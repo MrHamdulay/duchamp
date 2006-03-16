@@ -1,0 +1,94 @@
+# INPUT RELATED
+# imageFile -- the FITS image.
+# flagSubsection -- whether to get a subsection of that image. 
+# subsection -- the subsection to read in, in format [x1:x2,y1:y2,z1:z2],
+#               or * to indicate the full range 
+
+imageFile       your-file-here
+flagSubsection  1
+subsection      [*,*,*]
+
+# OUTPUT RELATED
+# flagLog -- log the intermediate results?   logfile-- the file to put that in.
+# outFile -- the final output list. 
+# spectraFile -- the postscript file of spectra
+# flagOutputRecon/Resid -- whether to save the reconstruction & residual arrays as FITS files
+# flagVOT -- make a VOTable file of the results?   votFile -- the file to put it in
+# flagMaps -- save postscript versions of the detection and 1st moment maps?
+# detectionMap, momentMap -- the postscript files produced.
+
+flagLog         1
+logFile		logfile.txt
+outFile		results.txt
+spectraFile	spectra.ps
+flagOutputRecon	0
+flagOutputResid	0
+flagVOT         0
+votFile         results.xml
+flagMaps        1
+detectionMap    latest-detection-map.ps
+momentMap       latest-moment-map.ps
+
+# FIXING UP THE CUBE
+# flagBlankPix -- whether to replace & ignore blank pixels. 
+# blankPixValue -- what value they should take. This is overridden by FITS header information.
+# flagBaseline -- whether to subtract spectral baselines before searching
+# flagMW -- whether to excise a range of channels (to remove Milky Way emission)
+# minMW, maxMW -- the first and last channels to be excised
+
+flagBlankPix    1
+blankPixValue	-8.00061
+flagBaseline    1
+flagMW		1
+minMW		75
+maxMW		112
+
+# GENERAL DETECTION RELATED
+# minPix -- Minimum number of pixels for a detected object to be counted
+# snrCut --  How many sigma above mean is a detection when sigma-clipping
+# flagGrowth -- Should the detections be "grown" to a lower significance value?
+# growthCut -- The lower threshold used when growing detections
+
+minPix		3
+snrCut		2.5
+flagGrowth	0
+growthCut	1.5
+
+# RECONSTRUCTION RELATED
+# flagATrous -- Whether or not to do the reconstruction before searching
+# scaleMin -- The minimum scale (starts at 1) to be included in the reconstruction
+# snrRecon -- The threshold used in filtering the wavelet coefficient arrays.
+# filterCode -- The code number for the choice of filter to be used in the reconstruction:
+# 1 = B3-spline filter, 2 = Triangle function, 3 = Haar wavelet. Other numbers default to 2.
+
+flagATrous	1
+scaleMin	1
+snrRecon	5.
+filterCode      2
+
+# FALSE DISCOVERY RATE METHOD
+# flagFDR -- Whether or not to use the false discovery rate method instead of 
+#   simple sigma clipping.
+# alphaFDR -- The "alpha" parameter for the FDR method -- what desired percentage
+#   of discoveries will be false. Expressed as a decimal.
+
+flagFDR 	0
+alphaFDR	0.05
+
+# MERGING PARAMETERS
+# flagAdjacent -- Whether to use the "adjacent criterion" to judge if objects are to be merged.
+# threshSpatial -- If flagAdjacent=false, this is the maximum spatial separation between objects
+#    for them to be merged.
+# threshVelocity -- The maximum channel separation between objects for them to be merged.
+# minChannels -- The minimum number of consecutive channels an object must have for it to be accepted.
+
+flagAdjacent	1
+threshSpatial	3
+threshVelocity	7
+minChannels	4
+
+# OTHER PARAMETERS
+# verbose -- whether to provide progress indicators on the terminal during execution
+# drawBorders -- whether to draw borders around the detections on the moment maps in the output.
+verbose         1
+drawBorders	1

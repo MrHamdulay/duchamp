@@ -1,0 +1,1167 @@
+\documentclass[12pt]{article}
+\usepackage[sort]{natbib}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{lscape}
+\usepackage{hyperref}
+\bibpunct[,]{(}{)}{;}{a}{}{,}
+\textwidth=161 mm
+\textheight=248 mm
+\topmargin=-13 mm
+\oddsidemargin=0 mm
+\parindent=6 mm
+
+\newcommand{\eg}{e.g.\ }
+\newcommand{\ie}{i.e.\ }
+\newcommand{\hi}{H{\sc i}}
+\newcommand{\hipass}{{\sc hipass}}
+\newcommand{\progname}{{\tt Duchamp}}
+\newcommand{\diff}{{\rm d}}
+\newcommand{\entrylabel}[1]{\mbox{\textsf{\bf{#1:}}}\hfil}
+\newenvironment{entry}
+        {\begin{list}{}%
+                {\renewcommand{\makelabel}{\entrylabel}%
+                        \setlength{\labelwidth}{30mm}%
+                        \setlength{\labelsep}{5pt}%
+                        \setlength{\itemsep}{2pt}%
+                        \setlength{\parsep}{2pt}%
+                        \setlength{\leftmargin}{35mm}%
+                }%
+        }%
+{\end{list}}
+
+\title{A Guide to the {\it Duchamp} Source Finding Software}
+\author{Matthew Whiting\\Australia Telescope National Facility\\CSIRO}
+%\date{January 2006}
+\date{}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\newpage
+\section{Introduction and getting going quickly}
+
+This document gives details on the use of the program Duchamp. This
+has been written to provide a source-detection facility for
+spectral-line data cubes. The basic execution of Duchamp is to read
+in a FITS data cube, find sources in the cube, and produce a text
+file of positions, velocities and fluxes of the detections, as well as
+a postscript file of the spectra of each detection. 
+
+So, you have a FITS cube, and you want to find the sources in it. What
+do you do? The first step is to make an input file that contains the
+list of parameters. Brief and detailed examples are shown in
+Appendix~\ref{app-input}. This provides the input file name, the various
+output files, and defines various parameters that control the
+execution.
+
+The program is run by the command
+\begin{quote}
+{\tt Duchamp -p [parameter file]}
+\end{quote}
+replacing {\tt [parameter file]} with the name of the file you have
+just created/copied. The program will then work away and give you the
+list of detections and their spectra. The program execution is
+summarise below, and detailed in \S\ref{sec-flow}. Information on
+inputs is in \S\ref{sec-param} and Appendix~\ref{app-param}, and
+descriptions of the output is in \S\ref{sec-output}.
+
+\subsection{A summary of the execution steps}
+
+The basic flow of the program is summarised here. All these steps are
+discussed in more detail in the following sections, so read on if
+there are questions!
+\begin{enumerate}
+\item The parameter file given on the command line is read in, and the
+  parameters absorbed.
+\item From the parameter file, the FITS image is located and read in
+  to memory.
+\item If requested, blank pixels are trimmed from the edges, and
+  channels corresponding to bright (\eg Galactic) emission are
+  excised. 
+\item If requested, the baseline of each spectrum is removed.
+\item If the reconstruction method is requested, the cube is
+  reconstructed using the {\it {\' a} trous} wavelet method.
+\item Searching for objects then takes place, using the requested
+  thresholding method.
+\item The list of objects is trimmed by merging neighbouring objects
+  and removing those deemed unacceptable.
+\item The baselines and trimmed pixels are replaced prior to output.
+\item The details on the detections are written to screen and to the
+  requested output file.
+\item Maps showing the spatial location of the detections are written.
+\item The integrated spectra of each detection are written to a
+  postscript file. 
+\item If requested, the reconstructed array can be written to a new
+  FITS file.
+\end{enumerate}
+
+\subsection{Guide to terminology}
+
+First, a brief note on the use of terminology in this guide. The FITS
+cube is assumed to have the following form: the first two dimensions
+(referred to as $x$ and $y$) are spatial directions (that is, relating
+to the position on the sky), while the third dimension, $z$, is the
+spectral direction, which can correspond to frequency, wavelength, or
+velocity. 
+
+Each spatial pixel (a given $(x,y)$ coordinate) can be said to be a
+single spectrum, while a slice through the cube perpendicular to the
+spectral direction at a given $z$-value is a single channel (the 2-D
+image is a channel map).
+
+\section{User Inputs}
+\label{sec-param}
+
+Input to the program is provided by means of a parameter file. Parameters
+are listed in the file, followed by the value that should be assigned
+to them. The syntax used is {\tt paramName value}. The file is not
+case-sensitive, and lines in the input file that start with {\tt \#} are
+ignored. If a parameter is listed more than once, the latter value is
+used, but otherwise the order in which the parameters are listed in the
+input file is arbitrary. 
+
+If a parameter is not listed, the default value is assumed. The
+defaults are chosen to provide a good result (using the reconstruction
+method), so the user can get away with only specifying a minimal
+number of parameters in the file. Note that the image file {\bf must}
+be specified! The parameters that can be set are listed in
+Appendix~\ref{app-param}, with their default values in parentheses.
+
+The 'flag' parameters are stored as {\tt bool} variables, and so are
+either {\tt true = 1} or {\tt false = 0} -- currently the program only
+reads them from the file as integers, and so they should be entered in
+the file as 0 or 1 (see example file in Appendix~\ref{app-input}).
+
+\section{What the program is doing}
+\label{sec-flow}
+
+The execution flow of the program is detailed here, indicating the
+main algorithmic steps that are used. The program is written in C/C++
+and makes use of the {\sc cfitsio}, {\sc wcslib} and {\sc pgplot}
+libraries. 
+
+%\subsection{Parameter input}
+%
+%The user provides parameters that govern the selection of files and
+%the parameters used by the various subroutines in the program. This is
+%done via a parameter file, and the parameters are stored in a C++
+%class for use throughout the program. The form of the parameter file is
+%discussed in \S\ref{sec-param}, and the parameters themselves are
+%listed in Appendix~\ref{app-param}.
+
+\subsection{Image input}
+
+The cube is read in using basic {\sc cfitsio} commands, and stored as
+an array in a special C++ class structure. This class keeps track of
+the list of detected objects, as well as any reconstructed arrays that
+are made (see \S\ref{sec-recon}). The WCS information for the cube is
+also obtained from the FITS header by {\sc wcslib} functions
+\citep{greisen02, calabretta02}, and this information, in the form of
+a {\tt wcsprm} structure, is also stored in the same class.
+
+A sub-section of an image can be requested. This is done via the {\tt
+subsection} parameter in the parameter file. The generalised form of
+the subsection that is used by {\sc cfitsio} is {\tt
+[x1:x2:dx,y1:y2:dy,z1:z2:dz]}, such that the x-coordinates run from
+{\tt x1} to {\tt x2} (inclusive), with steps of {\tt dx}. The step
+value can be omitted (so a subsection of the form {\tt
+[2:50,2:50,10:1000]} is still valid). Duchamp does not at this
+stage deal with the presence of steps in the subsection string, and
+any that are present are removed before the file is opened.
+
+If one wants the full range of a value then replace the range with an
+asterisk, \eg {\tt [2:50,2:50,*]}. If one wants to use just a
+subsection, one must set {\tt flagSubsection = 1}. A complete
+description of the section syntax can be found at the {\sc fitsio} web
+site
+\footnote{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/c/c\_user/node90.html}.
+
+\subsection{Image modification}
+\label{sec-modify}
+
+Several modifications to the cube can be made that improve the
+execution and efficiency of Duchamp (these are optional -- their
+use is indicated by the relevant flags set in the input parameter
+file).
+
+\subsubsection{Milky-Way removal}
+
+First, a single set of contiguous channels can be removed -- these may
+exhibit very strong emission, such as that from the Milky Way as seen
+in extragalactic \hi\ cubes (hence the references to ``Milky Way'' in
+relation to this task -- apologies to Galactic astronomers!). Such
+dominant channels will both produce many unnecessary, uninteresting
+and large (in size and hence in memory) detections, and will also
+affect any reconstruction that is performed (see next section). The
+use of this feature is controlled by the {\tt flagMW} parameter, and
+the exact channels concerned are able to be set by the user (using
+{\tt maxMW} and {\tt minMW}). When employed, the flux in these
+channels is set to zero. The information in those channels is not
+kept.
+
+\subsubsection{Blank pixel removal}
+
+Second, the cube is trimmed of BLANK pixels that pad the image
+out to a rectangular shape. This is also optional, being determined by
+the {\tt flagBlankPix} parameter. The value for these pixels is read from
+the FITS header (using the BLANK, BSCALE and BZERO keywords), but if
+these are not present then the value can be specified by the user in
+the parameter file. If these blank pixels are stored as NaNs, then a
+normal number will be substituted (allowing these pixels to be
+accurately removed without adverse effects).
+
+This stage is particularly important for the reconstruction step, as
+lots of BLANK pixels on the edges will smooth out features in the
+wavelet calculation stage. The trimming will also reduce the size of
+the cube's array, speeding up the execution. The amount of trimming is
+recorded, and these pixels are added back in once the source-detection
+is completed (so that quoted pixel positions are applicable to the
+original cube).
+
+Rows and columns are trimmed one at a time until the first non-BLANK
+pixel is reached, so that the image remains rectangular. In practice,
+this means that there will be BLANK pixels left in the trimmed image
+(if the non-BLANK region is non-rectangular). However, these are
+ignored in all further calculations done on the cube.
+
+\subsubsection{Baseline removal}
+
+Finally, the user may request the removal of baselines from the
+spectra, via the parameter {\tt flagBaseline}. This may be necessary
+if there is a strong baseline ripple present, which can result in
+spurious detections on the high points of the ripple. The baseline is
+calculated from a wavelet reconstruction procedure (see
+\S\ref{sec-recon}) that keeps only the two largest scales. This is
+done separately for each spatial pixel (\ie for each spectrum in the
+cube), and the baselines are stored and added back in before any
+output is done. In this way the quoted fluxes and displayed spectra
+are as one would see from the input cube itself -- the detection (and
+reconstruction if applicable) is done on the baseline-removed cube
+however.
+
+\subsection{Image reconstruction}
+\label{sec-recon}
+
+This is an optional step. The user can direct Duchamp to
+reconstruct the data cube using the {\it {\`a} trous} wavelet
+procedure. A good description of the procedure can be found in
+\citet{starck02:book}. This is an effective way of removing a
+lot of the noise in the image, but at this stage is relatively time-
+and cpu-intensive. The steps in the procedure are as follows:
+\begin{enumerate}
+\item Set the reconstructed array to 0 everywhere.
+\item The cube is discretely convolved with a given filter
+  function. This is determined from the parameter file via the {\tt
+  filterCode} parameter -- see Appendix~\ref{app-param} for details on
+  the filters available.
+\item The wavelet coefficients are calculated by taking the difference
+  between the convolved array and the input array.
+\item If the wavelet coefficients at a given point are above the
+  threshold requested (given by {\tt snrRecon} as the number of
+  $\sigma$ above the mean and adjusted to the current scale), add
+  these to the reconstructed array.
+\item The separation of the filter coefficients is doubled.
+\item The procedure is repeated from step 2, using the convolved array
+  as the input array.
+\item Continue until the required maximum number of scales is reached.
+\item Add the smoothed array to the reconstructed array. This provides
+  the ``DC offset''.
+\end{enumerate}
+
+
+The statistics of the cube are estimated using robust methods, to
+avoid corruption by strong outlying points. The mean is actually
+estimated by the median, while the median absolute deviation from the
+median (MADFM) is calculated and corrected assuming Gaussianity to
+estimate the standard deviation $\sigma$. The Gaussianity (or
+Normality) assumption is critical, as the MADFM does not give the same
+value as the usual rms or standard deviation value -- for a normal
+distribution $N(\mu,\sigma)$ we find MADFM$=0.6744888\sigma$. The
+difference between the MADFM and $\sigma$ is corrected for, so the
+user need only think in the usual multiples of $\sigma$ when setting
+{\tt snrRecon}. See Appendix~\ref{app-madfm} for a derivation of this
+value.
+
+When thresholding the different wavelet scales, the value of $\sigma$
+as measured from the input array needs to be scaled to account for the
+increased amount of correlation between neighbouring pixels (due to
+the convolution). 
+
+The user can also select the minimum scale to be used in the
+reconstruction -- the first scale exhibits the highest frequency
+variations, and so ignoring this one can sometimes be beneficial in
+removing excess noise. The default, however, is to use all scales
+({\tt minscale = 1}).
+
+The reconstruction has at least two iterations. The first iteration
+makes a first pass at the wavelet reconstruction (the process outlined
+in the 8 stages above), but the residual array will inevitably have
+some structure still in it, so the wavelet filtering is done on the
+residual, and any significant wavelet terms are added to the final
+reconstruction. This step is repeated until the change in the $\sigma$
+of the background is less than some fiducial amount.
+
+The user can optionally select to save the reconstructed image as a
+FITS file -- at the moment this is just saved in the same directory as
+the input file, so it won't work if the user does not have write
+permissions on that directory. See Appendix~\ref{app-param} for details
+on the naming of the output image. The residual image, which is the
+difference between the input image and the reconstructed image, can
+also be saved in the same manner. 
+
+Finally, note that any BLANK pixels that are still in the cube
+will not be altered by the reconstruction -- they will be left as
+BLANK so that the shape of the valid part of the cube is preserved.
+
+\subsection{Searching the image}
+\label{sec-detection}
+
+The image is searched for detections in two ways: spectrally (in the
+spectrum in each spatial pixel), and spatially (in the spatial image
+in each channel). In both cases, the algorithm finds connected pixels
+that are above the user-specified threshold. In the case of the
+spatial image search, the algorithm of \citet{lutz80} is used to
+raster scan through the image and connect groups of pixels on
+neighbouring rows.
+
+Note that this algorithm cannot be applied directly to a 3-dimensional
+case, as it requires that objects are completely nested in a row: that
+is, if you are scanning along a row, and one object finishes and
+another starts, you know that you will not get back to the first one
+(if at all) until the second is finished for that
+row. Three-dimensional data does not have this property, which is why
+we break up the searching into 1- and 2-dimensional cases.
+
+The determination of the threshold is done in one of two ways. The
+first way is a simple sigma-clipping, where a threshold defined as
+$n\sigma$ above the mean is set and pixels above this threshold are
+flagged as detected. As before, the value for $\sigma$ is estimated by
+the MADFM, and corrected by the ratio derived in
+Appendix~\ref{app-madfm}. 
+
+The second method uses the False Discovery Rate (FDR) technique
+\citep{miller01,hopkins02}, whose basis we briefly detail here. The
+false discovery rate (given by the number of false detections divided
+by the total number of detections) is fixed at a certain value
+$\alpha$ (\eg $\alpha=0.05$ implies 5\% of detections are false
+positives). In practice, an $\alpha$ value is chosen, and the ensemble
+average FDR (\ie $<FDR>$) when the method is used will be less than
+$\alpha$.  One calculates $p$ -- the probability, assuming the null
+hypothesis is true, of obtaining a test statistic as extreme as the
+pixel value (the observed test statistic) -- for each pixel, and sorts
+them in increasing order. One then calculates $d$ where
+\[
+d = \max_j \left\{ j : P_j < \frac{j\alpha}{c_N N} \right\}.
+\]
+And then rejects all hypotheses whose $p$-values are less than or equal
+to $P_d$. (So a $P_i<P_d$ will be rejected even if $P_i \geq
+j\alpha/c_N N$.) Note that ``reject hypothesis'' here means ``accept
+the pixel as an object pixel'' (\ie we are rejecting the null
+hypothesis that the pixel belongs to the background). 
+
+The $c_N$ values here are normalisation constants that depend on the
+correlated nature of the pixel values. If all the pixels are
+uncorrelated, then $c_N=1$. If $N$ pixels are correlated, then their
+tests will be dependent on each other, and so $c_N = \sum_{i=1}^N
+i^{-1}$. \citet{hopkins02} consider real radio data, where the pixels
+are correlated over the beam. In this case the sum is made over the
+$N$ pixels that make up the beam. The value of $N$ is calculated from
+the FITS header (if the correct keywords are not present, a default
+value of 10 pixels is assumed).
+
+If a reconstruction has been made, the residuals (defined as original
+$-$ reconstruction) are used to estimate the noise parameters of the
+cube. Otherwise they are estimated directly from the cube itself. In
+both cases, the median is used as a robust estimator of the mean
+value, although the $\sigma$ is estimated by the standard deviation
+(of the residual array, in the case of the reconstruction, but of the
+original array otherwise).
+
+Once a detection has been made, it is ``grown''. This is a process of
+increasing the size of the detection by adding adjacent pixels that
+are above some secondary threshold. This threshold is lower than the
+one used for the initial detection, but above the noise level, so that
+faint pixels are only detected when they are close to a bright
+pixel. The value of this threshold is a possible input parameter ({\tt
+growthCut}), with a default value of $1.5\sigma$.
+
+\subsection{Merging detected objects}
+\label{sec-merger}
+
+The searching step produces a list of detections that will have many
+repeated detections of a given object -- for instance, spectral
+detections in adjacent pixels of the same object. These are then
+combined in an algorithm that matches all objects judged to be
+``close''. This determination is made in one of two ways.
+
+One way is to define two thresholds -- one spatial and one in velocity
+-- and say that two objects should be merged if there is at least one
+pair of pixels that lie within these threshold distances of each
+other. These thresholds are specified by the parameters {\tt
+threshSpatial} and {\tt threshVelocity} (in units of pixels and
+channels respectively).
+
+Alternatively, the spatial requirement can be changed to say that
+there must be a pair of pixels that are {\it adjacent} -- a stricter,
+but more realistic requirement, particularly when the spatial pixels
+have a large angular size (as is the case for \hi\ surveys). This
+method can be selected by setting the parameter
+{\tt flagAdjacent} to 1 (\ie {\tt true}) in the parameter file. The
+velocity thresholding is done in the same way as the first option.
+
+The detections must also span a minimum number of channels (to remove
+any spurious single-channel spikes that may be present). This number
+is set with the {\tt minChannels} parameter. This requirement means
+there must be at least one set of this many consecutive channels in
+the source for it to be accepted. 
+
+\section{Outputs}
+\label{sec-output}
+
+\subsection{During execution}
+
+Duchamp provides the user with feedback whilst it is running, to
+keep the user informed on the progress of the analysis. Most of this
+consists of self-explanatory messages about the particular stage the
+program is up to. The relevant parameters are printed to the screen at
+the start (once the file has been successfully read in), so the user
+is able to make a quick check that the setup is correct.
+
+If the cube is being trimmed (\S\ref{sec-modify}), the resulting
+dimensions are printed to indicate how much has been trimmed. If a
+reconstruction is being done, a continually updating message shows the
+current iteration and scale (compared to the maximum scale). 
+
+During the searching algorithms, the progress through the 1D and 2D
+searches are shown. When the searches have completed,
+the number of objects found in both the 1D and 2D searches are
+reported (see \S\ref{sec-detection} for details).
+
+In the merging process (where multiple detections of the same object
+are combined -- see \S\ref{sec-merger}), two stages of output
+occur. The first is when each object in the list is compared with all
+others. The output shows two numbers: the first being how far through
+the list we are, and the second being the length of the list. As the
+algorithm proceeds, the first number should increase and the second
+should decrease (as objects are being combined). When the numbers
+meet, the second phase begins, of removing multiply-appearing pixels
+in each object and removing objects not meeting the minimum channels
+requirement. During this phase, the total number of accepted objects
+is shown, which should steadily increase until all have been accepted
+or rejected. Note that these steps can be very quick for small numbers
+of detections.
+
+Since this continual printing to screen has some overhead of time and
+CPU involved, the user can elect to not print this information by
+setting the parameter {\tt verbose = 0}. In this case, the user is
+still informed as to the steps being undertaken, but the details of
+the progress are not shown.
+
+\subsection{Results}
+
+Once the detection list is finalised, the results are printed to the
+screen and to the output file, denoted by the {\tt OutFile}
+parameter. The results list, an example of which can be seen in
+Appendix~\ref{app-output}, contains the following columns:
+
+\begin{entry}
+\item[Obj\#] The ID number of the detection (simply the sequential
+  count for the list, which is ordered by increasing velocity).
+\item[Name] The IAU-format name of the detection (based on the RA \&
+Dec).
+\item[X] The average X-pixel position.
+\item[Y] The average Y-pixel position.
+\item[Z] The average Z-pixel position.
+\item[RA] The Right Ascension of the centre of the object.
+\item[DEC] The Declination of the centre of the object.
+\item[w\_RA] The width of the object in Right Ascension [arcmin].
+\item[w\_DEC] The width of the object in Declination [arcmin].
+\item[VEL] The mean velocity of the object [km/s].
+\item[w\_VEL] The full velocity width of the detection (max channel
+  $-$ min channel, in velocity units [km/s]).
+\item[X1, X2] The minimum and maximum X-pixel coordinates.
+\item[Y1, Y2] The minimum and maximum Y-pixel coordinates.
+\item[Z1, Z2] The minimum and maximum Z-pixel coordinates.
+\item[Npix] The number of pixels \& channels (\ie distinct $(x,y,z)$
+  coordinates) in the detection.
+\item[F\_tot] The integrated flux over the object, in the units of the
+  FITS file. %This is calculated 
+\item[F\_peak] The peak flux over the object, in the units of the FITS
+  file.
+\end{entry}
+
+A VOTable-format XML file can also be produced, containing just the RA,
+Dec, Velocity and the corresponding widths of the detections. The user
+should set {\tt flagVOT = 1}, and put the desired filename in the
+parameter {\tt votFile}.
+
+As the program is running, it also (optionally) records the detections
+made in each individual spectrum or channel (see
+\S\ref{sec-detection} for details on this process). This is
+recorded in the file denoted by the parameter {\tt LogFile}. This file
+does not include the columns {\tt Name, RA, DEC, w\_RA, w\_DEC, VEL,
+w\_VEL}. This file is designed primarily for diagnostic purposes: \eg
+to see if a given set of pixels is detected in, say, one channel
+image, but does not survive the merging process. The list of pixels
+(and their fluxes) in the final detection list are also printed to
+this file, again for diagnostic purposes. This feature can be turned
+off by setting {\tt flagLog = false}. (This may be a good idea if you
+are not interested in its contents, as it can be a large file.)
+
+As well as the output data file, a postscript file is created that
+shows the integrated spectra of each detection, together with a small
+cutout image (0th moment) and basic information of the detection. If
+the cube was reconstructed, the spectrum from the reconstruction is
+shown in red, over the top of the original spectrum. The spectral
+extent of the detection is indicated with green lines, and a zoom is
+shown in a separate window. The cutout image can optionally include a
+border around the spatial pixels that are in the detection (turned on
+and off by the parameter {\tt drawBorders}). It also includes a scale bar
+in the bottom left corner to indicate size -- it is 30~arcmin long. An
+example detection can be seen below in Fig.~\ref{fig-spect}.
+
+Finally, a couple of images are optionally produced: a 1st moment map
+of the cube, combining just the detected channels in each object,
+showing the integrated flux in grey-scale; and a ``detection image'',
+a grey-scale image where the pixel values are the number of channels
+that spatial pixel is detected in. In both cases, if {\tt drawBorders =
+true}, a border is drawn around the spatial extent of each
+detection. An example moment map is shown in Fig.~\ref{fig-moment}.
+The production or otherwise of these images is governed by the {\tt
+flagMaps} parameter.
+
+The purpose of these images are to provide a visual guide to where the
+detections have been made, and, particularly in the case of the moment
+map, to provide an indication of the strength of the source. In both
+cases, the detections are numbered (in the same way as the output
+list), and the spatial borders are marked out as for the cutout images
+in the spectra file. Both these images are saved as postscript files
+(given by the parameters {\tt momentMap} and {\tt detectionMap}
+respectively), with the latter also displayed in a {\sc pgplot}
+window (regardless of the state of {\tt flagMaps}).
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=\textwidth]{example_spectrum.ps}
+\end{center}
+\caption{An example of the spectrum output. Note several of the
+  features discussed in the text: the removal of the Milky Way
+  emission around 0 km/s; the red lines indicating the reconstructed
+  spectrum and the spatial extent of the detection; the green dashed
+  lines indicating the spectral extent of the detection.}
+\label{fig-spect}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=\textwidth]{example_moment_map.ps}
+\end{center}
+\caption{An example of the moment map created by Duchamp. The full
+  extent of the cube is covered, and the 1st moment of each object is
+  shown (integrated separately over all the detected channels).}
+\label{fig-moment}
+\end{figure}
+
+\section{Notes and hints on the use of Duchamp}
+
+In using Duchamp, the user has to make a number of decisions about
+the way the program runs. This section is designed to give the user
+some idea about what the various selections do...
+
+The main choice is whether or not to use the wavelet
+reconstruction. The main benefits of this are the marked reduction in
+the noise level, leading to regularly-shaped detections, and good
+reliability for faint sources. The main drawback with its use is the
+long execution time: to reconstruct a $170\times160\times1024$
+(\hipass) cube often requires three iterations and takes about 20-25
+minutes. The searching part of the procedure is much quicker (although
+see the note on merging, below), so if one uses the FDR method on the
+un-reconstructed cube, the execution time is only a couple of minutes.
+
+A further drawback with the reconstruction is that it is susceptible
+to edge effects. If the valid area in the cube (\ie the part that is
+not BLANK) has very curved edges (such as the \hipass\ polar cap cube,
+H001, which has a roughly circular shape after gridding), the
+convolution can produce artefacts in the reconstruction that mimic
+the edges and lead to some spurious sources. Caution is advised with
+such data -- the user is advised to check carefully the reconstructed
+cube for the presence of such artefacts.
+
+If one chooses the reconstruction method, a further decision is
+required on the signal-to-noise cutoff used in determining acceptable
+wavelet coefficients. A larger value will remove more noise from the
+cube, at the expense of losing fainter sources, while a smaller value
+will include more noise, which may produce spurious detections, but
+will be more sensitive to faint sources. Values of less than about
+$3\sigma$ tend to not reduce the noise a great deal and can lead to
+many spurious sources.
+
+The FDR method certainly produces more reliable results than a simple
+sigma-clipping (\ie thresholding at some number of $\sigma$ above the
+mean). However, at this point it does not seem to be giving the
+sensitivity expected for the supplied value of {\tt alpha} (\ie it is
+not finding as many sources as expected). Work is
+being done to assess this, and to judge whether there is a real
+problem (such as with the determination of the statistics), or simply
+a result of working in 3 dimensions as opposed to 2.
+
+A further point to bear in mind is that the shape of the detections in
+a cube that has been reconstructed will be much more regular and
+smooth -- the ragged edges that objects in the raw cube possess are
+smoothed by the removal of most of the noise.
+
+\section{Drawbacks of the current program}
+
+The program currently has a few problems/drawbacks/things to be aware
+of that will hopefully be fixed in the future:
+\begin{itemize}
+
+\item Narrow interference spikes are still getting found, particularly
+  if there is no reconstruction, or reconstruction with a relatively
+  low {\tt snrRecon} (such as 2 or 3). Increasing the {\tt
+  minChannels} parameter is one way to circumvent this, but making the
+  algorithm a bit more clever would be preferable.
+
+\item Sources that have strong continuum ripple and/or artefacts often
+  generate many spurious detections. This needs some work to avoid
+  Duchamp doing this, and until then users are advised to be aware
+  of the possibility. Strong continuum ripples may generate many
+  sources on the same spatial pixel, and this will be apparent on the
+  detection images.
+
+\item Spectra are integrated over every spatial pixel of the
+  detection, and this may dilute the actual detection, making it
+  harder to see \ie the apparent strength of the line as plotted may
+  not give a true indication of how strong it really is.
+
+%\item A caution on the merging part of the procedure. This can be time
+%  consuming if there are many detections that do not require merging
+%  -- in this case, the time will go like $N^2$ ($N$ = number of
+%  detections). If there are plenty of mergers, the size of the list
+%  reduces quickly, so the execution time will be less.
+
+
+\end{itemize}
+
+
+%\section{Comparison with other software (to be developed further...)}
+%
+%\subsection{fred, by Matt Howlett}
+%
+%This is the program used in the \hipass\ analysis. It smoothes the
+%data spectrally with a boxcar filter of a size that varies over a
+%user-specified range, and then thresholds the data.
+%
+%Works effectively, but generally doesn't find as many sources as
+%Duchamp, particularly when the reconstruction is used. Sensitive to
+%faint, broad features that fall below the reconstruction threshold.
+%
+%Execution takes a long time, depending on the range of filter widths
+%that are used.
+%
+%\subsection{sfind}
+%
+%Hard to evaluate, as it does not (as far as I can see) output the
+%channel number at which detections are made, and does not merge
+%detections made at adjacent channels (\ie it just works in 2
+%dimensions). 
+%
+
+\section{Future Developments}
+
+This is both a list of planned improvements and a wish-list of
+features that would be nice to include (but are not planned in the
+immediate future):
+
+\begin{itemize}
+
+\item More varied output formats, including a Karma annotation file. {\bf Planned.}
+
+\item Better determination of the noise characteristics of
+  spectral-line cubes, including understanding how the noise is
+  generated and developing a model for it. {\bf Planned.}
+  
+\item Include more source analysis. Examples could be: shape
+  information; measurements of HI mass; better measurements of
+  velocity width and profile... {\bf Some planned.}
+
+\item Provide some indication of the significance of the detection
+  (\ie some S/N-like value). {\bf Planned.}
+
+\item Link to lists of possible counterparts (\eg via NED/SIMBAD/other
+  VO tools?). {\bf Wishlist.} 
+
+\item Add ability to read in a reconstructed cube that has been
+  saved. In this case the residual array will also need to be read
+  in. The idea of this will be to avoid the extended time required for
+  the reconstruction if the same cube is being analysed multiple
+  times. {\bf Wishlist.}
+ 
+\item At this point, the ``Milky Way'' channels are discarded and set
+  to zero. It may be that users would like to have those put back in
+  the final cube after the source detection is done, so at some point
+  this option may be added. {\bf Wishlist -- if needed.}
+
+\end{itemize}
+
+\section{Why ``Duchamp''?}
+
+Well, it's important for a program to have a name, and it certainly
+beats the initial version of ``cubefind''. I had planned to call it
+``Picasso'' (as in the father of cubism), but sadly this had already
+been used before \citep{minchin99}. So I settled on naming it after
+Marcel Duchamp, another cubist, but also one of the first artists to
+work with ``found objects''.
+
+
+%\bibliographystyle{mn2e}
+%\bibliographystyle{abbrvnat}
+%\bibliography{mnrasmnemonic,sourceDetection}
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{{Calabretta} \& {Greisen}}{{Calabretta} \&
+  {Greisen}}{2002}]{calabretta02}
+{Calabretta} M.,  {Greisen} E.,  2002, A\&A, 395, 1077
+
+\bibitem[\protect\citeauthoryear{{Greisen} \& {Calabretta}}{{Greisen} \&
+  {Calabretta}}{2002}]{greisen02}
+{Greisen} E.,  {Calabretta} M.,  2002, A\&A, 395, 1061
+
+\bibitem[\protect\citeauthoryear{{Hopkins}, {Miller}, {Connolly}, {Genovese},
+  {Nichol} \& {Wasserman}}{{Hopkins} et~al.}{2002}]{hopkins02}
+{Hopkins} A.,  {Miller} C.,  {Connolly} A.,  {Genovese} C.,  {Nichol} R.,
+  {Wasserman} L.,  2002, AJ, 123, 1086
+
+\bibitem[\protect\citeauthoryear{Lutz}{Lutz}{1980}]{lutz80}
+Lutz R.,  1980, The Computer Journal, 23, 262
+
+\bibitem[\protect\citeauthoryear{{Meyer} et~al.,}{{Meyer}
+  et~al.}{2004}]{meyer04:trunc}
+{Meyer} M.,  et~al., 2004, MNRAS, 350, 1195
+
+\bibitem[\protect\citeauthoryear{{Miller}, {Genovese}, {Nichol}, {Wasserman},
+  {Connolly}, {Reichart}, {Hopkins}, {Schneider} \& {Moore}}{{Miller}
+  et~al.}{2001}]{miller01}
+{Miller} C.,  {Genovese} C.,  {Nichol} R.,  {Wasserman} L.,  {Connolly} A.,
+  {Reichart} D.,  {Hopkins} A.,  {Schneider} J.,    {Moore} A.,  2001, AJ, 122,
+  3492
+
+\bibitem[\protect\citeauthoryear{Minchin}{Minchin}{1999}]{minchin99}
+Minchin R.,  1999, PASA, 16, 12
+
+\bibitem[\protect\citeauthoryear{Starck \& Murtagh}{Starck \&
+  Murtagh}{2002}]{starck02:book}
+Starck J.-L.,  Murtagh F.,  2002, {``Astronomical Image and Data Analysis''}.
+Springer
+
+\end{thebibliography}
+
+
+\appendix
+\newpage
+\section{Available parameters}
+\label{app-param}
+
+The full list of parameters that can be listed in the input file are
+given here. If not listed, they take the default value given in
+parentheses. Since the order of the parameters in the input file does
+not matter, they are grouped here in logical sections.
+
+\subsection*{Input-output related}
+\begin{entry}
+\item[ImageFile (no default assumed)] The filename of the
+  data cube to be analysed.
+\item[OutFile {\tt [./duchamp-Results]}] The file where the final
+  detections are to be recorded. This also records the list of input
+  parameters.
+\item[SpectraFile {\tt [./duchamp-Spectra.ps]}] The postscript file
+  containing the resulting integrated spectra and images of the
+  detections. 
+\item[flagLog {\tt [true]}] A flag to indicate whether intermediate
+  detections should be logged.
+\item[LogFile {\tt [./duchamp-Logfile]}] The file in which intermediate
+  detections are logged. These are detections that have not been
+  merged. This is primarily for use in debugging and diagnostic
+  purposes -- normal use of the program will probably not require
+  this.
+\item[flagSubsection {\tt [false]}] A flag to indicate whether one
+  wants a subsection of the requested image.
+\item[Subsection {\tt [ [*,*,*] ]}] The requested subsection, which
+  should be specified in the format {\tt [x1:x2,y1:y2,z1:z2]}, where
+  the limits are inclusive. If the full range of a dimension is
+  required, use a {\tt *}, \eg if you want the full spectral range of
+  a subsection of the image, use {\tt [30:140,30:140,*]}.
+\item[flagOutputRecon {\tt [false]}] A flag to say whether or not to
+  save the reconstructed cube as a FITS file. The filename will be
+  derived from the ImageFile -- the reconstruction of {\tt image.fits}
+  will be saved as {\tt image.RECON?.fits}, where {\tt ?} stands for
+  the value of {\tt snrRecon} (see below).
+\item[flagOutputResid {\tt [false]}] As for {\tt flagOutputRecon}, but
+  for the residual array -- the difference between the original cube
+  and the reconstructed cube. The filename will be {\tt
+  image.RESID?.fits}.
+\item[flagVOT {\tt [false]}] A flag to say whether to create a VOTable
+  file corresponding to the information in {\tt outfile}. This will be
+  an XML file in the Virtual Observatory VOTable format.
+\item[votFile {\tt [./duchamp-Results.xml]}] The VOTable file with the
+  list of final detections. Some input parameters are also recorded.
+\item[flagMaps {\tt [true]}] A flag to say whether to save postscript
+  files showing the moment map of the whole cube (parameter {\tt
+  momentMap}) and the detection image ({\tt detectionMap}).
+\item[momentMap {\tt [./latest-moment-map.ps]}] A postscript file
+  containing a map of the 1st moment of the detected sources, as well
+  as pixel and WCS coordinates.
+\item[detectionMap {\tt [./latest-detection-map.ps]}] A postscript
+  file showing each of the detected objects, coloured in greyscale by
+  the number of channels they span. Also shows pixel and WCS
+  coordinates.
+\end{entry}
+
+\subsection*{Modifying the cube}
+\begin{entry}
+\item[flagBlankPix {\tt [true]}] A flag to say whether to remove BLANK
+  pixels from the analysis -- these are pixels set to some particular
+  value because they fall outside the imaged area.
+\item[blankPixValue {\tt [-8.00061]}] The value of the BLANK pixels, if
+  this information is not contained in the FITS header (the usual
+  procedure is to obtain this value from the header information -- in
+  which case the value set by this parameter is ignored).
+\item[flagMW {\tt [true]}] A flag to say whether to remove channels
+  contaminated by Milky Way (or other) emission -- the flux in these
+  channels is currently just set to 0.
+\item[maxMW {\tt [112]}] The maximum channel for the Milky Way
+  emission. 
+\item[minMW {\tt [75]}] The minimum channel for the Milky Way
+  emission. Note that the channels specified by {\tt maxMW} and {\tt
+  minMW} are assumed to be Milky Way channels (\ie the range is
+  inclusive).
+\item[flagBaseline {\tt [false]}] A flag to say whether to remove the
+  baseline from each spectrum in the cube for the purposes of
+  reconstruction and detection.
+\end{entry}
+
+\subsection*{Detection related}
+
+\subsubsection*{General detection}
+\begin{entry}
+\item[snrCut {\tt [3.]}] The cut-off value for thresholding, in terms
+  of number of $\sigma$ above the mean.
+\item[minPix {\tt [3]}] The minimum number of pixels for a single
+  detection to be counted.
+\item[flagGrowth {\tt [true]}] A flag indicating whether or not to
+  grow the detected objects to a smaller threshold.
+\item[growthCut {\tt [1.5]}] The smaller threshold using in growing
+  detections. In units of $\sigma$ above the mean.
+\end{entry}
+
+\subsubsection*{{\` a} trous reconstruction}
+\begin{entry}
+\item [flagATrous {\tt [true]}] A flag indicating whether or not to
+  reconstruct the cube using the {\it {\`a} trous} wavelet
+  reconstruction. Currently does this in 3-dimensions. See
+  \S\ref{sec-recon} for details.
+\item[scaleMin {\tt [1]}] The minimum wavelet scale to be used in the
+  reconstruction. A value of 1 means ``use all scales''.
+\item[snrRecon {\tt [4]}] The thresholding cutoff used in the
+  reconstruction -- only wavelet coefficients this many $\sigma$ above
+  the mean (or greater) are included in the reconstruction. 
+\item[filterCode {\tt [2]}] The code number of the filter to use in
+  the reconstruction. The options are:
+  \begin{itemize}
+  \item {\bf 1:} B$_3$-spline filter: coefficients = 
+    $(\frac{1}{16}, \frac{1}{4}, \frac{3}{8}, \frac{1}{4}, \frac{1}{16})$
+  \item {\bf 2:} Triangle filter: coefficients = $(\frac{1}{4}, \frac{1}{2}, \frac{1}{4})$
+  \item {\bf 3:} Haar wavelet: coefficients = $(0, \frac{1}{2}, \frac{1}{2})$
+  \end{itemize}
+\end{entry}
+
+\subsubsection*{FDR method}
+\begin{entry}
+\item[flagFDR {\tt [false]}] A flag indicating whether or not to use
+  the False Discovery Rate method in thresholding the pixels.
+\item[alphaFDR {\tt [0.01]}] The $\alpha$ parameter used in the FDR
+analysis. The average number of false detections, as a fraction of the
+total number, will be less than $\alpha$ (see \S\ref{sec-detection}).
+\end{entry}
+
+\subsubsection*{Merging detections}
+\begin{entry}
+\item[flagAdjacent {\tt [true]}] A flag indicating whether to use the
+  ``adjacent pixel'' criterion to decide whether to merge objects. If
+  not, the next two parameters are used to determine whether objects
+  are within the necessary thresholds.
+\item[minChannels {\tt [3]}] The minimum number of consecutive
+  channels that must be present in the detection for it to be accepted
+  by the Merging algorithm.
+%The minimum number of channels that a
+%  detection must span for it to be accepted by the Merging algorithm.
+\item[threshSpatial {\tt [3.]}] The maximum allowed minimum spatial
+  separation (in pixels) between two detections for them to be merged
+  into one. Only used if {\tt flagAdjacent = false}.
+\item[threshVelocity {\tt [7.]}] The maximum allowed minimum channel
+  separation between two detections for them to be merged into
+  one. %Only used if {\tt flagAdjacent = false}.
+\end{entry}
+
+\subsubsection*{Other parameters}
+\begin{entry}
+\item[drawBorders {\tt [true]}] A flag indicating whether borders
+  are to be drawn around the detected objects in the moment maps
+  included in the output (see for example Fig.~\ref{fig-spect}).
+\item[verbose {\tt [true]}] A flag indicating whether to print the
+  progress of computationally-intensive algorithms (such as the
+  searching and merging) to screen.
+\end{entry}
+
+
+\newpage
+\section{Example parameter files}
+\label{app-input}
+
+This is what a typical parameter file would look like.
+
+\begin{verbatim}
+imageFile       /DATA/SITAR_1/whi550/cubes/H201_abcde_luther_chop.fits
+logFile         temp-Logfile
+outFile         temp-Results
+spectraFile     spectra.ps
+flagSubsection  0
+flagOutputRecon 0
+flagOutputResid 0
+flagBlankPix    1
+blankPixValue   -8.00061
+flagMW          1
+minMW           75
+maxMW           112
+minPix          3
+flagGrowth      1
+growthCut       1.5
+flagATrous      0
+scaleMin        1
+snrRecon        4
+flagFDR         1
+alphaFDR        0.1
+numPixPSF       20
+snrCut          3
+threshSpatial   3
+threshVelocity  7
+minChannels     4
+\end{verbatim}
+
+Note that it is not necessary to include all these parameters in the
+file, only those that need to be changed from the defaults (as listed
+in Appendix~\ref{app-param}), which in this case would be very few. A
+minimal parameter file might look like:
+\begin{verbatim}
+imageFile       /DATA/SITAR_1/whi550/cubes/H201_abcde_luther_chop.fits
+flagLog         0
+snrRecon        3
+snrCut          2.5
+minChannels     3
+\end{verbatim}
+This will reconstruct the cube with a lower SNR value than the
+default, select objects at a lower threshold,  with a looser minimum
+channel requirement, and not keep a log of the intermediate
+detections. 
+
+The following page demonstrates how the parameters are presented to
+the user, both on the screen at execution time and in the output and
+log files:
+\newpage
+\begin{landscape}
+Presentation of parameters in output and log files:  
+\begin{verbatim}
+---- Parameters ---
+Image to be analysed                    = /DATA/SITAR_1/whi550/cubes/H201_abcde_luther_chop.fits
+Intermediate Logfile                    = temp-Logfile
+Final Results file                      = temp-Results
+Spectrum file                           = spectra.ps
+Saving reconstructed cube?              = false
+Saving residuals from reconstruction?   = false
+-----
+Fixing Blank Pixels?                    = true
+Blank Pixel Value                       = -8.00061
+Removing Milky Way channels?            = true
+Milky Way Channels                      = 75-112
+Minimum # Pixels in a detection?        = 3
+Growing objects after detection?        = true
+SNR Threshold for growth                = 1.5
+Using A Trous reconstruction?           = true
+Minimum scale in reconstruction         = 1
+SNR Threshold within reconstruction     = 4.
+Using FDR analysis?                     = false
+SNR Threshold                           = 3
+Using Adjacent-pixel criterion?         = true
+Min. # channels for merging             = 4
+-------------------
+\end{verbatim}
+
+\newpage
+\section{Example output file}
+\label{app-output}
+This the typical content of an output file, after running Duchamp
+with the parameters illustrated on the previous page.
+
+{\scriptsize 
+  \begin{verbatim}
+Results of  the Duchamp source finder: Mon Nov  7 12:21:30 EST 2005
+---- Parameters ---
+
+(... omitted for clarity -- see previous page for examples...)
+
+-------------------
+Total number of detections = 25
+-------------------
+Obj#          Name     X     Y      Z           RA          DEC   RAerr  DECerr       VEL   VELerr  X1  X2  Y1  Y2   Z1   Z2 Npix   F_tot  F_peak
+----------------------------------------------------------------------------------------------------------------------------------------------
+   1    J0618-2535  31.3  86.2  113.3  06:18:11.47 -25:35:44.35   65.52   46.04   195.690   39.574  25  40  81  92  112  115  216 22.5225  0.3505
+   2    J0546-2151 140.1 142.3  114.5  05:46:26.96 -21:51:14.69   39.16   37.26   211.162   39.574 135 144 138 146  113  116   97  4.2503  0.0898
+   3    J0609-2159  60.0 140.9  114.8  06:09:28.44 -21:59:35.78   52.65   51.38   214.730   65.957  54  66 135 147  113  118  299 16.7887  0.2125
+   4    J0617-2637  33.9  70.9  115.5  06:17:32.93 -26:37:15.00   69.19   33.96   224.250   39.574  26  42  67  75  114  117  195 11.3938  0.1173
+   5    J0548-2452 132.9  97.3  118.6  05:48:13.00 -24:52:07.42   31.54   20.84   264.383   39.574 129 136  95  99  117  120   60  2.7168  0.0740
+   6    J0606-2722  71.5  60.4  121.1  06:06:21.90 -27:22:19.85   76.49   55.45   297.467   52.765  64  82  53  66  119  123  396 18.7983  0.1497
+   7    J0611-2142  52.5 144.9  162.4  06:11:36.41 -21:42:54.01   36.41   23.39   842.940  131.913  48  56 142 147  158  168  357 35.1624  0.4103
+   8    J0600-2902  89.6  35.5  202.4  06:00:53.79 -29:02:10.54   31.93   32.11  1370.373  197.870  86  93  32  39  195  210  492 24.0909  0.1729
+   9    J0559-2642  95.5  70.2  223.0  05:59:10.70 -26:42:55.41   15.89   20.09  1641.573  118.722  94  97  68  72  219  228   82  2.7609  0.0630
+  10    J0617-2727  34.8  58.3  226.9  06:17:24.28 -27:27:57.45   33.02   31.07  1693.404  316.592  32  39  55  62  214  238  368 14.3782  0.0929
+  11    J0559-2529  95.6  88.6  230.4  05:59:10.00 -25:29:40.27   35.85   28.18  1739.606  250.635  91  99  86  92  220  239  410 17.5353  0.1155
+  12    J0601-2146  88.8 144.3  231.6  06:01:12.10 -21:46:38.18   43.97   28.15  1755.172  237.444  84  94 141 147  221  239  636 30.9721  0.1655
+  13    J0615-2639  40.1  70.6  232.6  06:15:43.08 -26:39:08.39   20.67   23.47  1769.149   79.148  38  42  68  73  230  236   98  3.5063  0.0685
+  14    J0604-2610  75.9  78.4  233.2  06:04:59.84 -26:10:09.94   28.18   31.84  1776.512  237.444  73  79  75  82  224  242  526 25.1401  0.1545
+  15    J0601-2344  87.9 114.9  235.8  06:01:27.47 -23:44:31.98   39.97   36.06  1811.078  263.826  83  92 111 119  226  246 1000 70.9797  0.2968
+  16    J0615-2239  38.4 130.5  253.6  06:15:46.60 -22:39:13.99   20.49   19.50  2045.387  131.913  36  40 129 133  247  257   71  2.8341  0.0697
+  17    J0617-2308  31.4 123.0  257.7  06:17:51.43 -23:08:36.80   16.57   19.53  2099.724  105.531  30  33 121 125  252  260   63  2.3344  0.0624
+  18    J0612-2153  49.6 142.1  271.7  06:12:28.63 -21:53:48.46   32.49   27.44  2284.864  501.270  47  54 139 145  256  294  545 23.1440  0.1326
+  19    J0616-2137  35.2 145.8  298.8  06:16:34.71 -21:37:46.18   20.22    7.46  2641.616  145.104  33  37 145 146  293  304   42  2.7988  0.1271
+  20    J0555-3000 107.3  20.9  367.5  05:55:27.18 -30:00:15.79   27.61   28.41  3548.362   52.765 104 110  18  24  366  370  120  6.1519  0.1692
+  21    J0558-2251  99.6 128.1  434.2  05:58:04.62 -22:51:15.44    7.92   12.08  4428.516   52.765  99 100 127 129  432  436    9  0.8672  0.1674
+  22    J0616-2651  37.7  67.3  547.7  06:16:26.63 -26:51:59.99   20.60   19.44  5926.045  131.914  36  40  65  69  545  555   63  2.3717  0.0642
+  23    J0608-2243  62.0 130.0  723.5  06:08:56.37 -22:43:15.33    4.05    3.95  8244.473   39.574  62  62 130 130  722  725    4  0.2715  0.0813
+  24    J0552-2921 116.9  30.3  726.8  05:52:32.33 -29:21:37.75   11.52   24.25  8287.479  303.400 116 118  28  33  716  739  196 27.9587  0.4787
+
+
+  \end{verbatim}
+}
+
+%\end{landscape}
+
+\newpage
+\section{Example VOTable output}
+\label{app-votable}
+This is part of the VOTable, in XML format, corresponding to the
+output file in Appendix~\ref{app-output}.
+
+%\begin{landscape}
+{\scriptsize
+  \begin{verbatim}
+<?xml version="1.0"?>
+<VOTABLE version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="http://www.ivoa.net/xml/VOTable/VOTable/v1.1">
+  <COOSYS ID="J2000" equinox="J2000." epoch="J2000." system="eq_FK5"/>
+  <RESOURCE name="Cubefinder Output">
+    <TABLE name="Detections">
+      <DESCRIPTION>Detected sources and parameters</DESCRIPTION>
+      <PARAM name="FITS file" datatype="char" ucd="meta.file;meta.fits" value="/DATA/MULTI_5/LUTHER/hipass_chop/H201_abcde_luther_chop.fits"/>
+      <FIELD name="ID" ID="col1" ucd="meta.id" datatype="int" width="4"/>
+      <FIELD name="Name" ID="col2" ucd="meta.id;meta.main" datatype="char" arraysize="14"/>
+      <FIELD name="RA" ID="col3" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" width="10" precision="6" unit="deg"/>
+      <FIELD name="Dec" ID="col4" ucd="pos.eq.dec;meta.main" ref="J2000" datatype="float" width="10" precision="6" unit="deg"/>
+      <FIELD name="Vel" ID="col4" ucd="src.veloc" datatype="float" width="9" precision="3" unit="km/s"/>
+      <FIELD name="e_Vel" ID="col4" ucd="stat.error;src.veloc" datatype="float" width="8" precision="3" unit="km/s"/>
+      <DATA>
+        <TABLEDATA>
+        <TR>
+          <TD>   1</TD><TD>    J0618-2535</TD><TD> 94.547798</TD><TD>-25.595652</TD><TD>  195.690</TD><TD>  39.574</TD>
+        </TR>
+        <TR>
+          <TD>   2</TD><TD>    J0546-2151</TD><TD> 86.612350</TD><TD>-21.854080</TD><TD>  211.162</TD><TD>  39.574</TD>
+        </TR>
+        <TR>
+          <TD>   3</TD><TD>    J0609-2159</TD><TD> 92.368500</TD><TD>-21.993271</TD><TD>  214.730</TD><TD>  65.957</TD>
+        </TR>
+        <TR>
+          <TD>   4</TD><TD>    J0617-2637</TD><TD> 94.387222</TD><TD>-26.620832</TD><TD>  224.250</TD><TD>  39.574</TD>
+        </TR>
+        <TR>
+          <TD>   5</TD><TD>    J0548-2452</TD><TD> 87.054153</TD><TD>-24.868727</TD><TD>  264.383</TD><TD>  39.574</TD>
+        </TR>
+        <TR>
+          <TD>   6</TD><TD>    J0606-2722</TD><TD> 91.591263</TD><TD>-27.372181</TD><TD>  297.467</TD><TD>  52.765</TD>
+        </TR>
+
+(... table truncated for clarity ...)
+
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+  </RESOURCE>
+</VOTABLE>
+  \end{verbatim}
+}
+\end{landscape}
+
+\section{Robust statistics for a Normal distribution}
+\label{app-madfm}
+
+The Normal, or Gaussian, distribution for mean $\mu$ and standard
+deviation $\sigma$ can be written as 
+\[ 
+f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\ e^{-(x-\mu)^2/2\sigma^2}.
+ \]
+
+When one has a purely Gaussian signal, it is straightforward to
+estimate $\sigma$ by calculating the standard deviation (or rms) of
+the data. However, if there is a small amount of signal present on top
+of Gaussian noise, and one wants to estimate the $\sigma$ for the
+noise, the presence of the large values from the signal can bias the
+estimator to higher values.
+
+An alternative way is to use the median ($m$) and median absolute deviation
+from the median ($s$) to estimate $\mu$ and $\sigma$. The median is the
+middle of the distribution, defined for a continuous distribution by
+\[
+\int_{-\infty}^{m} f(x) \diff x = \int_{m}^{\infty} f(x) \diff x.
+\]
+From symmetry, we quickly see that for the continuous Normal
+distribution, $m=\mu$. We consider the case henceforth of $\mu=0$,
+without loss of generality.
+
+To find $s$, we find the distribution of the absolute deviation from
+the median, and then find the median of that distribution. This
+distribution is given by
+\begin{eqnarray*}
+g(x) &= &{\mbox{\rm distribution of }} |x|\\
+     &= &f(x) + f(-x), x\ge0\\
+     &= &\sqrt{\frac{2}{\pi\sigma^2}} e^{-x^2/2\sigma^2}, x\ge0.
+\end{eqnarray*}
+So to find $s$, we find the median of $g(x)$ via
+\[
+\int_{0}^{s} g(x) \diff x = \int_{s}^{\infty} g(x) \diff x.
+\]
+Now, $\int_{0}^{\infty}e^{-x^2/2\sigma^2} \diff x = \sqrt{\pi\sigma^2/2}$, and
+so $\int_{s}^{\infty} e^{-x^2/2\sigma^2} \diff x =
+\sqrt{\pi\sigma^2/2} - \int_{0}^{s} e^{-\frac{x^2}{2\sigma^2}} \diff x
+$. Hence, to find $s$ we simply solve the following equation (setting $\sigma=1$ for
+simplicity -- equivalent to stating $x$ and $s$ in units of $\sigma$):
+\[
+\int_{0}^{s}e^{-x^2/2} \diff x - \sqrt{\pi/8} = 0.
+\]
+This is hard to solve analytically (no nice analytic solution exists
+for the finite integral that I'm aware of), but straightforward to
+solve numerically, yielding the value of $s=0.6744888$. Thus, to
+estimate $\sigma$ for a Normally distributed data set, one can calculate
+$s$, then divide by 0.6744888 (or multiply by 1.4826042) to obtain the
+correct estimator.
+
+Note that this is different to solutions quoted elsewhere,
+specifically in \citet{meyer04:trunc}, where the same robust estimator is
+used but a different value for $s/\sigma$ (of
+$\sqrt{2/\pi}\approx0.797885$) is quoted. It should thus be noted that
+this means the values quoted by \citet{meyer04:trunc} for the cube noise in
+the \hipass\ catalogue should be 18\% larger (since 0.1486042 is 18\%
+larger than $\sqrt{\pi/2}\approx1.253314$). 
+
+\end{document}

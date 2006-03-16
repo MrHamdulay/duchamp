@@ -1,0 +1,12 @@
+imageFile	your-file-here
+logFile		logfile.txt
+outFile		results.txt
+spectraFile	spectra.ps
+flagGrowth      1
+growthCut       1.5
+minPix		3
+flagATrous	1
+snrRecon	5.
+snrCut		3.
+minChannels	3
+flagBaseline    1

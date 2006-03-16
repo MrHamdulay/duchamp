@@ -1,0 +1,196 @@
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <sstream>
+#include <string>
+using std::string;
+using std::stringstream;
+
+// void menu(string &fname)
+string menu()
+{
+  std::cout << "Files to choose from:\n";
+  std::cout << "1: precut_p26cube22_poly.fits\n";
+  std::cout << "2: precut_p34cube19_poly.fits\n";
+  std::cout << "3: precut_p34cube20_poly.fits\n";
+  std::cout << "4: precut_p42cube17_poly.fits\n";
+  std::cout << "5: precut_p58cube10_poly.fits\n";
+  std::cout << "6: H201_abcde_luther_chop.fits\n";
+  std::cout << "7: Another HIPASS cube\n";
+  std::cout << "8: Your own cube\n";
+
+  int file=0;
+  while((file<1)||(file>8)){
+    std::cout<<"Enter choice (1-8): ";
+    std::cin >> file;
+  }
+
+  string fname;
+  stringstream ss;
+  int cube=0;
+  switch(file){
+  case 1:
+    fname = "/DATA/SITAR_1/whi550/cubes/precut_p26cube22_poly.fits";
+    break;
+  case 2:
+    fname = "/DATA/SITAR_1/whi550/cubes/precut_p34cube19_poly.fits";
+    break;
+  case 3:
+    fname = "/DATA/SITAR_1/whi550/cubes/precut_p34cube20_poly.fits";
+    break;
+  case 4:
+    fname = "/DATA/SITAR_1/whi550/cubes/precut_p42cube17_poly.fits";
+    break;
+  case 5:
+    fname = "/DATA/SITAR_1/whi550/cubes/precut_p58cube10_poly.fits";
+    break;
+  case 6:
+    fname = "/DATA/SITAR_1/whi550/cubes/H201_abcde_luther_chop.fits";
+    break;
+  case 7:
+    while((cube<1)||(cube>538)){
+      std::cout<<"Enter cube number (1-538): ";
+      std::cin>>cube;
+    }
+    ss << "/DATA/MULTI_5/LUTHER/hipass_chop/H";
+    ss << std::setw(3) << std::setfill('0') << cube;
+    ss << "_abcde_luther_chop.fits";
+    fname = ss.str();
+    break;
+  default:
+    std::cout << "Enter filename (full path): ";
+    std::cin >> fname;
+    break;
+  }
+  return fname;
+}
+
+// void specMenu(string fname)
+string specMenu()
+{
+  std::cout << "Spectra to choose from:\n";
+  std::cout << "1: b1133m172\n";
+  std::cout << "2: b1136m135\n";
+  std::cout << "3: b1226p023\n";
+  std::cout << "4: b2126m158\n";
+  std::cout << "5: b2126m158-Galaxy#09\n";
+  std::cout << "6: b0823p033\n";
+
+  int file=0;
+  while((file<1)||(file>6)){
+    std::cout<<"Enter choice (1-6): ";
+    std::cin >> file;
+  }
+
+  string fname;
+  switch(file){
+  case 1:
+    fname = "/DATA/SITAR_1/whi550/cubes/phfs_spectra/b1133m172";
+    break;
+  case 2:
+    fname = "/DATA/SITAR_1/whi550/cubes/phfs_spectra/b1136m135";
+    break;
+  case 3:
+    fname = "/DATA/SITAR_1/whi550/cubes/phfs_spectra/b1226p023";
+    break;
+  case 4:
+    fname = "/DATA/SITAR_1/whi550/cubes/phfs_spectra/b2126m158";
+    break;
+  case 5:
+    fname = "/DATA/SITAR_1/whi550/cubes/phfs_spectra/b2126_obj09";
+    break;
+  default:
+    fname = "/DATA/SITAR_1/whi550/cubes/phfs_spectra/b0823p033";
+    break;
+  }
+  return fname;
+}
+
+//void orionMenu(string fname)
+string orionMenu()
+{
+  std::cout << "Chandra time series to choose from:\n";
+  std::cout << "1: Flaring/Constant \n";
+  std::cout << "2: Faint/Flaring\n";
+  std::cout << "3: Bright/Flaring\n";
+
+
+  int file=0;
+  while((file<1)||(file>3)){
+    std::cout<<"Enter choice (1-3): ";
+    std::cin >> file;
+  }
+
+  string fname;
+  switch(file){
+  case 1:
+    fname = "/DATA/SITAR_1/whi550/Stats/summerschool/orion/COUP263.dat";
+    break;
+  case 2:
+    fname = "/DATA/SITAR_1/whi550/Stats/summerschool/orion/COUP551.dat";
+    break;
+  default:
+    fname = "/DATA/SITAR_1/whi550/Stats/summerschool/orion/COUP554.dat";
+    break;
+  }
+  return fname;
+}
+
+//void imageMenu(string fname)
+string imageMenu()
+{
+  std::cout << "2D optical/NIR images to choose from:\n";
+  std::cout << "1: 2126-158 Kband (IRIS)\n";
+  std::cout << "2: 1555-140 Rband (40\")\n";
+  std::cout << "3: 2126-158 i' band (GMOS)\n";
+  std::cout << "4: NGC4567 Bband (2.3m)\n";
+  std::cout << "5: NGC4567 Vband (2.3m)\n";
+  std::cout << "6: A single velocity plane of an HI cube\n";
+
+  int file=0;
+  while((file<1)||(file>6)){
+    std::cout<<"Enter choice (1-6): ";
+    std::cin >> file;
+  }
+
+  string fname;
+  switch(file){
+  case 1:
+    fname = "/DATA/SITAR_1/whi550/iraf/search_test/temp2.fits";
+    break;
+  case 2:
+    fname = "/DATA/SITAR_1/whi550/iraf/search_test/b1555m140r.fits";
+    break;
+  case 3:
+    fname = "/DATA/SITAR_1/whi550/iraf/search_test/b2126_cps_sml.fits";
+    break;
+  case 4:
+    fname = "/DATA/SITAR_1/whi550/iraf/search_test/N4567B_trim.fits";
+    break;
+  case 5:
+    fname = "/DATA/SITAR_1/whi550/iraf/search_test/N4567V_trim.fits[216:715,261:760]";
+    break;
+  default:
+    fname = menu();
+    break;
+  }
+  return fname;
+}
+
+string twoblMenu()
+{
+  std::cout << "2BL spectra to choose from: \n";
+  system("ls /u/whi550/RESEARCH/2BL/data");
+  string fname;
+  std::ifstream fin;
+  do{
+    std::cout << "Select a file: ";
+    std::cin >> fname;
+    fname = "/u/whi550/RESEARCH/2BL/data/" + fname;
+    fin.open(fname.c_str(),std::ifstream::in);
+    if(!fin.good()) std::cout << "Bad file -- try again!";
+  }while(!fin.good());
+
+  return fname;
+}
+

@@ -1,0 +1,105 @@
+\documentclass[11pt]{article}
+\usepackage[sort]{natbib}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{lscape}
+\bibpunct[,]{(}{)}{;}{a}{}{,}
+\textwidth=161 mm
+\textheight=248 mm
+\topmargin=-13 mm
+\oddsidemargin=0 mm
+\parindent=6 mm
+
+\newcommand{\eg}{e.g.\ }
+\newcommand{\ie}{i.e.\ }
+\newcommand{\hi}{H{\sc i}}
+\newcommand{\hipass}{{\sc hipass}}
+\newcommand{\progname}{{\tt Duchamp}}
+\newcommand{\entrylabel}[1]{\mbox{\textsf{\bf{#1:}}}\hfil}
+\newenvironment{entry}
+        {\begin{list}{}%
+                {\renewcommand{\makelabel}{\entrylabel}%
+                        \setlength{\labelwidth}{30mm}%
+                        \setlength{\labelsep}{5pt}%
+                        \setlength{\itemsep}{2pt}%
+                        \setlength{\parsep}{2pt}%
+                        \setlength{\leftmargin}{35mm}%
+                }%
+        }%
+{\end{list}}
+
+\title{The ``noiseless reconstruction'' of astronomical data cubes
+  using the multi-scale {\it \`a trous} wavelet technique.}
+
+\author{Matthew Whiting\\Australia Telescope National Facility\\CSIRO}
+
+\date{November 2005}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We describe a technique to reconstruct a three-dimensional FITS data
+cube using multi-scale wavelet decomposition. The technique provides a
+marked reduction in the noise level of the cube, while retaining
+objects, providing an excellent basis for a source-finding algorithm. 
+\end{abstract}
+
+\section{Background}
+
+An important step in most astronomical data analysis that involves
+multi-dimensional imaging or spectroscopic data is the detection of
+sources. Often, astronomical sources (be they stars, galaxies, masers
+or otherwise) are faint and of a strength close to the noise or
+background of the image. Any procedure that could reduce this
+statistical background without removing the real features would be a
+great aid in detecting such sources.
+
+This is of great interest for large-scale surveys: large-scale here
+meaning both the size of data produced as well as the area of the sky
+they cover. The data rate seen in many current and planned surveys
+necessitates a largely automated pipeline reduction process, with
+minimal input from a user***. An object-detection (and
+characterisation) process is the logical next step (particularly with
+a view to producing source catalogues and the like), and such a
+process will need to be as sensitive as possible. This means beating
+the noise level in some way. 
+
+*** MATCHED FILTERS ***
+
+*** SMOOTHING ***
+
+*** WAVELETS ***
+
+\section{Wavelet decomposition}
+
+The technique we describe here relies on the properties of
+wavelets. These are localised functions that are described by two
+parameters, location (where the wavelet is operating) and scale (what
+range of values it operates on). An example of a wavelet is shown in
+Fig.~\ref{fig-wavelet}. 
+
+\begin{figure}
+\vspace{7.0cm}
+\caption{An example of a wavelet function.}
+\label{fig-wavelet}
+\end{figure}
+
+
+
+\section{Implementation}
+
+\subsection{Method}
+
+\subsection{Edge effects}
+
+
+\section{Results}
+
+\section{Applications of the technique}
+
+\section{Conclusions}
+
+
+\end{document}

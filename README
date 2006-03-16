@@ -1,0 +1,50 @@
+The Duchamp Source Finder
+-------------------------
+
+Here's a brief guide to getting Duchamp up and running.
+
+There is an executable (Duchamp) that has been compiled on a Debian
+Linux kernel 2.6.8-2-686, with gcc version 3.3.5 (Debian 1:3.3.5-13)
+
+If that is no good to you, you can compile it yourself using the
+Makefile included in this directory (sorry for not having a configure
+script or similar yet!).
+
+Duchamp uses three main external libraries: pgplot, cfitsio and
+wcslib. You will need to set the paths for the base directory and
+three libraries, as they are currently configured for my use and will
+not be of much use to you! These are:
+
+BASE --> the current directory
+PGDIR --> where the pgplot libraries (and header files) are located
+CFITSIODIR --> where the header file fitsio.h is
+CFITSIOLDIR --> where the cfitsio library is located (libcfitsio.a)
+WCSDIR --> where the wcslib header files are
+WCSLDIR --> where the wcslib library is located (libwcs.a)
+
+Once you've done that, then simply typing
+> make duchamp
+will compile the program.
+
+To run it, you need to use the syntax
+> Duchamp -p parameterFile
+where parameterFile is a file with the input parameters, including the
+name of the cube you want to search.
+
+There are two example input files included with the distribution. The
+smaller one, InputExample, shows the typical parameters one might want
+to set. The large one, InputComplete, lists all parameters that can be
+entered, and a brief description of them. Refer to the documentation
+for further details.
+
+To get going quickly, just replace the "your-file-here" in
+InputExample with your image name, and type
+> Duchamp -p InputExample
+and you're off!
+
+Any questions, please contact me!
+
+Matthew Whiting
+March 2006
+Matthew.Whiting@csiro.au
+
