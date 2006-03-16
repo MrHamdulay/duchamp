@@ -5,7 +5,6 @@
 #include <Cubes/cubes.hh>
 #include <Detection/detection.hh>
 #include <Utils/utils.hh>
-using std::setw;
 
 /**
  * Cube::ObjectMerger():
@@ -45,11 +44,11 @@ void Cube::ObjectMerger()
       while( counter < (currentList->size()-1) ){
 	if(isVerb){
 	  std::cout.setf(std::ios::right);
-	  if(nloop>0) std::cout << "Progress#2: " << setw(6) << counter << "/" ;
-	  else std::cout << "Progress: " << setw(6) << counter << "/" ;
+	  if(nloop>0) std::cout << "Progress#2: " << std::setw(6) << counter << "/" ;
+	  else std::cout << "Progress: " << std::setw(6) << counter << "/" ;
 	  std::cout.unsetf(std::ios::right);
 	  std::cout.setf(std::ios::left);
-	  std::cout << setw(6) << currentList->size() 
+	  std::cout << std::setw(6) << currentList->size() 
 		    << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b" << std::flush;
 	  if(nloop>0) std::cout << "\b\b" << std::flush; ;
 	  std::cout.unsetf(std::ios::left);
@@ -74,10 +73,10 @@ void Cube::ObjectMerger()
 	    if(isVerb){
 	      std::cout.setf(std::ios::right);
 	      std::cout << "Progress: "
-			<< setw(6) << counter << "/";
+			<< std::setw(6) << counter << "/";
 	      std::cout.unsetf(std::ios::right);
 	      std::cout.setf(std::ios::left);
-	      std::cout << setw(6) << currentList->size() 
+	      std::cout << std::setw(6) << currentList->size() 
 			<< "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b" << std::flush;
 	      std::cout.unsetf(std::ios::left);
 	    }
@@ -103,7 +102,7 @@ void Cube::ObjectMerger()
 	std::cout << " Growing object #      "<< std::flush;
 	std::cout.setf(std::ios::left);
 	for(int i=0;i<currentList->size();i++){
-	  std::cout<< "\b\b\b\b\b\b"<<setw(6)<<i+1<<std::flush;
+	  std::cout<< "\b\b\b\b\b\b"<<std::setw(6)<<i+1<<std::flush;
 	  Detection *obj = new Detection;
 	  *obj = currentList->at(i);
 	  growObject(*obj,*this);
@@ -133,7 +132,7 @@ void Cube::ObjectMerger()
       if( (*currentList)[listCounter].hasEnoughChannels(this->par.getMinChannels()) ){
 	listCounter++;
 	if(isVerb){
-	  std::cout << "Final total:"<<setw(5)<<listCounter<<"      "
+	  std::cout << "Final total:"<<std::setw(5)<<listCounter<<"      "
 		    << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
 	}
       }      
@@ -182,7 +181,7 @@ void Cube::ObjectMerger()
 // 	*/
 // 	finalList->push_back(*currentObject);
 // 	if(isVerb){
-// 	  std::cout << "Final total:"<<setw(5)<<finalList->size()
+// 	  std::cout << "Final total:"<<std::setw(5)<<finalList->size()
 // 		    << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
 // 	}
 // 	//	delete newObject;
