@@ -33,11 +33,12 @@ namespace Plot
     };
     ~ImagePlot(){};
   
-    void setUpPlot(float x, float y){
+    void setUpPlot(string pgDestination, float x, float y){
       /**
-       * setUpPlot(float x, float y)
-       *  set the dimensions for the image, and calculate the required aspect ratios
-       *   of the image and of the plot.
+       * setUpPlot(string pgDestination, float x, float y)
+       *  Opens a pgplot device and scales it to the correct shape.
+       *  In doing so, the dimensions for the image are set, and the required aspect ratios
+       *   of the image and of the plot are calculated.
        *  If the resulting image is going to be tall enough to exceed the maximum height 
        *  (given the default width), then scale everything down by enough to make the 
        *  height equal to maxPaperHeight.
@@ -53,6 +54,34 @@ namespace Plot
 	wedgeWidth *= correction;
 	imageWidth = paperWidth - 2*marginWidth - wedgeWidth;
       }
+      cpgopen(pgDestination.c_str());
+      cpgpap(paperWidth, aspectRatio);
+    }
+
+    void  drawMapBox(float x1, float x2, float y1, float y2, string xlabel, string ylabel){
+      /**
+       * drawMapBox() 
+       *  Defines the region that the box containing the map is to go in,
+       *  and draws the box with limits given by the arguments.
+       *  The labels for the x and y axes are also given as arguments.
+       */
+      cpgvsiz(marginWidth, marginWidth + imageWidth,
+	      marginWidth, marginWidth + (imageWidth*imageRatio));
+      cpgslw(2);
+      cpgswin(x1,x2,y1,y2);
+      cpgbox("bcst",0.,0,"bcst",0.,0);
+      cpgslw(1);
+      cpgbox("bcnst",0.,0,"bcnst",0.,0);
+      cpglab(xlabel.c_str(), ylabel.c_str(), "");
+    }
+    void  makeTitle(string title){
+      /**
+       *  makeTitle(string)
+       *    Writes the title for the plot, making it centred for the entire plot
+       *    and not just the map.
+       */ 
+      cpgvstd();
+      cpgmtxt("t", 2.7, 0.5, 0.5, title.c_str());
     }
     float cmToCoord(float cm){return (cm/inchToCm) * ydim / (imageWidth*imageRatio);};
     float getMargin()     {return marginWidth;};
@@ -99,24 +128,12 @@ void Cube::plotDetectionMap(string pgDestination)
 
   long xdim=this->axisDim[0];
   long ydim=this->axisDim[1];
-  cpgopen(pgDestination.c_str());
   Plot::ImagePlot newplot;
-  newplot.setUpPlot(float(xdim),float(ydim));
-  cpgpap(newplot.getPaperWidth(),newplot.getAspectRatio());
+  newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
 
-  cpgvstd();
-  cpgmtxt("t",2.7,0.5,0.5,this->pars().getImageFile().c_str());
+  newplot.makeTitle(this->pars().getImageFile());
 
-  cpgvsiz(newplot.getMargin(),newplot.getMargin()+newplot.getImageWidth(),
-	  newplot.getMargin(),newplot.getMargin()+newplot.getImageHeight());
-  
-  cpgslw(2);
-  cpgswin(boxXmin+0.5,boxXmin+xdim+0.5,
-	  boxYmin+0.5,boxYmin+ydim+0.5);
-  cpgbox("bcst",0.,0,"bcst",0.,0);
-  cpgslw(1);
-  cpgbox("bcnst",0.,0,"bcnst",0.,0);
-  cpglab("X pixel","Y pixel","");
+  newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,boxYmin+0.5,boxYmin+ydim+0.5,"X pixel","Y pixel");
 
   if(this->objectList.size()>0){ // if there are no detections, there will be nothing to plot here
 
@@ -189,26 +206,15 @@ void Cube::plotMomentMap(string pgDestination)
   long zdim=this->axisDim[2];
 
   Plot::ImagePlot newplot;
-  newplot.setUpPlot(float(xdim),float(ydim));
 
   if(this->objectList.size()==0){ // if there are no detections, we plot an empty field.
 
-    cpgopen(pgDestination.c_str());
-    cpgpap(newplot.getPaperWidth(),newplot.getAspectRatio());
+    newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
     
-    cpgvstd();
-    cpgmtxt("t",2.7,0.5,0.5,this->pars().getImageFile().c_str());
+    newplot.makeTitle(this->pars().getImageFile());
+    
+    newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,boxYmin+0.5,boxYmin+ydim+0.5,"X pixel","Y pixel");
 
-    cpgvsiz(newplot.getMargin(),newplot.getMargin()+newplot.getImageWidth(),
-	    newplot.getMargin(),newplot.getMargin()+newplot.getImageHeight());
-  
-    cpgslw(2);
-    cpgswin(boxXmin+0.5,boxXmin+xdim+0.5,
-	    boxYmin+0.5,boxYmin+ydim+0.5);
-    cpgbox("bcst",0.,0,"bcst",0.,0);
-    cpgslw(1);
-    cpgbox("bcnst",0.,0,"bcnst",0.,0);
-    cpglab("X pixel","Y pixel","");
     if(this->flagWCS) this->plotWCSaxes();
 
   }
@@ -300,22 +306,11 @@ void Cube::plotMomentMap(string pgDestination)
     // Have now done all necessary calculations for moment map.
     // Now produce the plot
 
-    cpgopen(pgDestination.c_str());
-    cpgpap(newplot.getPaperWidth(),newplot.getAspectRatio());
+    newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
     
-    cpgvstd();
-    cpgmtxt("t",2.7,0.5,0.5,this->pars().getImageFile().c_str());
-
-    cpgvsiz(newplot.getMargin(),newplot.getMargin()+newplot.getImageWidth(),
-	    newplot.getMargin(),newplot.getMargin()+newplot.getImageHeight());
-  
-    cpgslw(2);
-    cpgswin(boxXmin+0.5,boxXmin+xdim+0.5,
-	    boxYmin+0.5,boxYmin+ydim+0.5);
-    cpgbox("bcst",0.,0,"bcst",0.,0);
-    cpgslw(1);
-    cpgbox("bcnst",0.,0,"bcnst",0.,0);
-    cpglab("X pixel","Y pixel","");
+    newplot.makeTitle(this->pars().getImageFile());
+    
+    newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,boxYmin+0.5,boxYmin+ydim+0.5,"X pixel","Y pixel");
 
     float tr[6] = {boxXmin,1.,0.,boxYmin,0.,1.};
     cpggray(momentMap,xdim,ydim,1,xdim,1,ydim,z2,z1,tr);
