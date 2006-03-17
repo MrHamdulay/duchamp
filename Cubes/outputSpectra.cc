@@ -129,6 +129,10 @@ void Cube::outputSpectra()
 	if(specy[i]<min) min=specy[i];
       }
     }
+    // widen the flux range slightly so that the top & bottom don't lie on the axes.
+    float width = max - min;
+    max += width * 0.05;
+    min -= width * 0.05;
 
     cpgswin(minvel,maxvel,min,max);
     cpgbox("bc",0.,0,"bcstn",0.,0);
