@@ -22,7 +22,13 @@ CFITSIOLDIR --> where the cfitsio library is located (libcfitsio.a)
 WCSDIR --> where the wcslib header files are
 WCSLDIR --> where the wcslib library is located (libwcs.a)
 
-Once you've done that, then simply typing
+If you do not have the libraries, they can be downloaded from the
+following locations: 
+PGPlot -- http://www.astro.caltech.edu/~tjp/pgplot/
+cfitsio -- http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html
+wcslib -- http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html
+
+Once you've set up the Makefile correctly, then simply typing
 > make duchamp
 will compile the program.
 
