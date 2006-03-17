@@ -188,26 +188,31 @@ void Cube::plotMomentMap(string pgDestination)
   long ydim=this->axisDim[1];
   long zdim=this->axisDim[2];
 
-  cpgopen(pgDestination.c_str());
   Plot::ImagePlot newplot;
   newplot.setUpPlot(float(xdim),float(ydim));
-  cpgpap(newplot.getPaperWidth(),newplot.getAspectRatio());
 
-  cpgvstd();
-  cpgmtxt("t",2.7,0.5,0.5,this->pars().getImageFile().c_str());
+  if(this->objectList.size()==0){ // if there are no detections, we plot an empty field.
 
-  cpgvsiz(newplot.getMargin(),newplot.getMargin()+newplot.getImageWidth(),
-	  newplot.getMargin(),newplot.getMargin()+newplot.getImageHeight());
+    cpgopen(pgDestination.c_str());
+    cpgpap(newplot.getPaperWidth(),newplot.getAspectRatio());
+    
+    cpgvstd();
+    cpgmtxt("t",2.7,0.5,0.5,this->pars().getImageFile().c_str());
+
+    cpgvsiz(newplot.getMargin(),newplot.getMargin()+newplot.getImageWidth(),
+	    newplot.getMargin(),newplot.getMargin()+newplot.getImageHeight());
   
-  cpgslw(2);
-  cpgswin(boxXmin+0.5,boxXmin+xdim+0.5,
-	  boxYmin+0.5,boxYmin+ydim+0.5);
-  cpgbox("bcst",0.,0,"bcst",0.,0);
-  cpgslw(1);
-  cpgbox("bcnst",0.,0,"bcnst",0.,0);
-  cpglab("X pixel","Y pixel","");
+    cpgslw(2);
+    cpgswin(boxXmin+0.5,boxXmin+xdim+0.5,
+	    boxYmin+0.5,boxYmin+ydim+0.5);
+    cpgbox("bcst",0.,0,"bcst",0.,0);
+    cpgslw(1);
+    cpgbox("bcnst",0.,0,"bcnst",0.,0);
+    cpglab("X pixel","Y pixel","");
+    if(this->flagWCS) this->plotWCSaxes();
 
-  if(this->objectList.size()>0){ // if there are no detections, there will be nothing to plot here
+  }
+  else {  // if there are some detections, do the calculations first before plotting anything.
 
     bool *isObj = new bool[xdim*ydim*zdim];
     for(int i=0;i<xdim*ydim*zdim;i++) isObj[i] = false;
@@ -292,6 +297,26 @@ void Cube::plotMomentMap(string pgDestination)
       else momentMap[i] = log10(momentMap[i]);
     }
 
+    // Have now done all necessary calculations for moment map.
+    // Now produce the plot
+
+    cpgopen(pgDestination.c_str());
+    cpgpap(newplot.getPaperWidth(),newplot.getAspectRatio());
+    
+    cpgvstd();
+    cpgmtxt("t",2.7,0.5,0.5,this->pars().getImageFile().c_str());
+
+    cpgvsiz(newplot.getMargin(),newplot.getMargin()+newplot.getImageWidth(),
+	    newplot.getMargin(),newplot.getMargin()+newplot.getImageHeight());
+  
+    cpgslw(2);
+    cpgswin(boxXmin+0.5,boxXmin+xdim+0.5,
+	    boxYmin+0.5,boxYmin+ydim+0.5);
+    cpgbox("bcst",0.,0,"bcst",0.,0);
+    cpgslw(1);
+    cpgbox("bcnst",0.,0,"bcnst",0.,0);
+    cpglab("X pixel","Y pixel","");
+
     float tr[6] = {boxXmin,1.,0.,boxYmin,0.,1.};
     cpggray(momentMap,xdim,ydim,1,xdim,1,ydim,z2,z1,tr);
     cpgbox("bcnst",0.,0,"bcnst",0.,0);
@@ -302,12 +327,9 @@ void Cube::plotMomentMap(string pgDestination)
     delete [] temp;
     delete [] isObj;
 
-  }
-
-  if(this->flagWCS) this->plotWCSaxes();
+    if(this->flagWCS) this->plotWCSaxes();
   
-  if(this->objectList.size()>0){ // now show and label each detection, drawing over the WCS lines.
-    
+    // now show and label each detection, drawing over the WCS lines.
     cpgsch(1.0);
     cpgsci(2);
     cpgslw(2);
