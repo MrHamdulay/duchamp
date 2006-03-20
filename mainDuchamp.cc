@@ -147,8 +147,10 @@ int main(int argc, char * argv[])
     cube->plotMomentMap("/xs");
 
   if(cube->pars().getFlagMaps()){
+    std::cout<<"Creating the maps...  "<<std::flush;
     cube->plotMomentMap(cube->pars().getMomentMap()+"/vcps");
     cube->plotDetectionMap(cube->pars().getDetectionMap()+"/vcps");
+    std::cout << "done.\n";
   }
 
   if(cube->isWCS() && (cube->getNumObj()>0)){
