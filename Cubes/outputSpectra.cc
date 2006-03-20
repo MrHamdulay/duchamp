@@ -7,6 +7,7 @@
 #include <math.h>
 #include <wcs.h>
 #include <Cubes/cubes.hh>
+#include <Cubes/plots.hh>
 #include <Utils/utils.hh>
 
 void getSmallVelRange(Detection &obj, wcsprm *wcs, float *minvel, float *maxvel);
@@ -14,8 +15,8 @@ void Cube::outputSpectra()
 {
 
   string spectrafile = this->par.getSpectraFile() + "/vcps";
-  cpgopen(spectrafile.c_str());
-  cpgsubp(1,5);
+  Plot::SpectralPlot newplot;
+  newplot.setUpPlot(spectrafile.c_str());
 
   long xdim = this->axisDim[0];
   long ydim = this->axisDim[1];
@@ -79,42 +80,26 @@ void Cube::outputSpectra()
     }
 
     // now plot the resulting spectrum
-    cpgsch(3);
-    cpgpage();
-    cpgvstd();
+    newplot.gotoHeader("Velocity [km s\\u-1\\d]");
 
     string label = obj->outputLabelWCS();
-    cpgmtxt("t",3.,0.5,0.5,label.c_str());
+    newplot.firstHeaderLine(label);
     label = obj->outputLabelInfo();
-    cpgmtxt("t",1.8,0.5,0.5,label.c_str());
+    newplot.secondHeaderLine(label);
     label = obj->outputLabelPix();
-    cpgmtxt("t",0.6,0.5,0.5,label.c_str());
-    cpgmtxt("b",2.2,0.5,0.5,"Velocity [km s\\u-1\\d]");
+    newplot.thirdHeaderLine(label);
 
-    float x1,x2,y1,y2;
-    cpgqvp(0,&x1,&x2,&y1,&y2);
-    cpgsvp(x1,x1+0.75*(x2-x1),y1,y2);
-    cpgsch(2.);
-    cpgswin(vmin,vmax,min,max);
-    cpgbox("1bcnst",0.,0,"bcnst1v",0.,0);
-    cpgmtxt("l",3.5,0.5,0.5,"Flux [Jy]");
+    newplot.gotoMainSpectrum(vmin,vmax,min,max,"Flux [Jy]");
     cpgline(zdim,specx,specy);
     if(this->par.getFlagATrous()){
       cpgsci(2);
       cpgline(zdim,specx,specy2);    
+      cpgsci(1);
     }
-
-    cpgsci(3);
-    cpgsls(2);
-    cpgmove(obj->getVelMin(),min);  cpgdraw(obj->getVelMin(),max);
-    cpgmove(obj->getVelMax(),min);  cpgdraw(obj->getVelMax(),max);
-    cpgsci(1);
-    cpgsls(1);
+    newplot.drawVelRange(obj->getVelMin(),obj->getVelMax());
 
     /**************************/
     // ZOOM IN SPECTRALLY ON THE DETECTION.
-
-    cpgsvp(x1+0.78*(x2-x1),x1+0.88*(x2-x1),y1,y2);
 
     float minvel,maxvel;
     getSmallVelRange(*obj,wcs,&minvel,&maxvel);
@@ -134,49 +119,19 @@ void Cube::outputSpectra()
     max += width * 0.05;
     min -= width * 0.05;
 
-    cpgswin(minvel,maxvel,min,max);
-    cpgbox("bc",0.,0,"bcstn",0.,0);
-    float length,disp;
-    std::stringstream labelstream;
-    for(int i=1;i<10;i++){
-      labelstream.str("");
-      switch(i){
-      case 2:
-	length = 0.6;
-	labelstream<<minvel+(maxvel-minvel)*float(i)/10.;
-	disp = 0.2;
-	break;
-      case 8:
-	length = 0.6;
-	labelstream<<minvel+(maxvel-minvel)*float(i)/10.;
-	disp = 1.2;
-	break;
-      default:
-	length = 0.3;
-	break;
-      }
-      cpgtick(minvel,min,maxvel,min,float(i)/10.,length,0.3,disp,0.,labelstream.str().c_str());
-      cpgtick(minvel,max,maxvel,max,float(i)/10.,0.,length,0.,0.,"");
-    }
+    newplot.gotoZoomSpectrum(minvel,maxvel,min,max);
     cpgline(zdim,specx,specy);
     if(this->par.getFlagATrous()){
       cpgsci(2);
       cpgline(zdim,specx,specy2);    
+      cpgsci(1);
     }
-    cpgsci(3);
-    cpgsls(2);
-    cpgmove(obj->getVelMin(),min);  cpgdraw(obj->getVelMin(),max);
-    cpgmove(obj->getVelMax(),min);  cpgdraw(obj->getVelMax(),max);
-    cpgsci(1);
-    cpgsls(1);
+    newplot.drawVelRange(obj->getVelMin(),obj->getVelMax());
     
     /**************************/
 
     // DRAW THE MOMENT MAP OF THE DETECTION -- SUMMED OVER ALL CHANNELS
-//     cpgsvp(0,0.15*(x2-x1),y1,y2);
-    float p1,p2,p3,p4;
-    cpgqvsz(1,&p1,&p2,&p3,&p4);
-    cpgsvp(x1+0.9*(x2-x1),x1+0.9*(x2-x1)+(y2-y1)*p4/p2,y1,y2);
+    newplot.gotoMap();
     drawMomentCutout(*this,*obj);
 
     delete obj;
