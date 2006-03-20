@@ -208,6 +208,7 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
       spectrum->saveArray(spec,zdim);
       spectrum->setStats(specMedian[npix],specSigma[npix],par.getCut());
       if(par.getFlagFDR()) spectrum->setupFDR();
+      spectrum->setMinSize(par.getMinChannels());
       spectrum->lutz_detect();
       for(int obj=0;obj<spectrum->getNumObj();obj++){
 	Detection *object = new Detection;
@@ -287,6 +288,7 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
       channelImage->saveArray(image,xySize);
       channelImage->setStats(imageMedian[z],imageSigma[z],par.getCut());
       if(par.getFlagFDR()) channelImage->setupFDR();
+      channelImage->setMinSize(par.getMinPix());
       channelImage->lutz_detect();
       for(int obj=0;obj<channelImage->getNumObj();obj++){
 	Detection *object = new Detection;

@@ -151,7 +151,7 @@ void Image::lutz_detect()
 	  if( (status[CURRENT] == NONOBJECT) && (status[PRIOR] == COMPLETE) ){
 
 	    if(oS->back().start == NULLSTART){ // object completed
-	      if(oS->back().info.getSize() >= this->par.getMinPix()){
+	      if(oS->back().info.getSize() >= this->minSize){ // is it big enough?
 		oS->back().info.calcParams(); // work out midpoints, fluxes etc
 		this->addObject(oS->back().info);
 		this->maskObject(oS->back().info);

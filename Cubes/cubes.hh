@@ -122,6 +122,8 @@ public:
   float     getPCut(){return pCutLevel;};
   void      setAlpha(float a){alpha = a;};
   float     getAlpha(){return alpha;};
+  void      setMinSize()(int s){minSize = s};
+  int       getMinSize(){return minSize;};
 
   void      maskObject(Detection &object);
 
@@ -144,6 +146,7 @@ private:
                          //     a pixel to be called a detection.
   float      alpha;      // used by FDR routine -- significance level
   float      pCutLevel;  // the limiting P-value for the FDR analysis
+  int        minSize;    // the minimum number of pixels for a detection to be accepted.
 };
 
 /****************************************************************/

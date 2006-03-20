@@ -59,7 +59,7 @@ Param::Param(){
   // Baseline related
   this->flagBaseline    = false;
   // Detection-related    
-  this->minPix          = 3;
+  this->minPix          = 2;
   // Object growth        
   this->flagGrowth      = true;
   this->growthCut       = 1.5;
