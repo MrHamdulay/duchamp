@@ -122,7 +122,7 @@ public:
   float     getPCut(){return pCutLevel;};
   void      setAlpha(float a){alpha = a;};
   float     getAlpha(){return alpha;};
-  void      setMinSize()(int s){minSize = s};
+  void      setMinSize(int s){minSize = s;};
   int       getMinSize(){return minSize;};
 
   void      maskObject(Detection &object);

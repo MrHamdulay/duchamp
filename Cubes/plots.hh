@@ -159,7 +159,7 @@ namespace Plot
       cpgqls(&ls);
 //       cpgscr(18, 0., 0.7, 0.);
 //       cpgsci(18);
-      cpgsci(2);
+      cpgsci(4);
       cpgsls(2);
       cpgmove(v1,min);  cpgdraw(v1,max);
       cpgmove(v2,min);  cpgdraw(v2,max);
