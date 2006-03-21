@@ -87,10 +87,10 @@ void outputDetectionTextWCSHeader(std::ostream &stream, wcsprm *wcs)
   stream << setw(5)  << "Z1";
   stream << setw(5)  << "Z2";
   stream << setw(6)  << "Npix";
-  stream << setw(10)  << "F_tot";
+  stream << setw(10) << "F_tot";
   stream << setw(8)  << "F_peak";
   stream<<endl;
-  stream<<setfill('-')<<setw(4+14+6+6+7+13+13+8+8+10+9+4+4+4+4+5+5+6+8+8)<<'-';
+  stream<<setfill('-')<<setw(5+14+6+6+7+13+13+8+8+10+9+4+4+4+4+5+5+6+10+8)<<'-';
   stream<<endl;
 
 }

@@ -101,7 +101,7 @@ void Cube::outputDetectionList()
   output.open(this->par.getOutFile().c_str(),std::ios::app);
   this->showParam(output);
   output<<"Total number of detections = "<<this->objectList.size()<<endl;
-  output<<"-------------------"<<endl;
+  output<<"--------------------"<<endl;
   if(flag=wcsset(wcs)){
     std::cerr<<"outputDetectionList():: WCSSET failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<endl;
   }
