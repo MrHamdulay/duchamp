@@ -126,10 +126,12 @@ void Cube::ObjectMerger()
       (*currentList)[listCounter].calcParams();
 
       // Now, for each object in the newly modified list, we need to check if 
-      // they pass the minimum no. of channels requirement
+      // they pass the requirements on the minimum no. of channels and minimum 
+      // number of spatial pixels
       // If not, remove from list.
 
-      if( (*currentList)[listCounter].hasEnoughChannels(this->par.getMinChannels()) ){
+      if( (*currentList)[listCounter].hasEnoughChannels(this->par.getMinChannels())
+	  && ((*currentList)[listCounter].getSpatialSize() >= this->par.getMinPix()) ){
 	listCounter++;
 	if(isVerb){
 	  std::cout << "Final total:"<<std::setw(5)<<listCounter<<"      "

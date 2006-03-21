@@ -2,15 +2,15 @@
 #include <Detection/detection.hh>
 
 using std::vector;
-/**
- * Detection.SortByZ():
- *   A Function that takes a Detection and
- *   sorts the pixels by z-pixel
- *   Upon return, the inputList is sorted.
- */
 
 void Detection::SortByZ()
 {
+  /**
+   * Detection::SortByZ():
+   *   A Function that takes a Detection and
+   *   sorts the pixels by z-pixel
+   *   Upon return, the inputList is sorted.
+   */
 
   long size = this->pix.size();
   float *positions = new float[size];

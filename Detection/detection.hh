@@ -81,7 +81,8 @@ public:
 
   void   addPixel(Voxel point){pix.push_back(point);};
   Voxel  getPixel(long pixNum){return pix[pixNum];};
-  long   getSize(){return pix.size();};
+  int    getSize(){return pix.size();};
+  int    getSpatialSize();// in detection.cc
   //
   long   getX(long pixCount){return pix[pixCount].getX();};
   void   setX(long pixCount, long x){pix[pixCount].setX(x);};

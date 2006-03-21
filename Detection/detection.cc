@@ -349,6 +349,33 @@ bool Detection::hasEnoughChannels(int minNumber)
   
 }
 
+int Detection::getSpatialSize()
+{
+  /**
+   *  int getSpatialSize()
+   *    A function that returns the number of distinct spatial
+   *     pixels in a Detection.
+   */
+
+  vector<Pixel> spatialPix;
+  Pixel newpix;
+  bool addThisOne;
+  newpix.setXY(this->getX(0),this->getY(0));
+  spatialPix.push_back(newpix);
+  for(int i=1;i<this->pix.size();i++){
+    newpix.setXY(this->getX(i),this->getY(i));
+    addThisOne = true;
+    for(int j=0;(j<spatialPix.size())&&addThisOne;j++) { 
+      // do whole list or until addThisOne=false
+      addThisOne = ( (newpix.getX()!=spatialPix[j].getX()) || 
+		     (newpix.getY()!=spatialPix[j].getY())   );
+      // ie. if one of X or Y is different, addThisOne is true.
+    }
+    if(addThisOne) spatialPix.push_back(newpix);
+  }
+  return spatialPix.size();
+}
+
 std::ostream& operator<< ( std::ostream& theStream, Detection& obj)
 {
   /**
