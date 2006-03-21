@@ -76,7 +76,9 @@ void drawMomentCutout(Cube &cube, Detection &object)
   delete [] dim;
 
   // Draw the borders around the object
-  cpgsci(2);
+  int ci;
+  cpgqci(&ci);
+  cpgsci(4);
   cpgsfs(2);
   if(cube.pars().drawBorders()) 
     object.drawBorders(xmin,ymin);
@@ -88,6 +90,7 @@ void drawMomentCutout(Cube &cube, Detection &object)
     X values. We then subtract 0.5 for the left hand border (to place it on the
     pixel border), and add 0.5 for the right hand border. Similarly for y.
   */
+  cpgsci(ci);
 
   // Now draw a tick mark to indicate size -- 30 arcmin in length
   wcsprm *wcs = new wcsprm;

@@ -1,14 +1,22 @@
-\documentclass[12pt]{article}
-\usepackage[sort]{natbib}
-\usepackage{url}
-\usepackage{graphicx}
-\usepackage{lscape}
-\bibpunct[,]{(}{)}{;}{a}{}{,}
+\documentclass[12pt,a4paper]{article}
+
+%Define a test for doing PDF format -- use different code below
+\newif\ifPDF
+\ifx\pdfoutput\undefined\PDFfalse 
+\else\ifnum\pdfoutput > 0\PDFtrue 
+     \else\PDFfalse 
+     \fi 
+\fi
+
 \textwidth=161 mm
 \textheight=240 mm
 \topmargin=-18 mm
 \oddsidemargin=0 mm
 \parindent=6 mm
+
+\usepackage[sort]{natbib}
+\usepackage{lscape}
+\bibpunct[,]{(}{)}{;}{a}{}{,}
 
 \newcommand{\eg}{e.g.\ }
 \newcommand{\ie}{i.e.\ }
@@ -29,18 +37,29 @@
         }%
 {\end{list}}
 
+
 \title{A Guide to the {\it Duchamp} Source Finding Software}
-\author{Matthew Whiting\\{\small \href{mailto:Matthew.Whiting@csiro.au}{Matthew.Whiting@csiro.au}}\\
+\author{Matthew Whiting\\
+%{\small \href{mailto:Matthew.Whiting@csiro.au}{Matthew.Whiting@csiro.au}}\\
 Australia Telescope National Facility\\CSIRO}
 %\date{January 2006}
 \date{}
 
-\usepackage{hyperref}
-\hypersetup{colorlinks=true,% 	    citecolor=black,%
-			    % filecolor=black,%
-			    % linkcolor=black,%
-			    % urlcolor=black,% 
-            pdftex}
+% If we are creating a PDF, use different options for graphicx, hyperref.
+\ifPDF
+  \usepackage[pdftex]{graphicx,color}
+  \usepackage[pdftex]{hyperref}
+  \hypersetup{colorlinks=true,% 	    
+            % citecolor=black,%
+            % filecolor=black,%
+            % linkcolor=black,%
+            % urlcolor=black,%
+	      }
+\else
+  \usepackage[dvips]{graphicx} 
+  \usepackage[dvips]{hyperref} 
+\fi
+
 \begin{document}
 
 \maketitle
@@ -78,7 +97,7 @@ descriptions of the output is in \S\ref{sec-output}.
 
 The basic flow of the program is summarised here. All these steps are
 discussed in more detail in the following sections, so read on if
-there are questions!
+you have questions!
 \begin{enumerate}
 \item The parameter file given on the command line is read in, and the
   parameters absorbed.
@@ -106,17 +125,27 @@ there are questions!
 
 \subsection{Guide to terminology}
 
-First, a brief note on the use of terminology in this guide. The FITS
-cube is assumed to have the following form: the first two dimensions
-(referred to as $x$ and $y$) are spatial directions (that is, relating
-to the position on the sky), while the third dimension, $z$, is the
-spectral direction, which can correspond to frequency, wavelength, or
-velocity. 
+First, a brief note on the use of terminology in this guide. Duchamp
+is designed to work on FITS ``cubes''. These are FITS\footnote{FITS is
+the Flexible Image Transport System -- see \citet{hanisch01} or
+websites such as 
+\href{http://fits.cv.nrao.edu/FITS.html}{http://fits.cv.nrao.edu/FITS.html}
+for details.} image arrays with three dimensions -- they are assumed
+to have the following form: the first two dimensions (referred to as
+$x$ and $y$) are spatial directions (that is, relating to the position
+on the sky), while the third dimension, $z$, is the spectral
+direction, which can correspond to frequency, wavelength, or velocity.
 
 Each spatial pixel (a given $(x,y)$ coordinate) can be said to be a
 single spectrum, while a slice through the cube perpendicular to the
 spectral direction at a given $z$-value is a single channel (the 2-D
 image is a channel map).
+
+Note that it is possible to run Duchamp on a two-dimensional image
+(\ie one with no frequency or velocity information), or indeed a
+one-dimensional array, and many of the features of the program will
+work fine. The focus, however, is on object detection in three
+dimensions.
 
 \subsection{Why ``Duchamp''?}
 
@@ -146,7 +175,7 @@ be specified! The parameters that can be set are listed in
 Appendix~\ref{app-param}, with their default values in parentheses.
 
 The 'flag' parameters are stored as {\tt bool} variables, and so are
-either {\tt true = 1} or {\tt false = 0} -- currently the program only
+either {\tt true = 1} or {\tt false = 0}. Currently the program only
 reads them from the file as integers, and so they should be entered in
 the file as 0 or 1 (see example file in Appendix~\ref{app-input}).
 
@@ -172,10 +201,11 @@ libraries.
 The cube is read in using basic {\sc cfitsio} commands, and stored as
 an array in a special C++ class structure. This class keeps track of
 the list of detected objects, as well as any reconstructed arrays that
-are made (see \S\ref{sec-recon}). The WCS information for the cube is
-also obtained from the FITS header by {\sc wcslib} functions
-\citep{greisen02, calabretta02}, and this information, in the form of
-a {\tt wcsprm} structure, is also stored in the same class.
+are made (see \S\ref{sec-recon}). The World Coordinate System (WCS)
+information for the cube is also obtained from the FITS header by {\sc
+wcslib} functions \citep{greisen02, calabretta02}, and this
+information, in the form of a {\tt wcsprm} structure, is also stored
+in the same class.
 
 A sub-section of an image can be requested. This is done via the {\tt
 subsection} parameter in the parameter file. The generalised form of
@@ -371,9 +401,9 @@ hypothesis is true, of obtaining a test statistic as extreme as the
 pixel value (the observed test statistic) -- for each pixel, and sorts
 them in increasing order. One then calculates $d$ where
 \[
-d = \max_j \left\{ j : P_j < \frac{j\alpha}{c_N N} \right\}.
+d = \max_j \left\{ j : P_j < \frac{j\alpha}{c_N N} \right\},
 \]
-And then rejects all hypotheses whose $p$-values are less than or equal
+and then rejects all hypotheses whose $p$-values are less than or equal
 to $P_d$. (So a $P_i<P_d$ will be rejected even if $P_i \geq
 j\alpha/c_N N$.) Note that ``reject hypothesis'' here means ``accept
 the pixel as an object pixel'' (\ie we are rejecting the null
@@ -397,22 +427,15 @@ value, although the $\sigma$ is estimated by the standard deviation
 (of the residual array, in the case of the reconstruction, but of the
 original array otherwise).
 
-Once a detection has been made, it is ``grown''. This is a process of
-increasing the size of the detection by adding adjacent pixels that
-are above some secondary threshold. This threshold is lower than the
-one used for the initial detection, but above the noise level, so that
-faint pixels are only detected when they are close to a bright
-pixel. The value of this threshold is a possible input parameter ({\tt
-growthCut}), with a default value of $1.5\sigma$.
-
 \subsection{Merging detected objects}
 \label{sec-merger}
 
 The searching step produces a list of detections that will have many
 repeated detections of a given object -- for instance, spectral
-detections in adjacent pixels of the same object. These are then
-combined in an algorithm that matches all objects judged to be
-``close''. This determination is made in one of two ways.
+detections in adjacent pixels of the same object and/or spatial
+detections in neighbouring channels. These are then combined in an
+algorithm that matches all objects judged to be ``close''. This
+determination is made in one of two ways.
 
 One way is to define two thresholds -- one spatial and one in velocity
 -- and say that two objects should be merged if there is at least one
@@ -429,11 +452,25 @@ method can be selected by setting the parameter
 {\tt flagAdjacent} to 1 (\ie {\tt true}) in the parameter file. The
 velocity thresholding is done in the same way as the first option.
 
-The detections must also span a minimum number of channels (to remove
-any spurious single-channel spikes that may be present). This number
-is set with the {\tt minChannels} parameter. This requirement means
-there must be at least one set of this many consecutive channels in
-the source for it to be accepted. 
+Once the detections have been merged, they may be ``grown''. This is a
+process of increasing the size of the detection by adding adjacent
+pixels that are above some secondary threshold. This threshold is
+lower than the one used for the initial detection, but above the noise
+level, so that faint pixels are only detected when they are close to a
+bright pixel. The value of this threshold is a possible input
+parameter ({\tt growthCut}), with a default value of $1.5\sigma$. The
+use of the growth algorithm is controlled by the {\tt flagGrowth}
+parameter -- the default value of which is {\tt false}. If the
+detections are grown, they are sent through the merging algorithm a
+second time, to pick up any detections that have overlapped or grown
+over each other.
+
+Finally, to be accepted, the detections must span both a minimum
+number of channels (to remove any spurious single-channel spikes that
+may be present), and a minimum number of spatial pixels. These numbers
+are set with the {\tt minChannels} and {\tt minPix} parameters. The
+channel requirement means there must be at least one set of this many
+consecutive channels in the source for it to be accepted.
 
 \section{Outputs}
 \label{sec-output}
@@ -479,20 +516,10 @@ the progress are not shown.
 
 \subsection{Results}
 
-\begin{figure}[t]
-\begin{center}
-\includegraphics[width=\textwidth]{example_spectrum}
-\end{center}
-\caption{An example of the spectrum output. Note several of the
-  features discussed in the text: the removal of the Milky Way
-  emission around 0 km/s; the red lines indicating the reconstructed
-  spectrum and the spatial extent of the detection; the green dashed
-  lines indicating the spectral extent of the detection.}
-\label{fig-spect}
-\end{figure}
-
 Finally, we get to the results -- the reason for running Duchamp in
-the first place. Once the detection list is finalised, the results are
+the first place. Once the detection list is finalised, it is sorted by
+the mean velocity of the detections (or, if there is no good WCS with
+the cube, by the mean Z-pixel position). The results are then
 printed to the screen and to the output file, denoted by the {\tt
 OutFile} parameter. The results list, an example of which can be seen
 in Appendix~\ref{app-output}, contains the following columns:
@@ -522,11 +549,31 @@ Dec).
 \item[F\_peak] The peak flux over the object, in the units of the FITS
   file.
 \end{entry}
+If the WCS is not valid (\ie is not present or does not have all the
+necessary information), the Name, RA, DEC, VEL and related columns are not
+printed, but the pixel coordinates are still provided.
 
-A VOTable-format XML file can also be produced, containing just the RA,
-Dec, Velocity and the corresponding widths of the detections. The user
-should set {\tt flagVOT = 1}, and put the desired filename in the
-parameter {\tt votFile}.
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=\textwidth]{example_spectrum}
+\end{center}
+\caption{\footnotesize An example of the spectrum output. Note several
+  of the features discussed in the text: the removal of the Milky Way
+  emission around 0 km/s; the red lines indicating the reconstructed
+  spectrum; the blue dashed lines indicating the spectral extent of
+  the detection; and the blue border showing its spatial extent on the
+  0th moment map.}
+\label{fig-spect}
+\end{figure}
+
+A VOTable-format XML file can also be produced, containing just the
+RA, Dec, Velocity and the corresponding widths of the detections, as
+well as the fluxes. The user should set {\tt flagVOT = 1}, and put the
+desired filename in the parameter {\tt votFile} -- note that the
+default is for it not to be produced. This file should be compatible
+with all Virtual Observatory tools (such as Aladin\footnote{ Aladin
+can be found on the web at
+\href{http://aladin.u-strasbg.fr/}{http://aladin.u-strasbg.fr/}}).
 
 As the program is running, it also (optionally) records the detections
 made in each individual spectrum or channel (see
@@ -541,28 +588,28 @@ this file, again for diagnostic purposes. This feature can be turned
 off by setting {\tt flagLog = false}. (This may be a good idea if you
 are not interested in its contents, as it can be a large file.)
 
+\begin{figure}[!t]
+\begin{center}
+\includegraphics[width=\textwidth]{example_moment_map}
+\end{center}
+\caption{\footnotesize An example of the moment map created by
+  Duchamp. The full extent of the cube is covered, and the 0th moment
+  of each object is shown (integrated individually over all the
+  detected channels).}
+\label{fig-moment}
+\end{figure}
+
 As well as the output data file, a postscript file is created that
 shows the integrated spectra of each detection, together with a small
 cutout image (0th moment) and basic information of the detection. If
 the cube was reconstructed, the spectrum from the reconstruction is
 shown in red, over the top of the original spectrum. The spectral
 extent of the detection is indicated with green lines, and a zoom is
-shown in a separate window. 
-The cutout image can optionally include a
+shown in a separate window. The cutout image can optionally include a
 border around the spatial pixels that are in the detection (turned on
-and off by the parameter {\tt drawBorders}). It also includes a scale bar
-in the bottom left corner to indicate size -- it is 30~arcmin long. An
-example detection can be seen below in Fig.~\ref{fig-spect}.
-
-\begin{figure}[!t]
-\begin{center}
-\includegraphics[width=\textwidth]{example_moment_map}
-\end{center}
-\caption{An example of the moment map created by Duchamp. The full
-  extent of the cube is covered, and the 0th moment of each object is
-  shown (integrated separately over all the detected channels).}
-\label{fig-moment}
-\end{figure}
+and off by the parameter {\tt drawBorders}). It also includes a scale
+bar in the bottom left corner to indicate size -- it is 30~arcmin
+long. An example detection can be seen below in Fig.~\ref{fig-spect}.
 
 Finally, a couple of images are optionally produced: a 0th moment map
 of the cube, combining just the detected channels in each object,
@@ -739,6 +786,12 @@ immediate future):
 \bibitem[\protect\citeauthoryear{{Greisen} \& {Calabretta}}{{Greisen} \&
   {Calabretta}}{2002}]{greisen02}
 {Greisen} E.,  {Calabretta} M.,  2002, A\&A, 395, 1061
+
+\bibitem[\protect\citeauthoryear{{Hanisch}, {Farris}, {Greisen}, {Pence},
+  {Schlesinger}, {Teuben}, {Thompson} \& {Warnock}}{{Hanisch}
+  et~al.}{2001}]{hanisch01}
+{Hanisch} R.,  {Farris} A.,  {Greisen} E.,  {Pence} W.,  {Schlesinger} B.,
+  {Teuben} P.,  {Thompson} R.,    {Warnock} A.,  2001, A\&A, 376, 359
 
 \bibitem[\protect\citeauthoryear{{Hopkins}, {Miller}, {Connolly}, {Genovese},
   {Nichol} \& {Wasserman}}{{Hopkins} et~al.}{2002}]{hopkins02}
@@ -984,29 +1037,34 @@ log files:
 \begin{landscape}
 Presentation of parameters in output and log files:  
 \begin{verbatim}
----- Parameters ---
+---- Parameters ----
 Image to be analysed                    = /DATA/SITAR_1/whi550/cubes/H201_abcde_luther_chop.fits
-Intermediate Logfile                    = temp-Logfile
-Final Results file                      = temp-Results
+Intermediate Logfile                    = logfile.txt
+Final Results file                      = results.txt
 Spectrum file                           = spectra.ps
+VOTable file                            = results.xml
+0th Moment Map                          = latest-moment-map.ps
+Detection Map                           = latest-detection-map.ps
 Saving reconstructed cube?              = false
 Saving residuals from reconstruction?   = false
------
+------
 Fixing Blank Pixels?                    = true
 Blank Pixel Value                       = -8.00061
 Removing Milky Way channels?            = true
 Milky Way Channels                      = 75-112
-Minimum # Pixels in a detection?        = 3
-Growing objects after detection?        = true
-SNR Threshold for growth                = 1.5
+Beam Size (pixels)                      = 10.1788
+Removing baselines before search?       = false
+Minimum # Pixels in a detection         = 2
+Growing objects after detection?        = false
 Using A Trous reconstruction?           = true
 Minimum scale in reconstruction         = 1
-SNR Threshold within reconstruction     = 4.
+SNR Threshold within reconstruction     = 4
+Filter being used for reconstruction    = B3 spline function
 Using FDR analysis?                     = false
-SNR Threshold                           = 3
+SNR Threshold                           = 2.5
 Using Adjacent-pixel criterion?         = true
 Min. # channels for merging             = 4
--------------------
+--------------------
 \end{verbatim}
 
 \newpage
@@ -1017,42 +1075,39 @@ with the parameters illustrated on the previous page.
 
 {\scriptsize 
   \begin{verbatim}
-Results of  the Duchamp source finder: Mon Nov  7 12:21:30 EST 2005
----- Parameters ---
+Results of the Duchamp source finder: Tue Mar 21 16:28:50 EST 2006
+---- Parameters ----
 
 (... omitted for clarity -- see previous page for examples...)
 
--------------------
-Total number of detections = 25
--------------------
-Obj#          Name     X     Y      Z           RA          DEC   RAerr  DECerr       VEL   VELerr  X1  X2  Y1  Y2   Z1   Z2 Npix   F_tot  F_peak
-----------------------------------------------------------------------------------------------------------------------------------------------
-   1    J0618-2535  31.3  86.2  113.3  06:18:11.47 -25:35:44.35   65.52   46.04   195.690   39.574  25  40  81  92  112  115  216 22.5225  0.3505
-   2    J0546-2151 140.1 142.3  114.5  05:46:26.96 -21:51:14.69   39.16   37.26   211.162   39.574 135 144 138 146  113  116   97  4.2503  0.0898
-   3    J0609-2159  60.0 140.9  114.8  06:09:28.44 -21:59:35.78   52.65   51.38   214.730   65.957  54  66 135 147  113  118  299 16.7887  0.2125
-   4    J0617-2637  33.9  70.9  115.5  06:17:32.93 -26:37:15.00   69.19   33.96   224.250   39.574  26  42  67  75  114  117  195 11.3938  0.1173
-   5    J0548-2452 132.9  97.3  118.6  05:48:13.00 -24:52:07.42   31.54   20.84   264.383   39.574 129 136  95  99  117  120   60  2.7168  0.0740
-   6    J0606-2722  71.5  60.4  121.1  06:06:21.90 -27:22:19.85   76.49   55.45   297.467   52.765  64  82  53  66  119  123  396 18.7983  0.1497
-   7    J0611-2142  52.5 144.9  162.4  06:11:36.41 -21:42:54.01   36.41   23.39   842.940  131.913  48  56 142 147  158  168  357 35.1624  0.4103
-   8    J0600-2902  89.6  35.5  202.4  06:00:53.79 -29:02:10.54   31.93   32.11  1370.373  197.870  86  93  32  39  195  210  492 24.0909  0.1729
-   9    J0559-2642  95.5  70.2  223.0  05:59:10.70 -26:42:55.41   15.89   20.09  1641.573  118.722  94  97  68  72  219  228   82  2.7609  0.0630
-  10    J0617-2727  34.8  58.3  226.9  06:17:24.28 -27:27:57.45   33.02   31.07  1693.404  316.592  32  39  55  62  214  238  368 14.3782  0.0929
-  11    J0559-2529  95.6  88.6  230.4  05:59:10.00 -25:29:40.27   35.85   28.18  1739.606  250.635  91  99  86  92  220  239  410 17.5353  0.1155
-  12    J0601-2146  88.8 144.3  231.6  06:01:12.10 -21:46:38.18   43.97   28.15  1755.172  237.444  84  94 141 147  221  239  636 30.9721  0.1655
-  13    J0615-2639  40.1  70.6  232.6  06:15:43.08 -26:39:08.39   20.67   23.47  1769.149   79.148  38  42  68  73  230  236   98  3.5063  0.0685
-  14    J0604-2610  75.9  78.4  233.2  06:04:59.84 -26:10:09.94   28.18   31.84  1776.512  237.444  73  79  75  82  224  242  526 25.1401  0.1545
-  15    J0601-2344  87.9 114.9  235.8  06:01:27.47 -23:44:31.98   39.97   36.06  1811.078  263.826  83  92 111 119  226  246 1000 70.9797  0.2968
-  16    J0615-2239  38.4 130.5  253.6  06:15:46.60 -22:39:13.99   20.49   19.50  2045.387  131.913  36  40 129 133  247  257   71  2.8341  0.0697
-  17    J0617-2308  31.4 123.0  257.7  06:17:51.43 -23:08:36.80   16.57   19.53  2099.724  105.531  30  33 121 125  252  260   63  2.3344  0.0624
-  18    J0612-2153  49.6 142.1  271.7  06:12:28.63 -21:53:48.46   32.49   27.44  2284.864  501.270  47  54 139 145  256  294  545 23.1440  0.1326
-  19    J0616-2137  35.2 145.8  298.8  06:16:34.71 -21:37:46.18   20.22    7.46  2641.616  145.104  33  37 145 146  293  304   42  2.7988  0.1271
-  20    J0555-3000 107.3  20.9  367.5  05:55:27.18 -30:00:15.79   27.61   28.41  3548.362   52.765 104 110  18  24  366  370  120  6.1519  0.1692
-  21    J0558-2251  99.6 128.1  434.2  05:58:04.62 -22:51:15.44    7.92   12.08  4428.516   52.765  99 100 127 129  432  436    9  0.8672  0.1674
-  22    J0616-2651  37.7  67.3  547.7  06:16:26.63 -26:51:59.99   20.60   19.44  5926.045  131.914  36  40  65  69  545  555   63  2.3717  0.0642
-  23    J0608-2243  62.0 130.0  723.5  06:08:56.37 -22:43:15.33    4.05    3.95  8244.473   39.574  62  62 130 130  722  725    4  0.2715  0.0813
-  24    J0552-2921 116.9  30.3  726.8  05:52:32.33 -29:21:37.75   11.52   24.25  8287.479  303.400 116 118  28  33  716  739  196 27.9587  0.4787
-
-
+--------------------
+Total number of detections = 23
+--------------------
+ Obj#          Name     X     Y      Z           RA          DEC    w_RA   w_DEC       VEL    w_VEL  X1  X2  Y1  Y2   Z1   Z2  Npix     F_tot  F_peak
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+    1    J0609-2200  59.4 140.6  114.7  06:09:38.50 -22:00:48.20   48.50   39.42   213.061   65.957  55  66 136 145  113  118   185   17.5725  0.2125
+    2    J0608-2605  65.2  79.6  116.2  06:08:10.23 -26:05:06.57   44.47   39.47   233.119   39.574  60  70  76  85  115  118    50    4.1441  0.1002
+    3    J0606-2724  70.8  59.8  121.4  06:06:33.08 -27:24:43.28   52.48   47.57   302.213   39.574  65  77  53  64  120  123   213   17.0659  0.1497
+    4    J0611-2142  52.5 145.1  162.5  06:11:36.34 -21:42:00.01   32.40   23.47   843.727  118.722  49  56 142 147  158  167   303   44.3940  0.4103
+    5    J0600-2903  89.7  35.3  202.4  06:00:51.38 -29:03:02.51   23.94   28.09  1370.285  184.679  87  92  32  38  195  209   319   26.5725  0.1729
+    6    J0559-2643  95.5  70.2  222.6  05:59:10.59 -26:43:05.94   15.94   12.09  1637.316  105.531  94  97  69  71  219  227    35    1.9253  0.0630
+    7    J0617-2727  34.8  58.3  227.5  06:17:24.45 -27:27:53.89   20.77   23.41  1701.802  303.400  33  37  56  61  215  238   176   11.4138  0.0929
+    8    J0609-2145  60.3 144.4  229.6  06:09:23.17 -21:45:36.06   16.15   11.81  1729.279  105.531  59  62 143 145  225  233    25    1.4760  0.0679
+    9    J0559-2529  95.7  88.6  231.1  05:59:08.81 -25:29:34.50   27.88   24.14  1749.440  250.635  92  98  86  91  220  239   257   16.9297  0.1155
+   10    J0601-2145  88.9 144.4  232.3  06:01:10.14 -21:45:58.59   31.96   24.13  1764.657  224.253  86  93 142 147  222  239   415   34.0304  0.1655
+   11    J0615-2638  40.0  70.8  232.6  06:15:44.32 -26:38:29.42   16.56   19.57  1769.033   52.765  38  41  69  73  231  235    44    2.7565  0.0685
+   12    J0605-2610  75.9  78.4  233.1  06:05:00.16 -26:10:21.68   28.14   23.84  1775.066  224.253  73  79  76  81  225  242   352   27.0587  0.1545
+   13    J0601-2344  88.0 114.9  235.7  06:01:25.72 -23:44:18.18   35.96   32.07  1809.749  263.826  84  92 112 119  226  246   724   85.1317  0.2968
+   14    J0615-2238  38.2 130.6  253.6  06:15:48.32 -22:38:45.75   12.39   15.70  2046.530  118.722  37  39 129 132  248  257    40    2.3169  0.0697
+   15    J0617-2309  31.4 122.8  258.0  06:17:51.07 -23:09:29.22   16.46   15.53  2103.912   39.574  30  33 121 124  256  259    23    1.4243  0.0624
+   16    J0612-2153  49.5 142.3  271.1  06:12:29.32 -21:53:16.05   24.36   19.56  2276.976  395.740  47  52 140 144  257  287   318   20.7117  0.1008
+   17    J0616-2137  35.2 145.9  300.0  06:16:34.07 -21:37:30.95   20.22    7.46  2658.607  224.252  33  37 145 146  294  311    40    3.8507  0.1271
+   18    J0544-2740 144.0  54.9  325.4  05:44:31.07 -27:40:42.30    3.58   12.13  2993.384   39.574 144 144  54  56  324  327     7    0.4362  0.0569
+   19    J0555-3000 107.2  20.7  367.5  05:55:28.58 -30:00:46.76   19.67   24.31  3547.812   39.574 105 109  18  23  366  369    72    6.4819  0.1692
+   20    J0559-2325  96.0 119.6  532.1  05:59:04.98 -23:25:19.04   11.92   16.08  5720.289   52.765  95  97 118 121  530  534    27    1.2865  0.0508
+   21    J0616-2653  37.9  67.0  547.0  06:16:23.08 -26:53:11.73   12.36   11.67  5916.731   39.574  37  39  66  68  546  549    25    1.6374  0.0642
+   22    J0619-2256  25.1 125.9  724.2  06:19:39.49 -22:56:06.15   12.38   11.60  8254.112   39.573  24  26 125 127  723  726    13    0.6982  0.0593
+   23    J0552-2920 116.9  30.5  727.0  05:52:33.03 -29:20:54.43   11.60   20.25  8290.842  303.400 116 118  28  32  716  739   132   35.8343  0.4787
   \end{verbatim}
 }
 
@@ -1071,35 +1126,35 @@ output file in Appendix~\ref{app-output}.
 <VOTABLE version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:noNamespaceSchemaLocation="http://www.ivoa.net/xml/VOTable/VOTable/v1.1">
   <COOSYS ID="J2000" equinox="J2000." epoch="J2000." system="eq_FK5"/>
-  <RESOURCE name="Cubefinder Output">
+  <RESOURCE name="Duchamp Output">
     <TABLE name="Detections">
-      <DESCRIPTION>Detected sources and parameters</DESCRIPTION>
-      <PARAM name="FITS file" datatype="char" ucd="meta.file;meta.fits" value="/DATA/MULTI_5/LUTHER/hipass_chop/H201_abcde_luther_chop.fits"/>
+      <DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>
+      <PARAM name="FITS file" datatype="char" ucd="meta.file;meta.fits" value="/DATA/SITAR_1/whi550/cubes/H201_abcde_luther_chop.fits"/>
       <FIELD name="ID" ID="col1" ucd="meta.id" datatype="int" width="4"/>
       <FIELD name="Name" ID="col2" ucd="meta.id;meta.main" datatype="char" arraysize="14"/>
       <FIELD name="RA" ID="col3" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" width="10" precision="6" unit="deg"/>
       <FIELD name="Dec" ID="col4" ucd="pos.eq.dec;meta.main" ref="J2000" datatype="float" width="10" precision="6" unit="deg"/>
-      <FIELD name="Vel" ID="col4" ucd="src.veloc" datatype="float" width="9" precision="3" unit="km/s"/>
-      <FIELD name="e_Vel" ID="col4" ucd="stat.error;src.veloc" datatype="float" width="8" precision="3" unit="km/s"/>
+      <FIELD name="w_RA" ID="col3" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" width="7" precision="2" unit="arcmin"/>
+      <FIELD name="w_Dec" ID="col4" ucd="phys.angSize;pos.eq.dec" ref="J2000" datatype="float" width="7" precision="2" unit="arcmin"/>
+      <FIELD name="Vel" ID="col4" ucd="phys.veloc;src.dopplerVeloc" datatype="float" width="9" precision="3" unit="km/s"/>
+      <FIELD name="w_Vel" ID="col4" ucd="phys.veloc;src.dopplerVeloc;spect.line.width" datatype="float" width="8" precision="3" unit="km/s"/>
+      <FIELD name="Integrated_Flux" ID="col4" ucd="phys.flux;spect.line.intensity" datatype="float" width="10" precision="4" unit="km/s"/>
       <DATA>
         <TABLEDATA>
         <TR>
-          <TD>   1</TD><TD>    J0618-2535</TD><TD> 94.547798</TD><TD>-25.595652</TD><TD>  195.690</TD><TD>  39.574</TD>
+          <TD>   1</TD><TD>    J0609-2200</TD><TD> 92.410416</TD><TD>-22.013390</TD><TD>  48.50</TD><TD>  39.42</TD><TD>  213.061</TD><TD>  65.957</TD><TD>    17.572</TD>
         </TR>
         <TR>
-          <TD>   2</TD><TD>    J0546-2151</TD><TD> 86.612350</TD><TD>-21.854080</TD><TD>  211.162</TD><TD>  39.574</TD>
+          <TD>   2</TD><TD>    J0608-2605</TD><TD> 92.042633</TD><TD>-26.085157</TD><TD>  44.47</TD><TD>  39.47</TD><TD>  233.119</TD><TD>  39.574</TD><TD>     4.144</TD>
         </TR>
         <TR>
-          <TD>   3</TD><TD>    J0609-2159</TD><TD> 92.368500</TD><TD>-21.993271</TD><TD>  214.730</TD><TD>  65.957</TD>
+          <TD>   3</TD><TD>    J0606-2724</TD><TD> 91.637840</TD><TD>-27.412022</TD><TD>  52.48</TD><TD>  47.57</TD><TD>  302.213</TD><TD>  39.574</TD><TD>    17.066</TD>
         </TR>
         <TR>
-          <TD>   4</TD><TD>    J0617-2637</TD><TD> 94.387222</TD><TD>-26.620832</TD><TD>  224.250</TD><TD>  39.574</TD>
+          <TD>   4</TD><TD>    J0611-2142</TD><TD> 92.901421</TD><TD>-21.700003</TD><TD>  32.40</TD><TD>  23.47</TD><TD>  843.727</TD><TD> 118.722</TD><TD>    44.394</TD>
         </TR>
         <TR>
-          <TD>   5</TD><TD>    J0548-2452</TD><TD> 87.054153</TD><TD>-24.868727</TD><TD>  264.383</TD><TD>  39.574</TD>
-        </TR>
-        <TR>
-          <TD>   6</TD><TD>    J0606-2722</TD><TD> 91.591263</TD><TD>-27.372181</TD><TD>  297.467</TD><TD>  52.765</TD>
+          <TD>   5</TD><TD>    J0600-2903</TD><TD> 90.214081</TD><TD>-29.050697</TD><TD>  23.94</TD><TD>  28.09</TD><TD> 1370.285</TD><TD> 184.679</TD><TD>    26.573</TD>
         </TR>
 
 (... table truncated for clarity ...)
@@ -1144,10 +1199,10 @@ the median, and then find the median of that distribution. This
 distribution is given by
 \begin{eqnarray*}
 g(x) &= &{\mbox{\rm distribution of }} |x|\\
-     &= &f(x) + f(-x), x\ge0\\
-     &= &\sqrt{\frac{2}{\pi\sigma^2}} e^{-x^2/2\sigma^2}, x\ge0.
+     &= &f(x) + f(-x),\ x\ge0\\
+     &= &\sqrt{\frac{2}{\pi\sigma^2}} e^{-x^2/2\sigma^2},\ x\ge0.
 \end{eqnarray*}
-So to find $s$, we find the median of $g(x)$ via
+So, the median absolute deviation from the median, $s$, is given by
 \[
 \int_{0}^{s} g(x) \diff x = \int_{s}^{\infty} g(x) \diff x.
 \]
