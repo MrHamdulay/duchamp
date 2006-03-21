@@ -153,7 +153,7 @@ private:
   string votFile;         // Where the VOTable goes.
   bool   flagMaps;        // Should we produce detection and moment maps in postscript form?
   string detectionMap;    // The name of the detection map (ps file).
-  string momentMap;       // The name of the 1st moment map (ps file).
+  string momentMap;       // The name of the 0th moment map (ps file).
 
   // Cube related parameters 
   bool   flagBlankPix;    // A flag that indicates whether there are pixels defined as BLANK,

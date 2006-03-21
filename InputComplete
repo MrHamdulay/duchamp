@@ -14,7 +14,7 @@ subsection      [*,*,*]
 # spectraFile -- the postscript file of spectra
 # flagOutputRecon/Resid -- whether to save the reconstruction & residual arrays as FITS files
 # flagVOT -- make a VOTable file of the results?   votFile -- the file to put it in
-# flagMaps -- save postscript versions of the detection and 1st moment maps?
+# flagMaps -- save postscript versions of the detection and 0th moment maps?
 # detectionMap, momentMap -- the postscript files produced.
 
 flagLog         1
@@ -44,12 +44,10 @@ minMW		75
 maxMW		112
 
 # GENERAL DETECTION RELATED
-# minPix -- Minimum number of pixels for a detected object to be counted
 # snrCut --  How many sigma above mean is a detection when sigma-clipping
 # flagGrowth -- Should the detections be "grown" to a lower significance value?
 # growthCut -- The lower threshold used when growing detections
 
-minPix		3
 snrCut		2.5
 flagGrowth	0
 growthCut	1.5
@@ -81,11 +79,13 @@ alphaFDR	0.05
 #    for them to be merged.
 # threshVelocity -- The maximum channel separation between objects for them to be merged.
 # minChannels -- The minimum number of consecutive channels an object must have for it to be accepted.
+# minPix -- Minimum number of spatial pixels for a detected object to be counted
 
 flagAdjacent	1
 threshSpatial	3
 threshVelocity	7
 minChannels	4
+minPix		3
 
 # OTHER PARAMETERS
 # verbose -- whether to provide progress indicators on the terminal during execution

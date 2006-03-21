@@ -173,7 +173,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
     theStream<<setw(40)<<"VOTable file"                         <<"= "<<par.getVOTFile()        <<endl;
   }
   if(par.getFlagMaps()){
-    theStream<<setw(40)<<"1st Moment Map"                       <<"= "<<par.getMomentMap()      <<endl;
+    theStream<<setw(40)<<"0th Moment Map"                       <<"= "<<par.getMomentMap()      <<endl;
     theStream<<setw(40)<<"Detection Map"                        <<"= "<<par.getDetectionMap()   <<endl;
   }
   if(par.getFlagATrous()){			       

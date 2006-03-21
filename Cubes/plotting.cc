@@ -94,7 +94,7 @@ void Cube::plotMomentMap(string pgDestination)
 {
   /** 
    *  Cube::plotMomentMap(string)
-   *    Creates a 1st moment map of the detections, which is written to the 
+   *    Creates a 0th moment map of the detections, which is written to the 
    *     PGPlot device given by pgDestination.
    *    The map is done in greyscale, where the scale indicates the integrated flux at each
    *     spatial pixel.

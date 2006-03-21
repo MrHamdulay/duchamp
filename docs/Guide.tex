@@ -559,12 +559,12 @@ example detection can be seen below in Fig.~\ref{fig-spect}.
 \includegraphics[width=\textwidth]{example_moment_map}
 \end{center}
 \caption{An example of the moment map created by Duchamp. The full
-  extent of the cube is covered, and the 1st moment of each object is
+  extent of the cube is covered, and the 0th moment of each object is
   shown (integrated separately over all the detected channels).}
 \label{fig-moment}
 \end{figure}
 
-Finally, a couple of images are optionally produced: a 1st moment map
+Finally, a couple of images are optionally produced: a 0th moment map
 of the cube, combining just the detected channels in each object,
 showing the integrated flux in grey-scale; and a ``detection image'',
 a grey-scale image where the pixel values are the number of channels
@@ -819,10 +819,10 @@ not matter, they are grouped here in logical sections.
 \item[votFile {\tt [./duchamp-Results.xml]}] The VOTable file with the
   list of final detections. Some input parameters are also recorded.
 \item[flagMaps {\tt [true]}] A flag to say whether to save postscript
-  files showing the moment map of the whole cube (parameter {\tt
+  files showing the 0th moment map of the whole cube (parameter {\tt
   momentMap}) and the detection image ({\tt detectionMap}).
 \item[momentMap {\tt [./latest-moment-map.ps]}] A postscript file
-  containing a map of the 1st moment of the detected sources, as well
+  containing a map of the 0th moment of the detected sources, as well
   as pixel and WCS coordinates.
 \item[detectionMap {\tt [./latest-detection-map.ps]}] A postscript
   file showing each of the detected objects, coloured in greyscale by
@@ -859,8 +859,6 @@ not matter, they are grouped here in logical sections.
 \begin{entry}
 \item[snrCut {\tt [3.]}] The cut-off value for thresholding, in terms
   of number of $\sigma$ above the mean.
-\item[minPix {\tt [3]}] The minimum number of pixels for a single
-  detection to be counted.
 \item[flagGrowth {\tt [true]}] A flag indicating whether or not to
   grow the detected objects to a smaller threshold.
 \item[growthCut {\tt [1.5]}] The smaller threshold using in growing
@@ -903,6 +901,8 @@ total number, will be less than $\alpha$ (see \S\ref{sec-detection}).
   ``adjacent pixel'' criterion to decide whether to merge objects. If
   not, the next two parameters are used to determine whether objects
   are within the necessary thresholds.
+\item[minPix {\tt [2]}] The minimum number of spatial pixels for a single
+  detection to be counted.
 \item[minChannels {\tt [3]}] The minimum number of consecutive
   channels that must be present in the detection for it to be accepted
   by the Merging algorithm.
