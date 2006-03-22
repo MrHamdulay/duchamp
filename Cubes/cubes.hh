@@ -236,6 +236,7 @@ public:
   void    updateDetectMap(Detection obj);
 
   // Text outputting of detected objects.
+  void    outputDetectionsKarma(std::ostream &stream);     // in Cubes/detectionIO.cc
   void    outputDetectionsVOTable(std::ostream &stream);   // in Cubes/detectionIO.cc
   void    outputDetectionList();                           // in Cubes/detectionIO.cc
   void    logDetectionList();                              // in Cubes/detectionIO.cc

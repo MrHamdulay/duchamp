@@ -182,6 +182,12 @@ int main(int argc, char * argv[])
     votfile.close();
   }
 
+  if(cube->pars().getFlagKarma()){
+    ofstream karmafile(cube->pars().getKarmaFile().c_str());
+    cube->outputDetectionsKarma(karmafile);
+    karmafile.close();
+  }
+
   delete cube;
 
   return 0;

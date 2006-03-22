@@ -200,8 +200,8 @@ private:
   string         decS;	      // Central Declination(or Latitude), in form -12:23:34
   float          ra;	      // Central Right Ascension in degrees
   float          dec;	      // Central Declination in degrees
-  float          raWidth;     // Width of detection in RA direction
-  float          decWidth;    // Width of detection in Dec direction
+  float          raWidth;     // Width of detection in RA direction in arcmin
+  float          decWidth;    // Width of detection in Dec direction in arcmin
   float          lngRatio;    // Ratio of longitude/RA in decimal units to degrees value (=15. for RA case)
   string         lngtype;     // Type of longitude axis (RA/GALLNG)
   string         lattype;     // Type of latitude axis (Dec/GALLAT)

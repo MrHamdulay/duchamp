@@ -32,6 +32,8 @@ Param::Param(){
   this->flagOutputResid = false;
   this->flagVOT         = false;
   this->votFile         = "./duchamp-Results.xml";
+  this->flagKarma       = false;
+  this->karmaFile       = "./duchamp-Results.ann";
   this->flagMaps        = true;
   this->detectionMap    = "./latest-detection-map.ps";
   this->momentMap       = "./latest-moment-map.ps";
@@ -123,6 +125,8 @@ void Param::readParams(string &paramfile)
       if(makelower(arg)=="flagoutputresid"){ ss >> bval; this->flagOutputResid = bval; }
       if(makelower(arg)=="flagvot"){         ss >> bval; this->flagVOT = bval; }
       if(makelower(arg)=="votfile"){         ss >> sval; this->votFile = sval; }
+      if(makelower(arg)=="flagkarma"){       ss >> bval; this->flagKarma = bval; }
+      if(makelower(arg)=="karmafile"){       ss >> sval; this->karmaFile = sval; }
       if(makelower(arg)=="flagmaps"){        ss >> bval; this->flagMaps = bval; }
       if(makelower(arg)=="detectionmap"){    ss >> sval; this->detectionMap = sval; }
       if(makelower(arg)=="momentmap"){       ss >> sval; this->momentMap = sval; }
@@ -171,6 +175,9 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   theStream  <<setw(40)<<"Spectrum file"                        <<"= "<<par.getSpectraFile()    <<endl;
   if(par.getFlagVOT()){
     theStream<<setw(40)<<"VOTable file"                         <<"= "<<par.getVOTFile()        <<endl;
+  }
+  if(par.getFlagKarma()){
+    theStream<<setw(40)<<"Karma annotation file"                <<"= "<<par.getKarmaFile()      <<endl;
   }
   if(par.getFlagMaps()){
     theStream<<setw(40)<<"0th Moment Map"                       <<"= "<<par.getMomentMap()      <<endl;

@@ -11,6 +11,33 @@ using std::endl;
 using std::setw;
 using std::setprecision;
 
+void Cube::outputDetectionsKarma(std::ostream &stream)
+{
+  /**
+   * outputDetectionsKarma
+   *  Prints to a stream (provided) the list of detected objects in the cube
+   *   in the format of an annotation file for the Karma suite of programs.
+   *  Annotation file draws a box enclosing the detection, and writes the ID number
+   *   of the detection to the right of the box.
+   */
+
+  stream << "# Duchamp Source Finder results for cube " << this->par.getImageFile() << endl;
+  stream << "COLOR RED" << endl;
+  stream << "COORD W" << endl;
+  for(int i=0;i<this->objectList.size();i++){
+    stream << "CBOX " 
+	   << this->objectList[i].getRA() << " " 
+	   << this->objectList[i].getDec() << " " 
+	   << this->objectList[i].getRAWidth()/60. << " "
+	   << this->objectList[i].getDecWidth()/60. << endl;
+    stream << "TEXT " 
+	   << this->objectList[i].getRA()-this->objectList[i].getRAWidth()/60. << " " 
+	   << this->objectList[i].getDec() << " " 
+	   << this->objectList[i].getID() << endl;
+  }
+
+}
+
 void Cube::outputDetectionsVOTable(std::ostream &stream)
 {
   /**

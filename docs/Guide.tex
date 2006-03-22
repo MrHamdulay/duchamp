@@ -871,6 +871,12 @@ not matter, they are grouped here in logical sections.
   an XML file in the Virtual Observatory VOTable format.
 \item[votFile {\tt [./duchamp-Results.xml]}] The VOTable file with the
   list of final detections. Some input parameters are also recorded.
+\item[flagKarma {\tt [false]}] A flag to say whether to create a Karma
+  annotation file corresponding to the information in {\tt
+  outfile}. This can be used as an overlay for the Karma programs such
+  as {\tt kvis}.
+\item[karmaFile {\tt [./duchamp-Results.ann]}] The Karma annotation
+  file showing the list of final detections. 
 \item[flagMaps {\tt [true]}] A flag to say whether to save postscript
   files showing the 0th moment map of the whole cube (parameter {\tt
   momentMap}) and the detection image ({\tt detectionMap}).
@@ -1117,7 +1123,7 @@ Total number of detections = 23
 \section{Example VOTable output}
 \label{app-votable}
 This is part of the VOTable, in XML format, corresponding to the
-output file in Appendix~\ref{app-output}.
+output file in Appendix~\ref{app-output} (the indentation has been removed to make it fit on the page!).
 
 %\begin{landscape}
 {\scriptsize
@@ -1125,44 +1131,42 @@ output file in Appendix~\ref{app-output}.
 <?xml version="1.0"?>
 <VOTABLE version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:noNamespaceSchemaLocation="http://www.ivoa.net/xml/VOTable/VOTable/v1.1">
-  <COOSYS ID="J2000" equinox="J2000." epoch="J2000." system="eq_FK5"/>
-  <RESOURCE name="Duchamp Output">
-    <TABLE name="Detections">
-      <DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>
-      <PARAM name="FITS file" datatype="char" ucd="meta.file;meta.fits" value="/DATA/SITAR_1/whi550/cubes/H201_abcde_luther_chop.fits"/>
-      <FIELD name="ID" ID="col1" ucd="meta.id" datatype="int" width="4"/>
-      <FIELD name="Name" ID="col2" ucd="meta.id;meta.main" datatype="char" arraysize="14"/>
-      <FIELD name="RA" ID="col3" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" width="10" precision="6" unit="deg"/>
-      <FIELD name="Dec" ID="col4" ucd="pos.eq.dec;meta.main" ref="J2000" datatype="float" width="10" precision="6" unit="deg"/>
-      <FIELD name="w_RA" ID="col3" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" width="7" precision="2" unit="arcmin"/>
-      <FIELD name="w_Dec" ID="col4" ucd="phys.angSize;pos.eq.dec" ref="J2000" datatype="float" width="7" precision="2" unit="arcmin"/>
-      <FIELD name="Vel" ID="col4" ucd="phys.veloc;src.dopplerVeloc" datatype="float" width="9" precision="3" unit="km/s"/>
-      <FIELD name="w_Vel" ID="col4" ucd="phys.veloc;src.dopplerVeloc;spect.line.width" datatype="float" width="8" precision="3" unit="km/s"/>
-      <FIELD name="Integrated_Flux" ID="col4" ucd="phys.flux;spect.line.intensity" datatype="float" width="10" precision="4" unit="km/s"/>
-      <DATA>
-        <TABLEDATA>
-        <TR>
-          <TD>   1</TD><TD>    J0609-2200</TD><TD> 92.410416</TD><TD>-22.013390</TD><TD>  48.50</TD><TD>  39.42</TD><TD>  213.061</TD><TD>  65.957</TD><TD>    17.572</TD>
-        </TR>
-        <TR>
-          <TD>   2</TD><TD>    J0608-2605</TD><TD> 92.042633</TD><TD>-26.085157</TD><TD>  44.47</TD><TD>  39.47</TD><TD>  233.119</TD><TD>  39.574</TD><TD>     4.144</TD>
-        </TR>
-        <TR>
-          <TD>   3</TD><TD>    J0606-2724</TD><TD> 91.637840</TD><TD>-27.412022</TD><TD>  52.48</TD><TD>  47.57</TD><TD>  302.213</TD><TD>  39.574</TD><TD>    17.066</TD>
-        </TR>
-        <TR>
-          <TD>   4</TD><TD>    J0611-2142</TD><TD> 92.901421</TD><TD>-21.700003</TD><TD>  32.40</TD><TD>  23.47</TD><TD>  843.727</TD><TD> 118.722</TD><TD>    44.394</TD>
-        </TR>
-        <TR>
-          <TD>   5</TD><TD>    J0600-2903</TD><TD> 90.214081</TD><TD>-29.050697</TD><TD>  23.94</TD><TD>  28.09</TD><TD> 1370.285</TD><TD> 184.679</TD><TD>    26.573</TD>
-        </TR>
-
+<COOSYS ID="J2000" equinox="J2000." epoch="J2000." system="eq_FK5"/>
+<RESOURCE name="Duchamp Output">
+<TABLE name="Detections">
+<DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>
+<PARAM name="FITS file" datatype="char" ucd="meta.file;meta.fits" value="/DATA/SITAR_1/whi550/cubes/H201_abcde_luther_chop.fits"/>
+<FIELD name="ID" ID="col1" ucd="meta.id" datatype="int" width="4"/>
+<FIELD name="Name" ID="col2" ucd="meta.id;meta.main" datatype="char" arraysize="14"/>
+<FIELD name="RA" ID="col3" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" width="10" precision="6" unit="deg"/>
+<FIELD name="Dec" ID="col4" ucd="pos.eq.dec;meta.main" ref="J2000" datatype="float" width="10" precision="6" unit="deg"/>
+<FIELD name="w_RA" ID="col3" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" width="7" precision="2" unit="arcmin"/>
+<FIELD name="w_Dec" ID="col4" ucd="phys.angSize;pos.eq.dec" ref="J2000" datatype="float" width="7" precision="2" unit="arcmin"/>
+<FIELD name="Vel" ID="col4" ucd="phys.veloc;src.dopplerVeloc" datatype="float" width="9" precision="3" unit="km/s"/>
+<FIELD name="w_Vel" ID="col4" ucd="phys.veloc;src.dopplerVeloc;spect.line.width" datatype="float" width="8" precision="3" unit="km/s"/>
+<FIELD name="Integrated_Flux" ID="col4" ucd="phys.flux;spect.line.intensity" datatype="float" width="10" precision="3" unit="km/s"/>
+<DATA>
+<TABLEDATA>
+<TR>
+<TD>   1</TD><TD>    J0609-2200</TD><TD> 92.410416</TD><TD>-22.013390</TD><TD>  48.50</TD><TD>  39.42</TD><TD>  213.061</TD><TD>  65.957</TD><TD>    17.572</TD>
+</TR>
+<TR>
+<TD>   2</TD><TD>    J0608-2605</TD><TD> 92.042633</TD><TD>-26.085157</TD><TD>  44.47</TD><TD>  39.47</TD><TD>  233.119</TD><TD>  39.574</TD><TD>     4.144</TD>
+</TR>
+<TR>
+<TD>   3</TD><TD>    J0606-2724</TD><TD> 91.637840</TD><TD>-27.412022</TD><TD>  52.48</TD><TD>  47.57</TD><TD>  302.213</TD><TD>  39.574</TD><TD>    17.066</TD>
+</TR>
+<TR>
+<TD>   4</TD><TD>    J0611-2142</TD><TD> 92.901421</TD><TD>-21.700003</TD><TD>  32.40</TD><TD>  23.47</TD><TD>  843.727</TD><TD> 118.722</TD><TD>    44.394</TD>
+</TR>
+<TR>
+<TD>   5</TD><TD>    J0600-2903</TD><TD> 90.214081</TD><TD>-29.050697</TD><TD>  23.94</TD><TD>  28.09</TD><TD> 1370.285</TD><TD> 184.679</TD><TD>    26.573</TD>
+</TR>
 (... table truncated for clarity ...)
-
-        </TABLEDATA>
-      </DATA>
-    </TABLE>
-  </RESOURCE>
+</TABLEDATA>
+</DATA>
+</TABLE>
+</RESOURCE>
 </VOTABLE>
   \end{verbatim}
 }

@@ -46,6 +46,10 @@ public:
   void   setFlagVOT(bool flag){flagVOT=flag;};
   string getVOTFile(){return votFile;};
   void   setVOTFile(string fname){votFile = fname;};
+  bool   getFlagKarma(){return flagKarma;};
+  void   setFlagKarma(bool flag){flagKarma=flag;};
+  string getKarmaFile(){return karmaFile;};
+  void   setKarmaFile(string fname){karmaFile = fname;};
   bool   getFlagMaps(){return flagMaps;};
   void   setFlagMaps(bool flag){flagMaps=flag;};
   string getDetectionMap(){return detectionMap;};
@@ -151,6 +155,8 @@ private:
   bool   flagOutputResid; // Should the reconstructed cube be written?
   bool   flagVOT;         // Should we save results in VOTable format?
   string votFile;         // Where the VOTable goes.
+  bool   flagKarma;       // Should we save results in Karma annotation format?
+  string karmaFile;       // Where the Karma annotation file goes.
   bool   flagMaps;        // Should we produce detection and moment maps in postscript form?
   string detectionMap;    // The name of the detection map (ps file).
   string momentMap;       // The name of the 0th moment map (ps file).
