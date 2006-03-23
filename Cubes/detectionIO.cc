@@ -25,13 +25,15 @@ void Cube::outputDetectionsKarma(std::ostream &stream)
   stream << "COLOR RED" << endl;
   stream << "COORD W" << endl;
   for(int i=0;i<this->objectList.size();i++){
-    stream << "CBOX " 
+    float radius = this->objectList[i].getRAWidth()/120.;
+    if(this->objectList[i].getDecWidth()/120.>radius)
+      radius = this->objectList[i].getDecWidth()/120.;
+    stream << "CIRCLE " 
 	   << this->objectList[i].getRA() << " " 
 	   << this->objectList[i].getDec() << " " 
-	   << this->objectList[i].getRAWidth()/60. << " "
-	   << this->objectList[i].getDecWidth()/60. << endl;
+	   << radius << endl;
     stream << "TEXT " 
-	   << this->objectList[i].getRA()-this->objectList[i].getRAWidth()/60. << " " 
+	   << this->objectList[i].getRA() << " " 
 	   << this->objectList[i].getDec() << " " 
 	   << this->objectList[i].getID() << endl;
   }

@@ -566,14 +566,20 @@ printed, but the pixel coordinates are still provided.
 \label{fig-spect}
 \end{figure}
 
-A VOTable-format XML file can also be produced, containing just the
-RA, Dec, Velocity and the corresponding widths of the detections, as
-well as the fluxes. The user should set {\tt flagVOT = 1}, and put the
-desired filename in the parameter {\tt votFile} -- note that the
-default is for it not to be produced. This file should be compatible
-with all Virtual Observatory tools (such as Aladin\footnote{ Aladin
-can be found on the web at
-\href{http://aladin.u-strasbg.fr/}{http://aladin.u-strasbg.fr/}}).
+Two alternative results files can also be requested. One option is a
+VOTable-format XML file, containing just the RA, Dec, Velocity and the
+corresponding widths of the detections, as well as the fluxes. The
+user should set {\tt flagVOT = 1}, and put the desired filename in the
+parameter {\tt votFile} -- note that the default is for it not to be
+produced. This file should be compatible with all Virtual Observatory
+tools (such as Aladin\footnote{ Aladin can be found on the web at
+\href{http://aladin.u-strasbg.fr/}{http://aladin.u-strasbg.fr/}}). The
+second option is an annotation file for use with the Karma toolkit of
+visualisation tools (in particular, with {\tt kvis}). This will draw a
+circle at the position of each detection, and number it according to
+the Obj\# given above. To use, the user should set {\tt flagKarma = 1},
+and put the desired filename in the parameter {\tt karmaFile} -- again,
+the default is for it not to be produced.
 
 As the program is running, it also (optionally) records the detections
 made in each individual spectrum or channel (see
