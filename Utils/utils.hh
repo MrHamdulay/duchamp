@@ -61,6 +61,8 @@ double angularSeparation(double &ra1, double &dec1, double &ra2, double &dec2);
 double pixelToVelocity(wcsprm *wcs, double &x, double &y, double &z);
 int wcsToPixSingle(wcsprm *wcs, const double *world, double *pix);
 int pixToWCSSingle(wcsprm *wcs, const double *pix, double *world);
+int wcsToPixMulti(wcsprm *wcs, const double *world, double *pix, const int npts);
+int pixToWCSMulti(wcsprm *wcs, const double *pix, double *world, const int npts);
 float setVel_kms(wcsprm *wcs, const double coord);
 double velToCoord(wcsprm *wcs, const float velocity);
 

@@ -143,30 +143,44 @@ void Cube::plotMomentMap(string pgDestination)
     float deltaVel;
     for(int pix=0; pix<xdim*ydim; pix++){ 
       // loop over each spatial pixel -- ie. each cell of momentMap
-      int    *stat   = new    int[zdim];
-      double *pixcrd = new double[zdim*3];
-      double *imgcrd = new double[zdim*3];
+//       int    *stat   = new    int[zdim];
+//       double *pixcrd = new double[zdim*3];
+//       double *imgcrd = new double[zdim*3];
+//       double *world  = new double[zdim*3];
+//       double *phi    = new double[zdim];
+//       double *theta  = new double[zdim];
+//       for(int i=0;i<zdim;i++){
+// 	pixcrd[3*i]   =  pix%xdim;
+// 	pixcrd[3*i+1] =  (pix/xdim);
+// 	pixcrd[3*i+2] =  i;         
+//       }
+//       wcsp2s(this->wcs, zdim, 3, pixcrd, imgcrd, phi, theta, world, stat);	
+//       delete [] stat;
+//       delete [] pixcrd;
+//       delete [] imgcrd;
+//       delete [] phi;
+//       delete [] theta;
+
       double *world  = new double[zdim*3];
-      double *phi    = new double[zdim];
-      double *theta  = new double[zdim];
+      double *pixtmp = new double[zdim*3];
+//       double *worldtmp  = new double[3];
+//       pixtmp[0] =  pix%xdim;  
+//       pixtmp[1] =  (pix/xdim);
       for(int i=0;i<zdim;i++){
-	pixcrd[3*i]   =  pix%xdim;
-	pixcrd[3*i+1] =  (pix/xdim);
-	pixcrd[3*i+2] =  i;
+	pixtmp[i*3+0] = pix%xdim;  
+	pixtmp[i*3+1] = (pix/xdim);
+	pixtmp[i*3+2] = i;
+// 	int flag = pixToWCSSingle(wcs, pixtmp, worldtmp);
+// 	for(int j=0;j<3;j++) world[i*3+j] = worldtmp[j];
       }
-      wcsp2s(this->wcs, zdim, 3, pixcrd, imgcrd, phi, theta, world, stat);	
+      int flag = pixToWCSMulti(wcs, pixtmp, world, zdim);
+      delete [] pixtmp;
+//       delete [] worldtmp;	
+
       for(int i=0;i<zdim;i++){
 	// put velocity coords into km/s
-	if(this->wcs->ctype[2]=="FREQ") 
-	  world[3*i+2] = C_kms * (this->wcs->restfrq*this->wcs->restfrq - world[3*i+2]*world[3*i+2]) / 
-	    (this->wcs->restfrq*this->wcs->restfrq + world[3*i+2]*world[3*i+2]);
-	else world[3*i+2] /= 1000.;
+	world[3*i+2] = setVel_kms(this->wcs, world[3*i+2]);
       }
-      delete [] stat;
-      delete [] pixcrd;
-      delete [] imgcrd;
-      delete [] phi;
-      delete [] theta;
 
       for(int z=0; z<zdim; z++){
 	int pos =  z*xdim*ydim + pix;  // the voxel in the cube

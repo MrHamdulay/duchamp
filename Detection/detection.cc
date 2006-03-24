@@ -72,19 +72,15 @@ void Detection::calcWCSparams(wcsprm *wcs)
    *  Use the input wcs to calculate the position and velocity information for the Detection.
    *  Makes no judgement as to whether the WCS is good -- this needs to be done beforehand.
    *  Quantities calculated:
-   *     RA: ra (deg), ra (string), ra width.
-   *     Dec: dec (deg), dec (string), dec width.
-   *     Vel: vel (km/s), min & max vel, vel width.
-   *     Other: coord type for all three axes, nuRest, name (IAU-style, either equatorial or Galactic)
-   *     Uses getIntegFlux to calculate the integrated flux in (say) Jy km/s
+   *     RA: ra [deg], ra (string), ra width.
+   *     Dec: dec [deg], dec (string), dec width.
+   *     Vel: vel [km/s], min & max vel, vel width.
+   *     Other: coord type for all three axes, nuRest, name (IAU-style, in equatorial or Galactic)
+   *     Uses getIntegFlux to calculate the integrated flux in (say) [Jy km/s]
    */
 
-  int    *stat   = new int[5];
   double *pixcrd = new double[15];
-  double *imgcrd = new double[15];
   double *world  = new double[15];
-  double *phi    = new double[5];
-  double *theta  = new double[5];
   /*
   define a five-point array in 3D:
      (x,y,z), (x,y,z1), (x,y,z2), (x1,y1,z), (x2,y2,z)
@@ -99,13 +95,11 @@ void Detection::calcWCSparams(wcsprm *wcs)
   pixcrd[2] = pixcrd[11] = pixcrd[14] = this->zcentre;
   pixcrd[5] = this->zmin;
   pixcrd[8] = this->zmax;
-  wcsp2s(wcs, 5, 3, pixcrd, imgcrd, phi, theta, world, stat);
-  delete [] stat;
+  int flag = pixToWCSMulti(wcs, pixcrd, world, 5);
   delete [] pixcrd;
-  delete [] imgcrd;
-  delete [] phi;
-  delete [] theta;
 
+  // world now has the WCS coords for the five points -- use this to work out WCS params.
+  
   this->lngtype = wcs->lngtyp;
   this->lattype = wcs->lattyp;
   this->ztype   = wcs->ctype[2];
@@ -120,21 +114,10 @@ void Detection::calcWCSparams(wcsprm *wcs)
   else this->name = getIAUNameGAL(this->ra,this->dec);
   this->raWidth   = angularSeparation(world[9],world[1],world[12],world[1]) * 60.;
   this->decWidth  = angularSeparation(world[0],world[10],world[0],world[13]) * 60.;
-  if(this->ztype=="FREQ"){
-    this->vel = C_kms * (this->nuRest*this->nuRest - world[2]*world[2]) / 
-      (this->nuRest*this->nuRest + world[2]*world[2]);
-    this->velMin = C_kms * (this->nuRest*this->nuRest - world[5]*world[5]) / 
-      (this->nuRest*this->nuRest + world[5]*world[5]);
-    this->velMax = C_kms * (this->nuRest*this->nuRest - world[8]*world[8]) / 
-      (this->nuRest*this->nuRest + world[8]*world[8]);
-    this->velWidth = fabs(this->velMax - this->velMin);
-  }
-  else{ 
-    this->vel    = world[2] / 1000.;
-    this->velMin = world[5] / 1000.;
-    this->velMax = world[8] / 1000.;
-    this->velWidth = fabs(this->velMax - this->velMin);
-  }
+  this->vel    = setVel_kms(wcs, world[2]);
+  this->velMin = setVel_kms(wcs, world[5]);
+  this->velMax = setVel_kms(wcs, world[8]);
+  this->velWidth = fabs(this->velMax - this->velMin);
 
   this->getIntegFlux(wcs);
 
@@ -161,38 +144,28 @@ float Detection::getIntegFlux(wcsprm *wcs)
   int zsize = (this->zmax-this->zmin+3); 
   vector <bool> isObj(xsize*ysize*zsize,false);
   vector <float> fluxArray(xsize*ysize*zsize,0.);
-  int    *stat   = new    int[xsize*ysize*zsize];
-  double *pixcrd = new double[xsize*ysize*zsize*3];
-  double *imgcrd = new double[xsize*ysize*zsize*3];
-  double *world  = new double[xsize*ysize*zsize*3];
-  double *phi    = new double[xsize*ysize*zsize];
-  double *theta  = new double[xsize*ysize*zsize];
+  // work out which pixels are object pixels
   for(int p=0;p<this->pix.size();p++){
     int pos = (this->pix[p].getX()-this->xmin+1) + (this->pix[p].getY()-this->ymin+1)*xsize + 
       (this->pix[p].getZ()-this->zmin+1)*xsize*ysize;
     fluxArray[pos] = this->pix[p].getF();
     isObj[pos] = true;
   }
-
+  
+  // work out the WCS coords for each pixel
+  double *world  = new double[xsize*ysize*zsize*3];
+  double *pix = new double[xsize*ysize*zsize*3];
   for(int i=0;i<xsize*ysize*zsize;i++){
-    pixcrd[3*i]   = this->xmin -1 + i%xsize;
-    pixcrd[3*i+1] = this->ymin -1 + (i/xsize)%ysize;
-    pixcrd[3*i+2] = this->zmin -1 + i/(xsize*ysize);
+    pix[i*3+0] = this->xmin -1 + i%xsize;
+    pix[i*3+1] = this->ymin -1 + (i/xsize)%ysize;
+    pix[i*3+2] = this->zmin -1 + i/(xsize*ysize);
   }
+  int flag = pixToWCSMulti(wcs, pix, world, xsize*ysize*zsize);
+  delete [] pix;
 
-  wcsp2s(wcs, xsize*ysize*zsize, 3, pixcrd, imgcrd, phi, theta, world, stat);
-  for(int i=0;i<xsize*ysize*zsize;i++){
-    // put velocity coords into km/s
-    if(this->ztype=="FREQ") 
-      world[3*i+2] = C_kms * (wcs->restfrq*wcs->restfrq - world[3*i+2]*world[3*i+2]) / 
-	(wcs->restfrq*wcs->restfrq + world[3*i+2]*world[3*i+2]);
-    else world[3*i+2] /= 1000.;
-  }
-  delete [] stat;
-  delete [] pixcrd;
-  delete [] imgcrd;
-  delete [] phi;
-  delete [] theta;
+  // put velocity coords into km/s
+  for(int i=0;i<xsize*ysize*zsize;i++)
+    world[3*i+2] = setVel_kms(wcs,world[3*i+2]);
 
   this->intFlux = 0.;
   for(int pix=0; pix<xsize*ysize; pix++){ // loop over each spatial pixel.
