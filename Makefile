@@ -18,7 +18,7 @@ CFITSIOLIB = -L$(CFITSIODIR) -lcfitsio
 WCSDIR = /DATA/SITAR_1/whi550/wcslib-4.2
 WCSLIB = -L$(WCSDIR)/C -lwcs -L$(WCSDIR)/pgsbox/ -lpgsbox
 
-CINC= -I$(PGDIR) -I$(WCSDIR)/C/ -I$(WCSDIR)/pgsbox/ -I$(CFITSIODIR) -I$(BASE)
+CINC= -I$(PGDIR) -I$(WCSDIR)/C/ -I$(WCSDIR)/pgsbox/ -I$(CFITSIOINC) -I$(BASE)
 
 LIBS =  $(WCSLIB) $(PGPLOTLIB) $(CFITSIOLIB) -lm -lg2c -lstdc++
 
