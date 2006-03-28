@@ -141,6 +141,10 @@ single spectrum, while a slice through the cube perpendicular to the
 spectral direction at a given $z$-value is a single channel (the 2-D
 image is a channel map).
 
+Features that are detected are assumed to be positive. If one wants to
+search for absorption (negative) features, try multiplying your cube
+by $-1$ before running Duchamp.
+
 Note that it is possible to run Duchamp on a two-dimensional image
 (\ie one with no frequency or velocity information), or indeed a
 one-dimensional array, and many of the features of the program will
@@ -169,10 +173,10 @@ input file is arbitrary.
 
 If a parameter is not listed, the default value is assumed. The
 defaults are chosen to provide a good result (using the reconstruction
-method), so the user can get away with only specifying a minimal
-number of parameters in the file. Note that the image file {\bf must}
-be specified! The parameters that can be set are listed in
-Appendix~\ref{app-param}, with their default values in parentheses.
+method), so the user doesn't need to specify many new parameters in
+the input file. Note that the image file {\bf must} be specified! The
+parameters that can be set are listed in Appendix~\ref{app-param},
+with their default values in parentheses.
 
 The 'flag' parameters are stored as {\tt bool} variables, and so are
 either {\tt true = 1} or {\tt false = 0}. Currently the program only
@@ -241,24 +245,26 @@ exhibit very strong emission, such as that from the Milky Way as seen
 in extragalactic \hi\ cubes (hence the references to ``Milky Way'' in
 relation to this task -- apologies to Galactic astronomers!). Such
 dominant channels will both produce many unnecessary, uninteresting
-and large (in size and hence in memory) detections, and will also
-affect any reconstruction that is performed (see next section). The
-use of this feature is controlled by the {\tt flagMW} parameter, and
-the exact channels concerned are able to be set by the user (using
-{\tt maxMW} and {\tt minMW}). When employed, the flux in these
-channels is set to zero. The information in those channels is not
-kept.
+and large (in size and hence in memory usage) detections, and will
+also affect any reconstruction that is performed (see next
+section). The use of this feature is controlled by the {\tt flagMW}
+parameter, and the exact channels concerned are able to be set by the
+user (using {\tt maxMW} and {\tt minMW}). When employed, the flux in
+these channels is set to zero. The information in those channels is
+not kept.
 
 \subsubsection{Blank pixel removal}
 
-Second, the cube is trimmed of BLANK pixels that pad the image
+Second, the cube is trimmed of any BLANK pixels that pad the image
 out to a rectangular shape. This is also optional, being determined by
 the {\tt flagBlankPix} parameter. The value for these pixels is read from
 the FITS header (using the BLANK, BSCALE and BZERO keywords), but if
 these are not present then the value can be specified by the user in
 the parameter file. If these blank pixels are stored as NaNs, then a
 normal number will be substituted (allowing these pixels to be
-accurately removed without adverse effects).
+accurately removed without adverse effects). [NOTE: this appears not
+  to be working correctly at time of writing. If your data has
+  unspecified BLANKs, be wary...]
 
 This stage is particularly important for the reconstruction step, as
 lots of BLANK pixels on the edges will smooth out features in the
@@ -285,9 +291,9 @@ calculated from a wavelet reconstruction procedure (see
 done separately for each spatial pixel (\ie for each spectrum in the
 cube), and the baselines are stored and added back in before any
 output is done. In this way the quoted fluxes and displayed spectra
-are as one would see from the input cube itself -- the detection (and
-reconstruction if applicable) is done on the baseline-removed cube
-however.
+are as one would see from the input cube itself -- even though the
+detection (and reconstruction if applicable) is done on the
+baseline-removed cube.
 
 \subsection{Image reconstruction}
 \label{sec-recon}
@@ -297,7 +303,7 @@ reconstruct the data cube using the {\it {\`a} trous} wavelet
 procedure. A good description of the procedure can be found in
 \citet{starck02:book}. This is an effective way of removing a
 lot of the noise in the image, but at this stage is relatively time-
-and cpu-intensive. The steps in the procedure are as follows:
+and memory-intensive. The steps in the procedure are as follows:
 \begin{enumerate}
 \item Set the reconstructed array to 0 everywhere.
 \item The cube is discretely convolved with a given filter
@@ -314,10 +320,16 @@ and cpu-intensive. The steps in the procedure are as follows:
 \item The procedure is repeated from step 2, using the convolved array
   as the input array.
 \item Continue until the required maximum number of scales is reached.
-\item Add the smoothed array to the reconstructed array. This provides
-  the ``DC offset''.
+\item Add the final smoothed (\ie convolved) array to the
+  reconstructed array. This provides the ``DC offset'', as each of the
+  wavelet coefficient arrays will have zero mean.
 \end{enumerate}
 
+It is important to note that the {\it {\`a} trous} decomposition is
+an example of a ``redundant'' transformation. If no thresholding is
+performed, the sum of all the wavelet coefficient arrays and the final
+smoothed array is identical to the input array. The thresholding thus
+removes only the unwanted structure in the array. 
 
 The statistics of the cube are estimated using robust methods, to
 avoid corruption by strong outlying points. The mean is actually
@@ -335,7 +347,8 @@ value.
 When thresholding the different wavelet scales, the value of $\sigma$
 as measured from the input array needs to be scaled to account for the
 increased amount of correlation between neighbouring pixels (due to
-the convolution). 
+the convolution). See Appendix~\ref{app-madfm} for details on this
+scaling. 
 
 The user can also select the minimum scale to be used in the
 reconstruction -- the first scale exhibits the highest frequency
@@ -366,13 +379,13 @@ BLANK so that the shape of the valid part of the cube is preserved.
 \subsection{Searching the image}
 \label{sec-detection}
 
-The image is searched for detections in two ways: spectrally (in the
-spectrum in each spatial pixel), and spatially (in the spatial image
-in each channel). In both cases, the algorithm finds connected pixels
-that are above the user-specified threshold. In the case of the
-spatial image search, the algorithm of \citet{lutz80} is used to
-raster scan through the image and connect groups of pixels on
-neighbouring rows.
+The image is searched for detections in two ways: spectrally (a
+1-dimensional search in the spectrum in each spatial pixel), and
+spatially (a 2-dimensional search in the spatial image in each
+channel). In both cases, the algorithm finds connected pixels that are
+above the user-specified threshold. In the case of the spatial image
+search, the algorithm of \citet{lutz80} is used to raster scan through
+the image and connect groups of pixels on neighbouring rows.
 
 Note that this algorithm cannot be applied directly to a 3-dimensional
 case, as it requires that objects are completely nested in a row: that
@@ -416,8 +429,8 @@ tests will be dependent on each other, and so $c_N = \sum_{i=1}^N
 i^{-1}$. \citet{hopkins02} consider real radio data, where the pixels
 are correlated over the beam. In this case the sum is made over the
 $N$ pixels that make up the beam. The value of $N$ is calculated from
-the FITS header (if the correct keywords are not present, a default
-value of 10 pixels is assumed).
+the FITS header (if the correct keywords -- BMAJ, BMIN -- are not
+present, a default value of 10 pixels is assumed).
 
 If a reconstruction has been made, the residuals (defined as original
 $-$ reconstruction) are used to estimate the noise parameters of the
@@ -426,6 +439,12 @@ both cases, the median is used as a robust estimator of the mean
 value, although the $\sigma$ is estimated by the standard deviation
 (of the residual array, in the case of the reconstruction, but of the
 original array otherwise).
+
+Detections must have a minimum number of pixels to be counted. This
+minimum number is given by the input parameters {\tt minPix} (for
+2-dimensional searches) and {\tt minChannels} (for 1-dimensional
+searches). Note again that only positive thresholding is done --
+negative features are not searched for.
 
 \subsection{Merging detected objects}
 \label{sec-merger}
@@ -462,15 +481,16 @@ parameter ({\tt growthCut}), with a default value of $1.5\sigma$. The
 use of the growth algorithm is controlled by the {\tt flagGrowth}
 parameter -- the default value of which is {\tt false}. If the
 detections are grown, they are sent through the merging algorithm a
-second time, to pick up any detections that have overlapped or grown
+second time, to pick up any detections that now overlap or have grown
 over each other.
 
-Finally, to be accepted, the detections must span both a minimum
+Finally, to be accepted, the detections must span {\it both} a minimum
 number of channels (to remove any spurious single-channel spikes that
-may be present), and a minimum number of spatial pixels. These numbers
-are set with the {\tt minChannels} and {\tt minPix} parameters. The
-channel requirement means there must be at least one set of this many
-consecutive channels in the source for it to be accepted.
+may be present), and a minimum number of spatial pixels. These
+numbers, as for the original detection step, are set with the {\tt
+minChannels} and {\tt minPix} parameters. The channel requirement
+means there must be at least one set of this many consecutive channels
+in the source for it to be accepted.
 
 \section{Outputs}
 \label{sec-output}
@@ -685,38 +705,47 @@ a cube that has been reconstructed will be much more regular and
 smooth -- the ragged edges that objects in the raw cube possess are
 smoothed by the removal of most of the noise.
 
-\section{Drawbacks of the current program}
+Finally, as Duchamp is still undergoing development, there are some
+elements that are not fully developed. In particular, it is not as
+clever as I would like at avoiding interference. The ability to place
+requirements on the minimum number of channels and pixels partially
+circumvents this problem, but work is being done to make Duchamp
+smarter at rejecting signals that are clearly (to a human eye at
+least) interference. See the following section for further
+improvements that are planned.
 
-The program currently has a few problems/drawbacks/things to be aware
-of that will hopefully be fixed in the future:
-\begin{itemize}
-
-\item Narrow interference spikes are still getting found, particularly
-  if there is no reconstruction, or reconstruction with a relatively
-  low {\tt snrRecon} (such as 2 or 3). Increasing the {\tt
-  minChannels} parameter is one way to circumvent this, but making the
-  algorithm a bit more clever would be preferable.
-
-\item Sources that have strong continuum ripple and/or artefacts often
-  generate many spurious detections. This needs some work to avoid
-  Duchamp doing this, and until then users are advised to be aware
-  of the possibility. Strong continuum ripples may generate many
-  sources on the same spatial pixel, and this will be apparent on the
-  detection images.
-
-\item Spectra are integrated over every spatial pixel of the
-  detection, and this may dilute the actual detection, making it
-  harder to see \ie the apparent strength of the line as plotted may
-  not give a true indication of how strong it really is.
-
-%\item A caution on the merging part of the procedure. This can be time
-%  consuming if there are many detections that do not require merging
-%  -- in this case, the time will go like $N^2$ ($N$ = number of
-%  detections). If there are plenty of mergers, the size of the list
-%  reduces quickly, so the execution time will be less.
-
-
-\end{itemize}
+%\section{Drawbacks of the current program}
+%
+%The program currently has a few problems/drawbacks/things to be aware
+%of that will hopefully be fixed in the future:
+%\begin{itemize}
+%
+%\item Narrow interference spikes are still getting found, particularly
+%  if there is no reconstruction, or reconstruction with a relatively
+%  low {\tt snrRecon} (such as 2 or 3). Increasing the {\tt
+%  minChannels} parameter is one way to circumvent this, but making the
+%  algorithm a bit more clever would be preferable.
+%
+%\item Sources that have strong continuum ripple and/or artefacts often
+%  generate many spurious detections. This needs some work to avoid
+%  Duchamp doing this, and until then users are advised to be aware
+%  of the possibility. Strong continuum ripples may generate many
+%  sources on the same spatial pixel, and this will be apparent on the
+%  detection images.
+%
+%\item Spectra are integrated over every spatial pixel of the
+%  detection, and this may dilute the actual detection, making it
+%  harder to see \ie the apparent strength of the line as plotted may
+%  not give a true indication of how strong it really is.
+%
+%%\item A caution on the merging part of the procedure. This can be time
+%%  consuming if there are many detections that do not require merging
+%%  -- in this case, the time will go like $N^2$ ($N$ = number of
+%%  detections). If there are plenty of mergers, the size of the list
+%%  reduces quickly, so the execution time will be less.
+%
+%
+%\end{itemize}
 
 
 %\section{Comparison with other software (to be developed further...)}
@@ -750,7 +779,10 @@ immediate future):
 
 \begin{itemize}
 
-\item More varied output formats, including a Karma annotation file. {\bf Planned.}
+\item Ability to invert cube to search for absorption features. {\bf
+  Planned.} 
+
+\item More varied output formats. {\bf Planned.}
 
 \item Better determination of the noise characteristics of
   spectral-line cubes, including understanding how the noise is
@@ -762,6 +794,9 @@ immediate future):
 
 \item Provide some indication of the significance of the detection
   (\ie some S/N-like value). {\bf Planned.}
+
+\item Improved ability to reject interference, possibly on the
+  spectral shape of features. {\bf Planned.}
 
 \item Link to lists of possible counterparts (\eg via NED/SIMBAD/other
   VO tools?). {\bf Wishlist.} 
@@ -1239,4 +1274,170 @@ this means the values quoted by \citet{meyer04:trunc} for the cube noise in
 the \hipass\ catalogue should be 18\% larger (since 0.1486042 is 18\%
 larger than $\sqrt{\pi/2}\approx1.253314$). 
 
+\section{How Gaussian noise changes with wavelet scale.}
+\label{app-scaling}
+
+The key element in the wavelet reconstruction of an array is the
+thresholding of the individual wavelet coefficient arrays. This is
+usually done by choosing a level to be some number of standard
+deviations above the mean value.
+
+However, since the wavelet arrays are produced by convolving the input
+array by an increasingly large filter, the pixels in the coefficient
+arrays become increasingly correlated as the scale of the filter
+increases. This results in the measured standard deviation from a
+given coefficient array decreasing with increasing scale. To calculate
+this, we need to take into account how many other pixels each pixel in
+the convolved array depends on.
+
+To demonstrate, suppose we have a 1-D array with $N$ pixel values
+given by $F_i,\ i=1,...,N$, and we convolve it with the B$_3$-spline
+filter with coefficients $\{1/16,1/4,3/8,1/4,1/16\}$. The flux of the
+$i$th pixel in the convolved array will be
+\[
+F'_i = \frac{1}{16}F_{i-2} + \frac{1}{16}F_{i-2} + \frac{3}{8}F_{i}
++ \frac{1}{4}F_{i-1} + \frac{1}{16}F_{i+2}
+\]
+and the flux of the corresponding pixel in the wavelet array will be 
+\[
+W'_i = F_i - F'_i = \frac{1}{16}F_{i-2} + \frac{1}{16}F_{i-2} + \frac{5}{8}F_{i}
++ \frac{1}{4}F_{i-1} + \frac{1}{16}F_{i+2}
+\]
+Now, assuming each pixel has the same standard deviation
+$\sigma_i=\sigma$, we can work out the standard deviation for the
+coefficient array:
+\[
+\sigma'_i = \sigma \sqrt{\left(\frac{1}{16}\right)^2 + \left(\frac{1}{4}\right)^2
+  + \left(\frac{5}{8}\right)^2 + \left(\frac{1}{4}\right)^2 + \left(\frac{1}{16}\right)^2}
+          = 0.72349\ \sigma
+\]
+Thus, the first scale wavelet coefficient array will have a standard
+deviation of 72.3\% of the input array. This procedure can be followed
+to calculate the necessary values for all scales, dimensions and
+filters used by Duchamp.
+
+Calculating these values is, therefore, a critical step in performing
+the reconstruction. \citet{starck02:book} did so by simulating data sets
+with Gaussian noise, taking the wavelet transform, and measuring the
+value of $\sigma$ for each scale. We take a different approach, by
+calculating the scaling factors directly from the filter coefficients
+by taking the wavelet transform of an array made up of a 1 in the
+central pixel and 0s everywhere else. The scaling value is then
+derived by adding in quadrature all the wavelet coefficient values at
+each scale. We give the scaling factors for the three filters
+available to Duchamp on the following page. These values are
+hard-coded into Duchamp, so no on-the-fly calculation of them is
+necessary. 
+
+Memory limitations prevent us from calculating factors for large
+scales, particularly for the three-dimensional case (hence the --
+symbols in the tables). To calculate factors for
+higher scales than those available, we note the following
+relationships apply for large scales to a sufficient level of precision:
+\begin{itemize}
+\item 1-D: factor(scale $i$) = factor(scale $i-1$)$/\sqrt{2}$.
+\item 2-D: factor(scale $i$) = factor(scale $i-1$)$/2$.
+\item 1-D: factor(scale $i$) = factor(scale $i-1$)$/\sqrt{8}$.
+\end{itemize}
+
+\newpage
+\begin{itemize}
+\item {\bf B$_3$-Spline Function:} $\{1/16,1/4,3/8,1/4,1/16\}$
+
+\begin{tabular}{llll}
+Scale & 1 dimension      & 2 dimension     & 3 dimension\\ \hline
+1     & 0.723489806      & 0.890796310     & 0.956543592\\
+2     & 0.285450405	 & 0.200663851	   & 0.120336499\\
+3     & 0.177947535	 & 0.0855075048	   & 0.0349500154\\
+4     & 0.122223156	 & 0.0412474444	   & 0.0118164242\\
+5     & 0.0858113122	 & 0.0204249666	   & 0.00413233507\\
+6     & 0.0605703043	 & 0.0101897592	   & 0.00145703714\\
+7     & 0.0428107206	 & 0.00509204670   & 0.000514791120\\
+8     & 0.0302684024	 & 0.00254566946   & --\\
+9     & 0.0214024008	 & 0.00127279050   & --\\
+10    & 0.0151336781	 & 0.000636389722  & --\\
+11    & 0.0107011079	 & 0.000318194170  & --\\
+12    & 0.00756682272	 & --		   & --\\
+13    & 0.00535055108	 & --		   & --\\
+%14    & 0.00378341085	 & --		   & --\\
+%15    & 0.00267527545	 & --		   & --\\
+%16    & 0.00189170541	 & --		   & --\\
+%17    & 0.00133763772	 & --		   & --\\
+%18    & 0.000945852704   & --		   & --
+\end{tabular}
+
+\item {\bf Triangle Function:} $\{1/4,1/2,1/4\}$
+
+\begin{tabular}{llll}
+Scale & 1 dimension      & 2 dimension     & 3 dimension\\ \hline
+1     & 0.612372436      & 0.800390530     & 0.895954449  \\
+2     & 0.330718914	 & 0.272878894     & 0.192033014\\
+3     & 0.211947812	 & 0.119779282     & 0.0576484078\\
+4     & 0.145740298	 & 0.0577664785    & 0.0194912393\\
+5     & 0.102310944	 & 0.0286163283    & 0.00681278387\\
+6     & 0.0722128185	 & 0.0142747506    & 0.00240175885\\
+7     & 0.0510388224	 & 0.00713319703   & 0.000848538128 \\
+8     & 0.0360857673	 & 0.00356607618   & 0.000299949455 \\
+9     & 0.0255157615	 & 0.00178297280   & -- \\
+10    & 0.0180422389	 & 0.000891478237  & --  \\
+11    & 0.0127577667	 & 0.000445738098  & --  \\
+12    & 0.00902109930	 & 0.000222868922  & --  \\
+13    & 0.00637887978	 & --		   & -- \\
+%14   & 0.00451054902	 & --		   & -- \\
+%15   & 0.00318942978	 & --		   & -- \\
+%16   & 0.00225527449	 & --		   & -- \\
+%17   & 0.00159471988	 & --		   & -- \\
+%18   & 0.000112763724	 & --		   & -- 
+
+\end{tabular}
+
+\item {\bf Haar Wavelet:} $\{0,1/2,1/2\}$
+
+\begin{tabular}{llll}
+Scale & 1 dimension      & 2 dimension     & 3 dimension\\ \hline
+1     & 0.707167810      & 0.433012702     & 0.935414347 \\
+2     & 0.500000000	 & 0.216506351     & 0.330718914\\
+3     & 0.353553391	 & 0.108253175     & 0.116926793\\
+4     & 0.250000000	 & 0.0541265877    & 0.0413398642\\
+5     & 0.176776695	 & 0.0270632939    & 0.0146158492\\
+6     & 0.125000000	 & 0.0135316469    & 0.00516748303
+
+\end{tabular}
+
+
+\end{itemize}
+
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
