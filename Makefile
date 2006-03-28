@@ -5,7 +5,7 @@ FFLAGS = -C -fast -O4
 CC=     g++ $(CFLAGS)
 F77=    g77 $(FFLAGS)
 
-BASE = /DATA/SITAR_1/whi550/Duchamp
+BASE = .
 
 PGDIR = /u/whi550/pgplot/
 PGPLOTLIB = -L$(PGDIR) -L/usr/X11R6/lib/ -lcpgplot -lpgplot -lX11
@@ -63,8 +63,8 @@ HEADS = $(BASE)/param.o\
 	$(CUBESDIR)/cubes.o\
 	$(ATROUSDIR)/atrous.o
 
-duchamp : main.o $(HEADS) $(CUBES) $(ATROUS) $(DETECTION) $(UTIL)
-	$(F77) -o Duchamp main.o $(HEADS) $(CUBES) $(ATROUS) $(DETECTION) $(UTIL) $(LIBS)
+duchamp : mainDuchamp.o $(HEADS) $(CUBES) $(ATROUS) $(DETECTION) $(UTIL)
+	$(F77) -o Duchamp mainDuchamp.o $(HEADS) $(CUBES) $(ATROUS) $(DETECTION) $(UTIL) $(LIBS)
 
 .cc.o:
 	$(CC) $< $(CINC) -o $@
