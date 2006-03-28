@@ -14,6 +14,7 @@ subsection      [*,*,*]
 # spectraFile -- the postscript file of spectra
 # flagOutputRecon/Resid -- whether to save the reconstruction & residual arrays as FITS files
 # flagVOT -- make a VOTable file of the results?   votFile -- the file to put it in
+# flagKarma -- make a Karma annotation file of the results?  karmaFile -- the file to put it in
 # flagMaps -- save postscript versions of the detection and 0th moment maps?
 # detectionMap, momentMap -- the postscript files produced.
 
@@ -25,6 +26,8 @@ flagOutputRecon	0
 flagOutputResid	0
 flagVOT         0
 votFile         results.xml
+flagKarma       0
+karmaFile       results.ann
 flagMaps        1
 detectionMap    latest-detection-map.ps
 momentMap       latest-moment-map.ps
