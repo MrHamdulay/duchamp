@@ -11,7 +11,8 @@ PGDIR = /u/whi550/pgplot/
 PGPLOTLIB = -L$(PGDIR) -L/usr/X11R6/lib/ -lcpgplot -lpgplot -lX11
 
 #CFITSIOLIB = -lcfitsio 
-CFITSIODIR = /DATA/SITAR_1/whi550/cfitsio
+CFITSIOINC = /DATA/SITAR_1/whi550/cfitsio
+CFITSIODIR = /usr/local/lib
 CFITSIOLIB = -L$(CFITSIODIR) -lcfitsio
 
 WCSDIR = /DATA/SITAR_1/whi550/wcslib-4.2
@@ -19,7 +20,7 @@ WCSLIB = -L$(WCSDIR)/C -lwcs -L$(WCSDIR)/pgsbox/ -lpgsbox
 
 CINC= -I$(PGDIR) -I$(WCSDIR)/C/ -I$(WCSDIR)/pgsbox/ -I$(CFITSIODIR) -I$(BASE)
 
-LIBS =  $(PGPLOTLIB) $(CFITSIOLIB) $(WCSLIB) -lm -lg2c -lstdc++
+LIBS =  $(WCSLIB) $(PGPLOTLIB) $(CFITSIOLIB) -lm -lg2c -lstdc++
 
 ATROUSDIR = $(BASE)/ATrous
 ATROUS = $(ATROUSDIR)/atrous_1d_reconstruct.o\
