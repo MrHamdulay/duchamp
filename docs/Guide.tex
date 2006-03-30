@@ -1245,7 +1245,7 @@ distribution is given by
 \begin{eqnarray*}
 g(x) &= &{\mbox{\rm distribution of }} |x|\\
      &= &f(x) + f(-x),\ x\ge0\\
-     &= &\sqrt{\frac{2}{\pi\sigma^2}} e^{-x^2/2\sigma^2},\ x\ge0.
+     &= &\sqrt{\frac{2}{\pi\sigma^2}}\, e^{-x^2/2\sigma^2},\ x\ge0.
 \end{eqnarray*}
 So, the median absolute deviation from the median, $s$, is given by
 \[
@@ -1267,12 +1267,19 @@ $s$, then divide by 0.6744888 (or multiply by 1.4826042) to obtain the
 correct estimator.
 
 Note that this is different to solutions quoted elsewhere,
-specifically in \citet{meyer04:trunc}, where the same robust estimator is
-used but a different value for $s/\sigma$ (of
-$\sqrt{2/\pi}\approx0.797885$) is quoted. It should thus be noted that
-this means the values quoted by \citet{meyer04:trunc} for the cube noise in
-the \hipass\ catalogue should be 18\% larger (since 0.1486042 is 18\%
-larger than $\sqrt{\pi/2}\approx1.253314$). 
+specifically in \citet{meyer04:trunc}, where the same robust estimator
+is used but with an incorrect conversion to standard deviation -- they
+assume $\sigma = s\sqrt{\pi/2}$. This, in fact, is the conversion used
+to convert the {\it mean} absolute deviation from the mean to the
+standard deviation. This means that the cube noise in the \hipass\
+catalogue (parameter Rms$_{\rm cube}$) should be 18\% larger than
+quoted.
+
+%a different value for $s/\sigma$ (of
+%$\sqrt{2/\pi}\approx0.797885$) is quoted. It should thus be noted that
+%this means the values quoted by \citet{meyer04:trunc} for the cube noise in
+%the \hipass\ catalogue should be 18\% larger (since 0.1486042 is 18\%
+%larger than $\sqrt{\pi/2}\approx1.253314$). 
 
 \section{How Gaussian noise changes with wavelet scale.}
 \label{app-scaling}
