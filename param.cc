@@ -220,8 +220,8 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   theStream  <<setw(40)<<"Using Adjacent-pixel criterion?"      <<"= "<<par.getFlagAdjacent()   <<endl;
   if(!par.getFlagAdjacent()){
     theStream<<setw(40)<<"Max. spatial separation for merging"  <<"= "<<par.getThreshS()        <<endl;
-    theStream<<setw(40)<<"Max. velocity separation for merging" <<"= "<<par.getThreshV()        <<endl;
   }
+  theStream  <<setw(40)<<"Max. velocity separation for merging" <<"= "<<par.getThreshV()        <<endl;
   theStream  <<setw(40)<<"Min. # channels for merging"          <<"= "<<par.getMinChannels()    <<endl;
   theStream  <<"--------------------"<<endl;
   theStream.unsetf(std::ios::left);

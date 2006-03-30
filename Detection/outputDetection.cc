@@ -52,7 +52,7 @@ void Detection::outputDetectionTextWCS(std::ostream &stream)
   stream << setw(6)                  << this->pix.size();
   //   stream << setw(8)                  << this->totalFlux();
   stream << setw(10)                 << this->intFlux;
-  stream << setw(8)                  << this->peakFlux;
+  stream << setw(9)                  << this->peakFlux;
   stream << endl;
   resetiosflags(std::ios::fixed);
 
@@ -88,9 +88,9 @@ void outputDetectionTextWCSHeader(std::ostream &stream, wcsprm *wcs)
   stream << setw(5)  << "Z2";
   stream << setw(6)  << "Npix";
   stream << setw(10) << "F_tot";
-  stream << setw(8)  << "F_peak";
+  stream << setw(9)  << "F_peak";
   stream<<endl;
-  stream<<setfill('-')<<setw(5+14+6+6+7+13+13+8+8+10+9+4+4+4+4+5+5+6+10+8)<<'-';
+  stream<<setfill('-')<<setw(5+14+6+6+7+13+13+8+8+10+9+4+4+4+4+5+5+6+10+9)<<'-';
   stream<<endl;
 
 }
@@ -119,7 +119,7 @@ void Detection::outputDetectionText(std::ostream &stream, int idNumber)
   stream<<setprecision(4); 
   stream<<setw(6) << this->pix.size();
   stream<<setw(10)<< this->totalFlux;
-  stream<<setw(8) << this->peakFlux;  
+  stream<<setw(9) << this->peakFlux;  
   stream<<endl;
   resetiosflags(std::ios::fixed);
 
@@ -145,9 +145,9 @@ void outputDetectionTextHeader(std::ostream &stream)
   stream<<setw(5)<<"Z2";
   stream<<setw(6)<<"Npix";
   stream<<setw(10)<<"F_tot";
-  stream<<setw(8)<<"F_peak";
+  stream<<setw(9)<<"F_peak";
   stream<<endl;
-  stream<<setfill('-')<<setw(4+6+6+7+4+4+4+4+5+5+6+10+8)<<'-';
+  stream<<setfill('-')<<setw(4+6+6+7+4+4+4+4+5+5+6+10+9)<<'-';
   stream<<endl;
 }
 
@@ -175,7 +175,7 @@ void Detection::outputDetectionText(int idNumber)
   std::cout<<setprecision(4);
   std::cout<<setw(6) << this->pix.size();	
   std::cout<<setw(10)<< this->totalFlux;	
-  std::cout<<setw(8) << this->peakFlux;  
+  std::cout<<setw(9) << this->peakFlux;  
   std::cout<<endl;
   resetiosflags(std::ios::fixed);
 
@@ -200,10 +200,10 @@ void outputDetectionTextHeader()
   std::cout<<setw(5)<<"Z1";
   std::cout<<setw(5)<<"Z2";
   std::cout<<setw(6)<<"Npix";
-  std::cout<<setw(8)<<"F_tot";
-  std::cout<<setw(8)<<"F_peak";
+  std::cout<<setw(10)<<"F_tot";
+  std::cout<<setw(9)<<"F_peak";
   std::cout<<endl;
-  for(int i=0;i<4+6+6+7+4+4+4+4+5+5+6+8+8;i++) std::cout<<'-';
+  for(int i=0;i<4+6+6+7+4+4+4+4+5+5+6+10+9;i++) std::cout<<'-';
   std::cout<<endl;
 
 }

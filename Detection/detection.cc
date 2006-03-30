@@ -104,14 +104,14 @@ void Detection::calcWCSparams(wcsprm *wcs)
   this->lattype = wcs->lattyp;
   this->ztype   = wcs->ctype[2];
   this->nuRest  = wcs->restfrq;
-  if(this->lngtype=="RA") this->name = getIAUNameEQ(this->ra,this->dec,wcs->equinox);
-  else this->name = getIAUNameGAL(this->ra,this->dec);
   this->ra   = world[0];
   this->dec  = world[1];
   this->raS = decToDMS(this->ra,this->lngtype);
   this->decS = decToDMS(this->dec,this->lattype);
   this->raWidth   = angularSeparation(world[9],world[1],world[12],world[1]) * 60.;
   this->decWidth  = angularSeparation(world[0],world[10],world[0],world[13]) * 60.;
+  if(this->lngtype=="RA") this->name = getIAUNameEQ(this->ra,this->dec,wcs->equinox);
+  else this->name = getIAUNameGAL(this->ra,this->dec);
   this->vel    = setVel_kms(wcs, world[2]);
   this->velMin = setVel_kms(wcs, world[5]);
   this->velMax = setVel_kms(wcs, world[8]);
