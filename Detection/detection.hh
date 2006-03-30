@@ -135,8 +135,6 @@ public:
   void   setRAWidth(float f){raWidth = f;};
   float  getDecWidth(){return decWidth;};
   void   setDecWidth(float f){decWidth = f;};
-  float  getLNGRatio(){return lngRatio;};
-  void   setLNGRatio(float f){lngRatio = f;};
   string getLNGtype(){return lngtype;};
   void   setLNGtype(string s){lngtype = s;};
   string getLATtype(){return lattype;};
@@ -202,9 +200,8 @@ private:
   float          dec;	      // Central Declination in degrees
   float          raWidth;     // Width of detection in RA direction in arcmin
   float          decWidth;    // Width of detection in Dec direction in arcmin
-  float          lngRatio;    // Ratio of longitude/RA in decimal units to degrees value (=15. for RA case)
-  string         lngtype;     // Type of longitude axis (RA/GALLNG)
-  string         lattype;     // Type of latitude axis (Dec/GALLAT)
+  string         lngtype;     // Type of longitude axis (RA/GLON)
+  string         lattype;     // Type of latitude axis (DEC/GLAT)
   string         ztype;	      // Type of z-axis (FREQ/VEL/...)
   float          nuRest;      // Rest frequency
   float          vel;	      // Central velocity (from zCentre)

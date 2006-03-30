@@ -62,22 +62,44 @@ string getIAUNameGAL(double lon, double lat)
   return ss.str();
 }
 
-string decToDMS(double dec, bool doSign)
+string decToDMS(const double dec, const string type)
 {
   /** 
-   *  string decToDMS(double, bool)
-   *   converts a decimal angle (in degrees) to dd:mm:ss.ss format.
-   *   if doSign is positive, the sign of the angle is shown 
-   *    (as would be necessary for Declination angles) 
-   *   Returns a string in format 12:34:56.78 or -23:23:23.23 
+   *  string decToDMS(double, string)
+   *   converts a decimal angle (in degrees) to a format reflecting the axis type:
+   *       RA   (right ascension)    --> hh:mm:ss.ss, with dec made modulo 360. (or 24hrs)
+   *       DEC  (declination)        --> sdd:mm:ss.ss  (with sign, either + or -)
+   *       GLON (galactic longitude) --> ddd:mm:ss.ss, with dec made modulo 360.
+   *       GLAT (galactic latitude)  --> sdd:mm:ss.ss  (with sign, either + or -)
+   *    Any other type defaults to RA, and prints warning.
    */
 
   double dec_abs,sec;
   int deg,min;
   const double onemin=1./60.;
-  bool isNeg = (dec < 0.);
+  double thisDec = dec;
+  string sign="";
+  int degSize = 2; // number of figures in the degrees part of the output.
 
-  dec_abs = fabs(dec);
+  if((type=="RA")||(type=="GLON")){
+    if(type=="GLON")  degSize = 3; // three figures in degrees when doing longitude.
+    // Make these modulo 360.;
+    while (thisDec < 0.) { thisDec += 360.; }
+    while (thisDec >= 360.) { thisDec -= 360.; }
+    if(type=="RA") thisDec /= 15.;  // Convert to hours.
+  }
+  else if((type=="DEC")||(type=="GLAT")){
+    if(thisDec<0.) sign = "-";
+    else sign = "+";
+  }
+  else { // UNKNOWN TYPE -- DEFAULT TO RA.
+    std::cerr << "decToDMS:: Warning! Unknown axis type (" << type << "). Defaulting to using RA\n";
+    while (thisDec < 0.) { thisDec += 360.; }
+    while (thisDec >= 360.) { thisDec -= 360.; }
+    thisDec /= 15.;
+  }
+  
+  dec_abs = fabs(thisDec);
   deg = int(dec_abs);//floor(d)
   min = (int)(fmod(dec_abs,1.)*60.);
   sec = fmod(dec_abs,onemin)*3600.;
@@ -88,15 +110,13 @@ string decToDMS(double dec, bool doSign)
   std::stringstream ss(std::stringstream::out);
   ss.setf(std::ios::showpoint);
   ss.setf(std::ios::fixed);
-  if(doSign){
-    if(isNeg) ss << "-";
-    else ss << "+";
-  }
-  ss << setw(2)<<setfill('0')<<deg<<":";
+  ss << sign;
+  ss << setw(degSize)<<setfill('0')<<deg<<":";
   ss<<setw(2)<<setfill('0')<<min<<":";
   ss<<setw(5)<<setprecision(2)<<sec;
   return ss.str();
 }
+
 
 double dmsToDec(string dms)
 {

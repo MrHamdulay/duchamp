@@ -17,9 +17,10 @@ double pixelToVelocity(wcsprm *wcs, double &x, double &y, double &z)
   double *world  = new double[3];
   double *phi    = new double[1];
   double *theta  = new double[1];
-  pixcrd[0] = x;
-  pixcrd[1] = y;
-  pixcrd[2] = z;
+  // correct from 0-indexed to 1-indexed pixel array by adding 1 to pixel values.
+  pixcrd[0] = x + 1;
+  pixcrd[1] = y + 1;
+  pixcrd[2] = z + 1;
   if(int flag=wcsp2s(wcs, 1, 3, pixcrd, imgcrd, phi, theta, world, stat)>0){
     std::cerr<<"WCS Error in pixelToVelocity(): Code = "<<flag<<": "<<wcs_errmsg[flag]<<std::endl;
     std::cerr<<"  stat value is "<<stat[0]<<std::endl;
@@ -126,6 +127,7 @@ int pixToWCSMulti(wcsprm *wcs, const double *pix, double *world, const int npts)
   delete [] imgcrd;
   delete [] phi;
   delete [] theta;
+  delete [] newpix;
   return flag;
 }
 

@@ -54,7 +54,7 @@ void cpghistlog(int npts, float *data, float datamin, float datamax, int nbin, i
 
 string getIAUNameEQ(double ra, double dec, float equinox);
 string getIAUNameGAL(double ra, double dec);
-string decToDMS(double dec, bool doSign);
+string decToDMS(double dec, string type);
 double dmsToDec(string dms);
 double angularSeparation(double &ra1, double &dec1, double &ra2, double &dec2);
 
