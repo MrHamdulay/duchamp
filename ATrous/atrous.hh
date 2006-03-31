@@ -104,5 +104,6 @@ void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float
 void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *input, float *coeffs, float *wavelet);
 
 void baselineSubtract(long numSpec, long specLength, float *originalCube, float *baseline, Param &par);
+void getBaseline(long size, float *input, float *baseline, Param &par);
 
 #endif

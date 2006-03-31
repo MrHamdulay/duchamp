@@ -295,6 +295,15 @@ are as one would see from the input cube itself -- even though the
 detection (and reconstruction if applicable) is done on the
 baseline-removed cube.
 
+The presence of very strong signals (for instance, masers at several
+hundred Jy) can affect the determination of the baseline, leading to a
+large dip centred on the signal in the baseline-subtracted
+spectrum. To prevent this, the signal is trimmed prior to the
+reconstruction process at some fiducial threshold (about $8\sigma$
+above the mean). The baseline determined should thus be representative
+of the true, signal-free baseline. Note that this trimming is only a
+temporary measure which does not affect the source-detection.
+
 \subsection{Image reconstruction}
 \label{sec-recon}
 
