@@ -573,10 +573,9 @@ Dec).
 \item[Z1, Z2] The minimum and maximum Z-pixel coordinates.
 \item[Npix] The number of pixels \& channels (\ie distinct $(x,y,z)$
   coordinates) in the detection.
-\item[F\_tot] The integrated flux over the object, in the units of the
-  FITS file. %This is calculated 
-\item[F\_peak] The peak flux over the object, in the units of the FITS
-  file.
+\item[F\_tot] The integrated flux over the object, in the units of
+  flux times velocity (\eg Jy km/s).
+\item[F\_peak] The peak flux over the object, in the units of flux.
 \end{entry}
 If the WCS is not valid (\ie is not present or does not have all the
 necessary information), the Name, RA, DEC, VEL and related columns are not
@@ -635,16 +634,22 @@ are not interested in its contents, as it can be a large file.)
 \end{figure}
 
 As well as the output data file, a postscript file is created that
-shows the integrated spectra of each detection, together with a small
-cutout image (0th moment) and basic information of the detection. If
-the cube was reconstructed, the spectrum from the reconstruction is
-shown in red, over the top of the original spectrum. The spectral
-extent of the detection is indicated with green lines, and a zoom is
-shown in a separate window. The cutout image can optionally include a
-border around the spatial pixels that are in the detection (turned on
-and off by the parameter {\tt drawBorders}). It also includes a scale
-bar in the bottom left corner to indicate size -- it is 30~arcmin
-long. An example detection can be seen below in Fig.~\ref{fig-spect}.
+shows the spectra of each detection, together with a small cutout
+image (0th moment) and basic information of the detection. If the cube
+was reconstructed, the spectrum from the reconstruction is shown in
+red, over the top of the original spectrum. The spectrum that is
+plotted is governed by the {\tt spectralMethod} parameter. It can be
+either {\tt peak}, where the spectrum is that containing the pixel
+with the detection's peak flux; or {\tt sum}, where the spectrum is
+summed over all spatial pixels, and then corrected for the beam size.
+
+The spectral extent of the detection is indicated with blue lines, and
+a zoom is shown in a separate window. The cutout image can optionally
+include a border around the spatial pixels that are in the detection
+(turned on and off by the parameter {\tt drawBorders}). It also
+includes a scale bar in the bottom left corner to indicate size -- it
+is 30~arcmin long. An example detection can be seen below in
+Fig.~\ref{fig-spect}.
 
 Finally, a couple of images are optionally produced: a 0th moment map
 of the cube, combining just the detected channels in each object,
@@ -1027,6 +1032,11 @@ total number, will be less than $\alpha$ (see \S\ref{sec-detection}).
 
 \subsubsection*{Other parameters}
 \begin{entry}
+\item[spectralMethod {\tt [peak]}] This indicates which method to plot
+  the output spectra by: {\tt peak} means plot the spectrum containing
+  the detection's peak pixel; {\tt sum} means sum the spectra of each
+  detected spatial pixel, and correct for the beam size. Any other
+  choice defaults to {\tt peak}.
 \item[drawBorders {\tt [true]}] A flag indicating whether borders
   are to be drawn around the detected objects in the moment maps
   included in the output (see for example Fig.~\ref{fig-spect}).

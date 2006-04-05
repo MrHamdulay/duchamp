@@ -57,7 +57,12 @@ void Detection::calcParams()
     if(((*ctr)==0)||(this->pix[*ctr].itsY>this->ymax))     this->ymax     = this->pix[*ctr].itsY;
     if(((*ctr)==0)||(this->pix[*ctr].itsZ<this->zmin))     this->zmin     = this->pix[*ctr].itsZ;
     if(((*ctr)==0)||(this->pix[*ctr].itsZ>this->zmax))     this->zmax     = this->pix[*ctr].itsZ;
-    if(((*ctr)==0)||(this->pix[*ctr].itsF>this->peakFlux)) this->peakFlux = this->pix[*ctr].itsF;
+    if(((*ctr)==0)||(this->pix[*ctr].itsF>this->peakFlux)){
+      this->peakFlux = this->pix[*ctr].itsF;
+      this->xpeak = this->pix[*ctr].itsX;
+      this->ypeak = this->pix[*ctr].itsY;
+      this->zpeak = this->pix[*ctr].itsZ;
+    }
   }
   delete ctr;
   this->xcentre /= this->pix.size();

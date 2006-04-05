@@ -110,33 +110,38 @@ namespace Plot
     void gotoZoomSpectrum(float x1, float x2, float y1, float y2){
       /** SpectralPlot::gotoZoomSpectrum()
        *   Defines the region for the zoomed-in part of the spectrum.
-       *   Draws the box, with special tick marks on the x-axis.
+       *   Draws the box, with special tick marks on the bottom axis.
        */
       cpgvsiz(zoomCoords[0],zoomCoords[1],zoomCoords[2],zoomCoords[3]);
       cpgsch(indexSize);
       cpgswin(x1,x2,y1,y2);
       cpgbox("bc",0.,0,"bcstn1v",0.,0);
-      float length,disp;
-      std::stringstream labelstream;
+      float lengthL,lengthR,disp,tickpt;
+      string opt;
       for(int i=1;i<10;i++){
 	labelstream.str("");
-	switch(i){
-	case 2:
-	  length = 0.6;
-	  labelstream<<x1+(x2-x1)*float(i)/10.;
-	  disp = 0.2;
-	break;
-	case 8:
-	  length = 0.6;
-	  labelstream<<x1+(x2-x1)*float(i)/10.;
-	  disp = 1.2;
-	  break;
-	default:
-	  length = 0.3;
-	  break;
-	}
-	cpgtick(x1,y1,x2,y1,float(i)/10.,length,0.3,disp,0.,labelstream.str().c_str());
-	cpgtick(x1,y2,x2,y2,float(i)/10.,0.,length,0.,0.,"");
+	tickpt = x1+(x2-x1)*float(i)/10.;  // spectral coord of the tick
+	switch(i)
+	  {
+	  case 2:
+	  case 8:
+	    opt = "n";
+	    lengthL = lengthR = 0.5;
+	    disp = 0.3 + float(i-2)/6.; // i==2 --> disp=0.3, i==8 --> disp=1.3
+	    break;
+	  default:
+	    opt = "";
+	    lengthL = 0.25;
+	    lengthR = 0.;
+	    disp = 0.;  // not used in this case, but set it anyway.
+	    break;
+	  }
+	// first the bottom axis, labelling the ticks as appropriate
+	cpgaxis(opt.c_str(),tickpt-0.05*(x2-x1),y1,tickpt+0.5*(x2-x1),y1,
+		tickpt-0.05*(x2-x1),tickpt+0.5*(x2-x1),tickpt,
+		-1,lengthL,lengthR,0.5,disp,0.);
+	// and now the top -- no labels, just tick marks
+	cpgtick(x1,y2,x2,y2,float(i)/10.,0.,lengthL,0.,0.,"");
       }
     }
     

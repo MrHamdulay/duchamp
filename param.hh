@@ -135,6 +135,8 @@ public:
   int    getMinChannels(){return minChannels;};
   void   setMinChannels(int n){minChannels=n;};
   //
+  string getSpectralMethod(){return spectralMethod;};
+  void   setSpectralMethod(string s){spectralMethod=s;};
   bool   drawBorders(){return borders;};
   void   setDrawBorders(bool f){borders=f;};
   bool   isVerbose(){return verbose;};
@@ -211,6 +213,8 @@ private:
   float  threshVelocity;  // Maximum channels separation between objects
   int    minChannels;     // Minimum no. of channels to make an object 
   // Input-Output related
+  string spectralMethod;  // A string indicating choice of spectral plotting method:
+                          //   choices are "peak" or "sum" (peak is the default).
   bool   borders;         // Whether to draw a border around the individual
                           //   pixels of a detection in the spectral display
   bool   verbose;         // Whether to use maximum verbosity -- progress indicators in the 

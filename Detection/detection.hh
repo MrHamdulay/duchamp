@@ -112,6 +112,12 @@ public:
   void   setPeakFlux(float f){peakFlux = f;};
   float  getIntegFlux(){return intFlux;};
   void   setIntegFlux(float f){intFlux = f;};
+  long   getXPeak(){return xpeak;};
+  void   setXPeak(long x){xpeak = x;};
+  long   getYPeak(){return ypeak;};
+  void   setYPeak(long y){ypeak = y;};
+  long   getZPeak(){return zpeak;};
+  void   setZPeak(long z){zpeak = z;};
   //
   long   getXmin(){return xmin;};
   long   getYmin(){return ymin;};
@@ -190,6 +196,7 @@ private:
   float          totalFlux;   // sum of the fluxes of all the pixels
   float          peakFlux;    // maximum flux over all the pixels
   float          intFlux;     // integrated flux --> involves integration over velocity.
+  long           xpeak,ypeak,zpeak; // location of peak flux
   //
   int            id;          // ID -- generally number in list
   string         name;	      // IAU-style name (based on position)

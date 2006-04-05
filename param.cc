@@ -81,6 +81,7 @@ Param::Param(){
   this->threshVelocity  = 7.;
   this->minChannels     = 3;
   // Input-Output related
+  this->spectralMethod  = "peak";
   this->borders         = true;
   this->verbose         = true;
 };
@@ -153,6 +154,7 @@ void Param::readParams(string &paramfile)
       if(makelower(arg)=="minchannels"){     ss >> ival; this->minChannels = ival; }
       if(makelower(arg)=="flagsubsection"){  ss >> bval; this->flagSubsection = bval; }
       if(makelower(arg)=="subsection"){      ss >> sval; this->subsection = sval; }
+      if(makelower(arg)=="spectralMethod"){  ss >> sval; this->spectralMethod = makelower(sval); }
       if(makelower(arg)=="drawborders"){     ss >> bval; this->borders = bval; }
       if(makelower(arg)=="verbose"){         ss >> bval; this->verbose = bval; }
     }
@@ -223,6 +225,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   }
   theStream  <<setw(40)<<"Max. velocity separation for merging" <<"= "<<par.getThreshV()        <<endl;
   theStream  <<setw(40)<<"Min. # channels for merging"          <<"= "<<par.getMinChannels()    <<endl;
+  theStream  <<setw(40)<<"Method of spectral plotting"          <<"= "<<par.getSpectralMethod() <<endl;
   theStream  <<"--------------------"<<endl;
   theStream.unsetf(std::ios::left);
   theStream.unsetf(std::ios::boolalpha);
