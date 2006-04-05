@@ -46,8 +46,8 @@ public:
   virtual void         saveArray(float *input, long size);
   float                getPixValue(long pos){return array[pos];};
   void                 setPixValue(long pos, float f){array[pos] = f;};
-  bool                 isBlank(long pos){return blankarray[pos];};
-  void                 setBlankValue(long pos, bool f){blankarray[pos] = f;};
+//   bool                 isBlank(long pos){return blankarray[pos];};
+//   void                 setBlankValue(long pos, bool f){blankarray[pos] = f;};
   // Related to the object lists
   Detection            getObject(long number){return objectList[number];};
   void                 addObject(Detection object); 
@@ -63,6 +63,7 @@ public:
   Param                getParam(){return par;};
   void                 saveParam(Param newpar){par = newpar;};
   Param&               pars(){Param &rpar = par; return rpar;};
+  bool                 isBlank(int vox){return par.isBlank(array[vox]);};
 
   friend std::ostream& operator<< ( std::ostream& theStream, DataArray &array);
 
@@ -73,7 +74,7 @@ protected:
                                    //     (ie. how large in each direction).
   long                 numPixels;  // total number of pixels in cube
   float               *array;      // array of data
-  bool                *blankarray; // boolean array --> null pixels are true.
+//   bool                *blankarray; // boolean array --> null pixels are true.
   vector <Detection>   objectList; // the list of detected objects in the image
   Param                par;        // a parameter list.
 };
@@ -172,9 +173,9 @@ public:
   float   getPixValue(long pos){return array[pos];};
   float   getPixValue(long x, long y, long z){
     return array[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x];};
-  float   isBlank(long pos){return blankarray[pos];};
-  float   isBlank(long x, long y, long z){
-    return blankarray[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x];};
+//   float   isBlank(long pos){return blankarray[pos];};
+//   float   isBlank(long x, long y, long z){
+//     return blankarray[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x];};
   short   getDetectMapValue(long pos){return detectMap[pos];};
   short   getDetectMapValue(long x, long y){return detectMap[y*axisDim[0] + x];};
   bool    isRecon(){return reconExists;};
