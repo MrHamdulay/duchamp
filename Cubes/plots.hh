@@ -119,7 +119,6 @@ namespace Plot
       float lengthL,lengthR,disp,tickpt;
       string opt;
       for(int i=1;i<10;i++){
-	labelstream.str("");
 	tickpt = x1+(x2-x1)*float(i)/10.;  // spectral coord of the tick
 	switch(i)
 	  {
