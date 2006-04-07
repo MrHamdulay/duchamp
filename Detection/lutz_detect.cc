@@ -18,9 +18,9 @@ enum STATUS { NONOBJECT, OBJECT, COMPLETE, INCOMPLETE };
 enum ROW { PRIOR=0, CURRENT};
 enum NULLS { NULLSTART=-1, NULLMARKER=45}; //ASCII 45 = '-' --> eases printing in case of debugging
 
-class Stack{
+class Object{
 public:
-  Stack(){start=NULLSTART; end=NULLSTART;};
+  Object(){start=NULLSTART; end=NULLSTART;};
   int start;
   int end;
   Detection info;
@@ -34,7 +34,7 @@ void Image::lutz_detect()
   Detection *store = new Detection[this->axisDim[0]+1];
   char *marker     = new char[this->axisDim[0]+1];
   for(int i=0; i<(this->axisDim[0]+1); i++) marker[i] = NULLMARKER;
-  vector <Stack>  *oS     = new vector <Stack>;
+  vector <Object>  *oS    = new vector <Object>;
   vector <STATUS> *psS    = new vector <STATUS>;
 
   Pixel *pix = new Pixel;
