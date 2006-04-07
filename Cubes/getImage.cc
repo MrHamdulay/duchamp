@@ -178,23 +178,24 @@ int Cube::getCube(string fname)
   int flag;
   if(flag = wcspih(hdr, nkeys, relax, ctrl, &nreject, &nwcs, &wcs)) {
     std::cerr<<"getImage.cc:: WCSPIH failed! Code="<<flag<<": "<<wcs_errmsg[flag]<<endl;
-    return FAILURE;
+//     return FAILURE;
   }
-  
-  int stat[6],axes[3]={dimAxes[0],dimAxes[1],dimAxes[2]};
-  if(flag=wcsfix(1,axes,wcs,stat)) {
-    std::cerr<<"getImage.cc:: WCSFIX failed!"<<endl;
-    for(int i=0; i<NWCSFIX; i++)
-      if (stat[i] > 0) std::cerr<<"wcsfix ERROR "<<flag<<": "<< wcsfix_errmsg[stat[i]] <<endl;
-    return FAILURE;
-  }
-  if(flag=wcsset(wcs)){
-    std::cerr<<"getImage.cc:: WCSSET failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<endl;
-    return FAILURE;
-  }
+  else{  
+    int stat[6],axes[3]={dimAxes[0],dimAxes[1],dimAxes[2]};
+    if(flag=wcsfix(1,axes,wcs,stat)) {
+      std::cerr<<"getImage.cc:: WCSFIX failed!"<<endl;
+      for(int i=0; i<NWCSFIX; i++)
+	if (stat[i] > 0) std::cerr<<"wcsfix ERROR "<<flag<<": "<< wcsfix_errmsg[stat[i]] <<endl;
+      //     return FAILURE;
+    }
+    if(flag=wcsset(wcs)){
+      std::cerr<<"getImage.cc:: WCSSET failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<endl;
+      //     return FAILURE;
+    }
 
-  this->setWCS(wcs);
-  this->setNWCS(nwcs);
+    this->setWCS(wcs);
+    this->setNWCS(nwcs);
+  }
   wcsfree(wcs);
 
   delete hdr;

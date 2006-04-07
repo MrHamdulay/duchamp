@@ -26,7 +26,7 @@ void Cube::saveReconstructedCube()
   if (status) fits_report_error(stderr, status);
   
   if(this->par.getFlagOutputRecon()){
-    string fileout1 = this->par.getImageFile();
+    string fileout1 = "!" + this->par.getImageFile(); // ! so that it writes over an existing file.
     fileout1 = fileout1.substr(0,fileout1.size()-5); // remove the ".fits" on the end.
     std::stringstream ss1;
     ss1 << ".RECON"<<this->par.getAtrousCut()<<".fits";
@@ -43,6 +43,18 @@ void Cube::saveReconstructedCube()
     status = 0;
     fits_copy_hdu(fptrOld, fptrNew, 0, &status);
     if (status) fits_report_error(stderr, status);
+    // Need to correct the dimensions, if we have subsectioned the image...
+    if(this->pars().getFlagSubsection()){
+      char *comment = new char[80];
+      long dud;
+      fits_read_key(fptrOld, TLONG, "NAXIS1", &dud, comment, &status);
+      fits_update_key(fptrNew, TLONG, "NAXIS1", &(this->axisDim[0]), comment, &status);
+      fits_read_key(fptrOld, TLONG, "NAXIS2", &dud, comment, &status);
+      fits_update_key(fptrNew, TLONG, "NAXIS2", &(this->axisDim[2]), comment, &status);
+      fits_read_key(fptrOld, TLONG, "NAXIS3", &dud, comment, &status);
+      fits_update_key(fptrNew, TLONG, "NAXIS3", &(this->axisDim[1]), comment, &status);
+    }
+
     //////////////////////////////
     ////// NEED TO ADD NEW HEADER KEYS 
     ////// INDICATING WHAT THE FILE IS...
@@ -56,7 +68,7 @@ void Cube::saveReconstructedCube()
   }
 
   if(this->par.getFlagOutputResid()){
-    string fileout2 = this->par.getImageFile();
+    string fileout2 = "!" + this->par.getImageFile(); // ! so that it writes over an existing file.
     fileout2 = fileout2.substr(0,fileout2.size()-5);
     std::stringstream ss2;
     ss2 << ".RESID"<<this->par.getAtrousCut()<<".fits";
@@ -73,6 +85,18 @@ void Cube::saveReconstructedCube()
     status = 0;
     fits_copy_hdu(fptrOld, fptrNew, 0, &status);
     if (status) fits_report_error(stderr, status);
+
+    // Need to correct the dimensions, if we have subsectioned the image...
+    if(this->pars().getFlagSubsection()){
+      char *comment = new char[80];
+      long dud;
+      fits_read_key(fptrOld, TLONG, "NAXIS1", &dud, comment, &status);
+      fits_update_key(fptrNew, TLONG, "NAXIS1", &(this->axisDim[0]), comment, &status);
+      fits_read_key(fptrOld, TLONG, "NAXIS2", &dud, comment, &status);
+      fits_update_key(fptrNew, TLONG, "NAXIS2", &(this->axisDim[2]), comment, &status);
+      fits_read_key(fptrOld, TLONG, "NAXIS3", &dud, comment, &status);
+      fits_update_key(fptrNew, TLONG, "NAXIS3", &(this->axisDim[1]), comment, &status);
+   }
     //////////////////////////////
     ////// NEED TO ADD NEW HEADER KEYS 
     ////// INDICATING WHAT THE FILE IS...
