@@ -212,7 +212,8 @@ void Cube::plotMomentMap(string pgDestination)
     cpggray(momentMap,xdim,ydim,1,xdim,1,ydim,z2,z1,tr);
     cpgbox("bcnst",0.,0,"bcnst",0.,0);
     cpgsch(1.5);
-    cpgwedglog("rg",3.2,2,z2,z1,"Flux [Jy km/s]");
+    if(this->flagWCS) cpgwedglog("rg",3.2,2,z2,z1,"Flux [Jy km/s]");
+    else cpgwedglog("rg",3.2,2,z2,z1,"Flux");
 
     delete [] momentMap;
     delete [] temp;
