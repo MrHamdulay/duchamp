@@ -50,8 +50,8 @@ void Detection::outputDetectionTextWCS(std::ostream &stream)
   stream << setw(5)                  << this->zmax + this->zSubOffset;
   stream << setprecision(4);
   stream << setw(6)                  << this->pix.size();
-  //   stream << setw(8)                  << this->totalFlux();
-  stream << setw(10)                 << this->intFlux;
+  if(this->flagWCS) stream<<setw(10) << this->intFlux;
+  else              stream<<setw(10) << this->totalFlux;
   stream << setw(9)                  << this->peakFlux;
   stream << endl;
   resetiosflags(std::ios::fixed);
@@ -147,7 +147,7 @@ void outputDetectionTextHeader(std::ostream &stream)
   stream<<setw(10)<<"F_tot";
   stream<<setw(9)<<"F_peak";
   stream<<endl;
-  stream<<setfill('-')<<setw(4+6+6+7+4+4+4+4+5+5+6+10+9)<<'-';
+  stream<<setfill('-')<<setw(5+6+6+7+4+4+4+4+5+5+6+10+9)<<'-';
   stream<<endl;
 }
 
@@ -269,11 +269,13 @@ string Detection::outputLabelInfo()
     ss << ", w_"        << this->lattype  <<"="    << this->decWidth;
     ss << ", w_Vel="    << this->velWidth <<"km/s";
     ss << ", F\\dT\\u=" << this->intFlux;
+    ss << ", F\\dP\\u=" << this->peakFlux;
   }
-  else 
-    ss << "F\\dT\\u="   << this->intFlux;
-  //ss << ", F\\dT\\u=" << this->totalFlux;
-  ss   << ", F\\dP\\u=" << this->peakFlux;
+  else{ 
+    ss << "#" << setfill('0') << setw(3) << this->id << ": ";
+    ss << "F\\dT\\u=" << this->totalFlux;
+    ss << ", F\\dP\\u=" << this->peakFlux;
+  }
   string output = ss.str();
 
   return output;

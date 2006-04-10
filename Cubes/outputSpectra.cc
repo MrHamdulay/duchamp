@@ -11,6 +11,7 @@
 #include <Utils/utils.hh>
 
 void getSmallVelRange(Detection &obj, wcsprm *wcs, float *minvel, float *maxvel);
+void getSmallZRange(Detection &obj, float *minz, float *maxz);
 void Cube::outputSpectra()
 {
 
@@ -42,12 +43,15 @@ void Cube::outputSpectra()
     
     double x = double(obj->getXcentre());
     double y = double(obj->getYcentre());
-    for(double z=0;z<zdim;z++) specx[int(z)] = pixelToVelocity(this->wcs,x,y,z);
+    if(this->flagWCS)
+      for(double z=0;z<zdim;z++) specx[int(z)] = pixelToVelocity(this->wcs,x,y,z);
+    else 
+      for(double z=0;z<zdim;z++) specx[int(z)] = z;
 
-    string fluxLabel;
+    string fluxLabel = "Flux";
 
     if(par.getSpectralMethod()=="sum"){
-      fluxLabel = "Flux [Jy]";
+      if(this->flagWCS) fluxLabel += " [Jy]";
       bool *done = new bool[xdim*ydim]; 
       for(int i=0;i<xdim*ydim;i++) done[i]=false;
       int thisSize = obj->getSize();
@@ -67,7 +71,7 @@ void Cube::outputSpectra()
       delete [] done;
     }
     else {// if(par.getSpectralMethod()=="peak"){
-      fluxLabel = "Flux [Jy/beam]";
+      if(this->flagWCS) fluxLabel += " [Jy/beam]";
       for(int z=0;z<zdim;z++){
 	int pos = obj->getXPeak() + xdim*obj->getYPeak();
 	specy[z] = this->array[pos + z*xdim*ydim];
@@ -93,15 +97,19 @@ void Cube::outputSpectra()
     }
 
     // now plot the resulting spectrum
-    newplot.gotoHeader("Velocity [km s\\u-1\\d]");
+    if(this->flagWCS) newplot.gotoHeader("Velocity [km s\\u-1\\d]");
+    else newplot.gotoHeader("Z-pixel value");
 
-    string label = obj->outputLabelWCS();
-    newplot.firstHeaderLine(label);
+    string label;
+    if(this->flagWCS){
+      label = obj->outputLabelWCS();
+      newplot.firstHeaderLine(label);
+    }
     label = obj->outputLabelInfo();
     newplot.secondHeaderLine(label);
     label = obj->outputLabelPix();
     newplot.thirdHeaderLine(label);
-
+    
     newplot.gotoMainSpectrum(vmin,vmax,min,max,fluxLabel);
     cpgline(zdim,specx,specy);
     if(this->par.getFlagATrous()){
@@ -109,13 +117,15 @@ void Cube::outputSpectra()
       cpgline(zdim,specx,specy2);    
       cpgsci(1);
     }
-    newplot.drawVelRange(obj->getVelMin(),obj->getVelMax());
+    if(this->flagWCS) newplot.drawVelRange(obj->getVelMin(),obj->getVelMax());
+    else newplot.drawVelRange(obj->getZmin(),obj->getZmax());
 
     /**************************/
     // ZOOM IN SPECTRALLY ON THE DETECTION.
 
     float minvel,maxvel;
-    getSmallVelRange(*obj,wcs,&minvel,&maxvel);
+    if(this->flagWCS) getSmallVelRange(*obj,this->wcs,&minvel,&maxvel);
+    else getSmallZRange(*obj,&minvel,&maxvel);
 
     // Find new max & min flux values
     swap(max,min);
@@ -139,7 +149,8 @@ void Cube::outputSpectra()
       cpgline(zdim,specx,specy2);    
       cpgsci(1);
     }
-    newplot.drawVelRange(obj->getVelMin(),obj->getVelMax());
+    if(this->flagWCS) newplot.drawVelRange(obj->getVelMin(),obj->getVelMax());
+    else newplot.drawVelRange(obj->getZmin(),obj->getZmax());
     
     /**************************/
 
@@ -162,7 +173,7 @@ void getSmallVelRange(Detection &obj, wcsprm *wcs, float *minvel, float *maxvel)
   // Want the velocity range for the zoomed in region to be maximum of 
   // 20 pixels or 3x width of detection. Need to:
   //   * Calculate pixel width of a 3x-detection-width region.
-  //   * If smaller than 20, calculate velocities of central vel +- 8pixels
+  //   * If smaller than 20, calculate velocities of central vel +- 10 pixels
   //   * If not, use those velocities
 
   double *pixcrd = new double[3];
@@ -182,7 +193,7 @@ void getSmallVelRange(Detection &obj, wcsprm *wcs, float *minvel, float *maxvel)
   maxpix = pixcrd[2];
   if(maxpix<minpix) swap(maxpix,minpix);
     
-  if((maxpix - minpix + 1) < 16){
+  if((maxpix - minpix + 1) < 20){
     pixcrd[0] = double(obj.getXcentre());
     pixcrd[1] = double(obj.getYcentre());
     pixcrd[2] = obj.getZcentre() - 10.;
@@ -195,5 +206,24 @@ void getSmallVelRange(Detection &obj, wcsprm *wcs, float *minvel, float *maxvel)
   }
   delete [] pixcrd;
   delete [] world;
+
+}
+
+void getSmallZRange(Detection &obj, float *minz, float *maxz)
+{
+  // Want the z-pixel range for the zoomed in region to be maximum of 
+  // 20 pixels or 3x width of detection. Need to:
+  //   * Calculate pixel width of a 3x-detection-width region.
+  //   * If smaller than 20, use central pixel +- 10 pixels
+
+
+  // define new velocity extrema -- make it 3x wider than the width of the detection.
+  *minz = 2.*obj.getZmin() - obj.getZmax();
+  *maxz = 2.*obj.getZmax() - obj.getZmin();
+    
+  if((*maxz - *minz + 1) < 20){
+    *minz = obj.getZcentre() - 10.;
+    *maxz = obj.getZcentre() + 10.;
+  }
 
 }

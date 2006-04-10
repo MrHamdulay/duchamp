@@ -153,12 +153,13 @@ int main(int argc, char * argv[])
     std::cout << "done.\n";
   }
 
-  if(cube->isWCS() && (cube->getNumObj()>0)){
+//   if(cube->isWCS() && (cube->getNumObj()>0)){
+  if((cube->getDimZ()>1) && (cube->getNumObj()>0)){
     std::cout << "Plotting the individual spectra... " << std::flush;
     cube->outputSpectra();
     std::cout << "done.\n";
   }
-  else if(!(cube->isWCS())) std::cout << "Not plotting any spectra due to bad WCS.\n";
+  else if(cube->getDimZ()<=1) std::cout << "Not plotting any spectra  -- no third dimension.\n";
 
   cpgend();
 

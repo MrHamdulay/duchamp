@@ -134,11 +134,23 @@ void Cube::outputDetectionList()
   if(flag=wcsset(wcs)){
     std::cerr<<"outputDetectionList():: WCSSET failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<endl;
   }
-  outputDetectionTextWCSHeader(output,this->wcs);
-  outputDetectionTextWCSHeader(std::cout,this->wcs);
+  if(this->flagWCS){
+    outputDetectionTextWCSHeader(output,this->wcs);
+    outputDetectionTextWCSHeader(std::cout,this->wcs);
+  }
+  else{
+    outputDetectionTextHeader(output);
+    outputDetectionTextHeader(std::cout);
+  }
   for(int i=0;i<this->objectList.size();i++){
-    this->objectList[i].outputDetectionTextWCS(output);
-    this->objectList[i].outputDetectionTextWCS(std::cout);
+    if(this->flagWCS){
+      this->objectList[i].outputDetectionTextWCS(output);
+      this->objectList[i].outputDetectionTextWCS(std::cout);
+    }
+    else{
+      this->objectList[i].outputDetectionText(output,i+1);
+      this->objectList[i].outputDetectionText(std::cout,i+1);
+    }
   }
 }
 

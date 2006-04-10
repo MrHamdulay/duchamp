@@ -92,34 +92,36 @@ void drawMomentCutout(Cube &cube, Detection &object)
   */
   cpgsci(ci);
 
-  // Now draw a tick mark to indicate size -- 30 arcmin in length
-  wcsprm *wcs = new wcsprm;
-  wcs = cube.getWCS();
+  if(cube.isWCS()){
+    // Now draw a tick mark to indicate size -- 30 arcmin in length
+    wcsprm *wcs = new wcsprm;
+    wcs = cube.getWCS();
 
-  double *pix   = new double[3];
-  double *world = new double[3];
-  pix[0] = double(xmin) + double(object.getXOffset()) + 2.;
-  pix[1] = double(ymin) + double(object.getYOffset()) + 2.;
-  pix[2] = object.getZcentre();
-  pixToWCSSingle(wcs,pix,world);
-  world[0] -= 0.25;
-  wcsToPixSingle(wcs,world,pix);
-  wcsfree(wcs);
+    double *pix   = new double[3];
+    double *world = new double[3];
+    pix[0] = double(xmin) + double(object.getXOffset()) + 2.;
+    pix[1] = double(ymin) + double(object.getYOffset()) + 2.;
+    pix[2] = object.getZcentre();
+    pixToWCSSingle(wcs,pix,world);
+    world[0] -= 0.25;
+    wcsToPixSingle(wcs,world,pix);
+    wcsfree(wcs);
 
-  float tickpt1 = xmin + 2.;
-  float tickpt2 = pix[0] - object.getXOffset();
-  float tickpt3 = ymin + 2.;
-  cpgsci(2);
-  int thick;
-  cpgqlw(&thick);
-  cpgslw(3);
-  cpgerrx(1,&tickpt1,&tickpt2,&tickpt3,2.);
-//   cpgtext(0.5*(tickpt1+tickpt2)-1,tickpt3+2.,"30\'");
-  cpgslw(thick);
-  cpgsci(1);
+    float tickpt1 = xmin + 2.;
+    float tickpt2 = pix[0] - object.getXOffset();
+    float tickpt3 = ymin + 2.;
+    cpgsci(2);
+    int thick;
+    cpgqlw(&thick);
+    cpgslw(3);
+    cpgerrx(1,&tickpt1,&tickpt2,&tickpt3,2.);
+    //   cpgtext(0.5*(tickpt1+tickpt2)-1,tickpt3+2.,"30\'");
+    cpgslw(thick);
+    cpgsci(1);
 
-  delete [] pix;
-  delete [] world;
+    delete [] pix;
+    delete [] world;
+  }
 
   cpgsci(1);
   cpgswin(x1,x2,y1,y2);
