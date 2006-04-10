@@ -130,6 +130,7 @@ public:
 
   // Detection-related
   void      lutz_detect();                  // in Detection/lutz_detect.cc
+  void      spectrumDetect();               // in Detection/spectrumDetect.cc
   int       setupFDR();                     // in Detection/thresholding_functions.cc
   bool      isDetection(float value);       // in Detection/thresholding_functions.cc
   bool      isDetection(long x, long y);    // in Detection/thresholding_functions.cc
