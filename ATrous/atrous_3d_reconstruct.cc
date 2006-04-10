@@ -11,23 +11,13 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,float
 {
   extern Filter reconFilter;
   long size = xdim * ydim * zdim;
+  long spatialSize = xdim * ydim;
   long mindim = xdim;
   if (ydim<mindim) mindim = ydim;
   if (zdim<mindim) mindim = zdim;
   int numScales = reconFilter.getNumScales(mindim);
-  /* 
-  if(numScales>maxNumScales3D){
-    std::cerr<<"Error in atrous3DReconstruct:: numScales ("<<numScales<<") > "<<maxNumScales3D<<"\n";
-    std::cerr<<"Don't have correction factors for this many scales...\n";
-    std::cerr<<"Exiting...\n";
-    exit(1);
-  }
-  */
+
   double *sigmaFactors = new double[numScales+1];
-//   for(int i=0;i<=numScales;i++){
-//     if(i<=maxNumScales3D) sigmaFactors[i] = sigmaFactors3D[i];
-//     else sigmaFactors[i] = sigmaFactors[i-1] / sqrt(8.);
-//   }
   for(int i=0;i<=numScales;i++){
     if(i<=reconFilter.maxFactor(3)) sigmaFactors[i] = reconFilter.sigmaFactor(3,i);
     else sigmaFactors[i] = sigmaFactors[i-1] / sqrt(8.);
@@ -35,11 +25,11 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,float
 
   float mean,sigma,originalSigma,originalMean,oldsigma,newsigma;
   bool *isGood = new bool[size];
-  bool flagBlank = par.getFlagBlankPix();
   float blankPixValue = par.getBlankPixVal();
-  for(int pos=0;pos<size;pos++) //isGood[pos] = (!flagBlank) || (input[pos]!=blankPixValue);
+  for(int pos=0;pos<size;pos++){
     isGood[pos] = !par.isBlank(input[pos]);
- 
+  }
+
   float *array = new float[size];
   int goodSize=0;
   for(int i=0;i<size;i++) if(isGood[i]) array[goodSize++] = input[i];
@@ -52,20 +42,7 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,float
 
   for(int pos=0;pos<size;pos++) output[pos]=0.;
 
-/***********************************************************************/
-/////  3-DIMENSIONAL TRANSFORM
-
-//   int filterHW = filterwidth/2;
-//   int fsize = filterwidth*filterwidth*filterwidth;
-//   double *filter = new double[fsize];
-//   for(int i=0;i<filterwidth;i++){
-//     for(int j=0;j<filterwidth;j++){
-//       for(int k=0;k<filterwidth;k++){
-//       filter[i +j*filterwidth + k*filterwidth*filterwidth] = 
-// 	filter1D[i] * filter1D[j] * filter1D[k];
-//       }
-//     }
-//   }
+  // Define the 3-D (separable) filter, using info from reconFilter
   int filterwidth = reconFilter.width();
   int filterHW = filterwidth/2;
   int fsize = filterwidth*filterwidth*filterwidth;
@@ -79,48 +56,46 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,float
     }
   }
 
-
   // locating the borders of the image -- ignoring BLANK pixels
-  // HAVE NOT DONE THIS FOR Z --> ASSUMING NO TRIMMING IN SPECTRAL DIRECTION
-//   int xLim1 = 0, yLim1 = 0, xLim2 = xdim-1, yLim2 = ydim-1;
-//   for(int col=0;col<xdim;col++){
-//     while((yLim1<yLim2)&&(input[col+xdim*yLim1]==blankPixValue) ) yLim1++;
-//     while((yLim2>yLim1)&&(input[col+xdim*yLim1]==blankPixValue) ) yLim2--;
-//   }
-//   for(int row=0;row<ydim;row++){
-//     while((xLim1<xLim2)&&(input[row*xdim+xLim1]==blankPixValue) ) xLim1++;
-//     while((xLim2>xLim1)&&(input[row*xdim+xLim1]==blankPixValue) ) xLim2--;
-//   }
+  //  Only do this if flagBlankPix is true. Otherwise use the full range of x and y.
+  //  No trimming is done in the z-direction at this point.
   int *xLim1 = new int[ydim];
-  int *yLim1 = new int[xdim];
+  for(int i=0;i<ydim;i++) xLim1[i] = 0;
   int *xLim2 = new int[ydim];
+  for(int i=0;i<ydim;i++) xLim2[i] = xdim-1;
+  int *yLim1 = new int[xdim];
+  for(int i=0;i<xdim;i++) yLim1[i] = 0;
   int *yLim2 = new int[xdim];
-  float avGapX = 0, avGapY = 0;
-  for(int row=0;row<ydim;row++){
-    int ct1 = 0;
-    int ct2 = xdim - 1;
-    while((ct1<ct2)&&(input[row*xdim+ct1]==blankPixValue) ) ct1++;
-    while((ct2>ct1)&&(input[row*xdim+ct2]==blankPixValue) ) ct2--;
-    xLim1[row] = ct1;
-    xLim2[row] = ct2;
-    avGapX += ct2 - ct1;
-  }
-  avGapX /= float(ydim);
+  for(int i=0;i<xdim;i++) yLim2[i] = ydim-1;
 
-  for(int col=0;col<xdim;col++){
-    int ct1=0;
-    int ct2=ydim-1;
-    while((ct1<ct2)&&(input[col+xdim*ct1]==blankPixValue) ) ct1++;
-    while((ct2>ct1)&&(input[col+xdim*ct2]==blankPixValue) ) ct2--;
-    yLim1[col] = ct1;
-    yLim2[col] = ct2;
-    avGapY += ct2 - ct1;
-  }
-  avGapY /= float(ydim);
+  if(par.getFlagBlankPix()){
+    float avGapX = 0, avGapY = 0;
+    for(int row=0;row<ydim;row++){
+      int ct1 = 0;
+      int ct2 = xdim - 1;
+      while((ct1<ct2)&&(input[row*xdim+ct1]==blankPixValue) ) ct1++;
+      while((ct2>ct1)&&(input[row*xdim+ct2]==blankPixValue) ) ct2--;
+      xLim1[row] = ct1;
+      xLim2[row] = ct2;
+      avGapX += ct2 - ct1 + 1;
+    }
+    avGapX /= float(ydim);
+
+    for(int col=0;col<xdim;col++){
+      int ct1=0;
+      int ct2=ydim-1;
+      while((ct1<ct2)&&(input[col+xdim*ct1]==blankPixValue) ) ct1++;
+      while((ct2>ct1)&&(input[col+xdim*ct2]==blankPixValue) ) ct2--;
+      yLim1[col] = ct1;
+      yLim2[col] = ct2;
+      avGapY += ct2 - ct1 + 1;
+    }
+    avGapY /= float(ydim);
  
-  mindim = int(avGapX);
-  if(avGapY < avGapX) mindim = int(avGapY);
-  numScales = reconFilter.getNumScales(mindim);
+    mindim = int(avGapX);
+    if(avGapY < avGapX) mindim = int(avGapY);
+    numScales = reconFilter.getNumScales(mindim);
+  }
 
   float threshold;
   int iteration=0;
@@ -142,18 +117,20 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,float
 		  << "\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
       }
 
+      int pos = -1;
       for(int zpos = 0; zpos<zdim; zpos++){
-// 	std::cout << setw(4)<<zpos<<"\b\b\b\b";
+// 	std::cerr << setw(7)<<zpos<<"\b\b\b\b\b\b\b";
 	for(int ypos = 0; ypos<ydim; ypos++){
 	  for(int xpos = 0; xpos<xdim; xpos++){
 	    // loops over each pixel in the image
-	    int pos = zpos*xdim*ydim + ypos*xdim + xpos;
+	    pos++;
 
 	    wavelet[pos] = coeffs[pos];
  	    
 	    if(!isGood[pos] )  wavelet[pos] = 0.;
 	    else{
 
+	      int filterpos = -1;
 	      for(int zoffset=-filterHW; zoffset<=filterHW; zoffset++){
 		int z = zpos + spacing*zoffset;
 		if(z<0) z = -z;                 // boundary conditions are 
@@ -161,23 +138,14 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,float
 	  
 		for(int yoffset=-filterHW; yoffset<=filterHW; yoffset++){
 		  int y = ypos + spacing*yoffset;
-		  //if(y<0) y = -y;                 // boundary conditions are 
-		  //if(y>=ydim) y = 2*(ydim-1) - y; //    reflection.
-// 		  if(y<yLim1) y = 2*yLim1 - y;      // boundary conditions are 
-// 		  if(y>yLim2) y = 2*yLim2 - y;      //    reflection.
 	  
 		  for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
 		    int x = xpos + spacing*xoffset;
-		    //if(x<0) x = -x;                 // boundary conditions are 
-		    //if(x>=xdim) x = 2*(xdim-1) - x; //    reflection.
-// 		    if(x<xLim1) x = 2*xLim1 - x;      // boundary conditions are 
-// 		    if(x>xLim2) x = 2*xLim2 - x;      //    reflection.
 
-		    // boundary conditions are reflection.
-// 		    if(y<yLim1[xpos]) newy = 2*yLim1[xpos] - y;      
-// 		    else if(y>yLim2[xpos]) newy = 2*yLim2[xpos] - y;      
-// 		    else newy = y;
-
+		    filterpos++;
+		    
+		    // Boundary conditions -- assume reflection at boundaries.
+		    // Use limits as calculated above
 		    if(yLim1[xpos]!=yLim2[xpos]){ 
 		      // if these are equal we will get into an infinite loop here 
 		      while((y<yLim1[xpos])||(y>yLim2[xpos])){
@@ -185,10 +153,6 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,float
 			else if(y>yLim2[xpos]) y = 2*yLim2[xpos] - y;      
 		      }
 		    }
-
-// 		    if(x<xLim1[ypos]) newx = 2*xLim1[ypos] - x;
-// 		    else if(x>xLim2[ypos]) newx = 2*xLim2[ypos] - x;      
-// 		    else newx=x;      
 
 		    if(xLim1[ypos]!=xLim2[ypos]){
 		      // if these are equal we will get into an infinite loop here 
@@ -198,17 +162,7 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,float
 		      }
 		    }
 
-// 		    x = newx;
-// 		    y = newy;
-
-		    int filterpos = (zoffset+filterHW)*filterwidth*filterwidth + 
-		      (yoffset+filterHW)*filterwidth + (xoffset+filterHW);
-		    int oldpos = z*xdim*ydim + y*xdim + x;
-		    if(oldpos>=size) 
-		      std::cerr<<"oldpos ("<<oldpos<<") exceeds array size("<<size<<")!\n"
-			  <<"x="<<x<<", y="<<y<<", z="<<z<<endl
-			  <<"xpos="<<xpos<<", ypos="<<ypos<<", zpos="<<zpos<<endl
-			  <<"cf. xdim="<<xdim<<", ydim="<<ydim<<", zdim="<<zdim<<endl;
+		    int oldpos = z*spatialSize + y*xdim + x;
 		    
 		    if(isGood[oldpos]) 
 		      wavelet[pos] -= filter[filterpos]*coeffs[oldpos];
@@ -259,6 +213,7 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,float
 
   if(par.isVerbose()) std::cout << "Completed "<<iteration<<" iterations. ";
 
+  delete [] xLim1,xLim2,yLim1,yLim2;
   delete [] coeffs;
   delete [] wavelet;
   delete [] isGood;
