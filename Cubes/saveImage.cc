@@ -50,9 +50,9 @@ void Cube::saveReconstructedCube()
       fits_read_key(fptrOld, TLONG, "NAXIS1", &dud, comment, &status);
       fits_update_key(fptrNew, TLONG, "NAXIS1", &(this->axisDim[0]), comment, &status);
       fits_read_key(fptrOld, TLONG, "NAXIS2", &dud, comment, &status);
-      fits_update_key(fptrNew, TLONG, "NAXIS2", &(this->axisDim[2]), comment, &status);
+      fits_update_key(fptrNew, TLONG, "NAXIS2", &(this->axisDim[1]), comment, &status);
       fits_read_key(fptrOld, TLONG, "NAXIS3", &dud, comment, &status);
-      fits_update_key(fptrNew, TLONG, "NAXIS3", &(this->axisDim[1]), comment, &status);
+      fits_update_key(fptrNew, TLONG, "NAXIS3", &(this->axisDim[2]), comment, &status);
     }
 
     //////////////////////////////
@@ -93,9 +93,9 @@ void Cube::saveReconstructedCube()
       fits_read_key(fptrOld, TLONG, "NAXIS1", &dud, comment, &status);
       fits_update_key(fptrNew, TLONG, "NAXIS1", &(this->axisDim[0]), comment, &status);
       fits_read_key(fptrOld, TLONG, "NAXIS2", &dud, comment, &status);
-      fits_update_key(fptrNew, TLONG, "NAXIS2", &(this->axisDim[2]), comment, &status);
+      fits_update_key(fptrNew, TLONG, "NAXIS2", &(this->axisDim[1]), comment, &status);
       fits_read_key(fptrOld, TLONG, "NAXIS3", &dud, comment, &status);
-      fits_update_key(fptrNew, TLONG, "NAXIS3", &(this->axisDim[1]), comment, &status);
+      fits_update_key(fptrNew, TLONG, "NAXIS3", &(this->axisDim[2]), comment, &status);
    }
     //////////////////////////////
     ////// NEED TO ADD NEW HEADER KEYS 
