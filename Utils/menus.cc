@@ -171,7 +171,8 @@ string imageMenu()
     fname = "/DATA/SITAR_1/whi550/iraf/search_test/N4567V_trim.fits[216:715,261:760]";
     break;
   default:
-    fname = menu();
+    //    fname = menu();
+    fname = "";
     break;
   }
   return fname;

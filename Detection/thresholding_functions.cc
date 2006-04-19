@@ -1,7 +1,6 @@
 #include <iostream>
 #include <math.h>
 #include <Cubes/cubes.hh>
-#include <Utils/utils.hh>
 
 bool Image::isDetection(long x, long y)
 {
