@@ -44,7 +44,7 @@ Param::Param(){
   this->bscaleKeyword   = -8.00061;
   this->bzeroKeyword    = 0.;
   this->nanAsBlank      = false;
-  this->flagMW          = true;
+  this->flagMW          = false;
   this->maxMW           = 112;
   this->minMW           = 75;
   this->numPixBeam      = 0.;
