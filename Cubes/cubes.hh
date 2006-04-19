@@ -100,7 +100,11 @@ public:
   Image(long *dimensions);
   virtual ~Image(){};
 
+  // Defining the array
   void      saveArray(float *input, long size);
+  void      extractSpectrum(float *Array, long *dim, long pixel);
+  void      extractImage(float *Array, long *dim, long channel);
+    // Accessing the data.
   float     getPixValue(long x, long y){return array[y*axisDim[0] + x];};
   float     getPixValue(long pos){return array[pos];};
   float     getPValue(long pos){return pValue[pos];};
@@ -116,15 +120,19 @@ public:
   void      setMaskValue(long x, long y, short int m){mask[y*axisDim[0] + x] = m;};
   // Stats-related
   void      setStats(float m, float s, float c){mean=m; sigma=s; cutLevel=c;};
+  void      findStats(int code);
   float     getMean(){return mean;};
+  void      setMean(float m){mean=m;};
   float     getSigma(){return sigma;};
+  void      setSigma(float s){sigma=s;};
   float     getCut(){return cutLevel;};
-  void      setPCut(float p){pCutLevel = p;};
+  void      setCut(float c){cutLevel=c;};
   float     getPCut(){return pCutLevel;};
-  void      setAlpha(float a){alpha = a;};
+  void      setPCut(float p){pCutLevel = p;};
   float     getAlpha(){return alpha;};
-  void      setMinSize(int s){minSize = s;};
+  void      setAlpha(float a){alpha = a;};
   int       getMinSize(){return minSize;};
+  void      setMinSize(int s){minSize = s;};
 
   void      maskObject(Detection &object);
 

@@ -49,10 +49,10 @@ vector <Detection> cubicSearch(long *dim, float *Array, Param &par)
   float dud;
 
   // FIRST SEARCH --  IN EACH SPECTRUM.
-  // FIRST, GET STATS
+  // FIRST, GET STATS -- not any more...
   if(zdim>1){
     if(par.isVerbose()) std::cout << "  1D: |                    |" << std::flush;
-//     if(par.isVerbose()) std::cout << "Done  0%" << "\b\b\b\b\b\b\b\b" << std::flush;
+    if(par.isVerbose()) std::cout << "Done  0%" << "\b\b\b\b\b\b\b\b" << std::flush;
     float *specMedian = new float[xySize];
     float *specSigma = new float[xySize];
 
@@ -81,19 +81,21 @@ vector <Detection> cubicSearch(long *dim, float *Array, Param &par)
 	std::cout << "|" << std::flush;
       }
 
-      float *spec = new float[zdim];
-      for(int z=0;z<zdim;z++) spec[z] = Array[z*xySize + npix];
+//       float *spec = new float[zdim];
+//       for(int z=0;z<zdim;z++) spec[z] = Array[z*xySize + npix];
       long *specdim = new long[2];
       specdim[0] = zdim; specdim[1]=1;
       Image *spectrum = new Image(specdim);
       spectrum->saveParam(par);
       spectrum->pars().setBeamSize(2.); // for spectrum, only neighbouring channels correlated
-      spectrum->saveArray(spec,zdim);
+//       spectrum->saveArray(spec,zdim);
+      spectrum->extractSpectrum(Array,dim,npix);
       spectrum->setStats(specMedian[npix],specSigma[npix],par.getCut());
+//       spectrum->findStats(11);
       if(par.getFlagFDR()) spectrum->setupFDR();
       spectrum->setMinSize(par.getMinChannels());
       //      spectrum->lutz_detect();
-      spectrum->spectrumDetect();
+      spectrum->spectrumDetect(); 
       for(int obj=0;obj<spectrum->getNumObj();obj++){
 	Detection *object = new Detection;
 	*object = spectrum->getObject(obj);
@@ -111,12 +113,12 @@ vector <Detection> cubicSearch(long *dim, float *Array, Param &par)
 	delete object;
       }
       delete spectrum;
-      delete spec;
+//       delete spec;
       delete specdim;
     }
 
-    delete [] specMedian;
-    delete [] specSigma;
+//     delete [] specMedian;
+//     delete [] specSigma;
 
     num = outputList.size();
     if(par.isVerbose()) 
@@ -127,7 +129,7 @@ vector <Detection> cubicSearch(long *dim, float *Array, Param &par)
   // SECOND SEARCH --  IN EACH CHANNEL
   // FIRST, GET STATS
   if(par.isVerbose()) std::cout << "  2D: |                    |" << std::flush;
-//   if(par.isVerbose()) std::cout << "Done  0%" << "\b\b\b\b\b\b\b\b" << std::flush;
+  if(par.isVerbose()) std::cout << "Done  0%" << "\b\b\b\b\b\b\b\b" << std::flush;
   float *imageMedian = new float[zdim];
   float *imageSigma = new float[zdim];
   for(int z=0; z<zdim; z++){
@@ -135,10 +137,16 @@ vector <Detection> cubicSearch(long *dim, float *Array, Param &par)
     int goodSize=0;
     for(int npix=0; npix<xySize; npix++) 
       if(isGood[z*xySize + npix]) image[goodSize++] = Array[z*xySize + npix];
-    if(goodSize>0) findMedianStats(image,goodSize,imageMedian[z],dud);
-    else imageMedian[z] = blankPixValue;
-    if(goodSize>0) findNormalStats(image,goodSize,dud,imageSigma[z]);
-    else imageSigma[z] = 1.;
+    if(goodSize>0){// findMedianStats(image,goodSize,imageMedian[z],dud);
+      findMedianStats(image,goodSize,imageMedian[z],imageSigma[z]);
+      imageSigma[z] /= correctionFactor;
+    }
+    else{// imageMedian[z] = blankPixValue;
+      imageMedian[z] = blankPixValue;
+      imageSigma[z] = 1.;
+    }
+//     if(goodSize>0) findNormalStats(image,goodSize,dud,imageSigma[z]);
+//     else imageSigma[z] = 1.;
     delete image;
   }
   // NEXT, DO SOURCE FINDING
@@ -157,14 +165,16 @@ vector <Detection> cubicSearch(long *dim, float *Array, Param &par)
 
     if( doChannel[z] ){
 
-      float *image = new float[xySize];
-      for(int npix=0; npix<xySize; npix++) image[npix] = Array[z*xySize + npix];
+//       float *image = new float[xySize];
+//       for(int npix=0; npix<xySize; npix++) image[npix] = Array[z*xySize + npix];
       long *imdim = new long[2];
       imdim[0] = dim[0]; imdim[1] = dim[1];
       Image *channelImage = new Image(imdim);
       channelImage->saveParam(par);
-      channelImage->saveArray(image,xySize);
+//       channelImage->saveArray(image,xySize);
+      channelImage->extractImage(Array,dim,z);
       channelImage->setStats(imageMedian[z],imageSigma[z],par.getCut());
+//       channelImage->findStats(11);
       if(par.getFlagFDR()) channelImage->setupFDR();
       channelImage->setMinSize(par.getMinPix());
       channelImage->lutz_detect();
@@ -180,7 +190,7 @@ vector <Detection> cubicSearch(long *dim, float *Array, Param &par)
 	mergeIntoList(*object,outputList,par);
 	delete object;
       }
-      delete image;
+//       delete image;
       delete channelImage;
       delete imdim;
     }
@@ -191,8 +201,8 @@ vector <Detection> cubicSearch(long *dim, float *Array, Param &par)
     std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " << outputList.size() - num 
 	      << ".                                           " << std::endl << std::flush;
 
-  delete [] imageMedian;
-  delete [] imageSigma;
+   delete [] imageMedian;
+   delete [] imageSigma;
   delete [] isGood;
   delete [] doChannel;
 

@@ -143,11 +143,108 @@ void Image::maskObject(Detection &object)
    * Image::maskObject(Detection &)
    *  A function that increments the mask for each pixel of the detection.
    */
-
   for(long i=0;i<object.getSize();i++){
     this->setMaskValue(object.getX(i),object.getY(i),1);
   }
+}
 
+void Image::extractSpectrum(float *Array, long *dim, long pixel)
+{
+  /**
+   * Image::extractSpectrum(float *, int)
+   *  A function to extract a 1-D spectrum from a 3-D array.
+   *  The array is assumed to be 3-D with the third dimension the spectral one.
+   *  The dimensions of the array are in the dim[] array.
+   *  The spectrum extracted is the one lying in the spatial pixel referenced
+   *    by the third argument.
+   */ 
+  float *spec = new float[dim[2]];
+  for(int z=0;z<dim[2];z++) spec[z] = Array[z*dim[0]*dim[1] + pixel];
+  this->saveArray(spec,dim[2]);
+  delete [] spec;
+}
+
+void Image::extractImage(float *Array, long *dim, long channel)
+{
+  /**
+   * Image::extractImage(float *, int)
+   *  A function to extract a 2-D image from a 3-D array.
+   *  The array is assumed to be 3-D with the third dimension the spectral one.
+   *  The dimensions of the array are in the dim[] array.
+   *  The image extracted is the one lying in the channel referenced
+   *    by the third argument.
+   */ 
+  float *image = new float[dim[0]*dim[1]];
+  for(int npix=0; npix<dim[0]*dim[1]; npix++){ 
+    image[npix] = Array[channel*dim[0]*dim[1] + npix];
+
+//     int npts = 0;
+//     image[npix] = 2.*Array[channel*dim[0]*dim[1] + npix];
+//     npts+=2;
+//     // npts++;
+//     if(channel>0){
+//       image[npix] += Array[(channel-1)*dim[0]*dim[1] + npix];
+//       npts++;
+//     }
+//     if(channel<(dim[2]-1)){
+//       image[npix] += Array[(channel+1)*dim[0]*dim[1] + npix];
+//       npts++;
+//     }
+//     image[npix] /= float(npts);
+
+  }
+  this->saveArray(image,dim[0]*dim[1]);
+  delete [] image;
+}
+
+void Image::findStats(int code)
+{
+  /**
+   *  Image::findStats(int code)
+   *    Front-end to function to find the stats (mean/median & sigma/madfm) and
+   *     store them in the "mean" and "sigma" members of Image.
+   *    The choice of normal(mean & sigma) or robust (median & madfm) is made via the 
+   *      code parameter. This is stored as a decimal number, with 0s representing 
+   *      normal stats, and 1s representing robust. 
+   *      The 10s column is the mean, the 1s column the sigma.
+   *      Eg: 00 -- mean&sigma; 01 -- mean&madfm; 10 -- median&sigma; 11 -- median&madfm
+   *    If calculated, the madfm value is corrected to sigma units.
+   *    The Image member "cut" is also assigned using the parameter in Image's par 
+   *      (needs to be defined first -- also for the blank pixel determination).
+   */
+  float *tempArray = new float[this->numPixels];
+  int goodSize=0;
+  for(int i=0; i<this->numPixels; i++) 
+    if(!this->isBlank(i)) tempArray[goodSize++] = this->array[i];
+  float tempMean,tempSigma,tempMedian,tempMADFM;
+  if(code != 0) findMedianStats(tempArray,goodSize,tempMedian,tempMADFM);
+  if(code != 11) findNormalStats(tempArray,goodSize,tempMean,tempSigma);
+  switch(code)
+    {
+    case 0:
+      findNormalStats(tempArray,goodSize,tempMean,tempSigma);
+      this->mean = tempMean;
+      this->sigma = tempSigma;
+      break;
+    case 10:
+      this->mean = findMedian(tempArray,goodSize);;
+      this->sigma = findSigma(tempArray,goodSize);
+      break;
+    case 1:
+      this->mean = findMean(tempArray,goodSize);
+      this->sigma = findMADFM(tempArray,goodSize)/correctionFactor;
+      break;
+    case 11:
+    default:
+      if(code!=11) std::cerr << 
+		     "Invalid code ("<<code<<") in findStats. Using robust method.\n";
+      findMedianStats(tempArray,goodSize,tempMedian,tempMADFM);
+      this->mean = tempMedian;
+      this->sigma = tempMADFM/correctionFactor;
+      break;
+    }
+  this->cutLevel = this->par.getCut();
+  delete [] tempArray;
 }
 
 /****************************************************************/

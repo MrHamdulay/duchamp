@@ -177,13 +177,15 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
       goodSize=0;
       for(int z=0;z<zdim;z++) 
 	if(isGood[z*xySize+npix]) spec[goodSize++] = originalArray[z*xySize+npix];
-      if(goodSize>0) findMedianStats(spec,goodSize,specMedian[npix],dud);
+//       if(goodSize>0) findMedianStats(spec,goodSize,specMedian[npix],dud);
+      if(goodSize>0) specMedian[npix] = findMedian(spec,goodSize);
       else specMedian[npix] = blankPixValue;
       goodSize=0;
       for(int z=0;z<zdim;z++) 
 	if(isGood[z*xySize+npix]) 
 	  spec[goodSize++] = originalArray[z*xySize+npix]-reconArray[z*xySize+npix];
-      if(goodSize>0) findNormalStats(spec,goodSize,dud,specSigma[npix]);
+//       if(goodSize>0) findNormalStats(spec,goodSize,dud,specSigma[npix]);
+      if(goodSize>0) specSigma[npix] = findSigma(spec,goodSize);
       else specSigma[npix] = 1.;
     }
 
@@ -204,9 +206,18 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
 	std::cout << "|" << std::flush;
       }
 
-      for(int z=0;z<zdim;z++) spec[z] = reconArray[z*xySize + npix];
-      spectrum->saveArray(spec,zdim);
+//       for(int z=0;z<zdim;z++) spec[z] = reconArray[z*xySize + npix];
+//       spectrum->saveArray(spec,zdim);
+      spectrum->extractSpectrum(reconArray,dim,npix);
       spectrum->setStats(specMedian[npix],specSigma[npix],par.getCut());
+//       spectrum->findStats(10);
+//       float *resid = new float[zdim];
+//       goodSize=0;
+//       for(int z=0;z<zdim;z++) 
+// 	if(isGood[z*xySize+npix])
+// 	  resid[goodSize] = originalArray[z*xySize+npix]-reconArray[z*xySize+npix];
+//       spectrum->setSigma(findMADFM(resid,goodSize)/correctionFactor);
+//       delete [] resid;
       if(par.getFlagFDR()) spectrum->setupFDR();
       spectrum->setMinSize(par.getMinChannels());
 //       spectrum->lutz_detect();
@@ -231,7 +242,7 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
       }
       spectrum->clearDetectionList();
     }
-    delete [] spec;
+//     delete [] spec;
     delete [] specdim;
     delete spectrum;
     delete [] specMedian;
@@ -244,22 +255,24 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
 
   // Second search --  in each channel
   std::cout << "2D: |                    |" << std::flush;
-//   if(par.isVerbose()) std::cout << "Done  0%" << "\b\b\b\b\b\b\b\b" << std::flush;
+  if(par.isVerbose()) std::cout << "Done  0%" << "\b\b\b\b\b\b\b\b" << std::flush;
   float *imageMedian = new float[zdim];
   float *imageSigma = new float[zdim];
   float *image = new float[xySize];
-  // First, get stats
+  //  First, get stats
   for(int z=0; z<zdim; z++){
     goodSize=0;
     for(int npix=0; npix<xySize; npix++) 
       if(isGood[z*xySize + npix]) image[goodSize++] = originalArray[z*xySize + npix];
-    if(goodSize>0) findMedianStats(image,goodSize,imageMedian[z],dud);
+//     if(goodSize>0) findMedianStats(image,goodSize,imageMedian[z],dud);
+    if(goodSize>0) imageMedian[z] = findMedian(image,goodSize);
     else imageMedian[z] = blankPixValue;
     goodSize=0;
     for(int npix=0; npix<xySize; npix++) 
       if(isGood[z*xySize+npix]) 
 	image[goodSize++]=originalArray[z*xySize+npix]-reconArray[z*xySize+npix];
-    if(goodSize>0) findNormalStats(image,goodSize,dud,imageSigma[z]);
+//     if(goodSize>0) findNormalStats(image,goodSize,dud,imageSigma[z]);
+    if(goodSize>0) imageSigma[z] = findSigma(image,goodSize);
     else imageSigma[z] = 1.;
   }
   // Next, do source finding.
@@ -285,9 +298,18 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
 //       std::cout << "Done " << setw(2) << 100*z/zdim << "%\b\b\b\b\b\b\b\b" << std::flush;
 
     if( doChannel[z] ){
-      for(int npix=0; npix<xySize; npix++) image[npix] = reconArray[z*xySize + npix];
-      channelImage->saveArray(image,xySize);
+//       for(int npix=0; npix<xySize; npix++) image[npix] = reconArray[z*xySize + npix];
+//       channelImage->saveArray(image,xySize);
+      channelImage->extractImage(reconArray,dim,z);
       channelImage->setStats(imageMedian[z],imageSigma[z],par.getCut());
+//       channelImage->findStats(10);
+//       float *resid = new float[xySize];
+//       goodSize=0;
+//       for(int npix=0; npix<xySize; npix++) 
+// 	if(isGood[z*xySize+npix])
+// 	  resid[goodSize] = originalArray[z*xySize+npix]-reconArray[z*xySize+npix];
+//       channelImage->setSigma(findMADFM(resid,goodSize)/correctionFactor);
+//       delete [] resid;
       if(par.getFlagFDR()) channelImage->setupFDR();
       channelImage->setMinSize(par.getMinPix());
       channelImage->lutz_detect();
