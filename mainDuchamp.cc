@@ -8,6 +8,8 @@
 #include <cpgplot.h>
 #include <math.h>
 #include <unistd.h>
+
+#include <duchamp.hh>
 #include <Detection/detection.hh>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
@@ -22,22 +24,25 @@ int main(int argc, char * argv[])
 {
 
   string paramFile;
-  string err_usage_msg("Usage:: Duchamp.x -p [parameter file]\n");
 
   if(argc==1){
-    std::cout << err_usage_msg;
+    std::cout << ERR_USAGE_MSG;
     exit(1);
   }
   else{
     char c;
-    while( ( c = getopt(argc,argv,"p:h") )!=-1){
+    while( ( c = getopt(argc,argv,"p:hv") )!=-1){
       switch(c) {
       case 'p':
 	paramFile = optarg;
 	break;
+      case 'v':
+	std::cout << PROGNAME << " " << VERSION << std::endl;
+	exit(1);
+	break;
       case 'h':
       default :
-	std::cout << err_usage_msg;
+	std::cout << ERR_USAGE_MSG;
 	exit(1);
 	break;
       }
