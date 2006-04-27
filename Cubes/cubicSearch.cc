@@ -52,7 +52,6 @@ vector <Detection> cubicSearch(long *dim, float *Array, Param &par)
   // FIRST, GET STATS -- not any more...
   if(zdim>1){
     if(par.isVerbose()) std::cout << "  1D: |                    |" << std::flush;
-    if(par.isVerbose()) std::cout << "Done  0%" << "\b\b\b\b\b\b\b\b" << std::flush;
     float *specMedian = new float[xySize];
     float *specSigma = new float[xySize];
 
@@ -129,7 +128,6 @@ vector <Detection> cubicSearch(long *dim, float *Array, Param &par)
   // SECOND SEARCH --  IN EACH CHANNEL
   // FIRST, GET STATS
   if(par.isVerbose()) std::cout << "  2D: |                    |" << std::flush;
-  if(par.isVerbose()) std::cout << "Done  0%" << "\b\b\b\b\b\b\b\b" << std::flush;
   float *imageMedian = new float[zdim];
   float *imageSigma = new float[zdim];
   for(int z=0; z<zdim; z++){
