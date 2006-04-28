@@ -140,6 +140,10 @@ void Cube::plotMomentMap(string pgDestination)
     // Initialise to zero
     for(int i=0;i<xdim*ydim;i++) momentMap[i] = 0.;
 
+    // if we are looking for negative features, we need to invert the detected pixels for the moment map
+    float sign = 1.;
+    if(this->pars().getFlagNegative()) sign = -1.;
+
     float deltaVel;
     for(int pix=0; pix<xdim*ydim; pix++){ 
       // loop over each spatial pixel -- ie. each cell of momentMap
@@ -170,7 +174,7 @@ void Cube::plotMomentMap(string pgDestination)
 	  }
 	  else if(z==(zdim-1)) deltaVel = world[3*(z-1)+2] - world[ 3*z+2 ];
 	  deltaVel = (world[3*(z+1)+2] - world[ 3*(z-1)+2 ]) / 2.;
-	  momentMap[pix] += this->array[pos] * fabsf(deltaVel);
+	  momentMap[pix] += sign * this->array[pos] * fabsf(deltaVel);
 	}
       }
 
@@ -212,8 +216,10 @@ void Cube::plotMomentMap(string pgDestination)
     cpggray(momentMap,xdim,ydim,1,xdim,1,ydim,z2,z1,tr);
     cpgbox("bcnst",0.,0,"bcnst",0.,0);
     cpgsch(1.5);
-    if(this->flagWCS) cpgwedglog("rg",3.2,2,z2,z1,"Flux [Jy km/s]");
-    else cpgwedglog("rg",3.2,2,z2,z1,"Flux");
+    string wedgeLabel = "Flux";
+    if(this->pars().getFlagNegative()) wedgeLabel = "-1. * " + wedgeLabel;
+    if(this->flagWCS) wedgeLabel += "[Jy km/s]";
+    cpgwedglog("rg",3.2,2,z2,z1,wedgeLabel.c_str());
 
     delete [] momentMap;
     delete [] temp;

@@ -38,6 +38,7 @@ Param::Param(){
   this->detectionMap    = "./latest-detection-map.ps";
   this->momentMap       = "./latest-moment-map.ps";
   // Cube related parameters 
+  this->flagNegative    = false;
   this->flagBlankPix    = true;
   this->blankPixValue   = -8.00061;
   this->blankKeyword    = 1;
@@ -117,7 +118,8 @@ void Param::readParams(string &paramfile)
       ss.str(line);
       string arg;
       ss >> arg;      
-      if(makelower(arg)=="imagefile"){       ss >> sval; this->imageFile = sval;}
+      std::cerr.setf(std::ios::boolalpha);
+     if(makelower(arg)=="imagefile"){       ss >> sval; this->imageFile = sval;}
       if(makelower(arg)=="flaglog"){         ss >> bval; this->flagLog = bval; }
       if(makelower(arg)=="logfile"){         ss >> sval; this->logFile = sval; }
       if(makelower(arg)=="outfile"){         ss >> sval; this->outFile = sval; }
@@ -132,6 +134,7 @@ void Param::readParams(string &paramfile)
       if(makelower(arg)=="detectionmap"){    ss >> sval; this->detectionMap = sval; }
       if(makelower(arg)=="momentmap"){       ss >> sval; this->momentMap = sval; }
 
+      if(makelower(arg)=="flagnegative"){    ss >> bval; this->flagNegative = bval;}
       if(makelower(arg)=="flagblankpix"){    ss >> bval; this->flagBlankPix = bval; }
       if(makelower(arg)=="blankpixvalue"){   ss >> fval; this->blankPixValue = fval; }
       if(makelower(arg)=="flagmw"){          ss >> bval; this->flagMW = bval; }
@@ -157,6 +160,7 @@ void Param::readParams(string &paramfile)
       if(makelower(arg)=="spectralMethod"){  ss >> sval; this->spectralMethod = makelower(sval); }
       if(makelower(arg)=="drawborders"){     ss >> bval; this->borders = bval; }
       if(makelower(arg)=="verbose"){         ss >> bval; this->verbose = bval; }
+      std::cerr.unsetf(std::ios::boolalpha);
     }
   }
 }
@@ -189,7 +193,8 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
     theStream<<setw(40)<<"Saving reconstructed cube?"           <<"= "<<par.getFlagOutputRecon()<<endl;
     theStream<<setw(40)<<"Saving residuals from reconstruction?"<<"= "<<par.getFlagOutputResid()<<endl;
   }						       
-  theStream  <<"------"<<endl;				       
+  theStream  <<"------"<<endl;
+  theStream  <<setw(40)<<"Searching for Negative features?"     <<"= "<<par.getFlagNegative()   <<endl;
   theStream  <<setw(40)<<"Fixing Blank Pixels?"                 <<"= "<<par.getFlagBlankPix()   <<endl;
   if(par.getFlagBlankPix()){
     theStream<<setw(40)<<"Blank Pixel Value"                    <<"= "<<par.getBlankPixVal()    <<endl;

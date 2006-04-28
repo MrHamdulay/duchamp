@@ -141,9 +141,10 @@ single spectrum, while a slice through the cube perpendicular to the
 spectral direction at a given $z$-value is a single channel (the 2-D
 image is a channel map).
 
-Features that are detected are assumed to be positive. If one wants to
-search for absorption (negative) features, try multiplying your cube
-by $-1$ before running Duchamp.
+Features that are detected are assumed to be positive. The user can
+choose to search for negative features by setting an input parameter
+-- this inverts the cube prior to the search (see
+\S~\ref{sec-detection} for details).
 
 Note that it is possible to run Duchamp on a two-dimensional image
 (\ie one with no frequency or velocity information), or indeed a
@@ -452,8 +453,15 @@ original array otherwise).
 Detections must have a minimum number of pixels to be counted. This
 minimum number is given by the input parameters {\tt minPix} (for
 2-dimensional searches) and {\tt minChannels} (for 1-dimensional
-searches). Note again that only positive thresholding is done --
-negative features are not searched for.
+searches).
+
+The search only looks for positive features. If one is interested
+instead in negative features (such as absorption lines), set the
+parameter {\tt flagNegative = true}. This will invert the cube (\ie
+multiply by $-1$) prior to the search, and then re-invert the cube
+(and the fluxes of any detections) after searching is complete. All
+outputs are done in the same manner as normal, so that fluxes of
+detections will be negative.
 
 \subsection{Merging detected objects}
 \label{sec-merger}
@@ -946,6 +954,9 @@ not matter, they are grouped here in logical sections.
 
 \subsection*{Modifying the cube}
 \begin{entry}
+\item[flagNegative {\tt [false]}] A flag to indicate that the features
+  being searched for are negative. The cube will be inverted prior to
+  searching. 
 \item[flagBlankPix {\tt [true]}] A flag to say whether to remove BLANK
   pixels from the analysis -- these are pixels set to some particular
   value because they fall outside the imaged area.

@@ -115,6 +115,12 @@ int main(int argc, char * argv[])
 
   if(cube->getDimZ()==1) cube->pars().setMinChannels(0);  // special case for 2D images.
 
+  if(cube->pars().getFlagNegative()){
+    std::cout<<"Inverting the Cube... "<<std::flush;
+    cube->invert();
+    std::cout<<" Done."<<std::endl;
+  }
+
   if(cube->pars().getFlagATrous()){
     std::cout<<"Commencing search in reconstructed cube..."<<endl;
     cube->ReconSearch3D();
@@ -130,6 +136,12 @@ int main(int argc, char * argv[])
   cube->ObjectMerger();
   std::cout<<"Done.                      "<<endl;
   std::cout<<"Final object count = "<<cube->getNumObj()<<endl; 
+
+  if(cube->pars().getFlagNegative()){
+    std::cout<<"Un-Inverting the Cube... "<<std::flush;
+    cube->reInvert();
+    std::cout<<" Done."<<std::endl;
+  }
 
   cube->replaceBaseline();
 

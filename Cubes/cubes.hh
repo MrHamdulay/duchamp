@@ -222,6 +222,8 @@ public:
   void    unTrimCube();
   void    removeBaseline();  // in ATrous/baselineSubtract.cc
   void    replaceBaseline(); // in ATrous/baselineSubtract.cc
+  void    invert();          // in Cubes/invertCube.cc
+  void    reInvert();        // in Cubes/invertCube.cc
 
   // Reconstruction and Searching functions
   void    ReconSearch1D();   // in ATrous/ReconSearch.cc

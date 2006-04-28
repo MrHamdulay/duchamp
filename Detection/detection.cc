@@ -73,7 +73,7 @@ void Detection::calcParams()
 void Detection::calcWCSparams(wcsprm *wcs)
 {
   /**
-   * Detection::calcWCSParams(wcsprm *)
+   * Detection::calcWCSparams(wcsprm *)
    *  Use the input wcs to calculate the position and velocity information for the Detection.
    *  Makes no judgement as to whether the WCS is good -- this needs to be done beforehand.
    *  Quantities calculated:
@@ -83,6 +83,8 @@ void Detection::calcWCSparams(wcsprm *wcs)
    *     Other: coord type for all three axes, nuRest, name (IAU-style, in equatorial or Galactic)
    *     Uses getIntegFlux to calculate the integrated flux in (say) [Jy km/s]
    */
+
+  this->calcParams(); // make sure this is up to date.
 
   double *pixcrd = new double[15];
   double *world  = new double[15];

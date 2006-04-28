@@ -57,6 +57,8 @@ public:
   string getMomentMap(){return momentMap;};
   void   setMomentMap(string fname){momentMap = fname;};
   //
+  bool   getFlagNegative(){return flagNegative;};
+  void   setFlagNegative(bool flag){flagNegative=flag;};
   bool   getFlagBlankPix(){return flagBlankPix;};
   void   setFlagBlankPix(bool flag){flagBlankPix=flag;};
   bool   getNanFlag(){return nanAsBlank;};
@@ -164,6 +166,7 @@ private:
   string momentMap;       // The name of the 0th moment map (ps file).
 
   // Cube related parameters 
+  bool   flagNegative;    // Are we going to search for negative features? (Need to invert the cube.)
   bool   flagBlankPix;    // A flag that indicates whether there are pixels defined as BLANK,
                           //   with the value given by the next parameter.
   float  blankPixValue;   // Pixel value that is considered BLANK.
