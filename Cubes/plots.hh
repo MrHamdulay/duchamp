@@ -6,6 +6,7 @@
 #include <cpgplot.h>
 
 using std::string;
+using std::stringstream;
 
 namespace Plot
 {
@@ -117,32 +118,37 @@ namespace Plot
       cpgswin(x1,x2,y1,y2);
       cpgbox("bc",0.,0,"bcstn1v",0.,0);
       float lengthL,lengthR,disp,tickpt;
-      string opt;
+      stringstream label;
       for(int i=1;i<10;i++){
 	tickpt = x1+(x2-x1)*float(i)/10.;  // spectral coord of the tick
 	switch(i)
 	  {
 	  case 2:
 	  case 8:
-	    opt = "n";
 	    lengthL = lengthR = 0.5;
 	    disp = 0.3 + float(i-2)/6.; // i==2 --> disp=0.3, i==8 --> disp=1.3
+	    label.str("");
+	    label << tickpt;
+	    // do a labelled tick mark
+	    cpgtick(x1,y1,x2,y1,float(i)/10.,lengthL,lengthR,disp,0.,label.str().c_str());
 	    break;
 	  default:
-	    opt = "";
+	    label.str("");
 	    lengthL = 0.25;
 	    lengthR = 0.;
 	    disp = 0.;  // not used in this case, but set it anyway.
 	    break;
 	  }
-	// first the bottom axis, labelling the ticks as appropriate
-	cpgaxis(opt.c_str(),tickpt-0.05*(x2-x1),y1,tickpt+0.5*(x2-x1),y1,
-		tickpt-0.05*(x2-x1),tickpt+0.5*(x2-x1),tickpt,
-		-1,lengthL,lengthR,0.5,disp,0.);
+	// first the bottom axis, just the tick
+	cpgaxis("",
+		tickpt-0.001*(x2-x1), y1,
+		tickpt+0.001*(x2-x1), y1,
+		tickpt-0.001*(x2-x1), tickpt+0.001*(x2-x1),
+		tickpt, -1, lengthL,lengthR, 0.5, disp, 0.);
 	// and now the top -- no labels, just tick marks
-	cpgtick(x1,y2,x2,y2,float(i)/10.,0.,lengthL,0.,0.,"");
+	cpgtick(x1,y2,x2,y2,float(i)/10.,lengthL,lengthR,0.,0.,"");
       }
-    }
+   }
     
     void gotoMap(){
       /** SpectralPlot::gotoMap()
