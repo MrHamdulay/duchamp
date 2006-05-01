@@ -34,40 +34,54 @@ void Detection::calcParams()
    *   and total & peak fluxes for a detection.
    */
 
-  this->xcentre = 0;
-  this->ycentre = 0;
-  this->zcentre = 0;
-  this->totalFlux = 0;
-  this->peakFlux = 0;
-  this->xmin = 0;
-  this->xmax = 0;
-  this->ymin = 0;
-  this->ymax = 0;
-  this->zmin = 0;
-  this->zmax = 0;
-  int *ctr = new int;
-  for((*ctr)=0;(*ctr)<this->pix.size();(*ctr)++){
-    this->xcentre   += this->pix[*ctr].itsX;
-    this->ycentre   += this->pix[*ctr].itsY;
-    this->zcentre   += this->pix[*ctr].itsZ;
-    this->totalFlux += this->pix[*ctr].itsF;
-    if(((*ctr)==0)||(this->pix[*ctr].itsX<this->xmin))     this->xmin     = this->pix[*ctr].itsX;
-    if(((*ctr)==0)||(this->pix[*ctr].itsX>this->xmax))     this->xmax     = this->pix[*ctr].itsX;
-    if(((*ctr)==0)||(this->pix[*ctr].itsY<this->ymin))     this->ymin     = this->pix[*ctr].itsY;
-    if(((*ctr)==0)||(this->pix[*ctr].itsY>this->ymax))     this->ymax     = this->pix[*ctr].itsY;
-    if(((*ctr)==0)||(this->pix[*ctr].itsZ<this->zmin))     this->zmin     = this->pix[*ctr].itsZ;
-    if(((*ctr)==0)||(this->pix[*ctr].itsZ>this->zmax))     this->zmax     = this->pix[*ctr].itsZ;
-    if(((*ctr)==0)||(this->pix[*ctr].itsF>this->peakFlux)){
-      this->peakFlux = this->pix[*ctr].itsF;
-      this->xpeak = this->pix[*ctr].itsX;
-      this->ypeak = this->pix[*ctr].itsY;
-      this->zpeak = this->pix[*ctr].itsZ;
+  if(this->pix.size()>0){
+    this->xcentre = 0;
+    this->ycentre = 0;
+    this->zcentre = 0;
+    this->totalFlux = 0;
+    this->peakFlux = this->pix[0].itsF;
+    this->xmin = 0;
+    this->xmax = 0;
+    this->ymin = 0;
+    this->ymax = 0;
+    this->zmin = 0;
+    this->zmax = 0;
+    int *ctr = new int;
+    for((*ctr)=0;(*ctr)<this->pix.size();(*ctr)++){
+      this->xcentre   += this->pix[*ctr].itsX;
+      this->ycentre   += this->pix[*ctr].itsY;
+      this->zcentre   += this->pix[*ctr].itsZ;
+      this->totalFlux += this->pix[*ctr].itsF;
+      if(((*ctr)==0)||(this->pix[*ctr].itsX<this->xmin))     this->xmin     = this->pix[*ctr].itsX;
+      if(((*ctr)==0)||(this->pix[*ctr].itsX>this->xmax))     this->xmax     = this->pix[*ctr].itsX;
+      if(((*ctr)==0)||(this->pix[*ctr].itsY<this->ymin))     this->ymin     = this->pix[*ctr].itsY;
+      if(((*ctr)==0)||(this->pix[*ctr].itsY>this->ymax))     this->ymax     = this->pix[*ctr].itsY;
+      if(((*ctr)==0)||(this->pix[*ctr].itsZ<this->zmin))     this->zmin     = this->pix[*ctr].itsZ;
+      if(((*ctr)==0)||(this->pix[*ctr].itsZ>this->zmax))     this->zmax     = this->pix[*ctr].itsZ;
+      if(this->negativeSource){
+	// if negative feature, peakFlux is most negative flux
+	if(((*ctr)==0)||(this->pix[*ctr].itsF < this->peakFlux)){
+	  this->peakFlux = this->pix[*ctr].itsF;
+	  this->xpeak = this->pix[*ctr].itsX;
+	  this->ypeak = this->pix[*ctr].itsY;
+	  this->zpeak = this->pix[*ctr].itsZ;
+	}
+      }
+      else{
+	// otherwise, it's a regular detection, and peakFlux is most positive flux
+	if(((*ctr)==0)||(this->pix[*ctr].itsF > this->peakFlux)){
+	  this->peakFlux = this->pix[*ctr].itsF;
+	  this->xpeak = this->pix[*ctr].itsX;
+	  this->ypeak = this->pix[*ctr].itsY;
+	  this->zpeak = this->pix[*ctr].itsZ;
+	}
+      }
     }
+    delete ctr;
+    this->xcentre /= this->pix.size();
+    this->ycentre /= this->pix.size();
+    this->zcentre /= this->pix.size();
   }
-  delete ctr;
-  this->xcentre /= this->pix.size();
-  this->ycentre /= this->pix.size();
-  this->zcentre /= this->pix.size();
 }
 
 void Detection::calcWCSparams(wcsprm *wcs)

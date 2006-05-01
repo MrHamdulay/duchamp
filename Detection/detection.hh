@@ -75,8 +75,8 @@ public:
 class Detection
 {
 public:
-  Detection(){flagWCS=false;};
-  Detection(long numPix){vector <Voxel> pix(numPix); bool flagWCS = false;};
+  Detection(){flagWCS=false; negativeSource = false;};
+  Detection(long numPix){vector <Voxel> pix(numPix); flagWCS = false; negativeSource = false;};
   virtual ~Detection(){};
 
   void   addPixel(Voxel point){pix.push_back(point);};
@@ -108,16 +108,18 @@ public:
   void   setCentre(float x, float y){xcentre = x; ycentre = y;};
   float  getTotalFlux(){return totalFlux;};
   void   setTotalFlux(float f){totalFlux = f;};
-  float  getPeakFlux(){return peakFlux;};
-  void   setPeakFlux(float f){peakFlux = f;};
   float  getIntegFlux(){return intFlux;};
   void   setIntegFlux(float f){intFlux = f;};
+  float  getPeakFlux(){return peakFlux;};
+  void   setPeakFlux(float f){peakFlux = f;};
   long   getXPeak(){return xpeak;};
   void   setXPeak(long x){xpeak = x;};
   long   getYPeak(){return ypeak;};
   void   setYPeak(long y){ypeak = y;};
   long   getZPeak(){return zpeak;};
   void   setZPeak(long z){zpeak = z;};
+  bool   isNegative(){return negativeSource;};
+  void   setNegative(bool f){negativeSource = f;};
   //
   long   getXmin(){return xmin;};
   long   getYmin(){return ymin;};
@@ -194,10 +196,11 @@ private:
   long           zSubOffset;  // The offset in the z-direction from the subsectioned cube
   // Flux related
   float          totalFlux;   // sum of the fluxes of all the pixels
-  float          peakFlux;    // maximum flux over all the pixels
   float          intFlux;     // integrated flux --> involves integration over velocity.
+  float          peakFlux;    // maximum flux over all the pixels
   long           xpeak,ypeak,zpeak; // location of peak flux
-  //
+  bool           negativeSource; // is the source defined as a negative feature?
+  // WCS related
   int            id;          // ID -- generally number in list
   string         name;	      // IAU-style name (based on position)
   bool           flagWCS;     // A flag indicating whether the WCS parameters have been set.

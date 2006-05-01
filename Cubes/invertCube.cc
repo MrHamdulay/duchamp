@@ -27,6 +27,7 @@ void Cube::reInvert()
   }
 
   for(int i=0; i<this->objectList.size(); i++){
+    this->objectList[i].setNegative(true);
     for(int pix=0; pix<this->objectList[i].getSize(); pix++){
       this->objectList[i].setF(pix, -1. * this->objectList[i].getF(pix) );
     }
