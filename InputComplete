@@ -95,5 +95,9 @@ minPix		3
 # OTHER PARAMETERS
 # verbose -- whether to provide progress indicators on the terminal during execution
 # drawBorders -- whether to draw borders around the detections on the moment maps in the output.
+# spectralMethod -- how to plot the spectra in the output -- the spectrum of the peak pixel ("peak" -- the 
+#      default), or integrated over all spatial pixels present ("sum")
+	
 verbose         1
 drawBorders	1
+spectralMethod  peak
