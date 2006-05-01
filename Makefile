@@ -36,6 +36,7 @@ DETECTION = $(DETECTIONDIR)/areClose.o\
 	$(DETECTIONDIR)/mergeIntoList.o\
 	$(DETECTIONDIR)/outputDetection.o\
 	$(DETECTIONDIR)/sorting.o\
+	$(DETECTIONDIR)/spectrumDetect.o\
 	$(DETECTIONDIR)/thresholding_functions.o
 
 CUBESDIR = $(BASE)/Cubes
@@ -43,6 +44,7 @@ CUBES = $(CUBESDIR)/cubicSearch.o\
 	$(CUBESDIR)/detectionIO.o\
 	$(CUBESDIR)/drawMomentCutout.o\
 	$(CUBESDIR)/getImage.o\
+	$(CUBESDIR)/invertCube.o\
 	$(CUBESDIR)/Merger.o\
 	$(CUBESDIR)/outputSpectra.o\
 	$(CUBESDIR)/plotting.o\

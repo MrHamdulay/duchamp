@@ -47,10 +47,12 @@ minMW		75
 maxMW		112
 
 # GENERAL DETECTION RELATED
+# flagNegative -- Are the features being searched for negative (set to true) or positive (false)?
 # snrCut --  How many sigma above mean is a detection when sigma-clipping
 # flagGrowth -- Should the detections be "grown" to a lower significance value?
 # growthCut -- The lower threshold used when growing detections
 
+flagNegative    0
 snrCut		2.5
 flagGrowth	0
 growthCut	1.5
