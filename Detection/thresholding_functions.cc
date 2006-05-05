@@ -55,7 +55,7 @@ int Image::setupFDR()
     if(isGood[*loopCtr])
       orderedP[(*count)++] = this->pValue[*loopCtr];
 
-  sort(orderedP,0,(*count-1));
+  sort(orderedP,0,(*count));
   
   // now find the maximum P value.
   int *max = new int;

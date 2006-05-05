@@ -37,7 +37,7 @@ void zscale(long imagesize, float *image, float &z1, float &z2)
     size=imagesize;
   }
 
-  sort(smallarray,0,size-1);
+  sort(smallarray,0,size);
   
   /* fit a linear slope to the centre of the cumulative distribution */
   long midpt = size/2;
@@ -102,7 +102,7 @@ void zscale(long imagesize, float *image, float &z1, float &z2, float blankVal)
     size=newsize;
   }
 
-  sort(smallarray,0,size-1);
+  sort(smallarray,0,size);
   
   /* fit a linear slope to the centre of the cumulative distribution */
   long midpt = size/2;

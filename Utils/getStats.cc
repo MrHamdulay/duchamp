@@ -25,7 +25,7 @@ float findMedian(float *&array, int size)
   float *newarray = new float[size];
   float median;
   for(int i=0;i<size;i++) newarray[i] = array[i];
-  sort(newarray,0,size-1);
+  sort(newarray,0,size);
   if((size%2)==0) median = 0.5*(newarray[size/2-1]+newarray[size/2]);
   else median = newarray[size/2];
   delete [] newarray;
@@ -39,7 +39,7 @@ float findMADFM(float *&array, int size)
   float median = findMedian(array,size);
   float madfm;
   for(int i=0;i<size;i++) newarray[i] = fabs(array[i]-median);
-  sort(newarray,0,size-1);
+  sort(newarray,0,size);
   if((size%2)==0) madfm = 0.5*(newarray[size/2-1]+newarray[size/2]);
   else madfm = newarray[size/2];
   delete [] newarray;
@@ -52,12 +52,12 @@ void findMedianStats(float *&array, int size, float &median, float &madfm)
   float *newarray = new float[size];
 
   for(int i=0;i<size;i++) newarray[i] = array[i];
-  sort(newarray,0,size-1);
+  sort(newarray,0,size);
   if((size%2)==0) median = 0.5*(newarray[size/2-1]+newarray[size/2]);
   else median = newarray[size/2];
 
   for(int i=0;i<size;i++) newarray[i] = fabs(array[i]-median);
-  sort(newarray,0,size-1);
+  sort(newarray,0,size);
   if((size%2)==0) madfm = 0.5*(newarray[size/2-1]+newarray[size/2]);
   else madfm = newarray[size/2];
 
@@ -70,12 +70,12 @@ void findMedianStats(float *&array, long size, float &median, float &madfm)
   float *newarray = new float[size];
 
   for(int i=0;i<size;i++) newarray[i] = array[i];
-  sort(newarray,0,size-1);
+  sort(newarray,0,size);
   if((size%2)==0) median = 0.5*(newarray[size/2-1]+newarray[size/2]);
   else median = newarray[size/2];
 
   for(int i=0;i<size;i++) newarray[i] = fabs(array[i]-median);
-  sort(newarray,0,size-1);
+  sort(newarray,0,size);
   if((size%2)==0) madfm = 0.5*(newarray[size/2-1]+newarray[size/2]);
   else madfm = newarray[size/2];
 
