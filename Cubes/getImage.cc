@@ -1,10 +1,10 @@
 #include <iostream>
 #include <string>
-#include <fitsio.h>
 #include <wcs.h>
 #include <wcshdr.h>
 #include <fitshdr.h>
 #include <wcsfix.h>
+#include <fitsio.h>
 #include <Cubes/cubes.hh>
 
 #ifdef NAN 

@@ -1,9 +1,9 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <fitsio.h>
 #include <wcs.h>
 #include <wcshdr.h>
+#include <fitsio.h>
 #include <Cubes/cubes.hh>
 
 void Cube::saveReconstructedCube()

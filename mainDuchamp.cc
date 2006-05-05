@@ -4,7 +4,6 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include <fitsio.h>
 #include <cpgplot.h>
 #include <math.h>
 #include <unistd.h>
