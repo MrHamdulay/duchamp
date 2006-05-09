@@ -64,7 +64,7 @@ Param::Param(){
   // Detection-related    
   this->minPix          = 2;
   // Object growth        
-  this->flagGrowth      = true;
+  this->flagGrowth      = false;
   this->growthCut       = 1.5;
   // FDR analysis         
   this->flagFDR         = false;
@@ -118,8 +118,7 @@ void Param::readParams(string &paramfile)
       ss.str(line);
       string arg;
       ss >> arg;      
-      std::cerr.setf(std::ios::boolalpha);
-     if(makelower(arg)=="imagefile"){       ss >> sval; this->imageFile = sval;}
+      if(makelower(arg)=="imagefile"){       ss >> sval; this->imageFile = sval;}
       if(makelower(arg)=="flaglog"){         ss >> bval; this->flagLog = bval; }
       if(makelower(arg)=="logfile"){         ss >> sval; this->logFile = sval; }
       if(makelower(arg)=="outfile"){         ss >> sval; this->outFile = sval; }
@@ -160,7 +159,6 @@ void Param::readParams(string &paramfile)
       if(makelower(arg)=="spectralMethod"){  ss >> sval; this->spectralMethod = makelower(sval); }
       if(makelower(arg)=="drawborders"){     ss >> bval; this->borders = bval; }
       if(makelower(arg)=="verbose"){         ss >> bval; this->verbose = bval; }
-      std::cerr.unsetf(std::ios::boolalpha);
     }
   }
 }

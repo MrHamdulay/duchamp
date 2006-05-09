@@ -37,7 +37,10 @@ namespace Plot
 	paperHeight = a4height - 2*psVoffset;
 	paperWidth = paperHeight / M_SQRT2;
       }
-      spectraCount=0;};
+      spectraCount=0;
+      numOnPage = 5;
+      indexSize = 0.6;
+      labelSize = 0.8;};
     ~SpectralPlot(){};
 
     void setUpPlot(string pgDestination){
@@ -167,8 +170,6 @@ namespace Plot
       cpgqwin(&dud,&dud,&min,&max);
       cpgqci(&ci);
       cpgqls(&ls);
-//       cpgscr(18, 0., 0.7, 0.);
-//       cpgsci(18);
       cpgsci(4);
       cpgsls(2);
       cpgmove(v1,min);  cpgdraw(v1,max);
@@ -178,15 +179,15 @@ namespace Plot
     }
     
   private:
-    const static int numOnPage = 5;        // Number of spectra to put on one page.
-    int spectraCount;                      // Number of spectra done so far -- where on the page?
-    float mainCoords[4];                   // Boundaries for the main spectrum [inches]
-    float zoomCoords[4];                   // Boundaries for the zoomed-in spectrum [inches]
-    float mapCoords[4];                    // Boundaries for the map box [inches]
-    float paperWidth;                      // Width of the plottable region of the paper [inches]
-    float paperHeight;                     // Height of the plottable region of the paper [inches]
-    const static float indexSize = 0.6;    // PGPlot character height for tick mark labels
-    const static float labelSize = 0.8;    // PGPlot character height for axis labels.
+    int numOnPage;              // Number of spectra to put on one page.
+    int spectraCount;           // Number of spectra done so far -- where on the page?
+    float mainCoords[4];        // Boundaries for the main spectrum [inches]
+    float zoomCoords[4];        // Boundaries for the zoomed-in spectrum [inches]
+    float mapCoords[4];         // Boundaries for the map box [inches]
+    float paperWidth;           // Width of the plottable region of the paper [inches]
+    float paperHeight;          // Height of the plottable region of the paper [inches]
+    float indexSize;            // PGPlot character height for tick mark labels
+    float labelSize;            // PGPlot character height for axis labels.
     
   };
 

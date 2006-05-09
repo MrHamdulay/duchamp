@@ -3,7 +3,9 @@
 #include <vector>
 #include <string>
 #include <wcs.h>
+#include <math.h>
 #include <param.hh>
+#include <Utils/utils.hh>
 #include <Detection/detection.hh>
 
 using std::setw;

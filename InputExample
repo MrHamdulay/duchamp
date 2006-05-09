@@ -2,7 +2,7 @@ imageFile	your-file-here
 logFile		logfile.txt
 outFile		results.txt
 spectraFile	spectra.ps
-flagGrowth      1
+flagGrowth      0
 growthCut       1.5
 minPix		2
 flagATrous	1

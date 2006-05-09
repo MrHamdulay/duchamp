@@ -5,6 +5,7 @@
 #include <fitshdr.h>
 #include <wcsfix.h>
 #include <fitsio.h>
+#include <math.h>
 #include <Cubes/cubes.hh>
 
 #ifdef NAN 

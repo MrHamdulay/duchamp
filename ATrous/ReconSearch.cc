@@ -104,8 +104,7 @@ void Cube::ReconSearch2D()
 //////////////////////////////////////////////////////////////////////////////////////
 /**
  * Cube::ReconSearch3D()
- *   This reconstructs a cube by performing a full 3D a trous 
- *   reconstruction of the cube
+ *   This performs a full 3D a trous reconstruction of the cube
  *   It then searches the cube using reconSearch (below).
  *
  *   The resulting object list is stored in the Cube.
