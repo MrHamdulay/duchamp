@@ -106,8 +106,8 @@ int Cube::readReconCube()
   int scaleMin,filterCode;
   float snrRecon;
   char *comment = new char[80];
-  if(!this->par.getFlagAtrous()){
-    this->par.setFlagAtrous(true);
+  if(!this->par.getFlagATrous()){
+    this->par.setFlagATrous(true);
     std::cerr << "WARNING <readReconCube> : Setting flagAtrous from false to true, as the reconstruction exists.\n";
   }
   fits_read_key(fptr, TINT, (char *)keyword_scaleMin.c_str(), &scaleMin, comment, &status);
