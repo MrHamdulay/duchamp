@@ -1,9 +1,9 @@
 #include <iostream>
 #include <math.h>
-void linear_regression(int num, float *x, float *y, int ilow, int ihigh, float &slope, float &errSlope, float &intercept, float &errIntercept, float &r)
+int linear_regression(int num, float *x, float *y, int ilow, int ihigh, float &slope, float &errSlope, float &intercept, float &errIntercept, float &r)
 {
   /**
-   *   linear_regression()
+   *  int linear_regression()
    *
    * Computes the linear best fit to data - y = a*x + b, where x and y are 
    * arrays of size num, a is the slope and b the y-intercept.
@@ -11,6 +11,8 @@ void linear_regression(int num, float *x, float *y, int ilow, int ihigh, float &
    * (ie. if the full arrays are being used, then ilow=0 and ihigh=num-1.
    * Returns the values of slope & intercept (with errors) 
    * as well as r, the regression coefficient. 
+   * If everything works, returns 0.
+   * If slope is infinite (eg, all points have same x value), returns 1.
    */
 
   if (ilow>ihigh) {
@@ -50,10 +52,14 @@ void linear_regression(int num, float *x, float *y, int ilow, int ihigh, float &
     std::exit(1);
   }
 
-  slope = (count*sumxy - sumx*sumy)/(count*sumxx - sumx*sumx);
-  errSlope = count / (count*sumxx - sumx*sumx);
-  intercept = (sumy*sumxx - sumxy*sumx)/(count*sumxx - sumx*sumx);
-  errIntercept = sumxx / (count*sumxx - sumx*sumx);
-
-  r = (count*sumxy - sumx*sumy)/(sqrt(count*sumxx-sumx*sumx)*sqrt(count*sumyy-sumy*sumy));
+  if(fabs(count*sumxx-sumx*sumx)<1.e-6) return 1;
+  else{
+    slope = (count*sumxy - sumx*sumy)/(count*sumxx - sumx*sumx);
+    errSlope = count / (count*sumxx - sumx*sumx);
+    intercept = (sumy*sumxx - sumxy*sumx)/(count*sumxx - sumx*sumx);
+    errIntercept = sumxx / (count*sumxx - sumx*sumx);
+    
+    r = (count*sumxy - sumx*sumy)/(sqrt(count*sumxx-sumx*sumx)*sqrt(count*sumyy-sumy*sumy));
+    return 0;
+  }
 }

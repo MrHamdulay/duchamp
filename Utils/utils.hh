@@ -13,6 +13,8 @@ const float C_kms = 299792.458;
 
 // Divide by the following correction factor to convert from MADFM to sigma estimator.
 const float correctionFactor = 0.6744888;
+// Multiply by the following correction factor to convert from trimmedSigma to sigma estimator.
+const double trimToNormal = 1.17036753077;
 
 // MENU ROUTINES FOR DIGANOSTIC/TEST PROGRAMS
 string menu();
@@ -21,7 +23,7 @@ string orionMenu();
 string imageMenu();
 string twoblMenu();
 
-void linear_regression(int num, float *x, float *y, int ilow, int ihigh, float &slope, float &errSlope, float &intercept, float &errIntercept, float &r);
+int linear_regression(int num, float *x, float *y, int ilow, int ihigh, float &slope, float &errSlope, float &intercept, float &errIntercept, float &r);
 void zscale(long imagesize, float *image, float &z1, float &z2);
 void zscale(long imagesize, float *image, float &z1, float &z2, float nullVal);
 void swap(float &a, float &b);
@@ -33,6 +35,7 @@ void sort(float *arr, float *matchingArray, int begin, int end);
 // inline void quick_sort( BidirectionalIterator first, BidirectionalIterator last );
 
 // STATISTICS-RELATED ROUTINES
+void findMinMax(const float *array, const int size, float &min, float &max);
 float findMean(float *&array, int size);
 float findSigma(float *&array, int size);
 float findMedian(float *&array, int size);
@@ -40,11 +43,13 @@ float findMADFM(float *&array, int size);
 void findMedianStats(float *&array, int size, float &median, float &madfm);
 void findMedianStats(float *&array, long size, float &median, float &madfm);
 void findNormalStats(float *&array, int size, float &mean, float &sig);
+void findTrimmedHistStats(float *array, const int size, float &tmean, float &tsigma);
 void getRandomSpectrum(int length, float *x, float *y);
 void getRandomSpectrum(int length, float *x, double *y);
 void getRandomSpectrum(int length, float mean, float sigma, float *x, double *y);
 void getRandomSpectrum(int length, float mean, float sigma, float *x, float *y);
 float getNormalRV();
+float getNormalRVtrunc();
 float getNormalRV(float mean, float sigma);
 void getSigmaFactors(int &numScales, float *factors);
 void getSigmaFactors2D(int &numScales, float *factors);
