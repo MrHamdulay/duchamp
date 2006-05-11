@@ -48,6 +48,7 @@ CUBES = $(CUBESDIR)/cubicSearch.o\
 	$(CUBESDIR)/Merger.o\
 	$(CUBESDIR)/outputSpectra.o\
 	$(CUBESDIR)/plotting.o\
+	$(CUBESDIR)/readRecon.o\
 	$(CUBESDIR)/removeMW.o\
 	$(CUBESDIR)/saveImage.o\
 	$(CUBESDIR)/trimImage.o
