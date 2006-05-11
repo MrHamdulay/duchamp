@@ -113,6 +113,7 @@ void Cube::removeBaseline()
    *   A front-end to the getBaseline routine, specialised for the 
    *   Cube data structure. Calls getBaseline on each spectrum individually.
    *   Upon exit, the original array minus its spectral baseline is stored
+   *   If the reconstructed array exists, the baseline is subtracted from it as well.
    *   in this->array and the baseline is in this->baseline.
    */
 
@@ -140,7 +141,10 @@ void Cube::removeBaseline()
 
     for(int z=0; z<this->axisDim[2]; z++) {
       this->baseline[z*numSpec+pix] = thisBaseline[z];
-      if(!par.isBlank(this->array[z*numSpec+pix])) this->array[z*numSpec+pix] -= thisBaseline[z];
+      if(!par.isBlank(this->array[z*numSpec+pix])){
+	this->array[z*numSpec+pix] -= thisBaseline[z];
+	if(this->reconExists) this->recon[z*numSpec+pix] -= thisBaseline[z];
+      }      
     }
 
   }  

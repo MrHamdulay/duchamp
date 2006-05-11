@@ -114,12 +114,14 @@ void Cube::ReconSearch3D()
   if(this->axisDim[2]==1) this->ReconSearch2D();
   else {
 
-    std::cout<<"  Reconstructing... "<<std::flush;
-    atrous3DReconstruct(this->axisDim[0],this->axisDim[1],this->axisDim[2],
-			this->array,this->recon,this->par);
-    this->reconExists = true;
-    std::cout<<"All Done.                      \n  Searching... "<<std::flush;
-      
+    if(!this->reconExists){
+      std::cout<<"  Reconstructing... "<<std::flush;
+      atrous3DReconstruct(this->axisDim[0],this->axisDim[1],this->axisDim[2],
+			  this->array,this->recon,this->par);
+      this->reconExists = true;
+      std::cout<<"All Done.                      \n  Searching... "<<std::flush;
+    }
+
     this->objectList = reconSearch(this->axisDim,this->array,this->recon,this->par);
 
     this->updateDetectMap();
@@ -165,8 +167,7 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
   // First search --  in each spectrum.
   // First, get stats
   if(zdim > 1){
-    std::cout << "1D: |                    |" << std::flush;
-//     if(par.isVerbose()) std::cout << "Done  0%" << "\b\b\b\b\b\b\b\b" << std::flush;
+    if(par.isVerbose()) std::cout << "1D: |                    |" << std::flush;
 
     float *specMedian = new float[xySize];
     float *specSigma = new float[xySize];
@@ -253,8 +254,8 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
   }  
 
   // Second search --  in each channel
-  std::cout << "2D: |                    |" << std::flush;
-  if(par.isVerbose()) std::cout << "Done  0%" << "\b\b\b\b\b\b\b\b" << std::flush;
+  if(par.isVerbose()) std::cout << "2D: |                    |" << std::flush;
+
   float *imageMedian = new float[zdim];
   float *imageSigma = new float[zdim];
   float *image = new float[xySize];

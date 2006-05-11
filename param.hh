@@ -30,6 +30,11 @@ public:
   void   setFlagSubsection(bool flag){flagSubsection=flag;};
   string getSubsection(){return subsection;};
   void   setSubsection(string range){subsection = range;};
+  bool   getFlagReconExists(){return flagReconExists;};
+  void   setFlagReconExists(bool flag){flagReconExists=flag;};
+  string getReconFile(){return reconFile;};
+  void   setReconFile(string file){reconFile = file;};
+  //
   bool   getFlagLog(){return flagLog;};
   void   setFlagLog(bool flag){flagLog=flag;};
   string getLogFile(){return logFile;};
@@ -150,6 +155,9 @@ private:
   bool   flagSubsection;  // Whether we just want a subsection of the image
   string subsection;      // The subsection requested, of the form [x1:x2,y1:y2,z1:z2]
                           //   If you want the full range of one index, use *
+  bool   flagReconExists; // The reconstructed array is in a FITS file on disk.
+  string reconFile;       // The FITS file containing the reconstructed array.
+
   // Output files
   bool   flagLog;         // Should we do the intermediate logging?
   string logFile;         // Where the intermediate logging goes.

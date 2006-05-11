@@ -301,7 +301,7 @@ void Cube::initialiseCube(long *dimensions){
     this->specSigma  = new float[imsize];
     this->chanMean   = new float[dimensions[2]];
     this->chanSigma  = new float[dimensions[2]];
-    if(this->par.getFlagATrous())
+    if(this->par.getFlagATrous() || this->par.getFlagReconExists())
       this->recon    = new float[size];
     if(this->par.getFlagBaseline())
       this->baseline = new float[size];
@@ -325,7 +325,7 @@ void Cube::saveArray(float *input, long size){
 
 void Cube::saveRecon(float *input, long size){
   // Need check for change in number of pixels!
-  if(this->numPixels>0) delete [] recon;
+  if(this->numPixels>0) delete [] this->recon;
   this->numPixels = size;
   this->recon = new float[size];
   for(int i=0;i<size;i++) this->recon[i] = input[i];

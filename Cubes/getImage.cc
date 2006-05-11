@@ -6,6 +6,7 @@
 #include <wcsfix.h>
 #include <fitsio.h>
 #include <math.h>
+#include <duchamp.hh>
 #include <Cubes/cubes.hh>
 
 #ifdef NAN 
@@ -14,7 +15,7 @@ float nanValue = NAN;
 
 using std::endl;
 
-enum OUTCOME {SUCCESS, FAILURE};
+string imageType[4] = {"point", "spectrum", "image", "cube"};
 
 int Cube::getCube(string fname)
 {
@@ -37,7 +38,7 @@ int Cube::getCube(string fname)
   long *dimAxes = new long[maxdim];
   for(int i=0;i<maxdim;i++) dimAxes[i]=1;
   long nelements;
-  int bitpix,numAxes,anynul;
+  int bitpix,numAxes;
   int status = 0,  nkeys;  /* MUST initialize status */
   fitsfile *fptr;         
 
@@ -53,22 +54,25 @@ int Cube::getCube(string fname)
     return FAILURE;
   }
 
-  std::cout << "Cube dimensions: " << dimAxes[0];
+  if(numAxes<=3)  std::cout << "Dimensions of " << imageType[numAxes] << ": " << dimAxes[0];
+  else std::cout << "Dimensions of " << imageType[3] << ": " << dimAxes[0];
   if(numAxes>1) std::cout << "x" << dimAxes[1];
   if(numAxes>2) std::cout << "x" << dimAxes[2];
   std::cout << endl;
 
   int npix = dimAxes[0]*dimAxes[1]*dimAxes[2];
   float *array = new float[npix];
+  int anynul;
   char *nullarray = new char[npix];
   for(int i=0;i<npix;i++) nullarray[i] = 0;
-  status = 0;
+
   //-------------------------------------------------------------
   // Reading in the pixel array.
-  //  The locationg of any blank pixels (as determined by the header keywords) is stored
+  //  The location of any blank pixels (as determined by the header keywords) is stored
   //  in nullarray (set to 1). Also anynul will be set to 1 to indicate the presence of
   //  blank pixels. If anynul==1 then all pixels are non-blank.
 
+  status = 0;
   fits_read_pixnull(fptr, TFLOAT, fpixel, npix, array, nullarray, &anynul, &status);
 //   fits_read_pix(fptr, TFLOAT, fpixel, npix, NULL, array, &anynul, &status);
   if(status){
@@ -76,10 +80,9 @@ int Cube::getCube(string fname)
     return FAILURE;
   }
 
-//   std::cerr << "anynul = " << anynul << std::endl;
   if(anynul==0){    // no blank pixels, so don't bother with any trimming or checking...
     if(this->par.getFlagBlankPix())  // if user requested fixing, inform them of change.
-      std::cerr << "No blank pixels, so setting flagBlankPix to false...\n";
+      std::cerr << "WARNING <getCube> : No blank pixels, so setting flagBlankPix to false...\n";
     this->par.setFlagBlankPix(false); 
   }
 
@@ -91,7 +94,7 @@ int Cube::getCube(string fname)
   status = 0;
   fits_hdr2str(fptr, noComments, NULL, nExc, &hdr, &nkeys, &status);
   if( status ){
-    std::cerr << "Error reading in header to string: ";
+    std::cerr << "WARNING <getCube> : Error reading in header to string: ";
     fits_report_error(stderr, status);
   }
 
@@ -104,7 +107,7 @@ int Cube::getCube(string fname)
   status = 0;
   fits_read_key(fptr, TSTRING, "BUNIT", bunit, comment, &status);
   if (status){
-    std::cerr << "Error reading BUNIT keyword: ";
+    std::cerr << "WARNING <getCube> : Error reading BUNIT keyword: ";
     fits_report_error(stderr, status);
   }
   else this->setBUnit(bunit);
@@ -126,7 +129,7 @@ int Cube::getCube(string fname)
       this->par.setBzeroKeyword(bzero);
     }
     if (status){
-      std::cerr << "Error reading BLANK keyword: ";
+      std::cerr << "WARNING <getCube> : Error reading BLANK keyword: ";
       fits_report_error(stderr, status);
       std::cerr << "Using default BLANK (physical) value (" << this->par.getBlankPixVal() << ")." << endl;
       for(int i=0;i<npix;i++) if(isnan(array[i])) array[i] = this->par.getBlankPixVal();
@@ -148,14 +151,15 @@ int Cube::getCube(string fname)
     this->par.setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / fabsf(cdelt1*cdelt2) );
   }
   if (status){
-    std::cerr << "No beam information in header. Setting size to nominal 10 pixels." << endl;
+    std::cerr << 
+      "WARNING <getCube> : No beam information in header. Setting size to nominal 10 pixels.\n";
     this->par.setBeamSize(10.);
   }
 
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    std::cerr << "Error closing file: ";
+    std::cerr << "WARNING <getCube> : Error closing file: ";
     fits_report_error(stderr, status);
   }
 
@@ -166,7 +170,6 @@ int Cube::getCube(string fname)
   // 0 (as they are set by fits_read_pixnull) to the correct blank value
   // as determined by the above code.
   for(int i=0; i<npix;i++){
-    //     this->blankarray[i] = bool(nullarray[i]);
     if(nullarray[i]==1) this->array[i] = blank*bscale + bzero;  
   }
 
@@ -178,26 +181,25 @@ int Cube::getCube(string fname)
   wcs->flag=-1;
   int flag;
   if(flag = wcspih(hdr, nkeys, relax, ctrl, &nreject, &nwcs, &wcs)) {
-    std::cerr<<"getImage.cc:: WCSPIH failed! Code="<<flag<<": "<<wcs_errmsg[flag]<<endl;
-//     return FAILURE;
+    std::cerr<<"WARNING <getCube> : WCSPIH failed! Code="<<flag<<": "<<wcs_errmsg[flag]<<endl;
   }
   else{  
     int stat[6],axes[3]={dimAxes[0],dimAxes[1],dimAxes[2]};
     if(flag=wcsfix(1,axes,wcs,stat)) {
-      std::cerr<<"getImage.cc:: WCSFIX failed!"<<endl;
+      std::cerr<<"WARNING <getCube> : WCSFIX failed!"<<endl;
       for(int i=0; i<NWCSFIX; i++)
 	if (stat[i] > 0) std::cerr<<"wcsfix ERROR "<<flag<<": "<< wcsfix_errmsg[stat[i]] <<endl;
-      //     return FAILURE;
     }
     if(flag=wcsset(wcs)){
-      std::cerr<<"getImage.cc:: WCSSET failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<endl;
-      //     return FAILURE;
+      std::cerr<<"WARNING <getCube> : WCSSET failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<endl;
     }
 
     this->setWCS(wcs);
     this->setNWCS(nwcs);
   }
   wcsfree(wcs);
+
+  if(!this->flagWCS) std::cerr << "WARNING <getCube> : WCS is not good enough to be used.\n";
 
   delete hdr;
   delete [] array;

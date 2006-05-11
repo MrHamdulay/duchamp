@@ -178,6 +178,7 @@ public:
   int     getCube(string fname);
   void    initialiseCube(long *dimensions);
   void    saveReconstructedCube();
+  int     readReconCube();
 
   float   getPixValue(long pos){return array[pos];};
   float   getPixValue(long x, long y, long z){

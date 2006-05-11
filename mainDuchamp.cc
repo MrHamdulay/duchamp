@@ -69,13 +69,21 @@ int main(int argc, char * argv[])
     fname+=cube->pars().getSubsection();
   }
   std::cout << "Opening image: " << fname << endl;
-  if( cube->getCube(fname) ){
+  if( cube->getCube(fname) == FAILURE){
     std::cerr << "Error opening file : " << fname << endl;
     std::cerr << "Exiting..." << endl;
     exit(1);
   }
   else std::cout << "Opened successfully." << endl; 
-  if(!cube->isWCS()) std::cerr << "Warning! WCS is not good enough to be used.\n";
+
+  // If the reconstructed array is to be read in from disk
+  if( cube->pars().getFlagReconExists() ){
+    if( cube->readReconCube() == FAILURE){
+      std::cerr << "WARNING : Could not find existing reconstructed array.\n"
+		<< "          Will perform reconstruction using assigned parameters.\n";
+      cube->pars().setFlagReconExists(false);
+    }
+  }
 
   std::cout << cube->pars();
 
@@ -120,7 +128,7 @@ int main(int argc, char * argv[])
     std::cout<<" Done."<<std::endl;
   }
 
-  if(cube->pars().getFlagATrous()){
+  if(cube->pars().getFlagATrous() || cube->pars().getFlagReconExists()){
     std::cout<<"Commencing search in reconstructed cube..."<<endl;
     cube->ReconSearch3D();
     std::cout<<"Done. Found "<<cube->getNumObj()<<" objects."<<endl;

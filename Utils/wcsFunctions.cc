@@ -22,7 +22,8 @@ double pixelToVelocity(wcsprm *wcs, double &x, double &y, double &z)
   pixcrd[1] = y + 1;
   pixcrd[2] = z + 1;
   if(int flag=wcsp2s(wcs, 1, 3, pixcrd, imgcrd, phi, theta, world, stat)>0){
-    std::cerr<<"WCS Error in pixelToVelocity(): Code = "<<flag<<": "<<wcs_errmsg[flag]<<std::endl;
+    std::cerr<<"ERROR <pixelToVelocity> : WCS Error Code = "<<flag<<": "
+	     <<wcs_errmsg[flag]<<std::endl;
     std::cerr<<"  stat value is "<<stat[0]<<std::endl;
   }
 
@@ -60,7 +61,8 @@ int pixToWCSSingle(wcsprm *wcs, const double *pix, double *world)
   double *phi    = new double[npts];
   double *theta  = new double[npts];
   if(flag=wcsp2s(wcs, npts, nelem, newpix, imgcrd, phi, theta, world, stat)>0){
-    std::cerr << "WCS Error in pixToWCSSingle(): Code = " <<flag<<": "<<wcs_errmsg[flag]<<std::endl;
+    std::cerr << "ERROR <pixToWCSSingle> : WCS Error Code = " <<flag<<": "
+	      <<wcs_errmsg[flag]<<std::endl;
     std::cerr << "  stat value is " << stat[0] << std::endl;
   }
   delete [] stat;
@@ -86,7 +88,8 @@ int wcsToPixSingle(wcsprm *wcs, const double *world, double *pix)
   double *phi    = new double[npts];
   double *theta  = new double[npts];
   if(flag=wcss2p(wcs, npts, nelem, world, phi, theta, imgcrd, pix, stat)>0){
-    std::cerr << "WCS Error in wcsToPixSingle(): Code = " <<flag<<": "<<wcs_errmsg[flag]<<std::endl;
+    std::cerr << "ERROR <wcsToPixSingle> : WCS Error Code = " <<flag<<": "
+	      <<wcs_errmsg[flag]<<std::endl;
     std::cerr << "  stat value is " << stat[0] << std::endl;
   }
 
@@ -120,7 +123,8 @@ int pixToWCSMulti(wcsprm *wcs, const double *pix, double *world, const int npts)
   double *phi    = new double[npts];
   double *theta  = new double[npts];
   if(flag=wcsp2s(wcs, npts, nelem, newpix, imgcrd, phi, theta, world, stat)>0){
-    std::cerr << "WCS Error in pixToWCSSingle(): Code = " <<flag<<": "<<wcs_errmsg[flag]<<std::endl;
+    std::cerr << "ERROR <pixToWCSSingle> : WCS Error Code = " <<flag<<": "
+	      <<wcs_errmsg[flag]<<std::endl;
     std::cerr << "  stat value is " << stat[0] << std::endl;
   }
   delete [] stat;
@@ -146,7 +150,8 @@ int wcsToPixMulti(wcsprm *wcs, const double *world, double *pix, const int npts)
   double *phi    = new double[npts];
   double *theta  = new double[npts];
   if(flag=wcss2p(wcs, npts, nelem, world, phi, theta, imgcrd, pix, stat)>0){
-    std::cerr << "WCS Error in wcsToPixSingle(): Code = " <<flag<<": "<<wcs_errmsg[flag]<<std::endl;
+    std::cerr << "ERROR <wcsToPixSingle> : WCS Error Code = " <<flag<<": "
+	      <<wcs_errmsg[flag]<<std::endl;
     std::cerr << "  stat value is " << stat[0] << std::endl;
   }
 

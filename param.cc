@@ -23,22 +23,23 @@ Param::Param(){
   this->imageFile       = "";
   this->flagSubsection  = false;
   this->subsection      = "[*,*,*]";
+  this->flagReconExists = false;
+  this->reconFile       = "";
   // Output files
   this->flagLog         = true;
-  this->logFile         = "./duchamp-Logfile";
-  this->outFile         = "./duchamp-Results";
-  this->spectraFile     = "./duchamp-Spectra.ps";
+  this->logFile         = "logfile.txt";
+  this->outFile         = "results.txt";
+  this->spectraFile     = "spectra.ps";
   this->flagOutputRecon = false;
   this->flagOutputResid = false;
   this->flagVOT         = false;
-  this->votFile         = "./duchamp-Results.xml";
+  this->votFile         = "results.xml";
   this->flagKarma       = false;
-  this->karmaFile       = "./duchamp-Results.ann";
+  this->karmaFile       = "results.ann";
   this->flagMaps        = true;
-  this->detectionMap    = "./latest-detection-map.ps";
-  this->momentMap       = "./latest-moment-map.ps";
+  this->detectionMap    = "latest-detection-map.ps";
+  this->momentMap       = "latest-moment-map.ps";
   // Cube related parameters 
-  this->flagNegative    = false;
   this->flagBlankPix    = true;
   this->blankPixValue   = -8.00061;
   this->blankKeyword    = 1;
@@ -62,7 +63,7 @@ Param::Param(){
   // Baseline related
   this->flagBaseline    = false;
   // Detection-related    
-  this->minPix          = 2;
+  this->flagNegative    = false;
   // Object growth        
   this->flagGrowth      = false;
   this->growthCut       = 1.5;
@@ -81,6 +82,7 @@ Param::Param(){
   this->threshSpatial   = 3.;
   this->threshVelocity  = 7.;
   this->minChannels     = 3;
+  this->minPix          = 2;
   // Input-Output related
   this->spectralMethod  = "peak";
   this->borders         = true;
@@ -119,6 +121,11 @@ void Param::readParams(string &paramfile)
       string arg;
       ss >> arg;      
       if(makelower(arg)=="imagefile"){       ss >> sval; this->imageFile = sval;}
+      if(makelower(arg)=="flagsubsection"){  ss >> bval; this->flagSubsection = bval; }
+      if(makelower(arg)=="subsection"){      ss >> sval; this->subsection = sval; }
+      if(makelower(arg)=="flagreconexists"){ ss >> bval; this->flagReconExists = bval; }
+      if(makelower(arg)=="reconfile"){       ss >> sval; this->reconFile = sval; }
+
       if(makelower(arg)=="flaglog"){         ss >> bval; this->flagLog = bval; }
       if(makelower(arg)=="logfile"){         ss >> sval; this->logFile = sval; }
       if(makelower(arg)=="outfile"){         ss >> sval; this->outFile = sval; }
@@ -139,23 +146,25 @@ void Param::readParams(string &paramfile)
       if(makelower(arg)=="flagmw"){          ss >> bval; this->flagMW = bval; }
       if(makelower(arg)=="maxmw"){           ss >> ival; this->maxMW = ival; }
       if(makelower(arg)=="minmw"){           ss >> ival; this->minMW = ival; }
-      if(makelower(arg)=="minpix"){          ss >> ival; this->minPix = ival; }
-      if(makelower(arg)=="flagfdr"){         ss >> bval; this->flagFDR = bval; }
-      if(makelower(arg)=="alphafdr"){        ss >> fval; this->alphaFDR = fval; }
+
       if(makelower(arg)=="flagbaseline"){    ss >> bval; this->flagBaseline = bval; }
-      if(makelower(arg)=="snrcut"){          ss >> fval; this->snrCut = fval; }
+      if(makelower(arg)=="minpix"){          ss >> ival; this->minPix = ival; }
       if(makelower(arg)=="flaggrowth"){      ss >> bval; this->flagGrowth = bval; }
       if(makelower(arg)=="growthcut"){       ss >> fval; this->growthCut = fval; }
+
+      if(makelower(arg)=="flagfdr"){         ss >> bval; this->flagFDR = bval; }
+      if(makelower(arg)=="alphafdr"){        ss >> fval; this->alphaFDR = fval; }
+      if(makelower(arg)=="snrcut"){          ss >> fval; this->snrCut = fval; }
       if(makelower(arg)=="flagatrous"){      ss >> bval; this->flagATrous = bval; }
       if(makelower(arg)=="scalemin"){        ss >> ival; this->scaleMin = ival; }
       if(makelower(arg)=="snrrecon"){        ss >> fval; this->snrRecon = fval; }
       if(makelower(arg)=="filtercode"){      ss >> ival; this->filterCode = ival; }
+
       if(makelower(arg)=="flagadjacent"){    ss >> bval; this->flagAdjacent = bval; }
       if(makelower(arg)=="threshspatial"){   ss >> fval; this->threshSpatial = fval; }
       if(makelower(arg)=="threshvelocity"){  ss >> fval; this->threshVelocity = fval; }
       if(makelower(arg)=="minchannels"){     ss >> ival; this->minChannels = ival; }
-      if(makelower(arg)=="flagsubsection"){  ss >> bval; this->flagSubsection = bval; }
-      if(makelower(arg)=="subsection"){      ss >> sval; this->subsection = sval; }
+
       if(makelower(arg)=="spectralMethod"){  ss >> sval; this->spectralMethod = makelower(sval); }
       if(makelower(arg)=="drawborders"){     ss >> bval; this->borders = bval; }
       if(makelower(arg)=="verbose"){         ss >> bval; this->verbose = bval; }
@@ -174,6 +183,10 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 									 par.getSubsection())   <<endl;
   else 
     theStream<<setw(40)<<"Image to be analysed"                 <<"= "<<par.getImageFile()      <<endl;
+  if(par.getFlagReconExists()){
+    theStream<<setw(40)<<"Reconstructed array exists?"          <<"= "<<par.getFlagReconExists()<<endl;
+    theStream<<setw(40)<<"FITS file containing reconstruction"  <<"= "<<par.getReconFile()      <<endl;
+  }
   theStream  <<setw(40)<<"Intermediate Logfile"                 <<"= "<<par.getLogFile()        <<endl;
   theStream  <<setw(40)<<"Final Results file"                   <<"= "<<par.getOutFile()        <<endl;
   theStream  <<setw(40)<<"Spectrum file"                        <<"= "<<par.getSpectraFile()    <<endl;

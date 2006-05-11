@@ -9,8 +9,8 @@
 \fi
 
 \textwidth=161 mm
-\textheight=240 mm
-\topmargin=-18 mm
+\textheight=245 mm
+\topmargin=-15 mm
 \oddsidemargin=0 mm
 \parindent=6 mm
 
@@ -50,10 +50,10 @@ Australia Telescope National Facility\\CSIRO}
   \usepackage[pdftex]{graphicx,color}
   \usepackage[pdftex]{hyperref}
   \hypersetup{colorlinks=true,% 	    
-            % citecolor=black,%
-            % filecolor=black,%
-            % linkcolor=black,%
-            % urlcolor=black,%
+            citecolor=red,%
+            filecolor=red,%
+            linkcolor=red,%
+            urlcolor=red,%
 	      }
 \else
   \usepackage[dvips]{graphicx} 
@@ -335,6 +335,10 @@ and memory-intensive. The steps in the procedure are as follows:
   wavelet coefficient arrays will have zero mean.
 \end{enumerate}
 
+Note that any BLANK pixels that are still in the cube will not be
+altered by the reconstruction -- they will be left as BLANK so that
+the shape of the valid part of the cube is preserved.
+
 It is important to note that the {\it {\`a} trous} decomposition is
 an example of a ``redundant'' transformation. If no thresholding is
 performed, the sum of all the wavelet coefficient arrays and the final
@@ -377,14 +381,24 @@ of the background is less than some fiducial amount.
 The user can optionally select to save the reconstructed image as a
 FITS file -- at the moment this is just saved in the same directory as
 the input file, so it won't work if the user does not have write
-permissions on that directory. See Appendix~\ref{app-param} for details
-on the naming of the output image. The residual image, which is the
-difference between the input image and the reconstructed image, can
-also be saved in the same manner. 
+permissions on that directory. The name of the file will be derived
+from the input file, in the following manner: if the input file is
+{\tt image.fits}, the reconstructed array will be saved in {\tt
+image.RECON?.fits}, where {\tt ?} stands for the value of {\tt
+snrRecon} (for instance, if {\tt snrRecon}$=4$, it will be {\tt
+image.RECON4.fits}, and if {\tt snrRecon}$=4.5$, it will be {\tt
+image.RECON4.5.fits}). To save the reconstructed array, set {\tt
+  flagOutputRecon = true}.
 
-Finally, note that any BLANK pixels that are still in the cube
-will not be altered by the reconstruction -- they will be left as
-BLANK so that the shape of the valid part of the cube is preserved.
+Likewise, the residual image, defined as the difference between the
+input image and the reconstructed image, can also be saved in the same
+manner -- its filename will be {\tt image.RESID?.fits}. This is done
+by setting {\tt flagOutputResid = true}.
+
+The advantage of saving the reconstructed array is in the time saved.
+If the reconstruction takes a long time (which it can for a large
+cube), it can be done once and saved, and then the source-detection
+done many times for different threshold values.
 
 \subsection{Searching the image}
 \label{sec-detection}
@@ -693,16 +707,20 @@ long execution time: to reconstruct a $170\times160\times1024$
 (\hipass) cube often requires three iterations and takes about 20-25
 minutes. The searching part of the procedure is much quicker (although
 see the note on merging, below), so if one uses the FDR method on the
-un-reconstructed cube, the execution time is only a couple of minutes.
+un-reconstructed cube, the execution time is only a couple of
+minutes. Alternatively, using the ability to read in previously-saved
+reconstructed arrays makes running the reconstruction more than once a
+more feasible prospect.
 
 A further drawback with the reconstruction is that it is susceptible
 to edge effects. If the valid area in the cube (\ie the part that is
 not BLANK) has very curved edges (such as the \hipass\ polar cap cube,
 H001, which has a roughly circular shape after gridding), the
-convolution can produce artefacts in the reconstruction that mimic
-the edges and lead to some spurious sources. Caution is advised with
-such data -- the user is advised to check carefully the reconstructed
-cube for the presence of such artefacts.
+convolution can produce artefacts in the reconstruction that mimic the
+edges and can lead (depending on the selection threshold) to some
+spurious sources. Caution is advised with such data -- the user is
+advised to check carefully the reconstructed cube for the presence of
+such artefacts.
 
 If one chooses the reconstruction method, a further decision is
 required on the signal-to-noise cutoff used in determining acceptable
@@ -711,7 +729,8 @@ cube, at the expense of losing fainter sources, while a smaller value
 will include more noise, which may produce spurious detections, but
 will be more sensitive to faint sources. Values of less than about
 $3\sigma$ tend to not reduce the noise a great deal and can lead to
-many spurious sources.
+many spurious sources (although this will depend on the nature of the
+cube).
 
 The FDR method certainly produces more reliable results than a simple
 sigma-clipping (\ie thresholding at some number of $\sigma$ above the
@@ -797,12 +816,10 @@ improvements that are planned.
 
 This is both a list of planned improvements and a wish-list of
 features that would be nice to include (but are not planned in the
-immediate future):
+immediate future). Let me know if there are items not on this list, or
+items on the list you would like prioritised.
 
 \begin{itemize}
-
-\item Ability to invert cube to search for absorption features. {\bf
-  Planned.} 
 
 \item More varied output formats. {\bf Planned.}
 
@@ -820,15 +837,12 @@ immediate future):
 \item Improved ability to reject interference, possibly on the
   spectral shape of features. {\bf Planned.}
 
+\item Ability to separate (de-blend) distinct sources that have been
+  merged. {\bf Planned.}
+
 \item Link to lists of possible counterparts (\eg via NED/SIMBAD/other
   VO tools?). {\bf Wishlist.} 
 
-\item Add ability to read in a reconstructed cube that has been
-  saved. In this case the residual array will also need to be read
-  in. The idea of this will be to avoid the extended time required for
-  the reconstruction if the same cube is being analysed multiple
-  times. {\bf Wishlist.}
- 
 \item At this point, the ``Milky Way'' channels are discarded and set
   to zero. It may be that users would like to have those put back in
   the final cube after the source detection is done, so at some point
@@ -900,6 +914,21 @@ not matter, they are grouped here in logical sections.
 \begin{entry}
 \item[ImageFile (no default assumed)] The filename of the
   data cube to be analysed.
+\item[flagSubsection {\tt [false]}] A flag to indicate whether one
+  wants a subsection of the requested image.
+\item[Subsection {\tt [ [*,*,*] ]}] The requested subsection, which
+  should be specified in the format {\tt [x1:x2,y1:y2,z1:z2]}, where
+  the limits are inclusive. If the full range of a dimension is
+  required, use a {\tt *}, \eg if you want the full spectral range of
+  a subsection of the image, use {\tt [30:140,30:140,*]}.
+\item[flagReconExists {\tt [false]}] A flag to indicate whether the
+  reconstructed array has been saved by a previous run of Duchamp. If
+  set true, the reconstructed array will be read from the file given by
+  {\tt reconFile}, rather than calculated directly.
+\item[reconFile (no default assumed)] The FITS file that contains the
+  reconstructed array. If {\tt flagReconExists} is true and this
+  parameter is not defined, the default file searched will be
+  determined by the {\`a} trous parameters (see \S\ref{sec-recon}).
 \item[OutFile {\tt [./duchamp-Results]}] The file where the final
   detections are to be recorded. This also records the list of input
   parameters.
@@ -913,13 +942,6 @@ not matter, they are grouped here in logical sections.
   merged. This is primarily for use in debugging and diagnostic
   purposes -- normal use of the program will probably not require
   this.
-\item[flagSubsection {\tt [false]}] A flag to indicate whether one
-  wants a subsection of the requested image.
-\item[Subsection {\tt [ [*,*,*] ]}] The requested subsection, which
-  should be specified in the format {\tt [x1:x2,y1:y2,z1:z2]}, where
-  the limits are inclusive. If the full range of a dimension is
-  required, use a {\tt *}, \eg if you want the full spectral range of
-  a subsection of the image, use {\tt [30:140,30:140,*]}.
 \item[flagOutputRecon {\tt [false]}] A flag to say whether or not to
   save the reconstructed cube as a FITS file. The filename will be
   derived from the ImageFile -- the reconstruction of {\tt image.fits}
@@ -1242,6 +1264,54 @@ output file in Appendix~\ref{app-output} (the indentation has been removed to ma
   \end{verbatim}
 }
 \end{landscape}
+
+\section{Installing Duchamp}
+\begin{verbatim}
+There is an executable (Duchamp) that has been compiled on a Debian
+Linux kernel 2.6.8-2-686, with gcc version 3.3.5 (Debian 1:3.3.5-13)
+
+If that is no good to you, you can compile it yourself using the
+Makefile included in this directory (sorry for not having a configure
+script or similar yet!).
+
+Duchamp uses three main external libraries: pgplot, cfitsio and
+wcslib. You will need to set the paths for the base directory and
+three libraries, as they are currently configured for my use and will
+not be of much use to you! These are:
+
+BASE --> the current directory
+PGDIR --> where the pgplot libraries (and header files) are located
+CFITSIODIR --> where the header file fitsio.h is
+CFITSIOLDIR --> where the cfitsio library is located (libcfitsio.a)
+WCSDIR --> where the wcslib header files are
+WCSLDIR --> where the wcslib library is located (libwcs.a)
+
+If you do not have the libraries, they can be downloaded from the
+following locations: 
+PGPlot -- http://www.astro.caltech.edu/~tjp/pgplot/
+cfitsio -- http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html
+wcslib -- http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html
+
+Once you've set up the Makefile correctly, then simply typing
+> make duchamp
+will compile the program.
+
+To run it, you need to use the syntax
+> Duchamp -p parameterFile
+where parameterFile is a file with the input parameters, including the
+name of the cube you want to search.
+
+There are two example input files included with the distribution. The
+smaller one, InputExample, shows the typical parameters one might want
+to set. The large one, InputComplete, lists all parameters that can be
+entered, and a brief description of them. Refer to the documentation
+for further details.
+
+To get going quickly, just replace the "your-file-here" in
+InputExample with your image name, and type
+> Duchamp -p InputExample
+and you're off!
+\end{verbatim}
 
 \section{Robust statistics for a Normal distribution}
 \label{app-madfm}
