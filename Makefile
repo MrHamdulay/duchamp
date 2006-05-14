@@ -12,7 +12,8 @@ PGPLOTLIB = -L$(PGDIR) -L/usr/X11R6/lib/ -lcpgplot -lpgplot -lX11
 
 #CFITSIOLIB = -lcfitsio 
 CFITSIOINC = /DATA/SITAR_1/whi550/cfitsio
-CFITSIODIR = /usr/local/lib
+#CFITSIODIR = /usr/local/lib
+CFITSIODIR = /DATA/SITAR_1/whi550/cfitsio
 CFITSIOLIB = -L$(CFITSIODIR) -lcfitsio
 
 WCSDIR = /DATA/SITAR_1/whi550/wcslib-4.2
@@ -40,7 +41,8 @@ DETECTION = $(DETECTIONDIR)/areClose.o\
 	$(DETECTIONDIR)/thresholding_functions.o
 
 CUBESDIR = $(BASE)/Cubes
-CUBES = $(CUBESDIR)/cubicSearch.o\
+CUBES = $(CUBESDIR)/baseline.o\
+	$(CUBESDIR)/cubicSearch.o\
 	$(CUBESDIR)/detectionIO.o\
 	$(CUBESDIR)/drawMomentCutout.o\
 	$(CUBESDIR)/getImage.o\

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <ATrous/atrous.hh>
-#include <Cubes/cubes.hh>
+#include <Utils/utils.hh>
 #include <param.hh>
 
 void baselineSubtract(long numSpec, long specLength, float *originalCube, float *baselineValues, Param &par)
@@ -106,94 +106,42 @@ void getBaseline(long size, float *input, float *baseline, Param &par)
 }
 
 
-void Cube::removeBaseline()
+void getBaseline(long size, float *input, float *baseline)
 {
   /**
-   *  Cube::removeBaseline()
-   *   A front-end to the getBaseline routine, specialised for the 
-   *   Cube data structure. Calls getBaseline on each spectrum individually.
-   *   Upon exit, the original array minus its spectral baseline is stored
-   *   If the reconstructed array exists, the baseline is subtracted from it as well.
-   *   in this->array and the baseline is in this->baseline.
+   *  getBaseline(long size, float *input, float *baseline)
+   *    A function to find the baseline of an input (1-D) spectrum.
+   *    This version is designed for programs not using Param classes -- it keeps
+   *       that side of things hidden from the user.
+   *    Uses the a trous reconstruction, keeping only the highest two scales, to
+   *       reconstruct the baseline.
+   *    To avoid contamination by very strong signals, the input spectrum is trimmed
+   *       at 8*MADFM above the median before reconstruction. This reduces the strong
+   *       dips created by the presence of very strong signals.
+   *    The baseline array is returned -- no change is made to the input array.
    */
 
-//   baselineSubtract(this->axisDim[0]*this->axisDim[1], this->axisDim[2],
-// 		   this->array, this->baseline, this->par);
+  extern Filter reconFilter;
+  Param par;
+  par.setMinScale(reconFilter.getNumScales(size));
+  par.setAtrousCut(1);
+  par.setVerbosity(false);
 
-
-  float *spec     = new float[this->axisDim[2]];
-  float *thisBaseline = new float[this->axisDim[2]];
-  int numSpec = this->axisDim[0]*this->axisDim[1];
-
-  std::cout << "|                    |" << std::flush;
-  for(int pix=0; pix<numSpec; pix++){ // for each spatial pixel...
-
-    if(this->par.isVerbose() && ((100*(pix+1)/numSpec)%5 == 0) ){
-      std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b|";
-      for(int i=0;i<(100*(pix+1)/numSpec)/5;i++) std::cout << "#";
-      for(int i=(100*(pix+1)/numSpec)/5;i<20;i++) std::cout << " ";
-      std::cout << "|" << std::flush;
+  float *spec = new float[size];
+  float med,sig;
+  findMedianStats(input,size,med,sig);
+  float threshold = 8. * sig;
+  for(int i=0;i<size;i++) {
+    if(fabsf(input[i]-med)>threshold){
+      if(input[i]>med) spec[i] = med + threshold;
+      else spec[i] = med - threshold;
     }
-
-    for(int z=0; z<this->axisDim[2]; z++)  spec[z] = this->array[z*numSpec + pix];
-
-    getBaseline(this->axisDim[2], spec, thisBaseline, this->par);
-
-    for(int z=0; z<this->axisDim[2]; z++) {
-      this->baseline[z*numSpec+pix] = thisBaseline[z];
-      if(!par.isBlank(this->array[z*numSpec+pix])){
-	this->array[z*numSpec+pix] -= thisBaseline[z];
-	if(this->reconExists) this->recon[z*numSpec+pix] -= thisBaseline[z];
-      }      
-    }
-
-  }  
-  
-  if(this->par.isVerbose()) std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
-}
-
-void Cube::replaceBaseline()
-{
-  /**
-   *  Cube::replaceBaseline()
-   *   A routine to replace the baseline flux on the reconstructed array (if it exists)
-   *   and the fluxes of each of the detected objects (if any).
-   */
-
-  if(this->par.getFlagBaseline()){
-
-    for(int i=0;i<this->numPixels;i++){
-      if(!(this->par.isBlank(this->array[i])))
-	this->array[i] += this->baseline[i];
-    }
-
-    if(this->reconExists){ 
-      // if we made a reconstruction, we need to add the baseline back in for plotting purposes
-      for(int i=0;i<this->numPixels;i++){
-	if(!(this->par.isBlank(this->array[i])))
-	  this->recon[i] += this->baseline[i];
-      }
-    }
- 
-    int pos;
-    float flux;
-    // Now add the baseline to the flux for all the objects.
-    for(int obj=0;obj<this->objectList.size();obj++){ // for each detection
-      for(int vox=0;vox<this->objectList[obj].getSize();vox++){ // for each of its voxels
-
-	pos = this->objectList[obj].getX(vox) + 
-	  this->axisDim[0]*this->objectList[obj].getY(vox) + 
-	  this->axisDim[0]*this->axisDim[1]*this->objectList[obj].getZ(vox);
-
-	flux = this->objectList[obj].getF(vox) + this->baseline[pos];
-
-	this->objectList[obj].setF(vox, flux);
-
-      }
-      this->objectList[obj].calcParams();  // correct the flux calculations.
-
-    }
-  
+    else spec[i] = input[i];
   }
 
+  atrous1DReconstruct(size, spec, baseline, par);
+
+  delete [] spec;
+
 }
+
