@@ -236,13 +236,23 @@ string Detection::outputLabelPix()
 
   std::stringstream ss;
   ss.setf(std::ios::fixed);
+//   ss << this->pix.size() << " Voxels:  ";
+//   ss << setprecision(1) << setfill(' ');
+//   ss       <<setw(5)<< this->xcentre + this->xSubOffset;
+//   ss <<" " <<setw(5)<< this->ycentre + this->ySubOffset;
+//   ss <<" " <<setw(5)<< this->zcentre + this->zSubOffset;
+//   ss <<" ["<<setw(3)<< this->xmin + this->xSubOffset   <<":"<< this->xmax + this->xSubOffset;
+//   ss <<", "<<setw(3)<< this->ymin + this->ySubOffset   <<":"<< this->ymax + this->ySubOffset;
+//   ss <<", "<<setw(3)<< this->zmin + this->zSubOffset   <<":"<< this->zmax + this->zSubOffset << "]";
+  ss << "Centre: ";
   ss << setprecision(1) << setfill(' ');
-  ss       <<setw(5)<< this->xcentre + this->xSubOffset;
-  ss <<" " <<setw(5)<< this->ycentre + this->ySubOffset;
-  ss <<" " <<setw(5)<< this->zcentre + this->zSubOffset;
-  ss <<" ["<<setw(3)<< this->xmin + this->xSubOffset   <<":"<< this->xmax + this->xSubOffset;
-  ss <<", "<<setw(3)<< this->ymin + this->ySubOffset   <<":"<< this->ymax + this->ySubOffset;
-  ss <<", "<<setw(3)<< this->zmin + this->zSubOffset   <<":"<< this->zmax + this->zSubOffset << "]";
+  ss <<"(" << this->xcentre + this->xSubOffset;
+  ss <<", " << this->ycentre + this->ySubOffset;
+  ss <<", " << this->zcentre + this->zSubOffset << ")";
+  ss <<", Size=" << this->pix.size() << " Voxels,  ";
+  ss <<"["<< this->xmin + this->xSubOffset <<":"<< this->xmax + this->xSubOffset;
+  ss <<", "<< this->ymin + this->ySubOffset <<":"<< this->ymax + this->ySubOffset;
+  ss <<", "<< this->zmin + this->zSubOffset <<":"<< this->zmax + this->zSubOffset << "]";
   
   return ss.str();
 }
