@@ -37,7 +37,7 @@ void sort(float *arr, float *matchingArray, int begin, int end);
 // STATISTICS-RELATED ROUTINES
 void findMinMax(const float *array, const int size, float &min, float &max);
 float findMean(float *&array, int size);
-float findSigma(float *&array, int size);
+float findStddev(float *&array, int size);
 float findMedian(float *&array, int size);
 float findMADFM(float *&array, int size);
 void findMedianStats(float *&array, int size, float &median, float &madfm);

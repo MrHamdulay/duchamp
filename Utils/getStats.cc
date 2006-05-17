@@ -20,13 +20,13 @@ float findMean(float *&array, int size)
   return mean;
 }
 
-float findSigma(float *&array, int size)
+float findStddev(float *&array, int size)
 {
   float mean = findMean(array,size);
-  float sig = (array[0]-mean) * (array[0]-mean);
-  for(int i=1;i<size;i++) sig += (array[i]-mean)*(array[i]-mean);
-  sig = sqrt(sig/float(size-1));
-  return sig;
+  float stddev = (array[0]-mean) * (array[0]-mean);
+  for(int i=1;i<size;i++) stddev += (array[i]-mean)*(array[i]-mean);
+  stddev = sqrt(sig/float(size-1));
+  return stddev;
 }
 
 float findMedian(float *&array, int size)

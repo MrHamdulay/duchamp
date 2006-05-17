@@ -227,11 +227,11 @@ void Image::findStats(int code)
       this->sigma = tempSigma;
       break;
     case 10:
-      this->mean = findMedian(tempArray,goodSize);;
-      this->sigma = findSigma(tempArray,goodSize);
+      this->mean  = findMedian(tempArray,goodSize);;
+      this->sigma = findStddev(tempArray,goodSize);
       break;
     case 1:
-      this->mean = findMean(tempArray,goodSize);
+      this->mean  = findMean(tempArray,goodSize);
       this->sigma = findMADFM(tempArray,goodSize)/correctionFactor;
       break;
     case 11:

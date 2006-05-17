@@ -185,7 +185,7 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
 	if(isGood[z*xySize+npix]) 
 	  spec[goodSize++] = originalArray[z*xySize+npix]-reconArray[z*xySize+npix];
 //       if(goodSize>0) findNormalStats(spec,goodSize,dud,specSigma[npix]);
-      if(goodSize>0) specSigma[npix] = findSigma(spec,goodSize);
+      if(goodSize>0) specSigma[npix] = findStddev(spec,goodSize);
       else specSigma[npix] = 1.;
     }
 
@@ -272,7 +272,7 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
       if(isGood[z*xySize+npix]) 
 	image[goodSize++]=originalArray[z*xySize+npix]-reconArray[z*xySize+npix];
 //     if(goodSize>0) findNormalStats(image,goodSize,dud,imageSigma[z]);
-    if(goodSize>0) imageSigma[z] = findSigma(image,goodSize);
+    if(goodSize>0) imageSigma[z] = findStddev(image,goodSize);
     else imageSigma[z] = 1.;
   }
   // Next, do source finding.
