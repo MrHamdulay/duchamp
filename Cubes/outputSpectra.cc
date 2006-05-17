@@ -95,6 +95,10 @@ void Cube::outputSpectra()
 	loc = i;
       }
     }
+    // widen the flux range slightly so that the top & bottom don't lie on the axes.
+    float width = max - min;
+    max += width * 0.05;
+    min -= width * 0.05;
 
     // now plot the resulting spectrum
     if(this->flagWCS) newplot.gotoHeader("Velocity [km s\\u-1\\d]");
@@ -138,7 +142,7 @@ void Cube::outputSpectra()
       }
     }
     // widen the flux range slightly so that the top & bottom don't lie on the axes.
-    float width = max - min;
+    width = max - min;
     max += width * 0.05;
     min -= width * 0.05;
 
