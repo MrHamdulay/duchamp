@@ -87,7 +87,7 @@ void Cube::trimCube()
       delete [] this->detectMap;
       this->detectMap = newdetect;
 
-      if(this->par.getFlagATrous() || this->par.getFlagReconExists()){
+      if(this->par.getFlagATrous()){
 	// Trim the reconstructed array if we are going to do the reconstruction
 	float *newrecon  = new float[this->numPixels];
 	for(int x = 0; x < axisDim[0]; x++){

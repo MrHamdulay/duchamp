@@ -301,7 +301,7 @@ void Cube::initialiseCube(long *dimensions){
     this->specSigma  = new float[imsize];
     this->chanMean   = new float[dimensions[2]];
     this->chanSigma  = new float[dimensions[2]];
-    if(this->par.getFlagATrous() || this->par.getFlagReconExists())
+    if(this->par.getFlagATrous())
       this->recon    = new float[size];
     if(this->par.getFlagBaseline())
       this->baseline = new float[size];

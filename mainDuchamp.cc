@@ -77,7 +77,7 @@ int main(int argc, char * argv[])
   else std::cout << "Opened successfully." << endl; 
 
   // If the reconstructed array is to be read in from disk
-  if( cube->pars().getFlagReconExists() ){
+  if( cube->pars().getFlagReconExists() && cube->pars().getFlagATrous() ){
     if( cube->readReconCube() == FAILURE){
       std::cerr << "WARNING : Could not find existing reconstructed array.\n"
 		<< "          Will perform reconstruction using assigned parameters.\n";
@@ -128,7 +128,7 @@ int main(int argc, char * argv[])
     std::cout<<" Done."<<std::endl;
   }
 
-  if(cube->pars().getFlagATrous() || cube->pars().getFlagReconExists()){
+  if(cube->pars().getFlagATrous()){
     std::cout<<"Commencing search in reconstructed cube..."<<endl;
     cube->ReconSearch3D();
     std::cout<<"Done. Found "<<cube->getNumObj()<<" objects."<<endl;
