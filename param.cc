@@ -27,18 +27,18 @@ Param::Param(){
   this->reconFile       = "";
   // Output files
   this->flagLog         = true;
-  this->logFile         = "logfile.txt";
-  this->outFile         = "results.txt";
-  this->spectraFile     = "spectra.ps";
+  this->logFile         = "duchamp-Logfile.txt";
+  this->outFile         = "duchamp-Results.txt";
+  this->spectraFile     = "duchamp-Spectra.ps";
   this->flagOutputRecon = false;
   this->flagOutputResid = false;
   this->flagVOT         = false;
-  this->votFile         = "results.xml";
+  this->votFile         = "duchamp-Results.xml";
   this->flagKarma       = false;
-  this->karmaFile       = "results.ann";
+  this->karmaFile       = "duchamp-Results.ann";
   this->flagMaps        = true;
-  this->detectionMap    = "latest-detection-map.ps";
-  this->momentMap       = "latest-moment-map.ps";
+  this->detectionMap    = "duchamp-DetectionMap.ps";
+  this->momentMap       = "duchamp-MomentMap.ps";
   // Cube related parameters 
   this->flagBlankPix    = true;
   this->blankPixValue   = -8.00061;
@@ -66,7 +66,7 @@ Param::Param(){
   this->flagNegative    = false;
   // Object growth        
   this->flagGrowth      = false;
-  this->growthCut       = 1.5;
+  this->growthCut       = 2.;
   // FDR analysis         
   this->flagFDR         = false;
   this->alphaFDR        = 0.01;

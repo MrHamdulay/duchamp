@@ -7,6 +7,7 @@
 #include <cpgplot.h>
 #include <math.h>
 #include <unistd.h>
+#include <time.h>
 
 #include <duchamp.hh>
 #include <Detection/detection.hh>
@@ -90,10 +91,8 @@ int main(int argc, char * argv[])
   if(cube->pars().getFlagLog()){
     ofstream logfile(cube->pars().getLogFile().c_str());
     logfile << "New run of the Duchamp sourcefinder: ";
-    logfile.close();
-    string syscall = "date >> " + cube->pars().getLogFile();
-    system(syscall.c_str());
-    logfile.open(cube->pars().getLogFile().c_str(),std::ios::app);
+    time_t now = time(NULL);
+    logfile << asctime( localtime(&now) );
     logfile << cube->pars();
     logfile.close();
   }

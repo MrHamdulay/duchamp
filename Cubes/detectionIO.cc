@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <time.h>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
 
@@ -61,8 +62,19 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
   stream<<"      <DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>"<<endl;
 
   // PARAM section -- parts that are not entry-specific ie. apply to whole dataset
-  stream<<"      <PARAM name=\"FITS file\" datatype=\"char\" ucd=\"meta.file;meta.fits\" value=\"" << this->par.getImageFile() << "\"/>"<<endl;
-
+  string fname = this->pars().getImageFile();
+  if(this->pars().getFlagSubsection()) fname+=this->pars().getSubsection();
+  stream<<"      <PARAM name=\"FITS file\" datatype=\"char\" ucd=\"meta.file;meta.fits\" value=\"" << fname << "\"/>"<<endl;
+  if(this->pars().getFlagFDR())
+    stream<<"      <PARAM name=\"FDR Significance\" datatype=\"float\" ucd=\"stat.param\" value=\"" << this->pars().getAlpha() << "\">" << endl;
+  else
+    stream<<"      <PARAM name=\"Threshold\" datatype=\"float\" ucd=\"stat.snr\" value=\"" << this->pars().getCut() << "\">" << endl;
+  if(this->pars().getFlagATrous()){
+    stream<<"      <PARAM name=\"ATrous note\" datatype=\"char\" ucd=\"meta.note\" value=\"The a trous reconstruction method was used, with the following parameters.\">" << endl;
+    stream<<"      <PARAM name=\"ATrous Cut\" datatype=\"float\" ucd=\"stat.snr\" value=\"" << this->pars().getAtrousCut() << "\">" << endl;
+    stream<<"      <PARAM name=\"ATrous Minimum Scale\" datatype=\"int\" ucd=\"stat.param\" value=\"" << this->pars().getMinScale() << "\">" << endl;
+    stream<<"      <PARAM name=\"ATrous Filter\" datatype=\"char\" ucd=\"meta.code;stat\" value=\"" << this->pars().getFilterName() << "\">" << endl;
+  }
   // FIELD section -- names, titles and info for each column.
   stream<<"      <FIELD name=\"ID\" ID=\"col1\" ucd=\"meta.id\" datatype=\"int\" width=\"4\"/>"<<endl;
   stream<<"      <FIELD name=\"Name\" ID=\"col2\" ucd=\"meta.id;meta.main\" datatype=\"char\" arraysize=\"14\"/>"<<endl;
@@ -124,10 +136,8 @@ void Cube::outputDetectionList()
   int flag;
   std::ofstream output(this->par.getOutFile().c_str());
   output<<"Results of the Duchamp source finder: ";
-  output.close();
-  string syscall = "date >> " + this->par.getOutFile();
-  system(syscall.c_str());
-  output.open(this->par.getOutFile().c_str(),std::ios::app);
+  time_t now = time(NULL);
+  output << asctime( localtime(&now) );
   this->showParam(output);
   output<<"Total number of detections = "<<this->objectList.size()<<endl;
   output<<"--------------------"<<endl;
