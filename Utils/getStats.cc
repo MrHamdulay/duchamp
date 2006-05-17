@@ -25,7 +25,7 @@ float findStddev(float *&array, int size)
   float mean = findMean(array,size);
   float stddev = (array[0]-mean) * (array[0]-mean);
   for(int i=1;i<size;i++) stddev += (array[i]-mean)*(array[i]-mean);
-  stddev = sqrt(sig/float(size-1));
+  stddev = sqrt(stddev/float(size-1));
   return stddev;
 }
 
@@ -93,7 +93,7 @@ void findMedianStats(float *&array, long size, float &median, float &madfm)
 }
   
 
-void findNormalStats(float *&array, int size, float &mean, float &sig)
+void findNormalStats(float *&array, int size, float &mean, float &stddev)
 {
   mean = array[0];
   for(int i=1;i<size;i++){
@@ -101,9 +101,9 @@ void findNormalStats(float *&array, int size, float &mean, float &sig)
   }
   mean /= float(size);
 
-  sig = (array[0]-mean) * (array[0]-mean);
-  for(int i=1;i<size;i++) sig += (array[i]-mean)*(array[i]-mean);
-  sig = sqrt(sig/float(size-1));
+  stddev = (array[0]-mean) * (array[0]-mean);
+  for(int i=1;i<size;i++) stddev += (array[i]-mean)*(array[i]-mean);
+  stddev = sqrt(stddev/float(size-1));
 
 }
 
