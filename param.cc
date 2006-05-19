@@ -183,7 +183,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 									 par.getSubsection())   <<endl;
   else 
     theStream<<setw(40)<<"Image to be analysed"                 <<"= "<<par.getImageFile()      <<endl;
-  if(par.getFlagReconExists()){
+  if(par.getFlagReconExists() && par.getFlagATrous()){
     theStream<<setw(40)<<"Reconstructed array exists?"          <<"= "<<par.getFlagReconExists()<<endl;
     theStream<<setw(40)<<"FITS file containing reconstruction"  <<"= "<<par.getReconFile()      <<endl;
   }
