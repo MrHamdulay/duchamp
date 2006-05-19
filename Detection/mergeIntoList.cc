@@ -15,34 +15,30 @@ void mergeIntoList(Detection &object, vector <Detection> &objList, Param &par)
    *        threshold is set to 1. These parameters are changed back before returning.
    */
 
-  bool *haveMerged = new bool;
-  *haveMerged = false;
-  long *ctr = new long;
+  bool haveMerged = false;
   bool flagAdjacent = par.getFlagAdjacent();
   par.setFlagAdjacent(true);
   float threshold = par.getThreshV();
   par.setThreshV(1.);
-  *ctr = 0;
+  long ctr = 0;
   if(objList.size()>0){
     do {
       Detection *obj2 = new Detection;
-      *obj2 = objList.at(*ctr);
+      *obj2 = objList.at(ctr);
       if(areClose(object, *obj2, par)){
 	obj2->addAnObject(object);
-	objList.erase( objList.begin() + *ctr );
+	objList.erase( objList.begin() + ctr );
 	objList.push_back( *obj2 );
-	*haveMerged = true;
+	haveMerged = true;
       }
-      else (*ctr)++;
+      else ctr++;
       delete obj2;
       
-    } while( !(*haveMerged) && (*ctr<objList.size()) );
+    } while( !(haveMerged) && (ctr<objList.size()) );
   }
 
-  if(!(*haveMerged)) objList.push_back(object);
+  if(!haveMerged) objList.push_back(object);
 
-  delete haveMerged;
-  delete ctr;
   par.setFlagAdjacent(flagAdjacent);
   par.setThreshV(threshold);
 

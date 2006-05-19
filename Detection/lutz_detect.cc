@@ -50,15 +50,13 @@ void Image::lutz_detect()
     for(int posX=0;posX<(this->axisDim[0]+1);posX++){
       // Now the loop for a given row, looking at each column individually.
 
-      char *currentMarker = new char;
-      *currentMarker = marker[posX];
+      char currentMarker = marker[posX];
       marker[posX] = NULLMARKER;
       pix->setX(posX);
 
-      bool *isObject = new bool;
-      *isObject = false;
+      bool isObject = false;
       if((posX<this->axisDim[0])&&(posY<this->axisDim[1])){ // if we are in the original image
-	*isObject = this->isDetection(posX,posY);
+	isObject = this->isDetection(posX,posY);
 	pix->setF( this->array[posY*this->axisDim[0] + posX] );
       }
       // else we're in the padding row/col and isObject=FALSE;
@@ -72,7 +70,7 @@ void Image::lutz_detect()
        * If it doesn't touch a prior object, this is the start of a completly
        * new object on this row.
        */
-      if ( (*isObject) && (status[CURRENT] != OBJECT) ){
+      if ( (isObject) && (status[CURRENT] != OBJECT) ){
 
 	status[CURRENT] = OBJECT;
 	if(status[PRIOR] == OBJECT){
@@ -108,9 +106,9 @@ void Image::lutz_detect()
        *         (priorStatus=COMPLETE), then finish it and output data.
        *         Addition -- only if it has more than the minimum no. of pixels.
        */
-      if(*currentMarker != NULLMARKER){
+      if(currentMarker != NULLMARKER){
 
-	if(*currentMarker == 'S'){
+	if(currentMarker == 'S'){
 	  psS->push_back(status[PRIOR]);      // PUSH PS onto PSSTACK
 	  if(status[CURRENT] == NONOBJECT){
 	    psS->push_back(COMPLETE);         // PUSH COMPLETE ONTO PSSTACK;
@@ -123,7 +121,7 @@ void Image::lutz_detect()
 	}
 
 	/*---------*/
-	if(*currentMarker == 's'){
+	if(currentMarker == 's'){
 
 	  if( (status[CURRENT] == OBJECT) && (status[PRIOR] == COMPLETE) ){
 	    status[PRIOR] = psS->back();
@@ -140,10 +138,10 @@ void Image::lutz_detect()
 	}
 
 	/*---------*/
-	if(*currentMarker == 'f') status[PRIOR] = INCOMPLETE;
+	if(currentMarker == 'f') status[PRIOR] = INCOMPLETE;
 
 	/*---------*/
-	if(*currentMarker == 'F') {
+	if(currentMarker == 'F') {
 
 	  status[PRIOR] = psS->back();
 	  psS->pop_back();                    //POP PSSTACK ONTO PS
@@ -171,7 +169,7 @@ void Image::lutz_detect()
 
       } // end of PROCESSMARKER section ( if(currentMarker!=NULLMARKER) )
 
-      if (*isObject){
+      if (isObject){
 	oS->back().info.addPixel(*pix);
       }
       else{
@@ -201,9 +199,6 @@ void Image::lutz_detect()
 	}
       	
       } //-> end of END SEGMENT else{ clause
-
-      delete currentMarker;
-      delete isObject;
 
     }//-> end of loop over posX
 

@@ -48,38 +48,36 @@ void Detection::calcParams()
     this->ymax = 0;
     this->zmin = 0;
     this->zmax = 0;
-    int *ctr = new int;
-    for((*ctr)=0;(*ctr)<this->pix.size();(*ctr)++){
-      this->xcentre   += this->pix[*ctr].itsX;
-      this->ycentre   += this->pix[*ctr].itsY;
-      this->zcentre   += this->pix[*ctr].itsZ;
-      this->totalFlux += this->pix[*ctr].itsF;
-      if(((*ctr)==0)||(this->pix[*ctr].itsX<this->xmin))     this->xmin     = this->pix[*ctr].itsX;
-      if(((*ctr)==0)||(this->pix[*ctr].itsX>this->xmax))     this->xmax     = this->pix[*ctr].itsX;
-      if(((*ctr)==0)||(this->pix[*ctr].itsY<this->ymin))     this->ymin     = this->pix[*ctr].itsY;
-      if(((*ctr)==0)||(this->pix[*ctr].itsY>this->ymax))     this->ymax     = this->pix[*ctr].itsY;
-      if(((*ctr)==0)||(this->pix[*ctr].itsZ<this->zmin))     this->zmin     = this->pix[*ctr].itsZ;
-      if(((*ctr)==0)||(this->pix[*ctr].itsZ>this->zmax))     this->zmax     = this->pix[*ctr].itsZ;
+    for(int ctr=0;ctr<this->pix.size();ctr++){
+      this->xcentre   += this->pix[ctr].itsX;
+      this->ycentre   += this->pix[ctr].itsY;
+      this->zcentre   += this->pix[ctr].itsZ;
+      this->totalFlux += this->pix[ctr].itsF;
+      if((ctr==0)||(this->pix[ctr].itsX<this->xmin)) this->xmin = this->pix[ctr].itsX;
+      if((ctr==0)||(this->pix[ctr].itsX>this->xmax)) this->xmax = this->pix[ctr].itsX;
+      if((ctr==0)||(this->pix[ctr].itsY<this->ymin)) this->ymin = this->pix[ctr].itsY;
+      if((ctr==0)||(this->pix[ctr].itsY>this->ymax)) this->ymax = this->pix[ctr].itsY;
+      if((ctr==0)||(this->pix[ctr].itsZ<this->zmin)) this->zmin = this->pix[ctr].itsZ;
+      if((ctr==0)||(this->pix[ctr].itsZ>this->zmax)) this->zmax = this->pix[ctr].itsZ;
       if(this->negativeSource){
 	// if negative feature, peakFlux is most negative flux
-	if(((*ctr)==0)||(this->pix[*ctr].itsF < this->peakFlux)){
-	  this->peakFlux = this->pix[*ctr].itsF;
-	  this->xpeak = this->pix[*ctr].itsX;
-	  this->ypeak = this->pix[*ctr].itsY;
-	  this->zpeak = this->pix[*ctr].itsZ;
+	if((ctr==0)||(this->pix[ctr].itsF < this->peakFlux)){
+	  this->peakFlux = this->pix[ctr].itsF;
+	  this->xpeak = this->pix[ctr].itsX;
+	  this->ypeak = this->pix[ctr].itsY;
+	  this->zpeak = this->pix[ctr].itsZ;
 	}
       }
       else{
 	// otherwise, it's a regular detection, and peakFlux is most positive flux
-	if(((*ctr)==0)||(this->pix[*ctr].itsF > this->peakFlux)){
-	  this->peakFlux = this->pix[*ctr].itsF;
-	  this->xpeak = this->pix[*ctr].itsX;
-	  this->ypeak = this->pix[*ctr].itsY;
-	  this->zpeak = this->pix[*ctr].itsZ;
+	if((ctr==0)||(this->pix[ctr].itsF > this->peakFlux)){
+	  this->peakFlux = this->pix[ctr].itsF;
+	  this->xpeak = this->pix[ctr].itsX;
+	  this->ypeak = this->pix[ctr].itsY;
+	  this->zpeak = this->pix[ctr].itsZ;
 	}
       }
     }
-    delete ctr;
     this->xcentre /= this->pix.size();
     this->ycentre /= this->pix.size();
     this->zcentre /= this->pix.size();
@@ -202,6 +200,56 @@ float Detection::getIntegFlux(wcsprm *wcs)
 }
 
 
+void Detection::addAnObject(Detection &toAdd)
+{
+  /**
+   * Detection::addAnObject(Detection &)
+   *  Combines two objects by adding all the pixels of the argument to the instigator.
+   *  All pixel & flux parameters are recalculated (so that calcParams does not need to be 
+   *   called a second time), but WCS parameters are not.
+   */
+  /*  */
+  this->xcentre *= this->pix.size();
+  this->ycentre *= this->pix.size();
+  this->zcentre *= this->pix.size();
+  for(int ctr=0;ctr<toAdd.getSize();ctr++){
+    long x  = toAdd.getX(ctr);
+    long y  = toAdd.getY(ctr);
+    long z  = toAdd.getZ(ctr);
+    float f = toAdd.getF(ctr);
+    bool isNewPix = true;
+    int ctr2 = 0;
+    // For each pixel in the new object, test to see if it already appears in the object
+    while( isNewPix && (ctr2<this->pix.size()) ){
+      isNewPix = isNewPix && (( this->pix[ctr2].itsX != x ) || 
+			      ( this->pix[ctr2].itsY != y ) ||
+			      ( this->pix[ctr2].itsZ != z ) );
+      ctr2++;
+    }
+    if(isNewPix){
+      // If the pixel is new, add it to the object and re-calculate the parameters.
+      this->pix.push_back(toAdd.getPixel(ctr));
+      this->xcentre += toAdd.getX(ctr);
+      this->ycentre += toAdd.getY(ctr);
+      this->zcentre += toAdd.getZ(ctr);
+      this->totalFlux += toAdd.getF(ctr);
+      if(toAdd.getX(ctr)<this->xmin) this->xmin=toAdd.getX(ctr);
+      if(toAdd.getX(ctr)>this->xmax) this->xmax=toAdd.getX(ctr);
+      if(toAdd.getY(ctr)<this->ymin) this->ymin=toAdd.getY(ctr);
+      if(toAdd.getY(ctr)>this->ymax) this->ymax=toAdd.getY(ctr);
+      if(toAdd.getZ(ctr)<this->zmin) this->zmin=toAdd.getZ(ctr);
+      if(toAdd.getZ(ctr)>this->zmax) this->zmax=toAdd.getZ(ctr);
+      if(toAdd.getF(ctr)>this->peakFlux) this->peakFlux=toAdd.getF(ctr);
+    }
+  }
+  this->xcentre /= this->pix.size();
+  this->ycentre /= this->pix.size();
+  this->zcentre /= this->pix.size();
+
+}
+/*  */
+
+
 // void Detection::addAnObject(Detection &toAdd)
 // {
   /**
@@ -211,43 +259,6 @@ float Detection::getIntegFlux(wcsprm *wcs)
    *   called a second time), but WCS parameters are not.
    */
 /*
-  int *ctr = new int;
-  this->xcentre *= this->pix.size();
-  this->ycentre *= this->pix.size();
-  this->zcentre *= this->pix.size();
-  for((*ctr)=0;(*ctr)<toAdd.getSize();(*ctr)++){
-    this->pix.push_back(toAdd.getPixel(*ctr));
-    this->xcentre += toAdd.getX(*ctr);
-    this->ycentre += toAdd.getY(*ctr);
-    this->zcentre += toAdd.getZ(*ctr);
-    this->totalFlux += toAdd.getF(*ctr);
-    if(toAdd.getX(*ctr)<this->xmin) this->xmin=toAdd.getX(*ctr);
-    if(toAdd.getX(*ctr)>this->xmax) this->xmax=toAdd.getX(*ctr);
-    if(toAdd.getY(*ctr)<this->ymin) this->ymin=toAdd.getY(*ctr);
-    if(toAdd.getY(*ctr)>this->ymax) this->ymax=toAdd.getY(*ctr);
-    if(toAdd.getZ(*ctr)<this->zmin) this->zmin=toAdd.getZ(*ctr);
-    if(toAdd.getZ(*ctr)>this->zmax) this->zmax=toAdd.getZ(*ctr);
-    if(toAdd.getF(*ctr)>this->peakFlux) this->peakFlux=toAdd.getF(*ctr);
-  }
-  this->xcentre /= this->pix.size();
-  this->ycentre /= this->pix.size();
-  this->zcentre /= this->pix.size();
-    
-  delete ctr;
-
-}
-*/
-
-
-void Detection::addAnObject(Detection &toAdd)
-{
-  /**
-   * Detection::addAnObject(Detection &)
-   *  Combines two objects by adding all the pixels of the argument to the instigator.
-   *  All pixel & flux parameters are recalculated (so that calcParams does not need to be 
-   *   called a second time), but WCS parameters are not.
-   */
-
   int *ctr = new int;
   int *ctr2 = new int;
   bool *isNewPix = new bool;
@@ -297,7 +308,7 @@ void Detection::addAnObject(Detection &toAdd)
   delete ctr2;
   delete isNewPix;
 }
-
+*/
 
 void Detection::addOffsets(Param &par)
 {

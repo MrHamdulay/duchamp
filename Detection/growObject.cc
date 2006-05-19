@@ -93,77 +93,60 @@ void growObject(Detection &object, Image &image)
 void growObject(Detection &object, Cube &cube)
 {
   vector <bool> isInObj(cube.getSize(),false);
-  float *cut     = new float;	    
-  float *flux    = new float;
-  float *thresh1 = new float;
-  float *thresh2 = new float;
-  long  *pos     = new long;
-  long  *chanpos = new long;
-  long  *newx    = new long;
-  long  *newy    = new long;
-  long  *newz    = new long;
+  float thresh1;
+  float thresh2;
+  long  chanpos;
 
   for(int i=0;i<object.getSize();i++) {
     long pos = object.getX(i) + object.getY(i)*cube.getDimX() + 
       object.getZ(i)*cube.getDimX()*cube.getDimY();
     isInObj[pos] = true;
   }
-  *cut = cube.pars().getGrowthCut();
+  float cut = cube.pars().getGrowthCut();
   
   for(int pix=0; pix<object.getSize(); pix++){ // for each pixel in the object
-
-//     std::cout.setf(std::ios::right);
-//     std::cout <<":"<< setw(6) << pix+1 << "/";
-//     std::cout.unsetf(std::ios::right);
-//     std::cout.setf(std::ios::left);
-//     std::cout << setw(6) << object.getSize() << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b" << std::flush;
-//     std::cout.unsetf(std::ios::left);
-
 
     for(int xnbr=-1; xnbr<=1; xnbr++){
       for(int ynbr=-1; ynbr<=1; ynbr++){
 	for(int znbr=-1; znbr<=1; znbr++){
 
-	  if((xnbr!=0)||(ynbr!=0)||(znbr!=0)){ // ignore when all=0 ie. the current object pixel
+	  if((xnbr!=0)||(ynbr!=0)||(znbr!=0)){ 
+	    // ignore when all=0 ie. the current object pixel
 
-	    Voxel *pixnew = new Voxel;
-	    *pixnew = object.getPixel(pix);
-	    *newx = object.getX(pix) + xnbr;
-	    *newy = object.getY(pix) + ynbr;
-	    *newz = object.getZ(pix) + znbr;
+	    Voxel pixnew = object.getPixel(pix);
+	    long newx = object.getX(pix) + xnbr;
+	    long newy = object.getY(pix) + ynbr;
+	    long newz = object.getZ(pix) + znbr;
 	  
-	    if((*newx<cube.getDimX())&&(*newx>=0)&&
-	       (*newy<cube.getDimY())&&(*newy>=0)&&
-	       (*newz<cube.getDimZ())&&(*newz>=0)){
+	    if((newx<cube.getDimX())&&(newx>=0)&&
+	       (newy<cube.getDimY())&&(newy>=0)&&
+	       (newz<cube.getDimZ())&&(newz>=0)){
 	    
-// 	      std::cerr << *newx<<" "<<*newy<<" "<<*newz<<"  "
-// 			<<cube.getDimX()<<" "<<cube.getDimY()<<" "<<cube.getDimZ()
-// 			<<std::endl;
-	      pixnew->setX(*newx);
-	      pixnew->setY(*newy);
-	      pixnew->setZ(*newz);
+	      pixnew.setX(newx);
+	      pixnew.setY(newy);
+	      pixnew.setZ(newz);
 	      // In following R=recon, B=baseline
 	      // Four cases: i) B+R -- use recon
 	      //            ii) R   -- use recon
 	      //           iii) B   -- use array
 	      //            iv) none-- use array
-	      if(cube.isRecon()) *flux = cube.getReconValue(*newx,*newy,*newz);
-	      else  *flux = cube.getPixValue(*newx,*newy,*newz);
-	      pixnew->setF(*flux);
+	      float flux;
+	      if(cube.isRecon()) flux = cube.getReconValue(newx,newy,newz);
+	      else  flux = cube.getPixValue(newx,newy,newz);
+	      pixnew.setF(flux);
 
-	      *chanpos = *newx + *newy * cube.getDimX();
-	      *pos = *newx + *newy * cube.getDimX() + *newz * cube.getDimX() * cube.getDimY();
+	      long chanpos = newx + newy * cube.getDimX();
+	      long pos = newx + newy * cube.getDimX() + 
+		newz * cube.getDimX() * cube.getDimY();
 	      // thresh1 = spectral growth threshold
-	      *thresh1 = cube.getSpecMean(*chanpos) + *cut * cube.getSpecSigma(*chanpos);
+	      float thresh1 = cube.getSpecMean(chanpos) + cut * cube.getSpecSigma(chanpos);
 	      // thresh2 = channel map growth threshold
-	      *thresh2 = cube.getChanMean(*newz) + *cut * cube.getChanSigma(*newz);
-	      if( (!isInObj[*pos]) && 
-		  ( (*flux > *thresh1) || (*flux > *thresh2) ) ){
-		isInObj[*pos] = true;
-		object.addPixel(*pixnew);
+	      float thresh2 = cube.getChanMean(newz) + cut * cube.getChanSigma(newz);
+	      if( (!isInObj[pos]) && ( (flux > thresh1) || (flux > thresh2) ) ){
+		isInObj[pos] = true;
+		object.addPixel(pixnew);
 	      }
 	    }
-	    delete pixnew;
 	  }
 
 	}
@@ -173,16 +156,6 @@ void growObject(Detection &object, Cube &cube)
   } // end of pix loop
 
   object.calcParams();
-
-  delete cut;	    
-  delete flux;
-  delete thresh1;
-  delete thresh2;
-  delete pos;
-  delete chanpos;
-  delete newx;
-  delete newy;
-  delete newz;
 
   isInObj.clear();
 
