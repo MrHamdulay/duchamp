@@ -310,22 +310,8 @@ void Cube::plotWCSaxes()
   grid2[0] = 0.0;
 
 //   nlfunc_t pgwcsl_;
-  // Draw the celestial grid letting PGSBOX choose the increments.
+  // Draw the celestial grid with no intermediate tick marks.
   // Set LABCTL=2100 to write 1st coord on top, and 2nd on right
-  cpgslw(2);
-  //Colour indices used by cpgsbox -- make text the background colour for thick line case
-  ci[0] = 17; // grid lines, coord 1
-  ci[1] = 17; // grid lines, coord 2
-  ci[2] =  0; // numeric labels, coord 1
-  ci[3] =  0; // numeric labels, coord 2
-  ci[4] =  0; // axis annotation, coord 1
-  ci[5] =  0; // axis annotation, coord 2
-  ci[6] =  0; // title
-
-  cpgsbox(blc, trc, idents, opt, 2100, 0, ci, gcode, 0.0, 0, grid1, 0, grid2,
-	  0, pgwcsl_, 1, WCSLEN, 1, nlcprm, (int *)this->wcs, nldprm, 256, &ic,
-	  cache, &ierr);
-  
   //Colour indices used by cpgsbox -- make it all the same colour for thin line case.
   ci[0] = 17; // grid lines, coord 1
   ci[1] = 17; // grid lines, coord 2
@@ -334,10 +320,9 @@ void Cube::plotWCSaxes()
   ci[4] = 17; // axis annotation, coord 1
   ci[5] = 17; // axis annotation, coord 2
   ci[6] = 17; // title
-  cpgslw(1);
 
   cpgsbox(blc, trc, idents, opt, 2100, 0, ci, gcode, 0.0, 0, grid1, 0, grid2,
-	  0, pgwcsl_, 1, WCSLEN, 1, nlcprm, (int *)this->wcs, nldprm, 256, &ic,
+	  0, pgwcsl_, 1, WCSLEN, 1, nlcprm, (int *)(this->wcs), nldprm, 256, &ic,
 	  cache, &ierr);
 
   cpgsci(colour);

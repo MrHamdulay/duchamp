@@ -7,6 +7,18 @@
 
 void drawMomentCutout(Cube &cube, Detection &object)
 {
+  /** 
+   *  drawMomentCutout(cube, object)
+   *
+   *   A routine to draw the 0th moment for the given detection
+   *    using the flux given by the pixel array in the Cube.
+   *   The 0th moment is constructed by adding the flux of each
+   *    pixel within the full extent of the object (this may be more
+   *    pixels than were actually detected in the object)
+   *   A tick mark is also drawn to indicate angular scale (but only
+   *    if the WCS for the Cube is valid).
+   */
+
   float x1,x2,y1,y2;
   cpgqwin(&x1,&x2,&y1,&y2);
 
@@ -60,8 +72,7 @@ void drawMomentCutout(Cube &cube, Detection &object)
   while(image[ct]==cube.pars().getBlankPixVal()) ct++;
   z1 = z2 = image[ct];
   for(int i=1;i<size*size;i++){
-    if(// (!cube.pars().getFlagBlankPix())||
-       (image[i]!=blankVal)){
+    if(image[i]!=blankVal){
       if(image[i]<z1) z1=image[i];
       if(image[i]>z2) z2=image[i];
     }
@@ -93,34 +104,8 @@ void drawMomentCutout(Cube &cube, Detection &object)
   cpgsci(ci);
 
   if(cube.isWCS()){
-    // Now draw a tick mark to indicate size -- 30 arcmin in length
-    wcsprm *wcs = new wcsprm;
-    wcs = cube.getWCS();
-
-    double *pix   = new double[3];
-    double *world = new double[3];
-    pix[0] = double(xmin) + double(object.getXOffset()) + 2.;
-    pix[1] = double(ymin) + double(object.getYOffset()) + 2.;
-    pix[2] = object.getZcentre();
-    pixToWCSSingle(wcs,pix,world);
-    world[0] -= 0.25;
-    wcsToPixSingle(wcs,world,pix);
-    wcsfree(wcs);
-
-    float tickpt1 = xmin + 2.;
-    float tickpt2 = pix[0] - object.getXOffset();
-    float tickpt3 = ymin + 2.;
-    cpgsci(2);
-    int thick;
-    cpgqlw(&thick);
-    cpgslw(3);
-    cpgerrx(1,&tickpt1,&tickpt2,&tickpt3,2.);
-    //   cpgtext(0.5*(tickpt1+tickpt2)-1,tickpt3+2.,"30\'");
-    cpgslw(thick);
-    cpgsci(1);
-
-    delete [] pix;
-    delete [] world;
+    // Now draw a tick mark to indicate size -- 15 arcmin in length
+    cube.drawScale(xmin+2.,ymin+2.,object.getZcentre(),0.25);
   }
 
   cpgsci(1);
@@ -128,7 +113,61 @@ void drawMomentCutout(Cube &cube, Detection &object)
 
 }
 
-// void Detection::drawBorders(Detection &object, int xoffset, int yoffset)
+void Cube::drawScale(float xstart, float ystart, float channel, float scaleLength)
+{
+  /** 
+   *  Cube::drawScale(xstart, ystart, channel, scaleLength)
+   *
+   *   A routine to draw a scale bar on a (pre-existing) PGPlot image.
+   *   It uses an iterative technique to move from the given start position 
+   *    (xstart,ystart) along the positive x-direction so that the length is
+   *    within 1% of the requested value scaleLength.
+   *   The parameter "channel" is required for the wcslib calculations, as the 
+   *    positions could theoretically change with channel.
+   */
+
+  double *pix1   = new double[3];
+  double *pix2   = new double[3];
+  double *world1 = new double[3];
+  double *world2 = new double[3];
+  pix1[0] = pix2[0] = xstart + this->par.getXOffset();
+  pix1[1] = pix2[1] = ystart + this->par.getYOffset();
+  pix1[2] = pix2[2] = channel;
+  pixToWCSSingle(this->wcs,pix1,world1);
+
+  double angSep=0.;
+  bool keepGoing=false;
+  float step = 1.;
+  do{
+    if(angSep>scaleLength){
+      pix2[0] -= step;
+      step /= 2.;
+    }
+    pix2[0] += step;
+    pixToWCSSingle(this->wcs,pix2,world2);
+    angSep = angularSeparation(world1[0],world1[1],world2[0],world2[1]);
+  }while((fabs(angSep-scaleLength)/scaleLength)>0.01); // look for 1% change
+
+  float tickpt1 = pix1[0] - this->par.getXOffset();
+  float tickpt2 = pix2[0] - this->par.getXOffset();
+  float tickpt3 = ystart;
+  int colour;
+  cpgqci(&colour);
+  cpgsci(2);
+  int thick;
+  cpgqlw(&thick);
+  cpgslw(3);
+  cpgerrx(1,&tickpt1,&tickpt2,&tickpt3,2.);
+  cpgslw(thick);
+  cpgsci(colour);
+
+  delete [] pix1,pix2;
+  delete [] world1,world2;
+
+
+}
+
+
 void Detection::drawBorders(int xoffset, int yoffset)
 {
 
