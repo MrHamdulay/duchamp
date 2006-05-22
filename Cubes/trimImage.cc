@@ -3,12 +3,23 @@
 
 void Cube::trimCube()
 {
+  /**
+   *  Cube::trimCube()
+   *
+   *   If the blankPix flag has been set, this routine trims excess blank pixels 
+   *    from the edges of the spatial image.
+   *   It uses as its template the first channel, assuming that its non-BLANK size
+   *    is representative of the rest of the channels.
+   *   The edges are moved in until the first non-BLANK pixel is encountered.
+   *   All other arrays are similarly edited, and the amount of trimming is recorded.
+   *
+   */
+
   if(this->par.getFlagBlankPix()) {
 
     long xdim = this->axisDim[0];
     long ydim = this->axisDim[1];
     long zdim = this->axisDim[2];
-    //     const long ZCHAN = zdim/2;
     const long ZCHAN = 0;
 
     for(int z = 0; z < zdim; z++){
@@ -108,7 +119,6 @@ void Cube::trimCube()
 
     }
 
-
   }
 
 }
@@ -116,6 +126,13 @@ void Cube::trimCube()
 
 void Cube::unTrimCube()
 {
+  /**
+   *  Cube::unTrimCube()
+   *
+   *   If the cube has been trimmed by trimCube(), this task adds back the BLANK pixels on
+   *    the edges, so that it returns to its original size.
+   *   All arrays are similarly edited.
+   */
 
   if(this->par.getFlagCubeTrimmed()){
 

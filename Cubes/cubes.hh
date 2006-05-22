@@ -14,7 +14,6 @@
 #endif
 
 using std::string;
-//using std::ostream;
 using std::vector;
 
 /****************************************************************/
@@ -46,8 +45,6 @@ public:
   virtual void         saveArray(float *input, long size);
   float                getPixValue(long pos){return array[pos];};
   void                 setPixValue(long pos, float f){array[pos] = f;};
-//   bool                 isBlank(long pos){return blankarray[pos];};
-//   void                 setBlankValue(long pos, bool f){blankarray[pos] = f;};
   // Related to the object lists
   Detection            getObject(long number){return objectList[number];};
   void                 addObject(Detection object); 
@@ -74,7 +71,6 @@ protected:
                                    //     (ie. how large in each direction).
   long                 numPixels;  // total number of pixels in cube
   float               *array;      // array of data
-//   bool                *blankarray; // boolean array --> null pixels are true.
   vector <Detection>   objectList; // the list of detected objects in the image
   Param                par;        // a parameter list.
 };
@@ -94,7 +90,7 @@ class Image : public DataArray
 {
 public:
   Image(){
-    numPixels=0; // numObject=0; 
+    numPixels=0;
     numDim=2;};
   Image(long nPix);
   Image(long *dimensions);
@@ -183,9 +179,6 @@ public:
   float   getPixValue(long pos){return array[pos];};
   float   getPixValue(long x, long y, long z){
     return array[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x];};
-//   float   isBlank(long pos){return blankarray[pos];};
-//   float   isBlank(long x, long y, long z){
-//     return blankarray[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x];};
   short   getDetectMapValue(long pos){return detectMap[pos];};
   short   getDetectMapValue(long x, long y){return detectMap[y*axisDim[0] + x];};
   bool    isRecon(){return reconExists;};
@@ -215,12 +208,12 @@ public:
   float   getSpecSigma(int pixel){return specSigma[pixel];};
   float   getChanMean(int channel){return chanMean[channel];};
   float   getChanSigma(int channel){return chanSigma[channel];};
-  void    setCubeStats();  // in cubes.cc
+  void    setCubeStats();    // in Cubes/cubes.cc
 
   // Functions that act on the cube
-  void    removeMW();
-  void    trimCube();
-  void    unTrimCube();
+  void    removeMW();        // in Cubes/cubes.cc
+  void    trimCube();        // in Cubes/trimImage.cc
+  void    unTrimCube();      // in Cubes/trimImage.cc
   void    removeBaseline();  // in ATrous/baselineSubtract.cc
   void    replaceBaseline(); // in ATrous/baselineSubtract.cc
   void    invert();          // in Cubes/invertCube.cc
@@ -260,6 +253,8 @@ public:
   void    plotMomentMap(string pgDestination);        // in Cubes/plotting.cc
   void    plotWCSaxes();                              // in Cubes/plotting.cc
   void    outputSpectra();                            // in Cubes/outputSpectra.cc
+  void    drawScale(float xstart, float ystart, float channel, float scaleLength);
+                                                      // in Cubes/drawMomentCutout.cc
 
 
 private: 
@@ -294,8 +289,6 @@ vector <Detection> reconSearch(long *dim,float *originalArray,float *reconArray,
 vector <Detection> cubicSearch(long *dim, float *Array, Param &par);
 vector <Detection> cubicSearchNMerge(long *dim, float *Array, Param &par);
 
-// void growObjectSpectral(Detection &object, Image &spectrum);
-// void growObjectSpatial(Detection &object, Image &image);
 void growObject(Detection &object, Image &image);
 void growObject(Detection &object, Cube &cube);
 

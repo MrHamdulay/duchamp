@@ -28,6 +28,16 @@ bool isDetection(float value, float mean, float sigma, float cut)
 
 int Image::setupFDR()
 {
+  /**
+   *  Image::setupFDR()
+   *   Determines the critical Prob value for the False Discovery Rate
+   *    detection routine. All pixels with Prob less than this value will
+   *    be considered detections.
+   *   The Prob here is the probability, assuming a Normal distribution, of
+   *    obtaining a value as high or higher than the pixel value (ie. only the
+   *    positive tail of the PDF)
+   */
+
   this->alpha = this->par.alphaFDR;
 
   // first calculate p-value for each pixel, using mean and sigma

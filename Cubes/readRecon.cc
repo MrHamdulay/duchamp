@@ -9,6 +9,15 @@
 
 int Cube::readReconCube()
 {
+  /** 
+   *  Cube::readReconCube()
+   *   
+   *   A way to read in a previously reconstructed array, corresponding to the 
+   *    requested parameters, or in the filename given by reconFile.
+   *   Performs various tests to make sure there are no clashes between the requested
+   *    parameters and those stored in the header of the FITS file.
+   */
+
 
   fitsfile *fptr;
   int status = 0;
@@ -97,6 +106,7 @@ int Cube::readReconCube()
     }
   }      
 
+  char *comment = new char[80];
   int minMW;
   fits_read_key(fptr, TINT, (char *)keyword_minMW.c_str(), &minMW, comment, &status);
   if(minMW != this->par.getMinMW()){
@@ -122,7 +132,6 @@ int Cube::readReconCube()
   // Make the a trous parameters match what the recon file has.
   int scaleMin,filterCode;
   float snrRecon;
-  char *comment = new char[80];
   if(!this->par.getFlagATrous()){
     this->par.setFlagATrous(true);
     std::cerr << "WARNING <readReconCube> : Setting flagAtrous from false to true, as the reconstruction exists.\n";

@@ -7,7 +7,6 @@
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
 
-//using std::ofstream;
 using std::endl;
 using std::setw;
 using std::setprecision;

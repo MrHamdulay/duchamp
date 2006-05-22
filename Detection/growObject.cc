@@ -7,91 +7,20 @@
 using std::vector;
 using std::setw;
 
-// void Detection::growObject(Image &image)
-// {
-//   vector <bool> isInObj(image.getSize(),false);
-//   for(int i=0;i<this->pix.size();i++) 
-//     isInObj[this->pix[i].getX() + this->pix[i].getY()*image.getDimX()] = true;
-
-//   for(int pix=0; pix<this->pix.size(); pix++){ // for each pixel in the object
-
-//     for(int xnbr=-1; xnbr<=1; xnbr++){
-//       for(int ynbr=-1; ynbr<=1; ynbr++){
-// 	if((xnbr!=0)||(ynbr!=0)){ // ignore when both=0 ie. the current object pixel
-
-// 	  Voxel *pixnew = new Voxel;
-// 	  *pixnew = object.getPixel(pix);
-// 	  long newx = this->pix[pix].getX() + xnbr;
-// 	  long newy = this->pix[pix].getY() + ynbr;
-	  
-// 	  if((newx<image.getDimX())&&(newy<image.getDimY())&&(newx>=0)&&(newy>=0)){
-	    
-// 	    pixnew->setX(newx);
-// 	    pixnew->setY(newy);
-// 	    pixnew->setF(image.getPixValue(newx,newy));
-	    
-// 	    if( (!isInObj[newx+newy*image.getDimX()]) && 
-// 		(isDetection(pixnew->getF(), image.getMean(), 
-// 			     image.getSigma(), image.pars().getGrowthCut())) ){
-// 	      isInObj[newx+newy*image.getDimX()] = true;
-// 	      this->addPixel(*pixnew);
-// 	    }
-// 	  }
-// 	  delete pixnew;
-// 	}
-//       }
-//     }
-
-//   }
-
-//   isInObj.clear();
-
-// }
-
-
-void growObject(Detection &object, Image &image)
-{
-  vector <bool> isInObj(image.getSize(),false);
-  for(int i=0;i<object.getSize();i++) 
-    isInObj[object.getX(i) + object.getY(i)*image.getDimX()] = true;
-
-  for(int pix=0; pix<object.getSize(); pix++){ // for each pixel in the object
-
-    for(int xnbr=-1; xnbr<=1; xnbr++){
-      for(int ynbr=-1; ynbr<=1; ynbr++){
-	if((xnbr!=0)||(ynbr!=0)){ // ignore when both=0 ie. the current object pixel
-
-	  Voxel *pixnew = new Voxel;
-	  *pixnew = object.getPixel(pix);
-	  long newx = object.getX(pix) + xnbr;
-	  long newy = object.getY(pix) + ynbr;
-	  
-	  if((newx<image.getDimX())&&(newy<image.getDimY())&&(newx>=0)&&(newy>=0)){
-	    
-	    pixnew->setX(newx);
-	    pixnew->setY(newy);
-	    pixnew->setF(image.getPixValue(newx,newy));
-	    
-	    if( (!isInObj[newx+newy*image.getDimX()]) && 
-		(isDetection(pixnew->getF(), image.getMean(), 
-			     image.getSigma(), image.pars().getGrowthCut())) ){
-	      isInObj[newx+newy*image.getDimX()] = true;
-	      object.addPixel(*pixnew);
-	    }
-	  }
-	  delete pixnew;
-	}
-      }
-    }
-
-  }
-
-  isInObj.clear();
-
-}
-
 void growObject(Detection &object, Cube &cube)
 {
+  /** 
+   *  growObject(Detection, Cube)
+   *    A function to grow an object (given by the Detection)
+   *     out to some lower threshold.
+   *    The Cube is necessary to see both the Param list, containing
+   *     the growth threshold, and the actual array of pixel fluxes.
+   *    Each pixel has each of its neighbours examined, and if one of 
+   *     them is not in the object but above the growth threshold, it
+   *     is added to the object.
+   */
+
+
   vector <bool> isInObj(cube.getSize(),false);
   float thresh1;
   float thresh2;
@@ -145,17 +74,62 @@ void growObject(Detection &object, Cube &cube)
 	      if( (!isInObj[pos]) && ( (flux > thresh1) || (flux > thresh2) ) ){
 		isInObj[pos] = true;
 		object.addPixel(pixnew);
-	      }
-	    }
-	  }
+	      } // end of if
 
-	}
-      }
-    }
+	    } // end of if clause regarding newx, newy, newz
+
+	  } // end of if clause regarding xnbr, ynbr, znbr
+
+	} // end of znbr loop
+      } // end of ynbr loop
+    } // end of xnbr loop
       
   } // end of pix loop
 
   object.calcParams();
+
+  isInObj.clear();
+
+}
+
+
+
+void growObject(Detection &object, Image &image)
+{
+  vector <bool> isInObj(image.getSize(),false);
+  for(int i=0;i<object.getSize();i++) 
+    isInObj[object.getX(i) + object.getY(i)*image.getDimX()] = true;
+
+  for(int pix=0; pix<object.getSize(); pix++){ // for each pixel in the object
+
+    for(int xnbr=-1; xnbr<=1; xnbr++){
+      for(int ynbr=-1; ynbr<=1; ynbr++){
+	if((xnbr!=0)||(ynbr!=0)){ // ignore when both=0 ie. the current object pixel
+
+	  Voxel *pixnew = new Voxel;
+	  *pixnew = object.getPixel(pix);
+	  long newx = object.getX(pix) + xnbr;
+	  long newy = object.getY(pix) + ynbr;
+	  
+	  if((newx<image.getDimX())&&(newy<image.getDimY())&&(newx>=0)&&(newy>=0)){
+	    
+	    pixnew->setX(newx);
+	    pixnew->setY(newy);
+	    pixnew->setF(image.getPixValue(newx,newy));
+	    
+	    if( (!isInObj[newx+newy*image.getDimX()]) && 
+		(isDetection(pixnew->getF(), image.getMean(), 
+			     image.getSigma(), image.pars().getGrowthCut())) ){
+	      isInObj[newx+newy*image.getDimX()] = true;
+	      object.addPixel(*pixnew);
+	    }
+	  }
+	  delete pixnew;
+	}
+      }
+    }
+
+  }
 
   isInObj.clear();
 

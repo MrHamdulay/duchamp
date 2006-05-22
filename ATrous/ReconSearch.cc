@@ -153,14 +153,12 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
   int zdim = dim[2];
   int xySize = dim[0] * dim[1];
   int fullSize = zdim * xySize;
-  int num, goodSize;
+  int num=0, goodSize;
 
-  //  bool flagBlank=par.getFlagBlankPix();
   float blankPixValue = par.getBlankPixVal();
   bool *isGood = new bool[fullSize];
   for(int pos=0;pos<fullSize;pos++) 
     isGood[pos] = !par.isBlank(originalArray[pos]);
-    //    isGood[pos] = (!flagBlank) || (originalArray[pos]!=blankPixValue);
  
   float dud;
 
@@ -177,14 +175,12 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
       goodSize=0;
       for(int z=0;z<zdim;z++) 
 	if(isGood[z*xySize+npix]) spec[goodSize++] = originalArray[z*xySize+npix];
-//       if(goodSize>0) findMedianStats(spec,goodSize,specMedian[npix],dud);
       if(goodSize>0) specMedian[npix] = findMedian(spec,goodSize);
       else specMedian[npix] = blankPixValue;
       goodSize=0;
       for(int z=0;z<zdim;z++) 
 	if(isGood[z*xySize+npix]) 
 	  spec[goodSize++] = originalArray[z*xySize+npix]-reconArray[z*xySize+npix];
-//       if(goodSize>0) findNormalStats(spec,goodSize,dud,specSigma[npix]);
       if(goodSize>0) specSigma[npix] = findStddev(spec,goodSize);
       else specSigma[npix] = 1.;
     }
@@ -193,12 +189,11 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
     long *specdim = new long[2];
     specdim[0] = zdim; specdim[1]=1;
     Image *spectrum = new Image(specdim);
+    delete [] specdim;
     spectrum->saveParam(par);
     spectrum->pars().setBeamSize(2.); // for spectrum, only neighbouring channels correlated
     for(int npix=0; npix<xySize; npix++){
 
-//       if(par.isVerbose() && ((1000*npix/xySize)%10==0) )
-// 	std::cout << "Done " << setw(2) << 100*npix/xySize << "%\b\b\b\b\b\b\b\b" << std::flush;
       if( par.isVerbose() && ((100*(npix+1)/xySize)%5 == 0) ){
 	std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b|";
 	for(int i=0;i<(100*(npix+1)/xySize)/5;i++) std::cout << "#";
@@ -206,26 +201,14 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
 	std::cout << "|" << std::flush;
       }
 
-//       for(int z=0;z<zdim;z++) spec[z] = reconArray[z*xySize + npix];
-//       spectrum->saveArray(spec,zdim);
       spectrum->extractSpectrum(reconArray,dim,npix);
       spectrum->setStats(specMedian[npix],specSigma[npix],par.getCut());
-//       spectrum->findStats(10);
-//       float *resid = new float[zdim];
-//       goodSize=0;
-//       for(int z=0;z<zdim;z++) 
-// 	if(isGood[z*xySize+npix])
-// 	  resid[goodSize] = originalArray[z*xySize+npix]-reconArray[z*xySize+npix];
-//       spectrum->setSigma(findMADFM(resid,goodSize)/correctionFactor);
-//       delete [] resid;
       if(par.getFlagFDR()) spectrum->setupFDR();
       spectrum->setMinSize(par.getMinChannels());
-//       spectrum->lutz_detect();
       spectrum->spectrumDetect();
       for(int obj=0;obj<spectrum->getNumObj();obj++){
 	Detection *object = new Detection;
 	*object = spectrum->getObject(obj);
-// 	if(par.getFlagGrowth()) growObject(*object,*spectrum);
 	for(int pix=0;pix<object->getSize();pix++) {
 	  // Fix up coordinates of each pixel to match original array
 	  object->setZ(pix, object->getX(pix));
@@ -236,14 +219,11 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
 	}
 	object->addOffsets(par);
 	object->calcParams();
-// 	outputList.push_back(*object);
 	mergeIntoList(*object,outputList,par);
 	delete object;
       }
       spectrum->clearDetectionList();
     }
-//     delete [] spec;
-    delete [] specdim;
     delete spectrum;
     delete [] specMedian;
     delete [] specSigma;
@@ -251,7 +231,7 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
     num = outputList.size();
     std::cout <<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " << num <<"; " << std::flush;
 
-  }  
+  }
 
   // Second search --  in each channel
   if(par.isVerbose()) std::cout << "2D: |                    |" << std::flush;
@@ -264,59 +244,43 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
     goodSize=0;
     for(int npix=0; npix<xySize; npix++) 
       if(isGood[z*xySize + npix]) image[goodSize++] = originalArray[z*xySize + npix];
-//     if(goodSize>0) findMedianStats(image,goodSize,imageMedian[z],dud);
     if(goodSize>0) imageMedian[z] = findMedian(image,goodSize);
     else imageMedian[z] = blankPixValue;
     goodSize=0;
     for(int npix=0; npix<xySize; npix++) 
       if(isGood[z*xySize+npix]) 
 	image[goodSize++]=originalArray[z*xySize+npix]-reconArray[z*xySize+npix];
-//     if(goodSize>0) findNormalStats(image,goodSize,dud,imageSigma[z]);
     if(goodSize>0) imageSigma[z] = findStddev(image,goodSize);
     else imageSigma[z] = 1.;
   }
+  delete [] image;
   // Next, do source finding.
   long *imdim = new long[2];
   imdim[0] = dim[0]; imdim[1] = dim[1];
   Image *channelImage = new Image(imdim);
   channelImage->saveParam(par);
+  delete [] imdim;
   
-  bool *doChannel = new bool[zdim];
-  // purpose of this is to ignore the Milky Way channels -- if we are flagging them...
-  for(int z=0;z<zdim;z++) 
-    doChannel[z] = !( par.getFlagMW() && (z>=par.getMinMW()) && (z<=par.getMaxMW()) );
-
-  for(int z=0; z<zdim; z++){
+  for(int z=0; z<zdim; z++){  // loop over all channels
 
     if( par.isVerbose() && ((100*(z+1)/zdim)%5 == 0) ){
       std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b|";
-      for(int i=0;i<(100*(z+1)/zdim)/5;i++) std::cout << "#";
+      for(int i=0;i<(100*(z+1)/zdim)/5;i++)  std::cout << "#";
       for(int i=(100*(z+1)/zdim)/5;i<20;i++) std::cout << " ";
       std::cout << "|" << std::flush;
     }
-//     if(par.isVerbose() && ((1000*z/zdim)%10==0) )
-//       std::cout << "Done " << setw(2) << 100*z/zdim << "%\b\b\b\b\b\b\b\b" << std::flush;
 
-    if( doChannel[z] ){
-//       for(int npix=0; npix<xySize; npix++) image[npix] = reconArray[z*xySize + npix];
-//       channelImage->saveArray(image,xySize);
+    if( !par.getFlagMW() || (z<par.getMinMW()) || (z>par.getMaxMW()) ){
+      // purpose of this is to ignore the Milky Way channels, but only if we are flagging them
+
       channelImage->extractImage(reconArray,dim,z);
       channelImage->setStats(imageMedian[z],imageSigma[z],par.getCut());
-//       channelImage->findStats(10);
-//       float *resid = new float[xySize];
-//       goodSize=0;
-//       for(int npix=0; npix<xySize; npix++) 
-// 	if(isGood[z*xySize+npix])
-// 	  resid[goodSize] = originalArray[z*xySize+npix]-reconArray[z*xySize+npix];
-//       channelImage->setSigma(findMADFM(resid,goodSize)/correctionFactor);
-//       delete [] resid;
       if(par.getFlagFDR()) channelImage->setupFDR();
       channelImage->setMinSize(par.getMinPix());
       channelImage->lutz_detect();
       for(int obj=0;obj<channelImage->getNumObj();obj++){
 	Detection *object = new Detection;
 	*object = channelImage->getObject(obj);
-// 	if(par.getFlagGrowth()) growObject(*object,*channelImage);
 	// Fix up z coordinates of each pixel to match original array (x & y are fine)
 	for(int pix=0;pix<object->getSize();pix++){
 	  object->setZ(pix, z);
@@ -325,24 +289,21 @@ vector <Detection> reconSearch(long *dim, float *originalArray, float *reconArra
 	}
 	object->addOffsets(par);
 	object->calcParams();
-// 	outputList.push_back(*object);
 	mergeIntoList(*object,outputList,par);
 	delete object;
       }
       channelImage->clearDetectionList();
+
     }
 
   }
+  delete channelImage;
+  delete [] imageMedian;
+  delete [] imageSigma;
+
 
   std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " << outputList.size() - num 
 	    << ".                                           "  << std::endl << std::flush;
-
-  delete [] image;
-  delete [] imdim;
-  delete channelImage;
-  delete [] doChannel;
-  delete [] imageMedian;
-  delete [] imageSigma;
 
   delete [] isGood;
 

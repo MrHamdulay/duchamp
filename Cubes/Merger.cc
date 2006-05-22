@@ -24,7 +24,6 @@ void Cube::ObjectMerger()
     vector <Detection> *currentList = new vector <Detection>(this->objectList.size());
     *currentList = this->objectList;
     vector <Detection>::iterator iter;
-//     for(int i=0;i<this->objectList.size();i++) currentList->push_back( this->objectList[i] );
 
     // The Cube's objectList is cleared, and then the final objects are added to it at the end.
     this->objectList.clear();
@@ -69,7 +68,7 @@ void Cube::ObjectMerger()
 	    iter = currentList->begin() + counter;
 	    currentList->erase(iter);
 	    currentList->push_back( *obj1 );
-	    //   	  currentList->insert(iter, *obj1 );
+
 	    if(isVerb){
 	      std::cout.setf(std::ios::right);
 	      std::cout << "Progress: "
@@ -147,59 +146,6 @@ void Cube::ObjectMerger()
     delete currentList;
 
   }
-
-
-
-//     vector<Detection> *finalList = new vector<Detection>;
-//     for(int listCounter = 0; listCounter < currentList->size(); listCounter++){
-//       Detection *currentObject = new Detection;
-//       *currentObject = currentList->at(listCounter);
-//       currentObject->addOffsets(this->par);
-//       currentObject->calcParams();
-//       // Now, for each object in the newly modified list, we need to check if 
-//       // they pass the minimum no. of channels requirement            
-//       int numChannels = currentObject->getZmax() - currentObject->getZmin() + 1;
-//       if( numChannels >= this->par.getMinChannels() ){
-
-// 	/*
-// 	// Now remove any multiply-appearing pixels in each good object
-// 	// and add to the output list      
-// 	Detection *newObject = new Detection;
-// 	// the first pixel gets included -- then compare all others...
-// 	newObject->addPixel(currentObject->getPixel(0)); 
-// 	for(int pix = 1; pix < currentObject->getSize(); pix++){
-// 	bool addThisOne = true;
-// 	for(int newpix = 0; newpix < newObject->getSize(); newpix++){
-// 	bool newOneMatches = ( newObject->getX(newpix) == currentObject->getX(pix) )
-// 	&& ( newObject->getY(newpix) == currentObject->getY(pix) )
-// 	&& ( newObject->getZ(newpix) == currentObject->getZ(pix) );
-// 	addThisOne = addThisOne && !newOneMatches;
-// 	}
-// 	if(addThisOne) newObject->addPixel(currentObject->getPixel(pix));
-// 	}
-// 	newObject->addOffsets(this->par);
-// 	newObject->calcParams();
-// 	this->objectList.push_back(*newObject);
-// 	*/
-// 	finalList->push_back(*currentObject);
-// 	if(isVerb){
-// 	  std::cout << "Final total:"<<std::setw(5)<<finalList->size()
-// 		    << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
-// 	}
-// 	//	delete newObject;
-//       }
-
-//       delete currentObject;
-//     }
-
-//     currentList->clear();
-//     delete currentList;
-
-//     this->objectList = *finalList;
-//     finalList->clear();
-//     delete finalList;
-
-//   }
 
 }
 

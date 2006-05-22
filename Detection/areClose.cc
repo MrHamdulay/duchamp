@@ -4,26 +4,23 @@
 
 /**
  * areClose(Detection &, Detection &, Param &):
- *   A Function to test whether object1 and object2 are 
- *   within the spatial and velocity thresholds specified
- *   in the parameter set par.
- *   Returns true if at least pixel of object1 is close to
+ *   A Function to test whether object1 and object2 are within the 
+ *   spatial and velocity thresholds specified in the parameter set par.
+ *   Returns true if at least one pixel of object1 is close to
  *   at least one pixel of object2.
  */
 
 bool areClose(Detection &obj1, Detection &obj2, Param &par)
 {
   
-  // In each case, for two pixels to be close they need to satisfy *both*
-  // thresholds, hence the && in the definition of "thisOneClose".
-  // For an overall match between the objects, we only require one 
-  // matching pair of pixels, hence the || in the "close" definition.
-  
-  bool close = false;
+  bool close = false;   // this will be the value returned
 
-  /* */
-  // Check to see if the objects are nearby.
-  //  .. Only do the pixel-by-pixel comparison if their pixel ranges overlap.
+  /*
+   * First, check to see if the objects are nearby.
+   * We will only do the pixel-by-pixel comparison if their pixel ranges overlap.
+   * This saves a bit of time if the objects are big and are nowhere near
+   * one another.
+   */
 
   bool flagAdj = par.getFlagAdjacent();
   float threshS = par.getThreshS();
@@ -66,8 +63,11 @@ bool areClose(Detection &obj1, Detection &obj2, Param &par)
       ((max2-min1+threshV)*(max2-max1-threshV) <= 0 ) );
 
   if(areNear){
-    // pixel ranges overlap -- so do pixel-by-pixel comparison to make sure.
-    // otherwise close=false, and so don't need to do anything before returning.
+    /*
+     * If we get to here, the pixel ranges overlap -- so we do a pixel-by-pixel 
+     * comparison to make sure they are actually "close" according to the thresholds.
+     * Otherwise, close=false, and so don't need to do anything else before returning.
+     */
 
     float *first = new float[3];  //just store x,y,z positions of objects.
     float *second = new float[3];
@@ -88,6 +88,8 @@ bool areClose(Detection &obj1, Detection &obj2, Param &par)
       if(flagAdj){
 	//This step just tests to see if there is a pair of *adjacent* pixels spatially,
 	//   and if the velocity pixels are within the threshold.
+	// For an overall match between the objects, we only require one 
+	// matching pair of pixels, hence the || in the "close" definition.
 	close = close || 
 	  ( (fabsf(first[0]-second[0]) <= 1.)                     //X vals adjacent?
 	    && (fabsf(first[1]-second[1]) <= 1.)                  //Y vals adjacent?
@@ -112,55 +114,3 @@ bool areClose(Detection &obj1, Detection &obj2, Param &par)
   return close;
 
 }
-
-  /* 
-//////// OLD STUFF ////////////////////
-
-  for(int i=0; i<obj1.getSize(); i++){
-    Voxel *first = new Voxel;
-    *first = obj1.getPixel(i);
-
-    for(int j=0; j<obj2.getSize(); j++){      
-      Voxel *second = new Voxel;
-      *second = obj2.getPixel(j);
-
-      if(par.getFlagAdjacent()){
-	//This step just tests to see if there is a pair of *adjacent* pixels.
-// 	thisOneClose = (abs(first->getX()-second->getX())<=1) && 
-// 	  (abs(first->getY()-second->getY())<=1) && 
-// 	  (abs(first->getZ()-second->getZ())<=1);
-	//This step just tests to see if there is a pair of *adjacent* pixels spatially,
-	//   and if the velocity pixels are within the threshold.
-
-	close = close || 
-	  ( (abs(first->getX()-second->getX()) <= 1)                     //X vals adjacent?
-	    && (abs(first->getY()-second->getY()) <= 1)                  //Y vals adjacent?
-	    && (abs(first->getZ()-second->getZ()) <= par.getThreshV())   //Z vals close?
-	    );
-      }
-      else{
-	// This tests to see if the pixels are within the spatial and velocity thresholds. 
-// 	spatialSep = hypot( first->getX() - second->getX(),
-// 			    first->getY() - second->getY());
-	
-// 	freqSep = abs( first->getZ() - second->getZ() );
-	
-// 	thisOneClose = ( spatialSep <= par.getThreshS() ) &&
-// 	  ( freqSep <= par.getThreshV() );
-
-	close = close ||
-	  ( (hypot(first->getX()-second->getX(),first->getY()-second->getY())<=par.getThreshS()) 
-	    && (abs(first->getZ()-second->getZ()) <= par.getThreshV() )
-	    );
-      }
-
-      //      close = close || thisOneClose;
-
-      delete second;
-    }
-    delete first;
-  }
-
-    */
-
-

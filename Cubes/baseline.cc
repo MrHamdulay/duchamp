@@ -15,10 +15,6 @@ void Cube::removeBaseline()
    *   in this->array and the baseline is in this->baseline.
    */
 
-//   baselineSubtract(this->axisDim[0]*this->axisDim[1], this->axisDim[2],
-// 		   this->array, this->baseline, this->par);
-
-
   float *spec     = new float[this->axisDim[2]];
   float *thisBaseline = new float[this->axisDim[2]];
   int numSpec = this->axisDim[0]*this->axisDim[1];
@@ -46,9 +42,14 @@ void Cube::removeBaseline()
     }
 
   }  
+
+  delete [] spec;
+  delete [] thisBaseline;
   
   if(this->par.isVerbose()) std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
 }
+
+
 
 void Cube::replaceBaseline()
 {

@@ -2,7 +2,6 @@
 #include <iomanip>
 #include <math.h>
 #include <ATrous/atrous.hh>
-//#include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
 
 using std::endl;
@@ -10,6 +9,18 @@ using std::setw;
 
 void atrous2DReconstruct(long &xdim, long &ydim, float *&input,float *&output, Param &par)
 {
+  /**
+   *  atrous2DReconstruct(xdim, ydim, input, output, par)
+   *
+   *  A routine that uses the a trous wavelet method to reconstruct a 
+   *   2-dimensional image.
+   *  The Param object "par" contains all necessary info about the filter and 
+   *   reconstruction parameters, although a Filter object has to be declared
+   *   elsewhere previously.
+   *  The input array is in "input", of dimensions "xdim"x"ydim", and the reconstructed
+   *   array is in "output".
+   */
+
   extern Filter reconFilter;
   bool flagBlank=par.getFlagBlankPix();
   float blankPixValue = par.getBlankPixVal();
@@ -17,20 +28,7 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input,float *&output, P
   long mindim = xdim;
   if (ydim<mindim) mindim = ydim;
   int numScales = reconFilter.getNumScales(mindim);
-  /*
-  if(numScales>maxNumScales2D){
-    std::cerr<<"Error in atrous2DReconstruct:: numScales ("<<numScales<<") > "<<maxNumScales2D<<"\n";
-    std::cerr<<"Don't have correction factors for this many scales...\n";
-    std::cerr<<"XDIM = "<<xdim<<", YDIM = "<<ydim<<endl;
-    std::cerr<<"Exiting...\n";
-    exit(1);
-  }
-  */
   double *sigmaFactors = new double[numScales+1];
-//   for(int i=0;i<=numScales;i++){
-//     if(i<=maxNumScales2D) sigmaFactors[i] = sigmaFactors2D[i];
-//     else sigmaFactors[i] = sigmaFactors[i-1] / 2.;
-//   }
   for(int i=0;i<=numScales;i++){
     if(i<=reconFilter.maxFactor(2)) sigmaFactors[i] = reconFilter.sigmaFactor(2,i);
     else sigmaFactors[i] = sigmaFactors[i-1] / 2.;
@@ -38,7 +36,7 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input,float *&output, P
 
   float mean,sigma,originalSigma,originalMean,oldsigma,newsigma;
   bool *isGood = new bool[size];
-  for(int pos=0;pos<size;pos++) //isGood[pos] = (!flagBlank) || (input[pos]!=blankPixValue);
+  for(int pos=0;pos<size;pos++) 
     isGood[pos] = !par.isBlank(input[pos]);
  
   float *array = new float[size];
@@ -52,15 +50,6 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input,float *&output, P
 
   for(int pos=0;pos<size;pos++) output[pos]=0.;
 
-  /***********************************************************************/
-  /////  2-DIMENSIONAL TRANSFORM
-//   int filterHW = filterwidth/2;
-//   double *filter = new double[filterwidth*filterwidth];
-//   for(int i=0;i<filterwidth;i++){
-//     for(int j=0;j<filterwidth;j++){
-//       filter[i*filterwidth+j] = filter1D[i] * filter1D[j];
-//     }
-//   }
   int filterHW = reconFilter.width()/2;
   double *filter = new double[reconFilter.width()*reconFilter.width()];
   for(int i=0;i<reconFilter.width();i++){

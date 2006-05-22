@@ -1,28 +1,11 @@
 // ATROUS.CC
 //  Functions necessary for the reconstruction routines.
-#include <iostream>
 #include <ATrous/atrous.hh>
 #include <math.h>
-
-// int getNumScales(long length)
-// {
-//   switch(filterwidth){
-//   case 5: 
-//     return int(logf(float(length-1))/M_LN2) - 1;
-//     break;
-//   case 3:
-//     return int(logf(float(length-1))/M_LN2);
-//     break;
-//   default:
-//     return 1 + int(logf(float(length-1)/float(filterwidth-1))/M_LN2);
-//     break;
-//   }
-// }
 
 int Filter::getNumScales(long length)
 {
   switch(this->filter1D.size()){
-//   switch(filter1D.size()){
   case 5: 
     return int(logf(float(length-1))/M_LN2) - 1;
     break;
@@ -31,25 +14,9 @@ int Filter::getNumScales(long length)
     break;
   default:
     return 1 + int(logf(float(length-1)/float(this->filter1D.size()-1))/M_LN2);
-//     return 1 + int(logf(float(length-1)/float(filter1D.size()-1))/M_LN2);
     break;
   }
 }
-
-// int getNumScales(long length)
-// {
-//   switch(Filter::width()){
-//   case 5: 
-//     return int(logf(float(length-1))/M_LN2) - 1;
-//     break;
-//   case 3:
-//     return int(logf(float(length-1))/M_LN2);
-//     break;
-//   default:
-//     return 1 + int(logf(float(length-1)/float(Filter::width()-1))/M_LN2);
-//     break;
-//   }
-// }
 
 int Filter::getMaxSize(int scale)
 {

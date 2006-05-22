@@ -6,6 +6,14 @@ void _swap(float &a, float &b);
 void _sort(float *array, int begin, int end);
 void cpgcumul(int npts, float *data, float datamin, float datamax, int pgflag)
 {
+  /** 
+   *  cpgcumul(npts, data, datamin, datamax, pgflag)
+   *    A new pgplot routine that draws a cumulative distribution.
+   *   The use of pgflag is similar to cpghist & cpghist_log:
+   *    0 --> draw a new graph using cpgenv, going from 0 to 1 on the y-axis.
+   *    2 --> draw the plot on the current graph, without re-drawing any axes.
+   */
+
   int i;
   float *sorted;
   float MINCOUNT=0.;

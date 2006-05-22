@@ -7,8 +7,21 @@
 using std::endl;
 using std::setw;
 
-void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,float *&output, Param &par)
+void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input, 
+			 float *&output, Param &par)
 {
+  /**
+   *  atrous3DReconstruct(xdim, ydim, zdim, input, output, par)
+   *
+   *  A routine that uses the a trous wavelet method to reconstruct a 
+   *   3-dimensional image cube.
+   *  The Param object "par" contains all necessary info about the filter and 
+   *   reconstruction parameters, although a Filter object has to be declared
+   *   elsewhere previously.
+   *  The input array is in "input", of dimensions "xdim"x"ydim"x"zdim", and 
+   *   the reconstructed array is in "output".
+   */
+
   extern Filter reconFilter;
   long size = xdim * ydim * zdim;
   long spatialSize = xdim * ydim;
@@ -119,7 +132,6 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,float
 
       int pos = -1;
       for(int zpos = 0; zpos<zdim; zpos++){
-// 	std::cerr << setw(7)<<zpos<<"\b\b\b\b\b\b\b";
 	for(int ypos = 0; ypos<ydim; ypos++){
 	  for(int xpos = 0; xpos<xdim; xpos++){
 	    // loops over each pixel in the image
@@ -189,12 +201,18 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,float
 	
 	threshold = mean + par.getAtrousCut() * originalSigma * sigmaFactors[scale];
 	for(int pos=0;pos<size;pos++){
-	  if(!isGood[pos]) output[pos] = blankPixValue; // preserve the Blank pixel values in the output.
-	  else if( fabs(wavelet[pos]) > threshold ) output[pos] += wavelet[pos];
+	  if(!isGood[pos]){
+	    output[pos] = blankPixValue; 
+	    // this preserves the Blank pixel values in the output.
+	  }
+	  else if( fabs(wavelet[pos]) > threshold ){
+	    output[pos] += wavelet[pos];
+	    // only add to the output if the wavelet coefficient is significant
+	  }
 	}
       }
  
-      spacing *= 2;
+      spacing *= 2;  // double the scale of the filter.
 
     } //-> end of scale loop 
 

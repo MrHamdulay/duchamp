@@ -51,7 +51,6 @@ CUBES = $(CUBESDIR)/baseline.o\
 	$(CUBESDIR)/outputSpectra.o\
 	$(CUBESDIR)/plotting.o\
 	$(CUBESDIR)/readRecon.o\
-	$(CUBESDIR)/removeMW.o\
 	$(CUBESDIR)/saveImage.o\
 	$(CUBESDIR)/trimImage.o
 

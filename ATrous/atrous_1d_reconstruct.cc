@@ -9,6 +9,19 @@ using std::setw;
 
 void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
 {
+  /**
+   *  atrous1DReconstruct(xdim, input, output, par)
+   *
+   *  A routine that uses the a trous wavelet method to reconstruct a 
+   *   1-dimensional spectrum. 
+   *  The Param object "par" contains all necessary info about the filter and 
+   *   reconstruction parameters, although a Filter object has to be declared
+   *   elsewhere previously.
+   *  The input array is in "input", of length "xdim", and the reconstructed
+   *   array is in "output".
+   */
+
+
   extern Filter reconFilter;
   const float SNR_THRESH=par.getAtrousCut();
   const int MIN_SCALE=par.getMinScale();
@@ -24,7 +37,7 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
 
   float mean,sigma,originalSigma,originalMean,oldsigma,newsigma;
   bool *isGood = new bool[xdim];
-  for(int pos=0;pos<xdim;pos++) //isGood[pos] = (!flagBlank) || (input[pos]!=blankPixValue);
+  for(int pos=0;pos<xdim;pos++) 
     isGood[pos] = !par.isBlank(input[pos]);
 
   float *coeffs = new float[xdim];
@@ -74,14 +87,10 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
 
 	  for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
 	    int x = xpos + spacing*xoffset;
-	    //if(x<0) x = -x;                 // boundary conditions are 
-	    //if(x>=xdim) x = 2*(xdim-1) - x; //    reflection.
-	    // 		    if(x<xLim1) x = 2*xLim1 - x;      // boundary conditions are 
-	    // 		    if(x>xLim2) x = 2*xLim2 - x;      //    reflection.
 
 	    while((x<0)||(x>=xdim)){
-	      if(x<0) x = 0 - x;      
-	      else if(x>=xdim) x = 2*(xdim-1) - x;      
+	      if(x<0) x = 0 - x;                    // boundary conditions are  
+	      else if(x>=xdim) x = 2*(xdim-1) - x;  //    reflection.               
 	    }
 
 	    int filterpos = (xoffset+filterHW);

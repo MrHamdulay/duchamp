@@ -26,7 +26,6 @@ DataArray::DataArray(short int nDim, long *dimensions){
   this->numPixels = size;
   if(size>0){
     this->array = new float[size];
-//     this->blankarray = new bool[size];
   }
   this->numDim=nDim;
   if(nDim>0) this->axisDim = new long[nDim];
@@ -177,21 +176,6 @@ void Image::extractImage(float *Array, long *dim, long channel)
   float *image = new float[dim[0]*dim[1]];
   for(int npix=0; npix<dim[0]*dim[1]; npix++){ 
     image[npix] = Array[channel*dim[0]*dim[1] + npix];
-
-//     int npts = 0;
-//     image[npix] = 2.*Array[channel*dim[0]*dim[1] + npix];
-//     npts+=2;
-//     // npts++;
-//     if(channel>0){
-//       image[npix] += Array[(channel-1)*dim[0]*dim[1] + npix];
-//       npts++;
-//     }
-//     if(channel<(dim[2]-1)){
-//       image[npix] += Array[(channel+1)*dim[0]*dim[1] + npix];
-//       npts++;
-//     }
-//     image[npix] /= float(npts);
-
   }
   this->saveArray(image,dim[0]*dim[1]);
   delete [] image;
@@ -256,7 +240,6 @@ Cube::Cube(long size){
   // need error handling in case size<0 !!!
   if(size>0){
     this->array = new float[size];
-//     this->blankarray = new bool[size];
     this->recon = new float[size];
   }
   this->numPixels = size;
@@ -272,7 +255,6 @@ Cube::Cube(long *dimensions){
   this->numPixels = size;
   if(size>0){
     this->array      = new float[size];
-//     this->blankarray = new bool[size];
     this->detectMap  = new short[imsize];
     if(this->par.getFlagATrous())
       this->recon    = new float[size];
@@ -295,7 +277,6 @@ void Cube::initialiseCube(long *dimensions){
   this->numPixels = size;
   if(size>0){
     this->array      = new float[size];
-//     this->blankarray = new bool[size];
     this->detectMap  = new short[imsize];
     this->specMean   = new float[imsize];
     this->specSigma  = new float[imsize];
@@ -341,6 +322,23 @@ void Cube::getRecon(float *output){
   }
 }
 
+void Cube::removeMW()
+{
+  int maxMW = this->par.getMaxMW();
+  int minMW = this->par.getMinMW();
+  bool flagBlank = this->par.getFlagBlankPix();
+  bool flagMW = this->par.getFlagMW();
+  float nPV = this->par.getBlankPixVal();
+  long xdim=axisDim[0], ydim=axisDim[1], zdim=axisDim[2];
+  for(int pix=0;pix<xdim*ydim;pix++){
+    for(int z=0;z<zdim;z++){
+      int pos = z*xdim*ydim + pix;
+      bool isMW = flagMW && (z>=minMW) && (z<=maxMW);
+      if(!(this->par.isBlank(this->array[pos])) && isMW) this->array[pos]=0.;
+    }
+  }
+}
+
 ////////// WCS-related functions
 
 void Cube::setWCS(wcsprm *w)
@@ -366,11 +364,7 @@ wcsprm *Cube::getWCS()
    */
 
   wcsprm *wNew = new wcsprm;
-//   wcsprm *wOld = new wcsprm;
-//   wOld = this->wcs;
   wNew->flag=-1;
-//   wcsini(true,wOld->naxis,wNew); 
-//   wcscopy(true,wOld,wNew); 
   wcsini(true,this->wcs->naxis,wNew); 
   wcscopy(true,this->wcs,wNew); 
   return wNew;
@@ -390,7 +384,7 @@ void Cube::calcObjectWCSparams()
     this->objectList[i].setID(i+1);
     if(this->flagWCS) this->objectList[i].calcWCSparams(this->wcs);
     this->objectList[i].setIntegFlux( this->objectList[i].getIntegFlux()/this->par.getBeamSize() );
-    // correct the integrated flux for the beam size.
+    // this corrects the integrated flux for the beam size.
   }  
 
   

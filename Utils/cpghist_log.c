@@ -4,20 +4,24 @@
 #include <math.h>
 void cpghistlog(int npts, float *data, float datamin, float datamax, int nbin, int pgflag)
 {
+  /**
+   * cpghistlog(npts, data, datamin, datamax, nbin, pgflag)
+   * 
+   *  Works exactly as for cpghist, except the y-axis is a logarithmic scale.
+   *
+   */
+
+
   int i,bin;
   float *num;
   float maxNum,binSize,x1,x2,y1,y2,older,newer,fraction;
   float MINCOUNT=-0.2;
-
-/*   if(npts<1) grwarn( */
-/* ||(datamax<datamin)||(nbin<1)||(nbin>MAXBIN)) */
 
   num = (float *)calloc(nbin,sizeof(float));
 
   cpgbbuf();
 
   // HOW MANY VALUES IN EACH BIN?
-/*   for(i=0; i<nbin; i++) num[i] = 0.; */
   for(i=0; i<npts; i++){
     fraction = (data[i] - datamin) / (datamax - datamin);
     bin = (int)( floor(fraction*nbin) );

@@ -8,8 +8,18 @@
 #include <Cubes/cubes.hh>
 
 void write_header_info(fitsfile *fptr, Param &par, string nature);
+
 void Cube::saveReconstructedCube()
 {
+  /**
+   *  Cube::saveReconstructedCube()
+   *
+   *   A function to save the reconstructed and/or residual arrays.
+   *   A number of header keywords are written as well, indicating the nature of the
+   *    reconstruction that has been done.
+   *   The file is always written -- if the filename (as calculated based on the 
+   *    recon parameters) exists, then it is overwritten.
+   */
   
   int newbitpix = FLOAT_IMG;
 
@@ -129,6 +139,17 @@ void Cube::saveReconstructedCube()
 
 void write_header_info(fitsfile *fptr, Param &par, string nature)
 {
+  /**
+   *  write_header_info(fptr, par, nature)
+   *
+   *   A simple function that writes all the necessary keywords and comments
+   *    to the FITS header pointed to by fptr.
+   *   The keyword names and comments are taken from duchamp.hh
+   *   The parameter "nature" indicates what type of file is being written:
+   *    should be either "recon" or "resid".
+   */
+
+
   int status = 0;
   char *comment, *keyword;
   string explanation = "",ReconResid="";

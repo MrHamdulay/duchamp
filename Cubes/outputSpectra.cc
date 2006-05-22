@@ -12,8 +12,22 @@
 
 void getSmallVelRange(Detection &obj, wcsprm *wcs, float *minvel, float *maxvel);
 void getSmallZRange(Detection &obj, float *minz, float *maxz);
+
 void Cube::outputSpectra()
 {
+  /** 
+   *   Cube::outputSpectra()
+   *
+   *    The way to print out the spectra of the detected objects.
+   *    Make use of the SpectralPlot class in plots.h, which sizes everything correctly.
+   *    Main choice is whether to use the peak pixel, in which case the spectrum is just
+   *     that of the peak pixel, or the sum, where the spectrum is summed over all spatial
+   *     pixels that are in the object.
+   *    If a reconstruction has been done, that spectrum is plotted in red.
+   *    The limits of the detection are marked in blue.
+   *    A 0th moment map of the detection is also plotted, with a scale bar indicating the 
+   *     spatial size.
+   */
 
   string spectrafile = this->par.getSpectraFile() + "/vcps";
   Plot::SpectralPlot newplot;
@@ -174,11 +188,16 @@ void Cube::outputSpectra()
 
 void getSmallVelRange(Detection &obj, wcsprm *wcs, float *minvel, float *maxvel)
 {
-  // Want the velocity range for the zoomed in region to be maximum of 
-  // 20 pixels or 3x width of detection. Need to:
-  //   * Calculate pixel width of a 3x-detection-width region.
-  //   * If smaller than 20, calculate velocities of central vel +- 10 pixels
-  //   * If not, use those velocities
+  /** 
+   * getSmallVelRange(obj,wcs,minvel,maxvel)
+   *  Routine to calculate the velocity range for the zoomed-in region.
+   *  This range should be the maximum of 20 pixels, or 3x the wdith of the detection.
+   *  Need to :
+   *      Calculate pixel width of a 3x-detection-width region.
+   *      If smaller than 20, calculate velocities of central vel +- 10 pixels
+   *      If not, use the 3x-detection-width
+   *  Range returned via "minvel" and "maxvel" parameters.
+   */
 
   double *pixcrd = new double[3];
   double *world  = new double[3];
@@ -215,13 +234,16 @@ void getSmallVelRange(Detection &obj, wcsprm *wcs, float *minvel, float *maxvel)
 
 void getSmallZRange(Detection &obj, float *minz, float *maxz)
 {
-  // Want the z-pixel range for the zoomed in region to be maximum of 
-  // 20 pixels or 3x width of detection. Need to:
-  //   * Calculate pixel width of a 3x-detection-width region.
-  //   * If smaller than 20, use central pixel +- 10 pixels
+  /** 
+   * getSmallZRange(obj,minz,maxz)
+   *  Routine to calculate the pixel range for the zoomed-in spectrum.
+   *  This range should be the maximum of 20 pixels, or 3x the wdith of the detection.
+   *  Need to :
+   *      Calculate pixel width of a 3x-detection-width region.
+   *       If smaller than 20, use central pixel +- 10 pixels
+   *  Range returned via "minz" and "maxz" parameters.
+   */
 
-
-  // define new velocity extrema -- make it 3x wider than the width of the detection.
   *minz = 2.*obj.getZmin() - obj.getZmax();
   *maxz = 2.*obj.getZmax() - obj.getZmin();
     

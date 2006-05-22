@@ -213,6 +213,7 @@ string Detection::outputLabelWCS()
 
   std::stringstream ss;
   ss << "#" << setfill('0') << setw(3) << this->id << ": ";
+  ss << this->name << "   ";
   ss << setfill(' ');
   ss << this->raS << ", ";
   ss << this->decS;
@@ -236,6 +237,7 @@ string Detection::outputLabelPix()
 
   std::stringstream ss;
   ss.setf(std::ios::fixed);
+  // // This is the OLD code -- have improved the formatting below...
 //   ss << this->pix.size() << " Voxels:  ";
 //   ss << setprecision(1) << setfill(' ');
 //   ss       <<setw(5)<< this->xcentre + this->xSubOffset;

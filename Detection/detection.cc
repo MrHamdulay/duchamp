@@ -103,9 +103,10 @@ void Detection::calcWCSparams(wcsprm *wcs)
   double *pixcrd = new double[15];
   double *world  = new double[15];
   /*
-  define a five-point array in 3D:
-     (x,y,z), (x,y,z1), (x,y,z2), (x1,y1,z), (x2,y2,z)
-   note x = central point, x1 = minimum x, x2 = maximum x etc.
+    define a five-point array in 3D:
+      (x,y,z), (x,y,z1), (x,y,z2), (x1,y1,z), (x2,y2,z)
+      [note: x = central point, x1 = minimum x, x2 = maximum x etc.]
+    and convert to world coordinates.   
   */
   pixcrd[0]  = pixcrd[3] = pixcrd[6] = this->xcentre;
   pixcrd[9]  = this->xmin-0.5;
@@ -250,66 +251,6 @@ void Detection::addAnObject(Detection &toAdd)
 /*  */
 
 
-// void Detection::addAnObject(Detection &toAdd)
-// {
-  /**
-   * Detection::addAnObject(Detection &)
-   *  Combines two objects by adding all the pixels of the argument to the instigator.
-   *  All pixel & flux parameters are recalculated (so that calcParams does not need to be 
-   *   called a second time), but WCS parameters are not.
-   */
-/*
-  int *ctr = new int;
-  int *ctr2 = new int;
-  bool *isNewPix = new bool;
-  this->xcentre *= this->pix.size();
-  this->ycentre *= this->pix.size();
-  this->zcentre *= this->pix.size();
-  for((*ctr)=0;(*ctr)<toAdd.getSize();(*ctr)++){
-    // For each pixel in the new object, test to see if it already appears in the object
-    long *x = new long;
-    *x = toAdd.getX(*ctr);
-    long *y = new long;
-    *y = toAdd.getY(*ctr);
-    long *z = new long;
-    *z = toAdd.getZ(*ctr);
-    float *f = new float;
-    *f = toAdd.getF(*ctr);
-    *isNewPix = true;
-    *ctr2 = 0;
-    while( *isNewPix && (*ctr2<this->pix.size()) ){
-      *isNewPix = *isNewPix && (( this->pix[*ctr2].itsX != *x ) || 
-				( this->pix[*ctr2].itsY != *y ) ||
-				( this->pix[*ctr2].itsZ != *z ) );
-      *ctr2 += 1;
-    }
-    if(*isNewPix){
-      // If the pixel is new, add it to the object and re-calculate the parameters.
-      this->pix.push_back(toAdd.getPixel(*ctr));
-      this->xcentre += *x;
-      this->ycentre += *y;
-      this->zcentre += *z;
-      this->totalFlux += *f;
-      if(*x<this->xmin) this->xmin=*x;
-      if(*x>this->xmax) this->xmax=*x;
-      if(*y<this->ymin) this->ymin=*y;
-      if(*y>this->ymax) this->ymax=*y;
-      if(*z<this->zmin) this->zmin=*z;
-      if(*z>this->zmax) this->zmax=*z;
-      if(*f>this->peakFlux) this->peakFlux=*f;
-    }
-    delete x,y,z,f;
-  }
-  this->xcentre /= this->pix.size();
-  this->ycentre /= this->pix.size();
-  this->zcentre /= this->pix.size();
-    
-  delete ctr;
-  delete ctr2;
-  delete isNewPix;
-}
-*/
-
 void Detection::addOffsets(Param &par)
 {
   this->xSubOffset = par.getXOffset();
@@ -387,6 +328,7 @@ std::ostream& operator<< ( std::ostream& theStream, Detection& obj)
    * << operator for Detection class
    *  A convenient way of printing the coordinate & flux 
    *  values for each pixel in the Detection
+   *   --> use as front end to the << operator for Voxels.
    */  
 
   for(int i=0;i<obj.pix.size();i++) theStream << obj.pix[i] << endl;
