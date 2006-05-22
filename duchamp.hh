@@ -5,16 +5,17 @@ enum OUTCOME {SUCCESS, FAILURE};
 
 
 const std::string ERR_USAGE_MSG = 
-"Usage:: Duchamp.x -p [parameter file]\n\
+"Usage:: Duchamp -p [parameter file]\n\
   Other options:\n\
-    -v       Version number\n\
-    -h       This help information\n";
+    -f <file>  Use default parameters with imageFile=<file>\n\
+    -v         Version number\n\
+    -h         This help information\n";
 
-const std::string ERR_USAGE_MSG_SHORT = "Usage:: Duchamp.x -p [parameter file]\n";
+const std::string ERR_USAGE_MSG_SHORT = "Usage:: Duchamp -p [parameter file]\n";
 
 const std::string PROGNAME = "Duchamp";
 
-const std::string VERSION = "0.9.1";
+const std::string VERSION = "1.0";
 
 // The following are the FITS Header Keywords corresponding to the 
 //  parameters related to the atrous reconstruction.

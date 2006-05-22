@@ -23,39 +23,47 @@ Filter reconFilter;
 int main(int argc, char * argv[])
 {
 
-  string paramFile;
+  string paramFile,fitsfile;
+  Cube *cube = new Cube;
+  Param *par = new Param;
 
   if(argc==1){
     std::cout << ERR_USAGE_MSG;
-    exit(1);
+    return 1;
   }
   else{
     char c;
-    while( ( c = getopt(argc,argv,"p:hv") )!=-1){
+    while( ( c = getopt(argc,argv,"p:f:hv") )!=-1){
       switch(c) {
       case 'p':
 	paramFile = optarg;
+	cube->readParam(paramFile);
+	break;
+      case 'f':
+	fitsfile = optarg;
+	par->setImageFile(fitsfile);
+	cube->saveParam(*par);
 	break;
       case 'v':
 	std::cout << PROGNAME << " " << VERSION << std::endl;
-	exit(1);
+	return 1;
 	break;
       case 'h':
       default :
 	std::cout << ERR_USAGE_MSG;
-	exit(1);
+	return 1;
 	break;
       }
     }
   }
 
-  Cube *cube = new Cube;
-  cube->readParam(paramFile);
+  delete par;
+
   if(cube->pars().getImageFile().empty()){
-    std::cerr << "Error: No input image has been given!"<<endl;
-    std::cerr << "Use the imageFile parameter in "<< paramFile << " to specify the FITS file."<<endl;
-    std::cerr << "Exiting..." << endl;
-    exit(1);
+    std::cerr << "ERROR : No input image has been given!\n";
+    std::cerr << "        Use the imageFile parameter in "<< paramFile << " to specify the FITS file.\n";
+    std::cerr << "Exiting...\n\n";
+    return 1;
   }
 
   // Filter needed for baseline removal and a trous reconstruction
@@ -71,16 +79,16 @@ int main(int argc, char * argv[])
   }
   std::cout << "Opening image: " << fname << endl;
   if( cube->getCube(fname) == FAILURE){
-    std::cerr << "Error opening file : " << fname << endl;
-    std::cerr << "Exiting..." << endl;
-    exit(1);
+    std::cerr << "ERROR : Unable to open image file : " << fname << endl;
+    std::cerr << "Exiting...\n\n";
+    return 1;
   }
   else std::cout << "Opened successfully." << endl; 
 
   // If the reconstructed array is to be read in from disk
   if( cube->pars().getFlagReconExists() && cube->pars().getFlagATrous() ){
     if( cube->readReconCube() == FAILURE){
-      std::cerr << "WARNING : Could not find existing reconstructed array.\n"
+      std::cerr << "WARNING : Could not read in existing reconstructed array.\n"
 		<< "          Will perform reconstruction using assigned parameters.\n";
       cube->pars().setFlagReconExists(false);
     }

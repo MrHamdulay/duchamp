@@ -91,16 +91,23 @@ Appendix~\ref{app-input}. This provides the input file name, the various
 output files, and defines various parameters that control the
 execution.
 
-The program is run by the command
+The standard way to run Duchamp is by the command
 \begin{quote}
 {\tt Duchamp -p [parameter file]}
 \end{quote}
 replacing {\tt [parameter file]} with the name of the file you have
-just created/copied. The program will then work away and give you the
-list of detections and their spectra. The program execution is
-summarise below, and detailed in \S\ref{sec-flow}. Information on
-inputs is in \S\ref{sec-param} and Appendix~\ref{app-param}, and
-descriptions of the output is in \S\ref{sec-output}.
+just created/copied. Alternatively, you can use the syntax
+\begin{quote}
+{\tt Duchamp -f [FITS file]}
+\end{quote}
+where {\tt [FITS file]} is the file you wish to search. In the latter
+case, the rest of the parameters will take their default values
+detailed in Appendix~\ref{app-param}. In either case, the program will
+then work away and give you the list of detections and their
+spectra. The program execution is summarise below, and detailed in
+\S\ref{sec-flow}. Information on inputs is in \S\ref{sec-param} and
+Appendix~\ref{app-param}, and descriptions of the output is in
+\S\ref{sec-output}.
 
 \subsection{A summary of the execution steps}
 
@@ -615,7 +622,8 @@ depend on the projection of the WCS):
 of the object.
 \item[DEC/GLAT] The Declination or Galactic Latitude of the centre of
 the object.
-\item[w\_RA/w\_GLON] The width of the object in Right Ascension or Galactic Longitude [arcmin].
+\item[w\_RA/w\_GLON] The width of the object in Right Ascension or
+Galactic Longitude [arcmin].
 \item[w\_DEC/w\_GLAT] The width of the object in Declination Galactic
   Latitude [arcmin].
 \item[VEL] The mean velocity of the object [km/s].
@@ -647,8 +655,8 @@ not printed, but the pixel coordinates are still provided.
   of the features discussed in the text: the removal of the Milky Way
   emission around 0 km/s; the red lines indicating the reconstructed
   spectrum; the blue dashed lines indicating the spectral extent of
-  the detection; and the blue border showing its spatial extent on the
-  0th moment map.}
+  the detection; the blue border showing its spatial extent on the
+  0th moment map; and the 15~arcmin-long scale bar.}
 \label{fig-spect}
 \end{figure}
 
@@ -707,8 +715,9 @@ a zoom is shown in a separate window. The cutout image can optionally
 include a border around the spatial pixels that are in the detection
 (turned on and off by the parameter {\tt drawBorders}). It also
 includes a scale bar in the bottom left corner to indicate size -- it
-is 30~arcmin long. An example detection can be seen below in
-Fig.~\ref{fig-spect}.
+is 15~arcmin long (note that due to projection effects it may be a
+slightly different physical length from object to object). An example
+detection can be seen below in Fig.~\ref{fig-spect}.
 
 Finally, a couple of images are optionally produced: a 0th moment map
 of the cube, combining just the detected channels in each object,
