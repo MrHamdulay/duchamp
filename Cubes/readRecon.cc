@@ -97,6 +97,23 @@ int Cube::readReconCube()
     }
   }      
 
+  int minMW;
+  fits_read_key(fptr, TINT, (char *)keyword_minMW.c_str(), &minMW, comment, &status);
+  if(minMW != this->par.getMinMW()){
+    std::cerr << "ERROR <readReconCube> : Reconstructed cube has different minMW parameter to original!\n"
+	      << "      Reconstructed cube has "<<minMW
+	      << " cf. " <<this->par.getMinMW() << " as requested.\n";
+    return FAILURE;
+  }
+  int maxMW;
+  fits_read_key(fptr, TINT, (char *)keyword_maxMW.c_str(), &maxMW, comment, &status);
+  if(maxMW != this->par.getMaxMW()){
+    std::cerr << "ERROR <readReconCube> : Reconstructed cube has different maxMW parameter to original!\n"
+	      << "      Reconstructed cube has "<<maxMW
+	      << " cf. " <<this->par.getMaxMW() << " as requested.\n";
+    return FAILURE;
+  }
+
   float *reconArray = new float[this->numPixels];
   //  fits_read_pix(fptr, TFLOAT, fpixel, this->numPixels, NULL, this->recon, &anynul, &status);
   fits_read_pix(fptr, TFLOAT, fpixel, this->numPixels, NULL, reconArray, &anynul, &status);

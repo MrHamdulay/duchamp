@@ -151,6 +151,16 @@ void write_header_info(fitsfile *fptr, Param &par, string nature)
   fits_write_key(fptr, TINT, (char *)keyword_filterCode.c_str(), &vali, 
 		 (char *)comment_filterCode.c_str(), &status);
 
+  if(par.getFlagMW()){
+    fits_write_comment(fptr, (char *)flagMW_comment.c_str(), &status);
+    vali = par.getMinMW();
+    fits_write_key(fptr, TINT, (char *)keyword_minMW.c_str(), &vali, 
+		   (char *)comment_minMW.c_str(), &status);
+    vali = par.getMaxMW();
+    fits_write_key(fptr, TINT, (char *)keyword_maxMW.c_str(), &vali, 
+		   (char *)comment_maxMW.c_str(), &status);
+  }
+
   if(nature == "recon"){
     explanation = "Duchamp: This is the RECONSTRUCTED cube";
     ReconResid = "RECON";
