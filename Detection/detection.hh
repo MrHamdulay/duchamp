@@ -74,7 +74,7 @@ public:
 class Detection
 {
 public:
-  Detection(){flagWCS=false; negativeSource = false;};
+  Detection(){flagWCS=false; negativeSource = false; flagText="";};
   Detection(long numPix){vector <Voxel> pix(numPix); flagWCS = false; negativeSource = false;};
   virtual ~Detection(){};
 
@@ -119,6 +119,9 @@ public:
   void   setZPeak(long z){zpeak = z;};
   bool   isNegative(){return negativeSource;};
   void   setNegative(bool f){negativeSource = f;};
+  string getFlagText(){return flagText;};
+  void   setFlagText(string s){flagText = s;};
+  void   addToFlagText(string s){flagText += s;};
   //
   long   getXmin(){return xmin;};
   long   getYmin(){return ymin;};
@@ -199,6 +202,7 @@ private:
   float          peakFlux;    // maximum flux over all the pixels
   long           xpeak,ypeak,zpeak; // location of peak flux
   bool           negativeSource; // is the source defined as a negative feature?
+  string         flagText;    // any warning flags about the quality of the detection.
   // WCS related
   int            id;          // ID -- generally number in list
   string         name;	      // IAU-style name (based on position)

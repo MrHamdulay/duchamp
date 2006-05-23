@@ -87,11 +87,13 @@ int main(int argc, char * argv[])
 
   // If the reconstructed array is to be read in from disk
   if( cube->pars().getFlagReconExists() && cube->pars().getFlagATrous() ){
+    std::cout << "Reading reconstructed array: ";
     if( cube->readReconCube() == FAILURE){
       std::cerr << "WARNING : Could not read in existing reconstructed array.\n"
 		<< "          Will perform reconstruction using assigned parameters.\n";
       cube->pars().setFlagReconExists(false);
     }
+    std::cout << " Done.\n";
   }
 
   std::cout << cube->pars();
@@ -168,29 +170,28 @@ int main(int argc, char * argv[])
   if(cube->getNumObj()>0){
 
     cube->calcObjectWCSparams();
+
+    cube->setObjectFlags();
     
     cube->sortDetections();
     
     cube->outputDetectionList();
   }
 
-//   cube->plotDetectionMap("/xs");
-    cube->plotMomentMap("/xs");
-
+  std::cout<<"Creating the maps...  "<<std::flush;
+  cube->plotMomentMap("/xs");
   if(cube->pars().getFlagMaps()){
-    std::cout<<"Creating the maps...  "<<std::flush;
     cube->plotMomentMap(cube->pars().getMomentMap()+"/vcps");
     cube->plotDetectionMap(cube->pars().getDetectionMap()+"/vcps");
-    std::cout << "done.\n";
   }
+  std::cout << "done.\n";
 
-//   if(cube->isWCS() && (cube->getNumObj()>0)){
   if((cube->getDimZ()>1) && (cube->getNumObj()>0)){
     std::cout << "Plotting the individual spectra... " << std::flush;
     cube->outputSpectra();
     std::cout << "done.\n";
   }
-  else if(cube->getDimZ()<=1) std::cout << "Not plotting any spectra  -- no third dimension.\n";
+  else if(cube->getDimZ()<=1) std::cerr << "WARNING : Not plotting any spectra  -- no third dimension.\n";
 
   cpgend();
 

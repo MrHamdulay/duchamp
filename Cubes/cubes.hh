@@ -176,6 +176,9 @@ public:
   void    saveReconstructedCube();
   int     readReconCube();
 
+  bool    isBlank(int vox){return par.isBlank(array[vox]);};
+  bool    isBlank(long x, long y, long z){
+    return par.isBlank(array[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x]);};
   float   getPixValue(long pos){return array[pos];};
   float   getPixValue(long x, long y, long z){
     return array[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x];};
@@ -240,7 +243,10 @@ public:
   void    sortDetections();
   void    updateDetectMap();
   void    updateDetectMap(Detection obj);
-
+  void    setObjectFlags();
+  float   enclosedFlux(Detection obj);
+  bool    objAtEdge(Detection obj);
+  
   // Text outputting of detected objects.
   void    outputDetectionsKarma(std::ostream &stream);     // in Cubes/detectionIO.cc
   void    outputDetectionsVOTable(std::ostream &stream);   // in Cubes/detectionIO.cc

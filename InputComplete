@@ -33,18 +33,18 @@ reconFile	your-reconstructed-file-here
 # detectionMap, momentMap -- the postscript files produced.
 
 flagLog         1
-logFile		logfile.txt
-outFile		results.txt
-spectraFile	spectra.ps
+logFile		duchamp-Logfile.txt
+outFile		duchamp-Results.txt
+spectraFile	duchamp-Spectra.ps
 flagOutputRecon	0
 flagOutputResid	0
 flagVOT         0
-votFile         results.xml
+votFile         duchamp-Results.xml
 flagKarma       0
-karmaFile       results.ann
+karmaFile       duchamp-Results.ann
 flagMaps        1
-detectionMap    latest-detection-map.ps
-momentMap       latest-moment-map.ps
+detectionMap    duchamp-DetectionMap.ps
+momentMap       duchamp-MomentMap.ps
 
 # FIXING UP THE CUBE
 # flagBlankPix -- whether to replace & ignore blank pixels. 
@@ -55,10 +55,10 @@ momentMap       latest-moment-map.ps
 
 flagBlankPix    1
 blankPixValue	-8.00061
-flagBaseline    0
 flagMW		0
 minMW		75
 maxMW		112
+flagBaseline    0
 
 # GENERAL DETECTION RELATED
 # flagNegative -- Are the features being searched for negative (set to true) or positive (false)?
@@ -69,7 +69,7 @@ maxMW		112
 flagNegative    0
 snrCut		3.
 flagGrowth	0
-growthCut	1.5
+growthCut	2.
 
 # RECONSTRUCTION RELATED
 # flagATrous -- Whether or not to do the reconstruction before searching

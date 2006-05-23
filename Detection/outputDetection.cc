@@ -42,6 +42,9 @@ void Detection::outputDetectionTextWCS(std::ostream &stream)
     stream << setw(9)                << this->velWidth;
   }
   else stream << "                                                             ";
+  if(this->flagWCS) stream<<setw(10) << this->intFlux;
+  else              stream<<setw(10) << this->totalFlux;
+  stream << setw(9)                  << this->peakFlux;
   stream << setw(4)                  << this->xmin + this->xSubOffset;
   stream << setw(4)                  << this->xmax + this->xSubOffset;
   stream << setw(4)                  << this->ymin + this->ySubOffset;
@@ -50,9 +53,7 @@ void Detection::outputDetectionTextWCS(std::ostream &stream)
   stream << setw(5)                  << this->zmax + this->zSubOffset;
   stream << setprecision(4);
   stream << setw(6)                  << this->pix.size();
-  if(this->flagWCS) stream<<setw(10) << this->intFlux;
-  else              stream<<setw(10) << this->totalFlux;
-  stream << setw(9)                  << this->peakFlux;
+  stream << setw(5)                  << this->flagText;
   stream << endl;
   resetiosflags(std::ios::fixed);
 
@@ -80,6 +81,8 @@ void outputDetectionTextWCSHeader(std::ostream &stream, wcsprm *wcs)
   stream << setw(8)  << "w_"+lattype;
   stream << setw(10) << "VEL";
   stream << setw(9)  << "w_VEL";
+  stream << setw(10) << "F_tot";
+  stream << setw(9)  << "F_peak";
   stream << setw(4)  << "X1";
   stream << setw(4)  << "X2";
   stream << setw(4)  << "Y1";
@@ -87,10 +90,9 @@ void outputDetectionTextWCSHeader(std::ostream &stream, wcsprm *wcs)
   stream << setw(5)  << "Z1";
   stream << setw(5)  << "Z2";
   stream << setw(6)  << "Npix";
-  stream << setw(10) << "F_tot";
-  stream << setw(9)  << "F_peak";
+  stream << setw(5)  << "Flag";
   stream<<endl;
-  stream<<setfill('-')<<setw(5+14+6+6+7+13+13+8+8+10+9+4+4+4+4+5+5+6+10+9)<<'-';
+  stream<<setfill('-')<<setw(5+14+6+6+7+13+13+8+8+10+9+10+9+4+4+4+4+5+5+6+5)<<'-';
   stream<<endl;
 
 }
@@ -213,7 +215,10 @@ string Detection::outputLabelWCS()
 
   std::stringstream ss;
   ss << "#" << setfill('0') << setw(3) << this->id << ": ";
-  ss << this->name << "   ";
+  ss << this->name ;
+  if(this->getFlagText()!="") 
+    ss << " [" << this->getFlagText() << "]   ";
+  else ss<< "   ";
   ss << setfill(' ');
   ss << this->raS << ", ";
   ss << this->decS;

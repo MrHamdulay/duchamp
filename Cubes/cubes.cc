@@ -459,3 +459,86 @@ void Cube::setCubeStats()
   delete im;
 
 }
+
+float Cube::enclosedFlux(Detection obj)
+{
+  /** 
+   *  float Cube::enclosedFlux(Detection obj)
+   *   A function to calculate the flux enclosed by the range
+   *    of pixels detected in the object obj (not necessarily all
+   *    pixels will have been detected).
+   */
+  obj.calcParams();
+  int xsize = obj.getXmax()-obj.getXmin()+1;
+  int ysize = obj.getYmax()-obj.getYmin()+1;
+  int zsize = obj.getZmax()-obj.getZmin()+1; 
+  vector <float> fluxArray(xsize*ysize*zsize,0.);
+  for(int x=0;x<xsize;x++){
+    for(int y=0;y<ysize;y++){
+      for(int z=0;z<zsize;z++){
+	fluxArray[x+y*xsize+z*ysize*xsize] = 
+	  this->getPixValue(x+obj.getXmin(),y+obj.getYmin(),z+obj.getZmin());
+      }
+    }
+  }
+  float sum = 0.;
+  for(int i=0;i<fluxArray.size();i++) 
+    if(!this->par.isBlank(fluxArray[i])) sum+=fluxArray[i];
+  return sum;
+}
+
+bool Cube::objAtEdge(Detection obj)
+{
+  /**
+   *  bool Cube::objAtEdge()
+   *   A function to test whether the object obj
+   *    lies at the edge of the cube's field --
+   *    either at the boundary, or next to BLANKs
+   */
+
+  bool atEdge = false;
+
+  int pix = 0;
+  while(!atEdge && pix<obj.getSize()){
+    // loop over each pixel in the object, until we find an edge pixel.
+    Voxel vox = obj.getPixel(pix);
+    for(int dx=-1;dx<=1;dx+=2){
+      if(((vox.getX()+dx)<0) || ((vox.getX()+dx)>this->axisDim[0])) atEdge = true;
+      else if(this->isBlank(vox.getX()+dx,vox.getY(),vox.getZ())) atEdge = true;
+    }
+    for(int dy=-1;dy<=1;dy+=2){
+      if(((vox.getY()+dy)<0) || ((vox.getY()+dy)>this->axisDim[1])) atEdge = true;
+      else if(this->isBlank(vox.getX(),vox.getY()+dy,vox.getZ())) atEdge = true;
+    }
+    for(int dz=-1;dz<=1;dz+=2){
+      if(((vox.getZ()+dz)<0) || ((vox.getZ()+dz)>this->axisDim[2])) atEdge = true;
+      else if(this->isBlank(vox.getX(),vox.getY(),vox.getZ()+dz)) atEdge = true;
+    }
+    pix++;
+  }
+
+  return atEdge;
+}
+
+void Cube::setObjectFlags()
+{
+  /**
+   *  void Cube::setObjectFlags()
+   *   A function to set any warning flags for all the detected objects
+   *    associated with the cube.
+   *   Flags to be looked for:
+   *       * Negative enclosed flux (N)
+   *       * Object at edge of field (E)
+   */
+
+  for(int i=0;i<this->objectList.size();i++){
+
+    if( this->enclosedFlux(this->objectList[i]) < 0. )  
+      this->objectList[i].addToFlagText("N");
+
+    if( this->objAtEdge(this->objectList[i]) ) 
+      this->objectList[i].addToFlagText("E");
+
+  }
+
+}
