@@ -116,7 +116,7 @@ void Cube::outputSpectra()
 
     // now plot the resulting spectrum
     if(this->flagWCS) newplot.gotoHeader("Velocity [km s\\u-1\\d]");
-    else newplot.gotoHeader("Z-pixel value");
+    else newplot.gotoHeader("Spectral pixel value");
 
     string label;
     if(this->flagWCS){

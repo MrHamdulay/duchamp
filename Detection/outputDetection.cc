@@ -253,13 +253,13 @@ string Detection::outputLabelPix()
 //   ss <<", "<<setw(3)<< this->zmin + this->zSubOffset   <<":"<< this->zmax + this->zSubOffset << "]";
   ss << "Centre: ";
   ss << setprecision(1) << setfill(' ');
-  ss <<"(" << this->xcentre + this->xSubOffset;
+  ss <<"("  << this->xcentre + this->xSubOffset;
   ss <<", " << this->ycentre + this->ySubOffset;
   ss <<", " << this->zcentre + this->zSubOffset << ")";
-  ss <<", Size=" << this->pix.size() << " Voxels,  ";
-  ss <<"["<< this->xmin + this->xSubOffset <<":"<< this->xmax + this->xSubOffset;
-  ss <<", "<< this->ymin + this->ySubOffset <<":"<< this->ymax + this->ySubOffset;
-  ss <<", "<< this->zmin + this->zSubOffset <<":"<< this->zmax + this->zSubOffset << "]";
+  ss <<", Size: " << this->pix.size() << " voxels,  ";
+  ss <<"Range: ["<< this->xmin + this->xSubOffset <<":"<< this->xmax + this->xSubOffset;
+  ss <<", "      << this->ymin + this->ySubOffset <<":"<< this->ymax + this->ySubOffset;
+  ss <<", "      << this->zmin + this->zSubOffset <<":"<< this->zmax + this->zSubOffset << "]";
   
   return ss.str();
 }
@@ -279,19 +279,21 @@ string Detection::outputLabelInfo()
    */
 
   std::stringstream ss;
-  ss << setprecision(3);
   ss.setf(std::ios::fixed);
   if(this->flagWCS){
+    ss << setprecision(2);
     ss << "w_"          << this->lngtype  <<"="    << this->raWidth;
     ss << ", w_"        << this->lattype  <<"="    << this->decWidth;
+    ss << setprecision(3);
     ss << ", w_Vel="    << this->velWidth <<"km/s";
-    ss << ", F\\dT\\u=" << this->intFlux;
-    ss << ", F\\dP\\u=" << this->peakFlux;
+    ss << ", F\\dint\\u=" << this->intFlux;
+    ss << ", F\\dpeak\\u=" << this->peakFlux;
   }
   else{ 
     ss << "#" << setfill('0') << setw(3) << this->id << ": ";
-    ss << "F\\dT\\u=" << this->totalFlux;
-    ss << ", F\\dP\\u=" << this->peakFlux;
+    ss << setprecision(3);
+    ss << "F\\dtot\\u=" << this->totalFlux;
+    ss << ", F\\dpeak\\u=" << this->peakFlux;
   }
   string output = ss.str();
 

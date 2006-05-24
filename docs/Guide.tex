@@ -276,16 +276,17 @@ not kept.
 
 \subsubsection{Blank pixel removal}
 
-Second, the cube is trimmed of any BLANK pixels that pad the image
-out to a rectangular shape. This is also optional, being determined by
-the {\tt flagBlankPix} parameter. The value for these pixels is read from
+Second, the cube is trimmed of any BLANK pixels that pad the image out
+to a rectangular shape. This is also optional, being determined by the
+{\tt flagBlankPix} parameter. The value for these pixels is read from
 the FITS header (using the BLANK, BSCALE and BZERO keywords), but if
 these are not present then the value can be specified by the user in
 the parameter file. If these blank pixels are stored as NaNs, then a
 normal number will be substituted (allowing these pixels to be
 accurately removed without adverse effects). [NOTE: this appears not
-  to be working correctly at time of writing. If your data has
-  unspecified BLANKs, be wary...]
+to be working correctly at time of writing. If your data has
+unspecified BLANKs, be wary, or use the subsectioning option to trim
+the BLANKs.]
 
 This stage is particularly important for the reconstruction step, as
 lots of BLANK pixels on the edges will smooth out features in the
@@ -328,12 +329,15 @@ temporary measure which does not affect the source-detection.
 \subsection{Image reconstruction}
 \label{sec-recon}
 
-This is an optional step. The user can direct Duchamp to
-reconstruct the data cube using the {\it {\`a} trous} wavelet
-procedure. A good description of the procedure can be found in
-\citet{starck02:book}. This is an effective way of removing a
-lot of the noise in the image, but at this stage is relatively time-
-and memory-intensive. The steps in the procedure are as follows:
+This is an optional step, but one that greatly enhances the
+source-detection process. The user can direct Duchamp to reconstruct
+the data cube using the {\it {\`a} trous} wavelet procedure. A good
+description of the procedure can be found in
+\citet{starck02:book}. The reconstruction is an effective way of
+removing a lot of the noise in the image, allowing one to search
+reliably to fainter levels, and reducing the number of spurious
+detections. The payoff is that it can be relatively time- and
+memory-intensive. The steps in the procedure are as follows:
 \begin{enumerate}
 \item Set the reconstructed array to 0 everywhere.
 \item The cube is discretely convolved with a given filter

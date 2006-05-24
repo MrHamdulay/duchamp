@@ -40,7 +40,7 @@ namespace Plot
       spectraCount=0;
       numOnPage = 5;
       indexSize = 0.6;
-      labelSize = 0.8;};
+      labelSize = 0.7;};
     ~SpectralPlot(){};
 
     void setUpPlot(string pgDestination){
@@ -93,9 +93,9 @@ namespace Plot
      *  Functions to write the header information above the boxes.
      *  One for each line (position/velocity, widths & fluxes, pixel coords).
      */
-    void firstHeaderLine(string line){  cpgmtxt("t",3.6,0.5,0.5,line.c_str());};
+    void firstHeaderLine(string line){  cpgmtxt("t",3.8,0.5,0.5,line.c_str());};
     void secondHeaderLine(string line){ cpgmtxt("t",2.3,0.5,0.5,line.c_str());};
-    void thirdHeaderLine(string line){  cpgmtxt("t",1.0,0.5,0.5,line.c_str());};
+    void thirdHeaderLine(string line){  cpgmtxt("t",0.8,0.5,0.5,line.c_str());};
 
     void gotoMainSpectrum(float x1, float x2, float y1, float y2, string ylabel){
       /** SpectralPlot::gotoMainSpectrum()
