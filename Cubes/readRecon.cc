@@ -21,12 +21,10 @@ int Cube::readReconCube()
    */
 
 
-  fitsfile *fptr;
   int status = 0;
 
   // Check to see whether the parameters reconFile and/or residFile are defined.
   bool reconGood = false;
-  bool residGood = false;
   int exists;
   if(this->par.getReconFile() != ""){
     reconGood = true;
@@ -70,6 +68,7 @@ int Cube::readReconCube()
 
   // if we get to here, reconGood is true (ie. file is open);
   status=0;
+  fitsfile *fptr;
   fits_open_file(&fptr,this->par.getReconFile().c_str(),READONLY,&status);
   short int maxdim=3;
   long *fpixel = new long[maxdim];
@@ -103,23 +102,52 @@ int Cube::readReconCube()
     }
   }      
 
+  char *comment = new char[80];
+  int scaleMin,filterCode,reconDim;
+  float snrRecon;
+  status = 0;
+  fits_read_key(fptr, TINT, (char *)keyword_reconDim.c_str(), &reconDim, comment, &status);
+  if(reconDim != this->par.getReconDim()){
+    std::cerr << "  ERROR <readReconCube> : reconDim keyword in reconFile (" << reconDim
+	      << ") does not match that requested (" << this->par.getReconDim() << ").\n";
+    return FAILURE;
+  }
+  status = 0;
+  fits_read_key(fptr, TINT, (char *)keyword_filterCode.c_str(), &filterCode, comment, &status);
+  if(filterCode != this->par.getFilterCode()){
+    std::cerr << "  ERROR <readReconCube> : filterCode keyword in reconFile (" << filterCode
+	      << ") does not match that requested (" << this->par.getFilterCode() << ").\n";
+    return FAILURE;
+  }
+  status = 0;
+  fits_read_key(fptr, TFLOAT, (char *)keyword_snrRecon.c_str(), &snrRecon, comment, &status);
+  if(snrRecon != this->par.getAtrousCut()){
+    std::cerr << "  ERROR <readReconCube> : snrRecon keyword in reconFile (" << snrRecon
+	      << ") does not match that requested (" << this->par.getAtrousCut() << ").\n";
+    return FAILURE;
+  }
+  status = 0;
+  fits_read_key(fptr, TINT, (char *)keyword_scaleMin.c_str(), &scaleMin, comment, &status);
+  if(scaleMin != this->par.getMinScale()){
+    std::cerr << "  ERROR <readReconCube> : scaleMin keyword in reconFile (" << scaleMin
+	      << ") does not match that requested (" << this->par.getMinScale() << ").\n";
+    return FAILURE;
+  }
+  
+  //
+  // If we get to here, the reconFile exists and matches the atrous parameters the user has requested.
+  //
+
   float *reconArray = new float[this->numPixels];
-  //  fits_read_pix(fptr, TFLOAT, fpixel, this->numPixels, NULL, this->recon, &anynul, &status);
   status = 0;
   fits_read_pix(fptr, TFLOAT, fpixel, this->numPixels, NULL, reconArray, &anynul, &status);
   this->saveRecon(reconArray,this->numPixels);
   
-  if(!this->par.getFlagATrous()){
-    this->par.setFlagATrous(true);
-    std::cerr << "  WARNING <readReconCube> : Setting flagAtrous from false to true, as the reconstruction exists.\n";
-  }
-
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
     std::cerr << "  WARNING <readReconCube> : Error closing file: ";
     fits_report_error(stderr, status);
-    //    return FAILURE;
   }
 
   // We don't want to write out the recon or resid files at the end
