@@ -1,8 +1,5 @@
 #include <iostream>
-#include <iomanip>
-#include <sstream>
 #include <fstream>
-#include <vector>
 #include <string>
 #include <cpgplot.h>
 #include <math.h>
@@ -16,7 +13,7 @@
 #include <ATrous/atrous.hh>
 
 using std::ofstream;
-using std::endl;
+using std::string;
 
 Filter reconFilter;
 
@@ -66,36 +63,37 @@ int main(int argc, char * argv[])
     return 1;
   }
 
+  string fname = cube->pars().getImageFile();
+  if(cube->pars().getFlagSubsection()){
+    cube->pars().parseSubsection();
+    fname+=cube->pars().getSubsection();
+  }
+  std::cout << "Opening image: " << fname << std::endl;
+  if( cube->getCube(fname) == FAILURE){
+    std::cerr << "ERROR : Unable to open image file : " << fname << std::endl;
+    std::cerr << "Exiting...\n\n";
+    return 1;
+  }
+  else std::cout << "Opened successfully." << std::endl; 
+
+  // If the reconstructed array is to be read in from disk
+  if( cube->pars().getFlagReconExists() && cube->pars().getFlagATrous() ){
+    std::cout << "Reading reconstructed array: "<<std::endl;
+    if( cube->readReconCube() == FAILURE){
+      std::cerr << "WARNING : Could not read in existing reconstructed array.\n"
+		<< "          Will perform reconstruction using assigned parameters.\n";
+      cube->pars().setFlagReconExists(false);
+    }
+    else std::cout << "Reconstructed array available.\n";
+  }
+
   // Filter needed for baseline removal and a trous reconstruction
   if(cube->pars().getFlagATrous() || cube->pars().getFlagBaseline()){
     reconFilter.define(cube->pars().getFilterCode());
     cube->pars().setFilterName(reconFilter.getName());
   }
 
-  string fname = cube->pars().getImageFile();
-  if(cube->pars().getFlagSubsection()){
-    cube->pars().parseSubsection();
-    fname+=cube->pars().getSubsection();
-  }
-  std::cout << "Opening image: " << fname << endl;
-  if( cube->getCube(fname) == FAILURE){
-    std::cerr << "ERROR : Unable to open image file : " << fname << endl;
-    std::cerr << "Exiting...\n\n";
-    return 1;
-  }
-  else std::cout << "Opened successfully." << endl; 
-
-  // If the reconstructed array is to be read in from disk
-  if( cube->pars().getFlagReconExists() && cube->pars().getFlagATrous() ){
-    std::cout << "Reading reconstructed array: ";
-    if( cube->readReconCube() == FAILURE){
-      std::cerr << "WARNING : Could not read in existing reconstructed array.\n"
-		<< "          Will perform reconstruction using assigned parameters.\n";
-      cube->pars().setFlagReconExists(false);
-    }
-    std::cout << " Done.\n";
-  }
-
+  // Write the parameters to screen.
   std::cout << cube->pars();
 
   if(cube->pars().getFlagLog()){
@@ -110,18 +108,18 @@ int main(int argc, char * argv[])
   if(cube->pars().getFlagBlankPix()){
     std::cout<<"Trimming the Blank Pixels from the edges...  "<<std::flush;
     cube->trimCube();
-    std::cout<<"Done."<<endl;
+    std::cout<<"Done."<<std::endl;
     std::cout << "New dimensions:  " << cube->getDimX();
     if(cube->getNumDim()>1) std::cout << "x" << cube->getDimY();
     if(cube->getNumDim()>2) std::cout << "x" << cube->getDimZ();
-    std::cout << endl;
+    std::cout << std::endl;
   }
 
-  if(cube->pars().getFlagMW()){
-    std::cout<<"Removing the Milky Way channels...  ";
-    cube->removeMW();
-    std::cout<<"Done."<<endl;
-  }
+//   if(cube->pars().getFlagMW()){
+//     std::cout<<"Removing the Milky Way channels...  "<<std::flush;
+//     cube->removeMW();
+//     std::cout<<"Done."<<std::endl;
+//   }
 
   if(cube->pars().getFlagBaseline()){
     std::cout<<"Removing the baselines... "<<std::flush;
@@ -138,20 +136,20 @@ int main(int argc, char * argv[])
   }
 
   if(cube->pars().getFlagATrous()){
-    std::cout<<"Commencing search in reconstructed cube..."<<endl;
-    cube->ReconSearch3D();
-    std::cout<<"Done. Found "<<cube->getNumObj()<<" objects."<<endl;
+    std::cout<<"Commencing search in reconstructed cube..."<<std::endl;
+    cube->ReconSearch();
+    std::cout<<"Done. Found "<<cube->getNumObj()<<" objects."<<std::endl;
   }
   else{
-    std::cout<<"Commencing search in cube..."<<endl;
-    cube->SimpleSearch3D();
-    std::cout<<"Done. Found "<<cube->getNumObj()<<" objects."<<endl;
+    std::cout<<"Commencing search in cube..."<<std::endl;
+    cube->CubicSearch();
+    std::cout<<"Done. Found "<<cube->getNumObj()<<" objects."<<std::endl;
   }
 
   std::cout<<"Merging lists...  "<<std::flush;
   cube->ObjectMerger();
-  std::cout<<"Done.                      "<<endl;
-  std::cout<<"Final object count = "<<cube->getNumObj()<<endl; 
+  std::cout<<"Done.                      "<<std::endl;
+  std::cout<<"Final object count = "<<cube->getNumObj()<<std::endl; 
 
   if(cube->pars().getFlagNegative()){
     std::cout<<"Un-Inverting the Cube... "<<std::flush;
@@ -164,7 +162,7 @@ int main(int argc, char * argv[])
   if(cube->pars().getFlagCubeTrimmed()){
     std::cout<<"Replacing the trimmed pixels on the edges...  "<<std::flush;
     cube->unTrimCube();
-    std::cout<<"Done."<<endl;
+    std::cout<<"Done."<<std::endl;
   }
 
   if(cube->getNumObj()>0){

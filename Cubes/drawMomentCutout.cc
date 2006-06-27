@@ -1,14 +1,15 @@
 #include <iostream>
+#include <sstream>
 #include <cpgplot.h>
 #include <math.h>
 #include <wcs.h>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
 
-void drawMomentCutout(Cube &cube, Detection &object)
+void Cube::drawMomentCutout(Detection &object)
 {
   /** 
-   *  drawMomentCutout(cube, object)
+   *  Cube::drawMomentCutout(object)
    *
    *   A routine to draw the 0th moment for the given detection
    *    using the flux given by the pixel array in the Cube.
@@ -27,7 +28,7 @@ void drawMomentCutout(Cube &cube, Detection &object)
     size = object.getYmax()-object.getYmin()+1;
   size += 20;
 
-  float blankVal = cube.pars().getBlankPixVal();
+  float blankVal = this->par.getBlankPixVal();
 
   long xmin = (object.getXmax()+object.getXmin())/2 - size/2 + 1;
   long xmax = (object.getXmax()+object.getXmin())/2 + size/2;
@@ -38,8 +39,6 @@ void drawMomentCutout(Cube &cube, Detection &object)
 
   float *image = new float[size*size];
   for(int i=0;i<size*size;i++) image[i]=blankVal;
-  long *dim = new long[3];
-  cube.getDimArray(dim);
 
   int imPos,cubePos;
   float val;
@@ -47,12 +46,12 @@ void drawMomentCutout(Cube &cube, Detection &object)
     for(int x=xmin; x<=xmax; x++){
       for(int y=ymin; y<=ymax; y++){
 	imPos = (y-ymin) * size + (x-xmin);
-	cubePos = (z)*dim[0]*dim[1]+(y)*dim[0]+(x);
-	if((x<0)||(x>=dim[0])||(y<0)||(y>=dim[1])) // if outside the boundaries
+	cubePos = (z)*this->axisDim[0]*this->axisDim[1]+(y)*this->axisDim[0]+(x);
+	if((x<0)||(x>=this->axisDim[0])||(y<0)||(y>=this->axisDim[1])) // if outside the boundaries
 	  image[imPos] = blankVal;
 	else{
-	  val = cube.getPixValue(cubePos);
-	  if (!cube.pars().isBlank(val)) // if pixel's not blank
+	  val = this->array[cubePos];
+	  if (!this->par.isBlank(val)) // if pixel's not blank
 	    image[imPos] += val;
 	}
       }
@@ -69,7 +68,7 @@ void drawMomentCutout(Cube &cube, Detection &object)
   // now work out the greyscale display limits, excluding blank pixels where necessary.
   float z1,z2,median,madfm;
   int ct=0;
-  while(image[ct]==cube.pars().getBlankPixVal()) ct++;
+  while(image[ct]==this->par.getBlankPixVal()) ct++;
   z1 = z2 = image[ct];
   for(int i=1;i<size*size;i++){
     if(image[i]!=blankVal){
@@ -84,14 +83,13 @@ void drawMomentCutout(Cube &cube, Detection &object)
   cpggray(image, size, size, 1, size, 1, size, z1, z2, tr);
 
   delete [] image;
-  delete [] dim;
 
   // Draw the borders around the object
   int ci;
   cpgqci(&ci);
   cpgsci(4);
   cpgsfs(2);
-  if(cube.pars().drawBorders()) 
+  if(this->par.drawBorders()) 
     object.drawBorders(xmin,ymin);
   else 
     cpgrect(object.getXmin()-xmin+0.5,object.getXmax()-xmin+1.5,
@@ -103,9 +101,9 @@ void drawMomentCutout(Cube &cube, Detection &object)
   */
   cpgsci(ci);
 
-  if(cube.isWCS()){
+  if(this->head.isWCS()){
     // Now draw a tick mark to indicate size -- 15 arcmin in length
-    cube.drawScale(xmin+2.,ymin+2.,object.getZcentre(),0.25);
+    this->drawScale(xmin+2.,ymin+2.,object.getZcentre(),0.25);
   }
 
   cpgsci(1);
@@ -133,7 +131,7 @@ void Cube::drawScale(float xstart, float ystart, float channel, float scaleLengt
   pix1[0] = pix2[0] = xstart + this->par.getXOffset();
   pix1[1] = pix2[1] = ystart + this->par.getYOffset();
   pix1[2] = pix2[2] = channel;
-  pixToWCSSingle(this->wcs,pix1,world1);
+  this->head.pixToWCS(pix1,world1);
 
   double angSep=0.;
   bool keepGoing=false;
@@ -144,7 +142,7 @@ void Cube::drawScale(float xstart, float ystart, float channel, float scaleLengt
       step /= 2.;
     }
     pix2[0] += step;
-    pixToWCSSingle(this->wcs,pix2,world2);
+    this->head.pixToWCS(pix2,world2);
     angSep = angularSeparation(world1[0],world1[1],world2[0],world2[1]);
   }while((fabs(angSep-scaleLength)/scaleLength)>0.01); // look for 1% change
 
@@ -159,6 +157,15 @@ void Cube::drawScale(float xstart, float ystart, float channel, float scaleLengt
   cpgslw(3);
   cpgerrx(1,&tickpt1,&tickpt2,&tickpt3,2.);
   cpgslw(thick);
+
+  std::stringstream text;
+  text << scaleLength*60 << "'";
+  float size,xch,ych;
+  cpgqch(&size);
+  cpgsch(0.4);
+  cpgqcs(4,&xch,&ych); // get the character size in world coords
+  cpgptxt((tickpt1+tickpt2)/2., ystart+ych, 0, 0.5, text.str().c_str());
+  cpgsch(size);
   cpgsci(colour);
 
   delete [] pix1,pix2;

@@ -5,11 +5,14 @@
 #include <string>
 #include <vector>
 #include <param.hh>
+#ifndef COLUMNS_H
+#include <Detection/columns.hh>
+#endif
 #include <Utils/utils.hh>
-#include <wcs.h>
 
 using std::string;
 using std::vector;
+using namespace Column;
 
 /**
  * Voxel class
@@ -145,14 +148,14 @@ public:
   void   setRAWidth(float f){raWidth = f;};
   float  getDecWidth(){return decWidth;};
   void   setDecWidth(float f){decWidth = f;};
-  string getLNGtype(){return lngtype;};
-  void   setLNGtype(string s){lngtype = s;};
-  string getLATtype(){return lattype;};
-  void   setLATtype(string s){lattype = s;};
-  string getZtype(){return ztype;};
-  void   setZtype(string s){ztype = s;};
-  float  getNuRest(){return nuRest;};
-  void   setNuRest(float f){nuRest = f;};
+//   string getLNGtype(){return lngtype;};
+//   void   setLNGtype(string s){lngtype = s;};
+//   string getLATtype(){return lattype;};
+//   void   setLATtype(string s){lattype = s;};
+//   string getZtype(){return ztype;};
+//   void   setZtype(string s){ztype = s;};
+//   float  getNuRest(){return nuRest;};
+//   void   setNuRest(float f){nuRest = f;};
   float  getVel(){return vel;};
   void   setVel(float f){vel = f;};
   float  getVelWidth(){return velWidth;};
@@ -165,8 +168,10 @@ public:
   void   setID(int i){id = i;};
   //
   void   addAnObject(Detection &toAdd);
-  void   calcWCSparams(wcsprm *wcs);
-  float  getIntegFlux(wcsprm *wcs);
+//   void   calcWCSparams(wcsprm *wcs);
+//   float  getIntegFlux(wcsprm *wcs);
+  void   calcWCSparams(FitsHeader head);
+  float  getIntegFlux(FitsHeader head);
   void   calcParams();
   void   clearDetection(){this->pix.clear();};
   void   addOffsets(Param &par);
@@ -176,9 +181,8 @@ public:
   string outputLabelWCS();
   string outputLabelPix();
   string outputLabelInfo();
-  void   outputDetectionTextWCS(std::ostream &stream);
-  void   outputDetectionText(std::ostream &stream, int idNumber);
-  void   outputDetectionText(int idNumber);
+  void   outputDetectionTextWCS(std::ostream &stream, ColSet columns);
+  void   outputDetectionText(std::ostream &stream, ColSet columns, int idNumber);
   // For plotting routines...
   void   drawBorders(int xoffset, int yoffset);  // in Cubes/drawMomentCutout.cc
   //
@@ -213,10 +217,13 @@ private:
   float          dec;	      // Central Declination in degrees
   float          raWidth;     // Width of detection in RA direction in arcmin
   float          decWidth;    // Width of detection in Dec direction in arcmin
+  string         specUnits;   // Units of the spectral dimension
+  string         fluxUnits;   // Units of flux
+  string         intFluxUnits;// Units of integrated flux
   string         lngtype;     // Type of longitude axis (RA/GLON)
   string         lattype;     // Type of latitude axis (DEC/GLAT)
-  string         ztype;	      // Type of z-axis (FREQ/VEL/...)
-  float          nuRest;      // Rest frequency
+//   string         ztype;	      // Type of z-axis (FREQ/VEL/...)
+//   float          nuRest;      // Rest frequency
   float          vel;	      // Central velocity (from zCentre)
   float          velWidth;    // Full velocity width
   float          velMin;      // Minimum velocity
@@ -229,9 +236,9 @@ private:
 // Prototypes for functions that use above classes
 //////////////////////////////////////////////////////
 
-void outputDetectionTextWCSHeader(std::ostream &stream, wcsprm *wcs);
-void outputDetectionTextHeader(std::ostream &stream);
-void outputDetectionTextHeader();
+// void outputDetectionTextWCSHeader(std::ostream &stream, wcsprm *wcs);
+void outputDetectionTextWCSHeader(std::ostream &stream, ColSet columns);
+void outputDetectionTextHeader(std::ostream &stream, ColSet columns);
 
 void SortByZ(vector <Detection> &inputList);
 void SortByVel(vector <Detection> &inputList);

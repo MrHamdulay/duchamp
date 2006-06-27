@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <wcs.h>
 
 #ifndef PARAM_H
 #include <param.hh>
@@ -12,9 +11,16 @@
 #ifndef DETECTION_H
 #include <Detection/detection.hh>
 #endif
+#ifndef COLUMNS_H
+#include <Detection/columns.hh>
+#endif
+#ifndef PLOTS_H
+#include <Cubes/plots.hh>
+#endif
 
 using std::string;
 using std::vector;
+using namespace Column;
 
 /****************************************************************/
 /////////////////////////////////////////////////////////////
@@ -114,6 +120,8 @@ public:
   void      setPValue(long x, long y, float p){pValue[y*axisDim[0] + x] = p;};
   void      setMaskValue(long pos, short int m){mask[pos] = m;};
   void      setMaskValue(long x, long y, short int m){mask[y*axisDim[0] + x] = m;};
+  bool      isBlank(int vox){return par.isBlank(array[vox]);};
+  bool      isBlank(long x, long y){return par.isBlank(array[y*axisDim[0] + x]);};
   // Stats-related
   void      setStats(float m, float s, float c){mean=m; sigma=s; cutLevel=c;};
   void      findStats(int code);
@@ -140,6 +148,7 @@ public:
   bool      isDetection(long x, long y);    // in Detection/thresholding_functions.cc
   bool      isDetectionFDR(float pvalue);   // in Detection/thresholding_functions.cc
 
+  void      removeMW();
   
 private: 
   float     *pValue;     // the array of p-values for each pixel 
@@ -164,7 +173,8 @@ private:
 class Cube : public DataArray
 {
 public:
-  Cube(){numPixels=0; numDim=3; flagWCS=false;};
+  Cube(){numPixels=0; numDim=3; // flagWCS=false;
+  };
   Cube(long nPix);
   Cube(long *dimensions);
   virtual ~Cube(){};            // destructor
@@ -172,6 +182,7 @@ public:
   // additional accessor functions -- in Cubes/cubes.cc unless otherwise specified.
 
   int     getCube(string fname);
+  int     getCube(){this->getCube(this->par.getImageFile());};
   void    initialiseCube(long *dimensions);
   void    saveReconstructedCube();
   int     readReconCube();
@@ -223,19 +234,34 @@ public:
   void    reInvert();        // in Cubes/invertCube.cc
 
   // Reconstruction and Searching functions
+  void    ReconSearch();     // in ATrous/ReconSearch.cc
   void    ReconSearch1D();   // in ATrous/ReconSearch.cc
   void    ReconSearch2D();   // in ATrous/ReconSearch.cc
   void    ReconSearch3D();   // in ATrous/ReconSearch.cc
-  void    SimpleSearch3D();  // in Cubes/CubicSearch.cc
+  void    CubicSearch();     // in Cubes/CubicSearch.cc
 
   // Dealing with the WCS
-  bool    isWCS(){return flagWCS;};
-  void    setWCS(wcsprm *w);
-  wcsprm *getWCS();
-  void    setNWCS(int n){nwcs = n;};
-  int     getNWCS(){return nwcs;};
-  void    setBUnit(char *s){bunit = s;};
-  string  getBUnit(){return bunit;};
+  FitsHeader getHead(){return head;};
+  void       setHead(FitsHeader F){head=F;};
+  FitsHeader& header(){FitsHeader &h = head; return h;};
+  int        wcsToPix(const double *world, double *pix){
+    return this->head.wcsToPix(world,pix);}
+  int        wcsToPix(const double *world, double *pix, const int npts){
+    return this->head.wcsToPix(world,pix,npts);}
+  int        pixToWCS(const double *pix, double *world){
+    return this->head.pixToWCS(pix,world);}
+  int        pixToWCS(const double *pix, double *world, const int npts){
+    return this->head.pixToWCS(pix,world,npts);}
+  
+//  bool    isWCS(){return flagWCS;};
+//  void    setWCS(wcsprm *w);
+//  wcsprm *getWCS();
+//  void    setNWCS(int n){nwcs = n;};
+//  int     getNWCS(){return nwcs;};
+//  void    setBUnit(char *s){bunit = s;};
+//  string  getBUnit(){return bunit;};
+//  void    setVelUnit(char *s){velunit = s;};
+//  string  getVelUnit(){return velunit;};
 	 
   // Dealing with the detections 
   void    ObjectMerger();          // in Cubes/Merger.cc
@@ -253,15 +279,17 @@ public:
   void    outputDetectionList();                           // in Cubes/detectionIO.cc
   void    logDetectionList();                              // in Cubes/detectionIO.cc
   void    logDetection(Detection obj, int counter);        // in Cubes/detectionIO.cc
+  void    setupColumns();                                  // in Detection/columns.cc
 
   // Graphical plotting of detections.
-  void    plotDetectionMap(string pgDestination);     // in Cubes/plotting.cc
-  void    plotMomentMap(string pgDestination);        // in Cubes/plotting.cc
-  void    plotWCSaxes();                              // in Cubes/plotting.cc
-  void    outputSpectra();                            // in Cubes/outputSpectra.cc
+  void    plotDetectionMap(string pgDestination);          // in Cubes/plotting.cc
+  void    plotMomentMap(string pgDestination);             // in Cubes/plotting.cc
+  void    plotWCSaxes();                                   // in Cubes/plotting.cc
+  void    outputSpectra();                                 // in Cubes/outputSpectra.cc
+  void    plotSpectrum(Detection obj,Plot::SpectralPlot &plot); // in Cubes/outputSpectra.cc
+  void    drawMomentCutout(Detection &object);             // in Cubes/drawMomentCutout.cc
   void    drawScale(float xstart, float ystart, float channel, float scaleLength);
-                                                      // in Cubes/drawMomentCutout.cc
-
+                                                           // in Cubes/drawMomentCutout.cc
 
 private: 
   float  *recon;           // reconstructed array -- used when doing a trous reconstruction.
@@ -273,11 +301,16 @@ private:
   float  *specSigma;       // array of sigmas for each spectrum in cube
   float  *chanMean;        // array of means  for each channel map in cube
   float  *chanSigma;       // array of sigmas for each channel map in cube
-		           
-  bool    flagWCS;         // a flag indicating whether there is a valid WCS present.
-  wcsprm *wcs;             // the WCS parameters for the cube -- a struct from wcslib
-  int     nwcs;            // number of WCS parameters
-  string  bunit;           // The header keyword BUNIT -- the units of brightness in the FITS file.
+	
+  FitsHeader head;         // the WCS and other header information.
+  ColSet fullColSet;       // the list of all columns as printed in the results file
+  ColSet logColSet;        // the list of columns as printed in the log file
+
+  //  bool    flagWCS;         // a flag indicating whether there is a valid WCS present.
+  //  wcsprm *wcs;             // the WCS parameters for the cube -- a struct from wcslib
+  //  int     nwcs;            // number of WCS parameters
+  //  string  bunit;           // The header keyword BUNIT -- the units of brightness in the FITS file.
+  //  string  velunit;         // The header keyword CUNIT3 -- the units of the spectral dimension.
 };
 
 /****************************************************************/
@@ -291,13 +324,10 @@ Image getImage(string fname);
 void findSources(Image &image);
 void findSources(Image &image, float mean, float sigma); 
 
-vector <Detection> reconSearch(long *dim,float *originalArray,float *reconArray, Param &par);
-vector <Detection> cubicSearch(long *dim, float *Array, Param &par);
-vector <Detection> cubicSearchNMerge(long *dim, float *Array, Param &par);
+vector <Detection> searchReconArray(long *dim,float *originalArray,float *reconArray, Param &par);
+vector <Detection> search3DArray(long *dim, float *Array, Param &par);
 
 void growObject(Detection &object, Image &image);
 void growObject(Detection &object, Cube &cube);
-
-void drawMomentCutout(Cube &cube, Detection &object);
 
 #endif

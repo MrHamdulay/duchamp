@@ -103,7 +103,7 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
       yLim2[col] = ct2;
       avGapY += ct2 - ct1 + 1;
     }
-    avGapY /= float(ydim);
+    avGapY /= float(xdim);
  
     mindim = int(avGapX);
     if(avGapY < avGapX) mindim = int(avGapY);
@@ -147,25 +147,28 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
 		int z = zpos + spacing*zoffset;
 		if(z<0) z = -z;                 // boundary conditions are 
 		if(z>=zdim) z = 2*(zdim-1) - z; //    reflection.
-	  
+		
+		int oldchan = z * spatialSize;
+		
 		for(int yoffset=-filterHW; yoffset<=filterHW; yoffset++){
 		  int y = ypos + spacing*yoffset;
+
+		  // Boundary conditions -- assume reflection at boundaries.
+		  // Use limits as calculated above
+		  if(yLim1[xpos]!=yLim2[xpos]){ 
+		    // if these are equal we will get into an infinite loop here 
+		    while((y<yLim1[xpos])||(y>yLim2[xpos])){
+		      if(y<yLim1[xpos]) y = 2*yLim1[xpos] - y;      
+		      else if(y>yLim2[xpos]) y = 2*yLim2[xpos] - y;      
+		    }
+		  }
+		  int oldrow = y * xdim;
 	  
 		  for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
 		    int x = xpos + spacing*xoffset;
 
-		    filterpos++;
-		    
 		    // Boundary conditions -- assume reflection at boundaries.
 		    // Use limits as calculated above
-		    if(yLim1[xpos]!=yLim2[xpos]){ 
-		      // if these are equal we will get into an infinite loop here 
-		      while((y<yLim1[xpos])||(y>yLim2[xpos])){
-			if(y<yLim1[xpos]) y = 2*yLim1[xpos] - y;      
-			else if(y>yLim2[xpos]) y = 2*yLim2[xpos] - y;      
-		      }
-		    }
-
 		    if(xLim1[ypos]!=xLim2[ypos]){
 		      // if these are equal we will get into an infinite loop here 
 		      while((x<xLim1[ypos])||(x>xLim2[ypos])){
@@ -174,8 +177,11 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
 		      }
 		    }
 
-		    int oldpos = z*spatialSize + y*xdim + x;
-		    
+// 		    int oldpos = z*spatialSize + y*xdim + x;
+		    int oldpos = oldchan + oldrow + x;
+
+		    filterpos++;
+		   
 		    if(isGood[oldpos]) 
 		      wavelet[pos] -= filter[filterpos]*coeffs[oldpos];
 		      
@@ -221,7 +227,8 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
     array = new float[size];
     goodSize=0;
     for(int i=0;i<size;i++) if(isGood[i]) array[goodSize++] = input[i] - output[i];
-    findNormalStats(array,goodSize,mean,newsigma);
+    findMedianStats(array,goodSize,mean,newsigma);
+    newsigma /= correctionFactor; // correct from MADFM to sigma estimator.
     delete [] array;
 
     if(par.isVerbose()) std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";

@@ -4,9 +4,10 @@
 #include <iomanip>
 #include <string>
 #include <time.h>
-#include <Cubes/cubes.hh>
+#include <Cubes/cubes.hh> 
+#include <Detection/columns.hh>
 #include <Utils/utils.hh>
-
+ 
 using std::endl;
 using std::setw;
 using std::setprecision;
@@ -51,6 +52,37 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
    *  If they have not (given by the isWCS() function), then those objects are not written...
    */
 
+  // Set up Column definitions here
+  vector<Column::Col> localCol;
+  string posUCD[4];
+  localCol.push_back(this->fullColSet.vec[0]);  // objID
+  localCol.push_back(this->fullColSet.vec[1]);  // name
+  localCol.push_back(this->fullColSet.vec[5]);  // ra
+  if(makelower(localCol[2].getName())=="ra"){
+    posUCD[0] = "pos.eq.ra;meta.main";
+    posUCD[2] = "phys.angSize;pos.eq.ra";
+  }
+  else{
+    posUCD[0] = "pos.galactic.lat;meta.main";
+    posUCD[2] = "phys.angSize;pos.galactic.lat";
+  }
+  localCol.push_back(this->fullColSet.vec[6]);  // dec
+  if(makelower(localCol[2].getName())=="dec"){
+    posUCD[1] = "pos.eq.dec;meta.main";
+    posUCD[3] = "phys.angSize;pos.eq.dec";
+  }
+  else{
+    posUCD[1] = "pos.galactic.lon;meta.main";
+    posUCD[3] = "phys.angSize;pos.galactic.lon";
+  }
+  localCol.push_back(this->fullColSet.vec[8]);  // w_ra
+  localCol.push_back(this->fullColSet.vec[9]);  // w_dec
+  localCol.push_back(this->fullColSet.vec[7]);  // vel
+  localCol.push_back(this->fullColSet.vec[10]); // w_vel
+  localCol.push_back(this->fullColSet.vec[11]); // f_int
+  localCol.push_back(this->fullColSet.vec[12]); // f_peak
+  localCol.push_back(this->fullColSet.vec[20]); // flag
+
   stream<<"<?xml version=\"1.0\"?>"<<endl;
   stream<<"<VOTABLE version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""<<endl;
   stream<<" xsi:noNamespaceSchemaLocation=\"http://www.ivoa.net/xml/VOTable/VOTable/v1.1\">"<<endl;
@@ -70,20 +102,23 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
     stream<<"      <PARAM name=\"Threshold\" datatype=\"float\" ucd=\"stat.snr\" value=\"" << this->pars().getCut() << "\">" << endl;
   if(this->pars().getFlagATrous()){
     stream<<"      <PARAM name=\"ATrous note\" datatype=\"char\" ucd=\"meta.note\" value=\"The a trous reconstruction method was used, with the following parameters.\">" << endl;
-    stream<<"      <PARAM name=\"ATrous Cut\" datatype=\"float\" ucd=\"stat.snr\" value=\"" << this->pars().getAtrousCut() << "\">" << endl;
+    stream<<"      <PARAM name=\"ATrous Dimension\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" << this->pars().getReconDim() << "\">" << endl;
+    stream<<"      <PARAM name=\"ATrous Threshold\" datatype=\"float\" ucd=\"stat.snr\" value=\"" << this->pars().getAtrousCut() << "\">" << endl;
     stream<<"      <PARAM name=\"ATrous Minimum Scale\" datatype=\"int\" ucd=\"stat.param\" value=\"" << this->pars().getMinScale() << "\">" << endl;
     stream<<"      <PARAM name=\"ATrous Filter\" datatype=\"char\" ucd=\"meta.code;stat\" value=\"" << this->pars().getFilterName() << "\">" << endl;
   }
   // FIELD section -- names, titles and info for each column.
-  stream<<"      <FIELD name=\"ID\" ID=\"col1\" ucd=\"meta.id\" datatype=\"int\" width=\"4\"/>"<<endl;
-  stream<<"      <FIELD name=\"Name\" ID=\"col2\" ucd=\"meta.id;meta.main\" datatype=\"char\" arraysize=\"14\"/>"<<endl;
-  stream<<"      <FIELD name=\"RA\" ID=\"col3\" ucd=\"pos.eq.ra;meta.main\" ref=\"J2000\" datatype=\"float\" width=\"10\" precision=\"6\" unit=\"deg\"/>"<<endl;
-  stream<<"      <FIELD name=\"Dec\" ID=\"col4\" ucd=\"pos.eq.dec;meta.main\" ref=\"J2000\" datatype=\"float\" width=\"10\" precision=\"6\" unit=\"deg\"/>"<<endl;
-  stream<<"      <FIELD name=\"w_RA\" ID=\"col3\" ucd=\"phys.angSize;pos.eq.ra\" ref=\"J2000\" datatype=\"float\" width=\"7\" precision=\"2\" unit=\"arcmin\"/>"<<endl;
-  stream<<"      <FIELD name=\"w_Dec\" ID=\"col4\" ucd=\"phys.angSize;pos.eq.dec\" ref=\"J2000\" datatype=\"float\" width=\"7\" precision=\"2\" unit=\"arcmin\"/>"<<endl;
-  stream<<"      <FIELD name=\"Vel\" ID=\"col4\" ucd=\"phys.veloc;src.dopplerVeloc\" datatype=\"float\" width=\"9\" precision=\"3\" unit=\"km/s\"/>"<<endl;
-  stream<<"      <FIELD name=\"w_Vel\" ID=\"col4\" ucd=\"phys.veloc;src.dopplerVeloc;spect.line.width\" datatype=\"float\" width=\"8\" precision=\"3\" unit=\"km/s\"/>"<<endl;
-  stream<<"      <FIELD name=\"Integrated_Flux\" ID=\"col4\" ucd=\"phys.flux;spect.line.intensity\" datatype=\"float\" width=\"10\" precision=\"4\" unit=\"km/s\"/>"<<endl;
+  stream<<"      <FIELD name=\"ID\" ID=\"col01\" ucd=\"meta.id\" datatype=\"int\" width=\""<<localCol[0].getWidth()<<"\"/>"<<endl;
+  stream<<"      <FIELD name=\"Name\" ID=\"col02\" ucd=\"meta.id;meta.main\" datatype=\"char\" arraysize=\""<<localCol[1].getWidth()<<"\"/>"<<endl;
+  stream<<"      <FIELD name=\""<<localCol[2].getName()<<"\" ID=\"col03\" ucd=\""<<posUCD[0]<<"\" ref=\"J2000\" datatype=\"float\" width=\""<<localCol[2].getWidth()<<"\" precision=\""<<Column::posPrec<<"\" unit=\"[deg]\"/>"<<endl;
+  stream<<"      <FIELD name=\""<<localCol[3].getName()<<"\" ID=\"col04\" ucd=\""<<posUCD[1]<<"\" ref=\"J2000\" datatype=\"float\" width=\""<<localCol[3].getWidth()<<"\" precision=\""<<Column::posPrec<<"\" unit=\"[deg]\"/>"<<endl;
+  stream<<"      <FIELD name=\""<<localCol[4].getName()<<"\" ID=\"col05\" ucd=\""<<posUCD[2]<<"\" ref=\"J2000\" datatype=\"float\" width=\""<<localCol[4].getWidth()<<"\" precision=\""<<Column::wposPrec<<"\" unit=\""<<localCol[4].getUnit()<<"\"/>"<<endl;
+  stream<<"      <FIELD name=\""<<localCol[5].getName()<<"\" ID=\"col06\" ucd=\""<<posUCD[2]<<"\" ref=\"J2000\" datatype=\"float\" width=\""<<localCol[5].getWidth()<<"\" precision=\""<<Column::wposPrec<<"\" unit=\""<<localCol[5].getUnit()<<"\"/>"<<endl;
+  stream<<"      <FIELD name=\"Vel\" ID=\"col07\" ucd=\"phys.veloc;src.dopplerVeloc\" datatype=\"float\" width=\""<<localCol[6].getWidth()<<"\" precision=\""<<Column::velPrec<<"\" unit=\""<<localCol[6].getUnit()<<"\"/>"<<endl;
+  stream<<"      <FIELD name=\"w_Vel\" ID=\"col08\" ucd=\"phys.veloc;src.dopplerVeloc;spect.line.width\" datatype=\"float\" width=\""<<localCol[7].getWidth()<<"\" precision=\""<<Column::velPrec<<"\" unit=\""<<localCol[7].getUnit()<<"\"/>"<<endl;
+  stream<<"      <FIELD name=\"Integrated_Flux\" ID=\"col09\" ucd=\"phot.flux;spect.line.intensity\" datatype=\"float\" width=\""<<localCol[8].getWidth()<<"\" precision=\""<<Column::fluxPrec<<"\" unit=\""<<localCol[8].getUnit()<<"\"/>"<<endl;
+  stream<<"      <FIELD name=\"Peak_Flux\" ID=\"col10\" ucd=\"phot.flux;spect.line.intensity\" datatype=\"float\" width=\""<<localCol[9].getWidth()<<"\" precision=\""<<Column::fluxPrec<<"\" unit=\""<<localCol[9].getUnit()<<"\"/>"<<endl;
+  stream<<"      <FIELD name=\"Flag\" ID=\"col11\" ucd=\"meta.code.qual\" datatype=\"char\" arraysize=\"3\"/>"<<endl;
 
 
   stream<<"      <DATA>"<<endl
@@ -93,19 +128,21 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
   for(int i=0;i<this->objectList.size();i++){
     if(this->objectList[i].isWCS()){
       stream<<"        <TR>"<<endl;
-      stream<<"          <TD>"<<setw(4)<<i+1<<"</TD>";
-      stream<<"<TD>" << setw(14) << this->objectList[i].getName()       <<"</TD>";
-      stream<<setprecision(6);					    
-      stream<<"<TD>" << setw(10) << this->objectList[i].getRA()         <<"</TD>";
-      stream<<"<TD>" << setw(10) << this->objectList[i].getDec()        <<"</TD>";
-      stream<<setprecision(2);					    
-      stream<<"<TD>" << setw(7)  << this->objectList[i].getRAWidth()    <<"</TD>";
-      stream<<"<TD>" << setw(7)  << this->objectList[i].getDecWidth()   <<"</TD>";
-      stream<<setprecision(3);					    
-      stream<<"<TD>" << setw(9)  << this->objectList[i].getVel()        <<"</TD>";
-      stream<<"<TD>" << setw(8)  << this->objectList[i].getVelWidth()   <<"</TD>";
-      stream<<setprecision(3);
-      stream<<"<TD>" << setw(10) << this->objectList[i].getIntegFlux()  <<"</TD>";
+      stream<<"          <TD>"<<setw(localCol[0].getWidth())<<i+1<<"</TD>";
+      stream<<"<TD>" << setw(localCol[1].getWidth()) << this->objectList[i].getName()       <<"</TD>";
+      stream<<setprecision(Column::posPrec);					    
+      stream<<"<TD>" << setw(localCol[2].getWidth()) << this->objectList[i].getRA()         <<"</TD>";
+      stream<<"<TD>" << setw(localCol[3].getWidth()) << this->objectList[i].getDec()        <<"</TD>";
+      stream<<setprecision(Column::wposPrec);					    
+      stream<<"<TD>" << setw(localCol[4].getWidth()) << this->objectList[i].getRAWidth()    <<"</TD>";
+      stream<<"<TD>" << setw(localCol[5].getWidth()) << this->objectList[i].getDecWidth()   <<"</TD>";
+      stream<<setprecision(Column::velPrec);					    
+      stream<<"<TD>" << setw(localCol[6].getWidth()) << this->objectList[i].getVel()        <<"</TD>";
+      stream<<"<TD>" << setw(localCol[7].getWidth()) << this->objectList[i].getVelWidth()   <<"</TD>";
+      stream<<setprecision(Column::fluxPrec);
+      stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList[i].getIntegFlux()  <<"</TD>";
+      stream<<"<TD>" << setw(localCol[9].getWidth()) << this->objectList[i].getPeakFlux()   <<"</TD>";
+      stream<<"<TD>" << setw(localCol[10].getWidth())<< this->objectList[i].getFlagText()   <<"</TD>";
       
       stream<<endl;
       stream<<"        </TR>"<<endl;
@@ -125,10 +162,11 @@ void Cube::outputDetectionList()
 {
   /** 
    * outputDetectionList
-   *  A front-end to writing the full list of detected objects to a results file and to cout.
+   *  A front-end to writing the full list of detected objects to a results 
+   *   file and to cout.
    *  Uses outputDetectionTextWCS for each objects.
-   *  Leaves the testing of whether the WCS parameters for each object have been calculated
-   *   to outputDetectionTextWCS.
+   *  Leaves the testing of whether the WCS parameters for each object 
+   *   have been calculated to outputDetectionTextWCS.
    */
 
   int count=0;
@@ -140,26 +178,12 @@ void Cube::outputDetectionList()
   this->showParam(output);
   output<<"Total number of detections = "<<this->objectList.size()<<endl;
   output<<"--------------------"<<endl;
-  if(flag=wcsset(wcs)){
-    std::cerr<<"outputDetectionList():: WCSSET failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<endl;
-  }
-  if(this->flagWCS){
-    outputDetectionTextWCSHeader(output,this->wcs);
-    outputDetectionTextWCSHeader(std::cout,this->wcs);
-  }
-  else{
-    outputDetectionTextHeader(output);
-    outputDetectionTextHeader(std::cout);
-  }
+  this->setupColumns();
+  outputDetectionTextWCSHeader(output,this->fullColSet);
+  outputDetectionTextWCSHeader(std::cout,this->fullColSet);
   for(int i=0;i<this->objectList.size();i++){
-    if(this->flagWCS){
-      this->objectList[i].outputDetectionTextWCS(output);
-      this->objectList[i].outputDetectionTextWCS(std::cout);
-    }
-    else{
-      this->objectList[i].outputDetectionText(output,i+1);
-      this->objectList[i].outputDetectionText(std::cout,i+1);
-    }
+    this->objectList[i].outputDetectionTextWCS(output,this->fullColSet);
+    this->objectList[i].outputDetectionTextWCS(std::cout,this->fullColSet);
   }
 }
 
@@ -173,7 +197,8 @@ void Cube::logDetectionList()
    */
 
   std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
-  outputDetectionTextHeader(fout);
+  this->setupColumns();
+  outputDetectionTextHeader(fout,this->logColSet);
   long pos;
   bool baselineFlag = this->par.getFlagBaseline();
   for(int objCtr=0;objCtr<this->objectList.size();objCtr++){
@@ -193,7 +218,7 @@ void Cube::logDetectionList()
       }
       obj->calcParams();
     }
-    obj->outputDetectionText(fout,objCtr);
+    obj->outputDetectionText(fout,logColSet,objCtr+1);
     delete obj;
   }
   fout.close();
@@ -227,6 +252,6 @@ void Cube::logDetection(Detection obj, int counter)
     }
     obj.calcParams();
   }
-  obj.outputDetectionText(fout,counter);
+  obj.outputDetectionText(fout,this->logColSet,counter);
   fout.close();
 }

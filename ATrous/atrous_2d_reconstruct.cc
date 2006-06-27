@@ -7,7 +7,7 @@
 using std::endl;
 using std::setw;
 
-void atrous2DReconstruct(long &xdim, long &ydim, float *&input,float *&output, Param &par)
+void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, Param &par)
 {
   /**
    *  atrous2DReconstruct(xdim, ydim, input, output, par)
@@ -36,13 +36,13 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input,float *&output, P
 
   float mean,sigma,originalSigma,originalMean,oldsigma,newsigma;
   bool *isGood = new bool[size];
-  for(int pos=0;pos<size;pos++) 
-    isGood[pos] = !par.isBlank(input[pos]);
+  for(int pos=0;pos<size;pos++) isGood[pos] = !par.isBlank(input[pos]);
  
   float *array = new float[size];
   int goodSize=0;
   for(int i=0;i<size;i++) if(isGood[i]) array[goodSize++] = input[i];
   findMedianStats(array,goodSize,originalMean,originalSigma);
+  originalSigma /= correctionFactor; // correct from MADFM to sigma estimator.
   delete [] array;
   
   float *coeffs    = new float[size];
@@ -50,55 +50,59 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input,float *&output, P
 
   for(int pos=0;pos<size;pos++) output[pos]=0.;
 
-  int filterHW = reconFilter.width()/2;
-  double *filter = new double[reconFilter.width()*reconFilter.width()];
-  for(int i=0;i<reconFilter.width();i++){
-    for(int j=0;j<reconFilter.width();j++){
-      filter[i*reconFilter.width()+j] = reconFilter.coeff(i) * reconFilter.coeff(j);
+  int filterwidth = reconFilter.width();
+  int filterHW = filterwidth/2;
+  double *filter = new double[filterwidth*filterwidth];
+  for(int i=0;i<filterwidth;i++){
+    for(int j=0;j<filterwidth;j++){
+      filter[i*filterwidth+j] = reconFilter.coeff(i) * reconFilter.coeff(j);
     }
   }
 
   int *xLim1 = new int[ydim];
+  for(int i=0;i<ydim;i++) xLim1[i] = 0;
   int *yLim1 = new int[xdim];
+  for(int i=0;i<xdim;i++) yLim1[i] = 0;
   int *xLim2 = new int[ydim];
+  for(int i=0;i<ydim;i++) xLim2[i] = xdim-1;
   int *yLim2 = new int[xdim];
-  float avGapX = 0, avGapY = 0;
-  for(int row=0;row<ydim;row++){
-    int ct1 = 0;
-    int ct2 = xdim - 1;
-    while((ct1<ct2)&&(input[row*xdim+ct1]==blankPixValue) ) ct1++;
-    while((ct2>ct1)&&(input[row*xdim+ct2]==blankPixValue) ) ct2--;
-    xLim1[row] = ct1;
-    xLim2[row] = ct2;
-    avGapX += ct2 - ct1;
-  }
-  avGapX /= float(ydim);
+  for(int i=0;i<xdim;i++) yLim2[i] = ydim-1;
 
-  for(int col=0;col<xdim;col++){
-    int ct1=0;
-    int ct2=ydim-1;
-    while((ct1<ct2)&&(input[col+xdim*ct1]==blankPixValue) ) ct1++;
-    while((ct2>ct1)&&(input[col+xdim*ct2]==blankPixValue) ) ct2--;
-    yLim1[col] = ct1;
-    yLim2[col] = ct2;
-    avGapY += ct2 - ct1;
+  if(par.getFlagBlankPix()){
+    float avGapX = 0, avGapY = 0;
+    for(int row=0;row<ydim;row++){
+      int ct1 = 0;
+      int ct2 = xdim - 1;
+      while((ct1<ct2)&&(input[row*xdim+ct1]==blankPixValue) ) ct1++;
+      while((ct2>ct1)&&(input[row*xdim+ct2]==blankPixValue) ) ct2--;
+      xLim1[row] = ct1;
+      xLim2[row] = ct2;
+      avGapX += ct2 - ct1;
+    }
+    avGapX /= float(ydim);
+    
+    for(int col=0;col<xdim;col++){
+      int ct1=0;
+      int ct2=ydim-1;
+      while((ct1<ct2)&&(input[col+xdim*ct1]==blankPixValue) ) ct1++;
+      while((ct2>ct1)&&(input[col+xdim*ct2]==blankPixValue) ) ct2--;
+      yLim1[col] = ct1;
+      yLim2[col] = ct2;
+      avGapY += ct2 - ct1;
+    }
+    avGapY /= float(xdim);
+    
+    mindim = int(avGapX);
+    if(avGapY < avGapX) mindim = int(avGapY);
+    numScales = reconFilter.getNumScales(mindim);
   }
-  avGapY /= float(ydim);
- 
-  mindim = int(avGapX);
-  if(avGapY < avGapX) mindim = int(avGapY);
-  numScales = reconFilter.getNumScales(mindim);
-  
-
-  /***********************************************************************/
-  /***********************************************************************/
 
   float threshold;
   int iteration=0;
   newsigma = 1.e9;
   for(int i=0;i<size;i++) output[i] = 0;
   do{
-    if(par.isVerbose()) std::cout << "Iteration #"<<++iteration<<":             ";
+    if(par.isVerbose()) std::cout << "Iteration #"<<setw(2)<<++iteration<<":             ";
     // first, get the value of oldsigma and set it to the previous newsigma value
     oldsigma = newsigma;
     // we are transforming the residual array
@@ -107,9 +111,10 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input,float *&output, P
     int spacing = 1;
     for(int scale = 1; scale<numScales; scale++){
 
-      if(par.isVerbose()) {
-	std::cout << "\b\b\b\b\b\b\b\b\b\b\b\bScale ";
-	std::cout << setw(2)<<scale<<" /"<<setw(2)<<numScales<<std::flush;
+      if(par.isVerbose()){
+	std::cout << "Scale ";
+	std::cout << setw(2)<<scale<<" / "<<setw(2)<<numScales
+		  << "\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
       }
 
       for(int ypos = 0; ypos<ydim; ypos++){
@@ -122,51 +127,43 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input,float *&output, P
 	  if(!isGood[pos]) wavelet[pos] = 0.;
 	  else{
 
+	    int filterpos = -1;
 	    for(int yoffset=-filterHW; yoffset<=filterHW; yoffset++){
 	      int y = ypos + spacing*yoffset;
-	      int newy;
-	      // 	  if(y<0) y = -y;                 // boundary conditions are 
-	      // 	  if(y>=ydim) y = 2*(ydim-1) - y; //    reflection.
-	      // 	  while((y<yLim1)||(y>yLim2)){
-	      // 	    if(y<yLim1) y = 2*yLim1 - y;      // boundary conditions are 
-	      // 	    if(y>yLim2) y = 2*yLim2 - y;      //    reflection.
-	      // 	  }
-	      // boundary conditions are reflection.
+	      // Boundary conditions -- assume reflection at boundaries.
+	      // Use limits as calculated above
+// 	      if(yLim1[xpos]!=yLim2[xpos]){ 
+// 		// if these are equal we will get into an infinite loop here 
+// 		while((y<yLim1[xpos])||(y>yLim2[xpos])){
+// 		  if(y<yLim1[xpos]) y = 2*yLim1[xpos] - y;      
+// 		  else if(y>yLim2[xpos]) y = 2*yLim2[xpos] - y;      
+// 		}
+// 	      }
+	      int oldrow = y * xdim;
 	  
 	      for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
 		int x = xpos + spacing*xoffset;
-		int newx;
-		//if(x<0) x = -x;                 // boundary conditions are 
-		// if(x>=xdim) x = 2*(xdim-1) - x; //    reflection.
-		//while((x<xLim1)||(x>xLim2)){
-		// 	      if(x<xLim1) x = 2*xLim1 - x;      // boundary conditions are 
-		// 	      if(x>xLim2) x = 2*xLim2 - x;      //    reflection.
-		// 	    }
-		// boundary conditions are reflection.
-		while((y<yLim1[xpos])||(y>yLim2[xpos])){
-		  if(y<yLim1[xpos]) y = 2*yLim1[xpos] - y;      
-		  else if(y>yLim2[xpos]) y = 2*yLim2[xpos] - y;      
-		}
-		while((x<xLim1[ypos])||(x>xLim2[ypos])){
-		  if(x<xLim1[ypos]) x = 2*xLim1[ypos] - x;      
-		  else if(x>xLim2[ypos]) x = 2*xLim2[ypos] - x;      
-		}
+		// Boundary conditions -- assume reflection at boundaries.
+		// Use limits as calculated above
+// 		if(xLim1[ypos]!=xLim2[ypos]){
+// 		  // if these are equal we will get into an infinite loop here 
+// 		  while((x<xLim1[ypos])||(x>xLim2[ypos])){
+// 		    if(x<xLim1[ypos]) x = 2*xLim1[ypos] - x;      
+// 		    else if(x>xLim2[ypos]) x = 2*xLim2[ypos] - x;      
+// 		  }
+// 		}
 
-// 		if(y<yLim1[xpos]) newy = 2*yLim1[xpos] - y;      
-// 		else if(y>yLim2[xpos]) newy = 2*yLim2[xpos] - y;      
-// 		else newy = y;
-// 		if(x<xLim1[ypos]) newx = 2*xLim1[ypos] - x;
-// 		else if(x>xLim2[ypos]) newx = 2*xLim2[ypos] - x;      
-// 		else newx=x;      
-	      
-// 		x = newx;
-// 		y = newy;
+		int oldpos = oldrow + x;
 
-		int filterpos = (yoffset+filterHW)*reconFilter.width() + (xoffset+filterHW);
-		int oldpos = y*xdim + x;
+		float oldCoeff;
+		if((y>=yLim1[xpos])&&(y<=yLim2[xpos])&&(x>=xLim1[ypos])&&(x<=xLim2[ypos]))
+		  oldCoeff = coeffs[oldpos];
+		else oldCoeff = 0.;
 
-		if(isGood[pos]) 
-		  wavelet[pos] -= filter[filterpos] * coeffs[oldpos];
+		filterpos++;
+
+		if(isGood[pos]) wavelet[pos] -= filter[filterpos] * oldCoeff;
+// 		  wavelet[pos] -= filter[filterpos] * coeffs[oldpos];
 
 	      } //-> end of xoffset loop
 	    } //-> end of yoffset loop
@@ -202,15 +199,17 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input,float *&output, P
     goodSize=0;
     for(int i=0;i<size;i++) if(isGood[i]) array[goodSize++] = input[i] - output[i];
     findMedianStats(array,goodSize,mean,newsigma);
+    newsigma /= correctionFactor; // correct from MADFM to sigma estimator.
     delete [] array;
     
-    if(par.isVerbose()) std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+    if(par.isVerbose()) std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
 
   } while( (iteration==1) || 
 	   (fabsf(oldsigma-newsigma)/newsigma > reconTolerance) );
 
   if(par.isVerbose()) std::cout << "Completed "<<iteration<<" iterations. ";
 
+  delete [] xLim1,xLim2,yLim1,yLim2;
   delete [] coeffs;
   delete [] wavelet;
   delete [] isGood;

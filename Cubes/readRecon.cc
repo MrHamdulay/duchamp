@@ -3,6 +3,8 @@
 #include <string>
 #include <wcs.h>
 #include <wcshdr.h>
+#define WCSLIB_GETWCSTAB // define this so that we don't try and redefine wtbarr 
+                         // (this is a problem when using gcc v.4+
 #include <fitsio.h>
 #include <duchamp.hh>
 #include <Cubes/cubes.hh>
@@ -32,32 +34,27 @@ int Cube::readReconCube()
     if(exists<=0){
       fits_report_error(stderr, status);
       std::cerr << 
-	"WARNING <readReconCube> : Cannot find requested ReconFile. Trying with parameters.\n";
+	"  WARNING <readReconCube> : Cannot find requested ReconFile. Trying with parameters.\n";
       std::cerr << 
-	"                          Bad reconFile was: "<<this->par.getReconFile()<<std::endl;
+	"                            Bad reconFile was: "<<this->par.getReconFile()<<std::endl;
       reconGood = false;
     }
   }
   else{
     std::cerr << 
-      "WARNING <readReconCube> : ReconFile not specified. Working out name from parameters.\n";
+      "  WARNING <readReconCube> : ReconFile not specified. Working out name from parameters.\n";
   }
   
   if(!reconGood){ // if bad, need to look at parameters
 
-    string reconFile = this->par.getImageFile(); 
-    reconFile = reconFile.substr(0,reconFile.size()-5); // remove the ".fits" on the end.
-    std::stringstream ss;
-    ss << ".RECON"<<this->par.getAtrousCut()<<".fits";
-    reconFile += ss.str();
+    string reconFile = this->par.outputReconFile();
+    std::cerr << "                          : Trying file " << reconFile << std::endl;
     reconGood = true;
     fits_file_exists(reconFile.c_str(),&exists,&status);
     if(exists<=0){
       fits_report_error(stderr, status);
       std::cerr << 
-	"WARNING <readReconCube> : ReconFile based on reconstruction parameters is not present\n";
-      std::cerr << 
-	"                          Looking for: "<<this->par.getReconFile()<<std::endl;
+	"  WARNING <readReconCube> : ReconFile not present\n";
       reconGood = false;
     }
 
@@ -65,7 +62,7 @@ int Cube::readReconCube()
       this->par.setReconFile(reconFile);
     }
     else { // if STILL bad, give error message and exit.
-      std::cerr << "WARNING <readReconCube> : Cannot find reconstructed file.\n";
+      std::cerr << "  ERROR <readReconCube> : Cannot find reconstructed file.\n";
       return FAILURE;
     }
 
@@ -90,71 +87,37 @@ int Cube::readReconCube()
   }
 
   if(numAxesNew != this->numDim){
-    std::cerr << "ERROR <readReconCube> : "
-	      << "Reconstructed cube has a different number of axes to original! ("
+    std::cerr << "  ERROR <readReconCube> : "
+	      << "  Reconstructed cube has a different number of axes to original! ("
 	      << numAxesNew << " cf. " << this->numDim << ")\n";
     return FAILURE;
   }
 
   for(int i=0;i<numAxesNew;i++){
     if(dimAxesNew[i]!=this->axisDim[i]){
-      std::cerr << "ERROR <readReconCube> : "
-		<< "Reconstructed cube has different axis dimensions to original!\n"
-		<< "      Axis #" << i << " has size " << dimAxesNew[i] 
-		<< " cf. " << this->axisDim[i] <<" in original.\n";	
+      std::cerr << "  ERROR <readReconCube> : "
+		<< "  Reconstructed cube has different axis dimensions to original!\n"
+		<< "        Axis #" << i << " has size " << dimAxesNew[i] 
+		<< "   cf. " << this->axisDim[i] <<" in original.\n";	
       return FAILURE;
     }
   }      
 
-  char *comment = new char[80];
-  int minMW;
-  fits_read_key(fptr, TINT, (char *)keyword_minMW.c_str(), &minMW, comment, &status);
-  if(minMW != this->par.getMinMW()){
-    std::cerr << "ERROR <readReconCube> : Reconstructed cube has different minMW parameter to original!\n"
-	      << "      Reconstructed cube has "<<minMW
-	      << " cf. " <<this->par.getMinMW() << " as requested.\n";
-    return FAILURE;
-  }
-  int maxMW;
-  fits_read_key(fptr, TINT, (char *)keyword_maxMW.c_str(), &maxMW, comment, &status);
-  if(maxMW != this->par.getMaxMW()){
-    std::cerr << "ERROR <readReconCube> : Reconstructed cube has different maxMW parameter to original!\n"
-	      << "      Reconstructed cube has "<<maxMW
-	      << " cf. " <<this->par.getMaxMW() << " as requested.\n";
-    return FAILURE;
-  }
-
   float *reconArray = new float[this->numPixels];
   //  fits_read_pix(fptr, TFLOAT, fpixel, this->numPixels, NULL, this->recon, &anynul, &status);
+  status = 0;
   fits_read_pix(fptr, TFLOAT, fpixel, this->numPixels, NULL, reconArray, &anynul, &status);
   this->saveRecon(reconArray,this->numPixels);
   
-  // Make the a trous parameters match what the recon file has.
-  int scaleMin,filterCode;
-  float snrRecon;
   if(!this->par.getFlagATrous()){
     this->par.setFlagATrous(true);
-    std::cerr << "WARNING <readReconCube> : Setting flagAtrous from false to true, as the reconstruction exists.\n";
-  }
-  fits_read_key(fptr, TINT, (char *)keyword_scaleMin.c_str(), &scaleMin, comment, &status);
-  if(scaleMin != this->par.getMinScale()){
-    this->par.setMinScale(scaleMin);
-    std::cerr << "WARNING <readReconCube> : Changing scaleMin parameter to match ReconFile.\n";
-  }
-  fits_read_key(fptr, TINT, (char *)keyword_filterCode.c_str(), &filterCode, comment, &status);
-  if(filterCode != this->par.getFilterCode()){
-    this->par.setFilterCode(filterCode);
-    std::cerr << "WARNING <readReconCube> : Changing filterCode parameter to match ReconFile.\n";
-  }
-  fits_read_key(fptr, TFLOAT, (char *)keyword_snrRecon.c_str(), &snrRecon, comment, &status);
-  if(snrRecon != this->par.getAtrousCut()){
-    this->par.setAtrousCut(snrRecon);
-    std::cerr << "WARNING <readReconCube> : Changing snrRecon parameter to match ReconFile.\n";
+    std::cerr << "  WARNING <readReconCube> : Setting flagAtrous from false to true, as the reconstruction exists.\n";
   }
 
+  status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    std::cerr << "WARNING <readReconCube> : Error closing file: ";
+    std::cerr << "  WARNING <readReconCube> : Error closing file: ";
     fits_report_error(stderr, status);
     //    return FAILURE;
   }

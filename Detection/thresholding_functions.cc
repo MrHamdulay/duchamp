@@ -74,8 +74,9 @@ int Image::setupFDR()
     cN += 1./float(psfCtr);
 
   for(int loopCtr=0;loopCtr<count;loopCtr++) {
-    if( orderedP[loopCtr] < (double(loopCtr+1)*this->alpha/(cN * double(count))) )
+    if( orderedP[loopCtr] < (double(loopCtr+1)*this->alpha/(cN * double(count))) ) {
       max = loopCtr;
+    }
   }
 
   this->pCutLevel = orderedP[max];

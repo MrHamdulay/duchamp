@@ -4,6 +4,9 @@
 #include <wcshdr.h>
 #include <fitshdr.h>
 #include <wcsfix.h>
+#include <wcsunits.h>
+#define WCSLIB_GETWCSTAB // define this so that we don't try and redefine wtbarr 
+                         // (this is a problem when using gcc v.4+
 #include <fitsio.h>
 #include <math.h>
 #include <duchamp.hh>
@@ -88,6 +91,9 @@ int Cube::getCube(string fname)
 
   //-------------------------------------------------------------
   // Read the header in preparation for WCS and BUNIT/BLANK/etc extraction.
+  // And define a FitsHeader object that will be saved into the Cube.
+  FitsHeader newHead;
+
   char *hdr = new char;
   int noComments = 1; //so that fits_hdr2str will not write out COMMENT, HISTORY etc
   int nExc = 0;
@@ -99,18 +105,21 @@ int Cube::getCube(string fname)
   }
 
   //-------------------------------------------------------------
-  // Read the BUNIT header keyword, to store the brightness unit.
-  int blank;
-  float bscale, bzero;
+  // Read the BUNIT and CUNIT3 header keywords, to store the units
+  //  of brightness (flux) and the spectral dimension.
   char *comment = new char[80];
-  char *bunit = new char[80];
+  char *unit = new char[80];
   status = 0;
-  fits_read_key(fptr, TSTRING, "BUNIT", bunit, comment, &status);
+  fits_read_key(fptr, TSTRING, "BUNIT", unit, comment, &status);
   if (status){
     std::cerr << "WARNING <getCube> : Error reading BUNIT keyword: ";
     fits_report_error(stderr, status);
   }
-  else this->setBUnit(bunit);
+  else{
+    wcsutrn(0,unit);
+    newHead.setFluxUnits(unit);
+  }
+
 
   //-------------------------------------------------------------
   // Reading in the Blank pixel value keywords.
@@ -118,24 +127,30 @@ int Cube::getCube(string fname)
   //  If not, use the default value (either the default from param.cc or from the param file)
   //    and assume simple values for the keywords --> the scale keyword is the same as the 
   //    blank value, the blank keyword (which is an int) is 1 and the bzero (offset) is 0.
+  int blank;
+  float bscale, bzero;
   status = 0;
   if(this->par.getFlagBlankPix()){
     if( !fits_read_key(fptr, TINT32BIT, "BLANK", &blank, comment, &status) ){
       fits_read_key(fptr, TFLOAT, "BZERO", &bzero, comment, &status);
       fits_read_key(fptr, TFLOAT, "BSCALE", &bscale, comment, &status);
       this->par.setBlankPixVal(blank*bscale+bzero);
-      this->par.setBlankKeyword(blank);
-      this->par.setBscaleKeyword(bscale);
-      this->par.setBzeroKeyword(bzero);
+//       this->par.setBlankKeyword(blank);
+//       this->par.setBscaleKeyword(bscale);
+//       this->par.setBzeroKeyword(bzero);
+      newHead.setBlankKeyword(blank);
+      newHead.setBscaleKeyword(bscale);
+      newHead.setBzeroKeyword(bzero);
     }
     if (status){
       std::cerr << "WARNING <getCube> : Error reading BLANK keyword: ";
       fits_report_error(stderr, status);
       std::cerr << "Using default BLANK (physical) value (" << this->par.getBlankPixVal() << ")." << endl;
       for(int i=0;i<npix;i++) if(isnan(array[i])) array[i] = this->par.getBlankPixVal();
-      this->par.setBlankKeyword(1);
-      this->par.setBscaleKeyword(this->par.getBlankPixVal());
-      this->par.setBzeroKeyword(0.);
+      newHead.setBlankKeyword(1);
+      newHead.setBscaleKeyword(this->par.getBlankPixVal());
+      newHead.setBzeroKeyword(0.);
+      this->par.setFlagUsingBlank(true);
     }
   }
 
@@ -148,14 +163,21 @@ int Cube::getCube(string fname)
     fits_read_key(fptr, TFLOAT, "BMIN", &bmin, comment, &status);
     fits_read_key(fptr, TFLOAT, "CDELT1", &cdelt1, comment, &status);
     fits_read_key(fptr, TFLOAT, "CDELT2", &cdelt2, comment, &status);
+    newHead.setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / fabsf(cdelt1*cdelt2) );
     this->par.setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / fabsf(cdelt1*cdelt2) );
+    newHead.setBmajKeyword(bmaj);
+    newHead.setBminKeyword(bmin);
   }
+
+  delete [] comment;
+
   if (status){
     std::cerr << 
       "WARNING <getCube> : No beam information in header. Setting size to nominal 10 pixels.\n";
+    newHead.setBeamSize(10.);
     this->par.setBeamSize(10.);
   }
-
+  
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
@@ -194,12 +216,30 @@ int Cube::getCube(string fname)
       std::cerr<<"WARNING <getCube> : WCSSET failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<endl;
     }
 
-    this->setWCS(wcs);
-    this->setNWCS(nwcs);
-  }
-  wcsfree(wcs);
+    // Set the spectral axis to a standard specification: VELO-F2V
+    string specUnit = wcs->ctype[2];
+    if(specUnit != duchampSpectralType){
+      int index = wcs->spec;
+      string type = duchampSpectralType;
+      int flag = wcssptr(wcs, &index, (char *)type.c_str());
+//       if(flag){
+// 	std::cerr << "WARNING <getCube> : WCSSPTR failed! Code = "<<flag<<" : " 
+// 		  << wcs_errmsg[flag] << std::endl;
+// 	std::cerr << "Tried to convert from type " << wcs->ctype[index] 
+// 		  << " to type " << (char *)type.c_str() << std::endl;
+//       }
+    }
 
-  if(!this->flagWCS) std::cerr << "WARNING <getCube> : WCS is not good enough to be used.\n";
+    newHead.setWCS(wcs);
+    newHead.setNWCS(nwcs);
+
+    wcsfree(wcs);
+  }
+
+  newHead.fixUnits(this->par);  
+  this->setHead(newHead);
+
+  if(!newHead.isWCS()) std::cerr << "WARNING <getCube> : WCS is not good enough to be used.\n";
 
   delete hdr;
   delete [] array;
@@ -208,158 +248,5 @@ int Cube::getCube(string fname)
 
   return SUCCESS;
 
-}
-
-Cube getCube(string fname, Param par)
-{
-  short int maxdim=3;
-  long *fpixel = new long[maxdim];
-  for(int i=0;i<maxdim;i++) fpixel[i]=1;
-  long *dimAxes = new long[maxdim];
-  for(int i=0;i<maxdim;i++) dimAxes[i]=1;
-  long nelements;
-  int bitpix,numAxes,anynul;
-  int status = 0,  nkeys;  /* MUST initialize status */
-  fitsfile *fptr;         
-
-  if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
-    fits_report_error(stderr, status);
-    return 1;
-  }
-
-  fits_get_img_param(fptr, maxdim, &bitpix, &numAxes, dimAxes, &status);
-  int npix = dimAxes[0]*dimAxes[1]*dimAxes[2];
-  float *array = new float[npix];
-  fits_read_pix(fptr, TFLOAT, fpixel, npix, NULL, array, &anynul, &status);
-
-  // Read the header
-  char *hdr = new char;
-  int noComments = 1; //fits_hdr2str will not write out COMMENT, HISTORY etc
-  int nExc = 0;
-  if( fits_hdr2str(fptr, noComments, NULL, nExc, &hdr, &nkeys, &status) ){
-    fits_report_error(stderr, status);
-    return 1;
-  }
-
-  float blank, bscale, bzero;
-  char *comment = new char[80];
-  //  if( fits_movabs_hdu(fptr, 1, IMAGE_HDU, &status)) fits_report_error(stderr, status);
-  if( !fits_read_key(fptr, TFLOAT, "BLANK", &blank, comment, &status) ){
-    fits_read_key(fptr, TFLOAT, "BZERO", &bzero, comment, &status);
-    fits_read_key(fptr, TFLOAT, "BSCALE", &bscale, comment, &status);
-    par.setBlankPixVal(blank*bscale+bzero);
-  }
-  if (status) fits_report_error(stderr, status);
-  char *bunit = new char[80];
-  fits_read_key(fptr, TSTRING, "BUNIT", bunit, comment, &status);
-  if (status) fits_report_error(stderr, status);
-
-  fits_close_file(fptr, &status);
-  if (status) fits_report_error(stderr, status);
-
-  int relax=1, ctrl=2, nwcs, nreject;
-  wcsprm *wcs = new wcsprm;
-  wcsini(true,numAxes,wcs);
-  wcs->flag=-1;
-  int flag;
-  if(flag = wcspih(hdr, nkeys, relax, ctrl, &nreject, &nwcs, &wcs)) {
-    std::cerr<<"getImage.cc:: WCSPIH failed! Code="<<flag<<": "<<wcs_errmsg[flag]<<endl;
-    return 1;
-  }
-  
-  int stat[6],axes[3]={dimAxes[0],dimAxes[1],dimAxes[2]};
-  if(flag=wcsfix(1,axes,wcs,stat)) {
-    std::cerr<<"getImage.cc:: WCSFIX failed!"<<endl;
-    for(int i=0; i<NWCSFIX; i++)
-      if (stat[i] > 0) std::cerr<<"wcsfix ERROR "<<flag<<": "<< wcsfix_errmsg[stat[i]] <<endl;
-    return 1;
-  }
-  if(flag=wcsset(wcs)){
-    std::cerr<<"getImage.cc:: WCSSET failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<endl;
-    return 1;
-  }
-
-  Cube *data = new Cube(dimAxes);
-  data->saveArray(array,npix);
-  data->setWCS(wcs);
-  data->setNWCS(nwcs);
-  data->setBUnit(bunit);
-
-  wcsfree(wcs);
-  delete hdr;
-  delete [] array;
-  delete [] fpixel;
-  delete [] dimAxes;
-
-
-  return *data;
-}
-
-Image getImage(string fname)
-{
-  int maxdim=2;
-  long *fpixel = new long[maxdim];
-  for(int i=0;i<maxdim;i++) fpixel[i]=1;
-  long *dimAxes = new long[maxdim];
-  for(int i=0;i<maxdim;i++) dimAxes[i]=1;
-  long nelements;
-  int bitpix,numAxes,anynul;
-  int status = 0,  nkeys;  /* MUST initialize status */
-  fitsfile *fptr;         
-
-  std::cerr << fname.c_str() << endl;
-
-  fits_open_file(&fptr,fname.c_str(),READONLY,&status);
-  if (status) fits_report_error(stderr, status);
-  fits_get_img_param(fptr, maxdim, &bitpix, &numAxes, dimAxes, &status);
-  int npix = dimAxes[0]*dimAxes[1];
-  float *cube = new float[npix];
-  fits_read_pix(fptr, TFLOAT, fpixel, npix, NULL, cube, &anynul, &status);
-  fits_close_file(fptr, &status);
-  if (status) fits_report_error(stderr, status);
-
-  Image data(dimAxes);
-  data.saveArray(cube,npix);
-
-  delete [] cube;
-  delete [] fpixel;
-  delete [] dimAxes;
-
-  //  std::cerr << data.getSize()<<"  "<<data.getDimX()<<" "<<data.getDimY()<<endl;
-
-  return data;
-}
-
-DataArray getImage(string fname, short int maxdim)
-{
-  long *fpixel = new long[maxdim];
-  for(int i=0;i<maxdim;i++) fpixel[i]=1;
-  long *dimAxes = new long[maxdim];
-  for(int i=0;i<maxdim;i++) dimAxes[i]=1;
-  long nelements;
-  int bitpix,numAxes,anynul;
-  int status = 0,  nkeys;  /* MUST initialize status */
-  fitsfile *fptr;         
-
-  std::cerr << fname.c_str() << endl;
-
-  fits_open_file(&fptr,fname.c_str(),READONLY,&status);
-  if (status) fits_report_error(stderr, status);
-  fits_get_img_param(fptr, maxdim, &bitpix, &numAxes, dimAxes, &status);
-  int npix = dimAxes[0];
-  for(int i=1;i<numAxes;i++) npix *= dimAxes[i];
-  float *cube = new float[npix];
-  fits_read_pix(fptr, TFLOAT, fpixel, npix, NULL, cube, &anynul, &status);
-  fits_close_file(fptr, &status);
-  if (status) fits_report_error(stderr, status);
-
-  DataArray data(numAxes,dimAxes);
-  data.saveArray(cube,npix);
-
-  delete [] cube;
-  delete [] fpixel;
-  delete [] dimAxes;
-
-  return data;
 }
 

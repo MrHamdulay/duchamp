@@ -6,6 +6,7 @@
 #include <cpgsbox.h>
 #include <pgwcsl.h>
 #include <wcs.h>
+#include <param.hh>
 #include <Utils/utils.hh>
 #include <Cubes/cubes.hh>
 #include <Cubes/plots.hh>
@@ -35,57 +36,69 @@ void Cube::plotDetectionMap(string pgDestination)
   long xdim=this->axisDim[0];
   long ydim=this->axisDim[1];
   Plot::ImagePlot newplot;
-  newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
+  int flag = newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
 
-  newplot.makeTitle(this->pars().getImageFile());
-
-  newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,boxYmin+0.5,boxYmin+ydim+0.5,"X pixel","Y pixel");
-
-  if(this->objectList.size()>0){ // if there are no detections, there will be nothing to plot here
-
-    float *detectMap = new float[xdim*ydim];
-    for(int pix=0;pix<xdim*ydim;pix++) detectMap[pix] = float(this->detectMap[pix]);  
-
-    float tr[6] = {boxXmin,1.,0.,boxYmin,0.,1.};
-    cpggray(detectMap,xdim,ydim,1,xdim,1,ydim,30,0,tr);  
-
-    delete [] detectMap;
-    cpgbox("bcnst",0.,0,"bcnst",0.,0);
-    cpgsch(1.5);
-    cpgwedg("rg",3.2,2,30,0,"Number of detected channels");
+  if(flag<=0){
+    std::cerr << "ERROR <plotDetectionMap> : Could not open PGPlot device " 
+	      << pgDestination << ".\n";
   }
+  else{
 
-  if(this->flagWCS) this->plotWCSaxes();
+    newplot.makeTitle(this->pars().getImageFile());
+
+    newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,boxYmin+0.5,boxYmin+ydim+0.5,"X pixel","Y pixel");
+
+    if(this->objectList.size()>0){ // if there are no detections, there will be nothing to plot here
+
+      float *detectMap = new float[xdim*ydim];
+      int maxNum;
+      for(int pix=0;pix<xdim*ydim;pix++){
+	detectMap[pix] = float(this->detectMap[pix]);  
+	if((pix==0)||(this->detectMap[pix]>maxNum)) maxNum = this->detectMap[pix];
+      }
+
+      maxNum = 5 * ((maxNum-1)%5 + 1);  // move to next multiple of 5
+
+      float tr[6] = {boxXmin,1.,0.,boxYmin,0.,1.};
+      cpggray(detectMap,xdim,ydim,1,xdim,1,ydim,maxNum,0,tr);  
+
+      delete [] detectMap;
+      cpgbox("bcnst",0.,0,"bcnst",0.,0);
+      cpgsch(1.5);
+      cpgwedg("rg",3.2,2,maxNum,0,"Number of detected channels");
+    }
+
+    if(this->head.isWCS()) this->plotWCSaxes();
   
-  if(this->objectList.size()>0){ // now show and label each detection, drawing over the WCS lines.
+    if(this->objectList.size()>0){ // now show and label each detection, drawing over the WCS lines.
 
-    cpgsch(1.0);
-    cpgsci(2);
-    cpgslw(2);    
-    float xoffset=0.;
-    float yoffset=newplot.cmToCoord(0.5);
-    if(this->par.drawBorders()){
-      cpgsci(4);
-      for(int i=0;i<this->objectList.size();i++) this->objectList[i].drawBorders(0,0);
+      cpgsch(1.0);
       cpgsci(2);
-    }
-    std::stringstream label;
-    cpgslw(1);
-    for(int i=0;i<this->objectList.size();i++){
-      cpgpt1(this->par.getXOffset()+this->objectList[i].getXcentre(), 
-	     this->par.getYOffset()+this->objectList[i].getYcentre(), 
-	     5);
-      label.str("");
-      label << this->objectList[i].getID();
-      cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoffset, 
-	      this->par.getYOffset()+this->objectList[i].getYcentre()-yoffset, 
-	      0, 0.5, label.str().c_str());
+      cpgslw(2);    
+      float xoffset=0.;
+      float yoffset=newplot.cmToCoord(0.5);
+      if(this->par.drawBorders()){
+	cpgsci(4);
+	for(int i=0;i<this->objectList.size();i++) this->objectList[i].drawBorders(0,0);
+	cpgsci(2);
+      }
+      std::stringstream label;
+      cpgslw(1);
+      for(int i=0;i<this->objectList.size();i++){
+	cpgpt1(this->par.getXOffset()+this->objectList[i].getXcentre(), 
+	       this->par.getYOffset()+this->objectList[i].getYcentre(), 
+	       5);
+	label.str("");
+	label << this->objectList[i].getID();
+	cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoffset, 
+		this->par.getYOffset()+this->objectList[i].getYcentre()-yoffset, 
+		0, 0.5, label.str().c_str());
+      }
+
     }
 
+    cpgclos();
   }
-
-  cpgclos();
-   
 }
 
 /*********************************************************/
@@ -113,148 +126,164 @@ void Cube::plotMomentMap(string pgDestination)
 
   Plot::ImagePlot newplot;
 
-  if(this->objectList.size()==0){ // if there are no detections, we plot an empty field.
-
-    newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
+  int flag = newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
     
-    newplot.makeTitle(this->pars().getImageFile());
-    
-    newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,boxYmin+0.5,boxYmin+ydim+0.5,"X pixel","Y pixel");
-
-    if(this->flagWCS) this->plotWCSaxes();
-
+  if(flag<=0){
+    std::cerr << "ERROR <plotMomentMap> : Could not open PGPlot device " 
+	      << pgDestination << ".\n";
   }
-  else {  // if there are some detections, do the calculations first before plotting anything.
+  else{
 
-    bool *isObj = new bool[xdim*ydim*zdim];
-    for(int i=0;i<xdim*ydim*zdim;i++) isObj[i] = false;
-    for(int i=0;i<this->objectList.size();i++){
-      for(int p=0;p<this->objectList[i].getSize();p++){
-	int pixelpos = this->objectList[i].getX(p) + xdim*this->objectList[i].getY(p) 
-	  + xdim*ydim*this->objectList[i].getZ(p);
-	isObj[pixelpos] = true;
-      }
+    if(this->objectList.size()==0){ // if there are no detections, we plot an empty field.
+
+      newplot.makeTitle(this->pars().getImageFile());
+    
+      newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,boxYmin+0.5,boxYmin+ydim+0.5,"X pixel","Y pixel");
+
+      if(this->head.isWCS()) this->plotWCSaxes();
+
     }
+    else {  // if there are some detections, do the calculations first before plotting anything.
+  
+      newplot.makeTitle(this->pars().getImageFile());
+    
+      newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,boxYmin+0.5,boxYmin+ydim+0.5,"X pixel","Y pixel");
 
-    float *momentMap = new float[xdim*ydim];
-    // Initialise to zero
-    for(int i=0;i<xdim*ydim;i++) momentMap[i] = 0.;
+      if(pgDestination=="/xs") 
+	cpgptxt(boxXmin+0.5+xdim/2.,boxYmin+0.5+ydim/2.,0,0.5,"Calculating map...");
 
-    // if we are looking for negative features, we need to invert the detected pixels for the moment map
-    float sign = 1.;
-    if(this->pars().getFlagNegative()) sign = -1.;
-
-    float deltaVel;
-    for(int pix=0; pix<xdim*ydim; pix++){ 
-      // loop over each spatial pixel -- ie. each cell of momentMap
-      double *world  = new double[zdim*3];
-      double *pixtmp = new double[zdim*3];
-      for(int i=0;i<zdim;i++){
-	pixtmp[i*3+0] = pix%xdim;  
-	pixtmp[i*3+1] = (pix/xdim);
-	pixtmp[i*3+2] = i;
-      }
-      int flag = pixToWCSMulti(wcs, pixtmp, world, zdim);
-      delete [] pixtmp;
-
-      for(int i=0;i<zdim;i++){
-	// put velocity coords into km/s
-	world[3*i+2] = setVel_kms(this->wcs, world[3*i+2]);
-      }
-
-      for(int z=0; z<zdim; z++){
-	int pos =  z*xdim*ydim + pix;  // the voxel in the cube
-
-	if(isObj[pos]){ // if it's an object pixel...
-	  // delta-vel is half the distance between adjacent channels.
-	  // if at end, then just use 0-1 or (zdim-1)-(zdim-2) distance
-	  if(z==0){
-	    if(zdim==1) deltaVel=1.; // pathological case -- if 2D image instead of cube.
-	    else deltaVel = world[3*(z+1)+2] - world[ 3*z+2 ];
-	  }
-	  else if(z==(zdim-1)) deltaVel = world[3*(z-1)+2] - world[ 3*z+2 ];
-	  deltaVel = (world[3*(z+1)+2] - world[ 3*(z-1)+2 ]) / 2.;
-	  momentMap[pix] += sign * this->array[pos] * fabsf(deltaVel);
+      bool *isObj = new bool[xdim*ydim*zdim];
+      for(int i=0;i<xdim*ydim*zdim;i++) isObj[i] = false;
+      for(int i=0;i<this->objectList.size();i++){
+	for(int p=0;p<this->objectList[i].getSize();p++){
+	  int pixelpos = this->objectList[i].getX(p) + xdim*this->objectList[i].getY(p) 
+	    + xdim*ydim*this->objectList[i].getZ(p);
+	  isObj[pixelpos] = true;
 	}
       }
 
+      float *momentMap = new float[xdim*ydim];
+      // Initialise to zero
+      for(int i=0;i<xdim*ydim;i++) momentMap[i] = 0.;
+
+      // if we are looking for negative features, we need to invert the detected pixels for the moment map
+      float sign = 1.;
+      if(this->pars().getFlagNegative()) sign = -1.;
+
+      float deltaVel;
+      double x,y;
+
+      double *zArray  = new double[zdim];
+      for(int z=0; z<zdim; z++) zArray[z] = double(z);
+    
+      double *world  = new double[zdim];
+
+      for(int pix=0; pix<xdim*ydim; pix++){ 
+
+	x = double(pix%xdim);
+	y = double(pix/xdim);
+
+	//       for(int z=0; z<zdim; z++){
+	// 	double zpos = double(z);
+	// 	world[z] = this->head.pixToVel(x,y,zpos);
+	//       }
+
+	delete [] world;
+	world = this->head.pixToVel(x,y,zArray,zdim);
+      
+	for(int z=0; z<zdim; z++){      
+	  int pos =  z*xdim*ydim + pix;  // the voxel in the cube
+	  if(isObj[pos]){ // if it's an object pixel...
+	    // delta-vel is half the distance between adjacent channels.
+	    // if at end, then just use 0-1 or (zdim-1)-(zdim-2) distance
+	    if(z==0){
+	      if(zdim==1) deltaVel=1.; // pathological case -- if 2D image instead of cube.
+	      else deltaVel = world[z+1] - world[z];
+	    }
+	    else if(z==(zdim-1)) deltaVel = world[z-1] - world[z];
+	    else deltaVel = (world[z+1] - world[z-1]) / 2.;
+
+	    momentMap[pix] += sign * this->array[pos] * fabsf(deltaVel);
+
+	  }
+	}
+
+      }
+    
       delete [] world;
-    }
-    
-    float *temp = new float[xdim*ydim];
-    int count=0;
-    for(int i=0;i<xdim*ydim;i++) {
-      bool addPixel = false;
-      for(int z=0;z<zdim;z++) addPixel = addPixel || isObj[z*xdim*ydim+i];
-      addPixel = addPixel && (momentMap[i]>0.);
-      if(addPixel) temp[count++] = log10(momentMap[i]);
-    }
-    float z1,z2;
-    z1 = z2 = temp[0];
-    for(int i=1;i<count;i++){
-      if(temp[i]<z1) z1 = temp[i];
-      if(temp[i]>z2) z2 = temp[i];
-    }
-    for(int i=0;i<xdim*ydim;i++) {
-      bool addPixel = false;
-      for(int z=0;z<zdim;z++) addPixel = addPixel || isObj[z*xdim*ydim+i];
-      addPixel = addPixel && (momentMap[i]>0.);
-      if(!addPixel) momentMap[i] = z1-1.;
-      else momentMap[i] = log10(momentMap[i]);
-    }
+      delete [] zArray;
 
-    // Have now done all necessary calculations for moment map.
-    // Now produce the plot
+      float *temp = new float[xdim*ydim];
+      int count=0;
+      for(int i=0;i<xdim*ydim;i++) {
+	if(momentMap[i]>0.){
+	  bool addPixel = false;
+	  for(int z=0;z<zdim;z++) addPixel = addPixel || isObj[z*xdim*ydim+i];
+	  if(addPixel) temp[count++] = log10(momentMap[i]);
+	}
+      }
+      float z1,z2;
+      z1 = z2 = temp[0];
+      for(int i=1;i<count;i++){
+	if(temp[i]<z1) z1 = temp[i];
+	if(temp[i]>z2) z2 = temp[i];
+      }
 
-    newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
-    
-    newplot.makeTitle(this->pars().getImageFile());
-    
-    newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,boxYmin+0.5,boxYmin+ydim+0.5,"X pixel","Y pixel");
+      for(int i=0;i<xdim*ydim;i++) {
+	bool addPixel = false;
+	for(int z=0;z<zdim;z++) addPixel = addPixel || isObj[z*xdim*ydim+i];
+	addPixel = addPixel && (momentMap[i]>0.);
+	if(!addPixel) momentMap[i] = z1-1.;
+	else momentMap[i] = log10(momentMap[i]);
+      }
 
-    float tr[6] = {boxXmin,1.,0.,boxYmin,0.,1.};
-    cpggray(momentMap,xdim,ydim,1,xdim,1,ydim,z2,z1,tr);
-    cpgbox("bcnst",0.,0,"bcnst",0.,0);
-    cpgsch(1.5);
-    string wedgeLabel = "Flux";
-    if(this->pars().getFlagNegative()) wedgeLabel = "-1. * " + wedgeLabel;
-    if(this->flagWCS) wedgeLabel += "[Jy km/s]";
-    cpgwedglog("rg",3.2,2,z2,z1,wedgeLabel.c_str());
+      // Have now done all necessary calculations for moment map.
+      // Now produce the plot
 
-    delete [] momentMap;
-    delete [] temp;
-    delete [] isObj;
+      float tr[6] = {boxXmin,1.,0.,boxYmin,0.,1.};
+      cpggray(momentMap,xdim,ydim,1,xdim,1,ydim,z2,z1,tr);
+      cpgbox("bcnst",0.,0,"bcnst",0.,0);
+      cpgsch(1.5);
+      string wedgeLabel = "Flux ";
+      if(this->pars().getFlagNegative()) wedgeLabel = "-1. * " + wedgeLabel;
+      if(this->head.isWCS()) wedgeLabel += "[" + this->head.getIntFluxUnits() + "]";
+      cpgwedglog("rg",3.2,2,z2,z1,wedgeLabel.c_str());
 
-    if(this->flagWCS) this->plotWCSaxes();
+      delete [] momentMap;
+      delete [] temp;
+      delete [] isObj;
+
+      if(this->head.isWCS()) this->plotWCSaxes();
   
-    // now show and label each detection, drawing over the WCS lines.
-    cpgsch(1.0);
-    cpgsci(2);
-    cpgslw(2);
-    float xoffset=0.;
-    float yoffset=newplot.cmToCoord(0.5);
-    if(this->par.drawBorders()){
-      cpgsci(4);
-      for(int i=0;i<this->objectList.size();i++) this->objectList[i].drawBorders(0,0);
+      // now show and label each detection, drawing over the WCS lines.
+      cpgsch(1.0);
       cpgsci(2);
-    }
-    std::stringstream label;
-    cpgslw(1);
-    for(int i=0;i<this->objectList.size();i++){
-      cpgpt1(this->par.getXOffset()+this->objectList[i].getXcentre(), 
-	     this->par.getYOffset()+this->objectList[i].getYcentre(),
-	     5);
-      label.str("");
-      label << this->objectList[i].getID();
-      cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoffset, 
-	      this->par.getYOffset()+this->objectList[i].getYcentre()-yoffset, 
-	      0, 0.5, label.str().c_str());
-    }
+      cpgslw(2);
+      float xoffset=0.;
+      float yoffset=newplot.cmToCoord(0.5);
+      if(this->par.drawBorders()){
+	cpgsci(4);
+	for(int i=0;i<this->objectList.size();i++) this->objectList[i].drawBorders(0,0);
+	cpgsci(2);
+      }
+      std::stringstream label;
+      cpgslw(1);
+      for(int i=0;i<this->objectList.size();i++){
+	cpgpt1(this->par.getXOffset()+this->objectList[i].getXcentre(), 
+	       this->par.getYOffset()+this->objectList[i].getYcentre(),
+	       5);
+	label.str("");
+	label << this->objectList[i].getID();
+	cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoffset, 
+		this->par.getYOffset()+this->objectList[i].getYcentre()-yoffset, 
+		0, 0.5, label.str().c_str());
+      }
 
-  }
+    }
 
   
-  cpgclos();
+    cpgclos();
+  }
   
 }
 
@@ -276,10 +305,16 @@ void Cube::plotWCSaxes()
   float boxYmin = this->par.getYOffset() - 1;
 
   char idents[3][80], opt[2], nlcprm[1];
-  strcpy(idents[0], this->wcs->lngtyp);
-  strcpy(idents[1], this->wcs->lattyp);
+
+  //   std::cerr << "!";
+  wcsprm *tempwcs;
+  tempwcs = this->head.getWCS();
+//   std::cerr << "!";
+
+  strcpy(idents[0], tempwcs->lngtyp);
+  strcpy(idents[1], tempwcs->lattyp);
   strcpy(idents[2], "");
-  if(strcmp(this->wcs->lngtyp,"RA")==0) opt[0] = 'G';
+  if(strcmp(tempwcs->lngtyp,"RA")==0) opt[0] = 'G';
   else opt[0] = 'D';
   opt[1] = 'E';
 
@@ -322,8 +357,12 @@ void Cube::plotWCSaxes()
   ci[6] = 17; // title
 
   cpgsbox(blc, trc, idents, opt, 2100, 0, ci, gcode, 0.0, 0, grid1, 0, grid2,
-	  0, pgwcsl_, 1, WCSLEN, 1, nlcprm, (int *)(this->wcs), nldprm, 256, &ic,
-	  cache, &ierr);
+	  0, pgwcsl_, 1, WCSLEN, 1, nlcprm, (int *)tempwcs, 
+	  nldprm, 256, &ic, cache, &ierr);
+
+  wcsfree(tempwcs);
+
+//   std::cerr << "!";
 
   cpgsci(colour);
   cpgsch(size);

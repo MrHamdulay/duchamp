@@ -1,12 +1,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <param.hh>
 #include <wcs.h>
 #include <string>
 using std::string;
-// #include <functional>
-// #include <algorithm>
-// #include <iterator>
 
 // define the speed of light for WCS-related accessor functions 
 const float C_kms = 299792.458;
@@ -29,10 +27,6 @@ void zscale(long imagesize, float *image, float &z1, float &z2, float nullVal);
 void swap(float &a, float &b);
 void sort(float *arr, int begin, int end);
 void sort(float *arr, float *matchingArray, int begin, int end);
-// template< typename BidirectionalIterator, typename Compare >
-// void quick_sort( BidirectionalIterator first, BidirectionalIterator last, Compare cmp );
-// template< typename BidirectionalIterator >
-// inline void quick_sort( BidirectionalIterator first, BidirectionalIterator last );
 
 // STATISTICS-RELATED ROUTINES
 void findMinMax(const float *array, const int size, float &min, float &max);
@@ -83,13 +77,20 @@ double dmsToDec(string dms);
 double angularSeparation(double &ra1, double &dec1, double &ra2, double &dec2);
 
 // WCS-RELATED ROUTINES
-double pixelToVelocity(wcsprm *wcs, double &x, double &y, double &z);
 int wcsToPixSingle(wcsprm *wcs, const double *world, double *pix);
 int pixToWCSSingle(wcsprm *wcs, const double *pix, double *world);
 int wcsToPixMulti(wcsprm *wcs, const double *world, double *pix, const int npts);
 int pixToWCSMulti(wcsprm *wcs, const double *pix, double *world, const int npts);
-float setVel_kms(wcsprm *wcs, const double coord);
-double velToCoord(wcsprm *wcs, const float velocity);
+double pixelToVelocity(wcsprm *wcs, double &x, double &y, double &z, string velUnits);
+double coordToVel(wcsprm *wcs, const double coord, string outputUnits);
+double velToCoord(wcsprm *wcs, const float velocity, string outputUnits);
+// double pixelToVelocity(FitsHeader &head, double &x, double &y, double &z);
+// int wcsToPixSingle(FitsHeader &head, const double *world, double *pix);
+// int pixToWCSSingle(FitsHeader &head, const double *pix, double *world);
+// int wcsToPixMulti(FitsHeader &head, const double *world, double *pix, const int npts);
+// int pixToWCSMulti(FitsHeader &head, const double *pix, double *world, const int npts);
+// double coordToVel(FitsHeader &head, const double coord, string outputUnits);
+// double velToCoord(FitsHeader &head, const float velocity, string outputUnits);
 
 // FILTER SMOOTHING ROUTINES
 void waveletSmooth(int dim,float *array, int arraySize, float sigma);

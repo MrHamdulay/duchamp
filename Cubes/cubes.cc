@@ -181,6 +181,24 @@ void Image::extractImage(float *Array, long *dim, long channel)
   delete [] image;
 }
 
+void Image::removeMW()
+{
+  /**
+   * Image::removeMW()
+   *  A function to remove the Milky Way range of channels from a 1-D spectrum.
+   *  The array in this Image is assumed to be 1-D, with only the first axisDim
+   *    equal to 1.
+   *  The values of the MW channels are set to 0, unless they are BLANK.
+   */ 
+  int maxMW = this->par.getMaxMW();
+  int minMW = this->par.getMinMW();
+  if(this->par.getFlagMW() && (this->axisDim[1]==1)){
+    for(int z=0;z<this->axisDim[0];z++){
+      if(!this->isBlank(z) && this->par.isInMW(z)) this->array[z]=0.;
+    }
+  }
+}
+
 void Image::findStats(int code)
 {
   /**
@@ -246,7 +264,7 @@ Cube::Cube(long size){
   this->axisDim = new long[2];
   this->numDim = 3;
   this->reconExists = false;
-  flagWCS = false;
+//   flagWCS = false;
 }
 
 Cube::Cube(long *dimensions){
@@ -265,10 +283,10 @@ Cube::Cube(long *dimensions){
   this->axisDim = new long[3];
   for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
   for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
-  this->wcs = new wcsprm;
-  this->wcs->flag=-1;
-  wcsini(true,3,this->wcs); 
-  flagWCS = false;
+//   this->wcs = new wcsprm;
+//   this->wcs->flag=-1;
+//   wcsini(true,3,this->wcs); 
+//   flagWCS = false;
 }
 
 void Cube::initialiseCube(long *dimensions){
@@ -291,9 +309,9 @@ void Cube::initialiseCube(long *dimensions){
   this->axisDim = new long[3];
   for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
   for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
-  this->wcs = new wcsprm;
-  this->wcs->flag=-1;
-  wcsini(true,3,this->wcs); 
+//   this->wcs = new wcsprm;
+//   this->wcs->flag=-1;
+//   wcsini(true,3,this->wcs); 
 }
 
 void Cube::saveArray(float *input, long size){
@@ -324,51 +342,46 @@ void Cube::getRecon(float *output){
 
 void Cube::removeMW()
 {
-  int maxMW = this->par.getMaxMW();
-  int minMW = this->par.getMinMW();
-  bool flagBlank = this->par.getFlagBlankPix();
-  bool flagMW = this->par.getFlagMW();
-  float nPV = this->par.getBlankPixVal();
-  long xdim=axisDim[0], ydim=axisDim[1], zdim=axisDim[2];
-  for(int pix=0;pix<xdim*ydim;pix++){
-    for(int z=0;z<zdim;z++){
-      int pos = z*xdim*ydim + pix;
-      bool isMW = flagMW && (z>=minMW) && (z<=maxMW);
-      if(!(this->par.isBlank(this->array[pos])) && isMW) this->array[pos]=0.;
+  if(this->par.getFlagMW()){
+    for(int pix=0;pix<this->axisDim[0]*this->axisDim[1];pix++){
+      for(int z=0;z<this->axisDim[2];z++){
+	int pos = z*this->axisDim[0]*this->axisDim[1] + pix;
+	if(!this->isBlank(pos) && this->par.isInMW(z)) this->array[pos]=0.;
+      }
     }
   }
 }
 
 ////////// WCS-related functions
 
-void Cube::setWCS(wcsprm *w)
-{
-  /** 
-   * Cube::setWCS(wcsprm *)
-   *  A function that assigns the cube's wcs parameters, and runs
-   *   wcsset to set it up correctly.
-   *  Performs a check to see if the WCS is good (by looking at 
-   *   the lng and lat wcsprm parameters), and sets the flagWCS accordingly.
-   */
+// void Cube::setWCS(wcsprm *w)
+// {
+//   /** 
+//    * Cube::setWCS(wcsprm *)
+//    *  A function that assigns the cube's wcs parameters, and runs
+//    *   wcsset to set it up correctly.
+//    *  Performs a check to see if the WCS is good (by looking at 
+//    *   the lng and lat wcsprm parameters), and sets the flagWCS accordingly.
+//    */
 
-  wcscopy(true,w,this->wcs);
-  wcsset(this->wcs);
-  if( (w->lng!=-1) && (w->lat!=-1) ) this->flagWCS = true;
-}
+//   wcscopy(true,w,this->wcs);
+//   wcsset(this->wcs);
+//   if( (w->lng!=-1) && (w->lat!=-1) ) this->flagWCS = true;
+// }
 
-wcsprm *Cube::getWCS()
-{
-  /** 
-   * Cube::getWCS()
-   *  A function that returns a wcsprm object corresponding to the cube's WCS.
-   */
+// wcsprm *Cube::getWCS()
+// {
+//   /** 
+//    * Cube::getWCS()
+//    *  A function that returns a wcsprm object corresponding to the cube's WCS.
+//    */
 
-  wcsprm *wNew = new wcsprm;
-  wNew->flag=-1;
-  wcsini(true,this->wcs->naxis,wNew); 
-  wcscopy(true,this->wcs,wNew); 
-  return wNew;
-}
+//   wcsprm *wNew = new wcsprm;
+//   wNew->flag=-1;
+//   wcsini(true,this->wcs->naxis,wNew); 
+//   wcscopy(true,this->wcs,wNew); 
+//   return wNew;
+// }
 
 void Cube::calcObjectWCSparams()
 {
@@ -382,8 +395,9 @@ void Cube::calcObjectWCSparams()
   
   for(int i=0; i<this->objectList.size();i++){
     this->objectList[i].setID(i+1);
-    if(this->flagWCS) this->objectList[i].calcWCSparams(this->wcs);
-    this->objectList[i].setIntegFlux( this->objectList[i].getIntegFlux()/this->par.getBeamSize() );
+//     if(this->flagWCS) this->objectList[i].calcWCSparams(this->wcs);
+    this->objectList[i].calcWCSparams(this->head);
+    //    this->objectList[i].setIntegFlux( this->objectList[i].getIntegFlux()/this->par.getBeamSize() );
     // this corrects the integrated flux for the beam size.
   }  
 
@@ -400,7 +414,7 @@ void Cube::sortDetections()
    *  The ID numbers are then re-calculated.
    */
   
-  if(this->flagWCS) SortByVel(this->objectList);
+  if(this->head.isWCS()) SortByVel(this->objectList);
   else SortByZ(this->objectList);
   for(int i=0; i<this->objectList.size();i++) this->objectList[i].setID(i+1);
 
@@ -478,6 +492,7 @@ float Cube::enclosedFlux(Detection obj)
       for(int z=0;z<zsize;z++){
 	fluxArray[x+y*xsize+z*ysize*xsize] = 
 	  this->getPixValue(x+obj.getXmin(),y+obj.getYmin(),z+obj.getZmin());
+	if(this->par.getFlagNegative()) fluxArray[x+y*xsize+z*ysize*xsize] *= -1.;
       }
     }
   }
@@ -503,15 +518,15 @@ bool Cube::objAtEdge(Detection obj)
     // loop over each pixel in the object, until we find an edge pixel.
     Voxel vox = obj.getPixel(pix);
     for(int dx=-1;dx<=1;dx+=2){
-      if(((vox.getX()+dx)<0) || ((vox.getX()+dx)>this->axisDim[0])) atEdge = true;
+      if(((vox.getX()+dx)<0) || ((vox.getX()+dx)>=this->axisDim[0])) atEdge = true;
       else if(this->isBlank(vox.getX()+dx,vox.getY(),vox.getZ())) atEdge = true;
     }
     for(int dy=-1;dy<=1;dy+=2){
-      if(((vox.getY()+dy)<0) || ((vox.getY()+dy)>this->axisDim[1])) atEdge = true;
+      if(((vox.getY()+dy)<0) || ((vox.getY()+dy)>=this->axisDim[1])) atEdge = true;
       else if(this->isBlank(vox.getX(),vox.getY()+dy,vox.getZ())) atEdge = true;
     }
     for(int dz=-1;dz<=1;dz+=2){
-      if(((vox.getZ()+dz)<0) || ((vox.getZ()+dz)>this->axisDim[2])) atEdge = true;
+      if(((vox.getZ()+dz)<0) || ((vox.getZ()+dz)>=this->axisDim[2])) atEdge = true;
       else if(this->isBlank(vox.getX(),vox.getY(),vox.getZ()+dz)) atEdge = true;
     }
     pix++;

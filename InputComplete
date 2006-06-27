@@ -73,12 +73,14 @@ growthCut	2.
 
 # RECONSTRUCTION RELATED
 # flagATrous -- Whether or not to do the reconstruction before searching
+# reconDim -- The number of dimensions with which to perform the reconstruction.
 # scaleMin -- The minimum scale (starts at 1) to be included in the reconstruction
 # snrRecon -- The threshold used in filtering the wavelet coefficient arrays.
 # filterCode -- The code number for the choice of filter to be used in the reconstruction:
 # 1 = B3-spline filter, 2 = Triangle function, 3 = Haar wavelet. Other numbers default to 2.
 
 flagATrous	1
+reconDim        3
 scaleMin	1
 snrRecon	4.
 filterCode      2
@@ -109,9 +111,12 @@ minPix		2
 # OTHER PARAMETERS
 # verbose -- whether to provide progress indicators on the terminal during execution
 # drawBorders -- whether to draw borders around the detections on the moment maps in the output.
-# spectralMethod -- how to plot the spectra in the output -- the spectrum of the peak pixel ("peak" -- the 
-#      default), or integrated over all spatial pixels present ("sum")
+# spectralMethod -- how to plot the spectra in the output -- the spectrum of the peak pixel 
+#      ("peak" -- the default), or integrated over all spatial pixels present ("sum")
+# spectralUnits -- what units you want the spectral axis to be plotted in and values quoted in
+#      (including the units of integrated flux)
 	
 verbose         1
 drawBorders	1
 spectralMethod  peak
+spectralUnits   km/s

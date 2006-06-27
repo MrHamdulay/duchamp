@@ -4,10 +4,25 @@
 #include <string>
 #include <math.h>
 #include <Utils/utils.hh>
+#include <param.hh>
 
 using std::setw;
 using std::setfill;
 using std::setprecision;
+
+string getIAUName(double ra, double dec, FitsHeader head)
+{
+  /**
+   *  string getIAUName(double, double, FitsHeader)
+   *   front end to the two getIAUName tasks. It parses the FitsHeader
+   *   object and works out the coord type and, if necessary, the
+   *   equinox.
+   */
+  if(head.getWCS()->lngtyp=="RA") 
+    return getIAUNameEQ(ra, dec, head.getWCS()->equinox);
+  else
+    return getIAUNameGAL(ra, dec);
+}
 
 string getIAUNameEQ(double ra, double dec, float equinox)
 {
@@ -93,7 +108,7 @@ string decToDMS(const double dec, const string type)
     else sign = "+";
   }
   else { // UNKNOWN TYPE -- DEFAULT TO RA.
-    std::cerr << "decToDMS:: Warning! Unknown axis type (" << type << "). Defaulting to using RA\n";
+    std::cerr << "WARNING <decToDMS> : Unknown axis type (" << type << "). Defaulting to using RA\n";
     while (thisDec < 0.) { thisDec += 360.; }
     while (thisDec >= 360.) { thisDec -= 360.; }
     thisDec /= 15.;

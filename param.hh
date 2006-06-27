@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <wcs.h>
 
 using std::string;
 using std::vector;
@@ -17,9 +18,12 @@ class Param
 public:
   Param();
   virtual ~Param(){};
-  void parseSubsection();                           // in param.cc
-  void readParams(string &paramfile);               // in param.cc
-  bool isBlank(float &value);                       // in param.cc
+  void parseSubsection();             // in param.cc
+  void readParams(string &paramfile); // in param.cc
+  bool isBlank(float &value);         // in param.cc
+  bool isInMW(int z){return ( this->flagMW && (z>=this->minMW) && (z<=this->maxMW) );};
+  string outputReconFile();           // in param.cc
+  string outputResidFile();           // in param.cc
   friend std::ostream& operator<< ( std::ostream& theStream, Param& par);
   friend class Image;
  
@@ -76,6 +80,8 @@ public:
   void   setBscaleKeyword(float v){bscaleKeyword=v;};
   float  getBzeroKeyword(){return bzeroKeyword;};
   void   setBzeroKeyword(float v){bzeroKeyword=v;};
+  bool   getFlagUsingBlank(){return flagUsingBlank;};
+  void   setFlagUsingBlank(bool b){flagUsingBlank=b;};
   bool   getFlagMW(){return flagMW;};
   bool   setFlagMW(bool flag){flagMW=flag;};
   int    getMaxMW(){return maxMW;};
@@ -124,6 +130,8 @@ public:
   //	 
   bool   getFlagATrous(){return flagATrous;};
   void   setFlagATrous(bool flag){flagATrous=flag;};
+  int    getReconDim(){return reconDim;};
+  void   setReconDim(int i){reconDim=i;};
   int    getMinScale(){return scaleMin;};
   void   setMinScale(int s){scaleMin=s;};
   float  getAtrousCut(){return snrRecon;};
@@ -144,6 +152,8 @@ public:
   //
   string getSpectralMethod(){return spectralMethod;};
   void   setSpectralMethod(string s){spectralMethod=s;};
+  string getSpectralUnits(){return spectralUnits;};
+  void   setSpectralUnits(string s){spectralUnits=s;};
   bool   drawBorders(){return borders;};
   void   setDrawBorders(bool f){borders=f;};
   bool   isVerbose(){return verbose;};
@@ -181,6 +191,8 @@ private:
   int    blankKeyword;    // The FITS header keyword BLANK.
   float  bscaleKeyword;   // The FITS header keyword BSCALE.
   float  bzeroKeyword;    // The FITS header keyword BZERO.
+  bool   flagUsingBlank;  // If true, we are using the blankPixValue keyword, otherwise we are using the value
+                          //   in the FITS header.
   bool   nanAsBlank;      // Are the BLANK pixels defined by NaNs?
   bool   flagMW;          // A flag that indicates whether to excise the Milky Way.
   int    maxMW;           // Last  Galactic velocity plane for HIPASS cubes
@@ -210,10 +222,10 @@ private:
   float  snrCut;          // How many sigma above mean is a detection when sigma-clipping
   // A trous reconstruction parameters
   bool   flagATrous;      // Are we using the a trous reconstruction?
+  int    reconDim;        // How many dimensions to use for the reconstruction?
   int    scaleMin;        // Min scale used in a trous reconstruction
   float  snrRecon;        // SNR cutoff used in a trous reconstruction
-                          //   (only wavelet coefficients that survive
-                          //    this threshold are kept)
+                          //   (only wavelet coefficients that survive this threshold are kept)
   int    filterCode;      // The code number for the filter to be used (saves having to parse names)
   string filterName;      // The code number converted into a name, for outputting purposes.
 
@@ -226,6 +238,7 @@ private:
   // Input-Output related
   string spectralMethod;  // A string indicating choice of spectral plotting method:
                           //   choices are "peak" or "sum" (peak is the default).
+  string spectralUnits;   // A string indicating what units the spectral axis should be quoted in.
   bool   borders;         // Whether to draw a border around the individual
                           //   pixels of a detection in the spectral display
   bool   verbose;         // Whether to use maximum verbosity -- progress indicators in the 
@@ -233,5 +246,77 @@ private:
 
 };
 
+class FitsHeader
+{
+  /**
+   *  FitsHeader Class
+   *
+   *   Stores information from a FITS header, including WCS information
+   *    in the form of a wcsprm struct, as well as various keywords.
+   */
+
+public:
+  FitsHeader();
+  ~FitsHeader(){};
+  FitsHeader(const FitsHeader& h);
+  FitsHeader& operator= (const FitsHeader& h);
+
+
+  wcsprm *getWCS();             // in param.cc
+  void    setWCS(wcsprm *w);    // in param.cc
+  bool    isWCS(){return wcsIsGood;};
+  int     getNWCS(){return nwcs;};
+  void    setNWCS(int i){nwcs=i;};
+  string  getSpectralUnits(){return spectralUnits;};
+  void    setSpectralUnits(string s){spectralUnits=s;};
+  string  getFluxUnits(){return fluxUnits;};
+  void    setFluxUnits(string s){fluxUnits=s;};
+  string  getIntFluxUnits(){return intFluxUnits;};
+  void    setIntFluxUnits(string s){intFluxUnits=s;};
+  float   getBeamSize(){return beamSize;};
+  void    setBeamSize(float f){beamSize=f;};
+  float   getBmajKeyword(){return bmajKeyword;};
+  void    setBmajKeyword(float f){bmajKeyword=f;};
+  float   getBminKeyword(){return bminKeyword;};
+  void    setBminKeyword(float f){bminKeyword=f;};
+  float   getBlankKeyword(){return blankKeyword;};
+  void    setBlankKeyword(float f){blankKeyword=f;};
+  float   getBzeroKeyword(){return bzeroKeyword;};
+  void    setBzeroKeyword(float f){bzeroKeyword=f;};
+  float   getBscaleKeyword(){return bscaleKeyword;};
+  void    setBscaleKeyword(float f){bscaleKeyword=f;};
+
+  // front ends to WCS functions
+  int     wcsToPix(const double *world, double *pix);
+  int     pixToWCS(const double *pix, double *world);
+  int     wcsToPix(const double *world, double *pix, const int npts);
+  int     pixToWCS(const double *pix, double *world, const int npts);
+  double  pixToVel(double &x, double &y, double &z);
+  double *pixToVel(double &x, double &y, double *zarray, int size);
+  double  specToVel(const double &z);
+  double  velToSpec(const float &vel);
+  string  getIAUName(double ra, double dec);
+
+  void    fixUnits(Param &par);
+ 
+private:
+  wcsprm *wcs;             // The WCS parameters for the cube -- a struct from wcslib
+  int     nwcs;            // The number of WCS parameters
+  bool    wcsIsGood;       // A flag indicating whether there is a valid WCS present.
+  string  spectralUnits;   // The units of the spectral dimension
+  string  fluxUnits;       // The units of pixel flux (from header)
+  string  intFluxUnits;    // The units of pixel flux (from header)
+  float   beamSize;        // The calculated beam size in pixels.
+  float   bmajKeyword;     // The FITS header keyword BMAJ.
+  float   bminKeyword;     // The FITS header keyword BMIN.
+  float   blankKeyword;    // The FITS header keyword BLANK.
+  float   bzeroKeyword;    // The FITS header keyword BZERO.
+  float   bscaleKeyword;   // The FITS header keyword BSCALE.
+  double  scale;           // scale parameter for converting spectral coords
+  double  offset;          // offset parameter for converting spectral coords
+  double  power;           // power parameter for converting spectral coords
+};
+
+string makelower( string s );
 
 #endif

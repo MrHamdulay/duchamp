@@ -17,19 +17,26 @@ const std::string PROGNAME = "Duchamp";
 
 const std::string VERSION = "1.0";
 
+// The spectral type that we want the wcsprm structs to be in
+const char duchampSpectralType[9] = "VELO-F2V";
+
 // The following are the FITS Header Keywords corresponding to the 
 //  parameters related to the atrous reconstruction.
+const std::string keyword_flagMW     = "DU_MWFLG";
 const std::string keyword_minMW      = "DU_MWMIN";
 const std::string keyword_maxMW      = "DU_MWMAX";
 const std::string keyword_scaleMin   = "DU_MINSC";
 const std::string keyword_snrRecon   = "DU_ATCUT";
+const std::string keyword_reconDim   = "DU_ATDIM";
 const std::string keyword_filterCode = "DU_FILTR";
 const std::string keyword_ReconResid = "DU_RECON"; // is this file the reconstruction or the residual?
 // And these are the comments corresponding to the relevant keywords
+const std::string comment_flagMW     = "Duchamp parameter flagMW";
 const std::string comment_minMW      = "Duchamp parameter minMW";
 const std::string comment_maxMW      = "Duchamp parameter maxMW";
 const std::string comment_scaleMin   = "Duchamp parameter scaleMin";
 const std::string comment_snrRecon   = "Duchamp parameter snrRecon";
+const std::string comment_reconDim   = "Duchamp parameter reconDim";
 const std::string comment_filterCode = "Duchamp parameter filterCode";
 const std::string comment_ReconResid = "Is this the reconstruction or residual?";
 // Descriptive Headers:

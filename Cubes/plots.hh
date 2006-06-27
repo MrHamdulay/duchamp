@@ -1,3 +1,6 @@
+#ifndef PLOTS_H
+#define PLOTS_H
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -43,14 +46,16 @@ namespace Plot
       labelSize = 0.7;};
     ~SpectralPlot(){};
 
-    void setUpPlot(string pgDestination){
+    int setUpPlot(string pgDestination){
       /** SpectralPlot::setUpPlot
        *    Opens the designated pgplot device.
        *    Scales the paper so that it fits on an A4 sheet (using known values of 
        *     the default pgplot offsets).
+       *    Returns the value returned by cpgopen -- if <= 0, then an error has occurred.
        */
-      cpgopen(pgDestination.c_str());
-      cpgpap(paperWidth, M_SQRT2); // make paper size to fit on A4.
+      int flag = cpgopen(pgDestination.c_str());
+      if(flag>0) cpgpap(paperWidth, paperHeight/paperWidth); // make paper size to fit on A4.
+      return flag;
     }
 
     void calcCoords(){
@@ -178,6 +183,35 @@ namespace Plot
       cpgsls(ls);
     }
     
+    void drawMWRange(float v1, float v2){
+      /** SpectralPlot::drawMWRange(float v1, float v2)
+       *   Draws a box showing the extent of channels masked by the Milky Way parameters
+       */
+      int ci,fs;
+      float dud,min,max,height;
+      cpgqwin(&dud,&dud,&min,&max);
+      height = max-min;
+      max += 0.01*height;
+      min -= 0.01*height;
+      cpgqci(&ci);
+      cpgqfs(&fs);
+      cpgscr(16,0.,0.7,0.);
+      cpgsci(16);
+      cpgsfs(3);
+      cpgrect(v1,v2,min,max);
+      cpgsfs(2);
+      cpgrect(v1,v2,min,max);
+      cpgsci(ci);
+      cpgsfs(fs);
+    }
+    
+    int   getNumOnPage(){return numOnPage;};
+    void  setNumOnPage(int i){numOnPage=i;};
+    float getPaperWidth(){return paperWidth;};
+    void  setPaperWidth(float f){paperWidth=f;};
+    float getPaperHeight(){return paperHeight;};
+    void  setPaperHeight(float f){paperHeight=f;};
+
   private:
     int numOnPage;              // Number of spectra to put on one page.
     int spectraCount;           // Number of spectra done so far -- where on the page?
@@ -208,33 +242,33 @@ namespace Plot
   public:
     ImagePlot(){
       paperWidth = 7.5; maxPaperHeight = 10.; marginWidth = 0.8; wedgeWidth = 0.7;
-      imageWidth = paperWidth - 2*marginWidth - wedgeWidth;
     };
     ~ImagePlot(){};
   
-    void setUpPlot(string pgDestination, float x, float y){
+    int  setUpPlot(string pgDestination, float x, float y){
       /**
        * setUpPlot(string pgDestination, float x, float y)
        *  Opens a pgplot device and scales it to the correct shape.
        *  In doing so, the dimensions for the image are set, and the required aspect ratios
        *   of the image and of the plot are calculated.
        *  If the resulting image is going to be tall enough to exceed the maximum height 
-       *  (given the default width), then scale everything down by enough to make the 
-       *  height equal to maxPaperHeight.
+       *   (given the default width), then scale everything down by enough to make the 
+       *   height equal to maxPaperHeight.
+       *  Returns the value returned by cpgopen -- if <= 0, then an error has occurred.
        */
       xdim = x;
       ydim = y;
       imageRatio= ydim / xdim; 
-      aspectRatio =  (imageRatio*imageWidth + 2*marginWidth) / paperWidth;
-      if((imageRatio*imageWidth + 2*marginWidth) > maxPaperHeight){
-	float correction = maxPaperHeight / (imageRatio*imageWidth + 2*marginWidth);
+      aspectRatio =  (imageRatio*imageWidth() + 2*marginWidth) / paperWidth;
+      if((imageRatio*imageWidth() + 2*marginWidth) > maxPaperHeight){
+	float correction = maxPaperHeight / (imageRatio*imageWidth() + 2*marginWidth);
 	paperWidth *= correction;
 	marginWidth *= correction;
 	wedgeWidth *= correction;
-	imageWidth = paperWidth - 2*marginWidth - wedgeWidth;
       }
-      cpgopen(pgDestination.c_str());
-      cpgpap(paperWidth, aspectRatio);
+      int flag = cpgopen(pgDestination.c_str());
+      if(flag>0) cpgpap(paperWidth, aspectRatio);
+      return flag;
     }
 
     void  drawMapBox(float x1, float x2, float y1, float y2, string xlabel, string ylabel){
@@ -244,8 +278,8 @@ namespace Plot
        *  and draws the box with limits given by the arguments.
        *  The labels for the x and y axes are also given as arguments.
        */
-      cpgvsiz(marginWidth, marginWidth + imageWidth,
-	      marginWidth, marginWidth + (imageWidth*imageRatio));
+      cpgvsiz(marginWidth, marginWidth + imageWidth(),
+	      marginWidth, marginWidth + (imageWidth()*imageRatio));
       cpgslw(2);
       cpgswin(x1,x2,y1,y2);
       cpgbox("bcst",0.,0,"bcst",0.,0);
@@ -262,19 +296,27 @@ namespace Plot
       cpgvstd();
       cpgmtxt("t", 2.7, 0.5, 0.5, title.c_str());
     }
-    float cmToCoord(float cm){return (cm/inchToCm) * ydim / (imageWidth*imageRatio);};
+
+    float imageWidth(){
+      /**
+       * imageWidth()
+       *   Returns the calculated total width of the image part of the plot [inches]
+       */
+      return paperWidth - 2*marginWidth - wedgeWidth;
+    };       
+
+    float cmToCoord(float cm){return (cm/inchToCm) * ydim / (imageWidth()*imageRatio);};
     float getMargin()     {return marginWidth;};
     float getPaperWidth() {return paperWidth;};
-    float getImageWidth() {return imageWidth;};
-    float getImageHeight(){return imageWidth*imageRatio;};
+    float getImageHeight(){return imageWidth()*imageRatio;};
     float getAspectRatio(){return aspectRatio;};
+
 
   private:
     float paperWidth;       // Default (maximum) width of "paper" [inches]
     float maxPaperHeight;   // Maximum allowed height of paper [inches]
     float marginWidth;      // Width allowed for margins around main plot (ie. label & numbers) [inches]
     float wedgeWidth;       // Width allowed for placement of wedge on right hand side of plot. [inches]
-    float imageWidth;       // Calculated total width of the image part of the plot [inches]
     float imageRatio;       // Aspect ratio of the image only (ie. y-value range / x-value range).
     float aspectRatio;      // Aspect ratio of whole plot.
     float xdim;             // Width of main plot, in display units.
@@ -282,3 +324,6 @@ namespace Plot
   };
 
 }
+
+#endif
+

@@ -10,7 +10,7 @@
 #include <Cubes/plots.hh>
 #include <Utils/utils.hh>
 
-void getSmallVelRange(Detection &obj, wcsprm *wcs, float *minvel, float *maxvel);
+void getSmallVelRange(Detection &obj, FitsHeader head, float *minvel, float *maxvel);
 void getSmallZRange(Detection &obj, float *minz, float *maxz);
 
 void Cube::outputSpectra()
@@ -33,11 +33,48 @@ void Cube::outputSpectra()
   Plot::SpectralPlot newplot;
   newplot.setUpPlot(spectrafile.c_str());
 
+  for(int nobj=0;nobj<this->objectList.size();nobj++){
+    // for each object in the cube:
+    this->plotSpectrum(this->objectList[nobj],newplot);
+
+  }// end of loop over objects.
+
+  cpgclos();
+
+}
+
+void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
+{
+  /** 
+   *   Cube::plotSpectrum(obj)
+   *
+   *    The way to print out the spectrum of a Detection.
+   *    Make use of the SpectralPlot class in plots.hh, which sizes everything correctly.
+   *    Main choice is whether to use the peak pixel, in which case the spectrum is just
+   *     that of the peak pixel, or the sum, where the spectrum is summed over all spatial
+   *     pixels that are in the object.
+   *    If a reconstruction has been done, that spectrum is plotted in red.
+   *    The limits of the detection are marked in blue.
+   *    A 0th moment map of the detection is also plotted, with a scale bar indicating the 
+   *     spatial size.
+   */
+
   long xdim = this->axisDim[0];
   long ydim = this->axisDim[1];
   long zdim = this->axisDim[2];
-  int numObjects = this->objectList.size();
   float beam = this->par.getBeamSize();
+
+  obj.calcParams();
+
+  double minMWvel,maxMWvel,xval,yval,zval;
+  xval = double(obj.getXcentre());
+  yval = double(obj.getYcentre());
+  if(this->par.getFlagMW()){
+    zval = double(this->par.getMinMW());
+    minMWvel = this->head.pixToVel(xval,yval,zval);
+    zval = double(this->par.getMaxMW());
+    maxMWvel = this->head.pixToVel(xval,yval,zval);
+  }
 
   float *specx  = new float[zdim];
   float *specy  = new float[zdim];
@@ -45,140 +82,136 @@ void Cube::outputSpectra()
   float *specy2 = new float[zdim];
   for(int i=0;i<zdim;i++) specy2[i] = 0.;
 
-  for(int nobj=0;nobj<numObjects;nobj++){
-    // for each object in the cube:
-    Detection *obj = new Detection;
-    *obj = this->objectList[nobj];
-    obj->calcParams();
-
-    for(int i=0;i<zdim;i++) specy[i] = 0.;
-    if(this->par.getFlagATrous())  
-      for(int i=0;i<zdim;i++) specy2[i] = 0.;
+  for(int i=0;i<zdim;i++) specy[i] = 0.;
+  if(this->par.getFlagATrous())  
+    for(int i=0;i<zdim;i++) specy2[i] = 0.;
     
-    double x = double(obj->getXcentre());
-    double y = double(obj->getYcentre());
-    if(this->flagWCS)
-      for(double z=0;z<zdim;z++) specx[int(z)] = pixelToVelocity(this->wcs,x,y,z);
-    else 
-      for(double z=0;z<zdim;z++) specx[int(z)] = z;
+  if(this->head.isWCS())
+    for(zval=0;zval<zdim;zval++) specx[int(zval)] = this->head.pixToVel(xval,yval,zval);
+  else 
+    for(zval=0;zval<zdim;zval++) specx[int(zval)] = zval;
 
-    string fluxLabel = "Flux";
+  string fluxLabel = "Flux";
 
-    if(par.getSpectralMethod()=="sum"){
-      if(this->flagWCS) fluxLabel += " [Jy]";
-      bool *done = new bool[xdim*ydim]; 
-      for(int i=0;i<xdim*ydim;i++) done[i]=false;
-      int thisSize = obj->getSize();
-      for(int pix=0;pix<thisSize;pix++){
-	int pos = obj->getX(pix) + xdim * obj->getY(pix);
-	if(!done[pos]){
-	  done[pos] = true;
-	  for(int z=0;z<zdim;z++){
-	    if(!(this->par.isBlank(this->array[pos+z*xdim*ydim]))){
-	      specy[z] += this->array[pos + z*xdim*ydim] / beam;
-	      if(this->par.getFlagATrous())
-		specy2[z] += this->recon[pos + z*xdim*ydim] / beam;
-	    }
+  if(this->par.getSpectralMethod()=="sum"){
+    if(this->head.isWCS()) fluxLabel += " [Jy]";
+    bool *done = new bool[xdim*ydim]; 
+    for(int i=0;i<xdim*ydim;i++) done[i]=false;
+    int thisSize = obj.getSize();
+    for(int pix=0;pix<thisSize;pix++){
+      int pos = obj.getX(pix) + xdim * obj.getY(pix);
+      if(!done[pos]){
+	done[pos] = true;
+	for(int z=0;z<zdim;z++){
+	  if(!(this->isBlank(pos+z*xdim*ydim))){
+	    specy[z] += this->array[pos + z*xdim*ydim] / beam;
+	    if(this->par.getFlagATrous())
+	      specy2[z] += this->recon[pos + z*xdim*ydim] / beam;
 	  }
 	}
       }
-      delete [] done;
     }
-    else {// if(par.getSpectralMethod()=="peak"){
-      if(this->flagWCS) fluxLabel += " [Jy/beam]";
-      for(int z=0;z<zdim;z++){
-	int pos = obj->getXPeak() + xdim*obj->getYPeak();
-	specy[z] = this->array[pos + z*xdim*ydim];
-	if(this->par.getFlagATrous()) specy2[z] = this->recon[pos + z*xdim*ydim];
-      }
+    delete [] done;
+  }
+  else {// if(par.getSpectralMethod()=="peak"){
+    if(this->head.isWCS()) fluxLabel += " [Jy/beam]";
+    for(int z=0;z<zdim;z++){
+      int pos = obj.getXPeak() + xdim*obj.getYPeak();
+      specy[z] = this->array[pos + z*xdim*ydim];
+      if(this->par.getFlagATrous()) specy2[z] = this->recon[pos + z*xdim*ydim];
     }
+  }
     
-    float vmax,vmin;
-    vmax = vmin = specx[0];
-    for(int i=1;i<zdim;i++){
-      if(specx[i]>vmax) vmax=specx[i];
-      if(specx[i]<vmin)	vmin=specx[i];
-    }
-    float max,min;
-    int loc=0;
-    max = min = specy[0];
-    for(int i=1;i<zdim;i++){
+  float vmax,vmin;
+  vmax = vmin = specx[0];
+  for(int i=1;i<zdim;i++){
+    if(specx[i]>vmax) vmax=specx[i];
+    if(specx[i]<vmin) vmin=specx[i];
+  }
+  float max,min;
+  int loc=0;
+  if(this->par.getMinMW()>0) max = min = specy[0];
+  else max = min = specx[this->par.getMaxMW()+1];
+  for(int i=0;i<zdim;i++){
+    if(!this->par.isInMW(i)){
       if(specy[i]>max) max=specy[i];
       if(specy[i]<min){
 	min=specy[i];
 	loc = i;
       }
     }
-    // widen the flux range slightly so that the top & bottom don't lie on the axes.
-    float width = max - min;
-    max += width * 0.05;
-    min -= width * 0.05;
+  }
+  // widen the flux range slightly so that the top & bottom don't lie on the axes.
+  float width = max - min;
+  max += width * 0.05;
+  min -= width * 0.05;
 
-    // now plot the resulting spectrum
-    if(this->flagWCS) newplot.gotoHeader("Velocity [km s\\u-1\\d]");
-    else newplot.gotoHeader("Spectral pixel value");
+  // now plot the resulting spectrum
+  string label;
+  if(this->head.isWCS()){
+    label = "Velocity [" + this->head.getSpectralUnits() + "]";
+    plot.gotoHeader(label);
+  }
+  else plot.gotoHeader("Spectral pixel value");
 
-    string label;
-    if(this->flagWCS){
-      label = obj->outputLabelWCS();
-      newplot.firstHeaderLine(label);
-    }
-    label = obj->outputLabelInfo();
-    newplot.secondHeaderLine(label);
-    label = obj->outputLabelPix();
-    newplot.thirdHeaderLine(label);
+  if(this->head.isWCS()){
+    label = obj.outputLabelWCS();
+    plot.firstHeaderLine(label);
+  }
+  label = obj.outputLabelInfo();
+  plot.secondHeaderLine(label);
+  label = obj.outputLabelPix();
+  plot.thirdHeaderLine(label);
     
-    newplot.gotoMainSpectrum(vmin,vmax,min,max,fluxLabel);
-    cpgline(zdim,specx,specy);
-    if(this->par.getFlagATrous()){
-      cpgsci(2);
-      cpgline(zdim,specx,specy2);    
-      cpgsci(1);
+  plot.gotoMainSpectrum(vmin,vmax,min,max,fluxLabel);
+  cpgline(zdim,specx,specy);
+  if(this->par.getFlagATrous()){
+    cpgsci(2);
+    cpgline(zdim,specx,specy2);    
+    cpgsci(1);
+  }
+  if(this->head.isWCS()) plot.drawVelRange(obj.getVelMin(),obj.getVelMax());
+  else plot.drawVelRange(obj.getZmin(),obj.getZmax());
+  if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
+
+  /**************************/
+  // ZOOM IN SPECTRALLY ON THE DETECTION.
+
+  float minvel,maxvel;
+  if(this->head.isWCS()) getSmallVelRange(obj,this->head,&minvel,&maxvel);
+  else getSmallZRange(obj,&minvel,&maxvel);
+
+  // Find new max & min flux values
+  swap(max,min);
+  int ct = 0;
+  for(int i=0;i<zdim;i++){
+    if((specx[i]>=minvel)&&(specx[i]<=maxvel)){
+      ct++;
+      if(specy[i]>max) max=specy[i];
+      if(specy[i]<min) min=specy[i];
     }
-    if(this->flagWCS) newplot.drawVelRange(obj->getVelMin(),obj->getVelMax());
-    else newplot.drawVelRange(obj->getZmin(),obj->getZmax());
+  }
+  // widen the flux range slightly so that the top & bottom don't lie on the axes.
+  width = max - min;
+  max += width * 0.05;
+  min -= width * 0.05;
 
-    /**************************/
-    // ZOOM IN SPECTRALLY ON THE DETECTION.
-
-    float minvel,maxvel;
-    if(this->flagWCS) getSmallVelRange(*obj,this->wcs,&minvel,&maxvel);
-    else getSmallZRange(*obj,&minvel,&maxvel);
-
-    // Find new max & min flux values
-    swap(max,min);
-    int ct = 0;
-    for(int i=0;i<zdim;i++){
-      if((specx[i]>=minvel)&&(specx[i]<=maxvel)){
-	ct++;
-	if(specy[i]>max) max=specy[i];
-	if(specy[i]<min) min=specy[i];
-      }
-    }
-    // widen the flux range slightly so that the top & bottom don't lie on the axes.
-    width = max - min;
-    max += width * 0.05;
-    min -= width * 0.05;
-
-    newplot.gotoZoomSpectrum(minvel,maxvel,min,max);
-    cpgline(zdim,specx,specy);
-    if(this->par.getFlagATrous()){
-      cpgsci(2);
-      cpgline(zdim,specx,specy2);    
-      cpgsci(1);
-    }
-    if(this->flagWCS) newplot.drawVelRange(obj->getVelMin(),obj->getVelMax());
-    else newplot.drawVelRange(obj->getZmin(),obj->getZmax());
+  plot.gotoZoomSpectrum(minvel,maxvel,min,max);
+  cpgline(zdim,specx,specy);
+  if(this->par.getFlagATrous()){
+    cpgsci(2);
+    cpgline(zdim,specx,specy2);    
+    cpgsci(1);
+  }
+  if(this->head.isWCS()) plot.drawVelRange(obj.getVelMin(),obj.getVelMax());
+  else plot.drawVelRange(obj.getZmin(),obj.getZmax());
+  if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
     
-    /**************************/
+  /**************************/
 
-    // DRAW THE MOMENT MAP OF THE DETECTION -- SUMMED OVER ALL CHANNELS
-    newplot.gotoMap();
-    drawMomentCutout(*this,*obj);
-
-    delete obj;
-
-  }// end of loop over objects.
+  // DRAW THE MOMENT MAP OF THE DETECTION -- SUMMED OVER ALL CHANNELS
+  plot.gotoMap();
+  this->drawMomentCutout(obj);
 
   delete [] specx;
   delete [] specy;
@@ -186,7 +219,8 @@ void Cube::outputSpectra()
   
 }
 
-void getSmallVelRange(Detection &obj, wcsprm *wcs, float *minvel, float *maxvel)
+
+void getSmallVelRange(Detection &obj, FitsHeader head, float *minvel, float *maxvel)
 {
   /** 
    * getSmallVelRange(obj,wcs,minvel,maxvel)
@@ -208,11 +242,11 @@ void getSmallVelRange(Detection &obj, wcsprm *wcs, float *minvel, float *maxvel)
   // Find velocity range in number of pixels:
   world[0] = obj.getRA();
   world[1] = obj.getDec();
-  world[2] = velToCoord(wcs,*minvel);
-  wcsToPixSingle(wcs,world,pixcrd);
+  world[2] = head.velToSpec(*minvel);
+  head.wcsToPix(world,pixcrd);
   minpix = pixcrd[2];
-  world[2] = velToCoord(wcs,*maxvel);
-  wcsToPixSingle(wcs,world,pixcrd);
+  world[2] = head.velToSpec(*maxvel);
+  head.wcsToPix(world,pixcrd);
   maxpix = pixcrd[2];
   if(maxpix<minpix) swap(maxpix,minpix);
     
@@ -220,11 +254,13 @@ void getSmallVelRange(Detection &obj, wcsprm *wcs, float *minvel, float *maxvel)
     pixcrd[0] = double(obj.getXcentre());
     pixcrd[1] = double(obj.getYcentre());
     pixcrd[2] = obj.getZcentre() - 10.;
-    pixToWCSSingle(wcs,pixcrd,world);
-    *minvel = setVel_kms(wcs,world[2]);
+    head.pixToWCS(pixcrd,world);
+    //    *minvel = setVel_kms(wcs,world[2]);
+    *minvel = head.specToVel(world[2]);
     pixcrd[2] = obj.getZcentre() + 10.;
-    pixToWCSSingle(wcs,pixcrd,world);
-    *maxvel = setVel_kms(wcs,world[2]);
+    head.pixToWCS(pixcrd,world);
+//     *maxvel = setVel_kms(wcs,world[2]);
+    *maxvel = head.specToVel(world[2]);
     if(*maxvel<*minvel) swap(*maxvel,*minvel);
   }
   delete [] pixcrd;

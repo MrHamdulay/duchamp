@@ -4,10 +4,206 @@
 #include <sstream>
 #include <string>
 #include <math.h>
+#include <wcs.h>
+#include <wcsunits.h>
 #include <param.hh>
+#include <Utils/utils.hh>
 
 using std::setw;
 using std::endl;
+
+/****************************************************************/
+///////////////////////////////////////////////////
+//// Functions for FitsHeader class:
+///////////////////////////////////////////////////
+
+FitsHeader::FitsHeader(){
+  this->wcs = new wcsprm;
+  this->wcs->flag=-1;
+  wcsini(true,3,this->wcs); 
+  this->wcsIsGood = false;
+  this->nwcs = 0;
+  this->scale=1.;
+  this->offset=0.;
+  this->power=1.;
+  this->fluxUnits="counts";
+}
+
+FitsHeader::FitsHeader(const FitsHeader& h){
+  this->wcs = new wcsprm;
+  this->wcs->flag=-1;
+  wcsini(true,h.wcs->naxis,this->wcs); 
+  wcscopy(true,h.wcs,this->wcs); 
+  wcsset(this->wcs);
+  nwcs = h.nwcs;
+  wcsIsGood = h.wcsIsGood;
+  spectralUnits = h.spectralUnits;
+  fluxUnits = h.fluxUnits;
+  intFluxUnits = h.intFluxUnits;
+  beamSize = h.beamSize;
+  bmajKeyword = h.bmajKeyword;
+  bminKeyword = h.bminKeyword;
+  blankKeyword = h.blankKeyword;
+  bzeroKeyword = h.bzeroKeyword;
+  bscaleKeyword = h.bscaleKeyword;
+  scale = h.scale;
+  offset = h.offset;
+  power = h.power;
+}
+
+FitsHeader& FitsHeader::operator= (const FitsHeader& h){
+  this->wcs = new wcsprm;
+  this->wcs->flag=-1;
+  wcsini(true,h.wcs->naxis,this->wcs); 
+  wcscopy(true,h.wcs,this->wcs); 
+  wcsset(this->wcs);
+  nwcs = h.nwcs;
+  wcsIsGood = h.wcsIsGood;
+  spectralUnits = h.spectralUnits;
+  fluxUnits = h.fluxUnits;
+  intFluxUnits = h.intFluxUnits;
+  beamSize = h.beamSize;
+  bmajKeyword = h.bmajKeyword;
+  bminKeyword = h.bminKeyword;
+  blankKeyword = h.blankKeyword;
+  bzeroKeyword = h.bzeroKeyword;
+  bscaleKeyword = h.bscaleKeyword;
+  scale = h.scale;
+  offset = h.offset;
+  power = h.power;
+}
+
+void FitsHeader::setWCS(wcsprm *w)
+{
+  /** 
+   * FitsHeader::setWCS(wcsprm *)
+   *  A function that assigns the wcs parameters, and runs
+   *   wcsset to set it up correctly.
+   *  Performs a check to see if the WCS is good (by looking at 
+   *   the lng and lat wcsprm parameters), and sets the wcsIsGood 
+   *   flag accordingly.
+   */
+  wcscopy(true,w,this->wcs);
+  wcsset(this->wcs);
+  if( (w->lng!=-1) && (w->lat!=-1) ) this->wcsIsGood = true;
+}
+
+wcsprm *FitsHeader::getWCS()
+{
+  /** 
+   * FitsHeader::getWCS()
+   *  A function that returns a wcsprm object corresponding to the WCS.
+   */
+  wcsprm *wNew = new wcsprm;
+  wNew->flag=-1;
+  wcsini(true,this->wcs->naxis,wNew); 
+  wcscopy(true,this->wcs,wNew); 
+  wcsset(wNew);
+  return wNew;
+}
+
+int     FitsHeader::wcsToPix(const double *world, double *pix){
+  return wcsToPixSingle(this->wcs,world,pix);}
+int     FitsHeader::wcsToPix(const double *world, double *pix, const int npts){
+  return wcsToPixMulti(this->wcs,world,pix,npts);}
+int     FitsHeader::pixToWCS(const double *pix, double *world){
+  return pixToWCSSingle(this->wcs,pix,world);}
+int     FitsHeader::pixToWCS(const double *pix, double *world, const int npts){
+  return pixToWCSMulti(this->wcs,pix,world,npts);}
+
+double  FitsHeader::pixToVel(double &x, double &y, double &z)
+{
+//   return pixelToVelocity(this->wcs,x,y,z,this->spectralUnits);};
+  double *pix   = new double[3]; 
+  double *world = new double[3];
+  pix[0] = x; pix[1] = y; pix[2] = z;
+  pixToWCSSingle(this->wcs,pix,world);
+  double vel = this->specToVel(world[2]);
+  delete [] pix;
+  delete [] world;
+  return vel;
+}
+
+double* FitsHeader::pixToVel(double &x, double &y, double *zarray, int size)
+{
+//   return pixelToVelocity(this->wcs,x,y,z,this->spectralUnits);};
+  double *pix   = new double[size*3];
+  for(int i=0;i<size;i++){
+    pix[3*i] = x; pix[3*i+1] = y; pix[3*i+2] = zarray[i];
+  }
+  double *world = new double[size*3];
+  pixToWCSMulti(this->wcs,pix,world,size);
+  delete [] pix;
+  double *newzarray = new double[size];
+  for(int i=0;i<size;i++) newzarray[i] = this->specToVel(world[3*i+2]);
+  delete [] world;
+  return newzarray;
+}
+
+double  FitsHeader::specToVel(const double &coord)
+{
+//   return coordToVel(this->wcs,coord,this->spectralUnits);};
+  double vel;
+  if(power==1.0){
+//     std::cerr << coord << " --> " << coord*this->scale + this->offset << std::endl;
+    vel =  coord*this->scale + this->offset;
+  }
+  else vel = pow( (coord*this->scale + this->offset), this->power);
+
+  return vel;
+}
+
+double  FitsHeader::velToSpec(const float &velocity)
+{
+//   return velToCoord(this->wcs,velocity,this->spectralUnits);};
+  return (pow(velocity, 1./this->power) - this->offset) / this->scale;}
+
+string  FitsHeader::getIAUName(double ra, double dec)
+{
+  if(strcmp(this->wcs->lngtyp,"RA")==0) return getIAUNameEQ(ra, dec, this->wcs->equinox);
+  else return getIAUNameGAL(ra, dec);
+}
+
+void FitsHeader::fixUnits(Param &par)
+{
+  // define spectral units from the param set
+  this->spectralUnits = par.getSpectralUnits();
+
+  double sc=1.;
+  double of=0.;
+  double po=1.;;
+  if(this->wcsIsGood){
+    int flag = wcsunits( this->wcs->cunit[2], this->spectralUnits.c_str(), &sc, &of, &po);
+    if(flag>0){
+      std::cerr << "ERROR <fixUnits> : WCSUNITS Error Code = " << flag << ": "
+		<< wcsunits_errmsg[flag] << std::endl;
+      if(flag==10) 
+	std::cerr<<"                   Tried to get conversion from '" << wcs->cunit[2]
+		 << "' to '" << this->spectralUnits.c_str() << "'\n";
+//       std::cerr << "                   Using coordinate value instead\n";
+      this->spectralUnits = this->wcs->cunit[2];
+      if(this->spectralUnits==""){
+	std::cerr << "                   Setting coordinates to 'XX' for clarity.\n";
+	this->spectralUnits = "XX";
+      }
+    }
+  }
+  this->scale = sc;
+  this->offset= of;
+  this->power = po;
+
+  // work out the integrated flux units, based on the spectral units
+  // if flux is per beam, trim the /beam from the flux units and multiply by the spectral units.
+  // otherwise, just muliply by the spectral units.
+  if(this->fluxUnits.size()>0){
+    if(this->fluxUnits.substr(this->fluxUnits.size()-5,this->fluxUnits.size())=="/beam"){
+      this->intFluxUnits = this->fluxUnits.substr(0,this->fluxUnits.size()-5)
+	+" " +this->spectralUnits;
+    }
+    else this->intFluxUnits = fluxUnits + " " + this->spectralUnits;
+  }
+
+}
 
 /****************************************************************/
 ///////////////////////////////////////////////////
@@ -45,6 +241,7 @@ Param::Param(){
   this->blankKeyword    = 1;
   this->bscaleKeyword   = -8.00061;
   this->bzeroKeyword    = 0.;
+  this->flagUsingBlank  = false;
   this->nanAsBlank      = false;
   this->flagMW          = false;
   this->maxMW           = 112;
@@ -74,6 +271,7 @@ Param::Param(){
   this->snrCut          = 3.;
   // A trous reconstruction parameters
   this->flagATrous      = true;
+  this->reconDim        = 3;
   this->scaleMin        = 1;
   this->snrRecon        = 4.;
   this->filterCode      = 2;
@@ -87,6 +285,7 @@ Param::Param(){
   this->spectralMethod  = "peak";
   this->borders         = true;
   this->verbose         = true;
+  this->spectralUnits   = "km/s";
 };
 
 /****************************************************************/
@@ -154,8 +353,11 @@ void Param::readParams(string &paramfile)
 
       if(makelower(arg)=="flagfdr"){         ss >> bval; this->flagFDR = bval; }
       if(makelower(arg)=="alphafdr"){        ss >> fval; this->alphaFDR = fval; }
+
       if(makelower(arg)=="snrcut"){          ss >> fval; this->snrCut = fval; }
+
       if(makelower(arg)=="flagatrous"){      ss >> bval; this->flagATrous = bval; }
+      if(makelower(arg)=="recondim"){        ss >> ival; this->reconDim = ival; }
       if(makelower(arg)=="scalemin"){        ss >> ival; this->scaleMin = ival; }
       if(makelower(arg)=="snrrecon"){        ss >> fval; this->snrRecon = fval; }
       if(makelower(arg)=="filtercode"){      ss >> ival; this->filterCode = ival; }
@@ -165,7 +367,8 @@ void Param::readParams(string &paramfile)
       if(makelower(arg)=="threshvelocity"){  ss >> fval; this->threshVelocity = fval; }
       if(makelower(arg)=="minchannels"){     ss >> ival; this->minChannels = ival; }
 
-      if(makelower(arg)=="spectralMethod"){  ss >> sval; this->spectralMethod = makelower(sval); }
+      if(makelower(arg)=="spectralmethod"){  ss >> sval; this->spectralMethod = makelower(sval); }
+      if(makelower(arg)=="spectralunits"){   ss >> sval; this->spectralUnits = makelower(sval); }
       if(makelower(arg)=="drawborders"){     ss >> bval; this->borders = bval; }
       if(makelower(arg)=="verbose"){         ss >> bval; this->verbose = bval; }
     }
@@ -175,74 +378,156 @@ void Param::readParams(string &paramfile)
 
 std::ostream& operator<< ( std::ostream& theStream, Param& par)
 {
+  // Only show the [blankPixValue] bit if we are using the parameter
+  // otherwise we have read it from the FITS header.
+  string blankParam = "";
+  if(par.getFlagUsingBlank()) blankParam = "[blankPixValue]";
+
+  // WARNING -- sometimes get error: `boolalpha' is not a member of type `ios' -- old compilers?
   theStream.setf(std::ios::boolalpha);
   theStream.setf(std::ios::left);
   theStream  <<"---- Parameters ----"<<endl;
+  theStream  << std::setfill('.');
   if(par.getFlagSubsection())
-    theStream<<setw(40)<<"Image to be analysed"                 <<"= "<<(par.getImageFile()+
-									 par.getSubsection())   <<endl;
+    theStream<<setw(38)<<"Image to be analysed"                 
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[imageFile]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<(par.getImageFile()+par.getSubsection())   <<endl;
   else 
-    theStream<<setw(40)<<"Image to be analysed"                 <<"= "<<par.getImageFile()      <<endl;
+    theStream<<setw(38)<<"Image to be analysed"                 
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[imageFile]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getImageFile()      <<endl;
   if(par.getFlagReconExists() && par.getFlagATrous()){
-    theStream<<setw(40)<<"Reconstructed array exists?"          <<"= "<<par.getFlagReconExists()<<endl;
-    theStream<<setw(40)<<"FITS file containing reconstruction"  <<"= "<<par.getReconFile()      <<endl;
+    theStream<<setw(38)<<"Reconstructed array exists?"          
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[reconExists]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagReconExists()<<endl;
+    theStream<<setw(38)<<"FITS file containing reconstruction"  
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[reconFile]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getReconFile()      <<endl;
   }
-  theStream  <<setw(40)<<"Intermediate Logfile"                 <<"= "<<par.getLogFile()        <<endl;
-  theStream  <<setw(40)<<"Final Results file"                   <<"= "<<par.getOutFile()        <<endl;
-  theStream  <<setw(40)<<"Spectrum file"                        <<"= "<<par.getSpectraFile()    <<endl;
+  theStream  <<setw(38)<<"Intermediate Logfile"
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[logFile]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getLogFile()        <<endl;
+  theStream  <<setw(38)<<"Final Results file"                   
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[outFile]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getOutFile()        <<endl;
+  theStream  <<setw(38)<<"Spectrum file"                        
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[spectraFile]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getSpectraFile()    <<endl;
   if(par.getFlagVOT()){
-    theStream<<setw(40)<<"VOTable file"                         <<"= "<<par.getVOTFile()        <<endl;
+    theStream<<setw(38)<<"VOTable file"                         
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[votFile]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getVOTFile()        <<endl;
   }
   if(par.getFlagKarma()){
-    theStream<<setw(40)<<"Karma annotation file"                <<"= "<<par.getKarmaFile()      <<endl;
+    theStream<<setw(38)<<"Karma annotation file"                
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[karmaFile]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getKarmaFile()      <<endl;
   }
   if(par.getFlagMaps()){
-    theStream<<setw(40)<<"0th Moment Map"                       <<"= "<<par.getMomentMap()      <<endl;
-    theStream<<setw(40)<<"Detection Map"                        <<"= "<<par.getDetectionMap()   <<endl;
+    theStream<<setw(38)<<"0th Moment Map"                       
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[momentMap]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getMomentMap()      <<endl;
+    theStream<<setw(38)<<"Detection Map"                        
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[detectionMap]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getDetectionMap()   <<endl;
   }
   if(par.getFlagATrous()){			       
-    theStream<<setw(40)<<"Saving reconstructed cube?"           <<"= "<<par.getFlagOutputRecon()<<endl;
-    theStream<<setw(40)<<"Saving residuals from reconstruction?"<<"= "<<par.getFlagOutputResid()<<endl;
+    theStream<<setw(38)<<"Saving reconstructed cube?"           
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagoutputrecon]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagOutputRecon()<<endl;
+    theStream<<setw(38)<<"Saving residuals from reconstruction?"
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagoutputresid]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagOutputResid()<<endl;
   }						       
   theStream  <<"------"<<endl;
-  theStream  <<setw(40)<<"Searching for Negative features?"     <<"= "<<par.getFlagNegative()   <<endl;
-  theStream  <<setw(40)<<"Fixing Blank Pixels?"                 <<"= "<<par.getFlagBlankPix()   <<endl;
+  theStream  <<setw(38)<<"Searching for Negative features?"     
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagNegative]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagNegative()   <<endl;
+  theStream  <<setw(38)<<"Fixing Blank Pixels?"                 
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagBlankPix]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagBlankPix()   <<endl;
   if(par.getFlagBlankPix()){
-    theStream<<setw(40)<<"Blank Pixel Value"                    <<"= "<<par.getBlankPixVal()    <<endl;
+    theStream<<setw(38)<<"Blank Pixel Value"                    
+	     <<setw(18)<<setiosflags(std::ios::right)  << blankParam
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getBlankPixVal()    <<endl;
   }
-  theStream  <<setw(40)<<"Removing Milky Way channels?"         <<"= "<<par.getFlagMW()         <<endl;
+  theStream  <<setw(38)<<"Removing Milky Way channels?"         
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagMW]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagMW()         <<endl;
   if(par.getFlagMW()){
-    theStream<<setw(40)<<"Milky Way Channels"                   <<"= "<<par.getMinMW()
-	               <<"-"                                          <<par.getMaxMW()          <<endl;
+    theStream<<setw(38)<<"Milky Way Channels"                   
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[minMW - maxMW]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getMinMW()
+	     <<"-" <<par.getMaxMW()          <<endl;
   }
-  theStream  <<setw(40)<<"Beam Size (pixels)"                   <<"= "<<par.getBeamSize()       <<endl;
-  theStream  <<setw(40)<<"Removing baselines before search?"    <<"= "<<par.getFlagBaseline()   <<endl;
-  theStream  <<setw(40)<<"Minimum # Pixels in a detection"      <<"= "<<par.getMinPix()         <<endl;
-  theStream  <<setw(40)<<"Growing objects after detection?"     <<"= "<<par.getFlagGrowth()     <<endl;
+  theStream  <<setw(38)<<"Beam Size (pixels)"                   
+	     <<setw(18)<<setiosflags(std::ios::right)  <<""
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getBeamSize()       <<endl;
+  theStream  <<setw(38)<<"Removing baselines before search?"    
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagBaseline]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagBaseline()   <<endl;
+  theStream  <<setw(38)<<"Minimum # Pixels in a detection"      
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[minPix]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getMinPix()         <<endl;
+  theStream  <<setw(38)<<"Minimum # Channels in a detection"    
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[minChannels]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getMinChannels()    <<endl;
+  theStream  <<setw(38)<<"Growing objects after detection?"     
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagGrowth]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagGrowth()     <<endl;
   if(par.getFlagGrowth()) {			       
-    theStream<<setw(40)<<"SNR Threshold for growth"             <<"= "<<par.getGrowthCut()      <<endl;
+    theStream<<setw(38)<<"SNR Threshold for growth"             
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[growthCut]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getGrowthCut()      <<endl;
   }
-  theStream  <<setw(40)<<"Using A Trous reconstruction?"        <<"= "<<par.getFlagATrous()     <<endl;
+  theStream  <<setw(38)<<"Using A Trous reconstruction?"        
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagATrous]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagATrous()     <<endl;
   if(par.getFlagATrous()){			       
-    theStream<<setw(40)<<"Minimum scale in reconstruction"      <<"= "<<par.getMinScale()       <<endl;
-    theStream<<setw(40)<<"SNR Threshold within reconstruction"  <<"= "<<par.getAtrousCut()      <<endl;
-    theStream<<setw(40)<<"Filter being used for reconstruction" <<"= "<<par.getFilterName()     <<endl;
+    theStream<<setw(38)<<"Number of dimensions in reconstruction"      
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[reconDim]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getReconDim()       <<endl;
+    theStream<<setw(38)<<"Minimum scale in reconstruction"      
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[scaleMin]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getMinScale()       <<endl;
+    theStream<<setw(38)<<"SNR Threshold within reconstruction"  
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[snrRecon]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getAtrousCut()      <<endl;
+    theStream<<setw(38)<<"Filter being used for reconstruction" 
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[filterCode]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFilterCode() 
+	     << " (" << par.getFilterName()  << ")" <<endl;
   }	     					       
-  theStream  <<setw(40)<<"Using FDR analysis?"                  <<"= "<<par.getFlagFDR()        <<endl;
+  theStream  <<setw(38)<<"Using FDR analysis?"                  
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagFDR]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagFDR()        <<endl;
   if(par.getFlagFDR()){				       
-    theStream<<setw(40)<<"Alpha value for FDR analysis"         <<"= "<<par.getAlpha()          <<endl;
+    theStream<<setw(38)<<"Alpha value for FDR analysis"         
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[alphaFDR]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getAlpha()          <<endl;
   }	     					       
   else {
-    theStream<<setw(40)<<"SNR Threshold"                        <<"= "<<par.getCut()            <<endl;
+    theStream<<setw(38)<<"SNR Threshold"                        
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[snrCut]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getCut()            <<endl;
   }
-  theStream  <<setw(40)<<"Using Adjacent-pixel criterion?"      <<"= "<<par.getFlagAdjacent()   <<endl;
+  theStream  <<setw(38)<<"Using Adjacent-pixel criterion?"      
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagAdjacent]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagAdjacent()   <<endl;
   if(!par.getFlagAdjacent()){
-    theStream<<setw(40)<<"Max. spatial separation for merging"  <<"= "<<par.getThreshS()        <<endl;
+    theStream<<setw(38)<<"Max. spatial separation for merging"  
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[threshSpatial]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getThreshS()        <<endl;
   }
-  theStream  <<setw(40)<<"Max. velocity separation for merging" <<"= "<<par.getThreshV()        <<endl;
-  theStream  <<setw(40)<<"Min. # channels for merging"          <<"= "<<par.getMinChannels()    <<endl;
-  theStream  <<setw(40)<<"Method of spectral plotting"          <<"= "<<par.getSpectralMethod() <<endl;
+  theStream  <<setw(38)<<"Max. velocity separation for merging" 
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[threshVelocity]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getThreshV()        <<endl;
+  theStream  <<setw(38)<<"Method of spectral plotting"          
+	     <<setw(18)<<setiosflags(std::ios::right)  <<"[spectralMethod]"
+	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getSpectralMethod() <<endl;
   theStream  <<"--------------------"<<endl;
+  theStream  << std::setfill(' ');
   theStream.unsetf(std::ios::left);
   theStream.unsetf(std::ios::boolalpha);
 }
@@ -321,4 +606,46 @@ bool Param::isBlank(float &val)
       return ( this->blankKeyword == int((val-this->bzeroKeyword)/this->bscaleKeyword) );
   }
   else return false;
+}
+
+string Param::outputReconFile()
+{
+  /** 
+   *  outputReconFile()
+   *
+   *   This function produces the required filename in which to save
+   *    the reconstructed array. If the input image is image.fits, then
+   *    the output will be eg. image.RECON-3-2-4-1.fits, where the numbers are
+   *    3=reconDim, 2=filterCode, 4=snrRecon, 1=minScale
+   */
+  string inputName = this->imageFile;
+  std::stringstream ss;
+  ss << inputName.substr(0,inputName.size()-5);  // remove the ".fits" on the end.
+  ss << ".RECON-" << this->reconDim 
+     << "-"       << this->filterCode
+     << "-"       << this->snrRecon
+     << "-"       << this->scaleMin
+     << ".fits";
+  return ss.str();
+}
+
+string Param::outputResidFile()
+{
+  /** 
+   *  outputResidFile()
+   *
+   *   This function produces the required filename in which to save
+   *    the reconstructed array. If the input image is image.fits, then
+   *    the output will be eg. image.RESID-3-2-4-1.fits, where the numbers are
+   *    3=reconDim, 2=filterCode, 4=snrRecon, 1=scaleMin
+   */
+  string inputName = this->imageFile;
+  std::stringstream ss;
+  ss << inputName.substr(0,inputName.size()-5);  // remove the ".fits" on the end.
+  ss << ".RESID-" << this->reconDim 
+     << "-"       << this->filterCode
+     << "-"       << this->snrRecon
+     << "-"       << this->scaleMin
+     << ".fits";
+  return ss.str();
 }

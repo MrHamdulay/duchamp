@@ -65,6 +65,7 @@ UTIL =	$(UTILDIR)/cpgwedg_log.o\
 
 HEADS = $(BASE)/param.o\
 	$(DETECTIONDIR)/detection.o\
+	$(DETECTIONDIR)/columns.o\
 	$(CUBESDIR)/cubes.o\
 	$(ATROUSDIR)/atrous.o
 

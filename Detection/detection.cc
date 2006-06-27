@@ -84,10 +84,11 @@ void Detection::calcParams()
   }
 }
 
-void Detection::calcWCSparams(wcsprm *wcs)
+//void Detection::calcWCSparams(wcsprm *wcs)
+void Detection::calcWCSparams(FitsHeader head)
 {
   /**
-   * Detection::calcWCSparams(wcsprm *)
+   * Detection::calcWCSparams(FitsHeader)
    *  Use the input wcs to calculate the position and velocity information for the Detection.
    *  Makes no judgement as to whether the WCS is good -- this needs to be done beforehand.
    *  Quantities calculated:
@@ -98,59 +99,64 @@ void Detection::calcWCSparams(wcsprm *wcs)
    *     Uses getIntegFlux to calculate the integrated flux in (say) [Jy km/s]
    */
 
-  this->calcParams(); // make sure this is up to date.
+  if(head.isWCS()){
 
-  double *pixcrd = new double[15];
-  double *world  = new double[15];
-  /*
-    define a five-point array in 3D:
+    this->calcParams(); // make sure this is up to date.
+
+    double *pixcrd = new double[15];
+    double *world  = new double[15];
+    /*
+      define a five-point array in 3D:
       (x,y,z), (x,y,z1), (x,y,z2), (x1,y1,z), (x2,y2,z)
       [note: x = central point, x1 = minimum x, x2 = maximum x etc.]
-    and convert to world coordinates.   
-  */
-  pixcrd[0]  = pixcrd[3] = pixcrd[6] = this->xcentre;
-  pixcrd[9]  = this->xmin-0.5;
-  pixcrd[12] = this->xmax+0.5;
-  pixcrd[1]  = pixcrd[4] = pixcrd[7] = this->ycentre;
-  pixcrd[10] = this->ymin-0.5;
-  pixcrd[13] = this->ymax+0.5;
-  pixcrd[2] = pixcrd[11] = pixcrd[14] = this->zcentre;
-  pixcrd[5] = this->zmin;
-  pixcrd[8] = this->zmax;
-  int flag = pixToWCSMulti(wcs, pixcrd, world, 5);
-  delete [] pixcrd;
+      and convert to world coordinates.   
+    */
+    pixcrd[0]  = pixcrd[3] = pixcrd[6] = this->xcentre;
+    pixcrd[9]  = this->xmin-0.5;
+    pixcrd[12] = this->xmax+0.5;
+    pixcrd[1]  = pixcrd[4] = pixcrd[7] = this->ycentre;
+    pixcrd[10] = this->ymin-0.5;
+    pixcrd[13] = this->ymax+0.5;
+    pixcrd[2] = pixcrd[11] = pixcrd[14] = this->zcentre;
+    pixcrd[5] = this->zmin;
+    pixcrd[8] = this->zmax;
+    int flag = head.pixToWCS(pixcrd, world, 5);
+    delete [] pixcrd;
 
-  // world now has the WCS coords for the five points -- use this to work out WCS params.
+    // world now has the WCS coords for the five points -- use this to work out WCS params
   
-  this->lngtype = wcs->lngtyp;
-  this->lattype = wcs->lattyp;
-  this->ztype   = wcs->ctype[2];
-  this->nuRest  = wcs->restfrq;
-  this->ra   = world[0];
-  this->dec  = world[1];
-  this->raS = decToDMS(this->ra,this->lngtype);
-  this->decS = decToDMS(this->dec,this->lattype);
-  this->raWidth   = angularSeparation(world[9],world[1],world[12],world[1]) * 60.;
-  this->decWidth  = angularSeparation(world[0],world[10],world[0],world[13]) * 60.;
-  if(this->lngtype=="RA") this->name = getIAUNameEQ(this->ra,this->dec,wcs->equinox);
-  else this->name = getIAUNameGAL(this->ra,this->dec);
-  this->vel    = setVel_kms(wcs, world[2]);
-  this->velMin = setVel_kms(wcs, world[5]);
-  this->velMax = setVel_kms(wcs, world[8]);
-  this->velWidth = fabs(this->velMax - this->velMin);
+    this->lngtype = head.getWCS()->lngtyp;
+    this->lattype = head.getWCS()->lattyp;
+    this->specUnits = head.getSpectralUnits();
+    this->fluxUnits = head.getFluxUnits();
+    // if fluxUnits are eg. Jy/beam, make intFluxUnits = Jy km/s
+    this->intFluxUnits = head.getIntFluxUnits();
+    this->ra   = world[0];
+    this->dec  = world[1];
+    this->raS  = decToDMS(this->ra, this->lngtype);
+    this->decS = decToDMS(this->dec,this->lattype);
+    this->raWidth   = angularSeparation(world[9],world[1],world[12],world[1]) * 60.;
+    this->decWidth  = angularSeparation(world[0],world[10],world[0],world[13]) * 60.;
+    this->name = head.getIAUName(this->ra, this->dec);
+    this->vel    = head.specToVel(world[2]);
+    this->velMin = head.specToVel(world[5]);
+    this->velMax = head.specToVel(world[8]);
+    this->velWidth = fabs(this->velMax - this->velMin);
 
-  this->getIntegFlux(wcs);
+    this->getIntegFlux(head);
 
-  this->flagWCS = true;
+    this->flagWCS = true;
 
-  delete [] world;
+    delete [] world;
 
+  }
 }
 
-float Detection::getIntegFlux(wcsprm *wcs)
+// float Detection::getIntegFlux(wcsprm *wcs)
+float Detection::getIntegFlux(FitsHeader head)
 {
   /**
-   * Detection::getIntegFlux(wcsprm *)
+   * Detection::getIntegFlux(FitsHeader)
    *  Uses the input wcs to calculate the velocity-integrated flux, 
    *  putting velocity in units of km/s.
    *  Integrates over full spatial and velocity range as given by extrema calculated 
@@ -173,30 +179,32 @@ float Detection::getIntegFlux(wcsprm *wcs)
   }
   
   // work out the WCS coords for each pixel
-  double *world  = new double[xsize*ysize*zsize*3];
-  double *pix = new double[xsize*ysize*zsize*3];
+  double *world  = new double[xsize*ysize*zsize];
+  double x,y,z;
   for(int i=0;i<xsize*ysize*zsize;i++){
-    pix[i*3+0] = this->xmin -1 + i%xsize;
-    pix[i*3+1] = this->ymin -1 + (i/xsize)%ysize;
-    pix[i*3+2] = this->zmin -1 + i/(xsize*ysize);
+    x = double( this->xmin -1 + i%xsize );
+    y = double( this->ymin -1 + (i/xsize)%ysize );
+    z = double( this->zmin -1 + i/(xsize*ysize) );
+    world[i] = head.pixToVel(x,y,z);
   }
-  int flag = pixToWCSMulti(wcs, pix, world, xsize*ysize*zsize);
-  delete [] pix;
-
-  // put velocity coords into km/s
-  for(int i=0;i<xsize*ysize*zsize;i++)
-    world[3*i+2] = setVel_kms(wcs,world[3*i+2]);
 
   this->intFlux = 0.;
   for(int pix=0; pix<xsize*ysize; pix++){ // loop over each spatial pixel.
     for(int z=0; z<zsize; z++){
       int pos =  z*xsize*ysize + pix;
       if(isObj[pos]){ // if it's an object pixel...
-	float deltaVel = (world[3*(pos+xsize*ysize)+2] - world[ 3*(pos-xsize*ysize)+2 ]) / 2.;
+	float deltaVel;
+	if(z==0) deltaVel = (world[pos+xsize*ysize] - world[pos]);
+	else if(z==(zsize-1)) deltaVel = (world[pos] - world[pos-xsize*ysize]);
+	else deltaVel = (world[pos+xsize*ysize] - world[pos-xsize*ysize]) / 2.;
 	this->intFlux += fluxArray[pos] * fabsf(deltaVel);
       }
     }
   }
+
+  if(this->fluxUnits.substr(this->fluxUnits.size()-5,this->fluxUnits.size())=="/beam")
+    this->intFlux /= head.getBeamSize();
+
   delete [] world;
 }
 

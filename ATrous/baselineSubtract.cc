@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <math.h>
 #include <ATrous/atrous.hh>
 #include <Utils/utils.hh>
 #include <param.hh>

@@ -104,6 +104,7 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
 	    
       } //-> end of xpos loop
 
+      // Need to do this after we've done *all* the convolving
       for(int pos=0;pos<xdim;pos++) coeffs[pos] = coeffs[pos] - wavelet[pos];
 
       // Have found wavelet coeffs for this scale -- now threshold
@@ -131,7 +132,8 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
     array = new float[xdim];
     goodSize=0;
     for(int i=0;i<xdim;i++) if(isGood[i]) array[goodSize++] = input[i] - output[i];
-    findNormalStats(array,goodSize,mean,newsigma);
+    findMedianStats(array,goodSize,mean,newsigma);
+    newsigma /= correctionFactor; // correct from MADFM to sigma estimator.
     delete [] array;
 
     if(par.isVerbose())     std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
