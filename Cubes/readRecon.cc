@@ -17,7 +17,8 @@ int Cube::readReconCube()
    *   A way to read in a previously reconstructed array, corresponding to the 
    *    requested parameters, or in the filename given by reconFile.
    *   Performs various tests to make sure there are no clashes between the requested
-   *    parameters and those stored in the header of the FITS file.
+   *    parameters and those stored in the header of the FITS file. Also test to 
+   *    make sure that the size (and subsection, if applicable) of the array is the same.
    */
 
 
@@ -95,14 +96,33 @@ int Cube::readReconCube()
   for(int i=0;i<numAxesNew;i++){
     if(dimAxesNew[i]!=this->axisDim[i]){
       std::cerr << "  ERROR <readReconCube> : "
-		<< "  Reconstructed cube has different axis dimensions to original!\n"
-		<< "        Axis #" << i << " has size " << dimAxesNew[i] 
+		<< "Reconstructed cube has different axis dimensions to original!\n"
+		<< "                          Axis #" << i+1 << " has size " << dimAxesNew[i] 
 		<< "   cf. " << this->axisDim[i] <<" in original.\n";	
       return FAILURE;
     }
-  }      
+  }
 
   char *comment = new char[80];
+
+  if(this->par.getFlagSubsection()){
+    char *subsection = new char[80];
+    status = 0;
+    fits_read_key(fptr, TSTRING, (char *)keyword_subsection.c_str(), subsection, comment, &status);
+    if(status){
+      std::cerr <<"  ERROR <readReconCube> : subsection keyword not present in reconFile.\n";
+      return FAILURE;
+    }
+    else{
+      if(this->par.getSubsection() != subsection){
+	std::cerr <<"  ERROR <readReconCube> : subsection keyword in reconFile (" << subsection
+		  <<") does not match that requested (" << this->par.getSubsection() <<").\n";
+	return FAILURE;
+      }
+    }
+    delete subsection;
+  }
+
   int scaleMin,filterCode,reconDim;
   float snrRecon;
   status = 0;

@@ -159,7 +159,18 @@ void write_header_info(fitsfile *fptr, Param &par, string nature)
 				   
   fits_write_history(fptr, (char *)header_history2.c_str(), &status);
 
-  fits_write_comment(fptr, (char *)header_comment.c_str(), &status);
+  fits_write_history(fptr, (char *)header_history_input.c_str(), &status);
+
+  fits_write_history(fptr, (char *)par.getImageFile().c_str(), &status);
+
+  if(par.getFlagSubsection()){
+    fits_write_comment(fptr, (char *)header_subsection_comment.c_str(), &status);
+    fits_write_key(fptr, TSTRING, (char *)keyword_subsection.c_str(), 
+		   (char *)par.getSubsection().c_str(),
+		   (char *)comment_subsection.c_str(), &status);
+  }
+    
+  fits_write_comment(fptr, (char *)header_atrous_comment.c_str(), &status);
 
   float valf = par.getAtrousCut();
   fits_write_key(fptr, TFLOAT, (char *)keyword_snrRecon.c_str(), &valf, 
@@ -189,5 +200,6 @@ void write_header_info(fitsfile *fptr, Param &par, string nature)
   fits_write_comment(fptr, (char *)explanation.c_str(), &status);
   fits_write_key(fptr, TSTRING, (char *)keyword_ReconResid.c_str(), 
 		 (char *)ReconResid.c_str(), (char *)comment_ReconResid.c_str(), &status);
+
 
 }
