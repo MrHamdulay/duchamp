@@ -63,14 +63,9 @@ int main(int argc, char * argv[])
     return 1;
   }
 
-  string fname = cube->pars().getImageFile();
-  if(cube->pars().getFlagSubsection()){
-    cube->pars().parseSubsection();
-    fname+=cube->pars().getSubsection();
-  }
-  std::cout << "Opening image: " << fname << std::endl;
-  if( cube->getCube(fname) == FAILURE){
-    std::cerr << "ERROR : Unable to open image file : " << fname << std::endl;
+  std::cout << "Opening image: " << cube->pars().getFullImageFile() << std::endl;
+  if( cube->getCube() == FAILURE){
+    std::cerr << "ERROR : Unable to open image file : " << cube->pars().getFullImageFile() << std::endl;
     std::cerr << "Exiting...\n\n";
     return 1;
   }
@@ -97,6 +92,7 @@ int main(int argc, char * argv[])
   std::cout << cube->pars();
 
   if(cube->pars().getFlagLog()){
+    // Open the logfile and write the time on the first line
     ofstream logfile(cube->pars().getLogFile().c_str());
     logfile << "New run of the Duchamp sourcefinder: ";
     time_t now = time(NULL);
@@ -106,6 +102,7 @@ int main(int argc, char * argv[])
   }
 
   if(cube->pars().getFlagBlankPix()){
+    // Trim any blank pixels from the edges, and report the new size of the cube
     std::cout<<"Trimming the Blank Pixels from the edges...  "<<std::flush;
     cube->trimCube();
     std::cout<<"Done."<<std::endl;
@@ -114,12 +111,6 @@ int main(int argc, char * argv[])
     if(cube->getNumDim()>2) std::cout << "x" << cube->getDimZ();
     std::cout << std::endl;
   }
-
-//   if(cube->pars().getFlagMW()){
-//     std::cout<<"Removing the Milky Way channels...  "<<std::flush;
-//     cube->removeMW();
-//     std::cout<<"Done."<<std::endl;
-//   }
 
   if(cube->pars().getFlagBaseline()){
     std::cout<<"Removing the baselines... "<<std::flush;

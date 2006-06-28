@@ -1,16 +1,20 @@
-CFLAGS = -c -g
+CFLAGS = -c
 
 FFLAGS = -C -fast -O4
 
-CC=     g++ $(CFLAGS)
+CC=     g++ -c
+CPP =   g++
 F77=    g77 $(FFLAGS)
 
 BASE = .
 
+INSTALLDIR = .
+
+EXEC = Duchamp
+
 PGDIR = /u/whi550/pgplot/
 PGPLOTLIB = -L$(PGDIR) -L/usr/X11R6/lib/ -lcpgplot -lpgplot -lX11
 
-#CFITSIOLIB = -lcfitsio 
 CFITSIOINC = /DATA/SITAR_1/whi550/cfitsio
 #CFITSIODIR = /usr/local/lib
 CFITSIODIR = /DATA/SITAR_1/whi550/cfitsio
@@ -24,24 +28,38 @@ CINC= -I$(PGDIR) -I$(WCSDIR)/C/ -I$(WCSDIR)/pgsbox/ -I$(CFITSIOINC) -I$(BASE)
 LIBS =  $(WCSLIB) $(PGPLOTLIB) $(CFITSIOLIB) -lm -lg2c -lstdc++
 
 ATROUSDIR = $(BASE)/ATrous
-ATROUS = $(ATROUSDIR)/atrous_1d_reconstruct.o\
+DETECTIONDIR = $(BASE)/Detection
+CUBESDIR = $(BASE)/Cubes
+UTILDIR = $(BASE)/Utils
+
+HEADS = $(BASE)/duchamp.hh\
+	$(BASE)/param.hh\
+	$(ATROUSDIR)/atrous.hh\
+	$(DETECTIONDIR)/detection.hh\
+	$(DETECTIONDIR)/columns.hh\
+	$(CUBESDIR)/cubes.hh\
+	$(CUBESDIR)/plots.hh\
+	$(UTILDIR)/utils.hh
+
+OBJECTS = $(BASE)/param.o\
+	$(ATROUSDIR)/atrous.o\
+	$(ATROUSDIR)/atrous_1d_reconstruct.o\
 	$(ATROUSDIR)/atrous_2d_reconstruct.o\
 	$(ATROUSDIR)/atrous_3d_reconstruct.o\
 	$(ATROUSDIR)/baselineSubtract.o\
-	$(ATROUSDIR)/ReconSearch.o
-
-DETECTIONDIR = $(BASE)/Detection
-DETECTION = $(DETECTIONDIR)/areClose.o\
+	$(ATROUSDIR)/ReconSearch.o\
+	$(DETECTIONDIR)/detection.o\
+	$(DETECTIONDIR)/columns.o\
+	$(DETECTIONDIR)/areClose.o\
 	$(DETECTIONDIR)/growObject.o\
 	$(DETECTIONDIR)/lutz_detect.o\
 	$(DETECTIONDIR)/mergeIntoList.o\
 	$(DETECTIONDIR)/outputDetection.o\
 	$(DETECTIONDIR)/sorting.o\
 	$(DETECTIONDIR)/spectrumDetect.o\
-	$(DETECTIONDIR)/thresholding_functions.o
-
-CUBESDIR = $(BASE)/Cubes
-CUBES = $(CUBESDIR)/baseline.o\
+	$(DETECTIONDIR)/thresholding_functions.o\
+	$(CUBESDIR)/cubes.o\
+	$(CUBESDIR)/baseline.o\
 	$(CUBESDIR)/cubicSearch.o\
 	$(CUBESDIR)/detectionIO.o\
 	$(CUBESDIR)/drawMomentCutout.o\
@@ -52,10 +70,8 @@ CUBES = $(CUBESDIR)/baseline.o\
 	$(CUBESDIR)/plotting.o\
 	$(CUBESDIR)/readRecon.o\
 	$(CUBESDIR)/saveImage.o\
-	$(CUBESDIR)/trimImage.o
-
-UTILDIR = $(BASE)/Utils
-UTIL =	$(UTILDIR)/cpgwedg_log.o\
+	$(CUBESDIR)/trimImage.o\
+	$(UTILDIR)/cpgwedg_log.o\
 	$(UTILDIR)/getStats.o\
 	$(UTILDIR)/linear_regression.o\
 	$(UTILDIR)/position_related.o\
@@ -63,14 +79,10 @@ UTIL =	$(UTILDIR)/cpgwedg_log.o\
 	$(UTILDIR)/wcsFunctions.o\
 	$(UTILDIR)/zscale.o
 
-HEADS = $(BASE)/param.o\
-	$(DETECTIONDIR)/detection.o\
-	$(DETECTIONDIR)/columns.o\
-	$(CUBESDIR)/cubes.o\
-	$(ATROUSDIR)/atrous.o
+$(OBJECTS) : $(HEADS)
 
-duchamp : mainDuchamp.o $(HEADS) $(CUBES) $(ATROUS) $(DETECTION) $(UTIL)
-	$(F77) -o Duchamp mainDuchamp.o $(HEADS) $(CUBES) $(ATROUS) $(DETECTION) $(UTIL) $(LIBS)
+duchamp : mainDuchamp.o $(OBJECTS)
+	$(CPP) -o $(INSTALLDIR)/$(EXEC) mainDuchamp.o $(OBJECTS) $(LIBS)
 
 .cc.o:
 	$(CC) $< $(CINC) -o $@

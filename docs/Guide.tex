@@ -235,6 +235,7 @@ libraries.
 %listed in Appendix~\ref{app-param}.
 
 \subsection{Image input}
+\label{sec-input}
 
 The cube is read in using basic {\sc cfitsio} commands, and stored as
 an array in a special C++ class. This class keeps track of
@@ -253,9 +254,8 @@ generalised form of the subsection that is used by {\sc cfitsio} is
 from \texttt{x1} to \texttt{x2} (inclusive), with steps of
 \texttt{dx}. The step value can be omitted (so a subsection of the
 form \texttt{[2:50,2:50,10:1000]} is still valid). \duchamp\ does not
-at this stage deal with the presence of steps in the subsection
-string, and any that are present are removed before the file is
-opened.
+make use of any step value present in the subsection string, and any
+that are present are removed before the file is opened.
 
 If one wants the full range of a coordinate then replace the range
 with an asterisk, \eg \texttt{[2:50,2:50,*]}. If one wants to use a
@@ -447,10 +447,11 @@ removing excess noise. The default, however, is to use all scales
 (\texttt{minscale = 1}). 
 
 Finally, the filter that is used for the convolution can be selected
-by using \texttt{filterCode} and the relevant code number -- the choices
-are listed in Appendix~\ref{app-param}. When multi-dimensional
-reconstruction is selected, this filter is used to construct a 2- or
-3-dimensional equivalent.
+by using \texttt{filterCode} and the relevant code number -- the
+choices are listed in Appendix~\ref{app-param}. A larger filter will
+give a better reconstruction, but take longer and use more memory when
+executing. When multi-dimensional reconstruction is selected, this
+filter is used to construct a 2- or 3-dimensional equivalent.
 
 \subsection{Reconstruction I/O}
 \label{sec-reconIO}
@@ -466,14 +467,18 @@ file by setting \texttt{flagOutputRecon = true}. The file will be saved
 in the same directory as the input image, so the user needs to have write 
 permissions for that directory.
 
-The filename will be derived from the input filename, with extra information
-detailing the reconstruction that has been done. For example, suppose 
-\texttt{image.fits} has been reconstructed using a 3-dimensional 
-reconstruction with filter 2, thresholded at $4\sigma$ using all scales. The 
-output filename will then be \texttt{image.RECON-3-2-4-1.fits} (\ie it uses 
-the four parameters relevant for the \atrous\ reconstruction as listed in 
+The filename will be derived from the input filename, with extra
+information detailing the reconstruction that has been done. For
+example, suppose \texttt{image.fits} has been reconstructed using a
+3-dimensional reconstruction with filter 2, thresholded at $4\sigma$
+using all scales. The output filename will then be
+\texttt{image.RECON-3-2-4-1.fits} (\ie it uses the four parameters
+relevant for the \atrous\ reconstruction as listed in
 Appendix~\ref{app-param}). The new FITS file will also have these
-parameters as header keywords.
+parameters as header keywords. If a subsection of the input image has
+been used (see \S\ref{sec-input}), the format of the output filename
+will be \texttt{image.sub.RECON-3-2-4-1.fits}, and the subsection that
+has been used is also stored in the FITS header.
 
 Likewise, the residual image, defined as the difference between the input 
 and reconstructed arrays, can also be saved in the same manner by setting 
@@ -1181,7 +1186,7 @@ not matter, they are grouped here in logical sections.
 \item[snrRecon \texttt{[4]}] The thresholding cutoff used in the
   reconstruction -- only wavelet coefficients this many $\sigma$ above
   the mean (or greater) are included in the reconstruction. 
-\item[filterCode \texttt{[2]}] The code number of the filter to use in
+\item[filterCode \texttt{[1]}] The code number of the filter to use in
   the reconstruction. The options are:
   \begin{itemize}
   \item \textbf{1:} B$_3$-spline filter: coefficients = 

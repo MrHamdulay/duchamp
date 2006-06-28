@@ -53,15 +53,14 @@ public:
   void                 setPixValue(long pos, float f){array[pos] = f;};
   // Related to the object lists
   Detection            getObject(long number){return objectList[number];};
-  void                 addObject(Detection object); 
-                       // adds a single detection to the object list
+  void                 addObject(Detection object);   // adds a single detection to the object list
   vector <Detection>   getObjectList(){return objectList;};
-  void                 addObjectList(vector <Detection> newlist); 
-                       // adds all objects in a detection list to the object list
+  void                 addObjectList(vector <Detection> newlist);  
+                                     // adds all objects in a detection list to the object list
   long                 getNumObj(){return objectList.size();};
   void                 clearDetectionList(){this->objectList.clear();};
   // Parameter list related.
-  void                 readParam(string &paramfile){par.readParams(paramfile);};
+  void                 readParam(string paramfile){par.readParams(paramfile);};
   void                 showParam(std::ostream &stream){stream << par;};
   Param                getParam(){return par;};
   void                 saveParam(Param newpar){par = newpar;};
@@ -106,7 +105,7 @@ public:
   void      saveArray(float *input, long size);
   void      extractSpectrum(float *Array, long *dim, long pixel);
   void      extractImage(float *Array, long *dim, long channel);
-    // Accessing the data.
+  // Accessing the data.
   float     getPixValue(long x, long y){return array[y*axisDim[0] + x];};
   float     getPixValue(long pos){return array[pos];};
   float     getPValue(long pos){return pValue[pos];};
@@ -182,7 +181,16 @@ public:
   // additional accessor functions -- in Cubes/cubes.cc unless otherwise specified.
 
   int     getCube(string fname);
-  int     getCube(){this->getCube(this->par.getImageFile());};
+  int     getCube(){  
+    // a front-end to the getCube function, that does subsection checks
+    // assumes the Param is setup properly
+    string fname = this->par.getImageFile();
+    if(this->par.getFlagSubsection()){
+      this->par.parseSubsection();
+      fname+=this->par.getSubsection();
+    }
+    return this->getCube(fname);
+  };
   void    initialiseCube(long *dimensions);
   void    saveReconstructedCube();
   int     readReconCube();
@@ -253,16 +261,6 @@ public:
   int        pixToWCS(const double *pix, double *world, const int npts){
     return this->head.pixToWCS(pix,world,npts);}
   
-//  bool    isWCS(){return flagWCS;};
-//  void    setWCS(wcsprm *w);
-//  wcsprm *getWCS();
-//  void    setNWCS(int n){nwcs = n;};
-//  int     getNWCS(){return nwcs;};
-//  void    setBUnit(char *s){bunit = s;};
-//  string  getBUnit(){return bunit;};
-//  void    setVelUnit(char *s){velunit = s;};
-//  string  getVelUnit(){return velunit;};
-	 
   // Dealing with the detections 
   void    ObjectMerger();          // in Cubes/Merger.cc
   void    calcObjectWCSparams();
@@ -306,11 +304,6 @@ private:
   ColSet fullColSet;       // the list of all columns as printed in the results file
   ColSet logColSet;        // the list of columns as printed in the log file
 
-  //  bool    flagWCS;         // a flag indicating whether there is a valid WCS present.
-  //  wcsprm *wcs;             // the WCS parameters for the cube -- a struct from wcslib
-  //  int     nwcs;            // number of WCS parameters
-  //  string  bunit;           // The header keyword BUNIT -- the units of brightness in the FITS file.
-  //  string  velunit;         // The header keyword CUNIT3 -- the units of the spectral dimension.
 };
 
 /****************************************************************/

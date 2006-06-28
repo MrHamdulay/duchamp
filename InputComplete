@@ -83,7 +83,7 @@ flagATrous	1
 reconDim        3
 scaleMin	1
 snrRecon	4.
-filterCode      2
+filterCode      1
 
 # FALSE DISCOVERY RATE METHOD
 # flagFDR -- Whether or not to use the false discovery rate method instead of 

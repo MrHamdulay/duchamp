@@ -19,7 +19,7 @@ public:
   Param();
   virtual ~Param(){};
   void parseSubsection();             // in param.cc
-  void readParams(string &paramfile); // in param.cc
+  void readParams(string paramfile);  // in param.cc
   bool isBlank(float &value);         // in param.cc
   bool isInMW(int z){return ( this->flagMW && (z>=this->minMW) && (z<=this->maxMW) );};
   string outputReconFile();           // in param.cc
@@ -30,6 +30,10 @@ public:
   //
   string getImageFile(){return imageFile;};
   void   setImageFile(string fname){imageFile = fname;};
+  string getFullImageFile(){
+    if(flagSubsection) return imageFile+subsection;
+    else return imageFile;
+  };
   bool   getFlagSubsection(){return flagSubsection;};
   void   setFlagSubsection(bool flag){flagSubsection=flag;};
   string getSubsection(){return subsection;};

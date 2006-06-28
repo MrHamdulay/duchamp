@@ -35,15 +35,12 @@ namespace Plot
      */
   public:
     SpectralPlot(){
-      paperWidth=a4width/inchToCm - 2*psHoffset; paperHeight = paperWidth*M_SQRT2; 
-      if(paperHeight+2*psVoffset > a4height){
-	paperHeight = a4height - 2*psVoffset;
-	paperWidth = paperHeight / M_SQRT2;
-      }
+      paperWidth=a4width/inchToCm - 2*psHoffset; 
       spectraCount=0;
       numOnPage = 5;
       indexSize = 0.6;
-      labelSize = 0.7;};
+      labelSize = 0.7;
+    };
     ~SpectralPlot(){};
 
     int setUpPlot(string pgDestination){
@@ -53,6 +50,11 @@ namespace Plot
        *     the default pgplot offsets).
        *    Returns the value returned by cpgopen -- if <= 0, then an error has occurred.
        */
+      paperHeight = paperWidth*M_SQRT2; 
+      if(paperHeight+2*psVoffset > a4height){
+	paperHeight = a4height - 2*psVoffset;
+	paperWidth = paperHeight / M_SQRT2;
+      }
       int flag = cpgopen(pgDestination.c_str());
       if(flag>0) cpgpap(paperWidth, paperHeight/paperWidth); // make paper size to fit on A4.
       return flag;
@@ -196,7 +198,7 @@ namespace Plot
       cpgqci(&ci);
       cpgqfs(&fs);
       cpgscr(16,0.,0.7,0.);
-      cpgsci(16);
+      cpgsci(9);
       cpgsfs(3);
       cpgrect(v1,v2,min,max);
       cpgsfs(2);

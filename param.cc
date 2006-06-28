@@ -274,7 +274,7 @@ Param::Param(){
   this->reconDim        = 3;
   this->scaleMin        = 1;
   this->snrRecon        = 4.;
-  this->filterCode      = 2;
+  this->filterCode      = 1;
   // Volume-merging parameters
   this->flagAdjacent    = true;
   this->threshSpatial   = 3.;
@@ -303,7 +303,7 @@ string makelower( string s )
   return out;
 }
 
-void Param::readParams(string &paramfile)
+void Param::readParams(string paramfile)
 {
 
   std::ifstream fin(paramfile.c_str());
@@ -621,6 +621,7 @@ string Param::outputReconFile()
   string inputName = this->imageFile;
   std::stringstream ss;
   ss << inputName.substr(0,inputName.size()-5);  // remove the ".fits" on the end.
+  if(this->flagSubsection) ss<<".sub";
   ss << ".RECON-" << this->reconDim 
      << "-"       << this->filterCode
      << "-"       << this->snrRecon
@@ -642,6 +643,7 @@ string Param::outputResidFile()
   string inputName = this->imageFile;
   std::stringstream ss;
   ss << inputName.substr(0,inputName.size()-5);  // remove the ".fits" on the end.
+  if(this->flagSubsection) ss<<".sub";
   ss << ".RESID-" << this->reconDim 
      << "-"       << this->filterCode
      << "-"       << this->snrRecon
