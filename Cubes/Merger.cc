@@ -57,9 +57,11 @@ void Cube::ObjectMerger()
 	do {
 
 	  Detection *obj1 = new Detection;
-	  *obj1 = currentList->at(counter);
+// 	  *obj1 = currentList->at(counter);
+	  *obj1 = (*currentList)[counter];
 	  Detection *obj2 = new Detection;
-	  *obj2 = currentList->at(compCounter);
+//	  *obj2 = currentList->at(compCounter);
+	  *obj2 = (*currentList)[compCounter];
 
 	  if(areClose(*obj1, *obj2, this->par)){
 	    obj1->addAnObject( *obj2 );
@@ -103,7 +105,8 @@ void Cube::ObjectMerger()
 	for(int i=0;i<currentList->size();i++){
 	  std::cout<< "\b\b\b\b\b\b"<<std::setw(6)<<i+1<<std::flush;
 	  Detection *obj = new Detection;
-	  *obj = currentList->at(i);
+// 	  *obj = currentList->at(i);
+	  *obj = (*currentList)[i];
 	  growObject(*obj,*this);
 	  newList->push_back(*obj);
 	  delete obj;

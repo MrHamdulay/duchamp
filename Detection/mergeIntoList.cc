@@ -24,7 +24,8 @@ void mergeIntoList(Detection &object, vector <Detection> &objList, Param &par)
   if(objList.size()>0){
     do {
       Detection *obj2 = new Detection;
-      *obj2 = objList.at(ctr);
+//       *obj2 = objList.at(ctr);
+      *obj2 = objList[ctr];
       if(areClose(object, *obj2, par)){
 	obj2->addAnObject(object);
 	objList.erase( objList.begin() + ctr );

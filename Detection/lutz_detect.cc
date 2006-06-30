@@ -26,7 +26,6 @@ public:
   Detection info;
 };
 
-//void lutz_detect(Image &image) 
 void Image::lutz_detect() 
 {
   // Allocate necessary arrays.
@@ -127,8 +126,11 @@ void Image::lutz_detect()
 	    status[PRIOR] = psS->back();
 	    psS->pop_back();                   //POP PSSTACK ONTO PS
 
-	    oS->at(oS->size()-2).info.addAnObject( oS->back().info );
-	    if(oS->at(oS->size()-2).start == NULLSTART) oS->at(oS->size()-2).start = oS->back().start;
+// 	    oS->at(oS->size()-2).info.addAnObject( oS->back().info );
+// 	    if(oS->at(oS->size()-2).start == NULLSTART) oS->at(oS->size()-2).start = oS->back().start;
+// 	    else marker[oS->back().start] = 's';
+	    (*oS)[oS->size()-2].info.addAnObject( oS->back().info );
+	    if((*oS)[oS->size()-2].start == NULLSTART) (*oS)[oS->size()-2].start = oS->back().start;
 	    else marker[oS->back().start] = 's';
 
 	    oS->pop_back();

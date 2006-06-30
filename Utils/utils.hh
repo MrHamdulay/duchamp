@@ -54,9 +54,9 @@ void getSigmaFactors3DNew(int &numScales);
 
 
 // PLOTTING ROUTINES
-void cpgwedglog(const char* side, float disp, float width, float fg, float bg, const char *label);
-void cpghistlog(int npts, float *data, float datamin, float datamax, int nbin, int pgflag);
-void cpgcumul(int npts, float *data, float datamin, float datamax, int pgflag);
+extern "C" void cpgwedglog(const char* side, float disp, float width, float fg, float bg, const char *label);
+extern "C" void cpghistlog(int npts, float *data, float datamin, float datamax, int nbin, int pgflag);
+extern "C" void cpgcumul(int npts, float *data, float datamin, float datamax, int pgflag);
 void plotLine(const float slope, const float intercept);
 void lineOfEquality();
 void lineOfBestFit(int size, float *x, float *y);

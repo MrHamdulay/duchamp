@@ -197,7 +197,7 @@ void findTrimmedHistStats(float *array, const int size, float &tmean, float &tsi
     if(i<width/2) beg=0; else beg=i-width/2;
     if(i>=size-width/2) end=size-1; else end=i+width/2;
     if(linear_regression(size,sorted,cumul,beg,end,slope,eSlope,inter,eInter,r)==0)
-      angle[i] = atanf( fabs(slope) ) * 180. / M_PI;
+      angle[i] = atan( fabs(slope) ) * 180. / M_PI;
     else angle[i] = 90.;
   }
 

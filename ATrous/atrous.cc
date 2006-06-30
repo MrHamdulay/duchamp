@@ -7,13 +7,13 @@ int Filter::getNumScales(long length)
 {
   switch(this->filter1D.size()){
   case 5: 
-    return int(logf(float(length-1))/M_LN2) - 1;
+    return int(log(double(length-1))/M_LN2) - 1;
     break;
   case 3:
-    return int(logf(float(length-1))/M_LN2);
+    return int(log(double(length-1))/M_LN2);
     break;
   default:
-    return 1 + int(logf(float(length-1)/float(this->filter1D.size()-1))/M_LN2);
+    return 1 + int(log(double(length-1)/double(this->filter1D.size()-1))/M_LN2);
     break;
   }
 }

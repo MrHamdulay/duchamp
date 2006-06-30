@@ -28,7 +28,7 @@ bool areClose(Detection &obj1, Detection &obj2, Param &par)
 
   int gap;
   if(flagAdj) gap = 1;
-  else gap = int( ceilf(threshS) );
+  else gap = int( ceil(threshS) );
   long min1 = obj1.getXmin();
   long min2 = obj2.getXmin();
   long max1 = obj1.getXmax();

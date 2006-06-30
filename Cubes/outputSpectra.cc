@@ -2,7 +2,6 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-#include <stdio.h>
 #include <cpgplot.h>
 #include <math.h>
 #include <wcs.h>

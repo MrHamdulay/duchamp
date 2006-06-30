@@ -383,7 +383,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   string blankParam = "";
   if(par.getFlagUsingBlank()) blankParam = "[blankPixValue]";
 
-  // WARNING -- sometimes get error: `boolalpha' is not a member of type `ios' -- old compilers?
+  // BUG -- can get error: `boolalpha' is not a member of type `ios' -- old compilers: gcc 2.95.3?
   theStream.setf(std::ios::boolalpha);
   theStream.setf(std::ios::left);
   theStream  <<"---- Parameters ----"<<endl;

@@ -46,7 +46,7 @@
 {\end{list}}
 
 
-\title{A Guide to the \duchamp\ Source Finding Software}
+\title{Source Detection with \duchamp\ v1.0\\A User's Guide}
 \author{Matthew Whiting\\
 %{\small \href{mailto:Matthew.Whiting@csiro.au}{Matthew.Whiting@csiro.au}}\\
 Australia Telescope National Facility\\CSIRO}
@@ -85,9 +85,8 @@ Australia Telescope National Facility\\CSIRO}
 \newpage
 \section{Introduction and getting going quickly}
 
-This document gives details on the program \duchamp: how to use it and
-what it does. This has been designed to provide a source-detection
-facility for spectral-line data cubes. The basic execution of
+This document provides a user's guide to \duchamp, an object-finder
+for use on spectral-line data cubes. The basic execution of
 \duchamp\ is to read in a FITS data cube, find sources in the cube,
 and produce a text file of positions, velocities and fluxes of the
 detections, as well as a postscript file of the spectra of each
@@ -96,7 +95,7 @@ detection.
 So, you have a FITS cube, and you want to find the sources in it. What
 do you do? The first step is to make an input file that contains the
 list of parameters. Brief and detailed examples are shown in
-Appendix~\ref{app-input}. This provides the input file name, the various
+Appendix~\ref{app-input}. This file provides the input file name, the various
 output files, and defines various parameters that control the
 execution.
 
@@ -104,8 +103,8 @@ The standard way to run \duchamp\ is by the command
 \begin{quote}
 \texttt{Duchamp -p [parameter file]}
 \end{quote}
-replacing \texttt{[parameter file]} with the name of the file you have
-just created/copied. Alternatively, you can use the syntax
+replacing \texttt{[parameter file]} with the name of the file listing
+the parameters. Alternatively, you can use the syntax
 \begin{quote}
 \texttt{Duchamp -f [FITS file]}
 \end{quote}
@@ -212,10 +211,11 @@ the input file. Note that the image file \textbf{must} be specified! The
 parameters that can be set are listed in Appendix~\ref{app-param},
 with their default values in parentheses.
 
-The 'flag' parameters are stored as \texttt{bool} variables, and so are
-either \texttt{true = 1} or \texttt{false = 0}. \duchamp\ will only
-read them from the file as integers, and so they should be entered in
-the file as 0 or 1 (see example file in Appendix~\ref{app-input}).
+The parameters with names starting with \texttt{flag} are stored as
+\texttt{bool} variables, and so are either \texttt{true = 1} or
+\texttt{false = 0}. \duchamp\ will only read them from the file as
+integers, and so they should be entered in the file as 0 or 1 (see
+example file in Appendix~\ref{app-input}).
 
 \section{What \duchamp\ is doing}
 \label{sec-flow}
@@ -302,7 +302,7 @@ ignored in all further calculations done on the cube.
 Second, the user may request the removal of baselines from the
 spectra, via the parameter \texttt{flagBaseline}. This may be necessary
 if there is a strong baseline ripple present, which can result in
-spurious detections on the high points of the ripple. The baseline is
+spurious detections at the high points of the ripple. The baseline is
 calculated from a wavelet reconstruction procedure (see
 \S\ref{sec-recon}) that keeps only the two largest scales. This is
 done separately for each spatial pixel (\ie for each spectrum in the
@@ -323,36 +323,37 @@ temporary measure which does not affect the source-detection.
 
 \subsubsection{Ignoring bright Milky Way emission}
 
-Also, a single set of contiguous channels can be ignored -- these may
-exhibit very strong emission, such as that from the Milky Way as seen
-in extragalactic \hi\ cubes (hence the references to ``Milky Way'' in
-relation to this task -- apologies to Galactic astronomers!). Such
-dominant channels will both produce many unnecessary, uninteresting
-and large (in size and hence in memory usage) detections, and so will
-slow the program down and detract from the interesting detections. The
-use of this feature is controlled by the \texttt{flagMW} parameter, and
-the exact channels concerned are able to be set by the user (using
-\texttt{maxMW} and \texttt{minMW} -- these give an inclusive range of
-channels). When employed, these channels are temporarily blanked out
-for the searching, and the scaling of the spectral output (see
-Fig.~\ref{fig-spect}) will not take them into account. They will be
-present in the reconstructed array, however, and so will be included
-in the saved FITS file (see \S\ref{sec-reconIO}). When the final
-spectra are plotted, the range of channels covered by these parameters
-is indicated by a green hashed box.
+Finally, a single set of contiguous channels can be ignored -- these
+may exhibit very strong emission, such as that from the Milky Way as
+seen in extragalactic \hi\ cubes (hence the references to ``Milky
+Way'' in relation to this task -- apologies to Galactic
+astronomers!). Such dominant channels will produce many detections
+that are unnecessary, uninteresting (if one is interested in
+extragalactic \hi) and large (in size and hence in memory usage), and
+so will slow the program down and detract from the interesting
+detections. The use of this feature is controlled by the
+\texttt{flagMW} parameter, and the exact channels concerned are able
+to be set by the user (using \texttt{maxMW} and \texttt{minMW} --
+these give an inclusive range of channels). When employed, these
+channels are temporarily blanked out for the searching, and the
+scaling of the spectral output (see Fig.~\ref{fig-spect}) will not
+take them into account. They will be present in the reconstructed
+array, however, and so will be included in the saved FITS file (see
+\S\ref{sec-reconIO}). When the final spectra are plotted, the range of
+channels covered by these parameters is indicated by a green hashed
+box.
 
 \subsection{Image reconstruction}
 \label{sec-recon}
 
-This is an optional step, but one that greatly enhances the
-source-detection process. The user can direct \duchamp\ to reconstruct
-the data cube using the \atrous\ wavelet procedure. A good
-description of the procedure can be found in
-\citet{starck02:book}. The reconstruction is an effective way of
-removing a lot of the noise in the image, allowing one to search
+The user can direct \duchamp\ to reconstruct the data cube using the
+\atrous\ wavelet procedure. A good description of the procedure can be
+found in \citet{starck02:book}. The reconstruction is an effective way
+of removing a lot of the noise in the image, allowing one to search
 reliably to fainter levels, and reducing the number of spurious
-detections. The payoff is that it can be relatively time- and
-memory-intensive. 
+detections. This is an optional step, but one that greatly enhances
+the source-detection process, with the payoff that it can be
+relatively time- and memory-intensive.
 
 \subsubsection{Algorithm}
 
@@ -369,7 +370,10 @@ The steps in the \atrous\ reconstruction are as follows:
   requested threshold (given by \texttt{snrRecon} as the number of
   $\sigma$ above the mean and adjusted to the current scale -- see
   Appendix~\ref{app-scaling}), add these to the reconstructed array.
-\item The separation of the filter coefficients is doubled.
+\item The separation of the filter coefficients is doubled. (Note that
+  this step provides the name of the procedure\footnote{\atrous\ means
+  ``with holes'' in French.}, as gaps or holes are created in the
+  filter coverage.)
 \item The procedure is repeated from step 2, using the convolved array
   as the input array.
 \item Continue until the required maximum number of scales is reached.
@@ -396,7 +400,7 @@ Note that any BLANK pixels that are still in the cube will not be
 altered by the reconstruction -- they will be left as BLANK so that
 the shape of the valid part of the cube is preserved.
 
-\subsubsection{Statistics}
+\subsubsection{Note on Statistics}
 
 The correct calculation of the reconstructed array needs good
 estimation of the underlying mean and standard deviation of the
