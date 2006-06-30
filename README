@@ -1,56 +1,119 @@
-The Duchamp Source Finder
--------------------------
+-----------------------------------------------------------------------
+               The Duchamp Source Finder
+-----------------------------------------------------------------------
+Duchamp 1.0 -- an object finder for spectral-line data cubes
+Copyright (C) 2006, Matthew Whiting, ATNF
 
-Here's a brief guide to getting Duchamp up and running.
+Duchamp is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
 
-There is an executable (Duchamp) that has been compiled on a Debian
-Linux kernel 2.6.8-2-686, with gcc version 3.3.5 (Debian 1:3.3.5-13)
+Duchamp is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
 
-If that is no good to you, you can compile it yourself using the
-Makefile included in this directory (sorry for not having a configure
-script or similar yet!).
+You should have received a copy of the GNU General Public License
+along with WCSLIB; if not, write to the Free Software Foundation,
+Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA
+
+Correspondence concerning WCSLIB may be directed to:
+   Internet email: matthew.whiting@atnf.csiro.au
+   Postal address: Dr. Matthew Whiting
+                   Australia Telescope National Facility, CSIRO
+                   PO Box 76
+                   Epping NSW 1710
+                   AUSTRALIA
+-----------------------------------------------------------------------
+
+Introduction
+------------
+
+Duchamp is a stand-alone program designed to find objects in
+astronomical data cubes, particularly spectral-line observations. Its
+features include a wavelet-based reconstruction technique for reducing
+the noise in the cube (and thereby enhancing detectability of
+sources), easy-to-use text-based interface, flexibility to control all
+relevant parameters such as detection thresholds, and a useful range
+of text- and graphics-based output.
+
+Duchamp works on any FITS image using the CFITSIO package, and uses
+Mark Calabretta's WCSLIB library to provide accurate position and
+velocity information for all detected sources.
+
+
+Obtaining and Building Duchamp
+------------------------------
+
+The Duchamp web page is at 
+http://www.atnf.csiro.au/people/Matthew.Whiting/Duchamp
+where you can download a gzipped tar archive of the source code.
 
 Duchamp uses three main external libraries: pgplot, cfitsio and
-wcslib. You will need to set the paths for the base directory and
-three libraries, as they are currently configured for my use and will
-not be of much use to you! These are:
-
-BASE --> the current directory
-PGDIR --> where the pgplot libraries (and header files) are located
-CFITSIODIR --> where the header file fitsio.h is
-CFITSIOLDIR --> where the cfitsio library is located (libcfitsio.a)
-WCSDIR --> where the wcslib header files are
-WCSLDIR --> where the wcslib library is located (libwcs.a)
-
-If you do not have the libraries, they can be downloaded from the
-following locations: 
-PGPlot -- http://www.astro.caltech.edu/~tjp/pgplot/
-cfitsio -- http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html
+wcslib. If you do not have the libraries, they can be downloaded from
+the following locations: 
+PGPlot -- http://www.astro.caltech.edu/~tjp/pgplot/ 
+cfitsio -- http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html 
 wcslib -- http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html
 
-Once you've set up the Makefile correctly, then simply typing
-> make duchamp
-will compile the program.
+Duchamp can be built on Unix systems by typing:
+ >  ./configure
+ >  make
+ >  make clean (optional -- to remove the object files from the src
+                directory)
 
-To run it, you need to use the syntax
-> Duchamp -p parameterFile
+This way, configure should find all the necessary libraries, but if
+the above-mentioned libraries have been installed in non-standard
+locations, you can specify additional directories to look in. There
+are separate options for library files (eg. libcpgplot.a) and header
+files (eg. cpgplot.h).
+
+For example, if wcslib had been installed in /home/mduchamp/wcslib,
+there are two libraries that are likely to be in separate
+subdirectories: C/ and pgsbox/. Each subdirectory needs to be searched
+for library and header files, so one could build Duchamp by typing:
+ >  ./configure LIBDIRS="/home/mduchamp/wcslib/C
+/home/mduchamp/wcslib/pgsbox" INCDIRS="/home/mduchamp/wcslib/C
+/home/mduchamp/wcslib/pgsbox"
+And then just run make in the usual fashion:
+ >  make
+
+
+Using Duchamp
+---------------
+
+There are two possible ways to run Duchamp. The first is:
+
+ >  Duchamp -f image.fits
+
+where image.fits is the data cube to be searched. This method simply
+uses the default values of all parameters.
+
+The second method allows some determination of the parameter values by
+the user. Type:
+
+ >  Duchamp -p parameterFile 
+
 where parameterFile is a file with the input parameters, including the
-name of the cube you want to search.
+name of the cube you want to search. There are two example input files
+included with the distribution. The smaller one, InputExample, shows
+the typical parameters one might want to set. The large one,
+InputComplete, lists all possible parameters that can be entered, and
+a brief description of them. To get going quickly, just replace the
+"your-file-here" in InputExample with your image name, and type 
 
-There are two example input files included with the distribution. The
-smaller one, InputExample, shows the typical parameters one might want
-to set. The large one, InputComplete, lists all parameters that can be
-entered, and a brief description of them. Refer to the documentation
-for further details.
+ >  Duchamp -p InputExample
 
-To get going quickly, just replace the "your-file-here" in
-InputExample with your image name, and type
-> Duchamp -p InputExample
-and you're off!
+A User's Guide in the docs/ directory provides complete
+documentation. It comes in both postscript and portable document
+format (pdf -- note that this contains hyperlinks). This guide will
+provide full descriptions of all parameters, and of all steps in the
+execution of Duchamp.
 
 Any questions, please contact me!
 
-Matthew Whiting
-March 2006
-Matthew.Whiting@csiro.au
+Author: 
+  Matthew Whiting, Australia Telescope National Facility, June 2006
+  Matthew.Whiting@csiro.au
 

@@ -1067,6 +1067,75 @@ Springer
 
 \appendix
 \newpage
+\section{Obtaining and Installing \duchamp}
+
+The \duchamp\ web page can be found at the following location:\\
+\href{http://www.atnf.csiro.au/people/Matthew.Whiting/Duchamp}%
+{http://www.atnf.csiro.au/people/Matthew.Whiting/Duchamp}\\
+Here you can find a gzipped tar archive of the source code that can be
+downloaded and extracted, as well as this User's Guide in postscript
+and hyperlinked PDF formats.
+
+\duchamp\ can be built on Unix systems by typing:
+\begin{quote}
+\texttt{%
+> ./configure\\
+> make\\
+> make clean (optional -- to remove the object files)}
+\end{quote}
+
+Run in this manner, \texttt{configure} should find all the necessary
+libraries, but if the above-mentioned libraries have been installed in
+non-standard locations, you can specify additional directories to look
+in. There are separate options for library files (eg. libcpgplot.a)
+and header files (eg. cpgplot.h).
+
+For example, if \textsc{wcslib} had been installed in
+\texttt{/home/mduchamp/wcslib}, there are two libraries that are
+likely to be in separate subdirectories: \texttt{C/} and
+\texttt{pgsbox/}. Each subdirectory needs to be searched for library
+and header files, so one could build Duchamp by typing: 
+\begin{quote}
+\texttt{%
+>  ./configure $\backslash$ \\ 
+LIBDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox" 
+$\backslash$\\
+INCDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox"}
+\end{quote}
+And then just run make in the usual fashion:
+\begin{quote}
+\texttt{> make}
+\end{quote}
+
+This will produce the executable \texttt{Duchamp}. There are two
+possible ways to run it. The first is:
+\begin{quote}
+\texttt{> Duchamp -f [FITS file]}
+\end{quote}
+where \texttt{[FITS file]} is the file you wish to search. This method
+simply uses the default values of all parameters.
+
+The second method allows some determination of the parameter values by
+the user. Type:
+\begin{quote}
+\texttt{> Duchamp -p [parameter file]}
+\end{quote}
+where \texttt{[parameterFile]} is a file with the input parameters,
+including the name of the cube you want to search. There are two
+example input files included with the distribution. The smaller one,
+\texttt{InputExample}, shows the typical parameters one might want to
+set. The large one, \texttt{InputComplete}, lists all possible
+parameters that can be entered, and a brief description of them. To
+get going quickly, just replace the "your-file-here" in
+\texttt{InputExample} with your image name, and type
+\begin{quote}
+\texttt{> Duchamp -p InputExample}
+\end{quote}
+
+The following appendices provide details on the individual parameters,
+and show examples of the output files that \duchamp\ produces.
+
+\newpage
 \section{Available parameters}
 \label{app-param}
 
@@ -1499,54 +1568,6 @@ TEXT 88.7932 -29.9453 19
 \end{verbatim}
 
 \newpage
-\section{Installing \duchamp\ (README file)}
-\begin{verbatim}
-There is an executable (Duchamp) that has been compiled on a Debian
-Linux kernel 2.6.8-2-686, with gcc version 3.3.5 (Debian 1:3.3.5-13)
-
-If that is no good to you, you can compile it yourself using the
-Makefile included in this directory (sorry for not having a configure
-script or similar yet!).
-
-Duchamp uses three main external libraries: pgplot, cfitsio and
-wcslib. You will need to set the paths for the base directory and
-three libraries, as they are currently configured for my use and will
-not be of much use to you. These are:
-
-BASE --> the current directory
-PGDIR --> where the pgplot libraries (and header files) are located
-CFITSIODIR --> where the header file fitsio.h is
-CFITSIOLDIR --> where the cfitsio library is located (libcfitsio.a)
-WCSDIR --> where the wcslib header files are
-WCSLDIR --> where the wcslib library is located (libwcs.a)
-
-If you do not have the libraries, they can be downloaded from the
-following locations: 
-PGPlot -- http://www.astro.caltech.edu/~tjp/pgplot/
-cfitsio -- http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html
-wcslib -- http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html
-
-Once you've set up the Makefile correctly, then simply typing
-> make duchamp
-will compile the program.
-
-To run it, you need to use the syntax
-> Duchamp -p parameterFile
-where parameterFile is a file with the input parameters, including the
-name of the cube you want to search.
-
-There are two example input files included with the distribution. The
-smaller one, InputExample, shows the typical parameters one might want
-to set. The large one, InputComplete, lists all parameters that can be
-entered, and a brief description of them. Refer to the documentation
-for further details.
-
-To get going quickly, just replace the "your-file-here" in
-InputExample with your image name, and type
-> Duchamp -p InputExample
-and you're off!
-\end{verbatim}
-
 \section{Robust statistics for a Normal distribution}
 \label{app-madfm}
 

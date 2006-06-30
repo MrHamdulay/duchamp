@@ -306,10 +306,8 @@ void Cube::plotWCSaxes()
 
   char idents[3][80], opt[2], nlcprm[1];
 
-  //   std::cerr << "!";
   wcsprm *tempwcs;
   tempwcs = this->head.getWCS();
-//   std::cerr << "!";
 
   strcpy(idents[0], tempwcs->lngtyp);
   strcpy(idents[1], tempwcs->lattyp);
@@ -362,108 +360,8 @@ void Cube::plotWCSaxes()
 
   wcsfree(tempwcs);
 
-//   std::cerr << "!";
-
   cpgsci(colour);
   cpgsch(size);
   cpgslw(lineWidth);
 }
-
-
-/*********************************************************/
-/*********************************************************/
-
-
-
-
-
-
-
-// void Cube::plotMomentMapOLD(string pgDestination)
-// {
-//   float boxXmin = this->par.getXOffset() - 1;
-//   float boxYmin = this->par.getYOffset() - 1;
-
-//   long xdim=this->axisDim[0];
-//   long ydim=this->axisDim[1];
-
-//   cpgopen(pgDestination.c_str());
-//   cpgpap(7.5,(float)ydim/(float)xdim);
-//   cpgsch(1.5);
-//   cpgvstd();
-//   cpgsch(1.);
-//   cpgslw(2);
-//   cpgswin(boxXmin+0.5,boxXmin+xdim+0.5,
-// 	  boxYmin+0.5,boxYmin+ydim+0.5);
-//   cpgbox("bcnst",0.,0,"bcnst",0.,0);
-//   cpglab("X pixel","Y pixel","");
-//   cpgmtxt("t",2.5,0.5,0.5,this->par.getImageFile().c_str());
-
-//   if(this->objectList.size()>0){ // if there are no detections, there will be nothing to plot here
-
-//     bool *isBlank = new bool[xdim*ydim];
-//     for(int i=0;i<xdim*ydim;i++) 
-//       isBlank[i] = this->par.isBlank(this->array[i]);
-
-//     float *momentMap = new float[xdim*ydim];
-//     bool *isObj = new bool[xdim*ydim];
-//     for(int i=0;i<xdim*ydim;i++){
-//       momentMap[i] = 0.;
-//       isObj[i] = false;
-//     }
-//     for(int i=0;i<this->objectList.size();i++){
-//       for(int p=0;p<this->objectList[i].getSize();p++){
-// 	momentMap[ this->objectList[i].getX(p) + xdim*this->objectList[i].getY(p) ] += 
-// 	  this->objectList[i].getF(p);
-// 	isObj[ this->objectList[i].getX(p) + xdim*this->objectList[i].getY(p) ] = true;
-//       }
-//     }
-//     for(int i=0;i<xdim*ydim;i++) if(isBlank[i]) momentMap[i] = this->par.getBlankPixVal();
- 
-//     float *temp = new float[xdim*ydim];
-//     int count=0;
-//     for(int i=0;i<xdim*ydim;i++) 
-//       if(isObj[i] && !isBlank[i])  temp[count++] = momentMap[i];
-//     float z1,z2;
-//     zscale(count,temp,z1,z2);
-
-//     float tr[6] = {boxXmin,1.,0.,boxYmin,0.,1.};
-//     cpggray(momentMap,xdim,ydim,1,xdim,1,ydim,z2,z1,tr);
-//     cpgbox("bcnst",0.,0,"bcnst",0.,0);
-//     cpgsch(1.2);
-//     cpgwedg("rg",3,2,z2,z1,"Flux");
-//     cpgsch(1.0);
-//     cpgsci(2);
-//     count=0;
-//     float xoffset=0.;
-//     float yoffset=ydim/50.;
-//     if(this->par.drawBorders()){
-//       cpgsci(4);
-//       for(int i=0;i<this->objectList.size();i++) this->objectList[i].drawBorders(0,0);
-//       cpgsci(2);
-//     }
-//     std::stringstream label;
-//     for(int i=0;i<this->objectList.size();i++){
-//       cpgpt1(this->par.getXOffset()+this->objectList[i].getXcentre(), 
-// 	     this->par.getYOffset()+this->objectList[i].getYcentre(),
-// 	     5);
-//       label.str("");
-//       label << "#"<<setw(3)<<setfill('0')<<this->objectList[i].getID();
-//       cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoffset, 
-// 	      this->par.getYOffset()+this->objectList[i].getYcentre()-yoffset-1, 
-// 	      0, 0.5, label.str().c_str());
-//     }
-
-//     delete [] momentMap;
-//     delete [] temp;
-//     delete [] isBlank;
-//     delete [] isObj;
-
-//   }
-
-//   this->plotWCSaxes();
-  
-//   cpgclos();
-  
-// }
 

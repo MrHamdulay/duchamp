@@ -4,7 +4,6 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <stdlib.h>
 #include <math.h>
 #include <cpgplot.h>
 

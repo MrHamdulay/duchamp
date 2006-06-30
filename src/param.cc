@@ -6,8 +6,27 @@
 #include <math.h>
 #include <wcs.h>
 #include <wcsunits.h>
+#include <duchamp.hh>
 #include <param.hh>
 #include <Utils/utils.hh>
+
+// Define funtion to print bools as words, in case the compiler doesn't recognise
+// the setf(ios::boolalpha) command...
+#ifdef HAVE_STDBOOL_H
+string stringize(bool b){
+  std::stringstream ss;
+  ss.setf(std::ios::boolalpha);
+  ss << b;
+  return ss.str();
+}
+#else
+string stringize(bool b){
+  std::string output;
+  if(b) output="true";
+  else output="false";
+  return output;
+}
+#endif
 
 using std::setw;
 using std::endl;
@@ -384,7 +403,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   if(par.getFlagUsingBlank()) blankParam = "[blankPixValue]";
 
   // BUG -- can get error: `boolalpha' is not a member of type `ios' -- old compilers: gcc 2.95.3?
-  theStream.setf(std::ios::boolalpha);
+//   theStream.setf(std::ios::boolalpha);
   theStream.setf(std::ios::left);
   theStream  <<"---- Parameters ----"<<endl;
   theStream  << std::setfill('.');
@@ -400,7 +419,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   if(par.getFlagReconExists() && par.getFlagATrous()){
     theStream<<setw(38)<<"Reconstructed array exists?"          
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[reconExists]"
-	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagReconExists()<<endl;
+	     <<"  =  " <<resetiosflags(std::ios::right)<<stringize(par.getFlagReconExists())<<endl;
     theStream<<setw(38)<<"FITS file containing reconstruction"  
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[reconFile]"
 	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getReconFile()      <<endl;
@@ -435,18 +454,18 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   if(par.getFlagATrous()){			       
     theStream<<setw(38)<<"Saving reconstructed cube?"           
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagoutputrecon]"
-	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagOutputRecon()<<endl;
+	     <<"  =  " <<resetiosflags(std::ios::right)<<stringize(par.getFlagOutputRecon())<<endl;
     theStream<<setw(38)<<"Saving residuals from reconstruction?"
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagoutputresid]"
-	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagOutputResid()<<endl;
+	     <<"  =  " <<resetiosflags(std::ios::right)<<stringize(par.getFlagOutputResid())<<endl;
   }						       
   theStream  <<"------"<<endl;
   theStream  <<setw(38)<<"Searching for Negative features?"     
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagNegative]"
-	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagNegative()   <<endl;
+	     <<"  =  " <<resetiosflags(std::ios::right)<<stringize(par.getFlagNegative())   <<endl;
   theStream  <<setw(38)<<"Fixing Blank Pixels?"                 
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagBlankPix]"
-	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagBlankPix()   <<endl;
+	     <<"  =  " <<resetiosflags(std::ios::right)<<stringize(par.getFlagBlankPix())   <<endl;
   if(par.getFlagBlankPix()){
     theStream<<setw(38)<<"Blank Pixel Value"                    
 	     <<setw(18)<<setiosflags(std::ios::right)  << blankParam
@@ -466,7 +485,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getBeamSize()       <<endl;
   theStream  <<setw(38)<<"Removing baselines before search?"    
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagBaseline]"
-	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagBaseline()   <<endl;
+	     <<"  =  " <<resetiosflags(std::ios::right)<<stringize(par.getFlagBaseline())   <<endl;
   theStream  <<setw(38)<<"Minimum # Pixels in a detection"      
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[minPix]"
 	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getMinPix()         <<endl;
@@ -475,7 +494,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getMinChannels()    <<endl;
   theStream  <<setw(38)<<"Growing objects after detection?"     
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagGrowth]"
-	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagGrowth()     <<endl;
+	     <<"  =  " <<resetiosflags(std::ios::right)<<stringize(par.getFlagGrowth())     <<endl;
   if(par.getFlagGrowth()) {			       
     theStream<<setw(38)<<"SNR Threshold for growth"             
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[growthCut]"
@@ -483,7 +502,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   }
   theStream  <<setw(38)<<"Using A Trous reconstruction?"        
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagATrous]"
-	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagATrous()     <<endl;
+	     <<"  =  " <<resetiosflags(std::ios::right)<<stringize(par.getFlagATrous())     <<endl;
   if(par.getFlagATrous()){			       
     theStream<<setw(38)<<"Number of dimensions in reconstruction"      
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[reconDim]"
@@ -501,7 +520,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   }	     					       
   theStream  <<setw(38)<<"Using FDR analysis?"                  
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagFDR]"
-	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagFDR()        <<endl;
+	     <<"  =  " <<resetiosflags(std::ios::right)<<stringize(par.getFlagFDR())        <<endl;
   if(par.getFlagFDR()){				       
     theStream<<setw(38)<<"Alpha value for FDR analysis"         
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[alphaFDR]"
@@ -514,7 +533,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   }
   theStream  <<setw(38)<<"Using Adjacent-pixel criterion?"      
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagAdjacent]"
-	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagAdjacent()   <<endl;
+	     <<"  =  " <<resetiosflags(std::ios::right)<<stringize(par.getFlagAdjacent())   <<endl;
   if(!par.getFlagAdjacent()){
     theStream<<setw(38)<<"Max. spatial separation for merging"  
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[threshSpatial]"
@@ -529,7 +548,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   theStream  <<"--------------------"<<endl;
   theStream  << std::setfill(' ');
   theStream.unsetf(std::ios::left);
-  theStream.unsetf(std::ios::boolalpha);
+  //  theStream.unsetf(std::ios::boolalpha);
 }
 
 void Param::parseSubsection()

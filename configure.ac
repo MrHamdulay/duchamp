@@ -4,7 +4,7 @@
 AC_PREREQ(2.57)
 AC_INIT([Duchamp], [1.0], [matthew.whiting@csiro.au])
 AC_CONFIG_SRCDIR([src/param.cc])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADER([src/config.h])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -12,22 +12,9 @@ AC_PROG_CC
 AC_PROG_CPP
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lX11':
-#AC_CHECK_LIB([X11], [main])
-# FIXME: Replace `main' with a function in `-lcfitsio':
-#AC_CHECK_LIB([cfitsio], [main])
-# FIXME: Replace `main' with a function in `-lcpgplot':
-#AC_CHECK_LIB([cpgplot], [main])
-# FIXME: Replace `main' with a function in `-lg2c':
+AC_CHECK_LIB([stdc++], [vector])
 AC_CHECK_LIB([g2c], [gerror_])
-# FIXME: Replace `main' with a function in `-lm':
 AC_CHECK_LIB([m], [log])
-# FIXME: Replace `main' with a function in `-lpgplot':
-#AC_CHECK_LIB([pgplot], [main])
-# FIXME: Replace `main' with a function in `-lpgsbox':
-#AC_CHECK_LIB([pgsbox], [main])
-# FIXME: Replace `main' with a function in `-lwcs':
-#AC_CHECK_LIB([wcs], [main])
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -42,6 +29,24 @@ AC_C_INLINE
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([floor pow sqrt strtol log atan fabs])
 
+# Look for a Fortran compiler.
+AC_PROG_F77
+if test "x$F77" = x; then
+  AC_MSG_WARN([Fortran compiler not found])
+else
+  if test "x$ac_cv_f77_compiler_gnu" = xyes ; then
+    FFLAGS="$FFLAGS -Wno-globals"
+  fi
+
+  AC_MSG_CHECKING(whether $F77 accepts -I)
+  AC_LANG_PUSH(Fortran 77)
+  FFLAGS_save=$FFLAGS
+  FFLAGS=-I.
+  AC_TRY_COMPILE([], [], [FFLAGS="$FFLAGS_save -I."; AC_MSG_RESULT(yes)],
+    [FFLAGS="$FFLAGS_save"; AC_MSG_RESULT(no)])
+  AC_LANG_POP(Fortran 77)
+fi
+
 # Extra places to look for third-party include files and libraries.
 INCDIRS="$INCDIRS           \
          /usr/include       \
@@ -50,7 +55,8 @@ INCDIRS="$INCDIRS           \
          /usr/local/cfitsio \
          /usr/local/wcslib  \
          /local/pgplot      \
-         /local/cfitsio"
+         /local/cfitsio     \
+         /opt/local/include"
 
 LIBDIRS="$LIBDIRS           \
          /usr/lib           \
@@ -61,8 +67,8 @@ LIBDIRS="$LIBDIRS           \
          /local/lib         \
          /local/pgplot      \
          /local/cfitsio     \
-         /u/whi550/CubeFinder\
-         /opt/SUNWspro/lib"
+         /opt/SUNWspro/lib  \
+	 /opt/local/lib"
 
 AC_MSG_NOTICE(LIBDIRS)
 
@@ -102,8 +108,8 @@ fi
 # graphics drivers were installed with PGPLOT.
 AC_CHECK_LIB([z],       [deflate],   [PGPLOTLIB="-lz $PGPLOTLIB"],
              [], [$PGPLOTLIB $LIBS])
-AC_CHECK_LIB([png],     [png_error], [PGPLOTLIB="-lpng $PGPLOTLIB"],
-             [], [$PGPLOTLIB $LIBS])
+AC_CHECK_LIB([png],     [png_error], [PGPLOTLIB="-lpng $PGPLOTLIB"], 
+	     [], [$PGPLOTLIB $LIBS])
 AC_CHECK_LIB([pgplot],  [pgbeg_],    [PGPLOTLIB="-lpgplot $PGPLOTLIB"],
              [], [$PGPLOTLIB $LIBS])
 AC_CHECK_LIB([cpgplot], [cpgopen],   [PGPLOTLIB="-lcpgplot $PGPLOTLIB"],
@@ -150,17 +156,6 @@ else
     LIBDIR=$LIBDIR/cfitsio
     AC_CHECK_FILE([$LIBDIR/libcfitsio.a], [CFITSIOLIB="-L$LIBDIR $CFITSIOLIB"; break])
   done
-  # Make sure that ffhdr2str is in the library -- exit if not
-#  AC_CHECK_LIB([cfitsio], [ffhdr2str], [CFITSIOLIB="$CFITSIOLIB"], 
-#               [AC_MSG_ERROR([
-#    -------------------------------------------------------
-#    CFITSIO library does not have function ffhdr2str.
-#    Please upgrade your CFITSIO library.
-#
-#    ERROR: Duchamp configuration failure.
-#    -------------------------------------------------------])],
-#               [$CFITSIOLIB $LIBS])
-#
   AC_MSG_NOTICE([CFITSIO appears to be available.])
   AC_DEFINE([HAVE_CFITSIO], [1], [Define to 1 if CFITSIO is available.])
 fi
@@ -195,6 +190,16 @@ if test "x$WCSINC" = x -o "x$WCSLIB" = x; then
     ERROR: Duchamp configuration failure.
     -------------------------------------------------------], [1])
 else
+  for LIBDIR in $LIBDIRS ; do
+    AC_CHECK_FILE([$LIBDIR/libwcs.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
+    LIBDIR=$LIBDIR/wcs
+    AC_CHECK_FILE([$LIBDIR/libwcs.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
+  done
+  for LIBDIR in $LIBDIRS ; do
+    AC_CHECK_FILE([$LIBDIR/libpgsbox.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
+    LIBDIR=$LIBDIR/wcs
+    AC_CHECK_FILE([$LIBDIR/libpgsbox.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
+  done
   AC_MSG_NOTICE([WCSLIB appears to be available.])
   AC_DEFINE([HAVE_WCSLIB], [1], [Define to 1 if WCSLIB is available.])
 fi

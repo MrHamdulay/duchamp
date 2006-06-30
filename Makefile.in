@@ -4,7 +4,7 @@ FFLAGS = -C -fast -O4
 
 CC =    @CC@
 CXX =   @CXX@
-F77=    g77 $(FFLAGS)
+F77=    @F77@ $(FFLAGS)
 
 BASE = ./src
 
@@ -23,7 +23,7 @@ WCSLIB = @WCSLIB@
 
 CINC = $(PGPLOTINC) $(WCSINC) $(CFITSIOINC) -I$(BASE)
 
-LIBS = @LDFLAGS@ $(WCSLIB) $(PGPLOTLIB) $(CFITSIOLIB) -lstdc++ @LIBS@
+LIBS = @LDFLAGS@ $(WCSLIB) $(CFITSIOLIB) $(PGPLOTLIB) @LIBS@
 
 ATROUSDIR = $(BASE)/ATrous
 DETECTIONDIR = $(BASE)/Detection
@@ -90,4 +90,4 @@ $(OBJECTS) : $(HEADS)
 	$(CC) -c $< $(CINC) -o $@
 
 clean : 
-	rm -f *.o $(ATROUSDIR)/*.o $(CUBESDIR)/*.o $(DETECTIONDIR)/*.o $(UTILDIR)/*.o 
+	rm -f $(BASE)/*.o $(ATROUSDIR)/*.o $(CUBESDIR)/*.o $(DETECTIONDIR)/*.o $(UTILDIR)/*.o 

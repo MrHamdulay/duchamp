@@ -42,7 +42,7 @@ int main(int argc, char * argv[])
 	cube->saveParam(*par);
 	break;
       case 'v':
-	std::cout << PROGNAME << " " << VERSION << std::endl;
+	std::cout << PROGNAME << " version " << VERSION << std::endl;
 	return 1;
 	break;
       case 'h':
