@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.57)
 AC_INIT([Duchamp], [1.0], [matthew.whiting@csiro.au])
-AC_CONFIG_SRCDIR([param.cc])
+AC_CONFIG_SRCDIR([src/param.cc])
 AC_CONFIG_HEADER([config.h])
 
 # Checks for programs.

@@ -272,7 +272,7 @@ PACKAGE_VERSION='1.0'
 PACKAGE_STRING='Duchamp 1.0'
 PACKAGE_BUGREPORT='matthew.whiting@csiro.au'
 
-ac_unique_file="param.cc"
+ac_unique_file="src/param.cc"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>

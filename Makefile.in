@@ -6,7 +6,7 @@ CC =    @CC@
 CXX =   @CXX@
 F77=    g77 $(FFLAGS)
 
-BASE = .
+BASE = ./src
 
 INSTALLDIR = .
 
@@ -39,7 +39,8 @@ HEADS = $(BASE)/duchamp.hh\
 	$(CUBESDIR)/plots.hh\
 	$(UTILDIR)/utils.hh
 
-OBJECTS = $(BASE)/param.o\
+OBJECTS = $(BASE)/mainDuchamp.o \
+	$(BASE)/param.o\
 	$(ATROUSDIR)/atrous.o\
 	$(ATROUSDIR)/atrous_1d_reconstruct.o\
 	$(ATROUSDIR)/atrous_2d_reconstruct.o\
@@ -77,8 +78,8 @@ OBJECTS = $(BASE)/param.o\
 	$(UTILDIR)/wcsFunctions.o\
 	$(UTILDIR)/zscale.o
 
-duchamp : mainDuchamp.o $(OBJECTS)
-	$(CXX) -o $(INSTALLDIR)/$(EXEC) mainDuchamp.o $(OBJECTS) $(LIBS)
+duchamp : $(OBJECTS)
+	$(CXX) -o $(INSTALLDIR)/$(EXEC) $(OBJECTS) $(LIBS)
 
 $(OBJECTS) : $(HEADS)
 
