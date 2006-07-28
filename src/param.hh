@@ -13,17 +13,21 @@ using std::vector;
  * Param class.
  *   Used for storing parameters used by all functions.
  */
+
+class FitsHeader; // foreshadow this so that Param knows it exists
+
 class Param
 {
 public:
   Param();
   virtual ~Param(){};
-  void parseSubsection();             // in param.cc
-  void readParams(string paramfile);  // in param.cc
-  bool isBlank(float &value);         // in param.cc
+  void parseSubsection();               // in param.cc
+  void readParams(string paramfile);    // in param.cc
+  void copyHeaderInfo(FitsHeader &head);// in param.cc
+  bool isBlank(float &value);           // in param.cc
   bool isInMW(int z){return ( this->flagMW && (z>=this->minMW) && (z<=this->maxMW) );};
-  string outputReconFile();           // in param.cc
-  string outputResidFile();           // in param.cc
+  string outputReconFile();             // in param.cc
+  string outputResidFile();             // in param.cc
   friend std::ostream& operator<< ( std::ostream& theStream, Param& par);
   friend class Image;
  
@@ -195,8 +199,8 @@ private:
   int    blankKeyword;    // The FITS header keyword BLANK.
   float  bscaleKeyword;   // The FITS header keyword BSCALE.
   float  bzeroKeyword;    // The FITS header keyword BZERO.
-  bool   flagUsingBlank;  // If true, we are using the blankPixValue keyword, otherwise we are using the value
-                          //   in the FITS header.
+  bool   flagUsingBlank;  // If true, we are using the blankPixValue keyword, 
+                          // otherwise we are using the value in the FITS header.
   bool   nanAsBlank;      // Are the BLANK pixels defined by NaNs?
   bool   flagMW;          // A flag that indicates whether to excise the Milky Way.
   int    maxMW;           // Last  Galactic velocity plane for HIPASS cubes
@@ -265,7 +269,6 @@ public:
   FitsHeader(const FitsHeader& h);
   FitsHeader& operator= (const FitsHeader& h);
 
-
   wcsprm *getWCS();             // in param.cc
   void    setWCS(wcsprm *w);    // in param.cc
   bool    isWCS(){return wcsIsGood;};
@@ -283,8 +286,8 @@ public:
   void    setBmajKeyword(float f){bmajKeyword=f;};
   float   getBminKeyword(){return bminKeyword;};
   void    setBminKeyword(float f){bminKeyword=f;};
-  float   getBlankKeyword(){return blankKeyword;};
-  void    setBlankKeyword(float f){blankKeyword=f;};
+  int     getBlankKeyword(){return blankKeyword;};
+  void    setBlankKeyword(int f){blankKeyword=f;};
   float   getBzeroKeyword(){return bzeroKeyword;};
   void    setBzeroKeyword(float f){bzeroKeyword=f;};
   float   getBscaleKeyword(){return bscaleKeyword;};
@@ -313,7 +316,7 @@ private:
   float   beamSize;        // The calculated beam size in pixels.
   float   bmajKeyword;     // The FITS header keyword BMAJ.
   float   bminKeyword;     // The FITS header keyword BMIN.
-  float   blankKeyword;    // The FITS header keyword BLANK.
+  int     blankKeyword;    // The FITS header keyword BLANK.
   float   bzeroKeyword;    // The FITS header keyword BZERO.
   float   bscaleKeyword;   // The FITS header keyword BSCALE.
   double  scale;           // scale parameter for converting spectral coords

@@ -134,7 +134,7 @@ int Cube::getCube(string fname)
     if( !fits_read_key(fptr, TINT32BIT, "BLANK", &blank, comment, &status) ){
       fits_read_key(fptr, TFLOAT, "BZERO", &bzero, comment, &status);
       fits_read_key(fptr, TFLOAT, "BSCALE", &bscale, comment, &status);
-      this->par.setBlankPixVal(blank*bscale+bzero);
+//       this->par.setBlankPixVal(blank*bscale+bzero);
 //       this->par.setBlankKeyword(blank);
 //       this->par.setBscaleKeyword(bscale);
 //       this->par.setBzeroKeyword(bzero);
@@ -164,7 +164,6 @@ int Cube::getCube(string fname)
     fits_read_key(fptr, TFLOAT, "CDELT1", &cdelt1, comment, &status);
     fits_read_key(fptr, TFLOAT, "CDELT2", &cdelt2, comment, &status);
     newHead.setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / fabsf(cdelt1*cdelt2) );
-    this->par.setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / fabsf(cdelt1*cdelt2) );
     newHead.setBmajKeyword(bmaj);
     newHead.setBminKeyword(bmin);
   }
@@ -175,7 +174,6 @@ int Cube::getCube(string fname)
     std::cerr << 
       "WARNING <getCube> : No beam information in header. Setting size to nominal 10 pixels.\n";
     newHead.setBeamSize(10.);
-    this->par.setBeamSize(10.);
   }
   
   status = 0;
@@ -187,6 +185,7 @@ int Cube::getCube(string fname)
 
   this->initialiseCube(dimAxes);
   this->saveArray(array,npix);
+  this->par.copyHeaderInfo(newHead);
   //-------------------------------------------------------------
   // Once the array is saved, change the value of the blank pixels from
   // 0 (as they are set by fits_read_pixnull) to the correct blank value

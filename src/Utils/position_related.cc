@@ -18,7 +18,8 @@ string getIAUName(double ra, double dec, FitsHeader head)
    *   object and works out the coord type and, if necessary, the
    *   equinox.
    */
-  if(head.getWCS()->lngtyp=="RA") 
+  string longitudeType = head.getWCS()->lngtyp;
+  if(longitudeType=="RA") 
     return getIAUNameEQ(ra, dec, head.getWCS()->equinox);
   else
     return getIAUNameGAL(ra, dec);
@@ -36,6 +37,7 @@ string getIAUNameEQ(double ra, double dec, float equinox)
   double raHrs = ra / 15.;
   int h = int(raHrs);
   int m = (int)(fmod(raHrs,1.)*60.);
+  int s = (int)(fmod(raHrs,1./60.)*3600.);
   std::stringstream ss(std::stringstream::out);
   ss.setf(std::ios::showpoint);
   ss.setf(std::ios::fixed);
@@ -43,14 +45,17 @@ string getIAUNameEQ(double ra, double dec, float equinox)
   else ss << "B";
   ss<<setw(2)<<setfill('0')<<h;
   ss<<setw(2)<<setfill('0')<<m;
+  ss<<setw(2)<<setfill('0')<<s;
   int sign = int( dec / fabs(dec) );
   double d = dec / sign;
   h = int(d);
   m = (int)(fmod(d,1.)*60.);
+  s = (int)(fmod(d,1./60.)*3600.);
   if(sign==1) ss<<"+"; else ss<<"-";
   ss<<setw(2)<<setfill('0')<<h;
   ss.unsetf(std::ios::showpos);
   ss<<setw(2)<<setfill('0')<<m;
+  ss<<setw(2)<<setfill('0')<<s;
   return ss.str();
 }
 
@@ -59,17 +64,17 @@ string getIAUNameGAL(double lon, double lat)
   /**
    * string getIAUNameGAL(double, double)
    *  both ra and dec are assumed to be in degrees.
-   *  returns name of the form G321.12+01.23
+   *  returns name of the form G321.123+01.234
    */
 
   std::stringstream ss(std::stringstream::out);
   ss.setf(std::ios::showpoint);
   ss.setf(std::ios::fixed);
   ss<<"G";
-  ss<<setw(6)<<setfill('0')<<setprecision(2)<<lon;
+  ss<<setw(7)<<setfill('0')<<setprecision(3)<<lon;
   ss.setf(std::ios::showpos);
   ss.setf(std::ios::internal);
-  ss<<setw(6)<<setfill('0')<<setprecision(2)<<lat;
+  ss<<setw(7)<<setfill('0')<<setprecision(3)<<lat;
   ss.unsetf(std::ios::internal);
   ss.unsetf(std::ios::showpos);
   ss.unsetf(std::ios::showpoint);

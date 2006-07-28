@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([Duchamp], [1.0], [matthew.whiting@csiro.au])
+AC_INIT([Duchamp], [1.0.1], [matthew.whiting@csiro.au])
 AC_CONFIG_SRCDIR([src/param.cc])
 AC_CONFIG_HEADER([src/config.h])
 

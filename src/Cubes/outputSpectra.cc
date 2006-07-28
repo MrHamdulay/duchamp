@@ -169,9 +169,9 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
     cpgline(zdim,specx,specy2);    
     cpgsci(1);
   }
+  if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
   if(this->head.isWCS()) plot.drawVelRange(obj.getVelMin(),obj.getVelMax());
   else plot.drawVelRange(obj.getZmin(),obj.getZmax());
-  if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
 
   /**************************/
   // ZOOM IN SPECTRALLY ON THE DETECTION.
@@ -184,7 +184,7 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   swap(max,min);
   int ct = 0;
   for(int i=0;i<zdim;i++){
-    if((specx[i]>=minvel)&&(specx[i]<=maxvel)){
+    if((!this->par.isInMW(i))&&(specx[i]>=minvel)&&(specx[i]<=maxvel)){
       ct++;
       if(specy[i]>max) max=specy[i];
       if(specy[i]<min) min=specy[i];
@@ -202,9 +202,9 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
     cpgline(zdim,specx,specy2);    
     cpgsci(1);
   }
+  if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
   if(this->head.isWCS()) plot.drawVelRange(obj.getVelMin(),obj.getVelMax());
   else plot.drawVelRange(obj.getZmin(),obj.getZmax());
-  if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
     
   /**************************/
 

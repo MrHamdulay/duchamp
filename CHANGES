@@ -1,0 +1,23 @@
+
+Duchamp version 1.0.1 (2006/07/28)
+----------------------------------
+
+* A bug in the calculation of blank pixels has been fixed. The correct
+  values from the FITS header were not propagating through correctly,
+  meaning that the default values were being used.
+
+* The zoomed spectrum had its flux scale determined by all points in the zoom box,
+  including those flagged by the MW range. This has been fixed so that any MW 
+  channels will not affect the flux scaling, potentially improving the appearance
+  of objects detected close in velocity to strong MW emission or absorption.
+
+* The position resolution in the IAU-format names has been increased, so that 
+  distinct objects close to one another are more readily distinguished. 
+  Overlapping sources at different velocities may still have the same name, but this
+  is a more general problem.
+
+
+Duchamp version 1.0 (2006/06/30)
+--------------------------------
+
+Initial full release version.

@@ -615,10 +615,28 @@ void Param::parseSubsection()
 //   if(z!="*") this->zSubOffset = strtol(z.c_str(),&end,10) - 1;    
 }
 
+void Param::copyHeaderInfo(FitsHeader &head)
+{
+  /**
+   *  Param::copyHeaderInfo(FitsHeader &head)
+   * A function to copy across relevant header keywords from the 
+   *  FitsHeader class to the Param class, as they are needed by
+   *  functions in the Param class.
+   */
+
+  this->blankKeyword  = head.getBlankKeyword();
+  this->bscaleKeyword = head.getBscaleKeyword();
+  this->bzeroKeyword  = head.getBzeroKeyword();
+  this->blankPixValue = this->blankKeyword * this->bscaleKeyword + this->bzeroKeyword;
+
+  this->numPixBeam    = head.getBeamSize();
+}
+
 bool Param::isBlank(float &val)
 {
-//   std::cerr << "val = " << val << " " << int((val-this->bzeroKeyword)/this->bscaleKeyword) 
-// 	    <<" " <<this->blankKeyword << std::endl;
+//    std::cerr << "val = " << val 
+// 	     << " " << int((val-this->bzeroKeyword)/this->bscaleKeyword) 
+// 	     <<" " <<this->blankKeyword << std::endl;
   if(this->flagBlankPix){
     if(this->nanAsBlank) return bool(isnan(val));
     else//  return (val == this->blankPixValue);
