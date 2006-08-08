@@ -609,10 +609,7 @@ void Param::parseSubsection()
     this->subsection = "[" + x + "," + y + "," + z + "]";  // rewrite subsection without any step sizes.
     std::cerr << this->subsection << std::endl;
   }
-  
-//   if(x!="*") this->xSubOffset = strtol(x.c_str(),&end,10) - 1;    
-//   if(y!="*") this->ySubOffset = strtol(y.c_str(),&end,10) - 1;    
-//   if(z!="*") this->zSubOffset = strtol(z.c_str(),&end,10) - 1;    
+
 }
 
 void Param::copyHeaderInfo(FitsHeader &head)
@@ -634,12 +631,9 @@ void Param::copyHeaderInfo(FitsHeader &head)
 
 bool Param::isBlank(float &val)
 {
-//    std::cerr << "val = " << val 
-// 	     << " " << int((val-this->bzeroKeyword)/this->bscaleKeyword) 
-// 	     <<" " <<this->blankKeyword << std::endl;
   if(this->flagBlankPix){
     if(this->nanAsBlank) return bool(isnan(val));
-    else//  return (val == this->blankPixValue);
+    else
       return ( this->blankKeyword == int((val-this->bzeroKeyword)/this->bscaleKeyword) );
   }
   else return false;

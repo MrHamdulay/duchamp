@@ -91,6 +91,7 @@ protected:
 ////     statistics information
 /////////////////////////////////////////////////////////////
 
+class Cube;
 class Image : public DataArray
 {
 public:
@@ -105,6 +106,8 @@ public:
   void      saveArray(float *input, long size);
   void      extractSpectrum(float *Array, long *dim, long pixel);
   void      extractImage(float *Array, long *dim, long channel);
+  void      extractSpectrum(Cube &cube, long pixel);
+  void      extractImage(Cube &cube, long channel);
   // Accessing the data.
   float     getPixValue(long x, long y){return array[y*axisDim[0] + x];};
   float     getPixValue(long pos){return array[pos];};

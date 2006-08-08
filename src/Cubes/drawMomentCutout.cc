@@ -20,6 +20,9 @@ void Cube::drawMomentCutout(Detection &object)
    *    if the WCS for the Cube is valid).
    */
 
+  bool flagBlankPix = this->par.getFlagBlankPix();
+  this->par.setFlagBlankPix(true);
+
   float x1,x2,y1,y2;
   cpgqwin(&x1,&x2,&y1,&y2);
 
@@ -59,7 +62,7 @@ void Cube::drawMomentCutout(Detection &object)
   }
 
   for(int i=0;i<size*size;i++){
-    if(image[i]!=blankVal){ // if there is some signal on this pixel
+    if(!this->par.isBlank(image[i])){ // if there is some signal on this pixel
       image[i]-=blankVal;   // remove the starting value so we just have the signal
       image[i] /= float(zmax-zmin+1); // normalise by the velocity width
     }
@@ -68,10 +71,10 @@ void Cube::drawMomentCutout(Detection &object)
   // now work out the greyscale display limits, excluding blank pixels where necessary.
   float z1,z2,median,madfm;
   int ct=0;
-  while(image[ct]==this->par.getBlankPixVal()) ct++;
+  while(this->par.isBlank(image[ct])) ct++; // move to first non-blank pixel
   z1 = z2 = image[ct];
   for(int i=1;i<size*size;i++){
-    if(image[i]!=blankVal){
+    if(!this->par.isBlank(image[i])){
       if(image[i]<z1) z1=image[i];
       if(image[i]>z2) z2=image[i];
     }
@@ -108,6 +111,8 @@ void Cube::drawMomentCutout(Detection &object)
 
   cpgsci(1);
   cpgswin(x1,x2,y1,y2);
+
+  this->par.setFlagBlankPix(flagBlankPix);
 
 }
 

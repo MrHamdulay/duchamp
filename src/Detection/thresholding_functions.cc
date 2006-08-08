@@ -66,7 +66,7 @@ int Image::setupFDR()
   sort(orderedP,0,count);
   
   // now find the maximum P value.
-  int max = -1;
+  int max = 0;
   float cN = 0.;
   int psfCtr;
   int numPix = int(this->par.getBeamSize());

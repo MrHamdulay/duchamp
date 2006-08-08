@@ -130,29 +130,28 @@ int Cube::getCube(string fname)
   int blank;
   float bscale, bzero;
   status = 0;
-  if(this->par.getFlagBlankPix()){
-    if( !fits_read_key(fptr, TINT32BIT, "BLANK", &blank, comment, &status) ){
-      fits_read_key(fptr, TFLOAT, "BZERO", &bzero, comment, &status);
-      fits_read_key(fptr, TFLOAT, "BSCALE", &bscale, comment, &status);
-//       this->par.setBlankPixVal(blank*bscale+bzero);
-//       this->par.setBlankKeyword(blank);
-//       this->par.setBscaleKeyword(bscale);
-//       this->par.setBzeroKeyword(bzero);
-      newHead.setBlankKeyword(blank);
-      newHead.setBscaleKeyword(bscale);
-      newHead.setBzeroKeyword(bzero);
-    }
-    if (status){
-      std::cerr << "WARNING <getCube> : Error reading BLANK keyword: ";
-      fits_report_error(stderr, status);
-      std::cerr << "Using default BLANK (physical) value (" << this->par.getBlankPixVal() << ")." << endl;
-      for(int i=0;i<npix;i++) if(isnan(array[i])) array[i] = this->par.getBlankPixVal();
-      newHead.setBlankKeyword(1);
-      newHead.setBscaleKeyword(this->par.getBlankPixVal());
-      newHead.setBzeroKeyword(0.);
-      this->par.setFlagUsingBlank(true);
-    }
+  if( !fits_read_key(fptr, TINT32BIT, "BLANK", &blank, comment, &status) ){
+    fits_read_key(fptr, TFLOAT, "BZERO", &bzero, comment, &status);
+    fits_read_key(fptr, TFLOAT, "BSCALE", &bscale, comment, &status);
+    //       this->par.setBlankPixVal(blank*bscale+bzero);
+    //       this->par.setBlankKeyword(blank);
+    //       this->par.setBscaleKeyword(bscale);
+    //       this->par.setBzeroKeyword(bzero);
+    newHead.setBlankKeyword(blank);
+    newHead.setBscaleKeyword(bscale);
+    newHead.setBzeroKeyword(bzero);
   }
+  if(this->par.getFlagBlankPix() && status){
+    std::cerr << "WARNING <getCube> : Error reading BLANK keyword: ";
+    fits_report_error(stderr, status);
+    std::cerr << "Using default BLANK (physical) value (" << this->par.getBlankPixVal() << ")." << endl;
+    for(int i=0;i<npix;i++) if(isnan(array[i])) array[i] = this->par.getBlankPixVal();
+    newHead.setBlankKeyword(1);
+    newHead.setBscaleKeyword(this->par.getBlankPixVal());
+    newHead.setBzeroKeyword(0.);
+    this->par.setFlagUsingBlank(true);
+  }
+  
 
   //-------------------------------------------------------------
   // Reading in the beam parameters from the header.

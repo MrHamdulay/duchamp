@@ -150,7 +150,7 @@ void Image::maskObject(Detection &object)
 void Image::extractSpectrum(float *Array, long *dim, long pixel)
 {
   /**
-   * Image::extractSpectrum(float *, int)
+   * Image::extractSpectrum(float *, long *, int)
    *  A function to extract a 1-D spectrum from a 3-D array.
    *  The array is assumed to be 3-D with the third dimension the spectral one.
    *  The dimensions of the array are in the dim[] array.
@@ -163,10 +163,26 @@ void Image::extractSpectrum(float *Array, long *dim, long pixel)
   delete [] spec;
 }
 
+void Image::extractSpectrum(Cube &cube, long pixel)
+{
+  /**
+   * Image::extractSpectrum(Cube &, int)
+   *  A function to extract a 1-D spectrum from a Cube class
+   *  The spectrum extracted is the one lying in the spatial pixel referenced
+   *    by the second argument.
+   */ 
+  long zdim = cube.getDimZ();
+  long spatSize = cube.getDimX()*cube.getDimY();
+  float *spec = new float[zdim];
+  for(int z=0;z<zdim;z++) spec[z] = cube.getPixValue(z*spatSize + pixel);
+  this->saveArray(spec,zdim);
+  delete [] spec;
+}
+
 void Image::extractImage(float *Array, long *dim, long channel)
 {
   /**
-   * Image::extractImage(float *, int)
+   * Image::extractImage(float *, long *, int)
    *  A function to extract a 2-D image from a 3-D array.
    *  The array is assumed to be 3-D with the third dimension the spectral one.
    *  The dimensions of the array are in the dim[] array.
@@ -178,6 +194,22 @@ void Image::extractImage(float *Array, long *dim, long channel)
     image[npix] = Array[channel*dim[0]*dim[1] + npix];
   }
   this->saveArray(image,dim[0]*dim[1]);
+  delete [] image;
+}
+
+void Image::extractImage(Cube &cube, long channel)
+{
+  /**
+   * Image::extractImage(Cube &, int)
+   *  A function to extract a 2-D image from Cube class.
+   *  The image extracted is the one lying in the channel referenced
+   *    by the second argument.
+   */ 
+  long spatSize = cube.getDimX()*cube.getDimY();
+  float *image = new float[spatSize];
+  for(int npix=0; npix<spatSize; npix++) 
+    image[npix] = cube.getPixValue(channel*spatSize + npix);
+  this->saveArray(image,spatSize);
   delete [] image;
 }
 
