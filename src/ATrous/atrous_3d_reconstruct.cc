@@ -86,8 +86,10 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
     for(int row=0;row<ydim;row++){
       int ct1 = 0;
       int ct2 = xdim - 1;
-      while((ct1<ct2)&&(input[row*xdim+ct1]==blankPixValue) ) ct1++;
-      while((ct2>ct1)&&(input[row*xdim+ct2]==blankPixValue) ) ct2--;
+//       while((ct1<ct2)&&(input[row*xdim+ct1]==blankPixValue) ) ct1++;
+//       while((ct2>ct1)&&(input[row*xdim+ct2]==blankPixValue) ) ct2--;
+      while((ct1<ct2)&&(par.isBlank(input[row*xdim+ct1]))) ct1++;
+      while((ct2>ct1)&&(par.isBlank(input[row*xdim+ct2]))) ct2--;
       xLim1[row] = ct1;
       xLim2[row] = ct2;
       avGapX += ct2 - ct1 + 1;
@@ -97,8 +99,10 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
     for(int col=0;col<xdim;col++){
       int ct1=0;
       int ct2=ydim-1;
-      while((ct1<ct2)&&(input[col+xdim*ct1]==blankPixValue) ) ct1++;
-      while((ct2>ct1)&&(input[col+xdim*ct2]==blankPixValue) ) ct2--;
+//       while((ct1<ct2)&&(input[col+xdim*ct1]==blankPixValue) ) ct1++;
+//       while((ct2>ct1)&&(input[col+xdim*ct2]==blankPixValue) ) ct2--;
+      while((ct1<ct2)&&(par.isBlank(input[col+xdim*ct1]))) ct1++;
+      while((ct2>ct1)&&(par.isBlank(input[col+xdim*ct2]))) ct2--;
       yLim1[col] = ct1;
       yLim2[col] = ct2;
       avGapY += ct2 - ct1 + 1;

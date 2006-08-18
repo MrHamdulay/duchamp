@@ -629,14 +629,19 @@ void Param::copyHeaderInfo(FitsHeader &head)
   this->numPixBeam    = head.getBeamSize();
 }
 
-bool Param::isBlank(float &val)
+bool Param::isBlank(float &value)
 {
   if(this->flagBlankPix){
-    if(this->nanAsBlank) return bool(isnan(val));
+    if(this->nanAsBlank) return bool(isnan(value));
     else
-      return ( this->blankKeyword == int((val-this->bzeroKeyword)/this->bscaleKeyword) );
+      return ( this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword) );
   }
   else return false;
+//   return flagBlankPix &&
+//     ( (nanAsBlank && bool(isnan(value)))   || 
+//       (!nanAsBlank && 
+//        (this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword))
+//        )  );
 }
 
 string Param::outputReconFile()

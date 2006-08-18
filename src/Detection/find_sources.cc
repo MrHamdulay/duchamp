@@ -13,7 +13,6 @@ void findSources(Image &image)
   int goodSize=0;
   for(int i=0;i<size;i++){
     float val = image.getPixValue(i);
-    //    if((!image.pars().getFlagBlankPix())||(image.getPixValue(i)!=blankPixValue))
     if(!image.pars().isBlank(val))
       arr[goodSize++] = val;
   }
