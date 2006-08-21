@@ -12,7 +12,6 @@ AC_PROG_CC
 AC_PROG_CPP
 
 # Checks for libraries.
-AC_CHECK_LIB([stdc++], [vector])
 AC_CHECK_LIB([g2c], [gerror_])
 AC_CHECK_LIB([m], [log])
 
