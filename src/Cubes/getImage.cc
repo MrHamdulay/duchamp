@@ -154,7 +154,7 @@ int Cube::getCube(string fname)
     fits_read_key(fptr, TFLOAT, "BMIN", &bmin, comment, &status);
     fits_read_key(fptr, TFLOAT, "CDELT1", &cdelt1, comment, &status);
     fits_read_key(fptr, TFLOAT, "CDELT2", &cdelt2, comment, &status);
-    newHead.setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / fabsf(cdelt1*cdelt2) );
+    newHead.setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / fabs(cdelt1*cdelt2) );
     newHead.setBmajKeyword(bmaj);
     newHead.setBminKeyword(bmin);
   }

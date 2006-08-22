@@ -144,7 +144,7 @@ void Cube::setupColumns(){
   size = this->head.getSpectralUnits().size() + 3;
   for(int i=tempC.width;i<size;i++) tempC.widen();
   for(int o=0;o<this->objectList.size();o++){
-    int tempsize = int( log10(fabsf(this->objectList[o].getVel())) + 1) + velPrec + 2;
+    int tempsize = int( log10(fabs(this->objectList[o].getVel())) + 1) + velPrec + 2;
     if(this->objectList[o].getVel()<0) tempsize++; // for - sign    
     if((o==0)||(tempsize > size)) size = tempsize;
   }
@@ -189,7 +189,7 @@ void Cube::setupColumns(){
   size = this->head.getIntFluxUnits().size();
   for(int i=fint.width-3;i<size;i++) fint.widen();
   for(int o=0;o<this->objectList.size();o++){
-    int tempsize = int( log10(fabsf(this->objectList[o].getIntegFlux())) + 1) + fluxPrec + 2;
+    int tempsize = int( log10(fabs(this->objectList[o].getIntegFlux())) + 1) + fluxPrec + 2;
     if(this->objectList[o].getIntegFlux()<0) tempsize++;
     if((o==0)||(size < tempsize ))  size = tempsize;
   }
@@ -200,7 +200,7 @@ void Cube::setupColumns(){
   size = this->head.getFluxUnits().size();
   for(int i=ftot.width-3;i<size;i++) ftot.widen();
   for(int o=0;o<this->objectList.size();o++){
-    int tempsize = int( log10(fabsf(this->objectList[o].getTotalFlux())) + 1) + fluxPrec + 2;
+    int tempsize = int( log10(fabs(this->objectList[o].getTotalFlux())) + 1) + fluxPrec + 2;
     if(this->objectList[o].getTotalFlux()<0) tempsize++;
     if((o==0)||(size < tempsize)) size = tempsize;
   }
@@ -216,7 +216,7 @@ void Cube::setupColumns(){
   size = this->head.getFluxUnits().size();
   for(int i=tempC.width-3;i<size;i++) tempC.widen();
   for(int o=0;o<this->objectList.size();o++){
-    int tempsize = int( log10(fabsf(this->objectList[o].getPeakFlux())) + 1);
+    int tempsize = int( log10(fabs(this->objectList[o].getPeakFlux())) + 1);
     if(this->objectList[o].getPeakFlux()<0) tempsize++;
     if((o==0)||(size < tempsize)) size = tempsize;
   }

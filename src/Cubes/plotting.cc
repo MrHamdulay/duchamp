@@ -202,7 +202,7 @@ void Cube::plotMomentMap(string pgDestination)
 	    else if(z==(zdim-1)) deltaVel = world[z-1] - world[z];
 	    else deltaVel = (world[z+1] - world[z-1]) / 2.;
 
-	    momentMap[pix] += sign * this->array[pos] * fabsf(deltaVel);
+	    momentMap[pix] += sign * this->array[pos] * fabs(deltaVel);
 
 	  }
 	}

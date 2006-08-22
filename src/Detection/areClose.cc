@@ -91,15 +91,15 @@ bool areClose(Detection &obj1, Detection &obj2, Param &par)
 	// For an overall match between the objects, we only require one 
 	// matching pair of pixels, hence the || in the "close" definition.
 	close = close || 
-	  ( (fabsf(first[0]-second[0]) <= 1.)                     //X vals adjacent?
-	    && (fabsf(first[1]-second[1]) <= 1.)                  //Y vals adjacent?
-	    && (fabsf(first[2]-second[2]) <= threshV)            //Z vals close?
+	  ( (fabs(first[0]-second[0]) <= 1.)                     //X vals adjacent?
+	    && (fabs(first[1]-second[1]) <= 1.)                  //Y vals adjacent?
+	    && (fabs(first[2]-second[2]) <= threshV)             //Z vals close?
 	    );
       }
       else{
 	close = close ||
 	  ( (hypot(first[0]-second[0],first[1]-second[1])<=threshS) 
-	    && (fabsf(first[2]-second[2]) <= threshV )
+	    && (fabs(first[2]-second[2]) <= threshV )
 	    );
       }
     

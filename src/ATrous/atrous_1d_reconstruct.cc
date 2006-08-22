@@ -139,7 +139,7 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
     if(par.isVerbose())     std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
 
   } while( (iteration==1) || 
-	   (fabsf(oldsigma-newsigma)/newsigma > reconTolerance) );
+	   (fabs(oldsigma-newsigma)/newsigma > reconTolerance) );
 
   if(par.isVerbose()) std::cout << "Completed "<<iteration<<" iterations. ";
 

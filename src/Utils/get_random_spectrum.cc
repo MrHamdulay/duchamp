@@ -22,7 +22,7 @@ float getNormalRVtrunc()
     v1 = 2.*(1.*rand())/(RAND_MAX+1.0) - 1.;
     v2 = 2.*(1.*rand())/(RAND_MAX+1.0) - 1.;
     s = v1*v1+v2*v2;
-  }while((s>1)||(fabsf(sqrt(-2.*log(s)/s)*v1)>sqrt(2*M_LN2)));
+  }while((s>1)||(fabs(sqrt(-2.*log(s)/s)*v1)>sqrt(2*M_LN2)));
   return sqrt(-2.*log(s)/s)*v1;
 
 }

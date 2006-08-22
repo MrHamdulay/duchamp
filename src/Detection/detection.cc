@@ -197,7 +197,7 @@ float Detection::getIntegFlux(FitsHeader head)
 	if(z==0) deltaVel = (world[pos+xsize*ysize] - world[pos]);
 	else if(z==(zsize-1)) deltaVel = (world[pos] - world[pos-xsize*ysize]);
 	else deltaVel = (world[pos+xsize*ysize] - world[pos-xsize*ysize]) / 2.;
-	this->intFlux += fluxArray[pos] * fabsf(deltaVel);
+	this->intFlux += fluxArray[pos] * fabs(deltaVel);
       }
     }
   }

@@ -205,7 +205,7 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
     if(par.isVerbose()) std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
 
   } while( (iteration==1) || 
-	   (fabsf(oldsigma-newsigma)/newsigma > reconTolerance) );
+	   (fabs(oldsigma-newsigma)/newsigma > reconTolerance) );
 
   if(par.isVerbose()) std::cout << "Completed "<<iteration<<" iterations. ";
 

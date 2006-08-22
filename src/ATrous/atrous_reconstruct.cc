@@ -65,7 +65,7 @@ void atrous1DReconstructOLD(long &size, float *input,float *output, Param &par)
     for(int pos=0;pos<size;pos++) output[pos] += coeffs[numScales*size+pos];
     for(int pos=0;pos<size;pos++) residual[pos] = input[pos] - output[pos];
     findMedianStats(residual,size,mean,newsigma);
-  }while( fabsf(oldsigma-newsigma)/newsigma > reconTolerance);
+  }while( fabs(oldsigma-newsigma)/newsigma > reconTolerance);
 
   delete [] coeffs;
   delete [] wavelet;
@@ -172,7 +172,7 @@ void atrous2DReconstructOLD(long &xdim, long &ydim, float *input,float *output, 
     for(int i=0;i<size;i++) if(isGood[i]) array[goodSize++] = residual[i];
     findMedianStats(array,goodSize,mean,newsigma);
     delete [] array;
-  }while( fabsf(oldsigma-newsigma)/newsigma > reconTolerance);
+  }while( fabs(oldsigma-newsigma)/newsigma > reconTolerance);
 
 
   delete [] coeffs;
@@ -276,9 +276,9 @@ void atrous3DReconstructOLD(long &xdim, long &ydim, long &zdim, float *&input,fl
     for(int i=0;i<size;i++) if(isGood[i]) array[goodSize++] = residual[i];
     findMedianStats(array,goodSize,mean,newsigma);
     delete [] array;
-    cerr<<"|"<<newsigma<<"|"<<fabsf(oldsigma-newsigma)/newsigma;
+    cerr<<"|"<<newsigma<<"|"<<fabs(oldsigma-newsigma)/newsigma;
 
-  }while( fabsf(oldsigma-newsigma)/newsigma > reconTolerance);
+  }while( fabs(oldsigma-newsigma)/newsigma > reconTolerance);
 
   delete [] coeffs;
   delete [] wavelet;

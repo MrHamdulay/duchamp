@@ -2,9 +2,9 @@
 #ifndef DUCHAMP_HH
 #define DUCHAMP_HH
 
-#include "config.h"
+#include <string>
 
-#include <string.h>
+#include "config.h"
 
 // how to convey whether a function has worked
 enum OUTCOME {SUCCESS, FAILURE};

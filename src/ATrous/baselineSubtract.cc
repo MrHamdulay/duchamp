@@ -89,7 +89,7 @@ void getBaseline(long size, float *input, float *baseline, Param &par)
   findMedianStats(input,size,med,sig);
   float threshold = 8. * sig;
   for(int i=0;i<size;i++) {
-    if(fabsf(input[i]-med)>threshold){
+    if(fabs(input[i]-med)>threshold){
       if(input[i]>med) spec[i] = med + threshold;
       else spec[i] = med - threshold;
     }
@@ -134,7 +134,7 @@ void getBaseline(long size, float *input, float *baseline)
   findMedianStats(input,size,med,sig);
   float threshold = 8. * sig;
   for(int i=0;i<size;i++) {
-    if(fabsf(input[i]-med)>threshold){
+    if(fabs(input[i]-med)>threshold){
       if(input[i]>med) spec[i] = med + threshold;
       else spec[i] = med - threshold;
     }
