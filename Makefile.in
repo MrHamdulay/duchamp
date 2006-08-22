@@ -40,6 +40,7 @@ HEADS = $(BASE)/duchamp.hh\
 	$(UTILDIR)/utils.hh
 
 OBJECTS = $(BASE)/mainDuchamp.o \
+	$(BASE)/duchamp.o\
 	$(BASE)/param.o\
 	$(ATROUSDIR)/atrous.o\
 	$(ATROUSDIR)/atrous_1d_reconstruct.o\
