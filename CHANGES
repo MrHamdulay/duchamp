@@ -1,3 +1,19 @@
+Duchamp version 1.0.2 (2006/08/22)
+----------------------------------
+
+* The FDR setup routine was occasionally failing with a segmentation
+  fault, due to it accessing unallocated memory. This has been fixed. 
+
+* A bug that affected the propagation of blank pixel information to
+  various functions (such as drawMomentMap) was fixed. The moment maps
+  should now be correct in all cases.
+
+* Improved error and warning reporting, so that the formatting and
+  presentation of information is clearer.
+
+* Fixed bugs that affected the way 2D images (rather than 3D cubes)
+  were dealt with. The minChannels test failed when minChannels=0.
+
 
 Duchamp version 1.0.1 (2006/07/28)
 ----------------------------------
