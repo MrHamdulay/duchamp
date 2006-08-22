@@ -32,16 +32,16 @@ int Cube::readReconCube()
     fits_file_exists(this->par.getReconFile().c_str(),&exists,&status);
     if(exists<=0){
       fits_report_error(stderr, status);
-      std::cerr << 
-	"  WARNING <readReconCube> : Cannot find requested ReconFile. Trying with parameters.\n";
-      std::cerr << 
-	"                            Bad reconFile was: "<<this->par.getReconFile()<<std::endl;
+      std::stringstream errmsg;
+      errmsg<< "Cannot find requested ReconFile. Trying with parameters.\n"
+	    << "Bad reconFile was: "<<this->par.getReconFile() << std::endl;
+      duchampWarning("readReconCube", errmsg.str());
       reconGood = false;
     }
   }
   else{
-    std::cerr << 
-      "  WARNING <readReconCube> : ReconFile not specified. Working out name from parameters.\n";
+    duchampWarning("readReconCube",
+		   "ReconFile not specified. Working out name from parameters.\n");
   }
   
   if(!reconGood){ // if bad, need to look at parameters
@@ -52,8 +52,7 @@ int Cube::readReconCube()
     fits_file_exists(reconFile.c_str(),&exists,&status);
     if(exists<=0){
       fits_report_error(stderr, status);
-      std::cerr << 
-	"  WARNING <readReconCube> : ReconFile not present\n";
+      duchampWarning("readReconCube","ReconFile not present.\n");
       reconGood = false;
     }
 
@@ -61,7 +60,7 @@ int Cube::readReconCube()
       this->par.setReconFile(reconFile);
     }
     else { // if STILL bad, give error message and exit.
-      std::cerr << "  ERROR <readReconCube> : Cannot find reconstructed file.\n";
+      duchampError("readReconCube","Cannot find reconstructed file.\n");
       return FAILURE;
     }
 
@@ -87,18 +86,20 @@ int Cube::readReconCube()
   }
 
   if(numAxesNew != this->numDim){
-    std::cerr << "  ERROR <readReconCube> : "
-	      << "  Reconstructed cube has a different number of axes to original! ("
-	      << numAxesNew << " cf. " << this->numDim << ")\n";
+    std::stringstream errmsg;
+    errmsg << "  Reconstructed cube has a different number of axes to original! ("
+	   << numAxesNew << " cf. " << this->numDim << ")\n";
+    duchampError("readReconCube", errmsg.str());
     return FAILURE;
   }
 
   for(int i=0;i<numAxesNew;i++){
     if(dimAxesNew[i]!=this->axisDim[i]){
-      std::cerr << "  ERROR <readReconCube> : "
-		<< "Reconstructed cube has different axis dimensions to original!\n"
-		<< "                          Axis #" << i+1 << " has size " << dimAxesNew[i] 
-		<< "   cf. " << this->axisDim[i] <<" in original.\n";	
+      std::stringstream errmsg;
+      errmsg << "Reconstructed cube has different axis dimensions to original!\n"
+	     << "                          Axis #" << i+1 << " has size " << dimAxesNew[i] 
+	     << "   cf. " << this->axisDim[i] <<" in original.\n";	
+      duchampError("readReconCube", errmsg.str());
       return FAILURE;
     }
   }
@@ -110,13 +111,16 @@ int Cube::readReconCube()
     status = 0;
     fits_read_key(fptr, TSTRING, (char *)keyword_subsection.c_str(), subsection, comment, &status);
     if(status){
-      std::cerr <<"  ERROR <readReconCube> : subsection keyword not present in reconFile.\n";
+      duchampError("readReconCube", "subsection keyword not present in reconFile.\n");
       return FAILURE;
     }
     else{
       if(this->par.getSubsection() != subsection){
-	std::cerr <<"  ERROR <readReconCube> : subsection keyword in reconFile (" << subsection
-		  <<") does not match that requested (" << this->par.getSubsection() <<").\n";
+	std::stringstream errmsg;
+	errmsg << "subsection keyword in reconFile (" << subsection 
+	       << ") does not match that requested (" << this->par.getSubsection() 
+	       << ").\n";
+	duchampError("readReconCube", errmsg.str());
 	return FAILURE;
       }
     }
@@ -128,29 +132,37 @@ int Cube::readReconCube()
   status = 0;
   fits_read_key(fptr, TINT, (char *)keyword_reconDim.c_str(), &reconDim, comment, &status);
   if(reconDim != this->par.getReconDim()){
-    std::cerr << "  ERROR <readReconCube> : reconDim keyword in reconFile (" << reconDim
-	      << ") does not match that requested (" << this->par.getReconDim() << ").\n";
+    std::stringstream errmsg;
+    errmsg << "reconDim keyword in reconFile (" << reconDim
+	   << ") does not match that requested (" << this->par.getReconDim() << ").\n";
+    duchampError("readReconCube", errmsg.str());
     return FAILURE;
   }
   status = 0;
   fits_read_key(fptr, TINT, (char *)keyword_filterCode.c_str(), &filterCode, comment, &status);
   if(filterCode != this->par.getFilterCode()){
-    std::cerr << "  ERROR <readReconCube> : filterCode keyword in reconFile (" << filterCode
-	      << ") does not match that requested (" << this->par.getFilterCode() << ").\n";
+    std::stringstream errmsg;
+    errmsg << "filterCode keyword in reconFile (" << filterCode
+	   << ") does not match that requested (" << this->par.getFilterCode() << ").\n";
+    duchampError("readReconCube", errmsg.str());
     return FAILURE;
   }
   status = 0;
   fits_read_key(fptr, TFLOAT, (char *)keyword_snrRecon.c_str(), &snrRecon, comment, &status);
   if(snrRecon != this->par.getAtrousCut()){
-    std::cerr << "  ERROR <readReconCube> : snrRecon keyword in reconFile (" << snrRecon
-	      << ") does not match that requested (" << this->par.getAtrousCut() << ").\n";
+    std::stringstream errmsg;
+    errmsg << "snrRecon keyword in reconFile (" << snrRecon
+	   << ") does not match that requested (" << this->par.getAtrousCut() << ").\n";
+    duchampError("readReconCube", errmsg.str());
     return FAILURE;
   }
   status = 0;
   fits_read_key(fptr, TINT, (char *)keyword_scaleMin.c_str(), &scaleMin, comment, &status);
   if(scaleMin != this->par.getMinScale()){
-    std::cerr << "  ERROR <readReconCube> : scaleMin keyword in reconFile (" << scaleMin
-	      << ") does not match that requested (" << this->par.getMinScale() << ").\n";
+    std::stringstream errmsg;
+    errmsg << "scaleMin keyword in reconFile (" << scaleMin
+	   << ") does not match that requested (" << this->par.getMinScale() << ").\n";
+    duchampError("readReconCube", errmsg.str());
     return FAILURE;
   }
   
@@ -166,7 +178,7 @@ int Cube::readReconCube()
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    std::cerr << "  WARNING <readReconCube> : Error closing file: ";
+    duchampWarning("readReconCube", "Error closing file: ");
     fits_report_error(stderr, status);
   }
 

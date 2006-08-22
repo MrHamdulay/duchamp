@@ -12,12 +12,6 @@
 #include <duchamp.hh>
 #include <Cubes/cubes.hh>
 
-#ifdef NAN 
-float nanValue = NAN;
-#endif
-
-using std::endl;
-
 string imageType[4] = {"point", "spectrum", "image", "cube"};
 
 int Cube::getCube(string fname)
@@ -61,7 +55,7 @@ int Cube::getCube(string fname)
   else std::cout << "Dimensions of " << imageType[3] << ": " << dimAxes[0];
   if(numAxes>1) std::cout << "x" << dimAxes[1];
   if(numAxes>2) std::cout << "x" << dimAxes[2];
-  std::cout << endl;
+  std::cout << std::endl;
 
   int npix = dimAxes[0]*dimAxes[1]*dimAxes[2];
   float *array = new float[npix];
@@ -85,7 +79,7 @@ int Cube::getCube(string fname)
 
   if(anynul==0){    // no blank pixels, so don't bother with any trimming or checking...
     if(this->par.getFlagBlankPix())  // if user requested fixing, inform them of change.
-      std::cerr << "WARNING <getCube> : No blank pixels, so setting flagBlankPix to false...\n";
+      duchampWarning("getCube","No blank pixels, so setting flagBlankPix to false.\n");
     this->par.setFlagBlankPix(false); 
   }
 
@@ -100,7 +94,7 @@ int Cube::getCube(string fname)
   status = 0;
   fits_hdr2str(fptr, noComments, NULL, nExc, &hdr, &nkeys, &status);
   if( status ){
-    std::cerr << "WARNING <getCube> : Error reading in header to string: ";
+    duchampWarning("getCube","Error reading in header to string: ");
     fits_report_error(stderr, status);
   }
 
@@ -112,7 +106,7 @@ int Cube::getCube(string fname)
   status = 0;
   fits_read_key(fptr, TSTRING, "BUNIT", unit, comment, &status);
   if (status){
-    std::cerr << "WARNING <getCube> : Error reading BUNIT keyword: ";
+    duchampWarning("getCube","Error reading BUNIT keyword: ");
     fits_report_error(stderr, status);
   }
   else{
@@ -133,18 +127,16 @@ int Cube::getCube(string fname)
   if( !fits_read_key(fptr, TINT32BIT, "BLANK", &blank, comment, &status) ){
     fits_read_key(fptr, TFLOAT, "BZERO", &bzero, comment, &status);
     fits_read_key(fptr, TFLOAT, "BSCALE", &bscale, comment, &status);
-    //       this->par.setBlankPixVal(blank*bscale+bzero);
-    //       this->par.setBlankKeyword(blank);
-    //       this->par.setBscaleKeyword(bscale);
-    //       this->par.setBzeroKeyword(bzero);
     newHead.setBlankKeyword(blank);
     newHead.setBscaleKeyword(bscale);
     newHead.setBzeroKeyword(bzero);
   }
   if(this->par.getFlagBlankPix() && status){
-    std::cerr << "WARNING <getCube> : Error reading BLANK keyword: ";
+    duchampWarning("getCube","Error reading BLANK keyword: ");
     fits_report_error(stderr, status);
-    std::cerr << "Using default BLANK (physical) value (" << this->par.getBlankPixVal() << ")." << endl;
+    std::stringstream errmsg;
+    errmsg << "Using default BLANK value (" << this->par.getBlankPixVal() << ").\n";
+    duchampWarning("getCube", errmsg.str());
     for(int i=0;i<npix;i++) if(isnan(array[i])) array[i] = this->par.getBlankPixVal();
     newHead.setBlankKeyword(1);
     newHead.setBscaleKeyword(this->par.getBlankPixVal());
@@ -170,15 +162,15 @@ int Cube::getCube(string fname)
   delete [] comment;
 
   if (status){
-    std::cerr << 
-      "WARNING <getCube> : No beam information in header. Setting size to nominal 10 pixels.\n";
+    duchampWarning("getCube",
+		   "No beam information in header. Setting size to nominal 10 pixels.\n");
     newHead.setBeamSize(10.);
   }
   
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    std::cerr << "WARNING <getCube> : Error closing file: ";
+    duchampWarning("getCube","Error closing file: ");
     fits_report_error(stderr, status);
   }
 
@@ -201,17 +193,22 @@ int Cube::getCube(string fname)
   wcs->flag=-1;
   int flag;
   if(flag = wcspih(hdr, nkeys, relax, ctrl, &nreject, &nwcs, &wcs)) {
-    std::cerr<<"WARNING <getCube> : WCSPIH failed! Code="<<flag<<": "<<wcs_errmsg[flag]<<endl;
+    std::stringstream errmsg;
+    errmsg << "WCSPIH failed! Code="<<flag<<": "<<wcs_errmsg[flag]<<std::endl;
+    duchampWarning("getCube",errmsg.str());
   }
   else{  
     int stat[6],axes[3]={dimAxes[0],dimAxes[1],dimAxes[2]};
     if(flag=wcsfix(1,axes,wcs,stat)) {
-      std::cerr<<"WARNING <getCube> : WCSFIX failed!"<<endl;
+      duchampWarning("getCube","WCSFIX failed!");
       for(int i=0; i<NWCSFIX; i++)
-	if (stat[i] > 0) std::cerr<<"wcsfix ERROR "<<flag<<": "<< wcsfix_errmsg[stat[i]] <<endl;
+	if (stat[i] > 0)
+	  std::cerr <<" wcsfix ERROR "<<flag<<": "<< wcsfix_errmsg[stat[i]]<<std::endl;
     }
     if(flag=wcsset(wcs)){
-      std::cerr<<"WARNING <getCube> : WCSSET failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<endl;
+      std::stringstream errmsg;
+      errmsg<<"WCSSET failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<std::endl;
+      duchampWarning("getCube",errmsg.str());
     }
 
     // Set the spectral axis to a standard specification: VELO-F2V
@@ -220,12 +217,6 @@ int Cube::getCube(string fname)
       int index = wcs->spec;
       string type = duchampSpectralType;
       int flag = wcssptr(wcs, &index, (char *)type.c_str());
-//       if(flag){
-// 	std::cerr << "WARNING <getCube> : WCSSPTR failed! Code = "<<flag<<" : " 
-// 		  << wcs_errmsg[flag] << std::endl;
-// 	std::cerr << "Tried to convert from type " << wcs->ctype[index] 
-// 		  << " to type " << (char *)type.c_str() << std::endl;
-//       }
     }
 
     newHead.setWCS(wcs);
@@ -237,7 +228,8 @@ int Cube::getCube(string fname)
   newHead.fixUnits(this->par);  
   this->setHead(newHead);
 
-  if(!newHead.isWCS()) std::cerr << "WARNING <getCube> : WCS is not good enough to be used.\n";
+  if(!newHead.isWCS()) 
+    duchampWarning("getCube","WCS is not good enough to be used.\n");
 
   delete hdr;
   delete [] array;

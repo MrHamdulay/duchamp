@@ -297,7 +297,7 @@ bool Detection::hasEnoughChannels(int minNumber)
     if( (this->getZ(i) - this->getZ(i-1)) == 1) numChannels++;
     else if( (this->getZ(i) - this->getZ(i-1)) >= 2) numChannels = 1;
 
-    if( numChannels == minNumber) result = true;
+    if( numChannels >= minNumber) result = true;
   }
   return result;
   

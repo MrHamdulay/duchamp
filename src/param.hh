@@ -78,8 +78,6 @@ public:
   void   setFlagNegative(bool flag){flagNegative=flag;};
   bool   getFlagBlankPix(){return flagBlankPix;};
   void   setFlagBlankPix(bool flag){flagBlankPix=flag;};
-  bool   getNanFlag(){return nanAsBlank;};
-  void   setNanFlag(bool flag){nanAsBlank = flag;};
   float  getBlankPixVal(){return blankPixValue;};
   void   setBlankPixVal(float v){blankPixValue=v;};
   int    getBlankKeyword(){return blankKeyword;};
@@ -192,16 +190,16 @@ private:
   string momentMap;       // The name of the 0th moment map (ps file).
 
   // Cube related parameters 
-  bool   flagNegative;    // Are we going to search for negative features? (Need to invert the cube.)
-  bool   flagBlankPix;    // A flag that indicates whether there are pixels defined as BLANK,
-                          //   with the value given by the next parameter.
+  bool   flagNegative;    // Are we going to search for negative features? 
+  bool   flagBlankPix;    // A flag that indicates whether there are pixels 
+                          //   defined as BLANK and whether we need to remove 
+                          //   & ignore them in processing.
   float  blankPixValue;   // Pixel value that is considered BLANK.
   int    blankKeyword;    // The FITS header keyword BLANK.
   float  bscaleKeyword;   // The FITS header keyword BSCALE.
   float  bzeroKeyword;    // The FITS header keyword BZERO.
   bool   flagUsingBlank;  // If true, we are using the blankPixValue keyword, 
                           // otherwise we are using the value in the FITS header.
-  bool   nanAsBlank;      // Are the BLANK pixels defined by NaNs?
   bool   flagMW;          // A flag that indicates whether to excise the Milky Way.
   int    maxMW;           // Last  Galactic velocity plane for HIPASS cubes
   int    minMW;           // First Galactic velocity plane for HIPASS cubes

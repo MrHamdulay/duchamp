@@ -23,6 +23,11 @@ const std::string PROGNAME = PACKAGE_NAME;
 
 const std::string VERSION = PACKAGE_VERSION;
 
+// Specialised functions to report warnings and errors.
+// These are defined in duchamp.cc
+void duchampWarning(std::string subroutine, std::string warning);
+void duchampError(std::string subroutine, std::string error);
+
 // The spectral type that we want the wcsprm structs to be in
 const char duchampSpectralType[9] = "VELO-F2V";
 

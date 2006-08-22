@@ -1,4 +1,5 @@
 #include <Detection/columns.hh>
+#include <duchamp.hh>
 #include <param.hh>
 #include <Cubes/cubes.hh>
 #include <vector> 
@@ -73,7 +74,9 @@ Col getDefaultCol(int i){
     break;
   case 11:
   default:
-    std::cerr << "ERROR <getDefaultCol> : bad value of argument : " << i << "\n";
+    std::stringstream errmsg;
+    errmsg << "bad value of argument : " << i<<std::endl;
+    duchampError("getDefaultCol", errmsg.str());
     break;
   }
 } 

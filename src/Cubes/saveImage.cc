@@ -196,10 +196,9 @@ void write_header_info(fitsfile *fptr, Param &par, string nature)
     explanation = "Duchamp: This is the RESIDUAL cube";
     ReconResid = "RESID";
   }
-  else std::cerr << "WARNING <write_header_info> : explanation not present!\n";
+  else duchampWarning("write_header_info","explanation not present!\n");
   fits_write_comment(fptr, (char *)explanation.c_str(), &status);
   fits_write_key(fptr, TSTRING, (char *)keyword_ReconResid.c_str(), 
 		 (char *)ReconResid.c_str(), (char *)comment_ReconResid.c_str(), &status);
-
 
 }

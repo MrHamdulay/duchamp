@@ -57,16 +57,17 @@ int main(int argc, char * argv[])
   delete par;
 
   if(cube->pars().getImageFile().empty()){
-    std::cerr << "ERROR : No input image has been given!\n";
-    std::cerr << "        Use the imageFile parameter in "<< paramFile << " to specify the FITS file.\n";
-    std::cerr << "Exiting...\n\n";
+    duchampError("mainDuchamp",
+		 "No input image has been given!\nUse the imageFile parameter in "+ 
+		 paramFile + " to specify the FITS file.\nExiting...\n");
     return 1;
   }
 
   std::cout << "Opening image: " << cube->pars().getFullImageFile() << std::endl;
   if( cube->getCube() == FAILURE){
-    std::cerr << "ERROR : Unable to open image file : " << cube->pars().getFullImageFile() << std::endl;
-    std::cerr << "Exiting...\n\n";
+    duchampError("mainDuchamp",
+		 "Unable to open image file "+cube->pars().getFullImageFile()+
+		 "\nExiting...\n");
     return 1;
   }
   else std::cout << "Opened successfully." << std::endl; 
@@ -75,8 +76,10 @@ int main(int argc, char * argv[])
   if( cube->pars().getFlagReconExists() && cube->pars().getFlagATrous() ){
     std::cout << "Reading reconstructed array: "<<std::endl;
     if( cube->readReconCube() == FAILURE){
-      std::cerr << "WARNING : Could not read in existing reconstructed array.\n"
-		<< "          Will perform reconstruction using assigned parameters.\n";
+      std::stringstream errmsg;
+      errmsg <<"Could not read in existing reconstructed array.\n"
+	     <<"Will perform reconstruction using assigned parameters.\n";
+      duchampWarning("mainDuchamp", errmsg.str());
       cube->pars().setFlagReconExists(false);
     }
     else std::cout << "Reconstructed array available.\n";
@@ -89,6 +92,7 @@ int main(int argc, char * argv[])
   }
 
   // Write the parameters to screen.
+  if(cube->getDimZ()==1) cube->pars().setMinChannels(0);  // special case for 2D images.
   std::cout << cube->pars();
 
   if(cube->pars().getFlagLog()){
@@ -97,6 +101,10 @@ int main(int argc, char * argv[])
     logfile << "New run of the Duchamp sourcefinder: ";
     time_t now = time(NULL);
     logfile << asctime( localtime(&now) );
+    // Write out the command-line statement
+    logfile << "Executing statement : ";
+    for(int i=0;i<argc;i++) logfile << argv[i] << " ";
+    logfile << std::endl;
     logfile << cube->pars();
     logfile.close();
   }
@@ -117,8 +125,6 @@ int main(int argc, char * argv[])
     cube->removeBaseline();
     std::cout<<" Done.                 "<<std::endl;
   }
-
-  if(cube->getDimZ()==1) cube->pars().setMinChannels(0);  // special case for 2D images.
 
   if(cube->pars().getFlagNegative()){
     std::cout<<"Inverting the Cube... "<<std::flush;
@@ -180,7 +186,8 @@ int main(int argc, char * argv[])
     cube->outputSpectra();
     std::cout << "done.\n";
   }
-  else if(cube->getDimZ()<=1) std::cerr << "WARNING : Not plotting any spectra  -- no third dimension.\n";
+  else if(cube->getDimZ()<=1) 
+    duchampWarning("mainDuchamp","Not plotting any spectra  -- no third dimension.\n");
 
   cpgend();
 

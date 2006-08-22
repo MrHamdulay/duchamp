@@ -48,9 +48,7 @@
 
 \title{Source Detection with \duchamp\ v1.0\\A User's Guide}
 \author{Matthew Whiting\\
-%{\small \href{mailto:Matthew.Whiting@csiro.au}{Matthew.Whiting@csiro.au}}\\
 Australia Telescope National Facility\\CSIRO}
-%\date{January 2006}
 \date{}
 
 % If we are creating a PDF, use different options for graphicx, hyperref.
@@ -224,15 +222,6 @@ The execution flow of \duchamp\ is detailed here, indicating the
 main algorithmic steps that are used. The program is written in C/C++
 and makes use of the {\sc cfitsio}, {\sc wcslib} and {\sc pgplot}
 libraries. 
-
-%\subsection{Parameter input}
-%
-%The user provides parameters that govern the selection of files and
-%the parameters used by the various subroutines in the program. This is
-%done via a parameter file, and the parameters are stored in a C++
-%class for use throughout the program. The form of the parameter file is
-%discussed in \S\ref{sec-param}, and the parameters themselves are
-%listed in Appendix~\ref{app-param}.
 
 \subsection{Image input}
 \label{sec-input}
@@ -692,7 +681,7 @@ depend on the projection of the WCS):
 \item[Obj\#] The ID number of the detection (simply the sequential
   count for the list, which is ordered by increasing velocity).
 \item[Name] The IAU-format name of the detection (derived from the WCS
-  projection).
+  position -- see below for a description of the format).
 \item[X] The average X-pixel position.
 \item[Y] The average Y-pixel position.
 \item[Z] The average Z-pixel position.
@@ -762,42 +751,20 @@ set \texttt{flagKarma = 1}, and put the desired filename in the parameter
 \texttt{karmaFile} -- again, the default is for it not to be produced.
 
 As the program is running, it also (optionally) records the detections
-made in each individual spectrum or channel (see
-\S\ref{sec-detection} for details on this process). This is
-recorded in the file given by the parameter \texttt{LogFile}. This file
-does not include the columns \texttt{Name, RA, DEC, w\_RA, w\_DEC, VEL,
-w\_VEL}. This file is designed primarily for diagnostic purposes: \eg
-to see if a given set of pixels is detected in, say, one channel
-image, but does not survive the merging process. The list of pixels
-(and their fluxes) in the final detection list are also printed to
-this file, again for diagnostic purposes. This feature can be turned
-off by setting \texttt{flagLog = false}. (This may be a good idea if you
-are not interested in its contents, as it can be a large file.)
-
-\begin{figure}[t]
-\begin{center}
-\includegraphics[width=\textwidth]{example_spectrum}
-\end{center}
-\caption{\footnotesize An example of the spectrum output. Note several
-  of the features discussed in the text: the red lines indicating the
-  reconstructed spectrum; the blue dashed lines indicating the
-  spectral extent of the detection; the green hashed area indicating
-  the Milky Way channels that are ignored by the searching algorithm;
-  the blue border showing its spatial extent on the 0th moment map;
-  and the 15~arcmin-long scale bar.}
-\label{fig-spect}
-\end{figure}
-
-\begin{figure}[!t]
-\begin{center}
-\includegraphics[width=\textwidth]{example_moment_map}
-\end{center}
-\caption{\footnotesize An example of the moment map created by
-  \duchamp. The full extent of the cube is covered, and the 0th moment
-  of each object is shown (integrated individually over all the
-  detected channels).}
-\label{fig-moment}
-\end{figure}
+made in each individual spectrum or channel (see \S\ref{sec-detection}
+for details on this process). This is recorded in the file given by
+the parameter \texttt{LogFile}. This file does not include the columns
+\texttt{Name, RA, DEC, w\_RA, w\_DEC, VEL, w\_VEL}. This file is
+designed primarily for diagnostic purposes: \eg to see if a given set
+of pixels is detected in, say, one channel image, but does not survive
+the merging process. The list of pixels (and their fluxes) in the
+final detection list are also printed to this file, again for
+diagnostic purposes. The file also records the execution time, as well
+as the command-line statement used to run \duchamp. The creation of
+this log file can be prevented by setting \texttt{flagLog =
+false}. (This may be a good idea if you are not interested in its
+contents, as it can be a large file if many pixels are being
+detected.)
 
 \subsubsection{Graphical output -- spectra}
 
@@ -827,7 +794,32 @@ projection effects it may be a slightly different physical length from
 object to object). An example detection can be seen below in
 Fig.~\ref{fig-spect}.
 
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=\textwidth]{example_spectrum}
+\end{center}
+\caption{\footnotesize An example of the spectrum output. Note several
+  of the features discussed in the text: the red lines indicating the
+  reconstructed spectrum; the blue dashed lines indicating the
+  spectral extent of the detection; the green hashed area indicating
+  the Milky Way channels that are ignored by the searching algorithm;
+  the blue border showing its spatial extent on the 0th moment map;
+  and the 15~arcmin-long scale bar.}
+\label{fig-spect}
+\end{figure}
+
 \subsubsection{Graphical output -- maps}
+
+\begin{figure}[!t]
+\begin{center}
+\includegraphics[width=\textwidth]{example_moment_map}
+\end{center}
+\caption{\footnotesize An example of the moment map created by
+  \duchamp. The full extent of the cube is covered, and the 0th moment
+  of each object is shown (integrated individually over all the
+  detected channels).}
+\label{fig-moment}
+\end{figure}
 
 Finally, a couple of images are optionally produced: a 0th moment map
 of the cube, combining just the detected channels in each object,
@@ -921,63 +913,6 @@ circumvents this problem, but work is being done to make \duchamp\
 smarter at rejecting signals that are clearly (to a human eye at
 least) interference. See the following section for further
 improvements that are planned.
-
-%\section{Drawbacks of the current program}
-%
-%The program currently has a few problems/drawbacks/things to be aware
-%of that will hopefully be fixed in the future:
-%\begin{itemize}
-%
-%\item Narrow interference spikes are still getting found, particularly
-%  if there is no reconstruction, or reconstruction with a relatively
-%  low \texttt{snrRecon} (such as 2 or 3). Increasing the
-%  \texttt{minChannels} parameter is one way to circumvent this, but
-%  making the algorithm a bit more clever would be preferable.
-%
-%\item Sources that have strong continuum ripple and/or artefacts often
-%  generate many spurious detections. This needs some work to avoid
-%  \duchamp\ doing this, and until then users are advised to be aware
-%  of the possibility. Strong continuum ripples may generate many
-%  sources on the same spatial pixel, and this will be apparent on the
-%  detection images.
-%
-%\item Spectra are integrated over every spatial pixel of the
-%  detection, and this may dilute the actual detection, making it
-%  harder to see \ie the apparent strength of the line as plotted may
-%  not give a true indication of how strong it really is.
-%
-%%\item A caution on the merging part of the procedure. This can be time
-%%  consuming if there are many detections that do not require merging
-%%  -- in this case, the time will go like $N^2$ ($N$ = number of
-%%  detections). If there are plenty of mergers, the size of the list
-%%  reduces quickly, so the execution time will be less.
-%
-%
-%\end{itemize}
-
-
-%\section{Comparison with other software (to be developed further...)}
-%
-%\subsection{fred, by Matt Howlett}
-%
-%This is the program used in the \hipass\ analysis. It smoothes the
-%data spectrally with a boxcar filter of a size that varies over a
-%user-specified range, and then thresholds the data.
-%
-%Works effectively, but generally doesn't find as many sources as
-%\duchamp, particularly when the reconstruction is used. Sensitive to
-%faint, broad features that fall below the reconstruction threshold.
-%
-%Execution takes a long time, depending on the range of filter widths
-%that are used.
-%
-%\subsection{sfind}
-%
-%Hard to evaluate, as it does not (as far as I can see) output the
-%channel number at which detections are made, and does not merge
-%detections made at adjacent channels (\ie it just works in 2
-%dimensions). 
-%
 
 \section{Future Developments}
 
@@ -1076,7 +1011,9 @@ Here you can find a gzipped tar archive of the source code that can be
 downloaded and extracted, as well as this User's Guide in postscript
 and hyperlinked PDF formats.
 
-\duchamp\ can be built on Unix systems by typing:
+\duchamp\ can be built on Unix systems by typing (assuming that the
+prompt your terminal provides is a \texttt{> } -- don't type this
+character!):
 \begin{quote}
 \texttt{%
 > ./configure\\
@@ -1085,10 +1022,11 @@ and hyperlinked PDF formats.
 \end{quote}
 
 Run in this manner, \texttt{configure} should find all the necessary
-libraries, but if the above-mentioned libraries have been installed in
-non-standard locations, you can specify additional directories to look
-in. There are separate options for library files (eg. libcpgplot.a)
-and header files (eg. cpgplot.h).
+libraries, but if some libraries have been installed in non-standard
+locations, it may fail. In this case, you can specify additional
+directories to look in by giving extra command-line arguments. There
+are separate options for library files (eg. libcpgplot.a) and header
+files (eg. cpgplot.h).
 
 For example, if \textsc{wcslib} had been installed in
 \texttt{/home/mduchamp/wcslib}, there are two libraries that are
@@ -1264,8 +1202,10 @@ not matter, they are grouped here in logical sections.
   \begin{itemize}
   \item \textbf{1:} B$_3$-spline filter: coefficients = 
     $(\frac{1}{16}, \frac{1}{4}, \frac{3}{8}, \frac{1}{4}, \frac{1}{16})$
-  \item \textbf{2:} Triangle filter: coefficients = $(\frac{1}{4}, \frac{1}{2}, \frac{1}{4})$
-  \item \textbf{3:} Haar wavelet: coefficients = $(0, \frac{1}{2}, \frac{1}{2})$
+  \item \textbf{2:} Triangle filter: coefficients = 
+    $(\frac{1}{4}, \frac{1}{2}, \frac{1}{4})$
+  \item \textbf{3:} Haar wavelet: coefficients = 
+    $(0, \frac{1}{2}, \frac{1}{2})$
   \end{itemize}
 \end{entry}
 

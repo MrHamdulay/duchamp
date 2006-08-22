@@ -1,7 +1,9 @@
 #include <iostream>
+#include <sstream>
 #include <math.h>
 #include <wcs.h>
 #include <wcsunits.h>
+#include <duchamp.hh>
 #include <Utils/utils.hh>
 
 int pixToWCSSingle(wcsprm *wcs, const double *pix, double *world)
@@ -25,9 +27,10 @@ int pixToWCSSingle(wcsprm *wcs, const double *pix, double *world)
   double *phi    = new double[npts];
   double *theta  = new double[npts];
   if(flag=wcsp2s(wcs, npts, nelem, newpix, imgcrd, phi, theta, world, stat)>0){
-    std::cerr << "ERROR <pixToWCSSingle> : WCS Error Code = " <<flag<<": "
-	      <<wcs_errmsg[flag]<<std::endl;
-    std::cerr << "  stat value is " << stat[0] << std::endl;
+    std::stringstream errmsg;
+    errmsg << "WCS Error Code = " <<flag<<": " << wcs_errmsg[flag] 
+	   << "\nstat value is " << stat[0] << std::endl;
+    duchampError("pixToWCSSingle",errmsg.str());
   }
   delete [] stat;
   delete [] imgcrd;
@@ -53,9 +56,10 @@ int wcsToPixSingle(wcsprm *wcs, const double *world, double *pix)
   double *phi    = new double[npts];
   double *theta  = new double[npts];
   if(flag=wcss2p(wcs, npts, nelem, world, phi, theta, imgcrd, pix, stat)>0){
-    std::cerr << "ERROR <wcsToPixSingle> : WCS Error Code = " <<flag<<": "
-	      <<wcs_errmsg[flag]<<std::endl;
-    std::cerr << "  stat value is " << stat[0] << std::endl;
+    std::stringstream errmsg;
+    errmsg << "WCS Error Code = " <<flag<<": " << wcs_errmsg[flag] 
+	   << "\nstat value is " << stat[0] << std::endl;
+    duchampError("wcsToPixSingle",errmsg.str());
   }
 
   for(int i=0;i<nelem;i++) pix[i] -= 1.;  // correct from 1-indexed to 0-indexed pixel array
@@ -88,9 +92,10 @@ int pixToWCSMulti(wcsprm *wcs, const double *pix, double *world, const int npts)
   double *phi    = new double[npts];
   double *theta  = new double[npts];
   if(flag=wcsp2s(wcs, npts, nelem, newpix, imgcrd, phi, theta, world, stat)>0){
-    std::cerr << "ERROR <pixToWCSMulti> : WCS Error Code = " <<flag<<": "
-	      <<wcs_errmsg[flag]<<std::endl;
-    std::cerr << "  stat value is " << stat[0] << std::endl;
+    std::stringstream errmsg;
+    errmsg << "WCS Error Code = " <<flag<<": " << wcs_errmsg[flag] 
+	   << "\nstat value is " << stat[0] << std::endl;
+    duchampError("pixToWCSMulti",errmsg.str());
   }
   delete [] stat;
   delete [] imgcrd;
@@ -116,9 +121,10 @@ int wcsToPixMulti(wcsprm *wcs, const double *world, double *pix, const int npts)
   double *phi    = new double[npts];
   double *theta  = new double[npts];
   if(flag=wcss2p(wcs, npts, nelem, world, phi, theta, imgcrd, pix, stat)>0){
-    std::cerr << "ERROR <wcsToPixMulti> : WCS Error Code = " <<flag<<": "
-	      <<wcs_errmsg[flag]<<std::endl;
-    std::cerr << "  stat value is " << stat[0] << std::endl;
+    std::stringstream errmsg;
+    errmsg << "WCS Error Code = " <<flag<<": " <<wcs_errmsg[flag] 
+	   << "\nstat value is " << stat[0] << std::endl;
+    duchampError("wcsToPixMulti",errmsg.str());
   }
 
   for(int i=0;i<nelem;i++) pix[i] -= 1.;  // correct from 1-indexed to 0-indexed pixel array
@@ -150,9 +156,10 @@ double pixelToVelocity(wcsprm *wcs, double &x, double &y, double &z, string velU
   pixcrd[1] = y + 1;
   pixcrd[2] = z + 1;
   if(int flag=wcsp2s(wcs, 1, 3, pixcrd, imgcrd, phi, theta, world, stat)>0){
-    std::cerr<<"ERROR <pixelToVelocity> : WCS Error Code = "<<flag<<": "
-	     <<wcs_errmsg[flag]<<std::endl;
-    std::cerr<<"  stat value is "<<stat[0]<<std::endl;
+    std::stringstream errmsg;
+    errmsg <<"WCS Error Code = "<<flag<<": "<<wcs_errmsg[flag] 
+	   << "\nstat value is "<<stat[0]<<std::endl;
+    duchampError("pixelToVelocity",errmsg.str());
   }
 
   double vel = coordToVel(wcs, world[2], velUnits);
@@ -176,18 +183,20 @@ double coordToVel(wcsprm *wcs, const double coord, string outputUnits)
    *   and converts accordingly.
    */
 
-  static int errmsg = 0;
+  static int errflag = 0;
   double scale, offset, power;
   int flag = wcsunits( wcs->cunit[2], outputUnits.c_str(), &scale, &offset, &power);
 
   if(flag>0){
-    if(errmsg==0){
-      std::cerr << "ERROR <coordToVel> : WCSUNITS Error Code = " << flag << ":"
-		<< wcsunits_errmsg[flag] << std::endl;
-      if(flag==10) std::cerr << "Tried to get conversion from " << wcs->cunit[2]
-			     << " to " << outputUnits.c_str() << std::endl;
-      std::cerr << "Using coordinate value instead\n";
-      errmsg = 1;
+    if(errflag==0){
+      std::stringstream errmsg;
+      errmsg << "WCSUNITS Error Code = " << flag << ":"
+	     << wcsunits_errmsg[flag];
+      if(flag==10) errmsg << "\nTried to get conversion from " << wcs->cunit[2]
+			  << " to " << outputUnits.c_str();
+      errmsg << "\nUsing coordinate value instead.\n";
+      duchampError("coordToVel", errmsg.str());
+      errflag = 1;
     }
     return coord;
   }
@@ -208,9 +217,10 @@ double velToCoord(wcsprm *wcs, const float velocity, string outputUnits)
   int flag = wcsunits( wcs->cunit[2], outputUnits.c_str(), &scale, &offset, &power);
 
   if(flag>0){
-    std::cerr << "ERROR <velToCoord> : WCSUNITS Error Code = " << flag << ":"
-	      << wcsunits_errmsg[flag] << std::endl;
-    std::cerr << "Using coordinate value instead\n";
+    std::stringstream errmsg;
+    errmsg << "WCSUNITS Error Code = " << flag << ":"
+	   << wcsunits_errmsg[flag] << "\nUsing coordinate value instead.\n";
+    duchampError("velToCoord",errmsg.str());
     return velocity;
   }
   else return (pow(velocity, 1./power) - offset) / scale;

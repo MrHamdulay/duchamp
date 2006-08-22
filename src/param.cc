@@ -194,17 +194,17 @@ void FitsHeader::fixUnits(Param &par)
   if(this->wcsIsGood){
     int flag = wcsunits( this->wcs->cunit[2], this->spectralUnits.c_str(), &sc, &of, &po);
     if(flag>0){
-      std::cerr << "ERROR <fixUnits> : WCSUNITS Error Code = " << flag << ": "
-		<< wcsunits_errmsg[flag] << std::endl;
-      if(flag==10) 
-	std::cerr<<"                   Tried to get conversion from '" << wcs->cunit[2]
-		 << "' to '" << this->spectralUnits.c_str() << "'\n";
-//       std::cerr << "                   Using coordinate value instead\n";
+      std::stringstream errmsg;
+      errmsg << "WCSUNITS Error, Code = " << flag << ": "<< wcsunits_errmsg[flag];
+      if(flag==10) errmsg << "\nTried to get conversion from '" << wcs->cunit[2]
+			  << "' to '" << this->spectralUnits.c_str() << "'\n";
       this->spectralUnits = this->wcs->cunit[2];
       if(this->spectralUnits==""){
-	std::cerr << "                   Setting coordinates to 'XX' for clarity.\n";
+	errmsg << "Setting coordinates to 'XX' for clarity.\n";
 	this->spectralUnits = "XX";
       }
+      duchampError("fixUnits", errmsg.str());
+      
     }
   }
   this->scale = sc;
@@ -261,7 +261,6 @@ Param::Param(){
   this->bscaleKeyword   = -8.00061;
   this->bzeroKeyword    = 0.;
   this->flagUsingBlank  = false;
-  this->nanAsBlank      = false;
   this->flagMW          = false;
   this->maxMW           = 112;
   this->minMW           = 75;
@@ -553,6 +552,17 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 
 void Param::parseSubsection()
 {
+  /**
+   *  Param::parseSubsection()
+   *
+   *   Convert the Param::subsection string to a series of offset values
+   *    for each dimension.
+   *   This involves reading the individual substrings and converting to
+   *    integers, and storing in the {x,y,z}SubOffset parameters.
+   *   Steps in the subsection string are not dealt with -- a warning message
+   *    is written to the screen, and the step values are ignored.
+   */
+
   std::stringstream ss;
   ss.str(this->subsection);
   bool removeStep = false;
@@ -631,17 +641,16 @@ void Param::copyHeaderInfo(FitsHeader &head)
 
 bool Param::isBlank(float &value)
 {
-  if(this->flagBlankPix){
-    if(this->nanAsBlank) return bool(isnan(value));
-    else
-      return ( this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword) );
-  }
-  else return false;
-//   return flagBlankPix &&
-//     ( (nanAsBlank && bool(isnan(value)))   || 
-//       (!nanAsBlank && 
-//        (this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword))
-//        )  );
+  /** 
+   *  Param::isBlank(float)
+   *   Tests whether the value passed as the argument is BLANK or not.
+   *   If flagBlankPix is false, return false.
+   *   Otherwise, compare to the relevant FITS keywords, using integer comparison.
+   *   Return a bool.
+   */
+
+  return this->flagBlankPix &&
+    (this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword));
 }
 
 string Param::outputReconFile()

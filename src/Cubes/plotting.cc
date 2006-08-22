@@ -6,6 +6,7 @@
 #include <cpgsbox.h>
 #include <pgwcsl.h>
 #include <wcs.h>
+#include <duchamp.hh>
 #include <param.hh>
 #include <Utils/utils.hh>
 #include <Cubes/cubes.hh>
@@ -39,8 +40,7 @@ void Cube::plotDetectionMap(string pgDestination)
   int flag = newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
 
   if(flag<=0){
-    std::cerr << "ERROR <plotDetectionMap> : Could not open PGPlot device " 
-	      << pgDestination << ".\n";
+    duchampError("plotDetectionMap", "Could not open PGPlot device "+pgDestination+".\n");
   }
   else{
 
@@ -129,8 +129,7 @@ void Cube::plotMomentMap(string pgDestination)
   int flag = newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
     
   if(flag<=0){
-    std::cerr << "ERROR <plotMomentMap> : Could not open PGPlot device " 
-	      << pgDestination << ".\n";
+    duchampError("plotMomentMap", "Could not open PGPlot device "+pgDestination+".\n");
   }
   else{
 

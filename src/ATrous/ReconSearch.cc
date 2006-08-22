@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <duchamp.hh>
 #include <Cubes/cubes.hh>
 #include <ATrous/atrous.hh>
 #include <Utils/utils.hh>
@@ -16,22 +17,36 @@ void Cube::ReconSearch()
    *   A front-end to the various ReconSearch functions, the choice of which
    *   is determined by the use of the reconDim parameter.
    */
-  int dim = this->par.getReconDim();
-  switch(dim)
+  int dimRecon = this->par.getReconDim();
+  
+  // Test whether we have eg. an image, but have requested a 3-d reconstruction.
+  // If dimension of data array is less than dimRecon, change dimRecon to the
+  // dimension of the array.
+  int numGoodDim = 0;
+  for(int i=0;i<this->numDim;i++) if(this->axisDim[i]>1) numGoodDim++;
+  if(numGoodDim<dimRecon) dimRecon = numGoodDim;
+  this->par.setReconDim(dimRecon);
+
+  switch(dimRecon)
     {
     case 1: this->ReconSearch1D(); break;
     case 2: this->ReconSearch2D(); break;
     case 3: this->ReconSearch3D(); break;
     default:
-      if(dim<=0){
-	std::cerr << " WARNING <ReconSearch> : reconDim (" << dim
-		  << ") is less than 1. Performing 1-D reconstruction.\n";
+      if(dimRecon<=0){
+	std::stringstream errmsg;
+	errmsg << "reconDim (" << dimRecon
+	       << ") is less than 1. Performing 1-D reconstruction.\n";
+	duchampWarning("ReconSearch", errmsg.str());
 	this->par.setReconDim(1);
 	this->ReconSearch1D();
       }
-      else if(dim>3){
-	std::cerr << " WARNING <ReconSearch> : reconDim (" << dim
-		  << ") is more than 3. Performing 3-D reconstruction.\n";
+      else if(dimRecon>3){ 
+	//this probably won't happen with new code above, but just in case...
+	std::stringstream errmsg;
+	errmsg << "reconDim (" << dimRecon
+	       << ") is more than 3. Performing 3-D reconstruction.\n";
+	duchampWarning("ReconSearch", errmsg.str());
 	this->par.setReconDim(3);
 	this->ReconSearch3D();
       }

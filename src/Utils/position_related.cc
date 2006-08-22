@@ -3,8 +3,9 @@
 #include <iomanip>
 #include <string>
 #include <math.h>
-#include <Utils/utils.hh>
+#include <duchamp.hh>
 #include <param.hh>
+#include <Utils/utils.hh>
 
 using std::setw;
 using std::setfill;
@@ -113,7 +114,8 @@ string decToDMS(const double dec, const string type)
     else sign = "+";
   }
   else { // UNKNOWN TYPE -- DEFAULT TO RA.
-    std::cerr << "WARNING <decToDMS> : Unknown axis type (" << type << "). Defaulting to using RA\n";
+    duchampWarning("decToDMS",
+		   "Unknown axis type (" + type + "). Defaulting to using RA.\n");
     while (thisDec < 0.) { thisDec += 360.; }
     while (thisDec >= 360.) { thisDec -= 360.; }
     thisDec /= 15.;
