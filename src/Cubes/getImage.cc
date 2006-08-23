@@ -30,8 +30,6 @@ int Cube::getCube(string fname)
 
 
   short int maxdim=3;
-  long *fpixel = new long[maxdim];
-  for(int i=0;i<maxdim;i++) fpixel[i]=1;
   long *dimAxes = new long[maxdim];
   for(int i=0;i<maxdim;i++) dimAxes[i]=1;
   long nelements;
@@ -50,6 +48,9 @@ int Cube::getCube(string fname)
     fits_report_error(stderr, status);
     return FAILURE;
   }
+
+  long *fpixel = new long[numAxes];
+  for(int i=0;i<numAxes;i++) fpixel[i]=1;
 
   if(numAxes<=3)  std::cout << "Dimensions of " << imageType[numAxes] << ": " << dimAxes[0];
   else std::cout << "Dimensions of " << imageType[3] << ": " << dimAxes[0];
@@ -73,6 +74,7 @@ int Cube::getCube(string fname)
   fits_read_pixnull(fptr, TFLOAT, fpixel, npix, array, nullarray, &anynul, &status);
 //   fits_read_pix(fptr, TFLOAT, fpixel, npix, NULL, array, &anynul, &status);
   if(status){
+    duchampError("getCube","There was an error reading in the data array:");
     fits_report_error(stderr, status);
     return FAILURE;
   }
