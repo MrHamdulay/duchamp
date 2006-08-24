@@ -84,8 +84,7 @@ void Detection::calcParams()
   }
 }
 
-//void Detection::calcWCSparams(wcsprm *wcs)
-void Detection::calcWCSparams(FitsHeader head)
+void Detection::calcWCSparams(FitsHeader &head)
 {
   /**
    * Detection::calcWCSparams(FitsHeader)
@@ -95,7 +94,8 @@ void Detection::calcWCSparams(FitsHeader head)
    *     RA: ra [deg], ra (string), ra width.
    *     Dec: dec [deg], dec (string), dec width.
    *     Vel: vel [km/s], min & max vel, vel width.
-   *     Other: coord type for all three axes, nuRest, name (IAU-style, in equatorial or Galactic)
+   *     Other: coord type for all three axes, nuRest, 
+   *            name (IAU-style, in equatorial or Galactic)
    *     Uses getIntegFlux to calculate the integrated flux in (say) [Jy km/s]
    */
 
@@ -144,7 +144,7 @@ void Detection::calcWCSparams(FitsHeader head)
     this->velWidth = fabs(this->velMax - this->velMin);
 
     this->getIntegFlux(head);
-
+    
     this->flagWCS = true;
 
     delete [] world;
@@ -152,8 +152,7 @@ void Detection::calcWCSparams(FitsHeader head)
   }
 }
 
-// float Detection::getIntegFlux(wcsprm *wcs)
-float Detection::getIntegFlux(FitsHeader head)
+float Detection::getIntegFlux(FitsHeader &head)
 {
   /**
    * Detection::getIntegFlux(FitsHeader)
@@ -204,6 +203,7 @@ float Detection::getIntegFlux(FitsHeader head)
 
   if(this->fluxUnits.substr(this->fluxUnits.size()-5,this->fluxUnits.size())=="/beam")
     this->intFlux /= head.getBeamSize();
+
 
   delete [] world;
 }

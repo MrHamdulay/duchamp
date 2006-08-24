@@ -71,9 +71,10 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(CUBESDIR)/readRecon.o\
 	$(CUBESDIR)/saveImage.o\
 	$(CUBESDIR)/trimImage.o\
-	$(UTILDIR)/cpgwedg_log.o\
+	$(UTILDIR)/drawBlankEdges.o\
 	$(UTILDIR)/getStats.o\
 	$(UTILDIR)/linear_regression.o\
+	$(UTILDIR)/pgplot_related.o\
 	$(UTILDIR)/position_related.o\
 	$(UTILDIR)/sort.o\
 	$(UTILDIR)/wcsFunctions.o\

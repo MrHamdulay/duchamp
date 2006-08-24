@@ -8,9 +8,9 @@
 #include <wcs.h>
 #include <duchamp.hh>
 #include <param.hh>
-#include <Utils/utils.hh>
 #include <Cubes/cubes.hh>
 #include <Cubes/plots.hh>
+#include <Utils/utils.hh>
 
 
 void Cube::plotDetectionMap(string pgDestination)
@@ -139,6 +139,8 @@ void Cube::plotMomentMap(string pgDestination)
     
       newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,boxYmin+0.5,boxYmin+ydim+0.5,"X pixel","Y pixel");
 
+      this->plotBlankEdges();
+
       if(this->head.isWCS()) this->plotWCSaxes();
 
     }
@@ -252,6 +254,8 @@ void Cube::plotMomentMap(string pgDestination)
       delete [] temp;
       delete [] isObj;
 
+      this->plotBlankEdges();
+
       if(this->head.isWCS()) this->plotWCSaxes();
   
       // now show and label each detection, drawing over the WCS lines.
@@ -300,8 +304,13 @@ void Cube::plotWCSaxes()
    *      other labels.
    */
 
-  float boxXmin = this->par.getXOffset() - 1;
-  float boxYmin = this->par.getYOffset() - 1;
+  float boxXmin,boxYmin;
+//   if(!this->par.getFlagSubsection()){
+//     float boxXmin = this->par.getXOffset() - 1;
+//     float boxYmin = this->par.getYOffset() - 1;
+//   }
+//   else
+    boxXmin = boxYmin = 0.;
 
   char idents[3][80], opt[2], nlcprm[1];
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <wcs.h>
 #include <Cubes/cubes.hh>
+#include <Detection/detection.hh>
 #include <Utils/utils.hh>
 using std::endl;
 
@@ -384,37 +385,6 @@ void Cube::removeMW()
   }
 }
 
-////////// WCS-related functions
-
-// void Cube::setWCS(wcsprm *w)
-// {
-//   /** 
-//    * Cube::setWCS(wcsprm *)
-//    *  A function that assigns the cube's wcs parameters, and runs
-//    *   wcsset to set it up correctly.
-//    *  Performs a check to see if the WCS is good (by looking at 
-//    *   the lng and lat wcsprm parameters), and sets the flagWCS accordingly.
-//    */
-
-//   wcscopy(true,w,this->wcs);
-//   wcsset(this->wcs);
-//   if( (w->lng!=-1) && (w->lat!=-1) ) this->flagWCS = true;
-// }
-
-// wcsprm *Cube::getWCS()
-// {
-//   /** 
-//    * Cube::getWCS()
-//    *  A function that returns a wcsprm object corresponding to the cube's WCS.
-//    */
-
-//   wcsprm *wNew = new wcsprm;
-//   wNew->flag=-1;
-//   wcsini(true,this->wcs->naxis,wNew); 
-//   wcscopy(true,this->wcs,wNew); 
-//   return wNew;
-// }
-
 void Cube::calcObjectWCSparams()
 {
   /** 
@@ -427,7 +397,6 @@ void Cube::calcObjectWCSparams()
   
   for(int i=0; i<this->objectList.size();i++){
     this->objectList[i].setID(i+1);
-//     if(this->flagWCS) this->objectList[i].calcWCSparams(this->wcs);
     this->objectList[i].calcWCSparams(this->head);
     //    this->objectList[i].setIntegFlux( this->objectList[i].getIntegFlux()/this->par.getBeamSize() );
     // this corrects the integrated flux for the beam size.
@@ -588,4 +557,13 @@ void Cube::setObjectFlags()
 
   }
 
+}
+
+void Cube::plotBlankEdges()
+{
+  int colour;
+  cpgqci(&colour);
+  cpgsci(6);
+  drawBlankEdges(this->array,this->axisDim[0],this->axisDim[1],this->par);
+  cpgsci(colour);
 }

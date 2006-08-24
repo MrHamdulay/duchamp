@@ -54,6 +54,7 @@ void getSigmaFactors3DNew(int &numScales);
 
 
 // PLOTTING ROUTINES
+extern "C" int  cpgtest();
 extern "C" void cpgwedglog(const char* side, float disp, float width, float fg, float bg, const char *label);
 extern "C" void cpghistlog(int npts, float *data, float datamin, float datamax, int nbin, int pgflag);
 extern "C" void cpgcumul(int npts, float *data, float datamin, float datamax, int pgflag);
@@ -68,6 +69,7 @@ void plotHorizLine(const float yval, const int colour, const int style);
 void plotHorizLine(const float yval);
 void plotHorizLine(const float yval, const int colour);
 void drawContours(const int size, const float *x, const float *y);
+void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par);
 
 // POSITION-RELATED ROUTINES
 string getIAUNameEQ(double ra, double dec, float equinox);

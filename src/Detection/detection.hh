@@ -168,10 +168,8 @@ public:
   void   setID(int i){id = i;};
   //
   void   addAnObject(Detection &toAdd);
-//   void   calcWCSparams(wcsprm *wcs);
-//   float  getIntegFlux(wcsprm *wcs);
-  void   calcWCSparams(FitsHeader head);
-  float  getIntegFlux(FitsHeader head);
+  void   calcWCSparams(FitsHeader &head);
+  float  getIntegFlux(FitsHeader &head);
   void   calcParams();
   void   clearDetection(){this->pix.clear();};
   void   addOffsets(Param &par);

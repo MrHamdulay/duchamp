@@ -187,12 +187,12 @@ public:
   int     getCube(){  
     // a front-end to the getCube function, that does subsection checks
     // assumes the Param is setup properly
-    string fname = this->par.getImageFile();
-    if(this->par.getFlagSubsection()){
-      this->par.parseSubsection();
-      fname+=this->par.getSubsection();
+    string fname = par.getImageFile();
+    if(par.getFlagSubsection()){
+      par.parseSubsection();
+      fname+=par.getSubsection();
     }
-    return this->getCube(fname);
+    return getCube(fname);
   };
   void    initialiseCube(long *dimensions);
   void    saveReconstructedCube();
@@ -282,7 +282,8 @@ public:
   void    logDetection(Detection obj, int counter);        // in Cubes/detectionIO.cc
   void    setupColumns();                                  // in Detection/columns.cc
 
-  // Graphical plotting of detections.
+  // Graphical plotting of the cube and the detections.
+  void    plotBlankEdges();                                // in Cubes/cubes.cc
   void    plotDetectionMap(string pgDestination);          // in Cubes/plotting.cc
   void    plotMomentMap(string pgDestination);             // in Cubes/plotting.cc
   void    plotWCSaxes();                                   // in Cubes/plotting.cc
