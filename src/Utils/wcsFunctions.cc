@@ -114,15 +114,12 @@ int pixToWCSMulti(wcsprm *wcs, const double *pix, double *world, const int npts)
 
   // Add entries for any other axes that are present, keeping the 
   //   order of pixel positions the same
-  for(int i=0;i<3*npts;i++){
-    int xyz = i%3;      // are we on x(xyz=0), y(1) or z(2)?
-    int pos = i/3;      // which position (1-npts) are we on?
-    newpix[pos * nelem + xyz]  = pix[i] + 1.;
+  for(int elem=0;elem<nelem;elem++){
+    for(int pt=0;pt<npts;pt++){
+      if(elem<3) newpix[pt*nelem+elem] = pix[pt*3 + elem] + 1.;
+      else newpix[pt*nelem+elem] = 1.;
+    }
   }
-  if(wcs->naxis>nelem) 
-    for(int extra=3;extra<nelem;extra++)
-      for(int i=0;i<npts;i++) 
-	newpix[i*nelem+extra] = 1.;
 
   int    *stat      = new int[npts];
   double *imgcrd    = new double[nelem*npts];
@@ -139,10 +136,10 @@ int pixToWCSMulti(wcsprm *wcs, const double *pix, double *world, const int npts)
   else{
     //return just the spatial/velocity information, keeping the
     //  order of the pixel positions the same.
-    for(int i=0;i<npts;i++){
-      int xyz = i%3;      // are we on x(xyz=0), y(1) or z(2)?
-      int pos = i/3;      // which position (1-npts) are we on?
-      world[i] = tempworld[pos * nelem + xyz];
+    for(int elem=0;elem<nelem;elem++){
+      for(int pt=0;pt<npts;pt++){
+	if(elem<3) world[pt*3+elem] = tempworld[pt*nelem + elem];
+      }
     }
   }
 
@@ -172,16 +169,12 @@ int wcsToPixMulti(wcsprm *wcs, const double *world, double *pix, const int npts)
   // Add entries for any other axes that are present, keeping the 
   //   order of pixel positions the same
   double *tempworld = new double[nelem*npts];
-  for(int i=0;i<3*npts;i++){
-    int xyz = i%3;      // are we on x(xyz=0), y(1) or z(2)?
-    int pos = i/3;      // which position (1-npts) are we on?
-    tempworld[pos * nelem + xyz]  = world[i];
+  for(int elem=0;elem<nelem;elem++){
+    for(int pt=0;pt<npts;pt++){
+      if(elem<3) tempworld[pt*nelem + elem] = world[pt*3+elem];
+      else tempworld[pt*nelem + elem] = 1.;
+    }
   }
-  if(wcs->naxis>nelem) 
-    for(int extra=3;extra<nelem;extra++)
-      for(int i=0;i<npts;i++) 
-	tempworld[i*nelem+extra] = 0.;
-
 
   int    *stat   = new int[npts];
   double *temppix = new double[nelem*npts];
@@ -198,14 +191,12 @@ int wcsToPixMulti(wcsprm *wcs, const double *world, double *pix, const int npts)
     // correct from 1-indexed to 0-indexed pixel array 
     //  and return just the spatial/velocity information, 
     //  keeping the order of the pixel positions the same.
-    for(int i=0;i<npts;i++){
-      int xyz = i%3;      // are we on x(xyz=0), y(1) or z(2)?
-      int pos = i/3;      // which position (1-npts) are we on?
-      pix[i] = temppix[pos * nelem + xyz] - 1.;
+    for(int elem=0;elem<nelem;elem++){
+      for(int pt=0;pt<npts;pt++){
+	if(elem<3) pix[pt*3+elem] = temppix[pt*nelem + elem] + 1.;
+      }
     }
   }
-
-  for(int i=0;i<nelem;i++) pix[i] -= 1.;  
 
   delete [] stat;
   delete [] imgcrd;
