@@ -43,6 +43,7 @@ int pixToWCSSingle(wcsprm *wcs, const double *pix, double *world)
 
   delete [] stat;
   delete [] imgcrd;
+  delete [] tempworld;
   delete [] phi;
   delete [] theta;
   delete [] newpix;
@@ -86,8 +87,10 @@ int wcsToPixSingle(wcsprm *wcs, const double *world, double *pix)
 
   delete [] stat;
   delete [] imgcrd;
+  delete [] temppix;
   delete [] phi;
   delete [] theta;
+  delete [] tempworld;
   return flag;
 }
 
@@ -145,6 +148,7 @@ int pixToWCSMulti(wcsprm *wcs, const double *pix, double *world, const int npts)
 
   delete [] stat;
   delete [] imgcrd;
+  delete [] tempworld;
   delete [] phi;
   delete [] theta;
   delete [] newpix;
@@ -205,8 +209,10 @@ int wcsToPixMulti(wcsprm *wcs, const double *world, double *pix, const int npts)
 
   delete [] stat;
   delete [] imgcrd;
+  delete [] temppix;
   delete [] phi;
   delete [] theta;
+  delete [] tempworld;
   return flag;
 }
 
