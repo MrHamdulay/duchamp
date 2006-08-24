@@ -18,20 +18,29 @@ int pixToWCSSingle(wcsprm *wcs, const double *pix, double *world)
 
   int nelem=3,npts=1,flag;
 
-  double *newpix = new double[nelem*npts];
-  for(int i=0;i<nelem*npts;i++) newpix[i] = pix[i] + 1.;  
-  // correct from 0-indexed to 1-indexed pixel array
+  if(wcs->naxis>nelem) nelem = wcs->naxis;
+  // Test to see if there are other axes present, eg. stokes
 
-  int    *stat   = new int[npts];
-  double *imgcrd = new double[nelem*npts];
-  double *phi    = new double[npts];
-  double *theta  = new double[npts];
-  if(flag=wcsp2s(wcs, npts, nelem, newpix, imgcrd, phi, theta, world, stat)>0){
+  double *newpix = new double[nelem*npts];
+  // correct from 0-indexed to 1-indexed pixel array
+  for(int i=0;i<3;i++)     newpix[i] = pix[i] + 1.;  
+  for(int i=3;i<nelem;i++) newpix[i] = 1.;  // this adds entries for other axes
+
+  int    *stat      = new int[npts];
+  double *imgcrd    = new double[nelem*npts];
+  double *tempworld = new double[nelem*npts];
+  double *phi       = new double[npts];
+  double *theta     = new double[npts];
+  if(flag=wcsp2s(wcs, npts, nelem, newpix, imgcrd, phi, theta, tempworld, stat)>0){
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " <<flag<<": " << wcs_errmsg[flag] 
 	   << "\nstat value is " << stat[0] << std::endl;
     duchampError("pixToWCSSingle",errmsg.str());
   }
+
+  //return just the spatial/velocity information
+  for(int i=0;i<3;i++) world[i] = tempworld[i];  
+
   delete [] stat;
   delete [] imgcrd;
   delete [] phi;
@@ -51,18 +60,29 @@ int wcsToPixSingle(wcsprm *wcs, const double *world, double *pix)
    */
 
   int nelem=3,npts=1,flag;
+
+  if(wcs->naxis>nelem) nelem = wcs->naxis;
+  // Test to see if there are other axes present, eg. stokes
+
+  double *tempworld = new double[nelem*npts];
+  for(int i=0;i<3;i++)     tempworld[i] = world[i];  
+  for(int i=3;i<nelem;i++) tempworld[i] = 0.; // this adds entries for other axes
+
   int    *stat   = new int[npts];
+  double *temppix = new double[nelem*npts];
   double *imgcrd = new double[nelem*npts];
   double *phi    = new double[npts];
   double *theta  = new double[npts];
-  if(flag=wcss2p(wcs, npts, nelem, world, phi, theta, imgcrd, pix, stat)>0){
+  if(flag=wcss2p(wcs, npts, nelem, tempworld, phi, theta, imgcrd, temppix, stat)>0){
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " <<flag<<": " << wcs_errmsg[flag] 
 	   << "\nstat value is " << stat[0] << std::endl;
     duchampError("wcsToPixSingle",errmsg.str());
   }
 
-  for(int i=0;i<nelem;i++) pix[i] -= 1.;  // correct from 1-indexed to 0-indexed pixel array
+  for(int i=0;i<3;i++) pix[i] = temppix[i] - 1.;  
+  // correct from 1-indexed to 0-indexed pixel array
+  //  and only return the spatial & frequency information
 
   delete [] stat;
   delete [] imgcrd;
@@ -83,20 +103,46 @@ int pixToWCSMulti(wcsprm *wcs, const double *pix, double *world, const int npts)
 
   int nelem=3,flag;
 
+  // Test to see if there are other axes present, eg. stokes
+  if(wcs->naxis>nelem) nelem = wcs->naxis;
+
   double *newpix = new double[nelem*npts];
-  for(int i=0;i<nelem*npts;i++) newpix[i] = pix[i] + 1.;  
   // correct from 0-indexed to 1-indexed pixel array
 
-  int    *stat   = new int[npts];
-  double *imgcrd = new double[nelem*npts];
-  double *phi    = new double[npts];
-  double *theta  = new double[npts];
-  if(flag=wcsp2s(wcs, npts, nelem, newpix, imgcrd, phi, theta, world, stat)>0){
+  // Add entries for any other axes that are present, keeping the 
+  //   order of pixel positions the same
+  for(int i=0;i<3*npts;i++){
+    int xyz = i%3;      // are we on x(xyz=0), y(1) or z(2)?
+    int pos = i/3;      // which position (1-npts) are we on?
+    newpix[pos * nelem + xyz]  = pix[i] + 1.;
+  }
+  if(wcs->naxis>nelem) 
+    for(int extra=3;extra<nelem;extra++)
+      for(int i=0;i<npts;i++) 
+	newpix[i*nelem+extra] = 1.;
+
+  int    *stat      = new int[npts];
+  double *imgcrd    = new double[nelem*npts];
+  double *tempworld = new double[nelem*npts];
+  double *phi       = new double[npts];
+  double *theta     = new double[npts];
+
+  if(flag=wcsp2s(wcs, npts, nelem, newpix, imgcrd, phi, theta, tempworld, stat)>0){
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " <<flag<<": " << wcs_errmsg[flag] 
 	   << "\nstat value is " << stat[0] << std::endl;
     duchampError("pixToWCSMulti",errmsg.str());
   }
+  else{
+    //return just the spatial/velocity information, keeping the
+    //  order of the pixel positions the same.
+    for(int i=0;i<npts;i++){
+      int xyz = i%3;      // are we on x(xyz=0), y(1) or z(2)?
+      int pos = i/3;      // which position (1-npts) are we on?
+      world[i] = tempworld[pos * nelem + xyz];
+    }
+  }
+
   delete [] stat;
   delete [] imgcrd;
   delete [] phi;
@@ -116,18 +162,46 @@ int wcsToPixMulti(wcsprm *wcs, const double *world, double *pix, const int npts)
    */
 
   int nelem=3,flag=0;
+  // Test to see if there are other axes present, eg. stokes
+  if(wcs->naxis>nelem) nelem = wcs->naxis;
+
+  // Add entries for any other axes that are present, keeping the 
+  //   order of pixel positions the same
+  double *tempworld = new double[nelem*npts];
+  for(int i=0;i<3*npts;i++){
+    int xyz = i%3;      // are we on x(xyz=0), y(1) or z(2)?
+    int pos = i/3;      // which position (1-npts) are we on?
+    tempworld[pos * nelem + xyz]  = world[i];
+  }
+  if(wcs->naxis>nelem) 
+    for(int extra=3;extra<nelem;extra++)
+      for(int i=0;i<npts;i++) 
+	tempworld[i*nelem+extra] = 0.;
+
+
   int    *stat   = new int[npts];
+  double *temppix = new double[nelem*npts];
   double *imgcrd = new double[nelem*npts];
   double *phi    = new double[npts];
   double *theta  = new double[npts];
-  if(flag=wcss2p(wcs, npts, nelem, world, phi, theta, imgcrd, pix, stat)>0){
+  if(flag=wcss2p(wcs, npts, nelem, tempworld, phi, theta, imgcrd, temppix, stat)>0){
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " <<flag<<": " <<wcs_errmsg[flag] 
 	   << "\nstat value is " << stat[0] << std::endl;
     duchampError("wcsToPixMulti",errmsg.str());
   }
+  else{
+    // correct from 1-indexed to 0-indexed pixel array 
+    //  and return just the spatial/velocity information, 
+    //  keeping the order of the pixel positions the same.
+    for(int i=0;i<npts;i++){
+      int xyz = i%3;      // are we on x(xyz=0), y(1) or z(2)?
+      int pos = i/3;      // which position (1-npts) are we on?
+      pix[i] = temppix[pos * nelem + xyz] - 1.;
+    }
+  }
 
-  for(int i=0;i<nelem;i++) pix[i] -= 1.;  // correct from 1-indexed to 0-indexed pixel array
+  for(int i=0;i<nelem;i++) pix[i] -= 1.;  
 
   delete [] stat;
   delete [] imgcrd;
