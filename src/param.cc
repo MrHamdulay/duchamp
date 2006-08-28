@@ -321,10 +321,10 @@ string makelower( string s )
   return out;
 }
 
-bool flagify( string s )
+bool boolify( string s )
 {
   /**
-   * flagify(string)
+   * bool boolify(string)
    *  Convert a string to a bool variable
    *  "1" and "true" get converted to true
    *  "0" and "false" (and anything else) get converted to false
@@ -350,57 +350,57 @@ void Param::readParams(string paramfile)
       string arg;
       ss >> arg;      
       if(makelower(arg)=="imagefile"){       ss >> sval; this->imageFile = sval;}
-      if(makelower(arg)=="flagsubsection"){  ss >> sval; this->flagSubsection = flagify(sval); }
+      if(makelower(arg)=="flagsubsection"){  ss >> sval; this->flagSubsection = boolify(sval); }
       if(makelower(arg)=="subsection"){      ss >> sval; this->subsection = sval; }
-      if(makelower(arg)=="flagreconexists"){ ss >> sval; this->flagReconExists = flagify(sval); }
+      if(makelower(arg)=="flagreconexists"){ ss >> sval; this->flagReconExists = boolify(sval); }
       if(makelower(arg)=="reconfile"){       ss >> sval; this->reconFile = sval; }
 
-      if(makelower(arg)=="flaglog"){         ss >> sval; this->flagLog = flagify(sval); }
+      if(makelower(arg)=="flaglog"){         ss >> sval; this->flagLog = boolify(sval); }
       if(makelower(arg)=="logfile"){         ss >> sval; this->logFile = sval; }
       if(makelower(arg)=="outfile"){         ss >> sval; this->outFile = sval; }
       if(makelower(arg)=="spectrafile"){     ss >> sval; this->spectraFile = sval; }
-      if(makelower(arg)=="flagoutputrecon"){ ss >> sval; this->flagOutputRecon = flagify(sval); }
-      if(makelower(arg)=="flagoutputresid"){ ss >> sval; this->flagOutputResid = flagify(sval); }
-      if(makelower(arg)=="flagvot"){         ss >> sval; this->flagVOT = flagify(sval); }
+      if(makelower(arg)=="flagoutputrecon"){ ss >> sval; this->flagOutputRecon = boolify(sval); }
+      if(makelower(arg)=="flagoutputresid"){ ss >> sval; this->flagOutputResid = boolify(sval); }
+      if(makelower(arg)=="flagvot"){         ss >> sval; this->flagVOT = boolify(sval); }
       if(makelower(arg)=="votfile"){         ss >> sval; this->votFile = sval; }
-      if(makelower(arg)=="flagkarma"){       ss >> sval; this->flagKarma = flagify(sval); }
+      if(makelower(arg)=="flagkarma"){       ss >> sval; this->flagKarma = boolify(sval); }
       if(makelower(arg)=="karmafile"){       ss >> sval; this->karmaFile = sval; }
-      if(makelower(arg)=="flagmaps"){        ss >> sval; this->flagMaps = flagify(sval); }
+      if(makelower(arg)=="flagmaps"){        ss >> sval; this->flagMaps = boolify(sval); }
       if(makelower(arg)=="detectionmap"){    ss >> sval; this->detectionMap = sval; }
       if(makelower(arg)=="momentmap"){       ss >> sval; this->momentMap = sval; }
 
-      if(makelower(arg)=="flagnegative"){    ss >> sval; this->flagNegative = flagify(sval);}
-      if(makelower(arg)=="flagblankpix"){    ss >> sval; this->flagBlankPix = flagify(sval); }
+      if(makelower(arg)=="flagnegative"){    ss >> sval; this->flagNegative = boolify(sval);}
+      if(makelower(arg)=="flagblankpix"){    ss >> sval; this->flagBlankPix = boolify(sval); }
       if(makelower(arg)=="blankpixvalue"){   ss >> fval; this->blankPixValue = fval; }
-      if(makelower(arg)=="flagmw"){          ss >> sval; this->flagMW = flagify(sval); }
+      if(makelower(arg)=="flagmw"){          ss >> sval; this->flagMW = boolify(sval); }
       if(makelower(arg)=="maxmw"){           ss >> ival; this->maxMW = ival; }
       if(makelower(arg)=="minmw"){           ss >> ival; this->minMW = ival; }
 
-      if(makelower(arg)=="flagbaseline"){    ss >> sval; this->flagBaseline = flagify(sval); }
+      if(makelower(arg)=="flagbaseline"){    ss >> sval; this->flagBaseline = boolify(sval); }
       if(makelower(arg)=="minpix"){          ss >> ival; this->minPix = ival; }
-      if(makelower(arg)=="flaggrowth"){      ss >> sval; this->flagGrowth = flagify(sval); }
+      if(makelower(arg)=="flaggrowth"){      ss >> sval; this->flagGrowth = boolify(sval); }
       if(makelower(arg)=="growthcut"){       ss >> fval; this->growthCut = fval; }
 
-      if(makelower(arg)=="flagfdr"){         ss >> sval; this->flagFDR = flagify(sval); }
+      if(makelower(arg)=="flagfdr"){         ss >> sval; this->flagFDR = boolify(sval); }
       if(makelower(arg)=="alphafdr"){        ss >> fval; this->alphaFDR = fval; }
 
       if(makelower(arg)=="snrcut"){          ss >> fval; this->snrCut = fval; }
 
-      if(makelower(arg)=="flagatrous"){      ss >> sval; this->flagATrous = flagify(sval); }
+      if(makelower(arg)=="flagatrous"){      ss >> sval; this->flagATrous = boolify(sval); }
       if(makelower(arg)=="recondim"){        ss >> ival; this->reconDim = ival; }
       if(makelower(arg)=="scalemin"){        ss >> ival; this->scaleMin = ival; }
       if(makelower(arg)=="snrrecon"){        ss >> fval; this->snrRecon = fval; }
       if(makelower(arg)=="filtercode"){      ss >> ival; this->filterCode = ival; }
 
-      if(makelower(arg)=="flagadjacent"){    ss >> sval; this->flagAdjacent = flagify(sval); }
+      if(makelower(arg)=="flagadjacent"){    ss >> sval; this->flagAdjacent = boolify(sval); }
       if(makelower(arg)=="threshspatial"){   ss >> fval; this->threshSpatial = fval; }
       if(makelower(arg)=="threshvelocity"){  ss >> fval; this->threshVelocity = fval; }
       if(makelower(arg)=="minchannels"){     ss >> ival; this->minChannels = ival; }
 
       if(makelower(arg)=="spectralmethod"){  ss >> sval; this->spectralMethod = makelower(sval); }
       if(makelower(arg)=="spectralunits"){   ss >> sval; this->spectralUnits = makelower(sval); }
-      if(makelower(arg)=="drawborders"){     ss >> sval; this->borders = flagify(sval); }
-      if(makelower(arg)=="verbose"){         ss >> sval; this->verbose = flagify(sval); }
+      if(makelower(arg)=="drawborders"){     ss >> sval; this->borders = boolify(sval); }
+      if(makelower(arg)=="verbose"){         ss >> sval; this->verbose = boolify(sval); }
     }
   }
 }
