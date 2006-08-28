@@ -21,7 +21,19 @@ void Cube::drawMomentCutout(Detection &object)
    */
 
   bool flagBlankPix = this->par.getFlagBlankPix();
-  this->par.setFlagBlankPix(true);
+  int blankKW;
+  float bscaleKW,bzeroKW,blankVal;
+  if(!flagBlankPix){
+    this->par.setFlagBlankPix(true);
+    blankKW =this->par.getBlankKeyword();
+    bscaleKW=this->par.getBscaleKeyword();
+    bzeroKW =this->par.getBzeroKeyword();
+    this->par.setBlankKeyword(1);
+    this->par.setBzeroKeyword(0.);
+    this->par.setBscaleKeyword(-100.1234);  
+    blankVal = this->par.getBscaleKeyword();
+  }
+  else blankVal = this->par.getBlankPixVal();
 
   float x1,x2,y1,y2;
   cpgqwin(&x1,&x2,&y1,&y2);
@@ -31,7 +43,6 @@ void Cube::drawMomentCutout(Detection &object)
     size = object.getYmax()-object.getYmin()+1;
   size += 20;
 
-  float blankVal = this->par.getBlankPixVal();
 
   long xmin = (object.getXmax()+object.getXmin())/2 - size/2 + 1;
   long xmax = (object.getXmax()+object.getXmin())/2 + size/2;
@@ -112,7 +123,12 @@ void Cube::drawMomentCutout(Detection &object)
   cpgsci(1);
   cpgswin(x1,x2,y1,y2);
 
-  this->par.setFlagBlankPix(flagBlankPix);
+  if(!flagBlankPix){
+    this->par.setFlagBlankPix(flagBlankPix);
+    this->par.setBlankKeyword(blankKW);
+    this->par.setBzeroKeyword(bzeroKW);
+    this->par.setBscaleKeyword(bscaleKW);
+  }
 
 }
 
