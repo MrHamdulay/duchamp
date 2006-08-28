@@ -8,6 +8,7 @@
 #include <wcsunits.h>
 #include <duchamp.hh>
 #include <param.hh>
+#include <config.h>
 #include <Utils/utils.hh>
 
 // Define funtion to print bools as words, in case the compiler doesn't recognise

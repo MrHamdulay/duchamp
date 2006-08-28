@@ -200,7 +200,9 @@ should be assigned to them. The syntax used is \texttt{paramName
 value}. Parameter names are not case-sensitive, and lines in the input
 file that start with \texttt{\#} are ignored. If a parameter is listed
 more than once, the latter value is used, but otherwise the order in
-which the parameters are listed in the input file is arbitrary.
+which the parameters are listed in the input file is
+arbitrary. Example input files can be seen in
+Appendix~\ref{app-input}.
 
 If a parameter is not listed, the default value is assumed. The
 defaults are chosen to provide a good result (using the reconstruction
@@ -211,9 +213,8 @@ with their default values in parentheses.
 
 The parameters with names starting with \texttt{flag} are stored as
 \texttt{bool} variables, and so are either \texttt{true = 1} or
-\texttt{false = 0}. \duchamp\ will only read them from the file as
-integers, and so they should be entered in the file as 0 or 1 (see
-example file in Appendix~\ref{app-input}).
+\texttt{false = 0}. They can be entered in the file either in text or
+integer format -- \duchamp\ will read them correctly in either case. 
 
 \section{What \duchamp\ is doing}
 \label{sec-flow}
@@ -1268,8 +1269,8 @@ imageFile       /DATA/SITAR_1/whi550/cubes/H201_abcde_luther_chop.fits
 logFile         logfile.txt
 outFile         results.txt
 spectraFile     spectra.ps
-flagSubsection  0
-flagOutputRecon 0
+flagSubsection  false
+flagOutputRecon false
 flagOutputResid 0
 flagBlankPix    1
 flagMW          1
@@ -1289,13 +1290,15 @@ threshSpatial   3
 threshVelocity  7
 \end{verbatim}
 
-Note that it is not necessary to include all these parameters in the
-file, only those that need to be changed from the defaults (as listed
-in Appendix~\ref{app-param}), which in this case would be very few. A
+Note that, as in this example, the flag parameters can be entered as
+strings (true/false) or integers (1/0). Also, note that it is not
+necessary to include all these parameters in the file, only those that
+need to be changed from the defaults (as listed in
+Appendix~\ref{app-param}), which in this case would be very few. A
 minimal parameter file might look like:
 \begin{verbatim}
 imageFile       /DATA/SITAR_1/whi550/cubes/H201_abcde_luther_chop.fits
-flagLog         0
+flagLog         false
 snrRecon        3
 snrCut          2.5
 minChannels     4
