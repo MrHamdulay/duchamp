@@ -6,9 +6,12 @@
 #include <string>
 #include <vector>
 
+#include <param.hh>
+
 using std::string;
 using std::vector;
 
+class Detection;
 namespace Column
 {
 
@@ -57,6 +60,9 @@ namespace Column
     }
 
   };
+
+  ColSet getLogColSet(vector<Detection> &objectList);
+  ColSet getFullColSet(vector<Detection> &objectList, FitsHeader &head);
 
 }
 

@@ -22,39 +22,8 @@ int main(int argc, char * argv[])
 
   string paramFile,fitsfile;
   Cube *cube = new Cube;
-  Param *par = new Param;
 
-  if(argc==1){
-    std::cout << ERR_USAGE_MSG;
-    return 1;
-  }
-  else{
-    char c;
-    while( ( c = getopt(argc,argv,"p:f:hv") )!=-1){
-      switch(c) {
-      case 'p':
-	paramFile = optarg;
-	cube->readParam(paramFile);
-	break;
-      case 'f':
-	fitsfile = optarg;
-	par->setImageFile(fitsfile);
-	cube->saveParam(*par);
-	break;
-      case 'v':
-	std::cout << PROGNAME << " version " << VERSION << std::endl;
-	return 1;
-	break;
-      case 'h':
-      default :
-	std::cout << ERR_USAGE_MSG;
-	return 1;
-	break;
-      }
-    }
-  }
-
-  delete par;
+  if(cube->getopts(argc,argv)==FAILURE) return 1;
 
   if(cube->pars().getImageFile().empty()){
     duchampError("mainDuchamp",

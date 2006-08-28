@@ -194,7 +194,8 @@ public:
     }
     return getCube(fname);
   };
-  void    initialiseCube(long *dimensions);
+  void    initialiseCube(long *dimensions);  // in cubes.cc
+  int     getopts(int argc, char ** argv);   // in cubes.cc
   void    saveReconstructedCube();
   int     readReconCube();
 
@@ -280,7 +281,7 @@ public:
   void    outputDetectionList();                           // in Cubes/detectionIO.cc
   void    logDetectionList();                              // in Cubes/detectionIO.cc
   void    logDetection(Detection obj, int counter);        // in Cubes/detectionIO.cc
-  void    setupColumns();                                  // in Detection/columns.cc
+  void    setupColumns();                                  // in Cubes/cubes.cc
 
   // Graphical plotting of the cube and the detections.
   void    plotBlankEdges();                                // in Cubes/cubes.cc

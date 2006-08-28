@@ -1,8 +1,13 @@
+#include <unistd.h>
 #include <iostream>
 #include <iomanip>
 #include <vector>
 #include <string>
+
 #include <wcs.h>
+
+#include <duchamp.hh>
+#include <param.hh>
 #include <Cubes/cubes.hh>
 #include <Detection/detection.hh>
 #include <Utils/utils.hh>
@@ -223,11 +228,13 @@ void Image::removeMW()
    *    equal to 1.
    *  The values of the MW channels are set to 0, unless they are BLANK.
    */ 
-  int maxMW = this->par.getMaxMW();
-  int minMW = this->par.getMinMW();
-  if(this->par.getFlagMW() && (this->axisDim[1]==1)){
-    for(int z=0;z<this->axisDim[0];z++){
-      if(!this->isBlank(z) && this->par.isInMW(z)) this->array[z]=0.;
+  if(this->par.getFlagMW()){
+    int maxMW = this->par.getMaxMW();
+    int minMW = this->par.getMinMW();
+    if(this->axisDim[1]==1){
+      for(int z=0;z<this->axisDim[0];z++){
+	if(!this->isBlank(z) && this->par.isInMW(z)) this->array[z]=0.;
+      }
     }
   }
 }
@@ -316,10 +323,6 @@ Cube::Cube(long *dimensions){
   this->axisDim = new long[3];
   for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
   for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
-//   this->wcs = new wcsprm;
-//   this->wcs->flag=-1;
-//   wcsini(true,3,this->wcs); 
-//   flagWCS = false;
 }
 
 void Cube::initialiseCube(long *dimensions){
@@ -342,10 +345,55 @@ void Cube::initialiseCube(long *dimensions){
   this->axisDim = new long[3];
   for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
   for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
-//   this->wcs = new wcsprm;
-//   this->wcs->flag=-1;
-//   wcsini(true,3,this->wcs); 
 }
+
+int Cube::getopts(int argc, char ** argv)
+{
+  /**
+   *   Cube::getopt
+   *    A front-end to read in the command-line options,
+   *     and then read in the correct parameters to the cube->par
+   */
+
+  int returnValue;
+  if(argc==1){
+    std::cout << ERR_USAGE_MSG;
+    returnValue = FAILURE;
+  }
+  else {
+    string file;
+    Param *par = new Param;
+    char c;
+    while( ( c = getopt(argc,argv,"p:f:hv") )!=-1){
+      switch(c) {
+      case 'p':
+	file = optarg;
+	this->readParam(file);
+	returnValue = SUCCESS;
+	break;
+      case 'f':
+	file = optarg;
+	par->setImageFile(file);
+	this->saveParam(*par);
+	returnValue = SUCCESS;
+	break;
+      case 'v':
+	std::cout << PROGNAME << " version " << VERSION << std::endl;
+	returnValue = FAILURE;
+	break;
+      case 'h':
+      default :
+	std::cout << ERR_USAGE_MSG;
+	returnValue = FAILURE;
+	break;
+      }
+    }
+    delete par;
+  }
+  return returnValue;
+}
+
+
 
 void Cube::saveArray(float *input, long size){
   // Need check for change in number of pixels!
@@ -501,6 +549,24 @@ float Cube::enclosedFlux(Detection obj)
   for(int i=0;i<fluxArray.size();i++) 
     if(!this->par.isBlank(fluxArray[i])) sum+=fluxArray[i];
   return sum;
+}
+
+void Cube::setupColumns()
+{
+  /**
+   *  Cube::setupColumns()
+   *
+   *   A front-end to the two ColSet setup routines in
+   *    columns.cc.
+   */ 
+
+
+  this->logColSet.vec.clear();
+  this->logColSet = getLogColSet(this->objectList);
+
+  this->fullColSet.vec.clear();
+  this->fullColSet = getFullColSet(this->objectList, this->head);
+
 }
 
 bool Cube::objAtEdge(Detection obj)

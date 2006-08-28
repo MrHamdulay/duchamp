@@ -20,11 +20,11 @@ void mergeIntoList(Detection &object, vector <Detection> &objList, Param &par)
   par.setFlagAdjacent(true);
   float threshold = par.getThreshV();
   par.setThreshV(1.);
+
   long ctr = 0;
   if(objList.size()>0){
     do {
       Detection *obj2 = new Detection;
-//       *obj2 = objList.at(ctr);
       *obj2 = objList[ctr];
       if(areClose(object, *obj2, par)){
 	obj2->addAnObject(object);
