@@ -37,7 +37,7 @@ public:
   DataArray(short int nDim){numDim=nDim; numPixels=0;};
   DataArray(short int nDim, long size);
   DataArray(short int nDim, long *dimensions);
-  virtual ~DataArray(){};
+  virtual ~DataArray();
   // Size and Dimension related
   long                 getDimX(){if(numDim>0) return axisDim[0]; else return 0;};
   long                 getDimY(){if(numDim>1) return axisDim[1]; else return 1;};
@@ -100,7 +100,7 @@ public:
     numDim=2;};
   Image(long nPix);
   Image(long *dimensions);
-  virtual ~Image(){};
+  virtual ~Image();
 
   // Defining the array
   void      saveArray(float *input, long size);
@@ -179,7 +179,7 @@ public:
   };
   Cube(long nPix);
   Cube(long *dimensions);
-  virtual ~Cube(){};            // destructor
+  virtual ~Cube();            // destructor
 
   // additional accessor functions -- in Cubes/cubes.cc unless otherwise specified.
 

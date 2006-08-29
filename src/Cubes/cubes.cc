@@ -38,6 +38,13 @@ DataArray::DataArray(short int nDim, long *dimensions){
   for(int i=0;i<nDim;i++) this->axisDim[i] = dimensions[i];
 }
 
+DataArray::~DataArray()
+{
+  delete [] array;
+  delete [] axisDim;
+  objectList.clear();
+}
+
 void DataArray::getDimArray(long *output){
   for(int i=0;i<this->numDim;i++) output[i] = this->axisDim[i];
 }
@@ -127,6 +134,14 @@ Image::Image(long *dimensions){
   for(int i=0;i<size;i++) this->mask[i] = 0;
 }
 
+Image::~Image(){
+  if(this->numPixels > 0){
+    delete [] this->pValue;
+    delete [] this->mask;
+  }
+}
+
+
 void Image::saveArray(float *input, long size){
   // Need check for change in number of pixels!
   if(this->numPixels>0){
@@ -135,9 +150,11 @@ void Image::saveArray(float *input, long size){
     delete [] mask;
   }
   this->numPixels = size;
-  this->array = new float[size];
-  this->pValue = new float[size];
-  this->mask = new short int[size];
+  if(this->numPixels>0){
+    this->array = new float[size];
+    this->pValue = new float[size];
+    this->mask = new short int[size];
+  }
   for(int i=0;i<size;i++) this->array[i] = input[i];
   for(int i=0;i<size;i++) this->mask[i] = 0;
 }
@@ -323,6 +340,14 @@ Cube::Cube(long *dimensions){
   this->axisDim = new long[3];
   for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
   for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
+}
+
+Cube::~Cube()
+{
+  delete [] detectMap;
+  delete [] recon;
+  delete [] baseline;
+  delete [] specMean,specSigma,chanMean,chanSigma;
 }
 
 void Cube::initialiseCube(long *dimensions){

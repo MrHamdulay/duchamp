@@ -128,6 +128,7 @@ ColSet Column::getLogColSet(vector<Detection> &objectList)
     if((o==0)||(size < tempsize)) size = tempsize;
   }
   for(int i=tempC.width;i<size;i++) tempC.widen();
+  newset.vec.push_back(tempC);
 
   // F_peak
   tempC = getDefaultCol(12);
@@ -294,6 +295,7 @@ ColSet Column::getFullColSet(vector<Detection> &objectList, FitsHeader &head)
       if((o==0)||(size < tempsize ))  size = tempsize;
     }
     for(int i=tempC.width;i<size;i++) tempC.widen();
+    newset.vec.push_back(tempC);
   }
   else{
     //F_tot

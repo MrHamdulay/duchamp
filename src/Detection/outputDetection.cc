@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <string>
 #include <vector>
-#include <stdio.h>
+#include <duchamp.hh>
 #include <param.hh>
 #include <Detection/detection.hh>
 #include <Cubes/cubes.hh>
@@ -110,25 +110,32 @@ void Detection::outputDetectionText(std::ostream &stream, ColSet columns, int id
    *  Also prints a counter, provided as an input.
    */
 
-  stream << setfill(' ');
-  stream.setf(std::ios::fixed);  
-  columns.vec[0].entry(stream,idNumber);
-  stream << setprecision(xyzPrec);
-  columns.vec[1].entry(stream,this->xcentre + this->xSubOffset);
-  columns.vec[2].entry(stream,this->ycentre + this->ySubOffset);
-  columns.vec[3].entry(stream,this->zcentre + this->zSubOffset);
-  stream << setprecision(fluxPrec);
-  columns.vec[4].entry(stream,this->totalFlux);
-  columns.vec[5].entry(stream,this->peakFlux);
-  columns.vec[6].entry(stream,this->xmin + this->xSubOffset);
-  columns.vec[7].entry(stream,this->xmax + this->xSubOffset);
-  columns.vec[8].entry(stream,this->ymin + this->ySubOffset);
-  columns.vec[9].entry(stream,this->ymax + this->ySubOffset);
-  columns.vec[10].entry(stream,this->zmin + this->zSubOffset);
-  columns.vec[11].entry(stream,this->zmax + this->zSubOffset);
-  columns.vec[12].entry(stream,int(this->pix.size()));
-  stream<<endl;
-
+  if(columns.vec.size()!=13){
+    std::stringstream errmsg;
+    errmsg << "columnSet used has wrong number of columns (" 
+	   << columns.vec.size() << ")\nshould be 13.\n";
+    duchampError("outputDetectionText",errmsg.str());
+  }
+  else{
+    stream << setfill(' ');
+    stream.setf(std::ios::fixed);  
+    columns.vec[0].entry(stream,idNumber);
+    stream << setprecision(xyzPrec);
+    columns.vec[1].entry(stream,this->xcentre + this->xSubOffset);
+    columns.vec[2].entry(stream,this->ycentre + this->ySubOffset);
+    columns.vec[3].entry(stream,this->zcentre + this->zSubOffset);
+    stream << setprecision(fluxPrec);
+    columns.vec[4].entry(stream,this->totalFlux);
+    columns.vec[5].entry(stream,this->peakFlux);
+    columns.vec[6].entry(stream,this->xmin + this->xSubOffset);
+    columns.vec[7].entry(stream,this->xmax + this->xSubOffset);
+    columns.vec[8].entry(stream,this->ymin + this->ySubOffset);
+    columns.vec[9].entry(stream,this->ymax + this->ySubOffset);
+    columns.vec[10].entry(stream,this->zmin + this->zSubOffset);
+    columns.vec[11].entry(stream,this->zmax + this->zSubOffset);
+    columns.vec[12].entry(stream,this->pix.size());
+    stream<<endl;
+  }
 }
 
 string Detection::outputLabelWCS()

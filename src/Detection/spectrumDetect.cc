@@ -22,7 +22,7 @@ void Image::spectrumDetect()
   STATUS status;
 //   vector <Detection> *obj = new vector <Detection>;
   Detection *obj = new Detection;
-  Pixel pix;
+  Pixel *pix = new Pixel;
   bool isObject;
 
   status = NONOBJECT;
@@ -30,7 +30,7 @@ void Image::spectrumDetect()
 
 //     isObject=false;
 //     if(pos<this->axisDim[0]){
-//       pix.setXYF(pos, 0, this->array[pos] );
+//       pix->setXYF(pos, 0, this->array[pos] );
 //       isObject = this->isDetection(pos,0);
 //     }
 
@@ -39,7 +39,7 @@ void Image::spectrumDetect()
 // 	status = OBJECT;
 // 	obj->resize(obj->size()+1);
 //       }
-//       obj->back().addPixel(pix);
+//       obj->back().addPixel(*pix);
 //     }
 //     else if(obj->size()>0){
 //       if(obj->back().getSize() >= this->minSize){ // is it big enough?
@@ -56,7 +56,7 @@ void Image::spectrumDetect()
 
     isObject=false;
     if(pos<this->axisDim[0]){
-      pix.setXYF(pos, 0, this->array[pos] );
+      pix->setXYF(pos, 0, this->array[pos] );
       isObject = this->isDetection(pos,0);
     }
 
@@ -64,7 +64,7 @@ void Image::spectrumDetect()
       if(status != OBJECT){
 	status = OBJECT;
       }
-      obj->addPixel(pix);
+      obj->addPixel(*pix);
     }
     else{
       if(status == OBJECT){ // if we were on an object and have left
@@ -82,5 +82,5 @@ void Image::spectrumDetect()
   }
 
   // clean up and remove declared arrays
-  delete obj;
+  delete obj,pix;
 }

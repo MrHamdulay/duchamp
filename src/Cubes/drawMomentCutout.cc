@@ -52,40 +52,49 @@ void Cube::drawMomentCutout(Detection &object)
   long zmax = object.getZmax();
 
   float *image = new float[size*size];
-  for(int i=0;i<size*size;i++) image[i]=blankVal;
+  for(int i=0;i<size*size;i++) image[i]=0.;
 
-  int imPos,cubePos;
-  float val;
+  bool *isGood = new bool[size*size];
   for(int z=zmin; z<=zmax; z++){
     for(int x=xmin; x<=xmax; x++){
       for(int y=ymin; y<=ymax; y++){
+	isGood[(y-ymin) * size + (x-xmin)] = !this->isBlank(x,y,z);
+      }
+    }
+  }
+
+  int imPos,cubePos;
+  for(int z=zmin; z<=zmax; z++){
+    for(int x=xmin; x<=xmax; x++){
+      for(int y=ymin; y<=ymax; y++){
+
 	imPos = (y-ymin) * size + (x-xmin);
 	cubePos = (z)*this->axisDim[0]*this->axisDim[1]+(y)*this->axisDim[0]+(x);
-	if((x<0)||(x>=this->axisDim[0])||(y<0)||(y>=this->axisDim[1])) // if outside the boundaries
+
+	if(   (x<0)||(x>=this->axisDim[0])  // if outside the boundaries
+	   || (y<0)||(y>=this->axisDim[1])  // if outside the boundaries
+	   || !isGood[imPos] )              // if not blank
 	  image[imPos] = blankVal;
-	else{
-	  val = this->array[cubePos];
-	  if (!this->par.isBlank(val)) // if pixel's not blank
-	    image[imPos] += val;
-	}
+	else 
+	  image[imPos] += this->array[cubePos];
+
       }
     }
   }
 
   for(int i=0;i<size*size;i++){
-    if(!this->par.isBlank(image[i])){ // if there is some signal on this pixel
-      image[i]-=blankVal;   // remove the starting value so we just have the signal
-      image[i] /= float(zmax-zmin+1); // normalise by the velocity width
-    }
+    // if there is some signal on this pixel, normalise by the velocity width
+    if(isGood[i]) image[i] /= float(zmax-zmin+1); 
   }
 
-  // now work out the greyscale display limits, excluding blank pixels where necessary.
+  // now work out the greyscale display limits, 
+  //   excluding blank pixels where necessary.
   float z1,z2,median,madfm;
   int ct=0;
-  while(this->par.isBlank(image[ct])) ct++; // move to first non-blank pixel
+  while(!isGood[ct]) ct++; // move to first non-blank pixel
   z1 = z2 = image[ct];
   for(int i=1;i<size*size;i++){
-    if(!this->par.isBlank(image[i])){
+    if(isGood[i]){
       if(image[i]<z1) z1=image[i];
       if(image[i]>z2) z2=image[i];
     }
@@ -98,9 +107,14 @@ void Cube::drawMomentCutout(Detection &object)
 
   delete [] image;
 
-  // Draw the borders around the object
   int ci;
   cpgqci(&ci);
+
+  // Draw the border of the BLANK region, if there is one...
+  cpgsci(6);
+  drawBlankEdges(image, size, size, par);
+
+  // Draw the borders around the object
   cpgsci(4);
   cpgsfs(2);
   if(this->par.drawBorders()) 

@@ -55,20 +55,20 @@ FitsHeader::FitsHeader(const FitsHeader& h){
   wcsini(true,h.wcs->naxis,this->wcs); 
   wcscopy(true,h.wcs,this->wcs); 
   wcsset(this->wcs);
-  nwcs = h.nwcs;
-  wcsIsGood = h.wcsIsGood;
-  spectralUnits = h.spectralUnits;
-  fluxUnits = h.fluxUnits;
-  intFluxUnits = h.intFluxUnits;
-  beamSize = h.beamSize;
-  bmajKeyword = h.bmajKeyword;
-  bminKeyword = h.bminKeyword;
-  blankKeyword = h.blankKeyword;
-  bzeroKeyword = h.bzeroKeyword;
-  bscaleKeyword = h.bscaleKeyword;
-  scale = h.scale;
-  offset = h.offset;
-  power = h.power;
+  this->nwcs = h.nwcs;
+  this->wcsIsGood = h.wcsIsGood;
+  this->spectralUnits = h.spectralUnits;
+  this->fluxUnits = h.fluxUnits;
+  this->intFluxUnits = h.intFluxUnits;
+  this->beamSize = h.beamSize;
+  this->bmajKeyword = h.bmajKeyword;
+  this->bminKeyword = h.bminKeyword;
+  this->blankKeyword = h.blankKeyword;
+  this->bzeroKeyword = h.bzeroKeyword;
+  this->bscaleKeyword = h.bscaleKeyword;
+  this->scale = h.scale;
+  this->offset = h.offset;
+  this->power = h.power;
 }
 
 FitsHeader& FitsHeader::operator= (const FitsHeader& h){
@@ -77,20 +77,20 @@ FitsHeader& FitsHeader::operator= (const FitsHeader& h){
   wcsini(true,h.wcs->naxis,this->wcs); 
   wcscopy(true,h.wcs,this->wcs); 
   wcsset(this->wcs);
-  nwcs = h.nwcs;
-  wcsIsGood = h.wcsIsGood;
-  spectralUnits = h.spectralUnits;
-  fluxUnits = h.fluxUnits;
-  intFluxUnits = h.intFluxUnits;
-  beamSize = h.beamSize;
-  bmajKeyword = h.bmajKeyword;
-  bminKeyword = h.bminKeyword;
-  blankKeyword = h.blankKeyword;
-  bzeroKeyword = h.bzeroKeyword;
-  bscaleKeyword = h.bscaleKeyword;
-  scale = h.scale;
-  offset = h.offset;
-  power = h.power;
+  this->nwcs = h.nwcs;
+  this->wcsIsGood = h.wcsIsGood;
+  this->spectralUnits = h.spectralUnits;
+  this->fluxUnits = h.fluxUnits;
+  this->intFluxUnits = h.intFluxUnits;
+  this->beamSize = h.beamSize;
+  this->bmajKeyword = h.bmajKeyword;
+  this->bminKeyword = h.bminKeyword;
+  this->blankKeyword = h.blankKeyword;
+  this->bzeroKeyword = h.bzeroKeyword;
+  this->bscaleKeyword = h.bscaleKeyword;
+  this->scale = h.scale;
+  this->offset = h.offset;
+  this->power = h.power;
 }
 
 void FitsHeader::setWCS(wcsprm *w)
@@ -306,6 +306,67 @@ Param::Param(){
   this->verbose         = true;
   this->spectralUnits   = "km/s";
 };
+
+Param& Param::operator= (const Param& p)
+{
+  this->imageFile       = p.imageFile;
+  this->flagSubsection  = p.flagSubsection; 
+  this->subsection      = p.subsection;     
+  this->flagReconExists = p.flagReconExists;
+  this->reconFile       = p.reconFile;      
+  this->flagLog         = p.flagLog;        
+  this->logFile         = p.logFile;       
+  this->outFile         = p.outFile;        
+  this->spectraFile     = p.spectraFile;    
+  this->flagOutputRecon = p.flagOutputRecon;
+  this->flagOutputResid = p.flagOutputResid;
+  this->flagVOT         = p.flagVOT;         
+  this->votFile         = p.votFile;        
+  this->flagKarma       = p.flagKarma;      
+  this->karmaFile       = p.karmaFile;      
+  this->flagMaps        = p.flagMaps;       
+  this->detectionMap    = p.detectionMap;   
+  this->momentMap       = p.momentMap;      
+  this->flagBlankPix    = p.flagBlankPix;   
+  this->blankPixValue   = p.blankPixValue;  
+  this->blankKeyword    = p.blankKeyword;   
+  this->bscaleKeyword   = p.bscaleKeyword;  
+  this->bzeroKeyword    = p.bzeroKeyword;   
+  this->flagUsingBlank  = p.flagUsingBlank; 
+  this->flagMW          = p.flagMW;         
+  this->maxMW           = p.maxMW;          
+  this->minMW           = p.minMW;         
+  this->numPixBeam      = p.numPixBeam;     
+  this->flagTrimmed     = p.flagTrimmed;    
+  this->borderLeft      = p.borderLeft;     
+  this->borderRight     = p.borderRight;    
+  this->borderBottom    = p.borderBottom;   
+  this->borderTop       = p.borderTop;      
+  this->xSubOffset      = p.xSubOffset;     
+  this->ySubOffset      = p.ySubOffset;     
+  this->zSubOffset      = p.zSubOffset;
+  this->flagBaseline    = p.flagBaseline;
+  this->flagNegative    = p.flagNegative;
+  this->flagGrowth      = p.flagGrowth;
+  this->growthCut       = p.growthCut;
+  this->flagFDR         = p.flagFDR;
+  this->alphaFDR        = p.alphaFDR;
+  this->snrCut          = p.snrCut;
+  this->flagATrous      = p.flagATrous;
+  this->reconDim        = p.reconDim;
+  this->scaleMin        = p.scaleMin;
+  this->snrRecon        = p.snrRecon;
+  this->filterCode      = p.filterCode;
+  this->flagAdjacent    = p.flagAdjacent;
+  this->threshSpatial   = p.threshSpatial;
+  this->threshVelocity  = p.threshVelocity;
+  this->minChannels     = p.minChannels;
+  this->minPix          = p.minPix;
+  this->spectralMethod  = p.spectralMethod;
+  this->borders         = p.borders;
+  this->verbose         = p.verbose;
+  this->spectralUnits   = p.spectralUnits;
+}
 
 /****************************************************************/
 ///////////////////////////////////////////////////

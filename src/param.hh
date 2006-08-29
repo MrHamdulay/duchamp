@@ -21,6 +21,7 @@ class Param
 public:
   Param();
   virtual ~Param(){};
+  Param& operator= (const Param& p);
   void parseSubsection();               // in param.cc
   void readParams(string paramfile);    // in param.cc
   void copyHeaderInfo(FitsHeader &head);// in param.cc

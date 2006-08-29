@@ -23,132 +23,141 @@ void Cube::ObjectMerger()
     //  but is the one worked on.
     vector <Detection> *currentList = new vector <Detection>(this->objectList.size());
     *currentList = this->objectList;
-    vector <Detection>::iterator iter;
-
-    // The Cube's objectList is cleared, and then the final objects are added to it at the end.
     this->objectList.clear();
-  
-    int counter, compCounter,numLoops;
-    bool areNear,isMatch;
-    long gap;
 
-    bool isVerb = this->par.isVerbose();
+    mergeList(*currentList, this->par);
 
-    if(this->par.getFlagGrowth()) numLoops=2;
-    else numLoops = 1;
-
-    for(int nloop = 0; nloop < numLoops; nloop++){
-
-      counter=0;
-      while( counter < (currentList->size()-1) ){
-	if(isVerb){
-	  std::cout.setf(std::ios::right);
-	  if(nloop>0) std::cout << "Progress#2: " << std::setw(6) << counter << "/" ;
-	  else std::cout << "Progress: " << std::setw(6) << counter << "/" ;
-	  std::cout.unsetf(std::ios::right);
-	  std::cout.setf(std::ios::left);
-	  std::cout << std::setw(6) << currentList->size() 
-		    << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b" << std::flush;
-	  if(nloop>0) std::cout << "\b\b" << std::flush; ;
-	  std::cout.unsetf(std::ios::left);
-	}
-
-	compCounter = counter + 1;
-	do {
-
-	  Detection *obj1 = new Detection;
-// 	  *obj1 = currentList->at(counter);
-	  *obj1 = (*currentList)[counter];
-	  Detection *obj2 = new Detection;
-//	  *obj2 = currentList->at(compCounter);
-	  *obj2 = (*currentList)[compCounter];
-
-	  if(areClose(*obj1, *obj2, this->par)){
-	    obj1->addAnObject( *obj2 );
-	    iter = currentList->begin() + compCounter;
-	    currentList->erase(iter);
-	    iter = currentList->begin() + counter;
-	    currentList->erase(iter);
-	    currentList->push_back( *obj1 );
-
-	    if(isVerb){
-	      std::cout.setf(std::ios::right);
-	      std::cout << "Progress: "
-			<< std::setw(6) << counter << "/";
-	      std::cout.unsetf(std::ios::right);
-	      std::cout.setf(std::ios::left);
-	      std::cout << std::setw(6) << currentList->size() 
-			<< "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b" << std::flush;
-	      std::cout.unsetf(std::ios::left);
-	    }
-	    compCounter = counter + 1;
-
-	  }
-	  else compCounter++;
-
-	  delete obj2;
-	  delete obj1;
-
-	} while( (compCounter<currentList->size()) );
-
-	counter++;
-
-      }  // end of while(counter<(currentList->size()-1)) loop
-
-      if( (nloop==0) && (this->par.getFlagGrowth()) ) {
-	std::cout << "Growing objects...     "<< std::flush;
-	this->setCubeStats();
-	vector <Detection> *newList = new vector <Detection>;
-	std::cout<< "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
-	std::cout << " Growing object #      "<< std::flush;
-	std::cout.setf(std::ios::left);
-	for(int i=0;i<currentList->size();i++){
-	  std::cout<< "\b\b\b\b\b\b"<<std::setw(6)<<i+1<<std::flush;
-	  Detection *obj = new Detection;
-// 	  *obj = currentList->at(i);
-	  *obj = (*currentList)[i];
-	  growObject(*obj,*this);
-	  newList->push_back(*obj);
-	  delete obj;
-	}
-	delete currentList;
-	currentList = newList;
-	std::cout.unsetf(std::ios::left);
-	std::cout<< "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
+    // Do growth stuff
+    if(this->par.getFlagGrowth()) {
+      std::cout << "Growing objects...     "<< std::flush;
+      this->setCubeStats();
+      vector <Detection> *newList = new vector <Detection>;
+      std::cout<< "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
+      std::cout << " Growing object #      "<< std::flush;
+      std::cout.setf(std::ios::left);
+      for(int i=0;i<currentList->size();i++){
+	std::cout<< "\b\b\b\b\b\b"<<std::setw(6)<<i+1<<std::flush;
+	Detection *obj = new Detection;
+	*obj = (*currentList)[i];
+	growObject(*obj,*this);
+	newList->push_back(*obj);
+	delete obj;
       }
+      delete currentList;
+      currentList = newList;
+      std::cout.unsetf(std::ios::left);
+      std::cout<< "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
 
-    } 
-    // when you get here, every detection in the input list has been 
-    // examined and compared to every other detection.
-
-    int listCounter = 0;
-    while(listCounter < currentList->size()){
-
-      (*currentList)[listCounter].addOffsets(this->par);
-      (*currentList)[listCounter].calcParams();
-
-      // Now, for each object in the newly modified list, we need to check if 
-      // they pass the requirements on the minimum no. of channels and minimum 
-      // number of spatial pixels
-      // If not, remove from list.
-
-      if( (*currentList)[listCounter].hasEnoughChannels(this->par.getMinChannels())
-	  && ((*currentList)[listCounter].getSpatialSize() >= this->par.getMinPix()) ){
-	listCounter++;
-	if(isVerb){
-	  std::cout << "Final total:"<<std::setw(5)<<listCounter<<"      "
-		    << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
-	}
-      }      
-      else currentList->erase(currentList->begin()+listCounter);
-
+      // and do the merging again to pick up objects that have
+      //  grown into each other.
+      mergeList(*currentList, this->par);
     }
+
+    finaliseList(*currentList, this->par);
 
     this->objectList = *currentList;
     currentList->clear();
     delete currentList;
 
   }
-
 }
+
+void mergeList(vector<Detection> &objList, Param &par)
+{
+
+  if(objList.size() > 0){
+
+    bool isVerb = par.isVerbose();
+    vector <Detection>::iterator iter;
+
+    int counter=0, compCounter;
+    while( counter < (objList.size()-1) ){
+      if(isVerb){
+	std::cout.setf(std::ios::right);
+// if(nloop>0) std::cout << "Progress#2: " << std::setw(6) << counter << "/" ;
+// 	else 
+	std::cout << "Progress: " << std::setw(6) << counter << "/" ;
+	std::cout.unsetf(std::ios::right);
+	std::cout.setf(std::ios::left);
+	std::cout << std::setw(6) << objList.size() 
+		  << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b" << std::flush;
+// 	if(nloop>0) std::cout << "\b\b" << std::flush; ;
+	std::cout.unsetf(std::ios::left);
+      }
+
+      compCounter = counter + 1;
+
+      do {
+
+	Detection *obj1 = new Detection;
+	*obj1 = objList[counter];
+	Detection *obj2 = new Detection;
+	*obj2 = objList[compCounter];
+
+	if(areClose(*obj1, *obj2, par)){
+	  obj1->addAnObject( *obj2 );
+	  iter = objList.begin() + compCounter;
+	  objList.erase(iter);
+	  iter = objList.begin() + counter;
+	  objList.erase(iter);
+	  objList.push_back( *obj1 );
+
+	  if(isVerb){
+	    std::cout.setf(std::ios::right);
+	    std::cout << "Progress: "
+		      << std::setw(6) << counter << "/";
+	    std::cout.unsetf(std::ios::right);
+	    std::cout.setf(std::ios::left);
+	    std::cout << std::setw(6) << objList.size() 
+		      << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b" 
+		      << std::flush;
+	    std::cout.unsetf(std::ios::left);
+	  }
+
+	  compCounter = counter + 1;
+
+	}
+	else compCounter++;
+
+	delete obj2;
+	delete obj1;
+
+      } while( (compCounter<objList.size()) );
+
+      counter++;
+
+    }  // end of while(counter<(objList.size()-1)) loop
+  }
+}
+
+
+void finaliseList(vector<Detection> &objList, Param &par)
+{
+  // when you get here, every detection in the input list has been 
+  // examined and compared to every other detection.
+
+  int listCounter = 0;
+  while(listCounter < objList.size()){
+
+    objList[listCounter].addOffsets(par);
+    objList[listCounter].calcParams();
+
+    // Now, for each object in the newly modified list, we need to check if 
+    // they pass the requirements on the minimum no. of channels and minimum 
+    // number of spatial pixels
+    // If not, remove from list.
+
+    if( objList[listCounter].hasEnoughChannels(par.getMinChannels())
+	&& (objList[listCounter].getSpatialSize() >= par.getMinPix()) ){
+      listCounter++;
+      if(par.isVerbose()){
+	std::cout << "Final total:"<<std::setw(5)<<listCounter<<"      "
+		  << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
+      }
+    }      
+    else objList.erase(objList.begin()+listCounter);
+
+  }
+}
+
 
