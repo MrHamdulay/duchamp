@@ -245,8 +245,9 @@ vector <Detection> combineLists(vector <Detection> &first, vector <Detection> &s
 
 bool areClose(Detection &object1, Detection &object2, Param &par);
 void mergeIntoList(Detection &object, vector <Detection> &objList, Param &par);
-void mergeList(vector<Detection> &objList, Param &par);
-void finaliseList(vector<Detection> &objList, Param &par);
+void mergeList(vector<Detection> &objList, Param &par);     //in Cubes/Merger.cc
+void finaliseList(vector<Detection> &objList, Param &par);  //in Cubes/Merger.cc
+void ObjectMerger(vector<Detection> &objList, Param &par);  //in Cubes/Merger.cc
 
 // A GENERIC DETECTION TEST  -- in thresholding_functions.cc
 bool isDetection(float value, float mean, float sigma, float cut);

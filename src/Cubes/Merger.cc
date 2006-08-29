@@ -6,16 +6,18 @@
 #include <Detection/detection.hh>
 #include <Utils/utils.hh>
 
-/**
- * Cube::ObjectMerger():
- *   A Function that takes a Cube's list of Detections and
- *   combines those that are close (according to the 
- *   thresholds specified in the parameter list par).
- *   It also excludes those that do not make the minimum
- *   number of channels requirement.
- */
 void Cube::ObjectMerger()
 {
+  /**
+   * Cube::ObjectMerger():
+   *   A Function that takes a Cube's list of Detections and
+   *   combines those that are close (according to the 
+   *   thresholds specified in the parameter list par).
+   *   It also excludes those that do not make the minimum
+   *   number of channels requirement.
+   *   A front end to simpler functions mergeList and finaliseList,
+   *    with code to cover the option of growing objects.
+   */
 
   if(this->objectList.size() > 0){
 
@@ -62,8 +64,27 @@ void Cube::ObjectMerger()
   }
 }
 
+void ObjectMerger(vector<Detection> &objList, Param &par)
+{
+  /**
+   *  ObjectMerger(objList, par)
+   *   A simple front-end to the two following functions,
+   *    so that if you want to merge a single list, it will
+   *    do both the merging and the cleaning up afterwards.
+   */
+  mergeList(objList, par);
+  finaliseList(objList, par);
+}
+
 void mergeList(vector<Detection> &objList, Param &par)
 {
+  /**
+   *  mergeList(objList, par)
+   *   A function that merges any objects in the list of 
+   *    Detections that are within stated threshold distances.
+   *   Determination of whether objects are close is done by
+   *    the function areClose. 
+   */
 
   if(objList.size() > 0){
 
@@ -133,8 +154,15 @@ void mergeList(vector<Detection> &objList, Param &par)
 
 void finaliseList(vector<Detection> &objList, Param &par)
 {
-  // when you get here, every detection in the input list has been 
-  // examined and compared to every other detection.
+  /**
+   *  finaliseList(objList, par)
+   *   A function that looks at each object in the Detection vector
+   *    and determines whether is passes the requirements for the
+   *    minimum number of channels and spatial pixels, as provided by
+   *    the Param set par.
+   *   In the process, the object parameters are calculated and offsets
+   *    are added.
+   */
 
   int listCounter = 0;
   while(listCounter < objList.size()){
