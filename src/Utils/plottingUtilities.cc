@@ -1,6 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <cpgplot.h>
+#include <duchamp.hh>
 #include <Utils/utils.hh>
 
 void plotLine(const float slope, const float intercept)
@@ -120,7 +121,8 @@ void drawContours(const int size, const float *x, const float *y)
   for(int i=0;i<size;i++){
     int xpos = int( (x[i] - (x1-xbin)) / xbin );
     int ypos = int( (y[i] - (y1-ybin)) / ybin );
-    if((ypos*nbin+xpos) >= (nbin*nbin)) std::cerr << "AAARRRRGGGHHHHH!!!!\n";
+    if((ypos*nbin+xpos) >= (nbin*nbin))
+      duchampError("drawContours","pixel position out of range");
     binnedarray[ypos*nbin+xpos] += 1.;
   }  
   float maxct = binnedarray[0];

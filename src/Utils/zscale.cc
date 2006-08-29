@@ -71,8 +71,6 @@ void zscale(long imagesize, float *image, float &z1, float &z2, float blankVal)
   int newsize=0;
   for(int i=0;i<imagesize;i++) if(image[i]!=blankVal) newimage[newsize++] = image[i];
 
-//   cerr<<"Sizes: "<<imagesize<<"   "<<newsize<<endl;
-
   float *smallarray = new float[nsample];
   float *ct = new float[nsample];
   long size=0;

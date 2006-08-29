@@ -160,6 +160,7 @@ void finaliseList(vector<Detection> &objList, Param &par)
    *    and determines whether is passes the requirements for the
    *    minimum number of channels and spatial pixels, as provided by
    *    the Param set par.
+   *   If it does not pass, it is removed from the list.
    *   In the process, the object parameters are calculated and offsets
    *    are added.
    */
@@ -170,17 +171,14 @@ void finaliseList(vector<Detection> &objList, Param &par)
     objList[listCounter].addOffsets(par);
     objList[listCounter].calcParams();
 
-    // Now, for each object in the newly modified list, we need to check if 
-    // they pass the requirements on the minimum no. of channels and minimum 
-    // number of spatial pixels
-    // If not, remove from list.
-
     if( objList[listCounter].hasEnoughChannels(par.getMinChannels())
 	&& (objList[listCounter].getSpatialSize() >= par.getMinPix()) ){
+
       listCounter++;
       if(par.isVerbose()){
 	std::cout << "Final total:"<<std::setw(5)<<listCounter<<"      "
 		  << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
+
       }
     }      
     else objList.erase(objList.begin()+listCounter);

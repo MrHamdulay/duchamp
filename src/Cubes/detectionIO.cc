@@ -179,8 +179,8 @@ void Cube::outputDetectionList()
   output<<"Total number of detections = "<<this->objectList.size()<<endl;
   output<<"--------------------"<<endl;
   this->setupColumns();
-  outputDetectionTextWCSHeader(output,this->fullColSet);
-  outputDetectionTextWCSHeader(std::cout,this->fullColSet);
+  outputDetectionTextHeader(output,this->fullColSet);
+  outputDetectionTextHeader(std::cout,this->fullColSet);
   for(int i=0;i<this->objectList.size();i++){
     this->objectList[i].outputDetectionTextWCS(output,this->fullColSet);
     this->objectList[i].outputDetectionTextWCS(std::cout,this->fullColSet);

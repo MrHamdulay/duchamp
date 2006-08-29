@@ -133,17 +133,9 @@ void findTrimmedHistStatsOLD(float *array, const int size, float &tmean, float &
     int bin = (int)( floor(fraction*nbin) );
     if(keep[bin]) newarray[newsize++] = array[i];
   }
-  // if(newsize==0)
-    std::cerr << size << "<->" << newsize << std::endl;
 
   findNormalStats(newarray,newsize,tmean,tsigma);
-//   cpgopen("tmp.ps/vps");
-//   cpghistlog(newsize,newarray,min,max,100,0);
-//   cpghist(newsize,newarray,min,max,100,0);
-//   cpgend();
   delete [] num,keep,newarray;
-
-//   tsigma *= trimToNormal;
 
 }
 void findTrimmedHistStats2(float *array, const int size, float &tmean, float &tsigma)

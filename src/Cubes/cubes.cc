@@ -19,23 +19,41 @@ using std::endl;
 ///////////////////////////////////////////////////
 
 DataArray::DataArray(short int nDim, long size){
-  // need error handling in case size<0 !!!
-  if(size>0) this->array = new float[size];
-  this->numPixels = size;
-  if(nDim>0) this->axisDim = new long[nDim];
-  this->numDim = nDim;
+
+  if(size<0)
+    duchampError("DataArray(nDim,size)",
+		 "Negative size -- could not define DataArray");
+  else if(nDim<0)
+    duchampError("DataArray(nDim,size)",
+		 "Negative number of dimensions -- could not define DataArray");
+  else {
+    if(size>0) this->array = new float[size];
+    this->numPixels = size;
+    if(nDim>0) this->axisDim = new long[nDim];
+    this->numDim = nDim;
+  }
 }
 
 DataArray::DataArray(short int nDim, long *dimensions){
-  int size = dimensions[0];
-  for(int i=1;i<nDim;i++) size *= dimensions[i];
-  this->numPixels = size;
-  if(size>0){
-    this->array = new float[size];
+  if(nDim<0)
+    duchampError("DataArray(nDim,dimArray)",
+		 "Negative number of dimensions -- could not define DataArray");
+  else {
+    int size = dimensions[0];
+    for(int i=1;i<nDim;i++) size *= dimensions[i];
+    if(size<0)
+      duchampError("DataArray(nDim,dimArray)",
+		   "Negative size -- could not define DataArray");
+    else{
+      this->numPixels = size;
+      if(size>0){
+	this->array = new float[size];
+      }
+      this->numDim=nDim;
+      if(nDim>0) this->axisDim = new long[nDim];
+      for(int i=0;i<nDim;i++) this->axisDim[i] = dimensions[i];
+    }
   }
-  this->numDim=nDim;
-  if(nDim>0) this->axisDim = new long[nDim];
-  for(int i=0;i<nDim;i++) this->axisDim[i] = dimensions[i];
 }
 
 DataArray::~DataArray()
@@ -54,11 +72,15 @@ void DataArray::getArray(float *output){
 }
 
 void DataArray::saveArray(float *input, long size){
-  delete [] this->array;
-  // Need check for change in number of pixels!
-  this->numPixels = size;
-  this->array = new float[size];
-  for(int i=0;i<size;i++) this->array[i] = input[i];
+  if(size != this->numPixels)
+    duchampError("DataArray::saveArray",
+		 "Input array different size to existing array. Cannot save.");
+  else {
+    if(this->numPixels>0) delete [] this->array;
+    this->numPixels = size;
+    this->array = new float[size];
+    for(int i=0;i<size;i++) this->array[i] = input[i];
+  }
 }
 
 void DataArray::getDim(long &x, long &y, long &z){
@@ -110,28 +132,36 @@ std::ostream& operator<< ( std::ostream& theStream, DataArray &array){
 
 Image::Image(long size){
   // need error handling in case size<0 !!!
-  if(size>0){
-    this->array = new float[size];
-    this->pValue = new float[size];
-    this->mask = new short int[size];
+  if(size<0)
+    duchampError("Image(size)","Negative size -- could not define Image");
+  else{
+    if(size>0){
+      this->array = new float[size];
+      this->pValue = new float[size];
+      this->mask = new short int[size];
+    }
+    this->numPixels = size;
+    this->axisDim = new long[2];
+    this->numDim = 2;
   }
-  this->numPixels = size;
-  this->axisDim = new long[2];
-  this->numDim = 2;
 }
 
 Image::Image(long *dimensions){
   int size = dimensions[0] * dimensions[1];
-  this->numPixels = size;
-  if(size>0){
-    this->array = new float[size];
-    this->pValue = new float[size];
-    this->mask = new short int[size];
+  if(size<0)
+    duchampError("Image(dimArray)","Negative size -- could not define Image");
+  else{
+    this->numPixels = size;
+    if(size>0){
+      this->array = new float[size];
+      this->pValue = new float[size];
+      this->mask = new short int[size];
+    }
+    this->numDim=2;
+    this->axisDim = new long[2];
+    for(int i=0;i<2;i++) this->axisDim[i] = dimensions[i];
+    for(int i=0;i<size;i++) this->mask[i] = 0;
   }
-  this->numDim=2;
-  this->axisDim = new long[2];
-  for(int i=0;i<2;i++) this->axisDim[i] = dimensions[i];
-  for(int i=0;i<size;i++) this->mask[i] = 0;
 }
 
 Image::~Image(){
@@ -143,20 +173,24 @@ Image::~Image(){
 
 
 void Image::saveArray(float *input, long size){
-  // Need check for change in number of pixels!
-  if(this->numPixels>0){
-    delete [] array;
-    delete [] pValue;
-    delete [] mask;
+  if(size != this->numPixels)
+    duchampError("Image::saveArray",
+		 "Input array different size to existing array. Cannot save.");
+  else {
+    if(this->numPixels>0){
+      delete [] array;
+      delete [] pValue;
+      delete [] mask;
+    }
+    this->numPixels = size;
+    if(this->numPixels>0){
+      this->array = new float[size];
+      this->pValue = new float[size];
+      this->mask = new short int[size];
+    }
+    for(int i=0;i<size;i++) this->array[i] = input[i];
+    for(int i=0;i<size;i++) this->mask[i] = 0;
   }
-  this->numPixels = size;
-  if(this->numPixels>0){
-    this->array = new float[size];
-    this->pValue = new float[size];
-    this->mask = new short int[size];
-  }
-  for(int i=0;i<size;i++) this->array[i] = input[i];
-  for(int i=0;i<size;i++) this->mask[i] = 0;
 }
 
 void Image::maskObject(Detection &object)
@@ -295,8 +329,11 @@ void Image::findStats(int code)
       break;
     case 11:
     default:
-      if(code!=11) std::cerr << 
-		     "Invalid code ("<<code<<") in findStats. Using robust method.\n";
+      if(code!=11) {
+	std::stringstream errmsg;
+	errmsg << "Invalid code ("<<code<<") in findStats. Using robust method.\n";
+	duchampWarning("Image::findStats", errmsg.str());
+      }
       findMedianStats(tempArray,goodSize,tempMedian,tempMADFM);
       this->mean = tempMedian;
       this->sigma = tempMADFM/correctionFactor;
@@ -313,33 +350,40 @@ void Image::findStats(int code)
 
 Cube::Cube(long size){
   // need error handling in case size<0 !!!
-  if(size>0){
-    this->array = new float[size];
-    this->recon = new float[size];
+  if(size<0)
+    duchampError("Cube(size)","Negative size -- could not define Cube");
+  else{
+    if(size>0){
+      this->array = new float[size];
+      this->recon = new float[size];
+    }
+    this->numPixels = size;
+    this->axisDim = new long[2];
+    this->numDim = 3;
+    this->reconExists = false;
   }
-  this->numPixels = size;
-  this->axisDim = new long[2];
-  this->numDim = 3;
-  this->reconExists = false;
-//   flagWCS = false;
 }
 
 Cube::Cube(long *dimensions){
   int size   = dimensions[0] * dimensions[1] * dimensions[2];
   int imsize = dimensions[0] * dimensions[1];
-  this->numPixels = size;
-  if(size>0){
-    this->array      = new float[size];
-    this->detectMap  = new short[imsize];
-    if(this->par.getFlagATrous())
-      this->recon    = new float[size];
-    if(this->par.getFlagBaseline())
-      this->baseline = new float[size];
+  if((size<0) || (imsize<0) )
+    duchampError("Cube(dimArray)","Negative size -- could not define Cube");
+  else{
+    this->numPixels = size;
+    if(size>0){
+      this->array      = new float[size];
+      this->detectMap  = new short[imsize];
+      if(this->par.getFlagATrous())
+	this->recon    = new float[size];
+      if(this->par.getFlagBaseline())
+	this->baseline = new float[size];
+    }
+    this->numDim  = 3;
+    this->axisDim = new long[3];
+    for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
+    for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
   }
-  this->numDim  = 3;
-  this->axisDim = new long[3];
-  for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
-  for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
 }
 
 Cube::~Cube()
@@ -353,23 +397,28 @@ Cube::~Cube()
 void Cube::initialiseCube(long *dimensions){
   int size   = dimensions[0] * dimensions[1] * dimensions[2];
   int imsize = dimensions[0] * dimensions[1];
-  this->numPixels = size;
-  if(size>0){
-    this->array      = new float[size];
-    this->detectMap  = new short[imsize];
-    this->specMean   = new float[imsize];
-    this->specSigma  = new float[imsize];
-    this->chanMean   = new float[dimensions[2]];
-    this->chanSigma  = new float[dimensions[2]];
-    if(this->par.getFlagATrous())
-      this->recon    = new float[size];
-    if(this->par.getFlagBaseline())
-      this->baseline = new float[size];
+  if((size<0) || (imsize<0) )
+    duchampError("Cube::initialiseCube(dimArray)",
+		 "Negative size -- could not define Cube");
+  else{
+    this->numPixels = size;
+    if(size>0){
+      this->array      = new float[size];
+      this->detectMap  = new short[imsize];
+      this->specMean   = new float[imsize];
+      this->specSigma  = new float[imsize];
+      this->chanMean   = new float[dimensions[2]];
+      this->chanSigma  = new float[dimensions[2]];
+      if(this->par.getFlagATrous())
+	this->recon    = new float[size];
+      if(this->par.getFlagBaseline())
+	this->baseline = new float[size];
+    }
+    this->numDim  = 3;
+    this->axisDim = new long[3];
+    for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
+    for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
   }
-  this->numDim  = 3;
-  this->axisDim = new long[3];
-  for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
-  for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
 }
 
 int Cube::getopts(int argc, char ** argv)
@@ -421,20 +470,28 @@ int Cube::getopts(int argc, char ** argv)
 
 
 void Cube::saveArray(float *input, long size){
-  // Need check for change in number of pixels!
-  if(this->numPixels>0) delete [] array;
-  this->numPixels = size;
-  this->array = new float[size];
-  for(int i=0;i<size;i++) this->array[i] = input[i];
+  if(size != this->numPixels)
+    duchampError("Cube::saveArray",
+		 "Input array different size to existing array. Cannot save.");
+  else {
+    if(this->numPixels>0) delete [] array;
+    this->numPixels = size;
+    this->array = new float[size];
+    for(int i=0;i<size;i++) this->array[i] = input[i];
+  }
 }
 
 void Cube::saveRecon(float *input, long size){
-  // Need check for change in number of pixels!
-  if(this->numPixels>0) delete [] this->recon;
-  this->numPixels = size;
-  this->recon = new float[size];
-  for(int i=0;i<size;i++) this->recon[i] = input[i];
-  this->reconExists = true;
+  if(size != this->numPixels)
+    duchampError("Cube::saveRecon",
+		 "Input array different size to existing array. Cannot save.");
+  else {
+    if(this->numPixels>0) delete [] this->recon;
+    this->numPixels = size;
+    this->recon = new float[size];
+    for(int i=0;i<size;i++) this->recon[i] = input[i];
+    this->reconExists = true;
+  }
 }
 
 void Cube::getRecon(float *output){
@@ -471,8 +528,6 @@ void Cube::calcObjectWCSparams()
   for(int i=0; i<this->objectList.size();i++){
     this->objectList[i].setID(i+1);
     this->objectList[i].calcWCSparams(this->head);
-    //    this->objectList[i].setIntegFlux( this->objectList[i].getIntegFlux()/this->par.getBeamSize() );
-    // this corrects the integrated flux for the beam size.
   }  
 
   

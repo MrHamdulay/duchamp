@@ -234,8 +234,6 @@ private:
 // Prototypes for functions that use above classes
 //////////////////////////////////////////////////////
 
-// void outputDetectionTextWCSHeader(std::ostream &stream, wcsprm *wcs);
-void outputDetectionTextWCSHeader(std::ostream &stream, ColSet columns);
 void outputDetectionTextHeader(std::ostream &stream, ColSet columns);
 
 void SortByZ(vector <Detection> &inputList);

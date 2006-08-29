@@ -118,9 +118,7 @@ void sort(float *array, float *matchingArray, int begin, int end)
 //       else 
 //         swap(arr[l], arr[--r]);
 //     }
-//   cerr<<"!";
 //     swap(arr[--l], arr[beg]);
-//   cerr<<"!";
 //     sort(arr, beg, l);
 //     sort(arr, r, end);
 //   }

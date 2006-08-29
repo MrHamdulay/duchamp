@@ -14,11 +14,12 @@ int Cube::readReconCube()
   /** 
    *  Cube::readReconCube()
    *   
-   *   A way to read in a previously reconstructed array, corresponding to the 
-   *    requested parameters, or in the filename given by reconFile.
-   *   Performs various tests to make sure there are no clashes between the requested
-   *    parameters and those stored in the header of the FITS file. Also test to 
-   *    make sure that the size (and subsection, if applicable) of the array is the same.
+   *   A way to read in a previously reconstructed array, corresponding 
+   *    to the requested parameters, or in the filename given by reconFile.
+   *   Performs various tests to make sure there are no clashes between 
+   *    the requested parameters and those stored in the header of the 
+   *    FITS file. Also test to make sure that the size (and subsection, 
+   *    if applicable) of the array is the same.
    */
 
 
@@ -27,12 +28,12 @@ int Cube::readReconCube()
   // Check to see whether the parameters reconFile and/or residFile are defined.
   bool reconGood = false;
   int exists;
+  std::stringstream errmsg;
   if(this->par.getReconFile() != ""){
     reconGood = true;
     fits_file_exists(this->par.getReconFile().c_str(),&exists,&status);
     if(exists<=0){
       fits_report_error(stderr, status);
-      std::stringstream errmsg;
       errmsg<< "Cannot find requested ReconFile. Trying with parameters.\n"
 	    << "Bad reconFile was: "<<this->par.getReconFile() << std::endl;
       duchampWarning("readReconCube", errmsg.str());
@@ -40,14 +41,14 @@ int Cube::readReconCube()
     }
   }
   else{
-    duchampWarning("readReconCube",
-		   "ReconFile not specified. Working out name from parameters.\n");
+    errmsg<< "ReconFile not specified. Working out name from parameters.\n";
   }
   
   if(!reconGood){ // if bad, need to look at parameters
 
     string reconFile = this->par.outputReconFile();
-    std::cerr << "                          : Trying file " << reconFile << std::endl;
+    errmsg << "Trying file " << reconFile << std::endl;
+    duchampWarning("readReconCube", errmsg.str() );
     reconGood = true;
     fits_file_exists(reconFile.c_str(),&exists,&status);
     if(exists<=0){
@@ -56,7 +57,8 @@ int Cube::readReconCube()
       reconGood = false;
     }
 
-    if(reconGood){ // were able to open this file -- use this, so reset the relevant parameter
+    if(reconGood){ 
+      // were able to open this new file -- use this, so reset the relevant parameter
       this->par.setReconFile(reconFile);
     }
     else { // if STILL bad, give error message and exit.

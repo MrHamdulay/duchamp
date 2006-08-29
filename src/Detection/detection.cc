@@ -171,8 +171,9 @@ float Detection::getIntegFlux(FitsHeader &head)
   vector <float> fluxArray(xsize*ysize*zsize,0.);
   // work out which pixels are object pixels
   for(int p=0;p<this->pix.size();p++){
-    int pos = (this->pix[p].getX()-this->xmin+1) + (this->pix[p].getY()-this->ymin+1)*xsize + 
-      (this->pix[p].getZ()-this->zmin+1)*xsize*ysize;
+    int pos = (this->pix[p].getX()-this->xmin+1) 
+      + (this->pix[p].getY()-this->ymin+1)*xsize 
+      + (this->pix[p].getZ()-this->zmin+1)*xsize*ysize;
     fluxArray[pos] = this->pix[p].getF();
     isObj[pos] = true;
   }
@@ -193,15 +194,20 @@ float Detection::getIntegFlux(FitsHeader &head)
       int pos =  z*xsize*ysize + pix;
       if(isObj[pos]){ // if it's an object pixel...
 	float deltaVel;
-	if(z==0) deltaVel = (world[pos+xsize*ysize] - world[pos]);
-	else if(z==(zsize-1)) deltaVel = (world[pos] - world[pos-xsize*ysize]);
-	else deltaVel = (world[pos+xsize*ysize] - world[pos-xsize*ysize]) / 2.;
+	if(z==0) 
+	  deltaVel = (world[pos+xsize*ysize] - world[pos]);
+	else if(z==(zsize-1)) 
+	  deltaVel = (world[pos] - world[pos-xsize*ysize]);
+	else 
+	  deltaVel = (world[pos+xsize*ysize] - world[pos-xsize*ysize]) / 2.;
 	this->intFlux += fluxArray[pos] * fabs(deltaVel);
       }
     }
   }
 
-  if(this->fluxUnits.substr(this->fluxUnits.size()-5,this->fluxUnits.size())=="/beam")
+  // correct for the beam size if "beam" is mentioned in the flux units.
+  if(this->fluxUnits.substr(this->fluxUnits.size()-5,this->fluxUnits.size())
+     =="/beam")
     this->intFlux /= head.getBeamSize();
 
 
@@ -213,11 +219,13 @@ void Detection::addAnObject(Detection &toAdd)
 {
   /**
    * Detection::addAnObject(Detection &)
-   *  Combines two objects by adding all the pixels of the argument to the instigator.
-   *  All pixel & flux parameters are recalculated (so that calcParams does not need to be 
-   *   called a second time), but WCS parameters are not.
+   *  Combines two objects by adding all the pixels of the argument 
+   *   to the instigator.
+   *  All pixel & flux parameters are recalculated (so that 
+   *   calcParams does not need to be called a second time), 
+   *   but WCS parameters are not.
    */
-  /*  */
+
   this->xcentre *= this->pix.size();
   this->ycentre *= this->pix.size();
   this->zcentre *= this->pix.size();
@@ -228,7 +236,8 @@ void Detection::addAnObject(Detection &toAdd)
     float f = toAdd.getF(ctr);
     bool isNewPix = true;
     int ctr2 = 0;
-    // For each pixel in the new object, test to see if it already appears in the object
+    // For each pixel in the new object, test to see if it already 
+    //  appears in the object
     while( isNewPix && (ctr2<this->pix.size()) ){
       isNewPix = isNewPix && (( this->pix[ctr2].itsX != x ) || 
 			      ( this->pix[ctr2].itsY != y ) ||

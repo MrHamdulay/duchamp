@@ -26,17 +26,23 @@ int main(int argc, char * argv[])
   if(cube->getopts(argc,argv)==FAILURE) return 1;
 
   if(cube->pars().getImageFile().empty()){
-    duchampError("mainDuchamp",
-		 "No input image has been given!\nUse the imageFile parameter in "+ 
-		 paramFile + " to specify the FITS file.\nExiting...\n");
+    std::stringstream errmsg;
+    errmsg << "No input image has been given!\n"
+	   << "Use the imageFile parameter in " 
+	   << paramFile << " to specify the FITS file.\nExiting...\n";
+    duchampError("mainDuchamp", errmsg.str());
     return 1;
   }
 
-  std::cout << "Opening image: " << cube->pars().getFullImageFile() << std::endl;
+  std::cout << "Opening image: " 
+	    << cube->pars().getFullImageFile() << std::endl;
+
   if( cube->getCube() == FAILURE){
-    duchampError("mainDuchamp",
-		 "Unable to open image file "+cube->pars().getFullImageFile()+
-		 "\nExiting...\n");
+    std::stringstream errmsg;
+    errmsg << "Unable to open image file "
+	   << cube->pars().getFullImageFile() 
+	   << "\nExiting...\n";
+    duchampError("mainDuchamp", errmsg.str());
     return 1;
   }
   else std::cout << "Opened successfully." << std::endl; 
@@ -60,8 +66,10 @@ int main(int argc, char * argv[])
     cube->pars().setFilterName(reconFilter.getName());
   }
 
+  // special case for 2D images -- ignore the minChannels requirement
+  if(cube->getDimZ()==1) cube->pars().setMinChannels(0);  
+
   // Write the parameters to screen.
-  if(cube->getDimZ()==1) cube->pars().setMinChannels(0);  // special case for 2D images.
   std::cout << cube->pars();
 
   if(cube->pars().getFlagLog()){
@@ -79,7 +87,8 @@ int main(int argc, char * argv[])
   }
 
   if(cube->pars().getFlagBlankPix()){
-    // Trim any blank pixels from the edges, and report the new size of the cube
+    // Trim any blank pixels from the edges, 
+    //  and report the new size of the cube
     std::cout<<"Trimming the Blank Pixels from the edges...  "<<std::flush;
     cube->trimCube();
     std::cout<<"Done."<<std::endl;

@@ -1,5 +1,8 @@
 // ATROUS.CC
 //  Functions necessary for the reconstruction routines.
+#include <iostream>
+#include <sstream>
+#include <duchamp.hh>
 #include <ATrous/atrous.hh>
 #include <math.h>
 
@@ -55,10 +58,17 @@ void Filter::define(int filtercode)
     case 1:
     default:
       if(filtercode!=1){
-	if(filtercode==4) 
-	  std::cerr << "TopHat Wavelet not being used currently. Using B3 spline instead.\n";
-	else 
-	  std::cerr << "Filter code " << filtercode << " undefined. Using B3 spline.\n";
+	if(filtercode==4) {
+	  std::stringstream errmsg;
+	  errmsg << "TopHat Wavelet not being used currently."
+		 << "Using B3 spline instead.\n";
+	  duchampWarning("Filter::define", errmsg.str());
+	}
+	else {
+	  std::stringstream errmsg;
+	  errmsg << "Filter code " << filtercode << " undefined. Using B3 spline.\n";
+	  duchampWarning("Filter::define", errmsg.str());
+	}
       }
       this->loadSpline();
       break;

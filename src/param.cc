@@ -162,14 +162,9 @@ double* FitsHeader::pixToVel(double &x, double &y, double *zarray, int size)
 
 double  FitsHeader::specToVel(const double &coord)
 {
-//   return coordToVel(this->wcs,coord,this->spectralUnits);};
   double vel;
-  if(power==1.0){
-//     std::cerr << coord << " --> " << coord*this->scale + this->offset << std::endl;
-    vel =  coord*this->scale + this->offset;
-  }
+  if(power==1.0) vel =  coord*this->scale + this->offset;
   else vel = pow( (coord*this->scale + this->offset), this->power);
-
   return vel;
 }
 
@@ -687,11 +682,15 @@ void Param::parseSubsection()
   }
 
   if(removeStep){
-    std::cerr << "\a\tThe subsection given is " << this->subsection <<".\n";
-    std::cerr << "\tDuchamp is currently unable to deal with pixel steps in the subsection.\n";
-    std::cerr << "\tThese have been ignored, and so the subection used is ";    
-    this->subsection = "[" + x + "," + y + "," + z + "]";  // rewrite subsection without any step sizes.
-    std::cerr << this->subsection << std::endl;
+    std::stringstream errmsg;
+    errmsg << "\aThe subsection given is " << this->subsection <<".\n"
+	   << "Duchamp is currently unable to deal with pixel steps"
+	   << " in the subsection.\n"
+	   << "These have been ignored, and so the subection used is "; 
+    // rewrite subsection without any step sizes. 
+   this->subsection = "[" + x + "," + y + "," + z + "]";  
+   errmsg << this->subsection << std::endl;
+   duchampWarning("parseSubsection", errmsg.str());
   }
 
 }

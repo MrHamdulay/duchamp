@@ -202,10 +202,12 @@ int Cube::getCube(string fname)
   else{  
     int stat[6],axes[3]={dimAxes[0],dimAxes[1],dimAxes[2]};
     if(flag=wcsfix(1,axes,wcs,stat)) {
-      duchampWarning("getCube","WCSFIX failed!");
+      std::stringstream errmsg;
+      errmsg << "WCSFIX failed:\n";
       for(int i=0; i<NWCSFIX; i++)
-	if (stat[i] > 0)
-	  std::cerr <<" wcsfix ERROR "<<flag<<": "<< wcsfix_errmsg[stat[i]]<<std::endl;
+	if (stat[i] > 0) 
+	  errmsg <<" flag="<<flag<<": "<< wcsfix_errmsg[stat[i]]<<std::endl;
+      duchampWarning("getCube", errmsg.str() );
     }
     if(flag=wcsset(wcs)){
       std::stringstream errmsg;
