@@ -16,7 +16,8 @@ std::ostream& operator<< ( std::ostream& theStream, Voxel& vox)
 {
   /**
    * << operator for Voxel class
-   * A convenient way of printing the coordinate & flux values of a voxel.
+   * A convenient way of printing the coordinate 
+   *  and flux values of a voxel.
    */  
 
   theStream << setw(4) << vox.itsX ;
@@ -32,7 +33,8 @@ void Detection::calcParams()
 {
   /**
    * Detection::calcParams()
-   *  A function that calculates centroid positions, minima & maxima of coordinates,
+   *  A function that calculates centroid positions, 
+   *   minima & maxima of coordinates,
    *   and total & peak fluxes for a detection.
    */
 
@@ -53,12 +55,18 @@ void Detection::calcParams()
       this->ycentre   += this->pix[ctr].itsY;
       this->zcentre   += this->pix[ctr].itsZ;
       this->totalFlux += this->pix[ctr].itsF;
-      if((ctr==0)||(this->pix[ctr].itsX<this->xmin)) this->xmin = this->pix[ctr].itsX;
-      if((ctr==0)||(this->pix[ctr].itsX>this->xmax)) this->xmax = this->pix[ctr].itsX;
-      if((ctr==0)||(this->pix[ctr].itsY<this->ymin)) this->ymin = this->pix[ctr].itsY;
-      if((ctr==0)||(this->pix[ctr].itsY>this->ymax)) this->ymax = this->pix[ctr].itsY;
-      if((ctr==0)||(this->pix[ctr].itsZ<this->zmin)) this->zmin = this->pix[ctr].itsZ;
-      if((ctr==0)||(this->pix[ctr].itsZ>this->zmax)) this->zmax = this->pix[ctr].itsZ;
+      if((ctr==0)||(this->pix[ctr].itsX<this->xmin)) 
+	this->xmin = this->pix[ctr].itsX;
+      if((ctr==0)||(this->pix[ctr].itsX>this->xmax)) 
+	this->xmax = this->pix[ctr].itsX;
+      if((ctr==0)||(this->pix[ctr].itsY<this->ymin)) 
+	this->ymin = this->pix[ctr].itsY;
+      if((ctr==0)||(this->pix[ctr].itsY>this->ymax)) 
+	this->ymax = this->pix[ctr].itsY;
+      if((ctr==0)||(this->pix[ctr].itsZ<this->zmin)) 
+	this->zmin = this->pix[ctr].itsZ;
+      if((ctr==0)||(this->pix[ctr].itsZ>this->zmax)) 
+	this->zmax = this->pix[ctr].itsZ;
       if(this->negativeSource){
 	// if negative feature, peakFlux is most negative flux
 	if((ctr==0)||(this->pix[ctr].itsF < this->peakFlux)){
@@ -69,7 +77,8 @@ void Detection::calcParams()
 	}
       }
       else{
-	// otherwise, it's a regular detection, and peakFlux is most positive flux
+	// otherwise, it's a regular detection, 
+	//   and peakFlux is most positive flux
 	if((ctr==0)||(this->pix[ctr].itsF > this->peakFlux)){
 	  this->peakFlux = this->pix[ctr].itsF;
 	  this->xpeak = this->pix[ctr].itsX;
@@ -87,9 +96,9 @@ void Detection::calcParams()
 void Detection::calcWCSparams(FitsHeader &head)
 {
   /**
-   * Detection::calcWCSparams(FitsHeader)
-   *  Use the input wcs to calculate the position and velocity information for the Detection.
-   *  Makes no judgement as to whether the WCS is good -- this needs to be done beforehand.
+   * Detection::calcWCSparams(FitsHeader &)
+   *  Use the input wcs to calculate the position and velocity 
+   *    information for the Detection.
    *  Quantities calculated:
    *     RA: ra [deg], ra (string), ra width.
    *     Dec: dec [deg], dec (string), dec width.
@@ -123,7 +132,8 @@ void Detection::calcWCSparams(FitsHeader &head)
     int flag = head.pixToWCS(pixcrd, world, 5);
     delete [] pixcrd;
 
-    // world now has the WCS coords for the five points -- use this to work out WCS params
+    // world now has the WCS coords for the five points 
+    //    -- use this to work out WCS params
   
     this->lngtype = head.getWCS()->lngtyp;
     this->lattype = head.getWCS()->lattyp;
@@ -157,10 +167,11 @@ float Detection::getIntegFlux(FitsHeader &head)
   /**
    * Detection::getIntegFlux(FitsHeader)
    *  Uses the input wcs to calculate the velocity-integrated flux, 
-   *  putting velocity in units of km/s.
-   *  Integrates over full spatial and velocity range as given by extrema calculated 
-   *  by calcWCSparams.
-   *  Units are (Jy/beam) . km/s  (no correction for the beam is made here...)
+   *   putting velocity in units of km/s.
+   *  Integrates over full spatial and velocity range as given 
+   *   by the extrema calculated by calcWCSparams.
+   *  If the flux units end in "/beam" (eg. Jy/beam), then the
+   *   flux is corrected by the beam size (in pixels).
    */
 
   // include one pixel either side in each direction
@@ -205,11 +216,10 @@ float Detection::getIntegFlux(FitsHeader &head)
     }
   }
 
-  // correct for the beam size if "beam" is mentioned in the flux units.
-  if(this->fluxUnits.substr(this->fluxUnits.size()-5,this->fluxUnits.size())
-     =="/beam")
-    this->intFlux /= head.getBeamSize();
-
+  // correct for the beam size if the flux units string ends in "/beam"
+  int size = this->fluxUnits.size();
+  string tailOfFluxUnits = this->fluxUnits.substr(size-5,size);
+  if(tailOfFluxUnits == "/beam") this->intFlux /= head.getBeamSize();
 
   delete [] world;
 }

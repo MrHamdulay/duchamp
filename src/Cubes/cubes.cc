@@ -557,9 +557,13 @@ void Cube::updateDetectMap()
    *  cube's detection map by the required amount at each pixel.
    */
 
-  for(int obj=0;obj<this->objectList.size();obj++)
-    for(int pix=0;pix<this->objectList[obj].getSize();pix++) 
-      this->detectMap[this->objectList[obj].getX(pix)+this->objectList[obj].getY(pix)*this->axisDim[0]]++;
+  for(int obj=0;obj<this->objectList.size();obj++){
+    for(int pix=0;pix<this->objectList[obj].getSize();pix++) {
+      int spatialPos = this->objectList[obj].getX(pix)+
+	this->objectList[obj].getY(pix)*this->axisDim[0];
+      this->detectMap[spatialPos]++;
+    }
+  }
 }
 
 void Cube::updateDetectMap(Detection obj)
@@ -569,8 +573,10 @@ void Cube::updateDetectMap(Detection obj)
    *  A function that, for the given object, increments the cube's
    *  detection map by the required amount at each pixel.
    */
-  for(int pix=0;pix<obj.getSize();pix++) 
-    this->detectMap[obj.getX(pix)+obj.getY(pix)*this->axisDim[0]]++;
+  for(int pix=0;pix<obj.getSize();pix++) {
+    int spatialPos = obj.getX(pix)+obj.getY(pix)*this->axisDim[0];
+    this->detectMap[spatialPos]++;
+  }
 }
 
 void Cube::setCubeStats()
@@ -582,8 +588,10 @@ void Cube::setCubeStats()
     for(int z=0;z<this->axisDim[2];z++){
       //Two cases: i) have reconstructed -- use residuals 
       //          ii) otherwise          -- use original array
-      if(this->reconExists) spec[z] = this->array[z*xySize+i] - this->recon[z*xySize+1];
-      else                  spec[z] = this->array[z*xySize+i];
+      if(this->reconExists) 
+	spec[z] = this->array[z*xySize+i] - this->recon[z*xySize+1];
+      else
+	spec[z] = this->array[z*xySize+i];
     }
     findMedianStats(spec,this->axisDim[2],this->specMean[i],this->specSigma[i]);
   }
@@ -592,9 +600,10 @@ void Cube::setCubeStats()
   float *im = new float[xySize];
   for(int z=0;z<this->axisDim[2];z++){
     for(int i=0;i<xySize;i++){
-      if(this->reconExists) im[i] = this->array[z*xySize+i] - this->recon[z*xySize+1];
-      else                  im[i] = this->array[z*xySize+i];
-     
+      if(this->reconExists) 
+	im[i] = this->array[z*xySize+i] - this->recon[z*xySize+1];
+      else 
+	im[i] = this->array[z*xySize+i];
     }
     findMedianStats(im,this->axisDim[2],this->chanMean[z],this->chanSigma[z]);
     this->chanSigma[z] /= correctionFactor;
@@ -620,8 +629,11 @@ float Cube::enclosedFlux(Detection obj)
     for(int y=0;y<ysize;y++){
       for(int z=0;z<zsize;z++){
 	fluxArray[x+y*xsize+z*ysize*xsize] = 
-	  this->getPixValue(x+obj.getXmin(),y+obj.getYmin(),z+obj.getZmin());
-	if(this->par.getFlagNegative()) fluxArray[x+y*xsize+z*ysize*xsize] *= -1.;
+	  this->getPixValue(x+obj.getXmin(),
+			    y+obj.getYmin(),
+			    z+obj.getZmin());
+	if(this->par.getFlagNegative()) 
+	  fluxArray[x+y*xsize+z*ysize*xsize] *= -1.;
       }
     }
   }
