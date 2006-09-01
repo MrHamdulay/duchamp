@@ -4,6 +4,11 @@
 
 #include <string>
 
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
 #include "config.h"
 
 // how to convey whether a function has worked

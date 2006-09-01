@@ -218,7 +218,7 @@ void Cube::logDetectionList()
       }
       obj->calcParams();
     }
-    obj->outputDetectionText(fout,logColSet,objCtr+1);
+    obj->outputDetectionText(fout,this->logColSet,objCtr+1);
     delete obj;
   }
   fout.close();

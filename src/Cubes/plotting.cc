@@ -68,6 +68,8 @@ void Cube::plotDetectionMap(string pgDestination)
       cpgwedg("rg",3.2,2,maxNum,0,"Number of detected channels");
     }
 
+    this->plotBlankEdges();
+
     if(this->head.isWCS()) this->plotWCSaxes();
   
     if(this->objectList.size()>0){ // now show and label each detection, drawing over the WCS lines.

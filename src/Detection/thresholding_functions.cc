@@ -5,19 +5,23 @@
 bool Image::isDetection(long x, long y)
 {
   if(this->par.getFlagFDR()) 
-    return ( this->pValue[y*axisDim[0]+x] < this->pCutLevel );
+    return ( (!this->par.isBlank(this->array[y*axisDim[0]+x])) &&
+	     (this->pValue[y*axisDim[0]+x] < this->pCutLevel)     );
   else 
-    return ( ((this->array[y*axisDim[0]+x]-this->mean)/this->sigma) > this->cutLevel );
+    return ( (!this->par.isBlank(this->array[y*axisDim[0]+x])) &&
+	     ( ((this->array[y*axisDim[0]+x]-this->mean)/this->sigma) 
+	       > this->cutLevel ) );
 }
 
 bool Image::isDetection(float value)
 {
-  return ( ((value - this->mean) / this->sigma) > this->cutLevel ) ;
+  return ( (!this->par.isBlank(value)) &&
+	   (((value - this->mean) / this->sigma) > this->cutLevel) );
 }
 
 bool Image::isDetectionFDR(float pvalue)
 {
-  return (  pvalue < this->pCutLevel ) ;
+  return (  (pvalue < this->pCutLevel ) );
 
 }
 
@@ -42,27 +46,24 @@ int Image::setupFDR()
 
   // first calculate p-value for each pixel, using mean and sigma
   // assume Gaussian for now.
-  bool *isGood = new bool[this->numPixels];
-  for(int loopCtr=0;loopCtr<this->numPixels;loopCtr++) 
-    isGood[loopCtr] = !(this->par.isBlank(this->array[loopCtr]));
 
-  for(int j=0;j<this->numPixels;j++){
-    if(isGood[j]){
-      float zStat = (this->array[j] - this->mean) / (this->sigma);
-      this->pValue[j] = 0.5 * erfc(zStat/M_SQRT2);
-      // Want the factor of 0.5 here, as we are only considering the positive tail
-      //  of the distribution. Don't care about negative detections.
-    }
-    else this->pValue[j] = 1.;  //need to make this high so that it won't be below the P cut level.
-  }
-
-  // now order them
   float *orderedP = new float[this->numPixels];
   int count = 0;
-  for(int loopCtr=0;loopCtr<this->numPixels;loopCtr++) 
-    if(isGood[loopCtr])
-      orderedP[count++] = this->pValue[loopCtr];
+  for(int pix=0; pix<this->numPixels; pix++){
 
+    if( !(this->par.isBlank(this->array[pix])) ){
+      float zStat = (this->array[pix] - this->mean) / (this->sigma);
+      this->pValue[pix] = 0.5 * erfc(zStat/M_SQRT2);
+      // Want the factor of 0.5 here, as we are only considering the positive tail
+      //  of the distribution. Don't care about negative detections.
+      
+      orderedP[count++] = this->pValue[pix];
+    }
+    else this->pValue[pix] = 1.0;
+    //need to make this high so that it won't be below the P cut level.
+  }
+
+  // now order them 
   sort(orderedP,0,count);
   
   // now find the maximum P value.
@@ -82,6 +83,6 @@ int Image::setupFDR()
   this->pCutLevel = orderedP[max];
 
   delete [] orderedP;
-  delete [] isGood;
+
 }
 

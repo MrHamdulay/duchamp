@@ -57,6 +57,7 @@ public:
   vector <Detection>   getObjectList(){return objectList;};
   void                 addObjectList(vector <Detection> newlist);  
                                      // adds all objects in a detection list to the object list
+  void                 addObjectOffsets();
   long                 getNumObj(){return objectList.size();};
   void                 clearDetectionList(){this->objectList.clear();};
   // Parameter list related.
@@ -228,6 +229,12 @@ public:
   void    saveArray(float *input, long size);
   void    saveRecon(float *input, long size);
   void    getRecon(float *output);
+
+  ColSet  getLogColSet(){return logColSet;};
+  void    setLogColSet(ColSet C){logColSet=C;};
+  ColSet  getFullColSet(){return fullColSet;};
+  void    setFullColSet(ColSet C){fullColSet=C;};
+
 
   // Statistics for cube
   float   getSpecMean(int pixel){return specMean[pixel];};

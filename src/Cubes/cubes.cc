@@ -10,8 +10,10 @@
 #include <param.hh>
 #include <Cubes/cubes.hh>
 #include <Detection/detection.hh>
+#include <Detection/columns.hh>
 #include <Utils/utils.hh>
 using std::endl;
+using namespace Column;
 
 /****************************************************************/
 ///////////////////////////////////////////////////
@@ -102,8 +104,19 @@ void DataArray::addObjectList(vector <Detection> newlist) {
   for(int i=0;i<newlist.size();i++) this->objectList.push_back(newlist[i]);
 }
 
-std::ostream& operator<< ( std::ostream& theStream, DataArray &array){
+void DataArray::addObjectOffsets(){
+  for(int i=0;i<this->objectList.size();i++){
+    for(int p=0;p<this->objectList[i].getSize();p++){
+      this->objectList[i].setX(p,this->objectList[i].getX(p)+this->par.getXOffset());
+      this->objectList[i].setY(p,this->objectList[i].getY(p)+this->par.getYOffset());
+      this->objectList[i].setZ(p,this->objectList[i].getZ(p)+this->par.getZOffset());
+    }
+  }
+}
 
+
+std::ostream& operator<< ( std::ostream& theStream, DataArray &array)
+{
   for(int i=0;i<array.numDim;i++){
     if(i>0) theStream<<"x";
     theStream<<array.axisDim[i];
@@ -389,8 +402,8 @@ Cube::Cube(long *dimensions){
 Cube::~Cube()
 {
   delete [] detectMap;
-  delete [] recon;
-  delete [] baseline;
+  if(this->par.getFlagATrous())   delete [] recon;
+  if(this->par.getFlagBaseline()) delete [] baseline;
   delete [] specMean,specSigma,chanMean,chanSigma;
 }
 
@@ -654,10 +667,10 @@ void Cube::setupColumns()
 
 
   this->logColSet.vec.clear();
-  this->logColSet = getLogColSet(this->objectList);
+  this->logColSet = Column::getLogColSet(this->objectList);
 
   this->fullColSet.vec.clear();
-  this->fullColSet = getFullColSet(this->objectList, this->head);
+  this->fullColSet = Column::getFullColSet(this->objectList, this->head);
 
 }
 
