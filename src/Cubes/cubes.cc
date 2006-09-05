@@ -732,9 +732,11 @@ void Cube::setObjectFlags()
 
 void Cube::plotBlankEdges()
 {
-  int colour;
-  cpgqci(&colour);
-  cpgsci(6);
-  drawBlankEdges(this->array,this->axisDim[0],this->axisDim[1],this->par);
-  cpgsci(colour);
+  if(this->par.drawBlankEdge()){
+    int colour;
+    cpgqci(&colour);
+    cpgsci(6);
+    drawBlankEdges(this->array,this->axisDim[0],this->axisDim[1],this->par);
+    cpgsci(colour);
+  }
 }

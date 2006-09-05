@@ -125,7 +125,7 @@ discussed in more detail in the following sections.
 \item The FITS image is located and read in to memory.
 \item If requested, a FITS image with a previously reconstructed array
   is read in.
-\item If requested, blank pixels are trimmed from the edges, and
+\item If requested, BLANK pixels are trimmed from the edges, and
   the baseline of each spectrum is removed.
 \item If the reconstruction method is requested, and the reconstructed
   array has not been read in at Step 3 above, the cube is
@@ -264,7 +264,7 @@ execution and efficiency of \duchamp\ (these are optional -- their
 use is indicated by the relevant flags set in the input parameter
 file).
 
-\subsubsection{Blank pixel removal}
+\subsubsection{BLANK pixel removal}
 
 First, the cube is trimmed of any BLANK pixels that pad the image out
 to a rectangular shape. This is optional, its use determined by the
@@ -325,10 +325,10 @@ detections. The use of this feature is controlled by the
 \texttt{flagMW} parameter, and the exact channels concerned are able
 to be set by the user (using \texttt{maxMW} and \texttt{minMW} --
 these give an inclusive range of channels). When employed, these
-channels are temporarily blanked out for the searching, and the
-scaling of the spectral output (see Fig.~\ref{fig-spect}) will not
-take them into account. They will be present in the reconstructed
-array, however, and so will be included in the saved FITS file (see
+channels are ignored for the searching, and the scaling of the
+spectral output (see Fig.~\ref{fig-spect}) will not take them into
+account. They will be present in the reconstructed array, however, and
+so will be included in the saved FITS file (see
 \S\ref{sec-reconIO}). When the final spectra are plotted, the range of
 channels covered by these parameters is indicated by a green hashed
 box.
@@ -789,11 +789,13 @@ The spectral extent of the detection is indicated with blue lines, and
 a zoom is shown in a separate window. The cutout image can optionally
 include a border around the spatial pixels that are in the detection
 (turned on and off by the parameter \texttt{drawBorders} -- the
-default is \texttt{true}). It also includes a scale bar in the bottom
-left corner to indicate size -- it is 15~arcmin long (note that due to
+default is \texttt{true}). It includes a scale bar in the bottom left
+corner to indicate size -- it is 15~arcmin long (note that due to
 projection effects it may be a slightly different physical length from
-object to object). An example detection can be seen below in
-Fig.~\ref{fig-spect}.
+object to object). It also can show the dividing line between BLANK
+and non-BLANK pixels (governed by the parameter
+\texttt{drawBlankEdges}, whose default is \texttt{true}). An example
+detection can be seen below in Fig.~\ref{fig-spect}.
 
 \begin{figure}[t]
 \begin{center}
@@ -818,7 +820,8 @@ Fig.~\ref{fig-spect}.
 \caption{\footnotesize An example of the moment map created by
   \duchamp. The full extent of the cube is covered, and the 0th moment
   of each object is shown (integrated individually over all the
-  detected channels).}
+  detected channels). The purple line indicates the limit of the
+  non-BLANK pixels.}
 \label{fig-moment}
 \end{figure}
 
@@ -828,7 +831,9 @@ showing the integrated flux in grey-scale; and a ``detection image'',
 a grey-scale image where the pixel values are the number of channels
 that spatial pixel is detected in. In both cases, if
 \texttt{drawBorders = true}, a border is drawn around the spatial
-extent of each detection. An example moment map is shown in
+extent of each detection, and if \texttt{drawBlankEdges = true}, a
+border is draw indicating the dividing line between BLANK and
+non-BLANK pixels. An example moment map is shown in
 Fig.~\ref{fig-moment}.  The production or otherwise of these images is
 governed by the \texttt{flagMaps} parameter.
 
@@ -1252,6 +1257,9 @@ total number, will be less than $\alpha$ (see \S\ref{sec-detection}).
 \item[drawBorders \texttt{[true]}] A flag indicating whether borders
   are to be drawn around the detected objects in the moment maps
   included in the output (see for example Fig.~\ref{fig-spect}).
+\item[drawBlankEdges \texttt{[true]}] A flag indicating whether to
+ draw the dividing line between BLANK and non-BLANK pixels on the
+ 2-dimensional images (see for example Fig.~\ref{fig-moment}).
 \item[verbose \texttt{[true]}] A flag indicating whether to print the
   progress of computationally-intensive algorithms (such as the
   searching and merging) to screen.

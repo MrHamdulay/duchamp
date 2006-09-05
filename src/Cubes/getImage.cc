@@ -1,12 +1,13 @@
 #include <iostream>
 #include <string>
+#include <string.h>
 #include <wcs.h>
 #include <wcshdr.h>
 #include <fitshdr.h>
 #include <wcsfix.h>
 #include <wcsunits.h>
-#define WCSLIB_GETWCSTAB // define this so that we don't try and redefine wtbarr 
-                         // (this is a problem when using gcc v.4+
+#define WCSLIB_GETWCSTAB // define this so that we don't try and redefine 
+                         //  wtbarr (this is a problem when using gcc v.4+
 #include <fitsio.h>
 #include <math.h>
 #include <duchamp.hh>
@@ -24,8 +25,8 @@ int Cube::getCube(string fname)
    *      - pixel array
    *      - WCS information (in form of WCSLIB wcsprm structure)
    *      - Header keywords: BUNIT (brightness unit), 
-   *                         BLANK, BZERO, BSCALE (to determine blank pixel value)
-   *                         BMAJ, BMIN, CDELT1, CDELT2 (to determine beam size)
+   *                         BLANK, BZERO, BSCALE (for blank pixel value)
+   *                         BMAJ, BMIN, CDELT1, CDELT2 (for beam size)
    */
 
 
@@ -52,8 +53,9 @@ int Cube::getCube(string fname)
   long *fpixel = new long[numAxes];
   for(int i=0;i<numAxes;i++) fpixel[i]=1;
 
-  if(numAxes<=3)  std::cout << "Dimensions of " << imageType[numAxes] << ": " << dimAxes[0];
-  else std::cout << "Dimensions of " << imageType[3] << ": " << dimAxes[0];
+  if(numAxes<=3)  std::cout << "Dimensions of " << imageType[numAxes];
+  else std::cout << "Dimensions of " << imageType[3];
+  std::cout << ": " << dimAxes[0];
   if(numAxes>1) std::cout << "x" << dimAxes[1];
   if(numAxes>2) std::cout << "x" << dimAxes[2];
   std::cout << std::endl;
@@ -66,12 +68,14 @@ int Cube::getCube(string fname)
 
   //-------------------------------------------------------------
   // Reading in the pixel array.
-  //  The location of any blank pixels (as determined by the header keywords) is stored
-  //  in nullarray (set to 1). Also anynul will be set to 1 to indicate the presence of
-  //  blank pixels. If anynul==1 then all pixels are non-blank.
+  //  The location of any blank pixels (as determined by the header keywords) 
+  //   is stored in nullarray (set to 1). Also anynul will be set to 1 to 
+  //   indicate the presence of blank pixels. 
+  //   If anynul==1 then all pixels are non-blank.
 
   status = 0;
-  fits_read_pixnull(fptr, TFLOAT, fpixel, npix, array, nullarray, &anynul, &status);
+  fits_read_pixnull(fptr, TFLOAT, fpixel, npix, array, 
+		    nullarray, &anynul, &status);
 //   fits_read_pix(fptr, TFLOAT, fpixel, npix, NULL, array, &anynul, &status);
   if(status){
     duchampError("getCube","There was an error reading in the data array:");
@@ -79,9 +83,13 @@ int Cube::getCube(string fname)
     return FAILURE;
   }
 
-  if(anynul==0){    // no blank pixels, so don't bother with any trimming or checking...
-    if(this->par.getFlagBlankPix())  // if user requested fixing, inform them of change.
-      duchampWarning("getCube","No blank pixels, so setting flagBlankPix to false.\n");
+  if(anynul==0){    
+    // no blank pixels, so don't bother with any trimming or checking...
+    if(this->par.getFlagBlankPix()) {  
+      // if user requested fixing, inform them of change.
+      duchampWarning("getCube",
+		     "No blank pixels, so setting flagBlankPix to false.\n");
+    }
     this->par.setFlagBlankPix(false); 
   }
 
@@ -91,7 +99,7 @@ int Cube::getCube(string fname)
   FitsHeader newHead;
 
   char *hdr = new char;
-  int noComments = 1; //so that fits_hdr2str will not write out COMMENT, HISTORY etc
+  int noComments = 1; //so that fits_hdr2str will ignore COMMENT, HISTORY etc
   int nExc = 0;
   status = 0;
   fits_hdr2str(fptr, noComments, NULL, nExc, &hdr, &nkeys, &status);
@@ -119,10 +127,13 @@ int Cube::getCube(string fname)
 
   //-------------------------------------------------------------
   // Reading in the Blank pixel value keywords.
-  //  If the BLANK keyword is in the header, use that and store the relevant values.
-  //  If not, use the default value (either the default from param.cc or from the param file)
-  //    and assume simple values for the keywords --> the scale keyword is the same as the 
-  //    blank value, the blank keyword (which is an int) is 1 and the bzero (offset) is 0.
+  //  If the BLANK keyword is in the header, use that and store the relevant 
+  //   values.
+  //  If not, use the default value (either the default from param.cc or 
+  //   from the param file) and assume simple values for the keywords 
+  //        --> the scale keyword is the same as the blank value, 
+  //            the blank keyword (which is an int) is 1 and 
+  //            the bzero (offset) is 0.
   int blank;
   float bscale, bzero;
   status = 0;
@@ -149,7 +160,8 @@ int Cube::getCube(string fname)
 
   //-------------------------------------------------------------
   // Reading in the beam parameters from the header.
-  // Use these, plus the basic WCS parameters to calculate the size of the beam in pixels.
+  // Use these, plus the basic WCS parameters to calculate the size of
+  //  the beam in pixels.
   float bmaj,bmin,cdelt1,cdelt2;
   status = 0;
   if( !fits_read_key(fptr, TFLOAT, "BMAJ", &bmaj, comment, &status) ){
@@ -188,22 +200,26 @@ int Cube::getCube(string fname)
   }
 
   //-------------------------------------------------------------
-  // Now convert the FITS header to a WCS structure, using the WCSLIB functions.
-  int relax=1, ctrl=2, nwcs, nreject;
+  // Now convert the FITS header to a WCS structure, using WCSLIB functions.
+  int relax=1, ctrl=2, nwcs, nreject, flag;
   wcsprm *wcs = new wcsprm;
-  wcsini(true,numAxes,wcs);
+  if(flag = wcsini(true,numAxes,wcs)){
+    std::stringstream errmsg;
+    errmsg << "wcsini failed! Code="<<flag<<": "<<wcs_errmsg[flag]<<std::endl;
+    duchampError("getCube",errmsg.str());
+    return FAILURE;
+  }
   wcs->flag=-1;
-  int flag;
   if(flag = wcspih(hdr, nkeys, relax, ctrl, &nreject, &nwcs, &wcs)) {
     std::stringstream errmsg;
-    errmsg << "WCSPIH failed! Code="<<flag<<": "<<wcs_errmsg[flag]<<std::endl;
+    errmsg << "wcspih failed! Code="<<flag<<": "<<wcs_errmsg[flag]<<std::endl;
     duchampWarning("getCube",errmsg.str());
   }
   else{  
     int stat[6],axes[3]={dimAxes[0],dimAxes[1],dimAxes[2]};
     if(flag=wcsfix(1,axes,wcs,stat)) {
       std::stringstream errmsg;
-      errmsg << "WCSFIX failed:\n";
+      errmsg << "wcsfix failed:\n";
       for(int i=0; i<NWCSFIX; i++)
 	if (stat[i] > 0) 
 	  errmsg <<" flag="<<flag<<": "<< wcsfix_errmsg[stat[i]]<<std::endl;
@@ -211,18 +227,42 @@ int Cube::getCube(string fname)
     }
     if(flag=wcsset(wcs)){
       std::stringstream errmsg;
-      errmsg<<"WCSSET failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<std::endl;
+      errmsg<<"wcsset failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<std::endl;
       duchampWarning("getCube",errmsg.str());
     }
 
-    // Set the spectral axis to a standard specification: VELO-F2V
-    string specUnit = wcs->ctype[2];
-    if(specUnit != duchampSpectralType){
-      int index = wcs->spec;
-      string type = duchampSpectralType;
-      int flag = wcssptr(wcs, &index, (char *)type.c_str());
-    }
 
+    string desiredType,specType = wcs->ctype[2];
+    int index = wcs->spec;
+    if(wcs->restfrq != 0){
+      // Set the spectral axis to a standard specification: VELO-F2V
+      desiredType = duchampVelocityType;
+      if(wcs->restwav == 0) wcs->restwav = 299792458.0 / wcs->restfrq;
+    }
+    else{
+      // No rest frequency defined, so put spectral dimension in frequency. 
+      // Set the spectral axis to a standard specification: FREQ
+      duchampWarning("getCube",
+      "No rest frequency defined. Using frequency units in spectral axis.\n");
+      desiredType = duchampFrequencyType;
+      this->par.setSpectralUnits("MHz");
+      if(strcmp(wcs->cunit[2],"")==0){
+	duchampWarning("getCube",
+	 "No frequency unit given. Assuming frequency axis is in Hz.\n");
+	strcpy(wcs->cunit[2],"Hz");
+      }
+    }
+    
+    if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0){
+      index = -1;
+      if( flag = wcssptr(wcs, &index, (char *)desiredType.c_str())){
+	std::stringstream errmsg;
+	errmsg<<"wcssptr failed! Code="<<flag <<": "
+	      <<wcs_errmsg[flag]<<std::endl;
+	duchampWarning("getCube",errmsg.str());
+      }	
+    }
+    
     newHead.setWCS(wcs);
     newHead.setNWCS(nwcs);
 

@@ -20,15 +20,6 @@ void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par)
 
   if(par.getFlagBlankPix()){
 
-//     char *status = new char[10];
-//     int statusLength = sizeof(status);
-//     cpgqinf("STATE",status,&statusLength);
-//     string stat = status;
-//     delete [] status;
-//     if( stat == "CLOSED" ) 
-//       duchampError("drawBlankEdges","There is no PGPlot device open!\n");
-//     else{
-
     if(!cpgtest())
       duchampError("drawBlankEdges","There is no PGPlot device open!\n");
     else{
@@ -36,14 +27,17 @@ void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par)
       float xoff,x2,yoff,y2;
       cpgqwin(&xoff,&x2,&yoff,&y2);
 
+      bool *blank = new bool[xdim*ydim];
+      for(int i=0;i<xdim*ydim;i++) blank[i] = par.isBlank(dataArray[i]);
+
       for(int x=0; x<xdim; x++){// for each column...
 	for(int y=1;y<ydim;y++){
 	  int current = y*xdim + x;
 	  int previous = (y-1)*xdim + x;
-	  if(((par.isBlank(dataArray[current]))&&!par.isBlank(dataArray[previous])) || 
-	     (!par.isBlank(dataArray[current])&&par.isBlank(dataArray[previous]))){
-	    cpgmove(x+xoff,   y+yoff);
-	    cpgdraw(x+xoff+1, y+yoff);
+	  if( (blank[current]&&!blank[previous]) || 
+	      (!blank[current]&&blank[previous])   ){
+	    cpgmove(x-0.5, y-0.5);
+	    cpgdraw(x+0.5, y-0.5);
 	  }
 	}
       }
@@ -52,13 +46,15 @@ void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par)
 	for(int x=1;x<xdim;x++){
 	  int current = y*xdim + x;
 	  int previous = y*xdim + x-1;
-	  if(((par.isBlank(dataArray[current]))&&!par.isBlank(dataArray[previous])) || 
-	     (!par.isBlank(dataArray[current])&&par.isBlank(dataArray[previous]))){
-	    cpgmove(x+xoff, y+yoff);
-	    cpgdraw(x+xoff, y+yoff+1);
+	  if( (blank[current]&&!blank[previous]) || 
+	      (!blank[current]&&blank[previous])   ){
+	    cpgmove(x-0.5, y-0.5);
+	    cpgdraw(x-0.5, y+0.5);
 	  }
 	}
       }
+
+      delete [] blank;
       
     }
 

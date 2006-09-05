@@ -28,9 +28,9 @@ namespace Plot
      *    A class to hold the dimensions and set up for the plotting of the spectra 
      *     (including the full spectra, the zoomed in part, and the moment map).
      *    The physical dimensions (in inches) of the plot and the elements within
-     *     it are stored, based on the assumption that the plot will go on an A4 page.
-     *    Simple accessor functions are provided to enable access to quantities needed
-     *     for pgplot routines.
+     *     it are stored, on the assumption that the plot will go on an A4 page.
+     *    Simple accessor functions are provided to enable access to quantities 
+     *     needed for pgplot routines.
      */
   public:
     SpectralPlot(){
@@ -47,7 +47,8 @@ namespace Plot
        *    Opens the designated pgplot device.
        *    Scales the paper so that it fits on an A4 sheet (using known values of 
        *     the default pgplot offsets).
-       *    Returns the value returned by cpgopen -- if <= 0, then an error has occurred.
+       *    Returns the value returned by cpgopen -- 
+       *                      if <= 0, then an error has occurred.
        */
       paperHeight = paperWidth*M_SQRT2; 
       if(paperHeight+2*psVoffset > a4height){
@@ -139,7 +140,8 @@ namespace Plot
 	    label.str("");
 	    label << tickpt;
 	    // do a labelled tick mark
-	    cpgtick(x1,y1,x2,y1,float(i)/10.,lengthL,lengthR,disp,0.,label.str().c_str());
+	    cpgtick(x1,y1,x2,y1,float(i)/10.,lengthL,lengthR,
+		    disp, 0., label.str().c_str());
 	    break;
 	  default:
 	    label.str("");
@@ -169,7 +171,8 @@ namespace Plot
 
     void drawVelRange(float v1, float v2){
       /** SpectralPlot::drawVelRange(float v1, float v2)
-       *   Draws two vertical lines at the limits of velocity given by the arguments.
+       *   Draws two vertical lines at the limits of velocity 
+       *    given by the arguments.
        */
       int ci,ls;
       float dud,min,max;
@@ -186,7 +189,8 @@ namespace Plot
     
     void drawMWRange(float v1, float v2){
       /** SpectralPlot::drawMWRange(float v1, float v2)
-       *   Draws a box showing the extent of channels masked by the Milky Way parameters
+       *   Draws a box showing the extent of channels masked by the 
+       *     Milky Way parameters
        */
       int ci,fs;
       float dud,min,max,height;
@@ -197,7 +201,7 @@ namespace Plot
       cpgqci(&ci);
       cpgqfs(&fs);
       cpgscr(16,0.,0.7,0.);
-      cpgsci(9);
+      cpgsci(16);
       cpgsfs(3);
       cpgrect(v1,v2,min,max);
       cpgsfs(2);
@@ -214,15 +218,15 @@ namespace Plot
     void  setPaperHeight(float f){paperHeight=f;};
 
   private:
-    int numOnPage;              // Number of spectra to put on one page.
-    int spectraCount;           // Number of spectra done so far -- where on the page?
-    float mainCoords[4];        // Boundaries for the main spectrum [inches]
-    float zoomCoords[4];        // Boundaries for the zoomed-in spectrum [inches]
-    float mapCoords[4];         // Boundaries for the map box [inches]
-    float paperWidth;           // Width of the plottable region of the paper [inches]
-    float paperHeight;          // Height of the plottable region of the paper [inches]
-    float indexSize;            // PGPlot character height for tick mark labels
-    float labelSize;            // PGPlot character height for axis labels.
+    int numOnPage;       // Number of spectra to put on one page.
+    int spectraCount;    // Number of spectra done so far: where on the page?
+    float mainCoords[4]; // Boundaries for the main spectrum [inches]
+    float zoomCoords[4]; // Boundaries for the zoomed-in spectrum [inches]
+    float mapCoords[4];  // Boundaries for the map box [inches]
+    float paperWidth;    // Width of the plottable region of the paper [inches]
+    float paperHeight;   // Height of the plottable region of the paper [inches]
+    float indexSize;     // PGPlot character height for tick mark labels
+    float labelSize;     // PGPlot character height for axis labels.
     
   };
 
@@ -235,10 +239,10 @@ namespace Plot
      *    A class to hold the dimensions and set up for the plots used by the two 
      *     functions below.
      *    The physical dimensions (in inches) of the plot and the elements within
-     *     it are stored, including maximum widths and heights (so that the plot will
-     *     fit on an A4 page).
-     *    Simple accessor functions are provided to enable access to quantities needed
-     *     for pgplot routines.
+     *     it are stored, including maximum widths and heights 
+     *     (so that the plot will fit on an A4 page).
+     *    Simple accessor functions are provided to enable access to quantities 
+     *     needed for pgplot routines.
      */
   public:
     ImagePlot(){
@@ -250,19 +254,20 @@ namespace Plot
       /**
        * setUpPlot(string pgDestination, float x, float y)
        *  Opens a pgplot device and scales it to the correct shape.
-       *  In doing so, the dimensions for the image are set, and the required aspect ratios
-       *   of the image and of the plot are calculated.
-       *  If the resulting image is going to be tall enough to exceed the maximum height 
-       *   (given the default width), then scale everything down by enough to make the 
-       *   height equal to maxPaperHeight.
-       *  Returns the value returned by cpgopen -- if <= 0, then an error has occurred.
+       *  In doing so, the dimensions for the image are set, and the required 
+       *   aspect ratios of the image and of the plot are calculated.
+       *  If the resulting image is going to be tall enough to exceed the maximum 
+       *   height (given the default width), then scale everything down by enough 
+       *   to make the height equal to maxPaperHeight.
+       *  Returns the value returned by cpgopen -- 
+       *             if <= 0, then an error has occurred.
        */
       xdim = x;
       ydim = y;
       imageRatio= ydim / xdim; 
       aspectRatio =  (imageRatio*imageWidth() + 2*marginWidth) / paperWidth;
       if((imageRatio*imageWidth() + 2*marginWidth) > maxPaperHeight){
-	float correction = maxPaperHeight / (imageRatio*imageWidth() + 2*marginWidth);
+	float correction = maxPaperHeight / (imageRatio*imageWidth()+2*marginWidth);
 	paperWidth *= correction;
 	marginWidth *= correction;
 	wedgeWidth *= correction;
@@ -314,14 +319,17 @@ namespace Plot
 
 
   private:
-    float paperWidth;       // Default (maximum) width of "paper" [inches]
-    float maxPaperHeight;   // Maximum allowed height of paper [inches]
-    float marginWidth;      // Width allowed for margins around main plot (ie. label & numbers) [inches]
-    float wedgeWidth;       // Width allowed for placement of wedge on right hand side of plot. [inches]
-    float imageRatio;       // Aspect ratio of the image only (ie. y-value range / x-value range).
-    float aspectRatio;      // Aspect ratio of whole plot.
-    float xdim;             // Width of main plot, in display units.
-    float ydim;             // Height of main plot, in display units.
+    float paperWidth;     // Default (maximum) width of "paper" [inches]
+    float maxPaperHeight; // Maximum allowed height of paper [inches]
+    float marginWidth;    // Width allowed for margins around main plot 
+                          //   (ie. label & numbers) [inches]
+    float wedgeWidth;     // Width allowed for placement of wedge on right-hand 
+                          //   side of plot. [inches]
+    float imageRatio;     // Aspect ratio of the image only 
+                          //   (ie. y-value range / x-value range).
+    float aspectRatio;    // Aspect ratio of whole plot.
+    float xdim;           // Width of main plot, in display units.
+    float ydim;           // Height of main plot, in display units.
   };
 
 }

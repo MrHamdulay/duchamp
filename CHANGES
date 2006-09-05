@@ -1,3 +1,27 @@
+Duchamp version 1.0.? (2006/09/01)
+----------------------------------
+
+* Fixed a bug that meant 4-dimensional FITS files were generating
+  memory faults, both with the allocation of the necessary arrays and
+  with the WCS-related calculations.
+
+* The user is now able to enter the value of flag parameters in the
+  parameter file as strings, as well as integers (so one can enter
+  true or 1 to give the same result).
+
+* Added a new function that draws the edge of the blank region on the
+  maps and image cutouts. There is a new flag parameter -- drawBlankEdges
+  -- that controls the use of this function (the default is true).
+
+* A couple of bugs related to the blank-pixel determination were fixed
+  (these affected the detection of some pixels, particularly when the
+  FDR method was used, and the display of cutout images -- this was
+  not quite resolved by the changes in v1.0.2).
+
+* Other minor fixes to the code, to improve its structure and
+  robustness.
+
+
 Duchamp version 1.0.2 (2006/08/22)
 ----------------------------------
 

@@ -283,23 +283,28 @@ public:
   bool    objAtEdge(Detection obj);
   
   // Text outputting of detected objects.
-  void    outputDetectionsKarma(std::ostream &stream);     // in Cubes/detectionIO.cc
-  void    outputDetectionsVOTable(std::ostream &stream);   // in Cubes/detectionIO.cc
-  void    outputDetectionList();                           // in Cubes/detectionIO.cc
-  void    logDetectionList();                              // in Cubes/detectionIO.cc
-  void    logDetection(Detection obj, int counter);        // in Cubes/detectionIO.cc
-  void    setupColumns();                                  // in Cubes/cubes.cc
+  //    the next five in Cubes/detectionIO.cc
+  void    outputDetectionsKarma(std::ostream &stream);     
+  void    outputDetectionsVOTable(std::ostream &stream);   
+  void    outputDetectionList();                           
+  void    logDetectionList();                              
+  void    logDetection(Detection obj, int counter);        
+  void    setupColumns(); // in Cubes/cubes.cc
 
   // Graphical plotting of the cube and the detections.
-  void    plotBlankEdges();                                // in Cubes/cubes.cc
-  void    plotDetectionMap(string pgDestination);          // in Cubes/plotting.cc
-  void    plotMomentMap(string pgDestination);             // in Cubes/plotting.cc
-  void    plotWCSaxes();                                   // in Cubes/plotting.cc
-  void    outputSpectra();                                 // in Cubes/outputSpectra.cc
-  void    plotSpectrum(Detection obj,Plot::SpectralPlot &plot); // in Cubes/outputSpectra.cc
-  void    drawMomentCutout(Detection &object);             // in Cubes/drawMomentCutout.cc
-  void    drawScale(float xstart, float ystart, float channel, float scaleLength);
-                                                           // in Cubes/drawMomentCutout.cc
+  void    plotBlankEdges();  // in Cubes/cubes.cc
+  //    the next three in Cubes/plotting.cc
+  void    plotDetectionMap(string pgDestination);          
+  void    plotMomentMap(string pgDestination);             
+  void    plotWCSaxes();                                   
+  //    the next two in Cubes/outputSpectra.cc
+  void    outputSpectra();                                     
+  void    plotSpectrum(Detection obj,Plot::SpectralPlot &plot);
+  //    the next three in Cubes/drawMomentCutout.cc
+  void    drawMomentCutout(Detection &object);
+//void    drawScale(float xstart,float ystart,float channel,float scaleLength);
+  void    drawScale(float xstart,float ystart,float channel);
+  void    drawFieldEdge();
 
 private: 
   float  *recon;           // reconstructed array -- used when doing a trous reconstruction.

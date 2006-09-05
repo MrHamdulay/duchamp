@@ -6,9 +6,9 @@
 #include <math.h>
 #include <wcs.h>
 #include <wcsunits.h>
-#include <duchamp.hh>
 #include <param.hh>
 #include <config.h>
+#include <duchamp.hh>
 #include <Utils/utils.hh>
 
 // Define funtion to print bools as words, in case the compiler doesn't recognise
@@ -188,12 +188,15 @@ void FitsHeader::fixUnits(Param &par)
   double of=0.;
   double po=1.;;
   if(this->wcsIsGood){
-    int flag = wcsunits( this->wcs->cunit[2], this->spectralUnits.c_str(), &sc, &of, &po);
+    int flag = wcsunits( this->wcs->cunit[2], this->spectralUnits.c_str(), 
+			 &sc, &of, &po);
     if(flag>0){
       std::stringstream errmsg;
-      errmsg << "WCSUNITS Error, Code = " << flag << ": "<< wcsunits_errmsg[flag];
-      if(flag==10) errmsg << "\nTried to get conversion from '" << wcs->cunit[2]
-			  << "' to '" << this->spectralUnits.c_str() << "'\n";
+      errmsg << "WCSUNITS Error, Code = " << flag 
+	     << ": "<< wcsunits_errmsg[flag];
+      if(flag==10) errmsg << "\nTried to get conversion from '" 
+			  << wcs->cunit[2] << "' to '" 
+			  << this->spectralUnits.c_str() << "'\n";
       this->spectralUnits = this->wcs->cunit[2];
       if(this->spectralUnits==""){
 	errmsg << "Setting coordinates to 'XX' for clarity.\n";
@@ -207,11 +210,13 @@ void FitsHeader::fixUnits(Param &par)
   this->offset= of;
   this->power = po;
 
-  // work out the integrated flux units, based on the spectral units
-  // if flux is per beam, trim the /beam from the flux units and multiply by the spectral units.
-  // otherwise, just muliply by the spectral units.
+  // Work out the integrated flux units, based on the spectral units.
+  // If flux is per beam, trim the /beam from the flux units and multiply 
+  //  by the spectral units.
+  // Otherwise, just muliply by the spectral units.
   if(this->fluxUnits.size()>0){
-    if(this->fluxUnits.substr(this->fluxUnits.size()-5,this->fluxUnits.size())=="/beam"){
+    if(this->fluxUnits.substr(this->fluxUnits.size()-5,
+			      this->fluxUnits.size()   ) == "/beam"){
       this->intFluxUnits = this->fluxUnits.substr(0,this->fluxUnits.size()-5)
 	+" " +this->spectralUnits;
     }
@@ -298,6 +303,7 @@ Param::Param(){
   // Input-Output related
   this->spectralMethod  = "peak";
   this->borders         = true;
+  this->blankEdge       = true;
   this->verbose         = true;
   this->spectralUnits   = "km/s";
 };
@@ -457,6 +463,7 @@ void Param::readParams(string paramfile)
       if(makelower(arg)=="spectralmethod"){  ss >> sval; this->spectralMethod = makelower(sval); }
       if(makelower(arg)=="spectralunits"){   ss >> sval; this->spectralUnits = makelower(sval); }
       if(makelower(arg)=="drawborders"){     ss >> sval; this->borders = boolify(sval); }
+      if(makelower(arg)=="drawblankedges"){  ss >> sval; this->blankEdge = boolify(sval); }
       if(makelower(arg)=="verbose"){         ss >> sval; this->verbose = boolify(sval); }
     }
   }
@@ -541,7 +548,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   }
   theStream  <<setw(38)<<"Removing Milky Way channels?"         
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[flagMW]"
-	     <<"  =  " <<resetiosflags(std::ios::right)<<par.getFlagMW()         <<endl;
+	     <<"  =  " <<resetiosflags(std::ios::right)<<stringize(par.getFlagMW())         <<endl;
   if(par.getFlagMW()){
     theStream<<setw(38)<<"Milky Way Channels"                   
 	     <<setw(18)<<setiosflags(std::ios::right)  <<"[minMW - maxMW]"

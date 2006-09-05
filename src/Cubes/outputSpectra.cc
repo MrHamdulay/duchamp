@@ -121,12 +121,13 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
     }
   }
     
-  float vmax,vmin;
+  float vmax,vmin,width;
   vmax = vmin = specx[0];
   for(int i=1;i<zdim;i++){
     if(specx[i]>vmax) vmax=specx[i];
     if(specx[i]<vmin) vmin=specx[i];
   }
+  
   float max,min;
   int loc=0;
   if(this->par.getMinMW()>0) max = min = specy[0];
@@ -140,10 +141,14 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
       }
     }
   }
-  // widen the flux range slightly so that the top & bottom don't lie on the axes.
-  float width = max - min;
+  // widen the ranges slightly so that the top & bottom & edges don't 
+  // lie on the axes.
+  width = max - min;
   max += width * 0.05;
   min -= width * 0.05;
+  width = vmax -vmin;
+  vmax += width * 0.01;
+  vmin -= width * 0.01;
 
   // now plot the resulting spectrum
   string label;

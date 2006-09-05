@@ -163,6 +163,8 @@ public:
   void   setSpectralUnits(string s){spectralUnits=s;};
   bool   drawBorders(){return borders;};
   void   setDrawBorders(bool f){borders=f;};
+  bool   drawBlankEdge(){return blankEdge;};
+  void   setDrawBlankEdge(bool f){blankEdge=f;};
   bool   isVerbose(){return verbose;};
   void   setVerbosity(bool f){verbose=f;};
   
@@ -170,8 +172,9 @@ private:
   // Input files
   string imageFile;       // The image to be analysed.
   bool   flagSubsection;  // Whether we just want a subsection of the image
-  string subsection;      // The subsection requested, of the form [x1:x2,y1:y2,z1:z2]
-                          //   If you want the full range of one index, use *
+  string subsection;      // The subsection requested, taking the form 
+                          //  [x1:x2,y1:y2,z1:z2]
+                          //  If you want the full range of one index, use *
   bool   flagReconExists; // The reconstructed array is in a FITS file on disk.
   string reconFile;       // The FITS file containing the reconstructed array.
 
@@ -186,7 +189,8 @@ private:
   string votFile;         // Where the VOTable goes.
   bool   flagKarma;       // Should we save results in Karma annotation format?
   string karmaFile;       // Where the Karma annotation file goes.
-  bool   flagMaps;        // Should we produce detection and moment maps in postscript form?
+  bool   flagMaps;        // Should we produce detection and moment maps 
+                          //  in postscript form?
   string detectionMap;    // The name of the detection map (ps file).
   string momentMap;       // The name of the 0th moment map (ps file).
 
@@ -200,25 +204,30 @@ private:
   float  bscaleKeyword;   // The FITS header keyword BSCALE.
   float  bzeroKeyword;    // The FITS header keyword BZERO.
   bool   flagUsingBlank;  // If true, we are using the blankPixValue keyword, 
-                          // otherwise we are using the value in the FITS header.
-  bool   flagMW;          // A flag that indicates whether to excise the Milky Way.
+                          // otherwise we use the value in the FITS header.
+  bool   flagMW;          // A flag that indicates whether to ignore the 
+                          //  Milky Way channels.
   int    maxMW;           // Last  Galactic velocity plane for HIPASS cubes
   int    minMW;           // First Galactic velocity plane for HIPASS cubes
   float  numPixBeam;      // Size (area) of the beam in pixels.
   // Trim-related         
-  bool   flagTrimmed;     // Has the cube been trimmed of excess BLANKs around the edge?
-  long   borderLeft;      // The number of BLANK pixels trimmed from the Left of the cube;
-  long   borderRight;     // The number of BLANK pixels trimmed from the Right of the cube;
-  long   borderBottom;    // The number of BLANK pixels trimmed from the Bottom of the cube;
-  long   borderTop;       // The number of BLANK pixels trimmed from the Top of the cube;
+  bool   flagTrimmed;     // Has the cube been trimmed of excess BLANKs 
+                          //  around the edge?
+  long   borderLeft;      // The number of BLANK pixels trimmed from the 
+                          //   Left of the cube;
+  long   borderRight;     // The number trimmed from the Right of the cube;
+  long   borderBottom;    // The number trimmed from the Bottom of the cube;
+  long   borderTop;       // The number trimmed from the Top of the cube;
   // Subsection offsets
   long   xSubOffset;      // The offset in the x-direction from the subsection
   long   ySubOffset;      // The offset in the y-direction from the subsection
   long   zSubOffset;      // The offset in the z-direction from the subsection
   // Baseline related;
-  bool   flagBaseline;    // Whether to do baseline subtraction before reconstruction and/or searching.
+  bool   flagBaseline;    // Whether to do baseline subtraction before 
+                          //  reconstruction and/or searching.
   // Detection-related    
-  int    minPix;          // Minimum number of pixels for a detected object to be counted
+  int    minPix;          // Minimum number of pixels for a detected object 
+                          //   to be counted
   // Object growth        
   bool   flagGrowth;      // Are we growing objects once they are found?
   float  growthCut;       // The SNR that we are growing objects down to.
@@ -226,15 +235,19 @@ private:
   bool   flagFDR;         // Should the FDR method be used? 
   float  alphaFDR;        // Alpha value for FDR detection algorithm
   // Other detection      
-  float  snrCut;          // How many sigma above mean is a detection when sigma-clipping
+  float  snrCut;          // How many sigma above mean is a detection 
+                          //   when sigma-clipping
   // A trous reconstruction parameters
   bool   flagATrous;      // Are we using the a trous reconstruction?
   int    reconDim;        // How many dimensions to use for the reconstruction?
   int    scaleMin;        // Min scale used in a trous reconstruction
   float  snrRecon;        // SNR cutoff used in a trous reconstruction
-                          //   (only wavelet coefficients that survive this threshold are kept)
-  int    filterCode;      // The code number for the filter to be used (saves having to parse names)
-  string filterName;      // The code number converted into a name, for outputting purposes.
+                          //   (only wavelet coefficients that survive this 
+                          //    threshold are kept)
+  int    filterCode;      // The code number for the filter to be used 
+                          //  (saves having to parse names)
+  string filterName;      // The code number converted into a name, 
+                          //  for outputting purposes.
 
   // Volume-merging parameters
   bool   flagAdjacent;    // Whether to use the adjacent criterion for 
@@ -243,13 +256,16 @@ private:
   float  threshVelocity;  // Maximum channels separation between objects
   int    minChannels;     // Minimum no. of channels to make an object 
   // Input-Output related
-  string spectralMethod;  // A string indicating choice of spectral plotting method:
-                          //   choices are "peak" or "sum" (peak is the default).
-  string spectralUnits;   // A string indicating what units the spectral axis should be quoted in.
+  string spectralMethod;  // A string indicating choice of spectral plotting 
+                          //  method: choices are "peak" (default) or "sum" 
+  string spectralUnits;   // A string indicating what units the spectral 
+                          //  axis should be quoted in.
   bool   borders;         // Whether to draw a border around the individual
-                          //   pixels of a detection in the spectral display
-  bool   verbose;         // Whether to use maximum verbosity -- progress indicators in the 
-                          //   reconstruction & merging functions.
+                          //  pixels of a detection in the spectral display
+  bool   blankEdge;       // Whether to draw a border around the BLANK pixel 
+                          //  region in the moment maps and cutout images
+  bool   verbose;         // Whether to use maximum verbosity -- use progress 
+                          //  indicators in the reconstruction & merging steps.
 
 };
 
@@ -291,6 +307,7 @@ public:
   void    setBzeroKeyword(float f){bzeroKeyword=f;};
   float   getBscaleKeyword(){return bscaleKeyword;};
   void    setBscaleKeyword(float f){bscaleKeyword=f;};
+  float   getAvPixScale(){return sqrt(fabs(wcs->pc[0]*wcs->pc[wcs->naxis+1]));};
 
   // front ends to WCS functions
   int     wcsToPix(const double *world, double *pix);
