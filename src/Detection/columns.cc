@@ -121,26 +121,26 @@ ColSet Column::getLogColSet(vector<Detection> &objectList)
   tempC = Col(10, "F_tot", "");
   // don't set any units for the flux here.
   size = tempC.getWidth();
-  for(int i=tempC.width-3;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth()-3;i<size;i++) tempC.widen();
   for(int o=0;o<objectList.size();o++){
     int tempsize = int( log10(fabs(objectList[o].getTotalFlux())) + 1) + fluxPrec + 2;
     if(objectList[o].getTotalFlux()<0) tempsize++;
     if((o==0)||(size < tempsize)) size = tempsize;
   }
-  for(int i=tempC.width;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   newset.vec.push_back(tempC);
 
   // F_peak
   tempC = getDefaultCol(12);
   // don't set any units for the flux here.
   size = tempC.getWidth();
-  for(int i=tempC.width-3;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth()-3;i<size;i++) tempC.widen();
   for(int o=0;o<objectList.size();o++){
     int tempsize = int( log10(fabs(objectList[o].getPeakFlux())) + 1);
     if(objectList[o].getPeakFlux()<0) tempsize++;
     if((o==0)||(size < tempsize)) size = tempsize;
   }
-  for(int i=tempC.width;i<size+fluxPrec+2;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size+fluxPrec+2;i++) tempC.widen();
   newset.vec.push_back(tempC);
 
   // X1,X2,Y1,Y2,Z1,Z2 -- just check widths
@@ -149,14 +149,14 @@ ColSet Column::getLogColSet(vector<Detection> &objectList)
     int tempsize = int( log10(objectList[o].getXmin()) + 1 + 1);
     if((o==0)||(size < tempsize)) size = tempsize;
   }
-  for(int i=tempC.width;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   newset.vec.push_back(tempC);
   tempC = getDefaultCol(14);
   for(int o=0;o<objectList.size();o++){
     int tempsize = int( log10(objectList[o].getXmax()) + 1 + 1);
     if((o==0)||(size < tempsize)) size = tempsize;
   }
-  for(int i=tempC.width;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   newset.vec.push_back(tempC);
 
   tempC = getDefaultCol(15);
@@ -164,14 +164,14 @@ ColSet Column::getLogColSet(vector<Detection> &objectList)
     int tempsize = int( log10(objectList[o].getYmin()) + 1) + 1;
     if((o==0)||(size < tempsize)) size = tempsize;
   }
-  for(int i=tempC.width;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   newset.vec.push_back(tempC);
   tempC = getDefaultCol(16);
   for(int o=0;o<objectList.size();o++){
     int tempsize = int( log10(objectList[o].getYmax()) + 1) + 1;
     if((o==0)||(size < tempsize)) size = tempsize;
   }
-  for(int i=tempC.width;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   newset.vec.push_back(tempC);
 
   tempC = getDefaultCol(17);
@@ -179,21 +179,21 @@ ColSet Column::getLogColSet(vector<Detection> &objectList)
     int tempsize = int( log10(objectList[o].getZmin()) + 1) + 1;
     if((o==0)||(size < tempsize)) size = tempsize;
   }
-  for(int i=tempC.width;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   newset.vec.push_back(tempC);
   tempC = getDefaultCol(18);
   for(int o=0;o<objectList.size();o++){
     int tempsize = int( log10(objectList[o].getZmax()) + 1) + 1;
     if((o==0)||(size < tempsize)) size = tempsize;
   }
-  for(int i=tempC.width;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   newset.vec.push_back(tempC);
 
   // Npix -- check for width.
   tempC = getDefaultCol(19);
   for(int o=0;o<objectList.size();o++){
     size = int( log10(objectList[o].getSize()) ) + 2;
-    for(int i=tempC.width;i<size;i++) tempC.widen();
+    for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   }    
   newset.vec.push_back(tempC);
 
@@ -242,13 +242,13 @@ ColSet Column::getFullColSet(vector<Detection> &objectList, FitsHeader &head)
   tempC = getDefaultCol(7);
   tempC.setUnit("[" + head.getSpectralUnits() + "]");
   size = head.getSpectralUnits().size() + 3;
-  for(int i=tempC.width;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   for(int o=0;o<objectList.size();o++){
     int tempsize = int( log10(fabs(objectList[o].getVel())) + 1) + velPrec + 2;
     if(objectList[o].getVel()<0) tempsize++; // for - sign    
     if((o==0)||(tempsize > size)) size = tempsize;
   }
-  for(int i=tempC.width;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   newset.vec.push_back(tempC);
 
   // w_RA & w_DEC -- titles and widths to be checked.
@@ -259,42 +259,42 @@ ColSet Column::getFullColSet(vector<Detection> &objectList, FitsHeader &head)
     int tempsize =  int( log10(objectList[o].getRAWidth()) + 1) + wposPrec + 2;
     if((o==0)||(size < tempsize)) size = tempsize;
   }
-  for(int i=tempC.width;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   newset.vec.push_back(tempC);
 
-  tempstr = "w_" + newset.vec[6].name;
+  tempstr = "w_" + newset.vec[6].getName();
   tempC = getDefaultCol(9);
   tempC.setName(tempstr);
   for(int o=0;o<objectList.size();o++){
     int tempsize = int( log10(objectList[o].getDecWidth()) + 1) + wposPrec + 2;
     if((o==0)||(size < tempsize)) size = tempsize;
   }
-  for(int i=tempC.width;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   newset.vec.push_back(tempC);
 
   // w_VEL -- title & width to be checked
   tempC = getDefaultCol(10);
   tempC.setUnit("[" + head.getSpectralUnits() + "]");
   size = head.getSpectralUnits().size() + 3;
-  for(int i=tempC.width;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   for(int o=0;o<objectList.size();o++){
     int tempsize = int( log10(objectList[o].getVelWidth()) + 1) + velPrec + 2;
     if((o==0)||(size < tempsize)) size = tempsize;
   }
-  for(int i=tempC.width;i<size;i++) tempC.widen();
+  for(int i=tempC.getWidth();i<size;i++) tempC.widen();
   newset.vec.push_back(tempC);
 
   if(head.isWCS()){   // use F_int
     tempC = Col(10, "F_int", "");
     tempC.setUnit("[" + head.getIntFluxUnits() + "]");
     size = head.getIntFluxUnits().size();
-    for(int i=tempC.width-3;i<size;i++) tempC.widen();
+    for(int i=tempC.getWidth()-3;i<size;i++) tempC.widen();
     for(int o=0;o<objectList.size();o++){
       int tempsize = int( log10(fabs(objectList[o].getIntegFlux())) + 1) + fluxPrec + 2;
       if(objectList[o].getIntegFlux()<0) tempsize++;
       if((o==0)||(size < tempsize ))  size = tempsize;
     }
-    for(int i=tempC.width;i<size;i++) tempC.widen();
+    for(int i=tempC.getWidth();i<size;i++) tempC.widen();
     newset.vec.push_back(tempC);
   }
   else{
