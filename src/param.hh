@@ -307,7 +307,10 @@ public:
   void    setBzeroKeyword(float f){bzeroKeyword=f;};
   float   getBscaleKeyword(){return bscaleKeyword;};
   void    setBscaleKeyword(float f){bscaleKeyword=f;};
-  float   getAvPixScale(){return sqrt(fabs(wcs->pc[0]*wcs->pc[wcs->naxis+1]));};
+  float   getAvPixScale(){
+    return sqrt( fabs ( (wcs->pc[0]*wcs->cdelt[0])*
+			(wcs->pc[wcs->naxis+1]*wcs->cdelt[1])));
+  };
 
   // front ends to WCS functions
   int     wcsToPix(const double *world, double *pix);

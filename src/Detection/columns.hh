@@ -73,7 +73,7 @@ namespace Column
     void   setUnits(string s){units=s;};
     // other functions
     int    widen(){width++;};
-    int    upPrec(){precision++; width++;};
+    int    upPrec(){precision++; if(width<precision+3) width++;};
     // outputting functions -- all in columns.cc
     void   printTitle(std::ostream &stream){
       stream << std::setw(this->width) << this->name;
@@ -90,7 +90,7 @@ namespace Column
     };
     template <class T> void printEntry(std::ostream &stream, T value)// ;
     {
-      stream << setprecision(precision);
+      stream << std::setprecision(precision);
       stream << std::setw(width) << value;
     }
 

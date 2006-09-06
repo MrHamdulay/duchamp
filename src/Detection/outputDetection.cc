@@ -11,11 +11,6 @@
 #include <Utils/utils.hh>
 #include <Detection/columns.hh>
 
-using std::endl;
-using std::setw; 
-using std::setfill;
-using std::setprecision;
- 
 using namespace Column;
 
 void Detection::outputDetectionTextHeader(std::ostream &stream, vector<Col> columns)
@@ -28,26 +23,22 @@ void Detection::outputDetectionTextHeader(std::ostream &stream, vector<Col> colu
    */
 
   vector<Col> local = columns;
-  std::cerr << "size = " << local.size();
-  std::cerr << " flagWCS = " << this->flagWCS;
   if(local.size()==22){
     vector <Col>::iterator iter;
     if(this->flagWCS) iter = local.begin() + FTOT;
     else iter = local.begin() + FINT;
-    std::cerr << " iter = " << iter-local.begin();
     local.erase(iter);
   }
-  std::cerr << " size = " << local.size() << std::endl;
 
-  stream << setfill(' ');
+  stream << std::setfill(' ');
   for(int i=0;i<local.size();i++) local[i].printDash(stream);
-  stream << endl;
+  stream << std::endl;
   for(int i=0;i<local.size();i++) local[i].printTitle(stream);
-  stream << endl;
+  stream << std::endl;
   for(int i=0;i<local.size();i++) local[i].printUnits(stream);
-  stream << endl;
+  stream << std::endl;
   for(int i=0;i<local.size();i++) local[i].printDash(stream);
-  stream << endl;
+  stream << std::endl;
 }
 
 void Detection::outputDetectionTextWCS(std::ostream &stream, vector<Col> columns)
@@ -93,7 +84,7 @@ void Detection::outputDetectionTextWCS(std::ostream &stream, vector<Col> columns
     columns[Z2].printEntry(stream,this->zmax + this->zSubOffset);
     columns[NPIX].printEntry(stream,int(this->pix.size()));
     columns[FLAG].printEntry(stream,this->flagText);
-    stream << endl;
+    stream << std::endl;
   }
 }
 
@@ -114,7 +105,7 @@ void Detection::outputDetectionText(std::ostream &stream, vector<Col> columns, i
     duchampError("outputDetectionText",errmsg.str());
   }
   else{
-   stream << setfill(' ');
+   stream << std::setfill(' ');
    stream.setf(std::ios::fixed);  
    columns[lNUM].printEntry(stream,idNumber);
    columns[lX].printEntry(stream,this->xcentre + this->xSubOffset);
@@ -129,7 +120,7 @@ void Detection::outputDetectionText(std::ostream &stream, vector<Col> columns, i
    columns[lZ1].printEntry(stream,this->zmin + this->zSubOffset);
    columns[lZ2].printEntry(stream,this->zmax + this->zSubOffset);
    columns[lNPIX].printEntry(stream,this->pix.size());
-   stream<<endl;
+   stream<<std::endl;
   }
 }
 
@@ -137,15 +128,15 @@ string Detection::outputLabelWCS()
 {
 
   std::stringstream ss;
-  ss << "#" << setfill('0') << setw(3) << this->id << ": ";
+  ss << "#" << std::setfill('0') << std::setw(3) << this->id << ": ";
   ss << this->name ;
   if(this->getFlagText()!="") 
     ss << " [" << this->getFlagText() << "]   ";
   else ss<< "   ";
-  ss << setfill(' ');
+  ss << std::setfill(' ');
   ss << this->raS << ", ";
   ss << this->decS;
-  ss << setprecision(this->velPrec);
+  ss << std::setprecision(this->velPrec);
   ss.setf(std::ios::fixed);
   ss << ", " << this->vel << " " << this->specUnits;
 
@@ -170,21 +161,21 @@ string Detection::outputLabelInfo()
   std::stringstream ss;
   ss.setf(std::ios::fixed);
   if(this->flagWCS){
-    ss << setprecision(this->posPrec);
+    ss << std::setprecision(this->posPrec);
     ss << "w_"          << this->lngtype  <<"="    << this->raWidth;
     ss << ", w_"        << this->lattype  <<"="    << this->decWidth;
-    ss << setprecision(this->velPrec);
+    ss << std::setprecision(this->velPrec);
     ss << ", w_Vel="    << this->velWidth << " " << this->specUnits;
-    ss << setprecision(this->fintPrec);
+    ss << std::setprecision(this->fintPrec);
     ss << ", F\\dint\\u=" << this->intFlux << " " << this->intFluxUnits;
-    ss << setprecision(this->fpeakPrec);
+    ss << std::setprecision(this->fpeakPrec);
     ss << ", F\\dpeak\\u=" << this->peakFlux << " " << this->fluxUnits;
   }
   else{ 
-    ss << "#" << setfill('0') << setw(3) << this->id << ": ";
-    ss << setprecision(this->fintPrec);
+    ss << "#" << std::setfill('0') << std::setw(3) << this->id << ": ";
+    ss << std::setprecision(this->fintPrec);
     ss << "F\\dtot\\u=" << this->totalFlux << this->fluxUnits;
-    ss << setprecision(this->fpeakPrec);
+    ss << std::setprecision(this->fpeakPrec);
     ss << ", F\\dpeak\\u=" << this->peakFlux << this->fluxUnits;
   }
   string output = ss.str();
@@ -203,17 +194,8 @@ string Detection::outputLabelPix()
 
   std::stringstream ss;
   ss.setf(std::ios::fixed);
-  // // This is the OLD code -- have improved the formatting below...
-//   ss << this->pix.size() << " Voxels:  ";
-//   ss << setprecision(1) << setfill(' ');
-//   ss       <<setw(5)<< this->xcentre + this->xSubOffset;
-//   ss <<" " <<setw(5)<< this->ycentre + this->ySubOffset;
-//   ss <<" " <<setw(5)<< this->zcentre + this->zSubOffset;
-//   ss <<" ["<<setw(3)<< this->xmin + this->xSubOffset   <<":"<< this->xmax + this->xSubOffset;
-//   ss <<", "<<setw(3)<< this->ymin + this->ySubOffset   <<":"<< this->ymax + this->ySubOffset;
-//   ss <<", "<<setw(3)<< this->zmin + this->zSubOffset   <<":"<< this->zmax + this->zSubOffset << "]";
   ss << "Centre: ";
-  ss << setprecision(this->xyzPrec) << setfill(' ');
+  ss << std::setprecision(this->xyzPrec) << std::setfill(' ');
   ss <<"("  << this->xcentre + this->xSubOffset;
   ss <<", " << this->ycentre + this->ySubOffset;
   ss <<", " << this->zcentre + this->zSubOffset << ")";
