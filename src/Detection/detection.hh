@@ -167,6 +167,17 @@ public:
   int    getID(){return id;};
   void   setID(int i){id = i;};
   //
+  int    getPosPrec(){return posPrec;};
+  void   setPosPrec(int i){posPrec=i;};
+  int    getXYZPrec(){return xyzPrec;};
+  void   setXYZPrec(int i){xyzPrec=i;};
+  int    getFintPrec(){return fintPrec;};
+  void   setFintPrec(int i){fintPrec=i;};
+  int    getFpeakPrec(){return fpeakPrec;};
+  void   setFpeakPrec(int i){fpeakPrec=i;};
+  int    getVelPrec(){return velPrec;};
+  void   setVelPrec(int i){velPrec=i;};
+  //
   void   addAnObject(Detection &toAdd);
   void   calcWCSparams(FitsHeader &head);
   float  getIntegFlux(FitsHeader &head);
@@ -179,8 +190,9 @@ public:
   string outputLabelWCS();
   string outputLabelPix();
   string outputLabelInfo();
-  void   outputDetectionTextWCS(std::ostream &stream, ColSet columns);
-  void   outputDetectionText(std::ostream &stream, ColSet columns, int idNumber);
+  void   outputDetectionTextHeader(std::ostream &stream, vector<Col> columns);
+  void   outputDetectionTextWCS(std::ostream &stream, vector<Col> columns);
+  void   outputDetectionText(std::ostream &stream, vector<Col> columns, int idNumber);
   // For plotting routines...
   void   drawBorders(int xoffset, int yoffset);  // in Cubes/drawMomentCutout.cc
   //
@@ -226,6 +238,12 @@ private:
   float          velWidth;    // Full velocity width
   float          velMin;      // Minimum velocity
   float          velMax;      // Maximum velocity
+  //  The next four are the precision of values printed in the spectral plots
+  int            posPrec;     // Precision of WCS positional values 
+  int            xyzPrec;     // Precision of pixel positional values 
+  int            fintPrec;    // Precision of F_int/F_tot values
+  int            fpeakPrec;   // Precision of F_peak values
+  int            velPrec;     // Precision of velocity values.
 
 };
 
@@ -233,8 +251,6 @@ private:
 //////////////////////////////////////////////////////
 // Prototypes for functions that use above classes
 //////////////////////////////////////////////////////
-
-void outputDetectionTextHeader(std::ostream &stream, ColSet columns);
 
 void SortByZ(vector <Detection> &inputList);
 void SortByVel(vector <Detection> &inputList);

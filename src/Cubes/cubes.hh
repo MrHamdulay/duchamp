@@ -230,10 +230,10 @@ public:
   void    saveRecon(float *input, long size);
   void    getRecon(float *output);
 
-  ColSet  getLogColSet(){return logColSet;};
-  void    setLogColSet(ColSet C){logColSet=C;};
-  ColSet  getFullColSet(){return fullColSet;};
-  void    setFullColSet(ColSet C){fullColSet=C;};
+  vector<Col>  getLogCols(){return logCols;};
+  void         setLogCols(vector<Col> C){logCols=C;};
+  vector<Col>  getFullCols(){return fullCols;};
+  void         setFullCols(vector<Col> C){fullCols=C;};
 
 
   // Statistics for cube
@@ -318,8 +318,8 @@ private:
   float  *chanSigma;       // array of sigmas for each channel map in cube
 	
   FitsHeader head;         // the WCS and other header information.
-  ColSet fullColSet;       // the list of all columns as printed in the results file
-  ColSet logColSet;        // the list of columns as printed in the log file
+  vector<Col> fullCols;    // the list of all columns as printed in the results file
+  vector<Col> logCols;     // the list of columns as printed in the log file
 
 };
 

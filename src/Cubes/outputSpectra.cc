@@ -18,15 +18,19 @@ void Cube::outputSpectra()
    *   Cube::outputSpectra()
    *
    *    The way to print out the spectra of the detected objects.
-   *    Make use of the SpectralPlot class in plots.h, which sizes everything correctly.
-   *    Main choice is whether to use the peak pixel, in which case the spectrum is just
-   *     that of the peak pixel, or the sum, where the spectrum is summed over all spatial
-   *     pixels that are in the object.
+   *    Make use of the SpectralPlot class in plots.h, which sizes everything 
+   *      correctly.
+   *    Main choice is whether to use the peak pixel, in which case the spectrum 
+   *     is just that of the peak pixel, or the sum, where the spectrum is summed 
+   *     over all spatial pixels that are in the object.
    *    If a reconstruction has been done, that spectrum is plotted in red.
    *    The limits of the detection are marked in blue.
-   *    A 0th moment map of the detection is also plotted, with a scale bar indicating the 
-   *     spatial size.
+   *    A 0th moment map of the detection is also plotted, with a scale bar 
+   *     indicating the spatial scale.
    */
+
+  if(this->fullCols.size()==0) this->setupColumns(); 
+  // in case cols haven't been set -- need the precisions for printing values.
 
   string spectrafile = this->par.getSpectraFile() + "/vcps";
   Plot::SpectralPlot newplot;
@@ -86,7 +90,8 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
     for(int i=0;i<zdim;i++) specy2[i] = 0.;
     
   if(this->head.isWCS())
-    for(zval=0;zval<zdim;zval++) specx[int(zval)] = this->head.pixToVel(xval,yval,zval);
+    for(zval=0;zval<zdim;zval++) 
+      specx[int(zval)] = this->head.pixToVel(xval,yval,zval);
   else 
     for(zval=0;zval<zdim;zval++) specx[int(zval)] = zval;
 

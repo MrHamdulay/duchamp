@@ -660,17 +660,32 @@ void Cube::setupColumns()
 {
   /**
    *  Cube::setupColumns()
-   *
-   *   A front-end to the two ColSet setup routines in
-   *    columns.cc.
+   *   A front-end to the two setup routines in columns.cc.
    */ 
+  this->fullCols.clear();
+  this->fullCols = getFullColSet(this->objectList, this->head);
 
+  this->logCols.clear();
+  this->logCols = getLogColSet(this->objectList, this->head);
 
-  this->logColSet.vec.clear();
-  this->logColSet = Column::getLogColSet(this->objectList);
-
-  this->fullColSet.vec.clear();
-  this->fullColSet = Column::getFullColSet(this->objectList, this->head);
+  int vel,fpeak,fint,pos,xyz,temp;
+  vel = fullCols[VEL].getPrecision();
+  fpeak = fullCols[FPEAK].getPrecision();
+  xyz = fullCols[X].getPrecision();
+  if(temp=fullCols[Y].getPrecision() > xyz) xyz = temp;
+  if(temp=fullCols[Z].getPrecision() > xyz) xyz = temp;
+  if(this->head.isWCS()) fint = fullCols[FINT].getPrecision();
+  else fint = fullCols[FTOT].getPrecision();
+  pos = fullCols[WRA].getPrecision();
+  if(temp=fullCols[WDEC].getPrecision() > pos) pos = temp;
+  
+  for(int obj=0;obj<this->objectList.size();obj++){
+    this->objectList[obj].setVelPrec(vel);
+    this->objectList[obj].setFpeakPrec(fpeak);
+    this->objectList[obj].setXYZPrec(xyz);
+    this->objectList[obj].setPosPrec(pos);
+    this->objectList[obj].setFintPrec(fint);
+  }
 
 }
 
