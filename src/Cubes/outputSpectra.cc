@@ -22,9 +22,9 @@ void Cube::outputSpectra()
    *    The way to print out the spectra of the detected objects.
    *    Make use of the SpectralPlot class in plots.h, which sizes everything 
    *      correctly.
-   *    Main choice is whether to use the peak pixel, in which case the spectrum 
-   *     is just that of the peak pixel, or the sum, where the spectrum is summed 
-   *     over all spatial pixels that are in the object.
+   *    Main choice is whether to use the peak pixel, in which case the 
+   *     spectrum is just that of the peak pixel, or the sum, where the 
+   *     spectrum is summed over all spatial pixels that are in the object.
    *    If a reconstruction has been done, that spectrum is plotted in red.
    *    The limits of the detection are marked in blue.
    *    A 0th moment map of the detection is also plotted, with a scale bar 
@@ -54,14 +54,15 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
    *   Cube::plotSpectrum(obj)
    *
    *    The way to print out the spectrum of a Detection.
-   *    Make use of the SpectralPlot class in plots.hh, which sizes everything correctly.
-   *    Main choice is whether to use the peak pixel, in which case the spectrum is just
-   *     that of the peak pixel, or the sum, where the spectrum is summed over all spatial
-   *     pixels that are in the object.
+   *    Makes use of the SpectralPlot class in plots.hh, which sizes 
+   *     everything correctly.
+   *    Main choice is whether to use the peak pixel, in which case the 
+   *     spectrum is just that of the peak pixel, or the sum, where the 
+   *     spectrum is summed over all spatial pixels that are in the object.
    *    If a reconstruction has been done, that spectrum is plotted in red.
    *    The limits of the detection are marked in blue.
-   *    A 0th moment map of the detection is also plotted, with a scale bar indicating the 
-   *     spatial size.
+   *    A 0th moment map of the detection is also plotted, with a scale bar 
+   *     indicating the spatial size.
    */
 
   long xdim = this->axisDim[0];
@@ -231,12 +232,14 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
 }
 
 
-void getSmallVelRange(Detection &obj, FitsHeader head, float *minvel, float *maxvel)
+void getSmallVelRange(Detection &obj, FitsHeader head, 
+		      float *minvel, float *maxvel)
 {
   /** 
    * getSmallVelRange(obj,wcs,minvel,maxvel)
    *  Routine to calculate the velocity range for the zoomed-in region.
-   *  This range should be the maximum of 20 pixels, or 3x the wdith of the detection.
+   *  This range should be the maximum of 20 pixels, or 3x the wdith of 
+   *   the detection.
    *  Need to :
    *      Calculate pixel width of a 3x-detection-width region.
    *      If smaller than 20, calculate velocities of central vel +- 10 pixels
@@ -247,7 +250,8 @@ void getSmallVelRange(Detection &obj, FitsHeader head, float *minvel, float *max
   double *pixcrd = new double[3];
   double *world  = new double[3];
   float minpix,maxpix;
-  // define new velocity extrema -- make it 3x wider than the width of the detection.
+  // define new velocity extrema 
+  //    -- make it 3x wider than the width of the detection.
   *minvel = 0.5*(obj.getVelMin()+obj.getVelMax()) - 1.5*obj.getVelWidth();
   *maxvel = 0.5*(obj.getVelMin()+obj.getVelMax()) + 1.5*obj.getVelWidth();
   // Find velocity range in number of pixels:
@@ -284,7 +288,8 @@ void getSmallZRange(Detection &obj, float *minz, float *maxz)
   /** 
    * getSmallZRange(obj,minz,maxz)
    *  Routine to calculate the pixel range for the zoomed-in spectrum.
-   *  This range should be the maximum of 20 pixels, or 3x the wdith of the detection.
+   *  This range should be the maximum of 20 pixels, or 3x the width 
+   *   of the detection.
    *  Need to :
    *      Calculate pixel width of a 3x-detection-width region.
    *       If smaller than 20, use central pixel +- 10 pixels
