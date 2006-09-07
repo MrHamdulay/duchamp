@@ -84,9 +84,9 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 duchamp : $(OBJECTS)
 	$(CXX) -o $(INSTALLDIR)/$(EXEC) $(OBJECTS) $(LIBS)
 
-createTestImage : $(TEST)/createTestImage.o $(UTILSDIR)/get_random_spectrum.o
+createTestImage : $(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o
 	$(CXX) -o createTestImage.x\
-	$(TEST)/createTestImage.o $(UTILSDIR)/get_random_spectrum.o\
+	$(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o\
 	$(CFITSIOLIB) @LIBS@
 
 $(OBJECTS) : $(HEADS)
