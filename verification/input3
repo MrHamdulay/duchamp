@@ -1,0 +1,12 @@
+imageFile	verification/verificationCube.fits
+flagMW		false
+flagBlankPix	false
+flagFDR		false
+flagAtrous	true
+snrRecon        3
+snrCut		2
+minChannels     2
+flagMaps        false
+flagLog         false
+outFile         verification/results3.txt
+spectraFile     verification/spectra3.ps

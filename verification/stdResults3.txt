@@ -1,0 +1,39 @@
+Results of the Duchamp source finder: Thu Sep  7 16:37:22 2006
+---- Parameters ----
+Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
+Intermediate Logfile...........................[logFile]  =  duchamp-Logfile.txt
+Final Results file.............................[outFile]  =  verification/results3.txt
+Spectrum file..............................[spectraFile]  =  verification/spectra3.ps
+Saving reconstructed cube?.............[flagoutputrecon]  =  false
+Saving residuals from reconstruction?..[flagoutputresid]  =  false
+------
+Searching for Negative features?..........[flagNegative]  =  false
+Fixing Blank Pixels?......................[flagBlankPix]  =  false
+Removing Milky Way channels?....................[flagMW]  =  false
+Beam Size (pixels)......................................  =  10.1788
+Removing baselines before search?.........[flagBaseline]  =  false
+Minimum # Pixels in a detection.................[minPix]  =  2
+Minimum # Channels in a detection..........[minChannels]  =  2
+Growing objects after detection?............[flagGrowth]  =  false
+Using A Trous reconstruction?...............[flagATrous]  =  true
+Number of dimensions in reconstruction........[reconDim]  =  3
+Minimum scale in reconstruction...............[scaleMin]  =  1
+SNR Threshold within reconstruction...........[snrRecon]  =  3
+Filter being used for reconstruction........[filterCode]  =  1 (B3 spline function)
+Using FDR analysis?............................[flagFDR]  =  false
+SNR Threshold...................................[snrCut]  =  2
+Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
+Max. velocity separation for merging....[threshVelocity]  =  7
+Method of spectral plotting.............[spectralMethod]  =  peak
+--------------------
+Total number of detections = 5
+--------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+ Obj#           Name     X     Y     Z           RA          DEC      VEL     w_RA    w_DEC    w_VEL     F_int    F_peak  X1  X2  Y1  Y2  Z1  Z2  Npix Flag
+                                                                   [km/s] [arcmin] [arcmin]   [km/s] [Jy km/s] [Jy/beam]                         [pix]     
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+    1 J060912-273522  25.0  25.0  20.0  06:09:12.44 -27:35:22.28 -566.763    52.78    51.30  158.296  5688.010    11.489  19  31  19  31  14  26  1024     
+    2 J055411-273529  74.9  24.9  41.9  05:54:11.83 -27:35:29.27 -277.710    51.20    52.79  158.296  5608.854    11.766  69  81  19  31  36  48  1010     
+    3 J060143-255613  49.9  49.9  64.0  06:01:43.15 -25:56:13.78   13.359    51.97    52.03  158.296  5714.271    10.926  44  56  44  56  58  70  1023     
+    4 J060900-241500  25.0  75.1  86.0  06:09:00.94 -24:15:00.97  302.981    52.67    51.32  158.296  5692.661    10.445  19  31  69  81  80  92  1038     
+    5 J055424-241521  74.9  75.0 108.0  05:54:24.77 -24:15:21.50  593.940    51.31    52.78  158.296  5747.620    11.304  69  81  69  81 102 114  1036     

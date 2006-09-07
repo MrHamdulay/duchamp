@@ -1,0 +1,33 @@
+Results of the Duchamp source finder: Thu Sep  7 16:44:36 2006
+---- Parameters ----
+Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
+Intermediate Logfile...........................[logFile]  =  duchamp-Logfile.txt
+Final Results file.............................[outFile]  =  verification/results1.txt
+Spectrum file..............................[spectraFile]  =  verification/spectra1.ps
+------
+Searching for Negative features?..........[flagNegative]  =  false
+Fixing Blank Pixels?......................[flagBlankPix]  =  false
+Removing Milky Way channels?....................[flagMW]  =  false
+Beam Size (pixels)......................................  =  10.1788
+Removing baselines before search?.........[flagBaseline]  =  false
+Minimum # Pixels in a detection.................[minPix]  =  2
+Minimum # Channels in a detection..........[minChannels]  =  2
+Growing objects after detection?............[flagGrowth]  =  false
+Using A Trous reconstruction?...............[flagATrous]  =  false
+Using FDR analysis?............................[flagFDR]  =  false
+SNR Threshold...................................[snrCut]  =  3
+Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
+Max. velocity separation for merging....[threshVelocity]  =  7
+Method of spectral plotting.............[spectralMethod]  =  peak
+--------------------
+Total number of detections = 5
+--------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+ Obj#           Name     X     Y     Z           RA          DEC      VEL     w_RA    w_DEC    w_VEL     F_int    F_peak  X1  X2  Y1  Y2  Z1  Z2  Npix Flag
+                                                                   [km/s] [arcmin] [arcmin]   [km/s] [Jy km/s] [Jy/beam]                         [pix]     
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+    1 J060911-273522  25.1  25.0  20.0  06:09:11.89 -27:35:22.50 -566.803    60.78    51.19  158.296  4994.265    11.489  18  32  19  31  14  26   747     
+    2 J055410-273518  75.0  25.0  41.9  05:54:10.11 -27:35:18.27 -278.386    51.20    52.79  158.296  4869.138    11.766  69  81  19  31  36  48   723     
+    3 J060142-255628  50.0  49.9  64.0  06:01:42.74 -25:56:28.55   12.977    59.98    56.03  158.296  5000.201    10.926  43  57  43  56  58  70   738     
+    4 J060903-241453  24.9  75.1  86.0  06:09:03.25 -24:14:53.22  303.418    56.70    55.29  158.296  4949.043    10.445  19  32  69  82  79  91   745     
+    5 J055424-241522  74.9  75.0 108.1  05:54:24.96 -24:15:22.17  594.554    51.31    52.78  158.296  5035.182    11.304  69  81  69  81 102 114   754     

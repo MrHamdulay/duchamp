@@ -29,6 +29,7 @@ ATROUSDIR = $(BASE)/ATrous
 DETECTIONDIR = $(BASE)/Detection
 CUBESDIR = $(BASE)/Cubes
 UTILDIR = $(BASE)/Utils
+TESTDIR = ./verification
 
 HEADS = $(BASE)/duchamp.hh\
 	$(BASE)/param.hh\
@@ -82,6 +83,11 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 
 duchamp : $(OBJECTS)
 	$(CXX) -o $(INSTALLDIR)/$(EXEC) $(OBJECTS) $(LIBS)
+
+createTestImage : $(TEST)/createTestImage.o $(UTILSDIR)/get_random_spectrum.o
+	$(CXX) -o createTestImage.x\
+	$(TEST)/createTestImage.o $(UTILSDIR)/get_random_spectrum.o\
+	$(CFITSIOLIB) @LIBS@
 
 $(OBJECTS) : $(HEADS)
 
