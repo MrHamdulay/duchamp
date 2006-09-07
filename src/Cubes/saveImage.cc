@@ -3,8 +3,10 @@
 #include <string>
 #include <wcs.h>
 #include <wcshdr.h>
-#define WCSLIB_GETWCSTAB // define this so that we don't try and redefine wtbarr 
-                         // (this is a problem when using cfitsio v.3 and g++ v.4)
+#define WCSLIB_GETWCSTAB 
+// define this so that we don't try and redefine wtbarr 
+// (this is a problem when using cfitsio v.3 and g++ v.4)
+
 #include <fitsio.h>
 #include <duchamp.hh>
 #include <Cubes/cubes.hh>
@@ -17,16 +19,17 @@ void Cube::saveReconstructedCube()
    *  Cube::saveReconstructedCube()
    *
    *   A function to save the reconstructed and/or residual arrays.
-   *   A number of header keywords are written as well, indicating the nature of the
-   *    reconstruction that has been done.
-   *   The file is always written -- if the filename (as calculated based on the 
-   *    recon parameters) exists, then it is overwritten.
+   *   A number of header keywords are written as well, indicating the 
+   *    nature of the reconstruction that has been done.
+   *   The file is always written -- if the filename (as calculated 
+   *    based on the recon parameters) exists, then it is overwritten.
    */
   
   int newbitpix = FLOAT_IMG;
 
   float *resid = new float[this->numPixels];
-  for(int i=0;i<this->numPixels;i++) resid[i] = this->array[i] - this->recon[i];
+  for(int i=0;i<this->numPixels;i++) 
+    resid[i] = this->array[i] - this->recon[i];
   float blankval = this->par.getBlankPixVal();
 
   long *fpixel = new long[this->numDim];
@@ -37,7 +40,8 @@ void Cube::saveReconstructedCube()
   if (status) fits_report_error(stderr, status);
   
   if(this->par.getFlagOutputRecon()){
-    string fileout = "!" + this->par.outputReconFile(); // ! so that it writes over an existing file.
+    string fileout = "!" + this->par.outputReconFile(); 
+    // the ! is there so that it writes over an existing file.
 
     status = 0;
     fits_create_file(&fptrNew,fileout.c_str(),&status);
@@ -54,29 +58,36 @@ void Cube::saveReconstructedCube()
 	char *comment = new char[80];
 	long dud;
 	status = 0;
-	fits_update_key(fptrNew, TINT, "BITPIX", &newbitpix, "number of bits per data pixel", &status);
+	fits_update_key(fptrNew, TINT, "BITPIX", &newbitpix, 
+			"number of bits per data pixel", &status);
 	if (status) fits_report_error(stderr, status);
 	status = 0;
 	float bscale=1., bzero=0.;
-	fits_update_key(fptrNew, TFLOAT, "BSCALE", &bscale, "PHYSICAL = PIXEL*BSCALE + BZERO", &status);
+	fits_update_key(fptrNew, TFLOAT, "BSCALE", &bscale, 
+			"PHYSICAL = PIXEL*BSCALE + BZERO", &status);
 	fits_update_key(fptrNew, TFLOAT, "BZERO", &bzero, "", &status);
 	fits_set_bscale(fptrNew, 1., 0., &status);
 	if (status) fits_report_error(stderr, status);
-	// Need to correct the dimensions, if we have subsectioned the image...    
+	// Need to correct the dimensions, if we have subsectioned the image
 	if(this->par.getFlagSubsection()){
 	  fits_read_key(fptrOld, TLONG, "NAXIS1", &dud, comment, &status);
-	  fits_update_key(fptrNew, TLONG, "NAXIS1", &(this->axisDim[0]), comment, &status);
+	  fits_update_key(fptrNew, TLONG, "NAXIS1", 
+			  &(this->axisDim[0]), comment, &status);
 	  fits_read_key(fptrOld, TLONG, "NAXIS2", &dud, comment, &status);
-	  fits_update_key(fptrNew, TLONG, "NAXIS2", &(this->axisDim[1]), comment, &status);
+	  fits_update_key(fptrNew, TLONG, "NAXIS2", 
+			  &(this->axisDim[1]), comment, &status);
 	  fits_read_key(fptrOld, TLONG, "NAXIS3", &dud, comment, &status);
-	  fits_update_key(fptrNew, TLONG, "NAXIS3", &(this->axisDim[2]), comment, &status);
+	  fits_update_key(fptrNew, TLONG, "NAXIS3", 
+			  &(this->axisDim[2]), comment, &status);
 	}
 
 	write_header_info(fptrNew, this->par, "recon");
 
 	if(this->par.getFlagBlankPix())
-	  fits_write_pixnull(fptrNew, TFLOAT, fpixel, this->numPixels, this->recon, &blankval, &status);
-	else  fits_write_pix(fptrNew, TFLOAT, fpixel, this->numPixels, this->recon, &status);
+	  fits_write_pixnull(fptrNew, TFLOAT, fpixel, this->numPixels, 
+			     this->recon, &blankval, &status);
+	else  fits_write_pix(fptrNew, TFLOAT, fpixel, this->numPixels, 
+			     this->recon, &status);
 
 	status = 0;
 	fits_close_file(fptrNew, &status);
@@ -86,7 +97,8 @@ void Cube::saveReconstructedCube()
 
 
   if(this->par.getFlagOutputResid()){
-    string fileout = "!" + this->par.outputResidFile(); // ! so that it writes over an existing file.
+    string fileout = "!" + this->par.outputResidFile(); 
+    // the ! is there so that it writes over an existing file.
     status = 0;
     fits_create_file(&fptrNew,fileout.c_str(),&status);
     if (status)
@@ -101,11 +113,13 @@ void Cube::saveReconstructedCube()
 	if (status) fits_report_error(stderr, status);
 
 	status = 0;
-	fits_update_key(fptrNew, TINT, "BITPIX", &newbitpix, "number of bits per data pixel", &status);
+	fits_update_key(fptrNew, TINT, "BITPIX", &newbitpix, 
+			"number of bits per data pixel", &status);
 	if (status) fits_report_error(stderr, status);
 	status = 0;
 	float bscale=1., bzero=0.;
-	fits_update_key(fptrNew, TFLOAT, "BSCALE", &bscale, "PHYSICAL = PIXEL*BSCALE + BZERO", &status);
+	fits_update_key(fptrNew, TFLOAT, "BSCALE", &bscale, 
+			"PHYSICAL = PIXEL*BSCALE + BZERO", &status);
 	fits_update_key(fptrNew, TFLOAT, "BZERO", &bzero, "", &status);
 	fits_set_bscale(fptrNew, 1., 0., &status);
 	if (status) fits_report_error(stderr, status);
@@ -115,18 +129,23 @@ void Cube::saveReconstructedCube()
 	long dud;
 	if(this->pars().getFlagSubsection()){
 	  fits_read_key(fptrOld, TLONG, "NAXIS1", &dud, comment, &status);
-	  fits_update_key(fptrNew, TLONG, "NAXIS1", &(this->axisDim[0]), comment, &status);
+	  fits_update_key(fptrNew, TLONG, "NAXIS1", 
+			  &(this->axisDim[0]), comment, &status);
 	  fits_read_key(fptrOld, TLONG, "NAXIS2", &dud, comment, &status);
-	  fits_update_key(fptrNew, TLONG, "NAXIS2", &(this->axisDim[1]), comment, &status);
+	  fits_update_key(fptrNew, TLONG, "NAXIS2", 
+			  &(this->axisDim[1]), comment, &status);
 	  fits_read_key(fptrOld, TLONG, "NAXIS3", &dud, comment, &status);
-	  fits_update_key(fptrNew, TLONG, "NAXIS3", &(this->axisDim[2]), comment, &status);
+	  fits_update_key(fptrNew, TLONG, "NAXIS3", 
+			  &(this->axisDim[2]), comment, &status);
 	}
 
 	write_header_info(fptrNew, this->par, "resid");
 
 	if(this->par.getFlagBlankPix())
-	  fits_write_pixnull(fptrNew, TFLOAT, fpixel, this->numPixels, resid, &blankval, &status);
-	else  fits_write_pix(fptrNew, TFLOAT, fpixel, this->numPixels, resid, &status);
+	  fits_write_pixnull(fptrNew, TFLOAT, fpixel, this->numPixels, 
+			     resid, &blankval, &status);
+	else  fits_write_pix(fptrNew, TFLOAT, fpixel, this->numPixels, 
+			     resid, &status);
 
 	fits_close_file(fptrNew, &status);
       }
@@ -164,7 +183,7 @@ void write_header_info(fitsfile *fptr, Param &par, string nature)
   fits_write_history(fptr, (char *)par.getImageFile().c_str(), &status);
 
   if(par.getFlagSubsection()){
-    fits_write_comment(fptr, (char *)header_subsection_comment.c_str(), &status);
+    fits_write_comment(fptr,(char *)header_subsection_comment.c_str(),&status);
     fits_write_key(fptr, TSTRING, (char *)keyword_subsection.c_str(), 
 		   (char *)par.getSubsection().c_str(),
 		   (char *)comment_subsection.c_str(), &status);
@@ -199,6 +218,7 @@ void write_header_info(fitsfile *fptr, Param &par, string nature)
   else duchampWarning("write_header_info","explanation not present!\n");
   fits_write_comment(fptr, (char *)explanation.c_str(), &status);
   fits_write_key(fptr, TSTRING, (char *)keyword_ReconResid.c_str(), 
-		 (char *)ReconResid.c_str(), (char *)comment_ReconResid.c_str(), &status);
+		 (char *)ReconResid.c_str(), 
+		 (char *)comment_ReconResid.c_str(), &status);
 
 }

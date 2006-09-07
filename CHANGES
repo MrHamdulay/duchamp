@@ -1,61 +1,70 @@
-Duchamp version 1.0.? (2006/09/01)
+Duchamp version 1.0.5 (2006/09/06)
 ----------------------------------
+
+Since version 1.0, there have been a range of mostly minor
+changes. These are generally bug-fixes, thanks to feedback from a
+number of users. Here is a summary of the changes since version 1.0:
 
 * Fixed a bug that meant 4-dimensional FITS files were generating
   memory faults, both with the allocation of the necessary arrays and
   with the WCS-related calculations.
+
+* When the FITS file does not have a rest frequency defined, there is
+  no way to transform the frequency axis into velocity. In this case,
+  the spectral axis is left as frequency, and put into units of MHz.
 
 * The user is now able to enter the value of flag parameters in the
   parameter file as strings, as well as integers (so one can enter
   true or 1 to give the same result).
 
 * Added a new function that draws the edge of the blank region on the
-  maps and image cutouts. There is a new flag parameter -- drawBlankEdges
-  -- that controls the use of this function (the default is true).
+  maps and image cutouts. There is a new flag parameter --
+  drawBlankEdges -- that controls the use of this function (the
+  default is true).
+  Also, the edge of the field is plotted on the image cutouts as a
+  yellow line. This distinguishes it from the purple blank pixel
+  dividing line.
 
-* A couple of bugs related to the blank-pixel determination were fixed
-  (these affected the detection of some pixels, particularly when the
-  FDR method was used, and the display of cutout images -- this was
-  not quite resolved by the changes in v1.0.2).
+* The size of the tick mark in the image cutout (indicating the
+  spatial scale of the image) is now adaptable, so that it shows the
+  scale that best fits the image (ranging from 1 arcsec to 15
+  degrees). (This is a change from the previous standard length of 15
+  arcmin.)
 
-* Other minor fixes to the code, to improve its structure and
-  robustness.
-
-
-Duchamp version 1.0.2 (2006/08/22)
-----------------------------------
+* Several bugs related to the blank-pixels were dealt with.
+  The correct values were not propagating through correctly, meaning
+  that the default values were being used. Also, there was the
+  potential for blank pixels to be detected when the FDR method was
+  used. Finally, the image cutout displays occasionally did not
+  obscure the blank pixels. All these problems should be fixed now.
 
 * The FDR setup routine was occasionally failing with a segmentation
   fault, due to it accessing unallocated memory. This has been fixed. 
 
-* A bug that affected the propagation of blank pixel information to
-  various functions (such as drawMomentMap) was fixed. The moment maps
-  should now be correct in all cases.
-
-* Improved error and warning reporting, so that the formatting and
-  presentation of information is clearer.
-
 * Fixed bugs that affected the way 2D images (rather than 3D cubes)
   were dealt with. The minChannels test failed when minChannels=0.
 
-
-Duchamp version 1.0.1 (2006/07/28)
-----------------------------------
-
-* A bug in the calculation of blank pixels has been fixed. The correct
-  values from the FITS header were not propagating through correctly,
-  meaning that the default values were being used.
-
 * The zoomed spectrum had its flux scale determined by all points in
-  the zoom box,including those flagged by the MW range. This has been
-  fixed so that any MW channels will not affect the flux scaling,
-  potentially improving the appearance of objects detected close in
-  velocity to strong MW emission or absorption.
+  the zoom box,including those flagged by the Milky Way (MW)
+  range. This has been fixed so that any MW channels will not affect
+  the flux scaling, potentially improving the appearance of objects
+  detected close in velocity to strong MW emission or absorption.
 
 * The position resolution in the IAU-format names has been increased,
   so that distinct objects close to one another are more readily
   distinguished.  Overlapping sources at different velocities may
   still have the same name, but this is a more general problem.
+
+* The presentation of the results in tabular format has been improved,
+  so that the precision of faint sources is sufficient to show their
+  flux, for instance, is not 0. This also applies to the information 
+  presented above the spectral plots.
+
+* Improved error and warning reporting, so that the formatting and
+  presentation of information is clearer.
+
+* Other minor fixes to the code, to improve its structure and
+  robustness.
 
 
 Duchamp version 1.0 (2006/06/30)

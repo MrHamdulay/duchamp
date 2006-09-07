@@ -126,7 +126,7 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
       tempwidth = objectList[obj].getRAs().size() + 1;
       for(int i=newset[RA].getWidth();i<tempwidth;i++) newset[RA].widen();
       
-      // Dec -- assign correct title. Check width but should be ok by definition
+      // Dec -- assign correct title. Check width, should be ok by definition
       tempstr = head.getWCS()->lattyp;
       newset[DEC].setName(tempstr);
       tempwidth = objectList[obj].getDecs().size() + 1;
@@ -137,36 +137,37 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
 	newset[VEL].setName("FREQ");
       newset[VEL].setUnits("[" + head.getSpectralUnits() + "]");
       tempwidth = newset[VEL].getUnits().size() + 1;
-      for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();      
+      for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
+
       val = objectList[obj].getVel();
       tempwidth = int( log10(fabs(val)) + 1) + newset[VEL].getPrecision() + 2;
       if(val<0) tempwidth++;
       for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
-      if(val < 1.){
+      if(fabs(val) < 1.){
 	minval = pow(10, -1. * newset[VEL].getPrecision()+1); 
 	if(val < minval) newset[VEL].upPrec();
       }
 
       // w_RA -- check width & title. leave units for the moment.
       tempwidth = newset[RA].getUnits().size() + 1;
-      for(int i=newset[RA].getWidth();i<tempwidth;i++) newset[RA].widen();      
+      for(int i=newset[RA].getWidth();i<tempwidth;i++) newset[RA].widen();
       val = objectList[obj].getRAWidth();
       tempwidth = int( log10(fabs(val)) + 1) + newset[WRA].getPrecision() + 2;
       if(val<0) tempwidth++;
       for(int i=newset[WRA].getWidth();i<tempwidth;i++) newset[WRA].widen();
-      if(val < 1.){
+      if(fabs(val) < 1.){
 	minval = pow(10, -1. * newset[WRA].getPrecision()+1); 
 	if(val < minval) newset[WRA].upPrec();
       }
 
       // w_DEC -- check width & title. leave units for the moment.
       tempwidth = newset[DEC].getUnits().size() + 1;
-      for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();      
+      for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
       val = objectList[obj].getDecWidth();
       tempwidth = int( log10(fabs(val)) + 1) + newset[WDEC].getPrecision() + 2;
       if(val<0) tempwidth++;
       for(int i=newset[WDEC].getWidth();i<tempwidth;i++) newset[WDEC].widen();
-      if(val < 1.){
+      if(fabs(val) < 1.){
 	minval = pow(10, -1. * newset[WDEC].getPrecision()+1); 
 	if(val < minval) newset[WDEC].upPrec();
       }
@@ -176,12 +177,12 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
 	newset[WVEL].setName("w_FREQ");
       newset[WVEL].setUnits("[" + head.getSpectralUnits() + "]");
       tempwidth = newset[WVEL].getUnits().size() + 1;
-      for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();      
+      for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
       val = objectList[obj].getVel();
       tempwidth = int( log10(fabs(val)) + 1) + newset[WVEL].getPrecision() + 2;
       if(val<0) tempwidth++;
       for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
-      if(val < 1.){
+      if(fabs(val) < 1.){
 	minval = pow(10, -1. * newset[WVEL].getPrecision()+1); 
 	if(val < minval) newset[WVEL].upPrec();
       }
@@ -189,12 +190,12 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
       // F_int -- check width & units
       newset[FINT].setUnits("[" + head.getIntFluxUnits() + "]");
       tempwidth = newset[FINT].getUnits().size() + 1;
-      for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();      
+      for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
       val = objectList[obj].getIntegFlux();
       tempwidth = int( log10(fabs(val)) + 1) + newset[FINT].getPrecision() + 2;
       if(val<0) tempwidth++;
       for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
-      if(val < 1.){
+      if(fabs(val) < 1.){
 	minval = pow(10, -1. * newset[FINT].getPrecision()+1); 
 	if(val < minval) newset[FINT].upPrec();
       }
@@ -203,12 +204,12 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
     // F_tot
     newset[FTOT].setUnits("[" + head.getFluxUnits() + "]");
     tempwidth = newset[FTOT].getUnits().size() + 1;
-    for(int i=newset[FTOT].getWidth();i<tempwidth;i++) newset[FTOT].widen();      
+    for(int i=newset[FTOT].getWidth();i<tempwidth;i++) newset[FTOT].widen();
     val = objectList[obj].getTotalFlux();
     tempwidth = int( log10(fabs(val)) + 1) + newset[FTOT].getPrecision() + 2;
     if(val<0) tempwidth++;
     for(int i=newset[FTOT].getWidth();i<tempwidth;i++) newset[FTOT].widen();
-    if(val < 1.){
+    if(fabs(val) < 1.){
       minval = pow(10, -1. * newset[FTOT].getPrecision()+1); 
       if(val < minval) newset[FTOT].upPrec();
     }
@@ -216,12 +217,12 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
     // F_peak
     newset[FPEAK].setUnits("[" + head.getFluxUnits() + "]");
     tempwidth = newset[FPEAK].getUnits().size() + 1;
-    for(int i=newset[FPEAK].getWidth();i<tempwidth;i++) newset[FPEAK].widen();      
+    for(int i=newset[FPEAK].getWidth();i<tempwidth;i++) newset[FPEAK].widen();
     val = objectList[obj].getPeakFlux();
     tempwidth = int( log10(fabs(val)) + 1) + newset[FPEAK].getPrecision() + 2;
     if(val<0) tempwidth++;
     for(int i=newset[FPEAK].getWidth();i<tempwidth;i++) newset[FPEAK].widen();
-    if(val < 1.){
+    if(fabs(val) < 1.){
       minval = pow(10, -1. * newset[FPEAK].getPrecision()+1); 
       if(val < minval) newset[FPEAK].upPrec();
     }

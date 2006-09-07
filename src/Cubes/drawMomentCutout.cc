@@ -7,8 +7,10 @@
 #include <param.hh>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
+#include <Utils/mycpgplot.hh>
 
 const int MIN_WIDTH=20;
+using namespace mycpgplot;
 
 void Cube::drawMomentCutout(Detection &object)
 {
@@ -114,8 +116,8 @@ void Cube::drawMomentCutout(Detection &object)
     this->drawFieldEdge();
 
     // Draw the borders around the object
-    cpgsci(4);
-    cpgsfs(2);
+    cpgsci(BLUE);
+    cpgsfs(OUTLINE);
     if(this->par.drawBorders()) 
       object.drawBorders(xmin,ymin);
     else 
@@ -158,85 +160,88 @@ void Cube::drawScale(float xstart, float ystart, float channel)
     duchampError("drawScale","There is no PGPlot device open!\n");
   else{
 
-    enum ANGLE {ARCSEC, ARCMIN, DEGREE};
-    const string symbol[3] = {"\"", "'", "\\(0718)" };
-    const float angleScale[3] = {3600., 60., 1.};
-    //  degree, arcmin, arcsec symbols
+    if(this->head.isWCS()){  // can only do this if the WCS is good!
+
+      enum ANGLE {ARCSEC, ARCMIN, DEGREE};
+      const string symbol[3] = {"\"", "'", mycpgplot::degrees };
+      const float angleScale[3] = {3600., 60., 1.};
+      //  degree, arcmin, arcsec symbols
     
-    const float lengths[11] = {1./3600., 5./3600., 15./3600., 30./3600.,
-			       1./60., 5./60., 15./60., 30./60.,
-			       1., 5., 15.};
-    const float desiredRatio = 0.2;
+      const float lengths[11] = {1./3600., 5./3600., 15./3600., 30./3600.,
+				 1./60., 5./60., 15./60., 30./60.,
+				 1., 5., 15.};
+      const float desiredRatio = 0.2;
 
-    // first, work out what is the optimum length of the scale bar,
-    //   based on the pixel scale and size of the image.
-    float pixscale = this->head.getAvPixScale();
-    float *fraction = new float[11];
-    int best;
-    float x1,x2,y1,y2;
-    cpgqwin(&x1,&x2,&y1,&y2);
-    for(int i=0;i<11;i++){
-      fraction[i] = (lengths[i]/pixscale) / (x2-x1);
-      if(i==0) best=0;
-      else if(fabs(fraction[i] - desiredRatio) < 
-	      fabs(fraction[best] - desiredRatio)) best=i;
-    }
-    delete [] fraction;
-
-    ANGLE angleType;
-    if(best<4)      angleType = ARCSEC;
-    else if(best<8) angleType = ARCMIN;
-    else            angleType = DEGREE;
-    float scaleLength = lengths[best];  // this is currently in degrees
-
-    // Now work out actual pixel locations for the ends of the scale bar
-    double *pix1   = new double[3];
-    double *pix2   = new double[3];
-    double *world1 = new double[3];
-    double *world2 = new double[3];
-    pix1[0] = pix2[0] = xstart + this->par.getXOffset();
-    pix1[1] = pix2[1] = ystart + this->par.getYOffset();
-    pix1[2] = pix2[2] = channel;
-    this->head.pixToWCS(pix1,world1);
-
-    double angSep=0.;
-    bool keepGoing=false;
-    float step = 1.;
-    do{
-      if(angSep>scaleLength){
-	pix2[0] -= step;
-	step /= 2.;
+      // first, work out what is the optimum length of the scale bar,
+      //   based on the pixel scale and size of the image.
+      float pixscale = this->head.getAvPixScale();
+      float *fraction = new float[11];
+      int best;
+      float x1,x2,y1,y2;
+      cpgqwin(&x1,&x2,&y1,&y2);
+      for(int i=0;i<11;i++){
+	fraction[i] = (lengths[i]/pixscale) / (x2-x1);
+	if(i==0) best=0;
+	else if(fabs(fraction[i] - desiredRatio) < 
+		fabs(fraction[best] - desiredRatio)) best=i;
       }
-      pix2[0] += step;
-      this->head.pixToWCS(pix2,world2);
-      angSep = angularSeparation(world1[0],world1[1],world2[0],world2[1]);
-    }while((fabs(angSep-scaleLength)/scaleLength)>0.01); // look for 1% change
+      delete [] fraction;
 
-    float tickpt1 = pix1[0] - this->par.getXOffset();
-    float tickpt2 = pix2[0] - this->par.getXOffset();
-    float tickpt3 = ystart;
-    int colour;
-    cpgqci(&colour);
-    cpgsci(2);
-    int thickness;
-    cpgqlw(&thickness);
-    cpgslw(3);
-    cpgerrx(1,&tickpt1,&tickpt2,&tickpt3,2.);
-    cpgslw(thickness);
+      ANGLE angleType;
+      if(best<4)      angleType = ARCSEC;
+      else if(best<8) angleType = ARCMIN;
+      else            angleType = DEGREE;
+      float scaleLength = lengths[best];  // this is currently in degrees
 
-    std::stringstream text;
-    text << scaleLength * angleScale[angleType] << symbol[angleType];
-    float size,xch,ych;
-    cpgqch(&size);
-    cpgsch(0.4);
-    cpgqcs(4,&xch,&ych); // get the character size in world coords
-    cpgptxt((tickpt1+tickpt2)/2., ystart+ych, 0, 0.5, text.str().c_str());
-    cpgsch(size);
-    cpgsci(colour);
+      // Now work out actual pixel locations for the ends of the scale bar
+      double *pix1   = new double[3];
+      double *pix2   = new double[3];
+      double *world1 = new double[3];
+      double *world2 = new double[3];
+      pix1[0] = pix2[0] = xstart + this->par.getXOffset();
+      pix1[1] = pix2[1] = ystart + this->par.getYOffset();
+      pix1[2] = pix2[2] = channel;
+      this->head.pixToWCS(pix1,world1);
 
-    delete [] pix1,pix2;
-    delete [] world1,world2;
+      double angSep=0.;
+      bool keepGoing=false;
+      float step = 1.;
+      do{
+	if(angSep>scaleLength){
+	  pix2[0] -= step;
+	  step /= 2.;
+	}
+	pix2[0] += step;
+	this->head.pixToWCS(pix2,world2);
+	angSep = angularSeparation(world1[0],world1[1],world2[0],world2[1]);
+      }while((fabs(angSep-scaleLength)/scaleLength)>0.01); // look for 1% change
 
+      float tickpt1 = pix1[0] - this->par.getXOffset();
+      float tickpt2 = pix2[0] - this->par.getXOffset();
+      float tickpt3 = ystart;
+      int colour;
+      cpgqci(&colour);
+      cpgsci(RED);
+      int thickness;
+      cpgqlw(&thickness);
+      cpgslw(3);
+      cpgerrx(1,&tickpt1,&tickpt2,&tickpt3,2.);
+      cpgslw(thickness);
+
+      std::stringstream text;
+      text << scaleLength * angleScale[angleType] << symbol[angleType];
+      float size,xch,ych;
+      cpgqch(&size);
+      cpgsch(0.4);
+      cpgqcs(4,&xch,&ych); // get the character size in world coords
+      cpgptxt((tickpt1+tickpt2)/2., ystart+ych, 0, 0.5, text.str().c_str());
+      cpgsch(size);
+      cpgsci(colour);
+
+      delete [] pix1,pix2;
+      delete [] world1,world2;
+
+    }
   }
 
 }
@@ -297,7 +302,7 @@ void Cube::drawFieldEdge()
   else{
     int ci;
     cpgqci(&ci);
-    cpgsci(7);
+    cpgsci(YELLOW);
   
     cpgmove(-0.5,-0.5);
     cpgdraw(-0.5,this->axisDim[1]-0.5);

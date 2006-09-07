@@ -10,19 +10,20 @@
 
 using std::setw;
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 void Cube::ReconSearch()
 {
   /**
    * Cube::ReconSearch()
-   *   A front-end to the various ReconSearch functions, the choice of which
-   *   is determined by the use of the reconDim parameter.
+   *   A front-end to the various ReconSearch functions, the choice of 
+   *   which is determined by the use of the reconDim parameter.
    */
   int dimRecon = this->par.getReconDim();
   
-  // Test whether we have eg. an image, but have requested a 3-d reconstruction.
-  // If dimension of data array is less than dimRecon, change dimRecon to the
-  // dimension of the array.
+  // Test whether we have eg. an image, but have requested a 3-d 
+  //  reconstruction.
+  // If dimension of data array is less than dimRecon, change dimRecon 
+  //  to the dimension of the array.
   int numGoodDim = 0;
   for(int i=0;i<this->numDim;i++) if(this->axisDim[i]>1) numGoodDim++;
   if(numGoodDim<dimRecon) dimRecon = numGoodDim;
@@ -57,7 +58,7 @@ void Cube::ReconSearch()
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 void Cube::ReconSearch1D()
 {
   /**
@@ -94,18 +95,20 @@ void Cube::ReconSearch1D()
       delete newSpec;
     }
     this->reconExists = true;
-    std::cout<<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b  All Done.                      \n"
+    std::cout<<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
+	     <<"  All Done.                      \n"
 	     <<"  Searching... "<<std::flush;
   }
     
-  this->objectList = searchReconArray(this->axisDim,this->array,this->recon,this->par);
+  this->objectList = searchReconArray(this->axisDim,this->array,
+				      this->recon,this->par);
 
   this->updateDetectMap();
   if(this->par.getFlagLog()) this->logDetectionList();
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 void Cube::ReconSearch2D()
 {
   /**
@@ -132,33 +135,39 @@ void Cube::ReconSearch2D()
       if(!this->par.isInMW(z)){
 	float *im = new float[xySize];
 	float *newIm = new float[xySize];
-	for(int npix=0; npix<xySize; npix++) im[npix] = this->array[z*xySize+npix];
+	for(int npix=0; npix<xySize; npix++) 
+	  im[npix] = this->array[z*xySize+npix];
 	bool verboseFlag = this->par.isVerbose();
 	this->par.setVerbosity(false);
-	atrous2DReconstruct(this->axisDim[0],this->axisDim[1],im,newIm,this->par);
+	atrous2DReconstruct(this->axisDim[0],this->axisDim[1],
+			    im,newIm,this->par);
 	this->par.setVerbosity(verboseFlag);
-	for(int npix=0; npix<xySize; npix++) this->recon[z*xySize+npix] = newIm[npix];
+	for(int npix=0; npix<xySize; npix++) 
+	  this->recon[z*xySize+npix] = newIm[npix];
 	delete im;
 	delete newIm;
       }
       else {
-	for(int i=z*xySize; i<(z+1)*xySize; i++) this->recon[i] = this->array[i];
+	for(int i=z*xySize; i<(z+1)*xySize; i++) 
+	  this->recon[i] = this->array[i];
       }
     }
     this->reconExists = true;
-    std::cout<<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b  All Done.                      \n"
+    std::cout<<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
+	     <<"  All Done.                      \n"
 	     <<"Searching... "<<std::flush;
 
   }
 
-  this->objectList = searchReconArray(this->axisDim,this->array,this->recon,this->par);
+  this->objectList = searchReconArray(this->axisDim,this->array,
+				      this->recon,this->par);
   
   this->updateDetectMap();
   if(this->par.getFlagLog()) this->logDetectionList();
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 void Cube::ReconSearch3D()
 {
   /**
@@ -176,10 +185,12 @@ void Cube::ReconSearch3D()
       atrous3DReconstruct(this->axisDim[0],this->axisDim[1],this->axisDim[2],
 			  this->array,this->recon,this->par);
       this->reconExists = true;
-      std::cout<<"All Done.                      \n  Searching... "<<std::flush;
+      std::cout << "All Done.                      \n  Searching... "
+	        << std::flush;
     }
 
-    this->objectList = searchReconArray(this->axisDim,this->array,this->recon,this->par);
+    this->objectList = searchReconArray(this->axisDim,this->array,
+					this->recon,this->par);
 
     this->updateDetectMap();
     if(this->par.getFlagLog()) this->logDetectionList();
@@ -189,11 +200,13 @@ void Cube::ReconSearch3D()
 }
 
 
-///////////////////////////////////////////////////////////////////////////////////
-vector <Detection> searchReconArray(long *dim, float *originalArray, float *reconArray, Param &par)
+/////////////////////////////////////////////////////////////////////////////
+vector <Detection> searchReconArray(long *dim, float *originalArray, 
+				    float *reconArray, Param &par)
 {
   /**
-   * searchReconArray(long *dim, float *originalArray, float *reconArray, Param &par)
+   * searchReconArray(long *dim, float *originalArray, 
+   *                  float *reconArray, Param &par)
    *   This searches for objects in a cube that has been reconstructed.
    *
    *   Inputs:   - dimension array
@@ -229,7 +242,8 @@ vector <Detection> searchReconArray(long *dim, float *originalArray, float *reco
 
   // First search --  in each spectrum.
   if(zdim > 1){
-    if(par.isVerbose()) std::cout << "1D: |                    |" << std::flush;
+    if(par.isVerbose()) std::cout << "1D: |                    |" 
+				  << std::flush;
 
     for(int npix=0; npix<xySize; npix++){
 
@@ -246,13 +260,17 @@ vector <Detection> searchReconArray(long *dim, float *originalArray, float *reco
 	float *spec = new float[zdim];
 	float specMedian,specSigma;
 	goodSize=0;
-	for(int z=0;z<zdim;z++) 
-	  if(isGood[z*xySize+npix]) spec[goodSize++] = originalArray[z*xySize+npix];
+	for(int z=0;z<zdim;z++) {
+	  if(isGood[z*xySize+npix]) 
+	    spec[goodSize++] = originalArray[z*xySize+npix];
+	}
 	specMedian = findMedian(spec,goodSize);
 	goodSize=0;
-	for(int z=0;z<zdim;z++) 
+	for(int z=0;z<zdim;z++) {
 	  if(isGood[z*xySize+npix]) 
-	    spec[goodSize++] = originalArray[z*xySize+npix]-reconArray[z*xySize+npix];
+	    spec[goodSize++] = originalArray[z*xySize+npix] -
+	      reconArray[z*xySize+npix];
+	}
 	specSigma = findMADFM(spec,goodSize) / correctionFactor;
 	delete [] spec;
 	
@@ -262,13 +280,15 @@ vector <Detection> searchReconArray(long *dim, float *originalArray, float *reco
 	Image *spectrum = new Image(specdim);
 	delete [] specdim;
 	spectrum->saveParam(par);
-	spectrum->pars().setBeamSize(2.); // for spectrum, only neighbouring channels correlated
+	spectrum->pars().setBeamSize(2.); 
+	// beam size: for spectrum, only neighbouring channels correlated
 	spectrum->extractSpectrum(reconArray,dim,npix);
 	spectrum->removeMW(); // only works if flagMW is true
 	spectrum->setStats(specMedian,specSigma,par.getCut());
 	if(par.getFlagFDR()) spectrum->setupFDR();
 	spectrum->setMinSize(par.getMinChannels());
 	spectrum->spectrumDetect();
+	num += spectrum->getNumObj();
 	for(int obj=0;obj<spectrum->getNumObj();obj++){
 	  Detection *object = new Detection;
 	  *object = spectrum->getObject(obj);
@@ -277,7 +297,9 @@ vector <Detection> searchReconArray(long *dim, float *originalArray, float *reco
 	    object->setZ(pix, object->getX(pix));
 	    object->setX(pix, npix%dim[0]);
 	    object->setY(pix, npix/dim[0]);
-	    object->setF(pix, originalArray[object->getX(pix)+object->getY(pix)*dim[0]+object->getZ(pix)*xySize]); 
+	    object->setF(pix, originalArray[object->getX(pix)+
+					    object->getY(pix)*dim[0]+
+					    object->getZ(pix)*xySize]); 
 	    // NB: set F to the original value, not the recon value.
 	  }
 	  object->addOffsets(par);
@@ -291,12 +313,16 @@ vector <Detection> searchReconArray(long *dim, float *originalArray, float *reco
 
     num = outputList.size();
     if(par.isVerbose()) 
-      std::cout <<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " << num <<"; " << std::flush;
+      std::cout <<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " 
+		<< num <<"; " << std::flush;
 
   }
 
   // Second search --  in each channel
-  if(par.isVerbose()) std::cout << "2D: |                    |" << std::flush;
+  if(par.isVerbose()) std::cout << "2D: |                    |" 
+				<< std::flush;
+
+  num = 0;
 
   for(int z=0; z<zdim; z++){  // loop over all channels
 
@@ -307,18 +333,24 @@ vector <Detection> searchReconArray(long *dim, float *originalArray, float *reco
       std::cout << "|" << std::flush;
     }
 
-    if(!par.isInMW(z)){ // purpose of this is to ignore the Milky Way channels if we are flagging them
+    if(!par.isInMW(z)){ 
+      // purpose of this is to ignore the Milky Way channels 
+      //  if we are flagging them
+
       //  First, get stats
       float *image = new float[xySize];
       float imageMedian,imageSigma;
       goodSize=0;
-      for(int npix=0; npix<xySize; npix++) 
-	if(isGood[z*xySize + npix]) image[goodSize++] = originalArray[z*xySize + npix];
+      for(int npix=0; npix<xySize; npix++) {
+	if(isGood[z*xySize + npix]) 
+	  image[goodSize++] = originalArray[z*xySize + npix];
+      }
       imageMedian = findMedian(image,goodSize);
       goodSize=0;
       for(int npix=0; npix<xySize; npix++) 
 	if(isGood[z*xySize+npix]) 
-	  image[goodSize++]=originalArray[z*xySize+npix]-reconArray[z*xySize+npix];
+	  image[goodSize++]=originalArray[z*xySize+npix]-
+	    reconArray[z*xySize+npix];
       imageSigma = findMADFM(image,goodSize) / correctionFactor;
       delete [] image;
 
@@ -333,13 +365,17 @@ vector <Detection> searchReconArray(long *dim, float *originalArray, float *reco
       if(par.getFlagFDR()) channelImage->setupFDR();
       channelImage->setMinSize(par.getMinPix());
       channelImage->lutz_detect();
+      num += channelImage->getNumObj();
       for(int obj=0;obj<channelImage->getNumObj();obj++){
 	Detection *object = new Detection;
 	*object = channelImage->getObject(obj);
-	// Fix up z coordinates of each pixel to match original array (x & y are fine)
+	// Fix up z coordinates of each pixel to match original array 
+	//   (x & y are fine)
 	for(int pix=0;pix<object->getSize();pix++){
 	  object->setZ(pix, z);
-	  object->setF(pix, originalArray[object->getX(pix)+object->getY(pix)*dim[0]+z*xySize]); 
+	  object->setF(pix, originalArray[object->getX(pix)+
+					  object->getY(pix)*dim[0]+
+					  z*xySize]); 
 	  // NB: set F to the original value, not the recon value.
 	}
 	object->addOffsets(par);
@@ -353,8 +389,10 @@ vector <Detection> searchReconArray(long *dim, float *originalArray, float *reco
   }
 
 
-  std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " << outputList.size() - num 
-	    << ".                                           "  << std::endl << std::flush;
+  std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " 
+	    << num 
+	    << ".                                           "  
+	    << std::endl << std::flush;
 
   delete [] isGood;
   delete [] doChannel;

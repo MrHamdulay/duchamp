@@ -11,7 +11,9 @@
 #include <Cubes/cubes.hh>
 #include <Cubes/plots.hh>
 #include <Utils/utils.hh>
+#include <Utils/mycpgplot.hh>
 
+using namespace mycpgplot;
 
 void Cube::plotDetectionMap(string pgDestination)
 {
@@ -75,21 +77,21 @@ void Cube::plotDetectionMap(string pgDestination)
     if(this->objectList.size()>0){ // now show and label each detection, drawing over the WCS lines.
 
       cpgsch(1.0);
-      cpgsci(2);
       cpgslw(2);    
       float xoffset=0.;
       float yoffset=newplot.cmToCoord(0.5);
       if(this->par.drawBorders()){
-	cpgsci(4);
-	for(int i=0;i<this->objectList.size();i++) this->objectList[i].drawBorders(0,0);
-	cpgsci(2);
+	cpgsci(BLUE);
+	for(int i=0;i<this->objectList.size();i++) 
+	  this->objectList[i].drawBorders(0,0);
       }
+      cpgsci(RED);
       std::stringstream label;
       cpgslw(1);
       for(int i=0;i<this->objectList.size();i++){
 	cpgpt1(this->par.getXOffset()+this->objectList[i].getXcentre(), 
 	       this->par.getYOffset()+this->objectList[i].getYcentre(), 
-	       5);
+	       CROSS);
 	label.str("");
 	label << this->objectList[i].getID();
 	cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoffset, 
@@ -262,21 +264,21 @@ void Cube::plotMomentMap(string pgDestination)
   
       // now show and label each detection, drawing over the WCS lines.
       cpgsch(1.0);
-      cpgsci(2);
       cpgslw(2);
       float xoffset=0.;
       float yoffset=newplot.cmToCoord(0.5);
       if(this->par.drawBorders()){
-	cpgsci(4);
-	for(int i=0;i<this->objectList.size();i++) this->objectList[i].drawBorders(0,0);
-	cpgsci(2);
+	cpgsci(BLUE);
+	for(int i=0;i<this->objectList.size();i++) 
+	  this->objectList[i].drawBorders(0,0);
       }
+      cpgsci(RED);
       std::stringstream label;
       cpgslw(1);
       for(int i=0;i<this->objectList.size();i++){
 	cpgpt1(this->par.getXOffset()+this->objectList[i].getXcentre(), 
 	       this->par.getYOffset()+this->objectList[i].getYcentre(),
-	       5);
+	       CROSS);
 	label.str("");
 	label << this->objectList[i].getID();
 	cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoffset, 
@@ -338,7 +340,7 @@ void Cube::plotWCSaxes()
   cpgqci(&colour);
   float size;
   cpgqch(&size);
-  cpgsci(3);
+  cpgsci(GREEN);
   cpgsch(0.8);
   int    c0[7], ci[7], gcode[2], ic, ierr;
   for(int i=0;i<7;i++) c0[i] = -1;
@@ -355,7 +357,8 @@ void Cube::plotWCSaxes()
 //   nlfunc_t pgwcsl_;
   // Draw the celestial grid with no intermediate tick marks.
   // Set LABCTL=2100 to write 1st coord on top, and 2nd on right
-  //Colour indices used by cpgsbox -- make it all the same colour for thin line case.
+
+  //Colour indices used by cpgsbox: make it all the same colour for thin line case.
   ci[0] = 17; // grid lines, coord 1
   ci[1] = 17; // grid lines, coord 2
   ci[2] = 17; // numeric labels, coord 1

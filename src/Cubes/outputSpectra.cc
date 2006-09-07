@@ -8,6 +8,8 @@
 #include <Cubes/cubes.hh>
 #include <Cubes/plots.hh>
 #include <Utils/utils.hh>
+#include <Utils/mycpgplot.hh>
+using namespace mycpgplot;
 
 void getSmallVelRange(Detection &obj, FitsHeader head, float *minvel, float *maxvel);
 void getSmallZRange(Detection &obj, float *minz, float *maxz);
@@ -175,9 +177,9 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   plot.gotoMainSpectrum(vmin,vmax,min,max,fluxLabel);
   cpgline(zdim,specx,specy);
   if(this->par.getFlagATrous()){
-    cpgsci(2);
+    cpgsci(RED);
     cpgline(zdim,specx,specy2);    
-    cpgsci(1);
+    cpgsci(BLACK);
   }
   if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
   if(this->head.isWCS()) plot.drawVelRange(obj.getVelMin(),obj.getVelMax());
@@ -208,9 +210,9 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   plot.gotoZoomSpectrum(minvel,maxvel,min,max);
   cpgline(zdim,specx,specy);
   if(this->par.getFlagATrous()){
-    cpgsci(2);
+    cpgsci(RED);
     cpgline(zdim,specx,specy2);    
-    cpgsci(1);
+    cpgsci(BLACK);
   }
   if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
   if(this->head.isWCS()) plot.drawVelRange(obj.getVelMin(),obj.getVelMax());

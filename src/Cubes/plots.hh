@@ -6,9 +6,11 @@
 #include <string>
 #include <math.h>
 #include <cpgplot.h>
+#include <Utils/mycpgplot.hh>
 
 using std::string;
 using std::stringstream;
+using namespace mycpgplot;
 
 namespace Plot
 {
@@ -179,8 +181,8 @@ namespace Plot
       cpgqwin(&dud,&dud,&min,&max);
       cpgqci(&ci);
       cpgqls(&ls);
-      cpgsci(4);
-      cpgsls(2);
+      cpgsci(BLUE);
+      cpgsls(DASHED);
       cpgmove(v1,min);  cpgdraw(v1,max);
       cpgmove(v2,min);  cpgdraw(v2,max);
       cpgsci(ci);
@@ -200,11 +202,11 @@ namespace Plot
       min -= 0.01*height;
       cpgqci(&ci);
       cpgqfs(&fs);
-      cpgscr(16,0.,0.7,0.);
-      cpgsci(16);
-      cpgsfs(3);
+      setDarkGreen();
+      cpgsci(DARKGREEN);
+      cpgsfs(HATCHED);
       cpgrect(v1,v2,min,max);
-      cpgsfs(2);
+      cpgsfs(OUTLINE);
       cpgrect(v1,v2,min,max);
       cpgsci(ci);
       cpgsfs(fs);

@@ -11,8 +11,8 @@ void mergeIntoList(Detection &object, vector <Detection> &objList, Param &par)
    *   first to see if it can be merged with existing members of the list.
    *   The merging is only done if the object is adjacent to one of the existing
    *   members -- this is considered in all three directions.
-   *        To this end, the adjacent flag in par is set true, and the velocity
-   *        threshold is set to 1. These parameters are changed back before returning.
+   *    To this end, the adjacent flag in par is set true, and the velocity
+   *    threshold is set to 1. These parameters are changed back before returning.
    */
 
   bool haveMerged = false;

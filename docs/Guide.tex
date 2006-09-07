@@ -84,17 +84,16 @@ Australia Telescope National Facility\\CSIRO}
 \section{Introduction and getting going quickly}
 
 This document provides a user's guide to \duchamp, an object-finder
-for use on spectral-line data cubes. The basic execution of
-\duchamp\ is to read in a FITS data cube, find sources in the cube,
-and produce a text file of positions, velocities and fluxes of the
-detections, as well as a postscript file of the spectra of each
-detection.
+for use on spectral-line data cubes. The basic execution of \duchamp\
+is to read in a FITS data cube, find sources in the cube, and produce
+a text file of positions, velocities and fluxes of the detections, as
+well as a postscript file of the spectra of each detection.
 
 So, you have a FITS cube, and you want to find the sources in it. What
 do you do? The first step is to make an input file that contains the
 list of parameters. Brief and detailed examples are shown in
-Appendix~\ref{app-input}. This file provides the input file name, the various
-output files, and defines various parameters that control the
+Appendix~\ref{app-input}. This file provides the input file name, the
+various output files, and defines various parameters that control the
 execution.
 
 The standard way to run \duchamp\ is by the command
@@ -102,18 +101,22 @@ The standard way to run \duchamp\ is by the command
 \texttt{Duchamp -p [parameter file]}
 \end{quote}
 replacing \texttt{[parameter file]} with the name of the file listing
-the parameters. Alternatively, you can use the syntax
+the parameters. 
+
+An even easier way is to use the default values for all parameters
+(these are given in Appendix~\ref{app-param} and in the file
+InputComplete included in the distribution directory) and use the
+syntax
 \begin{quote}
 \texttt{Duchamp -f [FITS file]}
 \end{quote}
-where \texttt{[FITS file]} is the file you wish to search. In the latter
-case, all parameters will take their default values detailed in
-Appendix~\ref{app-param}. In either case, the program will then work
-away and give you the list of detections and their spectra. The
-program execution is summarised below, and detailed in
-\S\ref{sec-flow}. Information on inputs is in \S\ref{sec-param} and
-Appendix~\ref{app-param}, and descriptions of the output is in
-\S\ref{sec-output}.
+where \texttt{[FITS file]} is the file you wish to search. 
+
+In either case, the program will then work away and give you the list
+of detections and their spectra. The program execution is summarised
+below, and detailed in \S\ref{sec-flow}. Information on inputs is in
+\S\ref{sec-param} and Appendix~\ref{app-param}, and descriptions of
+the output is in \S\ref{sec-output}.
 
 \subsection{A summary of the execution steps}
 
@@ -144,12 +147,12 @@ discussed in more detail in the following sections.
   FITS file.
 \end{enumerate}
 
-\subsection{Guide to terminology}
+\subsection{Guide to terminology and conventions}
 
 First, a brief note on the use of terminology in this guide. \duchamp\
 is designed to work on FITS ``cubes''. These are FITS\footnote{FITS is
 the Flexible Image Transport System -- see \citet{hanisch01} or
-websites such as 
+websites such as
 \href{http://fits.cv.nrao.edu/FITS.html}{http://fits.cv.nrao.edu/FITS.html}
 for details.} image arrays with three dimensions -- they are assumed
 to have the following form: the first two dimensions (referred to as
@@ -159,6 +162,14 @@ direction, which can correspond to frequency, wavelength, or
 velocity. The three dimensional analogue of pixels are ``voxels'', or
 volume cells -- a voxel is defined by a unique $(x,y,z)$ location and
 has a unique flux or intensity value associated with it.
+
+Note that it is possible for the FITS file to have more than three
+dimensions (for instance, a fourth dimension representing Stokes
+parameters). \duchamp\ assumes that these extra dimensions occur
+\emph{after} the spatial and spectral ones -- the data will not be
+read correctly if the order is different! Herein, we discuss the data
+in terms of the three basic dimensions, but you should be aware it is
+possible to have more than three.
 
 Each spatial pixel (a given $(x,y)$ coordinate) can be said to be a
 single spectrum, while a slice through the cube perpendicular to the
@@ -207,34 +218,34 @@ Appendix~\ref{app-input}.
 If a parameter is not listed, the default value is assumed. The
 defaults are chosen to provide a good result (using the reconstruction
 method), so the user doesn't need to specify many new parameters in
-the input file. Note that the image file \textbf{must} be specified! The
-parameters that can be set are listed in Appendix~\ref{app-param},
+the input file. Note that the image file \textbf{must} be specified!
+The parameters that can be set are listed in Appendix~\ref{app-param},
 with their default values in parentheses.
 
 The parameters with names starting with \texttt{flag} are stored as
 \texttt{bool} variables, and so are either \texttt{true = 1} or
 \texttt{false = 0}. They can be entered in the file either in text or
-integer format -- \duchamp\ will read them correctly in either case. 
+integer format -- \duchamp\ will read them correctly in either case.
 
 \section{What \duchamp\ is doing}
 \label{sec-flow}
 
-The execution flow of \duchamp\ is detailed here, indicating the
-main algorithmic steps that are used. The program is written in C/C++
-and makes use of the {\sc cfitsio}, {\sc wcslib} and {\sc pgplot}
-libraries. 
+The execution flow of \duchamp\ is detailed here, indicating the main
+algorithmic steps that are used. The program is written in C/C++ and
+makes use of the {\sc cfitsio}, {\sc wcslib} and {\sc pgplot}
+libraries.
 
 \subsection{Image input}
 \label{sec-input}
 
 The cube is read in using basic {\sc cfitsio} commands, and stored as
-an array in a special C++ class. This class keeps track of
-the list of detected objects, as well as any reconstructed arrays that
-are made (see \S\ref{sec-recon}). The World Coordinate System (WCS)
-information for the cube is also obtained from the FITS header by {\sc
-wcslib} functions \citep{greisen02, calabretta02}, and this
-information, in the form of a \texttt{wcsprm} structure, is also stored
-in the same class.
+an array in a special C++ class. This class keeps track of the list of
+detected objects, as well as any reconstructed arrays that are made
+(see \S\ref{sec-recon}). The World Coordinate System (WCS) information
+for the cube is also obtained from the FITS header by {\sc wcslib}
+functions \citep{greisen02, calabretta02}, and this information, in
+the form of a \texttt{wcsprm} structure, is also stored in the same
+class.
 
 A sub-section of an image can be requested via the \texttt{subsection}
 parameter in the parameter file -- this can be a good idea if the cube
@@ -266,20 +277,23 @@ file).
 
 \subsubsection{BLANK pixel removal}
 
-First, the cube is trimmed of any BLANK pixels that pad the image out
-to a rectangular shape. This is optional, its use determined by the
-\texttt{flagBlankPix} parameter. The value for these pixels is read from
-the FITS header (using the BLANK, BSCALE and BZERO keywords), but if
-these are not present then the value can be specified by the user in
-the parameter file using \texttt{blankPixValue}.
+If the imaged area of a cube is non-rectangular, BLANK pixels are used
+to pad it out to a rectangular shape. The value of these pixels is
+given by the FITS header keywords BLANK, BSCALE and BZERO. While these
+pixels make the image a nice shape, they will unnecessarily interfere
+with the processing (as well as taking up needless memory). The first
+step, then, is to trim them from the edge. This is done when the
+parameter \texttt{flagBlankPix=true}. If the above keywords are not
+present, the user can specify the BLANK value by the parameter
+\texttt{blankPixValue}.
 
-This stage is particularly important for the reconstruction step, as
-lots of BLANK pixels on the edges will smooth out features in the
-wavelet calculation stage. The trimming will also reduce the size of
-the cube's array, speeding up the execution. The amount of trimming is
-recorded, and these pixels are added back in once the source-detection
-is completed (so that quoted pixel positions are applicable to the
-original cube).
+Removing BLANK pixels is particularly important for the reconstruction
+step, as lots of BLANK pixels on the edges will smooth out features in
+the wavelet calculation stage. The trimming will also reduce the size
+of the cube's array, speeding up the execution. The amount of trimming
+is recorded, and these pixels are added back in once the
+source-detection is completed (so that quoted pixel positions are
+applicable to the original cube).
 
 Rows and columns are trimmed one at a time until the first non-BLANK
 pixel is reached, so that the image remains rectangular. In practice,
@@ -290,10 +304,10 @@ ignored in all further calculations done on the cube.
 \subsubsection{Baseline removal}
 
 Second, the user may request the removal of baselines from the
-spectra, via the parameter \texttt{flagBaseline}. This may be necessary
-if there is a strong baseline ripple present, which can result in
-spurious detections at the high points of the ripple. The baseline is
-calculated from a wavelet reconstruction procedure (see
+spectra, via the parameter \texttt{flagBaseline}. This may be
+necessary if there is a strong baseline ripple present, which can
+result in spurious detections at the high points of the ripple. The
+baseline is calculated from a wavelet reconstruction procedure (see
 \S\ref{sec-recon}) that keeps only the two largest scales. This is
 done separately for each spatial pixel (\ie for each spectrum in the
 cube), and the baselines are stored and added back in before any
@@ -321,17 +335,18 @@ astronomers!). Such dominant channels will produce many detections
 that are unnecessary, uninteresting (if one is interested in
 extragalactic \hi) and large (in size and hence in memory usage), and
 so will slow the program down and detract from the interesting
-detections. The use of this feature is controlled by the
-\texttt{flagMW} parameter, and the exact channels concerned are able
-to be set by the user (using \texttt{maxMW} and \texttt{minMW} --
-these give an inclusive range of channels). When employed, these
-channels are ignored for the searching, and the scaling of the
-spectral output (see Fig.~\ref{fig-spect}) will not take them into
-account. They will be present in the reconstructed array, however, and
-so will be included in the saved FITS file (see
-\S\ref{sec-reconIO}). When the final spectra are plotted, the range of
-channels covered by these parameters is indicated by a green hashed
-box.
+detections. 
+
+The use of this feature is controlled by the \texttt{flagMW}
+parameter, and the exact channels concerned are able to be set by the
+user (using \texttt{maxMW} and \texttt{minMW} -- these give an
+inclusive range of channels). When employed, these channels are
+ignored for the searching, and the scaling of the spectral output (see
+Fig.~\ref{fig-spect}) will not take them into account. They will be
+present in the reconstructed array, however, and so will be included
+in the saved FITS file (see \S\ref{sec-reconIO}). When the final
+spectra are plotted, the range of channels covered by these parameters
+is indicated by a green hashed box.
 
 \subsection{Image reconstruction}
 \label{sec-recon}
@@ -380,11 +395,11 @@ residual, and any significant wavelet terms are added to the final
 reconstruction. This step is repeated until the change in the $\sigma$
 of the background is less than some fiducial amount.
 
-It is important to note that the \atrous\ decomposition is an
-example of a ``redundant'' transformation. If no thresholding is
-performed, the sum of all the wavelet coefficient arrays and the final
-smoothed array is identical to the input array. The thresholding thus
-removes only the unwanted structure in the array.
+It is important to note that the \atrous\ decomposition is an example
+of a ``redundant'' transformation. If no thresholding is performed,
+the sum of all the wavelet coefficient arrays and the final smoothed
+array is identical to the input array. The thresholding thus removes
+only the unwanted structure in the array.
 
 Note that any BLANK pixels that are still in the cube will not be
 altered by the reconstruction -- they will be left as BLANK so that
@@ -409,20 +424,20 @@ think in the usual multiples of $\sigma$ when setting
 this value.
 
 When thresholding the different wavelet scales, the value of $\sigma$
-as measured from the wavelet array needs to be scaled to account for the
-increased amount of correlation between neighbouring pixels (due to
-the convolution). See Appendix~\ref{app-scaling} for details on this
-scaling. 
+as measured from the wavelet array needs to be scaled to account for
+the increased amount of correlation between neighbouring pixels (due
+to the convolution). See Appendix~\ref{app-scaling} for details on
+this scaling.
 
 \subsubsection{User control of reconstruction parameters}
 
 The most important parameter for the user to select in relation to the
 reconstruction is the threshold for each wavelet array. This is set
-using the \texttt{snrRecon} parameter, and is given as a multiple of the
-rms (estimated by the MADFM) above the mean (which for the wavelet
+using the \texttt{snrRecon} parameter, and is given as a multiple of
+the rms (estimated by the MADFM) above the mean (which for the wavelet
 arrays should be approximately zero). There are several other
 parameters that can be altered as well that affect the outcome of the
-reconstruction. 
+reconstruction.
 
 By default, the cube is reconstructed in three dimensions, using a
 3-dimensional filter and 3-dimensional convolution. This can be
@@ -447,19 +462,19 @@ give a better reconstruction, but take longer and use more memory when
 executing. When multi-dimensional reconstruction is selected, this
 filter is used to construct a 2- or 3-dimensional equivalent.
 
-\subsection{Reconstruction I/O}
+\subsection{Input/Output of reconstructed arrays}
 \label{sec-reconIO}
 
-The reconstruction stage can be relatively time-consuming, particularly 
-for large cubes and reconstructions in 3-D. To get around this, \duchamp\ 
-provides a shortcut to allow users to perform multiple searches (\eg with 
-different thresholds) on the same reconstruction without calculating the 
-reconstruction each time.
+The reconstruction stage can be relatively time-consuming,
+particularly for large cubes and reconstructions in 3-D. To get around
+this, \duchamp\ provides a shortcut to allow users to perform multiple
+searches (\eg with different thresholds) on the same reconstruction
+without calculating the reconstruction each time.
 
-The first step is to choose to save the reconstructed array as a FITS 
-file by setting \texttt{flagOutputRecon = true}. The file will be saved 
-in the same directory as the input image, so the user needs to have write 
-permissions for that directory.
+The first step is to choose to save the reconstructed array as a FITS
+file by setting \texttt{flagOutputRecon = true}. The file will be
+saved in the same directory as the input image, so the user needs to
+have write permissions for that directory.
 
 The filename will be derived from the input filename, with extra
 information detailing the reconstruction that has been done. For
@@ -474,10 +489,10 @@ been used (see \S\ref{sec-input}), the format of the output filename
 will be \texttt{image.sub.RECON-3-2-4-1.fits}, and the subsection that
 has been used is also stored in the FITS header.
 
-Likewise, the residual image, defined as the difference between the input 
-and reconstructed arrays, can also be saved in the same manner by setting 
-\texttt{flagOutputResid = true}. Its filename will be the same as above, 
-with RESID replacing RECON.
+Likewise, the residual image, defined as the difference between the
+input and reconstructed arrays, can also be saved in the same manner
+by setting \texttt{flagOutputResid = true}. Its filename will be the
+same as above, with RESID replacing RECON.
 
 If a reconstructed image has been saved, it can be read in and used
 instead of redoing the reconstruction. To do so, the user should set
@@ -531,11 +546,11 @@ where
 \[
 d = \max_j \left\{ j : P_j < \frac{j\alpha}{c_N N} \right\},
 \]
-and then rejects all hypotheses whose $p$-values are less than or equal
-to $P_d$. (So a $P_i<P_d$ will be rejected even if $P_i \geq
+and then rejects all hypotheses whose $p$-values are less than or
+equal to $P_d$. (So a $P_i<P_d$ will be rejected even if $P_i \geq
 j\alpha/c_N N$.) Note that ``reject hypothesis'' here means ``accept
 the pixel as an object pixel'' (\ie we are rejecting the null
-hypothesis that the pixel belongs to the background). 
+hypothesis that the pixel belongs to the background).
 
 The $c_N$ values here are normalisation constants that depend on the
 correlated nature of the pixel values. If all the pixels are
@@ -547,17 +562,19 @@ $N$ pixels that make up the beam. The value of $N$ is calculated from
 the FITS header (if the correct keywords -- BMAJ, BMIN -- are not
 present, a default value of 10 pixels is assumed).
 
-The theory behind the FDR method implies a direct connection between the 
-choice of $\alpha$ and the fraction of detections that will be false 
-positives. However, due to the merging process, this direct connection is
-lost when looking at the final number of detections -- see discussion in
-\S\ref{sec-notes}. The effect is that the number of false detections will
-be less than indicated by the $\alpha$ value used.
+The theory behind the FDR method implies a direct connection between
+the choice of $\alpha$ and the fraction of detections that will be
+false positives. However, due to the merging process, this direct
+connection is lost when looking at the final number of detections --
+see discussion in \S\ref{sec-notes}. The effect is that the number of
+false detections will be less than indicated by the $\alpha$ value
+used.
 
-If a reconstruction has been made, the residuals (defined as original
-$-$ reconstruction) are used to estimate the noise parameters of the
-cube. Otherwise they are estimated directly from the cube itself. In
-both cases, robust estimators are used as described above.
+If a reconstruction has been made, the residuals (defined in the sense
+of original $-$ reconstruction) are used to estimate the noise
+parameters of the cube. Otherwise they are estimated directly from the
+cube itself. In both cases, robust estimators are used as described
+above.
 
 Detections must have a minimum number of pixels to be counted. This
 minimum number is given by the input parameters \texttt{minPix} (for
@@ -575,8 +592,8 @@ fluxes of detections will be negative.
 \subsection{Merging detected objects}
 \label{sec-merger}
 
-The searching step produces a list of detected objects that will have many
-repeated detections of a given object -- for instance, spectral
+The searching step produces a list of detected objects that will have
+many repeated detections of a given object -- for instance, spectral
 detections in adjacent pixels of the same object and/or spatial
 detections in neighbouring channels. These are then combined in an
 algorithm that matches all objects judged to be ``close''. This
@@ -591,11 +608,12 @@ and channels respectively).
 
 Alternatively, the spatial requirement can be changed to say that
 there must be a pair of pixels that are \emph{adjacent} -- a stricter,
-but perhaps more realistic requirement, particularly when the spatial pixels
-have a large angular size (as is the case for \hi\ surveys). This
-method can be selected by setting the parameter
-\texttt{flagAdjacent} to 1 (\ie \texttt{true}) in the parameter file. The
-velocity thresholding is done in the same way as the first option.
+but perhaps more realistic requirement, particularly when the spatial
+pixels have a large angular size (as is the case for \hi\
+surveys). This method can be selected by setting the parameter
+\texttt{flagAdjacent} to 1 (\ie \texttt{true}) in the parameter
+file. The velocity thresholding is done in the same way as the first
+option.
 
 Once the detections have been merged, they may be ``grown''. This is a
 process of increasing the size of the detection by adding adjacent
@@ -603,20 +621,21 @@ pixels that are above some secondary threshold. This threshold is
 lower than the one used for the initial detection, but above the noise
 level, so that faint pixels are only detected when they are close to a
 bright pixel. The value of this threshold is a possible input
-parameter (\texttt{growthCut}), with a default value of $1.5\sigma$. The
-use of the growth algorithm is controlled by the \texttt{flagGrowth}
-parameter -- the default value of which is \texttt{false}. If the
-detections are grown, they are sent through the merging algorithm a
-second time, to pick up any detections that now overlap or have grown
-over each other.
+parameter (\texttt{growthCut}), with a default value of
+$1.5\sigma$. The use of the growth algorithm is controlled by the
+\texttt{flagGrowth} parameter -- the default value of which is
+\texttt{false}. If the detections are grown, they are sent through the
+merging algorithm a second time, to pick up any detections that now
+overlap or have grown over each other.
 
-Finally, to be accepted, the detections must span \emph{both} a minimum
-number of channels (to remove any spurious single-channel spikes that
-may be present), and a minimum number of spatial pixels. These
-numbers, as for the original detection step, are set with the
-\texttt{minChannels} and \texttt{minPix} parameters. The channel
-requirement means there must be at least one set of \texttt{minChannels}
-consecutive channels in the source for it to be accepted.
+Finally, to be accepted, the detections must span \emph{both} a
+minimum number of channels (to remove any spurious single-channel
+spikes that may be present), and a minimum number of spatial
+pixels. These numbers, as for the original detection step, are set
+with the \texttt{minChannels} and \texttt{minPix} parameters. The
+channel requirement means there must be at least one set of
+\texttt{minChannels} consecutive channels in the source for it to be
+accepted.
 
 \section{Outputs}
 \label{sec-output}
@@ -640,9 +659,9 @@ the cube that has been reconstructed (for smaller values of
 \texttt{reconDim}).
 
 During the searching algorithms, the progress through the 1D and 2D
-searches are shown. When the searches have completed,
-the number of objects found in both the 1D and 2D searches are
-reported (see \S\ref{sec-detection} for details).
+searches are shown. When the searches have completed, the number of
+objects found in both the 1D and 2D searches are reported (see
+\S\ref{sec-detection} for details).
 
 In the merging process (where multiple detections of the same object
 are combined -- see \S\ref{sec-merger}), two stages of output
@@ -666,24 +685,26 @@ the progress are not shown.
 
 \subsection{Results}
 
-\subsubsection{Table of Results}
+\subsubsection{Table of results}
 
 Finally, we get to the results -- the reason for running \duchamp\ in
 the first place. Once the detection list is finalised, it is sorted by
 the mean velocity of the detections (or, if there is no good WCS
 associated with the cube, by the mean Z-pixel position). The results
 are then printed to the screen and to the output file, given by the
-\texttt{OutFile} parameter. The results list, an example of which can be
-seen in Appendix~\ref{app-output}, contains the following columns
+\texttt{OutFile} parameter. The results list, an example of which can
+be seen in Appendix~\ref{app-output}, contains the following columns
 (note that the title of the columns depending on WCS information will
 depend on the projection of the WCS):
 
 \begin{entry}
 \item[Obj\#] The ID number of the detection (simply the sequential
-  count for the list, which is ordered by increasing velocity).
-\item[Name] The IAU-format name of the detection (derived from the WCS
-  position -- see below for a description of the format).
-\item[X] The average X-pixel position.
+  count for the list, which is ordered by increasing velocity, or
+  channel number, if the WCS is not good enough to find the velocity).
+\item[Name] The ``IAU''-format name of the detection (derived from the
+  WCS position -- see below for a description of the format).
+\item[X] The average X-pixel position (averaged over all detected
+voxels).
 \item[Y] The average Y-pixel position.
 \item[Z] The average Z-pixel position.
 \item[RA/GLON] The Right Ascension or Galactic Longitude of the centre
@@ -706,7 +727,7 @@ Galactic Longitude [arcmin].
 \item[Z1, Z2] The minimum and maximum Z-pixel coordinates.
 \item[Npix] The number of voxels (\ie distinct $(x,y,z)$ coordinates)
   in the detection.
-\item[Flag] Whether the detection has any warning flags (see below). 
+\item[Flag] Whether the detection has any warning flags (see below).
 \end{entry}
 The Name is derived from the WCS position. For instance, a source
 centred on the RA,Dec position 12$^h$53$^m$45$^s$,
@@ -719,9 +740,16 @@ information), the Name, RA, DEC, VEL and related columns are not
 printed, but the pixel coordinates are still provided.
 
 The velocity units can be specified by the user, using the parameter
-\texttt{spectralUnits} (enter it as a single string). The default value
-is km/s, which should be suitable for most users. These units are also
-used to give the units of integrated flux. 
+\texttt{spectralUnits} (enter it as a single string). The default
+value is km/s, which should be suitable for most users. These units
+are also used to give the units of integrated flux. Note that if there
+is no rest frequency specified in the FITS header, the \duchamp\
+output will instead default to using Frequency, with units of MHz.
+
+If the WCS is not specified sufficiently to be used, then all columns
+from RA/GLON to w\_VEL will be left blank. Also, F\_int will be
+replaced with the more simple F\_tot -- the total flux in the
+detection, being the sum of all detected voxels.
 
 The last column contains any warning flags about the detection. There
 are currently two options here. An `E' is printed if the detection is
@@ -729,27 +757,29 @@ next to the edge of the image, meaning either the limit of the pixels,
 or the limit of the non-BLANK pixel region. An `N' is printed if the
 total flux, summed over all the (non-BLANK) pixels in the smallest box
 that completely encloses the detection, is negative. Note that this
-sum is likely to include non-detected pixels. It is of use in
-pointing out detections that lie next to strongly negative pixels,
-such as might arise due to interference -- the detected pixels might
-then also be due to the interference, so caution is advised.
+sum is likely to include non-detected pixels. It is of use in pointing
+out detections that lie next to strongly negative pixels, such as
+might arise due to interference -- the detected pixels might then also
+be due to the interference, so caution is advised.
 
 \subsubsection{Other results lists}
 
 Two alternative results files can also be requested. One option is a
 VOTable-format XML file, containing just the RA, Dec, Velocity and the
 corresponding widths of the detections, as well as the fluxes. The
-user should set \texttt{flagVOT = 1}, and put the desired filename in the
-parameter \texttt{votFile} -- note that the default is for it not to be
-produced. This file should be compatible with all Virtual Observatory
-tools (such as Aladin\footnote{ Aladin can be found on the web at
+user should set \texttt{flagVOT = 1}, and put the desired filename in
+the parameter \texttt{votFile} -- note that the default is for it not
+to be produced. This file should be compatible with all Virtual
+Observatory tools (such as Aladin\footnote{ Aladin can be found on the
+web at
 \href{http://aladin.u-strasbg.fr/}{http://aladin.u-strasbg.fr/}}). The
 second option is an annotation file for use with the Karma toolkit of
-visualisation tools (in particular, with \texttt{kvis}). This will draw a
-circle at the position of each detection, and number it according to
-the Obj\# given above. To make use of this option, the user should
-set \texttt{flagKarma = 1}, and put the desired filename in the parameter
-\texttt{karmaFile} -- again, the default is for it not to be produced.
+visualisation tools (in particular, with \texttt{kvis}). This will
+draw a circle at the position of each detection, and number it
+according to the Obj\# given above. To make use of this option, the
+user should set \texttt{flagKarma = 1}, and put the desired filename
+in the parameter \texttt{karmaFile} -- again, the default is for it
+not to be produced.
 
 As the program is running, it also (optionally) records the detections
 made in each individual spectrum or channel (see \S\ref{sec-detection}
@@ -777,25 +807,33 @@ format \texttt{[E]}). If the cube was reconstructed, the spectrum from
 the reconstruction is shown in red, over the top of the original
 spectrum. The spectral extent of the detected object is indicated by
 two dashed blue lines, and the region covered by the ``Milky Way''
-channels is shown by a green hashed box.
+channels is shown by a green hashed box. An example detection can be
+seen below in Fig.~\ref{fig-spect}.
 
 The spectrum that is plotted is governed by the
 \texttt{spectralMethod} parameter. It can be either \texttt{peak},
 where the spectrum is from the spatial pixel containing the
 detection's peak flux; or \texttt{sum}, where the spectrum is summed
-over all spatial pixels, and then corrected for the beam size.
+over all spatial pixels, and then corrected for the beam size.  The
+spectral extent of the detection is indicated with blue lines, and a
+zoom is shown in a separate window.
 
-The spectral extent of the detection is indicated with blue lines, and
-a zoom is shown in a separate window. The cutout image can optionally
-include a border around the spatial pixels that are in the detection
-(turned on and off by the parameter \texttt{drawBorders} -- the
-default is \texttt{true}). It includes a scale bar in the bottom left
-corner to indicate size -- it is 15~arcmin long (note that due to
-projection effects it may be a slightly different physical length from
-object to object). It also can show the dividing line between BLANK
-and non-BLANK pixels (governed by the parameter
-\texttt{drawBlankEdges}, whose default is \texttt{true}). An example
-detection can be seen below in Fig.~\ref{fig-spect}.
+The cutout image can optionally include a border around the spatial
+pixels that are in the detection (turned on and off by the parameter
+\texttt{drawBorders} -- the default is \texttt{true}). It includes a
+scale bar in the bottom left corner to indicate size -- its length is
+indicated next to it (the choice of length depends on the size of the
+image).
+
+There may also be one or two extra lines on the image. A yellow line
+shows the limits of the cube -- the detected object is obviously close
+to the edge of the cube, and the box size extends outside the region
+covered by the data. A purple line, however, shows the dividing line
+between BLANK and non-BLANK pixels. The BLANK pixels will always be
+shown in black. The first type of line is always drawn, while the
+second is governed by the parameter \texttt{drawBlankEdges} (whose
+default is \texttt{true}), and obviously whether there are any BLANK
+pixel present.
 
 \begin{figure}[t]
 \begin{center}
@@ -831,21 +869,22 @@ showing the integrated flux in grey-scale; and a ``detection image'',
 a grey-scale image where the pixel values are the number of channels
 that spatial pixel is detected in. In both cases, if
 \texttt{drawBorders = true}, a border is drawn around the spatial
-extent of each detection, and if \texttt{drawBlankEdges = true}, a
-border is draw indicating the dividing line between BLANK and
-non-BLANK pixels. An example moment map is shown in
-Fig.~\ref{fig-moment}.  The production or otherwise of these images is
-governed by the \texttt{flagMaps} parameter.
+extent of each detection, and if \texttt{drawBlankEdges = true}, the
+purple line dividing BLANK and non-BLANK pixels (as described above)
+is drawn. An example moment map is shown in Fig.~\ref{fig-moment}.
+The production or otherwise of these images is governed by the
+\texttt{flagMaps} parameter.
 
 The purpose of these images are to provide a visual guide to where the
 detections have been made, and, particularly in the case of the moment
 map, to provide an indication of the strength of the source. In both
 cases, the detections are numbered (in the same sense as the output
-list), and the spatial borders are marked out as for the cutout images
-in the spectra file. Both these images are saved as postscript files
-(given by the parameters \texttt{momentMap} and \texttt{detectionMap}
-respectively), with the latter also displayed in a {\sc pgplot}
-window (regardless of the state of \texttt{flagMaps}).
+list and as the spectral plots), and the spatial borders are marked
+out as for the cutout images in the spectra file. Both these images
+are saved as postscript files (given by the parameters
+\texttt{momentMap} and \texttt{detectionMap} respectively), with the
+latter also displayed in a {\sc pgplot} window (regardless of the
+state of \texttt{flagMaps}).
 
 \section{Notes and hints on the use of \duchamp}
 \label{sec-notes}
@@ -900,16 +939,17 @@ $3\sigma$ tend to not reduce the noise a great deal and can lead to
 many spurious sources (although this will depend on the nature of the
 cube).
 
-When it comes to searching, the FDR method produces more reliable results 
-than simple sigma-clipping, particularly in the absence of reconstruction. 
-However, it does not work in exactly the way one would expect for a 
-given value of \texttt{alpha}. For instance, setting fairly liberal values 
-of \texttt{alpha} (say, 0.1) will often lead to a much smaller fraction 
-of false detections (\ie much less than 10\%). This is the effect of the 
-merging algorithms, that combine the sources after the detection stage,  
-and reject detections not meeting the minimum pixel or channel requirements. 
-It is thus better to aim for larger \texttt{alpha} values than those derived
-from a straight conversion of the desired false detection rate.
+When it comes to searching, the FDR method produces more reliable
+results than simple sigma-clipping, particularly in the absence of
+reconstruction.  However, it does not work in exactly the way one
+would expect for a given value of \texttt{alpha}. For instance,
+setting fairly liberal values of \texttt{alpha} (say, 0.1) will often
+lead to a much smaller fraction of false detections (\ie much less
+than 10\%). This is the effect of the merging algorithms, that combine
+the sources after the detection stage, and reject detections not
+meeting the minimum pixel or channel requirements.  It is thus better
+to aim for larger \texttt{alpha} values than those derived from a
+straight conversion of the desired false detection rate.
 
 Finally, as \duchamp\ is still undergoing development, there are some
 elements that are not fully developed. In particular, it is not as
@@ -920,7 +960,7 @@ smarter at rejecting signals that are clearly (to a human eye at
 least) interference. See the following section for further
 improvements that are planned.
 
-\section{Future Developments}
+\section{Future developments}
 
 This is both a list of planned improvements and a wish-list of
 features that would be nice to include (but are not planned in the
@@ -1008,7 +1048,7 @@ Springer
 
 \appendix
 \newpage
-\section{Obtaining and Installing \duchamp}
+\section{Obtaining and installing \duchamp}
 
 The \duchamp\ web page can be found at the following location:\\
 \href{http://www.atnf.csiro.au/people/Matthew.Whiting/Duchamp}%
@@ -1038,7 +1078,7 @@ For example, if \textsc{wcslib} had been installed in
 \texttt{/home/mduchamp/wcslib}, there are two libraries that are
 likely to be in separate subdirectories: \texttt{C/} and
 \texttt{pgsbox/}. Each subdirectory needs to be searched for library
-and header files, so one could build Duchamp by typing: 
+and header files, so one could build Duchamp by typing:
 \begin{quote}
 \texttt{%
 >  ./configure $\backslash$ \\ 
@@ -1095,14 +1135,14 @@ not matter, they are grouped here in logical sections.
 \item[flagSubsection \texttt{[false]}] A flag to indicate whether one
   wants a subsection of the requested image.
 \item[Subsection \texttt{[ [*,*,*] ]}] The requested subsection, which
-  should be specified in the format \texttt{[x1:x2,y1:y2,z1:z2]}, where
-  the limits are inclusive. If the full range of a dimension is
-  required, use a \texttt{*}, \eg if you want the full spectral range of
-  a subsection of the image, use \texttt{[30:140,30:140,*]}.
+  should be specified in the format \texttt{[x1:x2,y1:y2,z1:z2]},
+  where the limits are inclusive. If the full range of a dimension is
+  required, use a \texttt{*}, \eg if you want the full spectral range
+  of a subsection of the image, use \texttt{[30:140,30:140,*]}.
 \item[flagReconExists \texttt{[false]}] A flag to indicate whether the
   reconstructed array has been saved by a previous run of \duchamp. If
-  set true, the reconstructed array will be read from the file given by
-  \texttt{reconFile}, rather than calculated directly.
+  set true, the reconstructed array will be read from the file given
+  by \texttt{reconFile}, rather than calculated directly.
 \item[reconFile (no default assumed)] The FITS file that contains the
   reconstructed array. If \texttt{flagReconExists} is true and this
   parameter is not defined, the default file searched will be
@@ -1115,24 +1155,28 @@ not matter, they are grouped here in logical sections.
   detections. 
 \item[flagLog \texttt{[true]}] A flag to indicate whether intermediate
   detections should be logged.
-\item[LogFile \texttt{[duchamp-Logfile.txt]}] The file in which intermediate
-  detections are logged. These are detections that have not been
-  merged. This is primarily for use in debugging and diagnostic
-  purposes -- normal use of the program will probably not require
-  this.
-\item[flagOutputRecon \texttt{[false]}] A flag to say whether or not to
-  save the reconstructed cube as a FITS file. The filename will be
-  derived from the ImageFile -- the reconstruction of \texttt{image.fits}
-  will be saved as \texttt{image.RECON?.fits}, where \texttt{?} stands for
-  the value of \texttt{snrRecon} (see below).
-\item[flagOutputResid \texttt{[false]}] As for \texttt{flagOutputRecon}, but
-  for the residual array -- the difference between the original cube
-  and the reconstructed cube. The filename will be \texttt{image.RESID?.fits}.
-\item[flagVOT \texttt{[false]}] A flag to say whether to create a VOTable
-  file corresponding to the information in \texttt{outfile}. This will be
-  an XML file in the Virtual Observatory VOTable format.
-\item[votFile \texttt{[duchamp-Results.xml]}] The VOTable file with the
-  list of final detections. Some input parameters are also recorded.
+\item[LogFile \texttt{[duchamp-Logfile.txt]}] The file in which
+  intermediate detections are logged. These are detections that have
+  not been merged. This is primarily for use in debugging and
+  diagnostic purposes -- normal use of the program will probably not
+  require this.
+\item[flagOutputRecon \texttt{[false]}] A flag to say whether or not
+  to save the reconstructed cube as a FITS file. The filename will be
+  derived from the ImageFile -- the reconstruction of
+  \texttt{image.fits} will be saved as \texttt{image.RECON?.fits},
+  where \texttt{?} stands for the value of \texttt{snrRecon} (see
+  below).
+\item[flagOutputResid \texttt{[false]}] As for
+  \texttt{flagOutputRecon}, but for the residual array -- the
+  difference between the original cube and the reconstructed cube. The
+  filename will be \texttt{image.RESID?.fits}.
+\item[flagVOT \texttt{[false]}] A flag to say whether to create a
+  VOTable file corresponding to the information in
+  \texttt{outfile}. This will be an XML file in the Virtual
+  Observatory VOTable format.
+\item[votFile \texttt{[duchamp-Results.xml]}] The VOTable file with
+  the list of final detections. Some input parameters are also
+  recorded.
 \item[flagKarma \texttt{[false]}] A flag to say whether to create a
   Karma annotation file corresponding to the information in
   \texttt{outfile}. This can be used as an overlay for the Karma
@@ -1148,29 +1192,29 @@ not matter, they are grouped here in logical sections.
   as pixel and WCS coordinates.
 \item[detectionMap \texttt{[duchamp-DetectionMap.ps]}] A postscript
   file showing each of the detected objects, coloured in greyscale by
-  the number of channels spanned by each pixel. Also shows pixel and WCS
-  coordinates.
+  the number of channels spanned by each pixel. Also shows pixel and
+  WCS coordinates.
 \end{entry}
 
 \subsection*{Modifying the cube}
 \begin{entry}
-\item[flagBlankPix \texttt{[true]}] A flag to say whether to remove BLANK
-  pixels from the analysis -- these are pixels set to some particular
-  value because they fall outside the imaged area.
-\item[blankPixValue \texttt{[-8.00061]}] The value of the BLANK pixels,
-  if this information is not contained in the FITS header (the usual
-  procedure is to obtain this value from the header information -- in
-  which case the value set by this parameter is ignored).
-\item[flagMW \texttt{[false]}] A flag to say whether to ignore channels
-  contaminated by Milky Way (or other) emission -- the searching
-  algorithms will not look at these channels.
+\item[flagBlankPix \texttt{[true]}] A flag to say whether to remove
+  BLANK pixels from the analysis -- these are pixels set to some
+  particular value because they fall outside the imaged area.
+\item[blankPixValue \texttt{[-8.00061]}] The value of the BLANK
+  pixels, if this information is not contained in the FITS header (the
+  usual procedure is to obtain this value from the header information
+  -- in which case the value set by this parameter is ignored).
+\item[flagMW \texttt{[false]}] A flag to say whether to ignore
+  channels contaminated by Milky Way (or other) emission -- the
+  searching algorithms will not look at these channels.
 \item[maxMW \texttt{[112]}] The maximum channel number containing
   ``Milky Way'' emission.
 \item[minMW \texttt{[75]}] The minimum channel number containing
   ``Milky Way'' emission. Note that the range specified by
   \texttt{maxMW} and \texttt{minMW} is inclusive.
-\item[flagBaseline \texttt{[false]}] A flag to say whether to remove the
-  baseline from each spectrum in the cube for the purposes of
+\item[flagBaseline \texttt{[false]}] A flag to say whether to remove
+  the baseline from each spectrum in the cube for the purposes of
   reconstruction and detection.
 \end{entry}
 
@@ -1178,11 +1222,11 @@ not matter, they are grouped here in logical sections.
 
 \subsubsection*{General detection}
 \begin{entry}
-\item[flagNegative \texttt{[false]}] A flag to indicate that the features
-  being searched for are negative. The cube will be inverted prior to
-  searching. 
-\item[snrCut \texttt{[3.]}] The cut-off value for thresholding, in terms
-  of number of $\sigma$ above the mean.
+\item[flagNegative \texttt{[false]}] A flag to indicate that the
+  features being searched for are negative. The cube will be inverted
+  prior to searching.
+\item[snrCut \texttt{[3.]}] The cut-off value for thresholding, in
+  terms of number of $\sigma$ above the mean.
 \item[flagGrowth \texttt{[false]}] A flag indicating whether or not to
   grow the detected objects to a smaller threshold.
 \item[growthCut \texttt{[2.]}] The smaller threshold using in growing
@@ -1226,14 +1270,14 @@ total number, will be less than $\alpha$ (see \S\ref{sec-detection}).
 
 \subsubsection*{Merging detections}
 \begin{entry}
-\item[minPix \texttt{[2]}] The minimum number of spatial pixels for a single
-  detection to be counted.
+\item[minPix \texttt{[2]}] The minimum number of spatial pixels for a
+  single detection to be counted.
 \item[minChannels \texttt{[3]}] The minimum number of consecutive
   channels that must be present in a detection.
-\item[flagAdjacent \texttt{[true]}] A flag indicating whether to use the
-  ``adjacent pixel'' criterion to decide whether to merge objects. If
-  not, the next two parameters are used to determine whether objects
-  are within the necessary thresholds.
+\item[flagAdjacent \texttt{[true]}] A flag indicating whether to use
+  the ``adjacent pixel'' criterion to decide whether to merge
+  objects. If not, the next two parameters are used to determine
+  whether objects are within the necessary thresholds.
 \item[threshSpatial \texttt{[3.]}] The maximum allowed minimum spatial
   separation (in pixels) between two detections for them to be merged
   into one. Only used if \texttt{flagAdjacent = false}.
@@ -1316,19 +1360,20 @@ default, select objects at a lower threshold,  with a looser minimum
 channel requirement, and not keep a log of the intermediate
 detections. 
 
-The following page demonstrates how the parameters are presented to the 
-user, both on the screen at execution time, and in the output and log 
-files. On each line, there is a description on the parameter, the relevant 
-parameter name that is used in the input file (if there is one that the 
-user can enter), and the value of the parameter being used. 
+The following page demonstrates how the parameters are presented to
+the user, both on the screen at execution time, and in the output and
+log files. On each line, there is a description on the parameter, the
+relevant parameter name that is used in the input file (if there is
+one that the user can enter), and the value of the parameter being
+used.
 \newpage
 \begin{landscape}
 Typical presentation of parameters in output and log files:  
 \begin{verbatim}
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  input.fits
-Intermediate Logfile...........................[logFile]  =  duchamp-Logfile.txt	  
-Final Results file.............................[outFile]  =  duchamp-Results.txt	  
+Intermediate Logfile...........................[logFile]  =  duchamp-Logfile.txt
+Final Results file.............................[outFile]  =  duchamp-Results.txt
 Spectrum file..............................[spectraFile]  =  duchamp-Spectra.ps	  
 0th Moment Map...............................[momentMap]  =  duchamp-MomentMap.ps
 Detection Map.............................[detectionMap]  =  duchamp-DetectionMap.ps
@@ -1465,7 +1510,7 @@ removed to make it fit on the page).
 \end{landscape}
 
 \newpage
-\section{Example Karma Annotation File output}
+\section{Example Karma Annotation file output}
 \label{app-karma}
 
 This is the format of the Karma Annotation file, showing the locations
@@ -1535,9 +1580,10 @@ of Gaussian noise, and one wants to estimate the $\sigma$ for the
 noise, the presence of the large values from the signal can bias the
 estimator to higher values.
 
-An alternative way is to use the median ($m$) and median absolute deviation
-from the median ($s$) to estimate $\mu$ and $\sigma$. The median is the
-middle of the distribution, defined for a continuous distribution by
+An alternative way is to use the median ($m$) and median absolute
+deviation from the median ($s$) to estimate $\mu$ and $\sigma$. The
+median is the middle of the distribution, defined for a continuous
+distribution by
 \[
 \int_{-\infty}^{m} f(x) \diff x = \int_{m}^{\infty} f(x) \diff x.
 \]
@@ -1568,9 +1614,9 @@ simplicity -- equivalent to stating $x$ and $s$ in units of $\sigma$):
 This is hard to solve analytically (no nice analytic solution exists
 for the finite integral that I'm aware of), but straightforward to
 solve numerically, yielding the value of $s=0.6744888$. Thus, to
-estimate $\sigma$ for a Normally distributed data set, one can calculate
-$s$, then divide by 0.6744888 (or multiply by 1.4826042) to obtain the
-correct estimator.
+estimate $\sigma$ for a Normally distributed data set, one can
+calculate $s$, then divide by 0.6744888 (or multiply by 1.4826042) to
+obtain the correct estimator.
 
 Note that this is different to solutions quoted elsewhere,
 specifically in \citet{meyer04:trunc}, where the same robust estimator
@@ -1581,7 +1627,7 @@ standard deviation. This means that the cube noise in the \hipass\
 catalogue (their parameter Rms$_{\rm cube}$) should be 18\% larger
 than quoted.
 
-\section{How Gaussian noise changes with wavelet scale.}
+\section{How Gaussian noise changes with wavelet scale}
 \label{app-scaling}
 
 The key element in the wavelet reconstruction of an array is the
@@ -1608,15 +1654,16 @@ F'_i = \frac{1}{16}F_{i-2} + \frac{1}{4}F_{i-1} + \frac{3}{8}F_{i}
 \]
 and the flux of the corresponding pixel in the wavelet array will be 
 \[
-W'_i = F_i - F'_i = \frac{-1}{16}F_{i-2} - \frac{1}{4}F_{i-1} + \frac{5}{8}F_{i}
-- \frac{1}{4}F_{i+1} - \frac{1}{16}F_{i+2}
+W'_i = F_i - F'_i = \frac{-1}{16}F_{i-2} - \frac{1}{4}F_{i-1} 
++ \frac{5}{8}F_{i} - \frac{1}{4}F_{i+1} - \frac{1}{16}F_{i+2}
 \]
 Now, assuming each pixel has the same standard deviation
 $\sigma_i=\sigma$, we can work out the standard deviation for the
 wavelet array:
 \[
-\sigma'_i = \sigma \sqrt{\left(\frac{1}{16}\right)^2 + \left(\frac{1}{4}\right)^2
-  + \left(\frac{5}{8}\right)^2 + \left(\frac{1}{4}\right)^2 + \left(\frac{1}{16}\right)^2}
+\sigma'_i = \sigma \sqrt{\left(\frac{1}{16}\right)^2 
+  + \left(\frac{1}{4}\right)^2 + \left(\frac{5}{8}\right)^2 
+  + \left(\frac{1}{4}\right)^2 + \left(\frac{1}{16}\right)^2}
           = 0.72349\ \sigma
 \]
 Thus, the first scale wavelet coefficient array will have a standard
@@ -1639,9 +1686,9 @@ calculation of them is necessary.
 
 Memory limitations prevent us from calculating factors for large
 scales, particularly for the three-dimensional case (hence the --
-symbols in the tables). To calculate factors for
-higher scales than those available, we note the following
-relationships apply for large scales to a sufficient level of precision:
+symbols in the tables). To calculate factors for higher scales than
+those available, we note the following relationships apply for large
+scales to a sufficient level of precision:
 \begin{itemize}
 \item 1-D: factor(scale $i$) = factor(scale $i-1$)$/\sqrt{2}$.
 \item 2-D: factor(scale $i$) = factor(scale $i-1$)$/2$.

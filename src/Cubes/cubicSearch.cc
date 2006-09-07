@@ -56,7 +56,8 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
   
   // FIRST SEARCH --  IN EACH SPECTRUM.
   if(zdim>1){
-    if(par.isVerbose()) std::cout << "  1D: |                    |" << std::flush;
+    if(par.isVerbose()) std::cout << "  1D: |                    |" 
+				  << std::flush;
 
     for(int npix=0; npix<xySize; npix++){
 
@@ -83,13 +84,15 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
 	Image *spectrum = new Image(specdim);
 	delete specdim;
 	spectrum->saveParam(par);
-	spectrum->pars().setBeamSize(2.); // for spectrum, only neighbouring channels correlated
+	spectrum->pars().setBeamSize(2.); 
+	// beam size: for spectrum, only neighbouring channels correlated
 	spectrum->extractSpectrum(Array,dim,npix);
 	spectrum->removeMW(); // only works if flagMW is true
 	spectrum->setStats(specMedian,specSigma,par.getCut());
 	if(par.getFlagFDR()) spectrum->setupFDR();
 	spectrum->setMinSize(par.getMinChannels());
 	spectrum->spectrumDetect(); 
+	num += spectrum->getNumObj();
 	for(int obj=0;obj<spectrum->getNumObj();obj++){
 	  Detection *object = new Detection;
 	  *object = spectrum->getObject(obj);
@@ -108,14 +111,16 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
       }
     }
 
-    num = outputList.size();
+    //    num = outputList.size();
     if(par.isVerbose()) 
       std::cout <<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " << num <<";" << std::flush;
 
   }
 
   // SECOND SEARCH --  IN EACH CHANNEL
-  if(par.isVerbose()) std::cout << "  2D: |                    |" << std::flush;
+  if(par.isVerbose()) std::cout << "  2D: |                    |" 
+				<< std::flush;
+  num = 0;
 
   for(int z=0; z<zdim; z++){
 
@@ -146,6 +151,7 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
       if(par.getFlagFDR()) channelImage->setupFDR();
       channelImage->setMinSize(par.getMinPix());
       channelImage->lutz_detect();
+      num += channelImage->getNumObj();
       for(int obj=0;obj<channelImage->getNumObj();obj++){
 	Detection *object = new Detection;
 	*object = channelImage->getObject(obj);
@@ -162,8 +168,10 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
   }
 
   if(par.isVerbose())
-    std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " << outputList.size()-num 
-	      << ".                                           " << std::endl << std::flush;
+    std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " 
+	      << num 
+	      << ".                                           " 
+	      << std::endl << std::flush;
 
   delete [] isGood;
   delete [] doChannel;

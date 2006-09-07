@@ -12,8 +12,10 @@
 #include <Detection/detection.hh>
 #include <Detection/columns.hh>
 #include <Utils/utils.hh>
+#include <Utils/mycpgplot.hh>
 using std::endl;
 using namespace Column;
+using namespace mycpgplot;
 
 /****************************************************************/
 ///////////////////////////////////////////////////
@@ -750,7 +752,7 @@ void Cube::plotBlankEdges()
   if(this->par.drawBlankEdge()){
     int colour;
     cpgqci(&colour);
-    cpgsci(6);
+    cpgsci(MAGENTA);
     drawBlankEdges(this->array,this->axisDim[0],this->axisDim[1],this->par);
     cpgsci(colour);
   }

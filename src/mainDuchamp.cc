@@ -114,17 +114,25 @@ int main(int argc, char * argv[])
   if(cube->pars().getFlagATrous()){
     std::cout<<"Commencing search in reconstructed cube..."<<std::endl;
     cube->ReconSearch();
-    std::cout<<"Done. Found "<<cube->getNumObj()<<" objects."<<std::endl;
+    std::cout << "Done. Intermediate list has "
+	      << cube->getNumObj();
+    if(cube->getNumObj()==1) std::cout << " object.\n";
+    else std::cout << " objects.\n";
   }
   else{
     std::cout<<"Commencing search in cube..."<<std::endl;
     cube->CubicSearch();
-    std::cout<<"Done. Found "<<cube->getNumObj()<<" objects."<<std::endl;
+    std::cout << "Done. Intermediate list has "
+	      << cube->getNumObj();
+    if(cube->getNumObj()==1) std::cout << " object.\n";
+    else std::cout << " objects.\n";
   }
 
-  std::cout<<"Merging lists...  "<<std::flush;
-  cube->ObjectMerger();
-  std::cout<<"Done.                      "<<std::endl;
+  if(cube->getNumObj() > 1){
+    std::cout<<"Merging lists...  "<<std::flush;
+    cube->ObjectMerger();
+    std::cout<<"Done.                      "<<std::endl;
+  }
   std::cout<<"Final object count = "<<cube->getNumObj()<<std::endl; 
 
   if(cube->pars().getFlagNegative()){
