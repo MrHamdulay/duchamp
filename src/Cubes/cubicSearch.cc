@@ -11,7 +11,7 @@ void Cube::CubicSearch()
    * Cube::SimpleSearch3D()
    *  A front end to the cubic searching routine that does not
    *  involve any wavelet reconstruction. 
-   *  Although if baseline-removal is required that is done prior to searching.
+   *  If baseline-removal is required that is done prior to searching.
    *  Once searching is complete, the detection map is updated and
    *  the intermediate detections are logged in the log file.
    */
@@ -113,7 +113,8 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
 
     //    num = outputList.size();
     if(par.isVerbose()) 
-      std::cout <<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " << num <<";" << std::flush;
+      std::cout <<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " 
+		<< num <<";" << std::flush;
 
   }
 
@@ -136,8 +137,10 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
       float *image = new float[xySize];
       float imageMedian, imageSigma;
       goodSize=0;
-      for(int npix=0; npix<xySize; npix++) 
-	if(isGood[z*xySize + npix]) image[goodSize++] = Array[z*xySize + npix];
+      for(int npix=0; npix<xySize; npix++) {
+	if(isGood[z*xySize + npix]) 
+	  image[goodSize++] = Array[z*xySize + npix];
+      }
       findMedianStats(image,goodSize,imageMedian,imageSigma);
       imageSigma /= correctionFactor;
 

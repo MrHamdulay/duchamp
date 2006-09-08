@@ -664,6 +664,7 @@ void Cube::setupColumns()
    *  Cube::setupColumns()
    *   A front-end to the two setup routines in columns.cc.
    */ 
+  for(int i=0; i<this->objectList.size();i++) this->objectList[i].setID(i+1);
   this->fullCols.clear();
   this->fullCols = getFullColSet(this->objectList, this->head);
 
@@ -707,16 +708,22 @@ bool Cube::objAtEdge(Detection obj)
     // loop over each pixel in the object, until we find an edge pixel.
     Voxel vox = obj.getPixel(pix);
     for(int dx=-1;dx<=1;dx+=2){
-      if(((vox.getX()+dx)<0) || ((vox.getX()+dx)>=this->axisDim[0])) atEdge = true;
-      else if(this->isBlank(vox.getX()+dx,vox.getY(),vox.getZ())) atEdge = true;
+      if(((vox.getX()+dx)<0) || ((vox.getX()+dx)>=this->axisDim[0])) 
+	atEdge = true;
+      else if(this->isBlank(vox.getX()+dx,vox.getY(),vox.getZ())) 
+	atEdge = true;
     }
     for(int dy=-1;dy<=1;dy+=2){
-      if(((vox.getY()+dy)<0) || ((vox.getY()+dy)>=this->axisDim[1])) atEdge = true;
-      else if(this->isBlank(vox.getX(),vox.getY()+dy,vox.getZ())) atEdge = true;
+      if(((vox.getY()+dy)<0) || ((vox.getY()+dy)>=this->axisDim[1])) 
+	atEdge = true;
+      else if(this->isBlank(vox.getX(),vox.getY()+dy,vox.getZ())) 
+	atEdge = true;
     }
     for(int dz=-1;dz<=1;dz+=2){
-      if(((vox.getZ()+dz)<0) || ((vox.getZ()+dz)>=this->axisDim[2])) atEdge = true;
-      else if(this->isBlank(vox.getX(),vox.getY(),vox.getZ()+dz)) atEdge = true;
+      if(((vox.getZ()+dz)<0) || ((vox.getZ()+dz)>=this->axisDim[2])) 
+	atEdge = true;
+      else if(this->isBlank(vox.getX(),vox.getY(),vox.getZ()+dz)) 
+	atEdge = true;
     }
     pix++;
   }
