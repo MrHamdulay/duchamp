@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Fri Sep  8 09:58:49 2006
+New run of the Duchamp sourcefinder: Fri Sep  8 10:19:27 2006
 Executing statement : Duchamp -p verification/input1 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
