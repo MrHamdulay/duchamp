@@ -18,8 +18,8 @@ Duchamp -p verification/input1 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
 echo "Differences with Results:"
 diff -I"Results of the Duchamp source finder:" verification/results1.txt verification/stdResults1.txt
-echo "Differences with Spectra:"
-diff -I"CreationDate" verification/spectra1.ps verification/stdSpectra1.ps
+echo "Differences with Log:"
+diff -I"New run of the Duchamp sourcefinder" verification/log1.ps verification/stdLog1.ps
 
 echo 
 echo "Running the second Duchamp test:"
@@ -29,8 +29,8 @@ Duchamp -p verification/input2 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
 echo "Differences with Results:"
 diff -I"Results of the Duchamp source finder:" verification/results2.txt verification/stdResults2.txt
-echo "Differences with Spectra:"
-diff -I"CreationDate" verification/spectra2.ps verification/stdSpectra2.ps
+echo "Differences with Log:"
+diff -I"CreationDate" verification/log2.ps verification/stdLog2.ps
 
 echo 
 echo "Running the third Duchamp test:"
@@ -42,7 +42,7 @@ rm -f /tmp/duchamptest
 echo "Done. Comparison to standard result:"
 echo "Differences with Results:"
 diff -I"Results of the Duchamp source finder:" verification/results3.txt verification/stdResults3.txt
-echo "Differences with Spectra:"
-diff -I"CreationDate" verification/spectra3.ps verification/stdSpectra3.ps
+echo "Differences with Log:"
+diff -I"CreationDate" verification/log3.ps verification/stdLog3.ps
 
 echo "No differences? Then everything worked as expected\!"

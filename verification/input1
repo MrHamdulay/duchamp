@@ -5,6 +5,7 @@ flagAtrous	false
 snrCut		3
 minChannels     2
 flagMaps        false
-flagLog         false
+flagLog         true
+logFile         verification/log1.txt
 outFile         verification/results1.txt
 spectraFile     verification/spectra1.ps

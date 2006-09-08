@@ -7,6 +7,7 @@ snrRecon        3
 snrCut		2
 minChannels     2
 flagMaps        false
-flagLog         false
+flagLog         true
+logFile         verification/log3.txt
 outFile         verification/results3.txt
 spectraFile     verification/spectra3.ps

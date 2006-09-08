@@ -6,6 +6,7 @@ flagFDR		true
 alphaFDR        0.05
 minChannels     2
 flagMaps        false
-flagLog         false
+flagLog         true
+logFile         verification/log2.txt
 outFile         verification/results2.txt
 spectraFile     verification/spectra2.ps
