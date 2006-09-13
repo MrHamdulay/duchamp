@@ -1,16 +1,16 @@
 #!/bin/csh
 
-if( -e verification/verificationCube.fits ) then
-    echo "Test FITS file exists. Moving to testing."
-else
-    echo "Test FITS file has not been created. Doing so now."
-    make createTestImage
-    createTestImage.x
-    rm -f createTestImage.x
-    echo "Done. Moving to testing."
-endif
+#if( -e verification/verificationCube.fits ) then
+#    echo "Test FITS file exists. Moving to testing."
+#else
+#    echo "Test FITS file has not been created. Doing so now."
+#    make createTestImage
+#    createTestImage.x
+#    rm -f createTestImage.x
+#    echo "Done. Moving to testing."
+#endif
 
-echo 
+echo " "
 echo "Running the first Duchamp test:"
 echo "  [This is a simple sigma-clipping search]"
 rm -f /tmp/duchamptest
@@ -21,7 +21,7 @@ diff -I"Results of the Duchamp source finder:" verification/results1.txt verific
 echo "Differences with Log:"
 diff -I"New run of the Duchamp sourcefinder" verification/log1.txt verification/stdLog1.txt
 
-echo 
+echo " "
 echo "Running the second Duchamp test:"
 echo "  [This uses the FDR method]"
 rm -f /tmp/duchamptest
@@ -32,10 +32,10 @@ diff -I"Results of the Duchamp source finder:" verification/results2.txt verific
 echo "Differences with Log:"
 diff -I"New run of the Duchamp sourcefinder" verification/log2.txt verification/stdLog2.txt
 
-echo 
+echo " "
 echo "Running the third Duchamp test:"
 echo "  [This reconstructs the cube, then searches with simple sigma-clipping]"
-echo "  [It will take longer than the first two.]"
+echo "  [It should take a bit longer than the first two.]"
 rm -f /tmp/duchamptest
 Duchamp -p verification/input3 > /tmp/duchamptest
 rm -f /tmp/duchamptest

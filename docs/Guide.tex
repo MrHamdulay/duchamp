@@ -90,8 +90,10 @@ a text file of positions, velocities and fluxes of the detections, as
 well as a postscript file of the spectra of each detection.
 
 So, you have a FITS cube, and you want to find the sources in it. What
-do you do? The first step is to make an input file that contains the
-list of parameters. Brief and detailed examples are shown in
+do you do? First, you need to get \duchamp: there are instructions in
+Appendix~\ref{app-install} for obtaining and installing it. Once you
+have it running, the first step is to make an input file that contains
+the list of parameters. Brief and detailed examples are shown in
 Appendix~\ref{app-input}. This file provides the input file name, the
 various output files, and defines various parameters that control the
 execution.
@@ -1057,6 +1059,21 @@ Here you can find a gzipped tar archive of the source code that can be
 downloaded and extracted, as well as this User's Guide in postscript
 and hyperlinked PDF formats.
 
+To build \duchamp, you will need three main external libraries:
+pgplot, cfitsio and wcslib. If these are not present on your system,
+you can download them from the following locations:
+\begin{itemize}
+\item PGPlot:
+\href{http://www.astro.caltech.edu/~tjp/pgplot/}%
+{http://www.astro.caltech.edu/~tjp/pgplot/}
+\item CFITSIO:
+\href{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html}%
+{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html}
+\item WCSLIB:
+\href{http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html}%
+{http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html}
+\end{itemize}
+
 \duchamp\ can be built on Unix systems by typing (assuming that the
 prompt your terminal provides is a \texttt{> } -- don't type this
 character!):
@@ -1091,8 +1108,21 @@ And then just run make in the usual fashion:
 \texttt{> make}
 \end{quote}
 
-This will produce the executable \texttt{Duchamp}. There are two
-possible ways to run it. The first is:
+This will produce the executable \texttt{Duchamp}. 
+You can verify that it is running correctly by running the test
+script: 
+\begin{quote}
+\texttt{> VerifyDuchamp.sh}
+\end{quote}
+This will compile and run a bit of
+C++ code in the directory \texttt{verification/} that creates a dummy FITS
+image. It then runs Duchamp on this image with three different sets of
+inputs, and compares to known results, looking for differences and
+reporting any. There should be none reported if everything is working
+correctly. 
+
+You can then run \duchamp\ on your own data. This can be done in one
+of two ways. The first is:
 \begin{quote}
 \texttt{> Duchamp -f [FITS file]}
 \end{quote}
