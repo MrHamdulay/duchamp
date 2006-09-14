@@ -39,9 +39,9 @@ public:
   DataArray(short int nDim, long *dimensions);
   virtual ~DataArray();
   // Size and Dimension related
-  long                 getDimX(){if(numDim>0) return axisDim[0]; else return 0;};
-  long                 getDimY(){if(numDim>1) return axisDim[1]; else return 1;};
-  long                 getDimZ(){if(numDim>2) return axisDim[2]; else return 1;};
+  long                 getDimX(){if(numDim>0) return axisDim[0];else return 0;};
+  long                 getDimY(){if(numDim>1) return axisDim[1];else return 1;};
+  long                 getDimZ(){if(numDim>2) return axisDim[2];else return 1;};
   void                 getDim(long &x, long &y, long &z);
   long                 getSize(){return numPixels;};
   short int            getNumDim(){return numDim;};
@@ -53,10 +53,11 @@ public:
   void                 setPixValue(long pos, float f){array[pos] = f;};
   // Related to the object lists
   Detection            getObject(long number){return objectList[number];};
-  void                 addObject(Detection object);   // adds a single detection to the object list
+  void                 addObject(Detection object);   
+                  // adds a single detection to the object list
   vector <Detection>   getObjectList(){return objectList;};
   void                 addObjectList(vector <Detection> newlist);  
-                                     // adds all objects in a detection list to the object list
+                  // adds all objects in a detection list to the object list
   void                 addObjectOffsets();
   long                 getNumObj(){return objectList.size();};
   void                 clearDetectionList(){this->objectList.clear();};
@@ -122,9 +123,9 @@ public:
   void      setPValue(long pos, float p){pValue[pos] = p;};
   void      setPValue(long x, long y, float p){pValue[y*axisDim[0] + x] = p;};
   void      setMaskValue(long pos, short int m){mask[pos] = m;};
-  void      setMaskValue(long x, long y, short int m){mask[y*axisDim[0] + x] = m;};
+  void      setMaskValue(long x, long y, short int m){mask[y*axisDim[0]+x]=m;};
   bool      isBlank(int vox){return par.isBlank(array[vox]);};
-  bool      isBlank(long x, long y){return par.isBlank(array[y*axisDim[0] + x]);};
+  bool      isBlank(long x,long y){return par.isBlank(array[y*axisDim[0]+x]);};
   // Stats-related
   void      setStats(float m, float s, float c){mean=m; sigma=s; cutLevel=c;};
   void      findStats(int code);
@@ -144,12 +145,13 @@ public:
   void      maskObject(Detection &object);
 
   // Detection-related
-  void      lutz_detect();                  // in Detection/lutz_detect.cc
-  void      spectrumDetect();               // in Detection/spectrumDetect.cc
-  int       setupFDR();                     // in Detection/thresholding_functions.cc
-  bool      isDetection(float value);       // in Detection/thresholding_functions.cc
-  bool      isDetection(long x, long y);    // in Detection/thresholding_functions.cc
-  bool      isDetectionFDR(float pvalue);   // in Detection/thresholding_functions.cc
+  void      lutz_detect();            // in Detection/lutz_detect.cc
+  void      spectrumDetect();         // in Detection/spectrumDetect.cc
+  // the rest are in Detection/thresholding_functions.cc
+  int       setupFDR();
+  bool      isDetection(float value);
+  bool      isDetection(long x, long y);
+  bool      isDetectionFDR(float pvalue);
 
   void      removeMW();
   
@@ -159,12 +161,13 @@ private:
   short int *mask;       // a mask image indicating where objects are
 	   		  
   float      mean;       // the mean background level of the image
-  float      sigma;      // the standard deviation of the background in the image
+  float      sigma;      // the standard deviation of the image's background
   float      cutLevel;   // the limiting value (in sigmas above the mean) for
                          //     a pixel to be called a detection.
   float      alpha;      // used by FDR routine -- significance level
   float      pCutLevel;  // the limiting P-value for the FDR analysis
-  int        minSize;    // the minimum number of pixels for a detection to be accepted.
+  int        minSize;    // the minimum number of pixels for a detection 
+                         //  to be accepted.
 };
 
 /****************************************************************/
@@ -182,7 +185,8 @@ public:
   Cube(long *dimensions);
   virtual ~Cube();            // destructor
 
-  // additional accessor functions -- in Cubes/cubes.cc unless otherwise specified.
+  // additional accessor functions
+  //       -- in Cubes/cubes.cc unless otherwise specified.
 
   int     getCube(string fname);
   int     getCube(){  
@@ -207,7 +211,7 @@ public:
   float   getPixValue(long x, long y, long z){
     return array[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x];};
   short   getDetectMapValue(long pos){return detectMap[pos];};
-  short   getDetectMapValue(long x, long y){return detectMap[y*axisDim[0] + x];};
+  short   getDetectMapValue(long x, long y){return detectMap[y*axisDim[0]+x];};
   bool    isRecon(){return reconExists;};
   float   getReconValue(long pos){return recon[pos];};
   float   getReconValue(long x, long y, long z){
@@ -298,16 +302,16 @@ public:
   void    plotMomentMap(string pgDestination);             
   void    plotWCSaxes();                                   
   //    the next two in Cubes/outputSpectra.cc
-  void    outputSpectra();                                     
+  void    outputSpectra();
   void    plotSpectrum(Detection obj,Plot::SpectralPlot &plot);
   //    the next three in Cubes/drawMomentCutout.cc
   void    drawMomentCutout(Detection &object);
-//void    drawScale(float xstart,float ystart,float channel,float scaleLength);
   void    drawScale(float xstart,float ystart,float channel);
   void    drawFieldEdge();
 
 private: 
-  float  *recon;           // reconstructed array -- used when doing a trous reconstruction.
+  float  *recon;           // reconstructed array -- used when doing a trous 
+                           //   reconstruction.
   bool    reconExists;     // flag saying whether there is a reconstruction
   short  *detectMap;       // "moment map" -- x,y locations of detected pixels
   float  *baseline;        // array of spectral baseline values.
@@ -318,7 +322,8 @@ private:
   float  *chanSigma;       // array of sigmas for each channel map in cube
 	
   FitsHeader head;         // the WCS and other header information.
-  vector<Col> fullCols;    // the list of all columns as printed in the results file
+  vector<Col> fullCols;    // the list of all columns as printed in the 
+                           //  results file
   vector<Col> logCols;     // the list of columns as printed in the log file
 
 };
@@ -334,7 +339,8 @@ Image getImage(string fname);
 void findSources(Image &image);
 void findSources(Image &image, float mean, float sigma); 
 
-vector <Detection> searchReconArray(long *dim,float *originalArray,float *reconArray, Param &par);
+vector <Detection> searchReconArray(long *dim,float *originalArray,
+				    float *reconArray, Param &par);
 vector <Detection> search3DArray(long *dim, float *Array, Param &par);
 
 void growObject(Detection &object, Image &image);

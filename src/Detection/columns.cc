@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 
+#include <math.h>
 #include <duchamp.hh>
 #include <param.hh>
 #include <vector> 
@@ -116,7 +117,7 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
     for(int i=newset[Z].getWidth();i<tempwidth;i++) newset[Z].widen();
     if(val < 1.){
       minval = pow(10, -1. * newset[Z].getPrecision()+1); 
-      if(val < minval) newset[Z].upPrec();
+      if((val>0.)&&(val < minval)) newset[Z].upPrec();
     }
 
     if(head.isWCS()){  

@@ -76,22 +76,24 @@ namespace Column
     int    upPrec(){precision++; if(width<precision+3) width++;};
     // outputting functions -- all in columns.cc
     void   printTitle(std::ostream &stream){
-      stream << std::setw(this->width) << this->name;
+      stream << std::setw(this->width) << std::setfill(' ') << this->name;
     };
     void   printUnits(std::ostream &stream){
-      stream << std::setw(this->width) << this->units;
+      stream << std::setw(this->width) << std::setfill(' ') << this->units;
     };
     void   printDash (std::ostream &stream){
-      stream << std::setfill('-') << std::setw(this->width) 
-	     << ""<< std::setfill(' ');
+      stream << std::setw(this->width) << std::setfill('-')
+	     << "" << std::setfill(' ');
     };
     void   printBlank(std::ostream &stream){
-      stream << std::setfill(' ') << std::setw(this->width) << "";
+      stream << std::setw(this->width) << std::setfill(' ') << "";
     };
-    template <class T> void printEntry(std::ostream &stream, T value)// ;
+    template <class T> void printEntry(std::ostream &stream, T value)
     {
-      stream << std::setprecision(precision);
-      stream << std::setw(width) << value;
+      stream << std::setprecision(this->precision)
+	     << std::setw(this->width) 
+	     << std::setfill(' ')
+	     << value;
     }
 
   private:

@@ -5,7 +5,8 @@
 #include <string.h>
 #include <ctype.h>
 
-#define WDGPIX 100  // used by cpgwedglog --> number of increments in it
+#define WDGPIX 100  /* used by cpgwedglog 
+		       --> number of increments in the wedge. */
 
 /**
  *  This file contains the following programs, all in C code:
@@ -16,9 +17,10 @@
  *                   float fg, float bg, const char *label)
  *                 --> a C-code version of pgwedg, plotting the wedge 
  *                     scale in logarithmic units.
- *   void cpgcumul(int npts, float *data, float datamin, float datamax, int pgflag)
- *                 --> a new pgplot routine that draws a cumulative distribution.
- *                     Uses _swap and _sort.
+ *   void cpgcumul(int npts, float *data, float datamin, float datamax, 
+ *                        int pgflag)
+ *                 --> a new pgplot routine that draws a cumulative 
+ *                     distribution. Uses _swap and _sort.
  *   void cpghistlog(npts, data, datamin, datamax, nbin, pgflag)
  *                 --> as for cpghist, with the y-axis on a logarithmic scale.
  * 
@@ -46,27 +48,34 @@ int cpgtest()
 /*   CPGWEDGLOG
 /********************************************************************/
 
-void cpgwedglog(const char* side, float disp, float width, float fg, float bg, const char *label)
+void cpgwedglog(const char* side, float disp, float width, float fg, float bg, 
+		const char *label)
 {
   /** 
    *  cpgwedglog
-   *     A C-code version of PGWEDG that writes the scale of the wedge in logarithmic
-   *     coordinates. All parameters are exactly as for cpgwedg.
+   *     A C-code version of PGWEDG that writes the scale of the wedge in 
+   *      logarithmic coordinates. All parameters are exactly as for cpgwedg.
    */
   
-  float wxa,wxb,wya,wyb, xa,xb,ya,yb; // Temporary window coord storage.
-  float vxa,vxb,vya,vyb;              // Viewport coords of wedge.
-  float oldch, newch;                 // Original and anotation character heights.
-  float ndcsiz;                       // Size of unit character height (NDC units).
-  int horiz;                          // Logical: True (=1) if wedge plotted horizontally.
-  int image;                          // Logical: Use PGIMAG (T=1) or PGGRAY (F=0).
+  float wxa,wxb,wya,wyb, xa,xb,ya,yb; /* Temporary window coord storage.*/
+  float vxa,vxb,vya,vyb;              /* Viewport coords of wedge. */
+  float oldch, newch;                 /* Original and annotation character 
+					 heights. */
+  float ndcsiz;                       /* Size of unit character height 
+					 (NDC units). */
+  int horiz;                          /* Logical: True (=1) if wedge plotted 
+					 horizontally. */
+  int image;                          /* Logical: Use PGIMAG (T=1) or 
+					 PGGRAY (F=0). */
 
-  int nside,i;                        // nside = symbolic version of side.
+  int nside,i;                        /* nside = symbolic version of side. */
   const int bot=1,top=2,lft=3,rgt=4;
   float wedwid, wdginc, vwidth, vdisp, xch, ych, labwid, fg1, bg1;
-  float txtfrc=0.6;                       // Set the fraction of WIDTH used for anotation.
-  float txtsep=2.2;                       // Char separation between numbers and LABEL.
-  float wdgarr[WDGPIX];                   // Array to draw wedge in.
+  float txtfrc=0.6;                   /* Set the fraction of WIDTH used 
+					     for anotation. */
+  float txtsep=2.2;                   /* Char separation between numbers 
+					     and LABEL. */
+  float wdgarr[WDGPIX];               /* Array to draw wedge in. */
   float tr[6] = {0.0,1.0,0.0,0.0,0.0,1.0};
 
 /*   if(pgnoto("pgwedg")) return; */
@@ -88,7 +97,7 @@ void cpgwedglog(const char* side, float disp, float width, float fg, float bg, c
     nside = rgt;
     horiz = 0;
   }
-  //   else gwarn("Invalid \"SIDE\" argument in PGWEDG."); 
+  /*   else gwarn("Invalid \"SIDE\" argument in PGWEDG.");  */
   else fprintf(stdout,"%PGPLOT, Invalid \"SIDE\" argument in CPGWEDGLOG.");
 
   /* Determine which routine to use. */
@@ -127,7 +136,7 @@ void cpgwedglog(const char* side, float disp, float width, float fg, float bg, c
      (NDC units). */
   wedwid = vwidth * (1.0-txtfrc);
 
-  /* Use these to determine viewport coordinates for the wedge + annotation. */
+  /* Use these to determine viewport coordinates for the wedge + annotation.*/
   vxa = xa;
   vxb = xb;
   vya = ya;
@@ -258,11 +267,11 @@ void cpgcumul(int npts, float *data, float datamin, float datamax, int pgflag)
 
   cpgbbuf();
 
-  // DEFINE ENVIRONMENT IF NECESSARY
+  /* DEFINE ENVIRONMENT IF NECESSARY */
   if(pgflag == 0) cpgenv(datamin,datamax,MINCOUNT,1.0001,0,0);
   if(pgflag == 2) cpgswin(datamin,datamax,MINCOUNT,1.);
 
-  // DRAW LINE
+  /* DRAW LINE */
   cpgmove(datamin,MINCOUNT);
   for(i=0;i<npts;i++) cpgdraw(sorted[i],(float)(i+1)/(float)(npts));
   cpgdraw(datamax,1.);
@@ -277,7 +286,8 @@ void cpgcumul(int npts, float *data, float datamin, float datamax, int pgflag)
 /*   CPGHISTLOG
 /********************************************************************/
 
-void cpghistlog(int npts, float *data, float datamin, float datamax, int nbin, int pgflag)
+void cpghistlog(int npts, float *data, float datamin, float datamax, int nbin, 
+		int pgflag)
 {
   /**
    * cpghistlog(npts, data, datamin, datamax, nbin, pgflag)
@@ -296,7 +306,7 @@ void cpghistlog(int npts, float *data, float datamin, float datamax, int nbin, i
 
   cpgbbuf();
 
-  // HOW MANY VALUES IN EACH BIN?
+  /* HOW MANY VALUES IN EACH BIN? */
   for(i=0; i<npts; i++){
     fraction = (data[i] - datamin) / (datamax - datamin);
     bin = (int)( floor(fraction*nbin) );
@@ -310,16 +320,16 @@ void cpghistlog(int npts, float *data, float datamin, float datamax, int nbin, i
   for(i=1; i<nbin; i++) if(num[i]>maxNum) maxNum = num[i];
   binSize = (datamax - datamin) / (float)nbin;
 
-  // BOUNDARIES OF PLOT
+  /* BOUNDARIES OF PLOT */
   x1 = datamin;
   x2 = datamax;
   y1 = MINCOUNT;
   y2 = ceil(maxNum);
 
-  // DEFINE ENVIRONMENT IF NECESSARY
+  /* DEFINE ENVIRONMENT IF NECESSARY */
   if(pgflag%2 == 0) cpgenv(x1,x2,y1,y2,0,20);
 
-  // DRAW HISTOGRAM
+  /* DRAW HISTOGRAM */
   if(pgflag/2 == 0){
     older = 0.;
     x2 = datamin;

@@ -231,37 +231,40 @@ int Cube::getCube(string fname)
       duchampWarning("getCube",errmsg.str());
     }
 
+    if(numAxes>2){
 
-    string desiredType,specType = wcs->ctype[2];
-    int index = wcs->spec;
-    if(wcs->restfrq != 0){
-      // Set the spectral axis to a standard specification: VELO-F2V
-      desiredType = duchampVelocityType;
-      if(wcs->restwav == 0) wcs->restwav = 299792458.0 / wcs->restfrq;
-    }
-    else{
-      // No rest frequency defined, so put spectral dimension in frequency. 
-      // Set the spectral axis to a standard specification: FREQ
-      duchampWarning("getCube",
-      "No rest frequency defined. Using frequency units in spectral axis.\n");
-      desiredType = duchampFrequencyType;
-      this->par.setSpectralUnits("MHz");
-      if(strcmp(wcs->cunit[2],"")==0){
-	duchampWarning("getCube",
-	 "No frequency unit given. Assuming frequency axis is in Hz.\n");
-	strcpy(wcs->cunit[2],"Hz");
+      string desiredType,specType = wcs->ctype[2];
+      int index = wcs->spec;
+      if(wcs->restfrq != 0){
+	// Set the spectral axis to a standard specification: VELO-F2V
+	desiredType = duchampVelocityType;
+	if(wcs->restwav == 0) wcs->restwav = 299792458.0 / wcs->restfrq;
       }
-    }
+      else{
+	// No rest frequency defined, so put spectral dimension in frequency. 
+	// Set the spectral axis to a standard specification: FREQ
+	duchampWarning("getCube",
+		       "No rest frequency defined. Using frequency units in spectral axis.\n");
+	desiredType = duchampFrequencyType;
+	this->par.setSpectralUnits("MHz");
+	if(strcmp(wcs->cunit[2],"")==0){
+	  duchampWarning("getCube",
+			 "No frequency unit given. Assuming frequency axis is in Hz.\n");
+	  strcpy(wcs->cunit[2],"Hz");
+	}
+      }
     
-    if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0){
-      index = -1;
-      if( flag = wcssptr(wcs, &index, (char *)desiredType.c_str())){
-	std::stringstream errmsg;
-	errmsg<<"wcssptr failed! Code="<<flag <<": "
-	      <<wcs_errmsg[flag]<<std::endl;
-	duchampWarning("getCube",errmsg.str());
-      }	
-    }
+      if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0){
+	index = -1;
+	if( flag = wcssptr(wcs, &index, (char *)desiredType.c_str())){
+	  std::stringstream errmsg;
+	  errmsg<<"wcssptr failed! Code="<<flag <<": "
+		<<wcs_errmsg[flag]<<std::endl;
+	  duchampWarning("getCube",errmsg.str());
+	}	
+      }
+    
+    } // end of if(numAxes>2)
     
     newHead.setWCS(wcs);
     newHead.setNWCS(nwcs);
