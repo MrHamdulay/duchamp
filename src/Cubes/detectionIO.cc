@@ -20,26 +20,59 @@ void Cube::outputDetectionsKarma(std::ostream &stream)
    * outputDetectionsKarma
    *  Prints to a stream (provided) the list of detected objects in the cube
    *   in the format of an annotation file for the Karma suite of programs.
-   *  Annotation file draws a box enclosing the detection, and writes the ID number
-   *   of the detection to the right of the box.
+   *  Annotation file draws a box enclosing the detection, and writes the 
+   *   ID number of the detection to the right of the box.
    */
 
-  stream << "# Duchamp Source Finder results for cube " << this->par.getImageFile() << endl;
+  string fname = this->par.getImageFile();
+  if(this->par.getFlagSubsection()) fname+=this->par.getSubsection();
+  stream << "# Duchamp Source Finder results for FITS file: " << fname << endl;
+  if(this->par.getFlagFDR())
+    stream<<"# FDR Significance = " << this->par.getAlpha() << endl;
+  else
+    stream<<"# Threshold = " << this->par.getCut() << endl;
+  if(this->par.getFlagATrous()){
+    stream<<"# The a trous reconstruction method was used, with the following parameters." << endl;
+    stream<<"#  ATrous Dimension = " << this->par.getReconDim() << endl;
+    stream<<"#  ATrous Threshold = " << this->par.getAtrousCut() << endl;
+    stream<<"#  ATrous Minimum Scale =" << this->par.getMinScale() << endl;
+    stream<<"#  ATrous Filter = " << this->par.getFilterName() << endl;
+  }
+  else stream << "# No ATrous reconstruction done." << endl;
+  stream << "#\n";
   stream << "COLOR RED" << endl;
   stream << "COORD W" << endl;
   for(int i=0;i<this->objectList.size();i++){
-    float radius = this->objectList[i].getRAWidth()/120.;
-    if(this->objectList[i].getDecWidth()/120.>radius)
-      radius = this->objectList[i].getDecWidth()/120.;
-    stream << "CIRCLE " 
-	   << this->objectList[i].getRA() << " " 
-	   << this->objectList[i].getDec() << " " 
-	   << radius << endl;
-    stream << "TEXT " 
-	   << this->objectList[i].getRA() << " " 
-	   << this->objectList[i].getDec() << " " 
-	   << this->objectList[i].getID() << endl;
-  }
+    if(this->head.isWCS()){
+      float radius = this->objectList[i].getRAWidth()/120.;
+      if(this->objectList[i].getDecWidth()/120.>radius)
+	radius = this->objectList[i].getDecWidth()/120.;
+      stream << "CIRCLE " 
+	     << this->objectList[i].getRA() << " " 
+	     << this->objectList[i].getDec() << " " 
+	     << radius << endl;
+      stream << "TEXT " 
+	     << this->objectList[i].getRA() << " " 
+	     << this->objectList[i].getDec() << " " 
+	     << this->objectList[i].getID() << endl;
+    }
+    else{
+      float radius = this->objectList[i].getXmax() - 
+	this->objectList[i].getXmin() + 1;
+      if(this->objectList[i].getYmax()-this->objectList[i].getYmin() + 1 
+	 > radius)
+	radius = this->objectList[i].getYmax() - 
+	  this->objectList[i].getYmin() + 1;
+      stream << "CIRCLE " 
+	     << this->objectList[i].getXcentre() << " " 
+	     << this->objectList[i].getYcentre() << " " 
+	     << radius << endl;
+      stream << "TEXT " 
+	     << this->objectList[i].getXcentre() << " " 
+	     << this->objectList[i].getYcentre() << " " 
+	     << this->objectList[i].getID() << endl;
+    }
+  }      
 
 }
 
@@ -95,19 +128,19 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
   stream<<"      <DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>"<<endl;
 
   // PARAM section -- parts that are not entry-specific ie. apply to whole dataset
-  string fname = this->pars().getImageFile();
-  if(this->pars().getFlagSubsection()) fname+=this->pars().getSubsection();
+  string fname = this->par.getImageFile();
+  if(this->par.getFlagSubsection()) fname+=this->par.getSubsection();
   stream<<"      <PARAM name=\"FITS file\" datatype=\"char\" ucd=\"meta.file;meta.fits\" value=\"" << fname << "\"/>"<<endl;
-  if(this->pars().getFlagFDR())
-    stream<<"      <PARAM name=\"FDR Significance\" datatype=\"float\" ucd=\"stat.param\" value=\"" << this->pars().getAlpha() << "\">" << endl;
+  if(this->par.getFlagFDR())
+    stream<<"      <PARAM name=\"FDR Significance\" datatype=\"float\" ucd=\"stat.param\" value=\"" << this->par.getAlpha() << "\">" << endl;
   else
-    stream<<"      <PARAM name=\"Threshold\" datatype=\"float\" ucd=\"stat.snr\" value=\"" << this->pars().getCut() << "\">" << endl;
-  if(this->pars().getFlagATrous()){
+    stream<<"      <PARAM name=\"Threshold\" datatype=\"float\" ucd=\"stat.snr\" value=\"" << this->par.getCut() << "\">" << endl;
+  if(this->par.getFlagATrous()){
     stream<<"      <PARAM name=\"ATrous note\" datatype=\"char\" ucd=\"meta.note\" value=\"The a trous reconstruction method was used, with the following parameters.\">" << endl;
-    stream<<"      <PARAM name=\"ATrous Dimension\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" << this->pars().getReconDim() << "\">" << endl;
-    stream<<"      <PARAM name=\"ATrous Threshold\" datatype=\"float\" ucd=\"stat.snr\" value=\"" << this->pars().getAtrousCut() << "\">" << endl;
-    stream<<"      <PARAM name=\"ATrous Minimum Scale\" datatype=\"int\" ucd=\"stat.param\" value=\"" << this->pars().getMinScale() << "\">" << endl;
-    stream<<"      <PARAM name=\"ATrous Filter\" datatype=\"char\" ucd=\"meta.code;stat\" value=\"" << this->pars().getFilterName() << "\">" << endl;
+    stream<<"      <PARAM name=\"ATrous Dimension\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" << this->par.getReconDim() << "\">" << endl;
+    stream<<"      <PARAM name=\"ATrous Threshold\" datatype=\"float\" ucd=\"stat.snr\" value=\"" << this->par.getAtrousCut() << "\">" << endl;
+    stream<<"      <PARAM name=\"ATrous Minimum Scale\" datatype=\"int\" ucd=\"stat.param\" value=\"" << this->par.getMinScale() << "\">" << endl;
+    stream<<"      <PARAM name=\"ATrous Filter\" datatype=\"char\" ucd=\"meta.code;stat\" value=\"" << this->par.getFilterName() << "\">" << endl;
   }
   // FIELD section -- names, titles and info for each column.
   stream<<"      <FIELD name=\"ID\" ID=\"col01\" ucd=\"meta.id\" datatype=\"int\" width=\""<<localCol[0].getWidth()<<"\"/>"<<endl;
