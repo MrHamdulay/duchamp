@@ -1,0 +1,44 @@
+\secA{User Inputs}
+\label{sec-param}
+
+Input to the program is provided by means of a parameter
+file. Parameters are listed in the file, followed by the value that
+should be assigned to them. The syntax used is \texttt{paramName
+value}. Parameter names are not case-sensitive, and lines in the input
+file that start with \texttt{\#} are ignored. If a parameter is listed
+more than once, the latter value is used, but otherwise the order in
+which the parameters are listed in the input file is
+arbitrary. Example input files can be seen in
+Appendix~\ref{app-input}.
+
+If a parameter is not listed, the default value is assumed. The
+defaults are chosen to provide a good result (using the reconstruction
+method), so the user doesn't need to specify many new parameters in
+the input file. Note that the image file \textbf{must} be specified!
+The parameters that can be set are listed in Appendix~\ref{app-param},
+with their default values in parentheses.
+
+The parameters with names starting with \texttt{flag} are stored as
+\texttt{bool} variables, and so are either \texttt{true = 1} or
+\texttt{false = 0}. They can be entered in the file either in text or
+integer format -- \duchamp\ will read them correctly in either case.
+
+An example input file is included in the \texttt{.tar.gz} distribution
+file. It is as follows:
+
+\begin{verbatim}
+imageFile       your-file-here
+logFile         logfile.txt
+outFile         results.txt
+spectraFile     spectra.ps
+minPix          2
+flagATrous      1
+snrRecon        5.
+snrCut          3.
+minChannels     3
+flagBaseline    1
+\end{verbatim}.
+
+You would, of course, replace the ``\texttt{your-file-here}'' with the
+FITS file you wanted to search. Further examples are given in
+Appendix~\ref{app-input}.

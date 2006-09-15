@@ -1,0 +1,134 @@
+\secA{How Gaussian noise changes with wavelet scale}
+\label{app-scaling}
+
+The key element in the wavelet reconstruction of an array is the
+thresholding of the individual wavelet coefficient arrays. This is
+usually done by choosing a level to be some number of standard
+deviations above the mean value.
+
+However, since the wavelet arrays are produced by convolving the input
+array by an increasingly large filter, the pixels in the coefficient
+arrays become increasingly correlated as the scale of the filter
+increases. This results in the measured standard deviation from a
+given coefficient array decreasing with increasing scale. To calculate
+this, we need to take into account how many other pixels each pixel in
+the convolved array depends on.
+
+To demonstrate, suppose we have a 1-D array with $N$ pixel values
+given by $F_i,\ i=1,...,N$, and we convolve it with the B$_3$-spline
+filter, defined by the set of coefficients
+$\{1/16,1/4,3/8,1/4,1/16\}$. The flux of the $i$th pixel in the
+convolved array will be
+\[
+F'_i = \frac{1}{16}F_{i-2} + \frac{1}{4}F_{i-1} + \frac{3}{8}F_{i}
++ \frac{1}{4}F_{i+1} + \frac{1}{16}F_{i+2}
+\]
+and the flux of the corresponding pixel in the wavelet array will be 
+\[
+W'_i = F_i - F'_i = \frac{-1}{16}F_{i-2} - \frac{1}{4}F_{i-1} 
++ \frac{5}{8}F_{i} - \frac{1}{4}F_{i+1} - \frac{1}{16}F_{i+2}
+\]
+Now, assuming each pixel has the same standard deviation
+$\sigma_i=\sigma$, we can work out the standard deviation for the
+wavelet array:
+\[
+\sigma'_i = \sigma \sqrt{\left(\frac{1}{16}\right)^2 
+  + \left(\frac{1}{4}\right)^2 + \left(\frac{5}{8}\right)^2 
+  + \left(\frac{1}{4}\right)^2 + \left(\frac{1}{16}\right)^2}
+          = 0.72349\ \sigma
+\]
+Thus, the first scale wavelet coefficient array will have a standard
+deviation of 72.3\% of the input array. This procedure can be followed
+to calculate the necessary values for all scales, dimensions and
+filters used by \duchamp.
+
+Calculating these values is clearly a critical step in performing the
+reconstruction. \citet{starck02:book} did so by simulating data sets
+with Gaussian noise, taking the wavelet transform, and measuring the
+value of $\sigma$ for each scale. We take a different approach, by
+calculating the scaling factors directly from the filter coefficients
+by taking the wavelet transform of an array made up of a 1 in the
+central pixel and 0s everywhere else. The scaling value is then
+derived by taking the square root of the sum (in quadrature) of all
+the wavelet coefficient values at each scale. We give the scaling
+factors for the three filters available to \duchamp\ on the following
+page. These values are hard-coded into \duchamp, so no on-the-fly
+calculation of them is necessary.
+
+Memory limitations prevent us from calculating factors for large
+scales, particularly for the three-dimensional case (hence the --
+symbols in the tables). To calculate factors for higher scales than
+those available, we note the following relationships apply for large
+scales to a sufficient level of precision:
+\begin{itemize}
+\item 1-D: factor(scale $i$) = factor(scale $i-1$)$/\sqrt{2}$.
+\item 2-D: factor(scale $i$) = factor(scale $i-1$)$/2$.
+\item 1-D: factor(scale $i$) = factor(scale $i-1$)$/\sqrt{8}$.
+\end{itemize}
+
+\newpage
+\begin{itemize}
+\item \textbf{B$_3$-Spline Function:} $\{1/16,1/4,3/8,1/4,1/16\}$
+
+\begin{tabular}{llll}
+Scale & 1 dimension      & 2 dimension     & 3 dimension\\ \hline
+1     & 0.723489806      & 0.890796310     & 0.956543592\\
+2     & 0.285450405	 & 0.200663851	   & 0.120336499\\
+3     & 0.177947535	 & 0.0855075048	   & 0.0349500154\\
+4     & 0.122223156	 & 0.0412474444	   & 0.0118164242\\
+5     & 0.0858113122	 & 0.0204249666	   & 0.00413233507\\
+6     & 0.0605703043	 & 0.0101897592	   & 0.00145703714\\
+7     & 0.0428107206	 & 0.00509204670   & 0.000514791120\\
+8     & 0.0302684024	 & 0.00254566946   & --\\
+9     & 0.0214024008	 & 0.00127279050   & --\\
+10    & 0.0151336781	 & 0.000636389722  & --\\
+11    & 0.0107011079	 & 0.000318194170  & --\\
+12    & 0.00756682272	 & --		   & --\\
+13    & 0.00535055108	 & --		   & --\\
+%14    & 0.00378341085	 & --		   & --\\
+%15    & 0.00267527545	 & --		   & --\\
+%16    & 0.00189170541	 & --		   & --\\
+%17    & 0.00133763772	 & --		   & --\\
+%18    & 0.000945852704   & --		   & --
+\end{tabular}
+
+\item \textbf{Triangle Function:} $\{1/4,1/2,1/4\}$
+
+\begin{tabular}{llll}
+Scale & 1 dimension      & 2 dimension     & 3 dimension\\ \hline
+1     & 0.612372436      & 0.800390530     & 0.895954449  \\
+2     & 0.330718914	 & 0.272878894     & 0.192033014\\
+3     & 0.211947812	 & 0.119779282     & 0.0576484078\\
+4     & 0.145740298	 & 0.0577664785    & 0.0194912393\\
+5     & 0.102310944	 & 0.0286163283    & 0.00681278387\\
+6     & 0.0722128185	 & 0.0142747506    & 0.00240175885\\
+7     & 0.0510388224	 & 0.00713319703   & 0.000848538128 \\
+8     & 0.0360857673	 & 0.00356607618   & 0.000299949455 \\
+9     & 0.0255157615	 & 0.00178297280   & -- \\
+10    & 0.0180422389	 & 0.000891478237  & --  \\
+11    & 0.0127577667	 & 0.000445738098  & --  \\
+12    & 0.00902109930	 & 0.000222868922  & --  \\
+13    & 0.00637887978	 & --		   & -- \\
+%14   & 0.00451054902	 & --		   & -- \\
+%15   & 0.00318942978	 & --		   & -- \\
+%16   & 0.00225527449	 & --		   & -- \\
+%17   & 0.00159471988	 & --		   & -- \\
+%18   & 0.000112763724	 & --		   & -- 
+
+\end{tabular}
+
+\item \textbf{Haar Wavelet:} $\{0,1/2,1/2\}$
+
+\begin{tabular}{llll}
+Scale & 1 dimension      & 2 dimension     & 3 dimension\\ \hline
+1     & 0.707167810      & 0.433012702     & 0.935414347 \\
+2     & 0.500000000	 & 0.216506351     & 0.330718914\\
+3     & 0.353553391	 & 0.108253175     & 0.116926793\\
+4     & 0.250000000	 & 0.0541265877    & 0.0413398642\\
+5     & 0.176776695	 & 0.0270632939    & 0.0146158492\\
+6     & 0.125000000	 & 0.0135316469    & 0.00516748303
+
+\end{tabular}
+
+
+\end{itemize}

@@ -1,0 +1,188 @@
+\secA{Available parameters}
+\label{app-param}
+
+The full list of parameters that can be listed in the input file are
+given here. If not listed, they take the default value given in
+parentheses. Since the order of the parameters in the input file does
+not matter, they are grouped here in logical sections.
+
+\secB*{Input-output related}
+\begin{entry}
+\item[ImageFile (no default assumed)] The filename of the
+  data cube to be analysed.
+\item[flagSubsection \texttt{[false]}] A flag to indicate whether one
+  wants a subsection of the requested image.
+\item[Subsection \texttt{[ [*,*,*] ]}] The requested subsection, which
+  should be specified in the format \texttt{[x1:x2,y1:y2,z1:z2]},
+  where the limits are inclusive. If the full range of a dimension is
+  required, use a \texttt{*}, \eg if you want the full spectral range
+  of a subsection of the image, use \texttt{[30:140,30:140,*]}.
+\item[flagReconExists \texttt{[false]}] A flag to indicate whether the
+  reconstructed array has been saved by a previous run of \duchamp. If
+  set true, the reconstructed array will be read from the file given
+  by \texttt{reconFile}, rather than calculated directly.
+\item[reconFile (no default assumed)] The FITS file that contains the
+  reconstructed array. If \texttt{flagReconExists} is true and this
+  parameter is not defined, the default file searched will be
+  determined by the \atrous\ parameters (see \S\ref{sec-recon}).
+\item[OutFile \texttt{[duchamp-Results.txt]}] The file containing the
+  final list of detections. This also records the list of input
+  parameters.
+\item[SpectraFile \texttt{[duchamp-Spectra.ps]}] The postscript file
+  containing the resulting integrated spectra and images of the
+  detections. 
+\item[flagLog \texttt{[true]}] A flag to indicate whether intermediate
+  detections should be logged.
+\item[LogFile \texttt{[duchamp-Logfile.txt]}] The file in which
+  intermediate detections are logged. These are detections that have
+  not been merged. This is primarily for use in debugging and
+  diagnostic purposes -- normal use of the program will probably not
+  require this.
+\item[flagOutputRecon \texttt{[false]}] A flag to say whether or not
+  to save the reconstructed cube as a FITS file. The filename will be
+  derived according to the naming scheme detailed in
+  Section~\ref{sec-reconIO}.
+\item[flagOutputResid \texttt{[false]}] As for
+  \texttt{flagOutputRecon}, but for the residual array -- the
+  difference between the original cube and the reconstructed cube. The
+  filename will be derived according to the naming scheme detailed in
+  Section~\ref{sec-reconIO}.
+\item[flagVOT \texttt{[false]}] A flag to say whether to create a
+  VOTable file corresponding to the information in
+  \texttt{outfile}. This will be an XML file in the Virtual
+  Observatory VOTable format.
+\item[votFile \texttt{[duchamp-Results.xml]}] The VOTable file with
+  the list of final detections. Some input parameters are also
+  recorded.
+\item[flagKarma \texttt{[false]}] A flag to say whether to create a
+  Karma annotation file corresponding to the information in
+  \texttt{outfile}. This can be used as an overlay for the Karma
+  programs such as \texttt{kvis}.
+\item[karmaFile \texttt{[duchamp-Results.ann]}] The Karma annotation
+  file showing the list of final detections. 
+\item[flagMaps \texttt{[true]}] A flag to say whether to save
+  postscript files showing the 0th moment map of the whole cube
+  (parameter \texttt{momentMap}) and the detection image
+  (\texttt{detectionMap}).
+\item[momentMap \texttt{[duchamp-MomentMap.ps]}] A postscript file
+  containing a map of the 0th moment of the detected sources, as well
+  as pixel and WCS coordinates.
+\item[detectionMap \texttt{[duchamp-DetectionMap.ps]}] A postscript
+  file showing each of the detected objects, coloured in greyscale by
+  the number of channels spanned by each pixel. Also shows pixel and
+  WCS coordinates.
+\end{entry}
+
+\secB*{Modifying the cube}
+\begin{entry}
+\item[flagBlankPix \texttt{[true]}] A flag to say whether to remove
+  BLANK pixels from the analysis -- these are pixels set to some
+  particular value because they fall outside the imaged area.
+\item[blankPixValue \texttt{[-8.00061]}] The value of the BLANK
+  pixels, if this information is not contained in the FITS header (the
+  usual procedure is to obtain this value from the header information
+  -- in which case the value set by this parameter is ignored).
+\item[flagMW \texttt{[false]}] A flag to say whether to ignore
+  channels contaminated by Milky Way (or other) emission -- the
+  searching algorithms will not look at these channels.
+\item[maxMW \texttt{[112]}] The maximum channel number containing
+  ``Milky Way'' emission.
+\item[minMW \texttt{[75]}] The minimum channel number containing
+  ``Milky Way'' emission. Note that the range specified by
+  \texttt{maxMW} and \texttt{minMW} is inclusive.
+\item[flagBaseline \texttt{[false]}] A flag to say whether to remove
+  the baseline from each spectrum in the cube for the purposes of
+  reconstruction and detection.
+\end{entry}
+
+\secB*{Detection related}
+
+\secC*{General detection}
+\begin{entry}
+\item[flagNegative \texttt{[false]}] A flag to indicate that the
+  features being searched for are negative. The cube will be inverted
+  prior to searching.
+\item[snrCut \texttt{[3.]}] The cut-off value for thresholding, in
+  terms of number of $\sigma$ above the mean.
+\item[flagGrowth \texttt{[false]}] A flag indicating whether or not to
+  grow the detected objects to a smaller threshold.
+\item[growthCut \texttt{[2.]}] The smaller threshold using in growing
+  detections. In units of $\sigma$ above the mean.
+\end{entry}
+
+\secC*{\Atrous\ reconstruction}
+\begin{entry}
+\item [flagATrous \texttt{[true]}] A flag indicating whether or not to
+  reconstruct the cube using the \atrous\ wavelet
+  reconstruction. See \S\ref{sec-recon} for details.
+\item[reconDim \texttt{[3]}] The number of dimensions to use in the
+  reconstruction. 1 means reconstruct each spectrum separately, 2
+  means each channel map is done separately, and 3 means do the whole
+  cube in one go.
+\item[scaleMin \texttt{[1]}] The minimum wavelet scale to be used in the
+  reconstruction. A value of 1 means ``use all scales''.
+\item[snrRecon \texttt{[4]}] The thresholding cutoff used in the
+  reconstruction -- only wavelet coefficients this many $\sigma$ above
+  the mean (or greater) are included in the reconstruction. 
+\item[filterCode \texttt{[1]}] The code number of the filter to use in
+  the reconstruction. The options are:
+  \begin{itemize}
+  \item \textbf{1:} B$_3$-spline filter: coefficients = 
+    $(\frac{1}{16}, \frac{1}{4}, \frac{3}{8}, \frac{1}{4}, \frac{1}{16})$
+  \item \textbf{2:} Triangle filter: coefficients = 
+    $(\frac{1}{4}, \frac{1}{2}, \frac{1}{4})$
+  \item \textbf{3:} Haar wavelet: coefficients = 
+    $(0, \frac{1}{2}, \frac{1}{2})$
+  \end{itemize}
+\end{entry}
+
+\secC*{FDR method}
+\begin{entry}
+\item[flagFDR \texttt{[false]}] A flag indicating whether or not to use
+  the False Discovery Rate method in thresholding the pixels.
+\item[alphaFDR \texttt{[0.01]}] The $\alpha$ parameter used in the FDR
+analysis. The average number of false detections, as a fraction of the
+total number, will be less than $\alpha$ (see \S\ref{sec-detection}).
+\end{entry}
+
+\secC*{Merging detections}
+\begin{entry}
+\item[minPix \texttt{[2]}] The minimum number of spatial pixels for a
+  single detection to be counted.
+\item[minChannels \texttt{[3]}] The minimum number of consecutive
+  channels that must be present in a detection.
+\item[flagAdjacent \texttt{[true]}] A flag indicating whether to use
+  the ``adjacent pixel'' criterion to decide whether to merge
+  objects. If not, the next two parameters are used to determine
+  whether objects are within the necessary thresholds.
+\item[threshSpatial \texttt{[3.]}] The maximum allowed minimum spatial
+  separation (in pixels) between two detections for them to be merged
+  into one. Only used if \texttt{flagAdjacent = false}.
+\item[threshVelocity \texttt{[7.]}] The maximum allowed minimum channel
+  separation between two detections for them to be merged into
+  one. 
+\end{entry}
+
+\secC*{Other parameters}
+\begin{entry}
+\item[spectralMethod \texttt{[peak]}] This indicates which method is used
+  to plot the output spectra: \texttt{peak} means plot the spectrum
+  containing the detection's peak pixel; \texttt{sum} means sum the
+  spectra of each detected spatial pixel, and correct for the beam
+  size. Any other choice defaults to \texttt{peak}.
+\item[spectralUnits \texttt{[km/s]}] The user can specify the units of
+  the spectral axis. Assuming the WCS of the FITS file is valid, the
+  spectral axis is transformed into velocity, and put into these units
+  for all output and for calculations such as the integrated flux of a
+  detection.
+\item[drawBorders \texttt{[true]}] A flag indicating whether borders
+  are to be drawn around the detected objects in the moment maps
+  included in the output (see for example Fig.~\ref{fig-spect}).
+\item[drawBlankEdges \texttt{[true]}] A flag indicating whether to
+ draw the dividing line between BLANK and non-BLANK pixels on the
+ 2-dimensional images (see for example Fig.~\ref{fig-moment}).
+\item[verbose \texttt{[true]}] A flag indicating whether to print the
+  progress of computationally-intensive algorithms (such as the
+  searching and merging) to screen.
+\end{entry}
+

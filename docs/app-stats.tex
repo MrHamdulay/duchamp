@@ -1,0 +1,65 @@
+\secA{Robust statistics for a Normal distribution}
+\label{app-madfm}
+
+The Normal, or Gaussian, distribution for mean $\mu$ and standard
+deviation $\sigma$ can be written as 
+\[ 
+f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\ e^{-(x-\mu)^2/2\sigma^2}.
+ \]
+
+When one has a purely Gaussian signal, it is straightforward to
+estimate $\sigma$ by calculating the standard deviation (or rms) of
+the data. However, if there is a small amount of signal present on top
+of Gaussian noise, and one wants to estimate the $\sigma$ for the
+noise, the presence of the large values from the signal can bias the
+estimator to higher values.
+
+An alternative way is to use the median ($m$) and median absolute
+deviation from the median ($s$) to estimate $\mu$ and $\sigma$. The
+median is the middle of the distribution, defined for a continuous
+distribution by
+\[
+\int_{-\infty}^{m} f(x) \diff x = \int_{m}^{\infty} f(x) \diff x.
+\]
+From symmetry, we quickly see that for the continuous Normal
+distribution, $m=\mu$. We consider the case henceforth of $\mu=0$,
+without loss of generality.
+
+To find $s$, we find the distribution of the absolute deviation from
+the median, and then find the median of that distribution. This
+distribution is given by
+\begin{eqnarray*}
+g(x) &= &{\mbox{\rm distribution of }} |x|\\
+     &= &f(x) + f(-x),\ x\ge0\\
+     &= &\sqrt{\frac{2}{\pi\sigma^2}}\, e^{-x^2/2\sigma^2},\ x\ge0.
+\end{eqnarray*}
+So, the median absolute deviation from the median, $s$, is given by
+\[
+\int_{0}^{s} g(x) \diff x = \int_{s}^{\infty} g(x) \diff x.
+\]
+Now, 
+$\int_{0}^{\infty}e^{-x^2/2\sigma^2} \diff x = \sqrt{\pi\sigma^2/2}$, 
+and so 
+$\int_{s}^{\infty} e^{-x^2/2\sigma^2} \diff x =
+\sqrt{\pi\sigma^2/2}-\int_{0}^{s} e^{-\frac{x^2}{2\sigma^2}}\diff x$.
+Hence, to find $s$ we simply solve the following equation (setting
+$\sigma=1$ for simplicity -- equivalent to stating $x$ and $s$ in
+units of $\sigma$):
+\[
+\int_{0}^{s}e^{-x^2/2} \diff x - \sqrt{\pi/8} = 0.
+\]
+This is hard to solve analytically (no nice analytic solution exists
+for the finite integral that I'm aware of), but straightforward to
+solve numerically, yielding the value of $s=0.6744888$. Thus, to
+estimate $\sigma$ for a Normally distributed data set, one can
+calculate $s$, then divide by 0.6744888 (or multiply by 1.4826042) to
+obtain the correct estimator.
+
+Note that this is different to solutions quoted elsewhere,
+specifically in \citet{meyer04:trunc}, where the same robust estimator
+is used but with an incorrect conversion to standard deviation -- they
+assume $\sigma = s\sqrt{\pi/2}$. This, in fact, is the conversion used
+to convert the \emph{mean} absolute deviation from the mean to the
+standard deviation. This means that the cube noise in the \hipass\
+catalogue (their parameter Rms$_{\rm cube}$) should be 18\% larger
+than quoted.

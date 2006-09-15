@@ -1,0 +1,90 @@
+\secA{Example parameter files}
+\label{app-input}
+
+This is what a typical parameter file would look like.
+
+\begin{verbatim}
+imageFile       /DATA/SITAR_1/whi550/cubes/H201_abcde_luther_chop.fits
+logFile         logfile.txt
+outFile         results.txt
+spectraFile     spectra.ps
+flagSubsection  false
+flagOutputRecon false
+flagOutputResid 0
+flagBlankPix    1
+flagMW          1
+minMW           75
+maxMW           112
+minPix          3
+flagGrowth      1
+growthCut       1.5
+flagATrous      0
+scaleMin        1
+snrRecon        4
+flagFDR         1
+alphaFDR        0.1
+numPixPSF       20
+snrCut          3
+threshSpatial   3
+threshVelocity  7
+\end{verbatim}
+
+Note that, as in this example, the flag parameters can be entered as
+strings (true/false) or integers (1/0). Also, note that it is not
+necessary to include all these parameters in the file, only those that
+need to be changed from the defaults (as listed in
+Appendix~\ref{app-param}), which in this case would be very few. A
+minimal parameter file might look like:
+\begin{verbatim}
+imageFile       /DATA/SITAR_1/whi550/cubes/H201_abcde_luther_chop.fits
+flagLog         false
+snrRecon        3
+snrCut          2.5
+minChannels     4
+\end{verbatim}
+This will reconstruct the cube with a lower SNR value than the
+default, select objects at a lower threshold,  with a looser minimum
+channel requirement, and not keep a log of the intermediate
+detections. 
+
+The following page demonstrates how the parameters are presented to
+the user, both on the screen at execution time, and in the output and
+log files. On each line, there is a description on the parameter, the
+relevant parameter name that is used in the input file (if there is
+one that the user can enter), and the value of the parameter being
+used.
+\newpage
+\begin{landscape}
+Typical presentation of parameters in output and log files:  
+\begin{verbatim}
+---- Parameters ----
+Image to be analysed.........................[imageFile]  =  input.fits
+Intermediate Logfile...........................[logFile]  =  duchamp-Logfile.txt
+Final Results file.............................[outFile]  =  duchamp-Results.txt
+Spectrum file..............................[spectraFile]  =  duchamp-Spectra.ps	  
+0th Moment Map...............................[momentMap]  =  duchamp-MomentMap.ps
+Detection Map.............................[detectionMap]  =  duchamp-DetectionMap.ps
+Saving reconstructed cube?.............[flagoutputrecon]  =  false
+Saving residuals from reconstruction?..[flagoutputresid]  =  false
+------
+Searching for Negative features?..........[flagNegative]  =  false
+Fixing Blank Pixels?......................[flagBlankPix]  =  true
+Blank Pixel Value.......................................  =  -8.00061
+Removing Milky Way channels?....................[flagMW]  =  true
+Milky Way Channels.......................[minMW - maxMW]  =  75-112
+Beam Size (pixels)......................................  =  10.1788
+Removing baselines before search?.........[flagBaseline]  =  false
+Minimum # Pixels in a detection.................[minPix]  =  2
+Minimum # Channels in a detection..........[minChannels]  =  3
+Growing objects after detection?............[flagGrowth]  =  false
+Using A Trous reconstruction?...............[flagATrous]  =  true
+Number of dimensions in reconstruction........[reconDim]  =  3
+Minimum scale in reconstruction...............[scaleMin]  =  1
+SNR Threshold within reconstruction...........[snrRecon]  =  4
+Filter being used for reconstruction........[filterCode]  =  1 (B3 spline function)
+Using FDR analysis?............................[flagFDR]  =  false
+SNR Threshold...................................[snrCut]  =  3
+Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
+Max. velocity separation for merging....[threshVelocity]  =  7
+Method of spectral plotting.............[spectralMethod]  =  peak
+\end{verbatim}

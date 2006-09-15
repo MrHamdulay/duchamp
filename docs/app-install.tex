@@ -1,0 +1,99 @@
+\secA{Obtaining and installing \duchamp}
+\label{app-install}
+
+The \duchamp\ web page can be found at the following location:\\
+\href{http://www.atnf.csiro.au/people/Matthew.Whiting/Duchamp}%
+{http://www.atnf.csiro.au/people/Matthew.Whiting/Duchamp}\\
+Here you can find a gzipped tar archive of the source code that can be
+downloaded and extracted, as well as this User's Guide in postscript
+and hyperlinked PDF formats.
+
+To build \duchamp, you will need three main external libraries:
+\textsc{pgplot}, \textsc{cfitsio} and \textsc{wcslib}. If these are not present on your system,
+you can download them from the following locations:
+\begin{itemize}
+\item \textsc{pgplot}:
+\href{http://www.astro.caltech.edu/~tjp/pgplot/}%
+{http://www.astro.caltech.edu/~tjp/pgplot/}
+\item \textsc{cfitsio}:
+\href{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html}%
+{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html}
+\item \textsc{wcslib}:
+\href{http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html}%
+{http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html}
+\end{itemize}
+
+\duchamp\ can be built on Unix/Linux systems by typing (assuming that
+the prompt your terminal provides is a \texttt{> } -- don't type this
+character!):
+\begin{quote}
+\texttt{%
+> ./configure\\
+> make\\
+> make clean (optional -- to remove the object files)}
+\end{quote}
+
+Run in this manner, \texttt{configure} should find all the necessary
+libraries, but if some libraries have been installed in non-standard
+locations, it may fail. In this case, you can specify additional
+directories to look in by giving extra command-line arguments. There
+are separate options for library files (eg. libcpgplot.a) and header
+files (eg. cpgplot.h).
+
+For example, suppose \textsc{wcslib} had been locally installed in
+\texttt{/home/mduchamp/wcslib}. There will then be two libraries
+created that are likely to be in the following subdirectories:
+\texttt{C/} and \texttt{pgsbox/}. Each subdirectory needs to be
+searched for library and header files, so one could build Duchamp by
+typing:
+\begin{quote}
+\texttt{%
+>  ./configure $\backslash$ \\ 
+LIBDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox" 
+$\backslash$\\
+INCDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox"}
+\end{quote}
+And then just run make in the usual fashion:
+\begin{quote}
+\texttt{> make}
+\end{quote}
+
+This will produce the executable \texttt{Duchamp}. You can verify that
+it is running correctly by running the verification shell script:
+\begin{quote}
+\texttt{> VerifyDuchamp.sh}
+\end{quote}
+This will use a dummy FITS image in the \texttt{verification/}
+directory -- this image has some Gaussian random noise, with five
+Gaussian sources present, plus a dummy WCS. The script runs
+Duchamp on this image with three different sets of inputs, and
+compares to known results, looking for differences and reporting
+any. There should be none reported if everything is working correctly.
+
+You can then run \duchamp\ on your own data. This can be done in one
+of two ways. The first is:
+\begin{quote}
+\texttt{> Duchamp -f [FITS file]}
+\end{quote}
+where \texttt{[FITS file]} is the file you wish to search. This method
+simply uses the default values of all parameters.
+
+The second method allows some determination of the parameter values by
+the user. Type:
+\begin{quote}
+\texttt{> Duchamp -p [parameter file]}
+\end{quote}
+where \texttt{[parameterFile]} is a file with the input parameters,
+including the name of the cube you want to search. There are two
+example input files included with the distribution. The smaller one,
+\texttt{InputExample}, shows the typical parameters one might want to
+set. The large one, \texttt{InputComplete}, lists all possible
+parameters that can be entered, and a brief description of them. To
+get going quickly, just replace the "your-file-here" in
+\texttt{InputExample} with your image name, and type
+\begin{quote}
+\texttt{> Duchamp -p InputExample}
+\end{quote}
+
+The following appendices provide details on the individual parameters,
+and show examples of the output files that \duchamp\ produces.

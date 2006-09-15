@@ -1,0 +1,408 @@
+\secA{What \duchamp\ is doing}
+\label{sec-flow}
+
+The execution flow of \duchamp\ is detailed here, indicating the main
+algorithmic steps that are used. The program is written in C/C++ and
+makes use of the \textsc{cfitsio}, \textsc{wcslib} and \textsc{pgplot}
+libraries.
+
+\secB{Image input}
+\label{sec-input}
+
+The cube is read in using basic \textsc{cfitsio} commands, and stored as
+an array in a special C++ class. This class keeps track of the list of
+detected objects, as well as any reconstructed arrays that are made
+(see \S\ref{sec-recon}). The World Coordinate System (WCS) information
+for the cube is also obtained from the FITS header by \textsc{wcslib}
+functions \citep{greisen02, calabretta02}, and this information, in
+the form of a \texttt{wcsprm} structure, is also stored in the same
+class.
+
+A sub-section of an image can be requested via the \texttt{subsection}
+parameter -- this can be a good idea if the cube has very noisy edges,
+which may produce many spurious detections. The generalised form of
+the subsection that is used by \textsc{cfitsio} is
+\texttt{[x1:x2:dx,y1:y2:dy,z1:z2:dz]}, such that the x-coordinates run
+from \texttt{x1} to \texttt{x2} (inclusive), with steps of
+\texttt{dx}. The step value can be omitted (so a subsection of the
+form \texttt{[2:50,2:50,10:1000]} is still valid). \duchamp\ does not
+make use of any step value present in the subsection string, and any
+that are present are removed before the file is opened.
+
+If one wants the full range of a coordinate then replace the range
+with an asterisk, \eg \texttt{[2:50,2:50,*]}. If one wants to use a
+subsection, one must set \texttt{flagSubsection = 1}. A complete
+description of the section syntax can be found at the \textsc{fitsio}
+web site%
+\footnote{%
+\href%
+{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/c/c\_user/node90.html}%
+{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/c/c\_user/node90.html}}.
+
+\secB{Image modification}
+\label{sec-modify}
+
+Several modifications to the cube can be made that improve the
+execution and efficiency of \duchamp\ (their use is optional, governed
+by the relevant flags in the parameter file).
+
+\secC{BLANK pixel removal}
+
+If the imaged area of a cube is non-rectangular, BLANK pixels are used
+to pad it out to a rectangular shape. The value of these pixels is
+given by the FITS header keywords BLANK, BSCALE and BZERO. While these
+pixels make the image a nice shape, they will unnecessarily interfere
+with the processing (as well as taking up needless memory). The first
+step, then, is to trim them from the edge. This is done when the
+parameter \texttt{flagBlankPix=true}. If the above keywords are not
+present, the user can specify the BLANK value by the parameter
+\texttt{blankPixValue}.
+
+Removing BLANK pixels is particularly important for the reconstruction
+step, as lots of BLANK pixels on the edges will smooth out features in
+the wavelet calculation stage. The trimming will also reduce the size
+of the cube's array, speeding up the execution. The amount of trimming
+is recorded, and these pixels are added back in once the
+source-detection is completed (so that quoted pixel positions are
+applicable to the original cube).
+
+Rows and columns are trimmed one at a time until the first non-BLANK
+pixel is reached, so that the image remains rectangular. In practice,
+this means that there will be BLANK pixels left in the trimmed image
+(if the non-BLANK region is non-rectangular). However, these are
+ignored in all further calculations done on the cube.
+
+\secC{Baseline removal}
+
+Second, the user may request the removal of baselines from the
+spectra, via the parameter \texttt{flagBaseline}. This may be
+necessary if there is a strong baseline ripple present, which can
+result in spurious detections at the high points of the ripple. The
+baseline is calculated from a wavelet reconstruction procedure (see
+\S\ref{sec-recon}) that keeps only the two largest scales. This is
+done separately for each spatial pixel (\ie for each spectrum in the
+cube), and the baselines are stored and added back in before any
+output is done. In this way the quoted fluxes and displayed spectra
+are as one would see from the input cube itself -- even though the
+detection (and reconstruction if applicable) is done on the
+baseline-removed cube.
+
+The presence of very strong signals (for instance, masers at several
+hundred Jy) can affect the determination of the baseline, leading to a
+large dip centred on the signal in the baseline-subtracted
+spectrum. To prevent this, the signal is trimmed prior to the
+reconstruction process at some standard threshold (at $8\sigma$ above
+the mean). The baseline determined should thus be representative of
+the true, signal-free baseline. Note that this trimming is only a
+temporary measure which does not affect the source-detection.
+
+\secC{Ignoring bright Milky Way emission}
+
+Finally, a single set of contiguous channels can be ignored -- these
+may exhibit very strong emission, such as that from the Milky Way as
+seen in extragalactic \hi\ cubes (hence the references to ``Milky
+Way'' in relation to this task -- apologies to Galactic
+astronomers!). Such dominant channels will produce many detections
+that are unnecessary, uninteresting (if one is interested in
+extragalactic \hi) and large (in size and hence in memory usage), and
+so will slow the program down and detract from the interesting
+detections. 
+
+The use of this feature is controlled by the \texttt{flagMW}
+parameter, and the exact channels concerned are able to be set by the
+user (using \texttt{maxMW} and \texttt{minMW} -- these give an
+inclusive range of channels). When employed, these channels are
+ignored for the searching, and the scaling of the spectral output (see
+Fig.~\ref{fig-spect}) will not take them into account. They will be
+present in the reconstructed array, however, and so will be included
+in the saved FITS file (see \S\ref{sec-reconIO}). When the final
+spectra are plotted, the range of channels covered by these parameters
+is indicated by a green hashed box.
+
+\secB{Image reconstruction}
+\label{sec-recon}
+
+The user can direct \duchamp\ to reconstruct the data cube using the
+\atrous\ wavelet procedure. A good description of the procedure can be
+found in \citet{starck02:book}. The reconstruction is an effective way
+of removing a lot of the noise in the image, allowing one to search
+reliably to fainter levels, and reducing the number of spurious
+detections. This is an optional step, but one that greatly enhances
+the source-detection process, with the payoff that it can be
+relatively time- and memory-intensive.
+
+\secC{Algorithm}
+
+The steps in the \atrous\ reconstruction are as follows:
+\begin{enumerate}
+\item Set the reconstructed array to 0 everywhere.
+\item The input array is discretely convolved with a given filter
+  function. This is determined from the parameter file via the
+  \texttt{filterCode} parameter -- see Appendix~\ref{app-param} for
+  details on the filters available.
+\item The wavelet coefficients are calculated by taking the difference
+  between the convolved array and the input array.
+\item If the wavelet coefficients at a given point are above the
+  requested threshold (given by \texttt{snrRecon} as the number of
+  $\sigma$ above the mean and adjusted to the current scale -- see
+  Appendix~\ref{app-scaling}), add these to the reconstructed array.
+\item The separation of the filter coefficients is doubled. (Note that
+  this step provides the name of the procedure\footnote{\atrous\ means
+  ``with holes'' in French.}, as gaps or holes are created in the
+  filter coverage.)
+\item The procedure is repeated from step 2, using the convolved array
+  as the input array.
+\item Continue until the required maximum number of scales is reached.
+\item Add the final smoothed (\ie convolved) array to the
+  reconstructed array. This provides the ``DC offset'', as each of the
+  wavelet coefficient arrays will have zero mean.
+\end{enumerate}
+
+The reconstruction has at least two iterations. The first iteration
+makes a first pass at the wavelet reconstruction (the process outlined
+in the 8 stages above), but the residual array will inevitably have
+some structure still in it, so the wavelet filtering is done on the
+residual, and any significant wavelet terms are added to the final
+reconstruction. This step is repeated until the change in the $\sigma$
+of the background is less than some fiducial amount.
+
+It is important to note that the \atrous\ decomposition is an example
+of a ``redundant'' transformation. If no thresholding is performed,
+the sum of all the wavelet coefficient arrays and the final smoothed
+array is identical to the input array. The thresholding thus removes
+only the unwanted structure in the array.
+
+Note that any BLANK pixels that are still in the cube will not be
+altered by the reconstruction -- they will be left as BLANK so that
+the shape of the valid part of the cube is preserved.
+
+\secC{Note on Statistics}
+
+The correct calculation of the reconstructed array needs good
+estimators of the underlying mean and standard deviation of the
+background noise distribution. These statistics are estimated using
+robust methods, to avoid corruption by strong outlying points. The
+mean of the distribution is actually estimated by the median, while
+the median absolute deviation from the median (MADFM) is calculated
+and corrected assuming Gaussianity to estimate the underlying standard
+deviation $\sigma$. The Gaussianity (or Normality) assumption is
+critical, as the MADFM does not give the same value as the usual rms
+or standard deviation value -- for a normal distribution
+$N(\mu,\sigma)$ we find MADFM$=0.6744888\sigma$. Since this ratio is
+corrected for, the user need only think in the usual multiples of
+$\sigma$ when setting \texttt{snrRecon}. See Appendix~\ref{app-madfm}
+for a derivation of this value.
+
+When thresholding the different wavelet scales, the value of $\sigma$
+as measured from the wavelet array needs to be scaled to account for
+the increased amount of correlation between neighbouring pixels (due
+to the convolution). See Appendix~\ref{app-scaling} for details on
+this scaling.
+
+\secC{User control of reconstruction parameters}
+
+The most important parameter for the user to select in relation to the
+reconstruction is the threshold for each wavelet array. This is set
+using the \texttt{snrRecon} parameter, and is given as a multiple of
+the rms (estimated by the MADFM) above the mean (which for the wavelet
+arrays should be approximately zero). There are several other
+parameters that can be altered as well that affect the outcome of the
+reconstruction.
+
+By default, the cube is reconstructed in three dimensions, using a
+3-dimensional filter and 3-dimensional convolution. This can be
+altered, however, using the parameter \texttt{reconDim}. If set to 1,
+this means the cube is reconstructed by considering each spectrum
+separately, whereas \texttt{reconDim=2} will mean the cube is
+reconstructed by doing each channel map separately. The merits of
+these choices are discussed in \S\ref{sec-notes}, but it should be
+noted that a 2-dimensional reconstruction can be susceptible to edge
+effects if the spatial shape is not rectangular.
+
+The user can also select the minimum scale to be used in the
+reconstruction. The first scale exhibits the highest frequency
+variations, and so ignoring this one can sometimes be beneficial in
+removing excess noise. The default is to use all scales
+(\texttt{minscale = 1}).
+
+Finally, the filter that is used for the convolution can be selected
+by using \texttt{filterCode} and the relevant code number -- the
+choices are listed in Appendix~\ref{app-param}. A larger filter will
+give a better reconstruction, but take longer and use more memory when
+executing. When multi-dimensional reconstruction is selected, this
+filter is used to construct a 2- or 3-dimensional equivalent.
+
+\secB{Input/Output of reconstructed arrays}
+\label{sec-reconIO}
+
+The reconstruction stage can be relatively time-consuming,
+particularly for large cubes and reconstructions in 3-D. To get around
+this, \duchamp\ provides a shortcut to allow users to perform multiple
+searches (\eg with different thresholds) on the same reconstruction
+without calculating the reconstruction each time.
+
+The first step is to choose to save the reconstructed array as a FITS
+file by setting \texttt{flagOutputRecon = true}. The file will be
+saved in the same directory as the input image, so the user needs to
+have write permissions for that directory.
+
+The filename will be derived from the input filename, with extra
+information detailing the reconstruction that has been done. For
+example, suppose \texttt{image.fits} has been reconstructed using a
+3-dimensional reconstruction with filter 2, thresholded at $4\sigma$
+using all scales. The output filename will then be
+\texttt{image.RECON-3-2-4-1.fits} (\ie it uses the four parameters
+relevant for the \atrous\ reconstruction as listed in
+Appendix~\ref{app-param}). The new FITS file will also have these
+parameters as header keywords. If a subsection of the input image has
+been used (see \S\ref{sec-input}), the format of the output filename
+will be \texttt{image.sub.RECON-3-2-4-1.fits}, and the subsection that
+has been used is also stored in the FITS header.
+
+Likewise, the residual image, defined as the difference between the
+input and reconstructed arrays, can also be saved in the same manner
+by setting \texttt{flagOutputResid = true}. Its filename will be the
+same as above, with \texttt{RESID} replacing \texttt{RECON}.
+
+If a reconstructed image has been saved, it can be read in and used
+instead of redoing the reconstruction. To do so, the user should set
+\texttt{flagReconExists = true}. The user can indicate the name of the
+reconstructed FITS file using the \texttt{reconFile} parameter, or, if
+this is not specified, \duchamp\ searches for the file with the name
+as defined above. If the file is not found, the reconstruction is
+performed as normal. Note that to do this, the user needs to set
+\texttt{flagAtrous = true} (obviously, if this is \texttt{false}, the
+reconstruction is not needed).
+
+\secB{Searching the image}
+\label{sec-detection}
+
+The image is searched for detections in two ways: spectrally (a
+1-dimensional search in the spectrum in each spatial pixel), and
+spatially (a 2-dimensional search in the spatial image in each
+channel). In both cases, the algorithm finds connected pixels that are
+above the user-specified threshold. In the case of the spatial image
+search, the algorithm of \citet{lutz80} is used to raster scan through
+the image and connect groups of pixels on neighbouring rows.
+
+Note that this algorithm cannot be applied directly to a 3-dimensional
+case, as it requires that objects are completely nested in a row: that
+is, if you are scanning along a row, and one object finishes and
+another starts, you know that you will not get back to the first one
+(if at all) until the second is completely finished for that
+row. Three-dimensional data does not have this property, which is why
+we break up the searching into 1- and 2-dimensional cases.
+
+The determination of the threshold is done in one of two ways. The
+first way is a simple sigma-clipping, where a threshold is set at a
+fixed number $n$ of standard deviations above the mean, and pixels
+above this threshold are flagged as detected. The value of $n$ is set
+with the parameter \texttt{snrCut}. As before, the value of the
+standard deviation is estimated by the MADFM, and corrected by the
+ratio derived in Appendix~\ref{app-madfm}.
+
+The second method uses the False Discovery Rate (FDR) technique
+\citep{miller01,hopkins02}, whose basis we briefly detail here. The
+false discovery rate (given by the number of false detections divided
+by the total number of detections) is fixed at a certain value
+$\alpha$ (\eg $\alpha=0.05$ implies 5\% of detections are false
+positives). In practice, an $\alpha$ value is chosen, and the ensemble
+average FDR (\ie $\langle FDR \rangle$) when the method is used will
+be less than $\alpha$.  One calculates $p$ -- the probability,
+assuming the null hypothesis is true, of obtaining a test statistic as
+extreme as the pixel value (the observed test statistic) -- for each
+pixel, and sorts them in increasing order. One then calculates $d$
+where
+\[
+d = \max_j \left\{ j : P_j < \frac{j\alpha}{c_N N} \right\},
+\]
+and then rejects all hypotheses whose $p$-values are less than or
+equal to $P_d$. (So a $P_i<P_d$ will be rejected even if $P_i \geq
+j\alpha/c_N N$.) Note that ``reject hypothesis'' here means ``accept
+the pixel as an object pixel'' (\ie we are rejecting the null
+hypothesis that the pixel belongs to the background).
+
+The $c_N$ values here are normalisation constants that depend on the
+correlated nature of the pixel values. If all the pixels are
+uncorrelated, then $c_N=1$. If $N$ pixels are correlated, then their
+tests will be dependent on each other, and so $c_N = \sum_{i=1}^N
+i^{-1}$. \citet{hopkins02} consider real radio data, where the pixels
+are correlated over the beam. In this case the sum is made over the
+$N$ pixels that make up the beam. The value of $N$ is calculated from
+the FITS header (if the correct keywords -- BMAJ, BMIN -- are not
+present, a default value of 10 pixels is assumed).
+
+The theory behind the FDR method implies a direct connection between
+the choice of $\alpha$ and the fraction of detections that will be
+false positives. However, due to the merging process, this direct
+connection is lost when looking at the final number of detections --
+see discussion in \S\ref{sec-notes}. The effect is that the number of
+false detections will be less than indicated by the $\alpha$ value
+used.
+
+If a reconstruction has been made, the residuals (defined in the sense
+of original $-$ reconstruction) are used to estimate the noise
+parameters of the cube. Otherwise they are estimated directly from the
+cube itself. In both cases, robust estimators are used as described
+above.
+
+Detections must have a minimum number of pixels to be counted. This
+minimum number is given by the input parameters \texttt{minPix} (for
+2-dimensional searches) and \texttt{minChannels} (for 1-dimensional
+searches).
+
+The search only looks for positive features. If one is interested
+instead in negative features (such as absorption lines), set the
+parameter \texttt{flagNegative = true}. This will invert the cube (\ie
+multiply all pixels by $-1$) prior to the search, and then re-invert
+the cube (and the fluxes of any detections) after searching is
+complete. All outputs are done in the same manner as normal, so that
+fluxes of detections will be negative.
+
+\secB{Merging detected objects}
+\label{sec-merger}
+
+The searching step produces a list of detected objects that will have
+many repeated detections of a given object -- for instance, spectral
+detections in adjacent pixels of the same object and/or spatial
+detections in neighbouring channels. These are then combined in an
+algorithm that matches all objects judged to be ``close'', according
+to one of two criteria.
+
+One criterion is to define two thresholds -- one spatial and one in
+velocity -- and say that two objects should be merged if there is at
+least one pair of pixels that lie within these threshold distances of
+each other. These thresholds are specified by the parameters
+\texttt{threshSpatial} and \texttt{threshVelocity} (in units of pixels
+and channels respectively).
+
+Alternatively, the spatial requirement can be changed to say that
+there must be a pair of pixels that are \emph{adjacent} -- a stricter,
+but perhaps more realistic requirement, particularly when the spatial
+pixels have a large angular size (as is the case for \hi\
+surveys). This method can be selected by setting the parameter
+\texttt{flagAdjacent} to 1 (\ie \texttt{true}) in the parameter
+file. The velocity thresholding is done in the same way as the first
+option.
+
+Once the detections have been merged, they may be ``grown''. This is a
+process of increasing the size of the detection by adding adjacent
+pixels that are above some secondary threshold. This threshold is
+lower than the one used for the initial detection, but above the noise
+level, so that faint pixels are only detected when they are close to a
+bright pixel. The value of this threshold is a possible input
+parameter (\texttt{growthCut}), with a default value of
+$1.5\sigma$. The use of the growth algorithm is controlled by the
+\texttt{flagGrowth} parameter -- the default value of which is
+\texttt{false}. If the detections are grown, they are sent through the
+merging algorithm a second time, to pick up any detections that now
+overlap or have grown over each other.
+
+Finally, to be accepted, the detections must span \emph{both} a
+minimum number of channels (to remove any spurious single-channel
+spikes that may be present), and a minimum number of spatial
+pixels. These numbers, as for the original detection step, are set
+with the \texttt{minChannels} and \texttt{minPix} parameters. The
+channel requirement means there must be at least one set of
+\texttt{minChannels} consecutive channels in the source for it to be
+accepted.

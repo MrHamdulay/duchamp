@@ -1,0 +1,123 @@
+\secA{Introduction and getting going quickly}
+
+This document provides a user's guide to \duchamp, an object-finder
+for use on spectral-line data cubes. The basic execution of \duchamp\
+is to read in a FITS data cube, find sources in the cube, and produce
+a text file of positions, velocities and fluxes of the detections, as
+well as a postscript file of the spectra of each detection.
+
+So, you have a FITS cube, and you want to find the sources in it. What
+do you do? First, you need to get \duchamp: there are instructions in
+Appendix~\ref{app-install} for obtaining and installing it. Once you
+have it running, the first step is to make an input file that contains
+the list of parameters. Brief and detailed examples are shown in
+Appendix~\ref{app-input}. This file provides the input file name, the
+various output files, and defines various parameters that control the
+execution.
+
+The standard way to run \duchamp\ is by the command
+\begin{quote}
+\texttt{Duchamp -p [parameter file]}
+\end{quote}
+replacing \texttt{[parameter file]} with the name of the file listing
+the parameters. 
+
+An even easier way is to use the default values for all parameters
+(these are given in Appendix~\ref{app-param} and in the file
+InputComplete included in the distribution directory) and use the
+syntax
+\begin{quote}
+\texttt{Duchamp -f [FITS file]}
+\end{quote}
+where \texttt{[FITS file]} is the file you wish to search. 
+
+In either case, the program will then work away and give you the list
+of detections and their spectra. The program execution is summarised
+below, and detailed in \S\ref{sec-flow}. Information on inputs is in
+\S\ref{sec-param} and Appendix~\ref{app-param}, and descriptions of
+the output is in \S\ref{sec-output}.
+
+\secB{A summary of the execution steps}
+
+The basic flow of the program is summarised here -- all steps are
+discussed in more detail in the following sections.
+\begin{enumerate}
+\item If the \texttt{-p} option is used, the parameter file given on
+  the command line is read in, and the parameters absorbed.
+\item The FITS image is located and read in to memory.
+\item If requested, a FITS image with a previously reconstructed array
+  is read in.
+\item If requested, BLANK pixels are trimmed from the edges, and
+  the baseline of each spectrum is removed.
+\item If the reconstruction method is requested, and the reconstructed
+  array has not been read in at Step 3 above, the cube is
+  reconstructed using the \atrous\ wavelet method.
+\item Searching for objects then takes place, using the requested
+  thresholding method.
+\item The list of objects is condensed by merging neighbouring objects
+  and removing those deemed unacceptable.
+\item The baselines and trimmed pixels are replaced prior to output.
+\item The details of the detections are written to screen and to the
+  requested output file.
+\item Maps showing the spatial location of the detections are written.
+\item The integrated spectra of each detection are written to a
+  postscript file. 
+\item If requested, the reconstructed array can be written to a new
+  FITS file.
+\end{enumerate}
+
+\secB{Guide to terminology and conventions}
+
+First, a brief note on the use of terminology in this guide. \duchamp\
+is designed to work on FITS ``cubes''. These are FITS\footnote{FITS is
+the Flexible Image Transport System -- see \citet{hanisch01} or
+websites such as
+\href{http://fits.cv.nrao.edu/FITS.html}{http://fits.cv.nrao.edu/FITS.html}
+for details.} image arrays with three dimensions -- they are assumed
+to have the following form: the first two dimensions (referred to as
+$x$ and $y$) are spatial directions (that is, relating to the position
+on the sky), while the third dimension, $z$, is the spectral
+direction, which can correspond to frequency, wavelength, or
+velocity. The three dimensional analogue of pixels are ``voxels'', or
+volume cells -- a voxel is defined by a unique $(x,y,z)$ location and
+has a unique flux or intensity value associated with it.
+
+Note that it is possible for the FITS file to have more than three
+dimensions (for instance, a fourth dimension representing Stokes
+parameters). \duchamp\ assumes that these extra dimensions occur
+\emph{after} the spatial and spectral ones -- the data will not be
+read correctly if the order is different! Herein, we discuss the data
+in terms of the three basic dimensions, but you should be aware it is
+possible to have more than three.
+
+Each spatial pixel (a given $(x,y)$ coordinate) can be said to be a
+single spectrum, while a slice through the cube perpendicular to the
+spectral direction at a given $z$-value is a single channel (the 2-D
+image is a channel map).
+
+Detection involves locating a contiguous group of voxels with fluxes
+above a certain threshold. \duchamp\ makes no assumptions as to the
+size or shape of the detected features, other than having
+user-selected minimum size criteria.
+
+Features that are detected are assumed to be positive. The user can
+choose to search for negative features by setting an input parameter
+-- this inverts the cube prior to the search (see
+\S\ref{sec-detection} for details).
+
+Note that it is possible to run \duchamp\ on a two-dimensional image
+(\ie one with no frequency or velocity information), or indeed a
+one-dimensional array, and many of the features of the program will
+work fine. The focus, however, is on object detection in three
+dimensions.
+
+\secB{Why \duchamp?}
+
+Well, it's important for a program to have a name, and the initial
+working title of \emph{cubefind} was somewhat uninspiring. I wanted to
+avoid the classic astronomical approach of designing a cute acronym,
+and since it is designed to work on cubes, I looked at naming it after
+a cubist. \emph{Picasso}, sadly, was already taken \citep{minchin99},
+so I settled on naming it after Marcel Duchamp, another cubist, but
+also one of the first artists to work with ``found objects''.
+
