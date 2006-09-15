@@ -214,13 +214,14 @@ void FitsHeader::fixUnits(Param &par)
   // If flux is per beam, trim the /beam from the flux units and multiply 
   //  by the spectral units.
   // Otherwise, just muliply by the spectral units.
+  std::cerr << "%%%%%%%%% " << this->fluxUnits << std::endl;
   if(this->fluxUnits.size()>0){
     if(this->fluxUnits.substr(this->fluxUnits.size()-5,
 			      this->fluxUnits.size()   ) == "/beam"){
       this->intFluxUnits = this->fluxUnits.substr(0,this->fluxUnits.size()-5)
 	+" " +this->spectralUnits;
     }
-    else this->intFluxUnits = fluxUnits + " " + this->spectralUnits;
+    else this->intFluxUnits = this->fluxUnits + " " + this->spectralUnits;
   }
 
 }
@@ -651,7 +652,8 @@ void Param::parseSubsection()
   if(x!="*") {
     int x1,x2,dx;
     int a = x.find(':');  // first occurence of ':' in x-subsection string
-    int b = x.find(':',a+1); // location of second ':' -- will be -1 if there is no second occurence.
+    int b = x.find(':',a+1); // location of second ':'
+                             //   will be -1 if there is no second occurence.
     x1 = atoi( x.substr(0,a).c_str() ); // minimum x in subsection
     this->xSubOffset = x1 - 1;
     if(b>0){ // there is a dx component
@@ -664,7 +666,8 @@ void Param::parseSubsection()
   if(y!="*") {
     int y1,y2,dy;
     int a = y.find(':');  // first occurence of ':' in y-subsection string
-    int b = y.find(':',a+1); // location of second ':' -- will be -1 if there is no second occurence.
+    int b = y.find(':',a+1); // location of second ':'
+                             //    will be -1 if there is no second occurence.
     y1 = atoi( y.substr(0,a).c_str() ); // minimum y in subsection
     this->ySubOffset = y1 - 1;
     if(b>0){ // there is a dy component
@@ -677,7 +680,8 @@ void Param::parseSubsection()
   if(z!="*") {
     int z1,z2,dz;
     int a = z.find(':');  // first occurence of ':' in z-subsection string
-    int b = z.find(':',a+1); // location of second ':' -- will be -1 if there is no second occurence.
+    int b = z.find(':',a+1); // location of second ':'
+                             //   will be -1 if there is no second occurence.
     z1 = atoi( z.substr(0,a).c_str() ); // minimum z in subsection
     this->zSubOffset = z1 - 1;
     if(b>0){ // there is a dz component
@@ -714,7 +718,8 @@ void Param::copyHeaderInfo(FitsHeader &head)
   this->blankKeyword  = head.getBlankKeyword();
   this->bscaleKeyword = head.getBscaleKeyword();
   this->bzeroKeyword  = head.getBzeroKeyword();
-  this->blankPixValue = this->blankKeyword * this->bscaleKeyword + this->bzeroKeyword;
+  this->blankPixValue = this->blankKeyword * this->bscaleKeyword + 
+    this->bzeroKeyword;
 
   this->numPixBeam    = head.getBeamSize();
 }
@@ -725,7 +730,8 @@ bool Param::isBlank(float &value)
    *  Param::isBlank(float)
    *   Tests whether the value passed as the argument is BLANK or not.
    *   If flagBlankPix is false, return false.
-   *   Otherwise, compare to the relevant FITS keywords, using integer comparison.
+   *   Otherwise, compare to the relevant FITS keywords, using integer 
+   *     comparison.
    *   Return a bool.
    */
 

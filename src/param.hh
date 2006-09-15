@@ -289,6 +289,11 @@ public:
   bool    isWCS(){return wcsIsGood;};
   int     getNWCS(){return nwcs;};
   void    setNWCS(int i){nwcs=i;};
+  int     readHeaderInfo(string fname, Param &par);
+  int     defineWCS(string fname, Param &par);
+  int     getBUNIT(string fname);
+  int     getBLANKinfo(string fname, Param &par);
+  int     getBeamInfo(string fname);
   string  getSpectralUnits(){return spectralUnits;};
   void    setSpectralUnits(string s){spectralUnits=s;};
   string  getFluxUnits(){return fluxUnits;};
