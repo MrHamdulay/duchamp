@@ -59,6 +59,7 @@ wcslib -- http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html
 
 Duchamp can be built on Unix systems by typing (note that the terminal
 prompt here is represented by > -- don't type this character!):
+
  >  ./configure
  >  make
  >  make clean (optional -- to remove the object files from the src
@@ -70,26 +71,32 @@ locations, you can specify additional directories to look in. There
 are separate options for library files (eg. libcpgplot.a) and header
 files (eg. cpgplot.h).
 
-For example, if wcslib had been installed in /home/mduchamp/wcslib,
-there are two libraries that are likely to be in separate
-subdirectories: C/ and pgsbox/. Each subdirectory needs to be searched
-for library and header files, so one could build Duchamp by typing:
- >  ./configure LIBDIRS="/home/mduchamp/wcslib/C
-/home/mduchamp/wcslib/pgsbox" INCDIRS="/home/mduchamp/wcslib/C
-/home/mduchamp/wcslib/pgsbox"
+For example, suppose wcslib had been locally installed in
+/home/mduchamp/wcslib. There will then be two libraries created that
+are likely to be in separate subdirectories: C/ and pgsbox/. Each
+subdirectory needs to be searched for library and header files, so one
+could build Duchamp by typing:
+
+ >  ./configure \
+LIBDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox" \
+INCDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox"
 And then just run make in the usual fashion:
  >  make
 
 There is a script included in the distribution that allows you to make
-sure Duchamp is running correctly. It will compile and run a bit of
-C++ code in the directory verification/ that creates a dummy FITS
-image. It then runs Duchamp on this image with three different sets of
-inputs, and compares to known results, looking for differences and
-reporting any. There should be none reported if everything is working
+sure Duchamp is running correctly. It will use a dummy FITS image in
+the verification/ directory -- this image has some Gaussian random
+noise, with five Gaussian sources present, plus a dummy WCS. The
+script runs Duchamp on this image with three different sets of inputs,
+and compares to known results, looking for differences and reporting
+any. There should be none reported if everything is working
 correctly. To run, enter the command
+
  >  VerifyDuchamp.sh
-You can also use the dummy image for your own testing if you like (it 
-is a cube with five Gaussian-profile sources on Gaussian noise).
+
+You can also use the dummy image for your own testing if you like (for
+instance, testing different thresholds to get a feel for how the
+program works).
 
 
 Using Duchamp

@@ -1,15 +1,5 @@
 #!/bin/csh
 
-#if( -e verification/verificationCube.fits ) then
-#    echo "Test FITS file exists. Moving to testing."
-#else
-#    echo "Test FITS file has not been created. Doing so now."
-#    make createTestImage
-#    createTestImage.x
-#    rm -f createTestImage.x
-#    echo "Done. Moving to testing."
-#endif
-
 echo " "
 echo "Running the first Duchamp test:"
 echo "  [This is a simple sigma-clipping search]"

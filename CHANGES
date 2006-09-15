@@ -3,19 +3,17 @@ Duchamp version 1.0.5 (2006/09/06)
 
 Since version 1.0, there have been a range of mostly minor
 changes. These are generally bug-fixes, thanks to feedback from a
-number of users. Here is a summary of the changes since version 1.0:
+number of users, as well as a few extra features. 
 
-* Fixed a bug that meant 4-dimensional FITS files were generating
-  memory faults, both with the allocation of the necessary arrays and
-  with the WCS-related calculations.
+Here is a summary of the changes since version 1.0:
 
-* When the FITS file does not have a rest frequency defined, there is
-  no way to transform the frequency axis into velocity. In this case,
-  the spectral axis is left as frequency, and put into units of MHz.
+USER INTERFACE:
 
 * The user is now able to enter the value of flag parameters in the
   parameter file as strings, as well as integers (so one can enter
   true or 1 to give the same result).
+
+GRAPHICAL OUTPUT:
 
 * Added a new function that draws the edge of the blank region on the
   maps and image cutouts. There is a new flag parameter --
@@ -31,24 +29,16 @@ number of users. Here is a summary of the changes since version 1.0:
   degrees). (This is a change from the previous standard length of 15
   arcmin.)
 
-* Several bugs related to the blank-pixels were dealt with.
-  The correct values were not propagating through correctly, meaning
-  that the default values were being used. Also, there was the
-  potential for blank pixels to be detected when the FDR method was
-  used. Finally, the image cutout displays occasionally did not
-  obscure the blank pixels. All these problems should be fixed now.
-
-* The FDR setup routine was occasionally failing with a segmentation
-  fault, due to it accessing unallocated memory. This has been fixed. 
-
-* Fixed bugs that affected the way 2D images (rather than 3D cubes)
-  were dealt with. The minChannels test failed when minChannels=0.
-
 * The zoomed spectrum had its flux scale determined by all points in
   the zoom box,including those flagged by the Milky Way (MW)
   range. This has been fixed so that any MW channels will not affect
   the flux scaling, potentially improving the appearance of objects
   detected close in velocity to strong MW emission or absorption.
+
+* Improved Karma Annotation file output, so that files without good 
+  WCS are dealt with appropriately.
+
+TEXT-BASED OUTPUT:
 
 * The position resolution in the IAU-format names has been increased,
   so that distinct objects close to one another are more readily
@@ -62,6 +52,31 @@ number of users. Here is a summary of the changes since version 1.0:
 
 * Improved error and warning reporting, so that the formatting and
   presentation of information is clearer.
+
+FITS I/O RELATED:
+
+* Fixed a bug that meant 4-dimensional FITS files were generating
+  memory faults, both with the allocation of the necessary arrays and
+  with the WCS-related calculations.
+
+* When the FITS file does not have a rest frequency defined, there is
+  no way to transform the frequency axis into velocity. In this case,
+  the spectral axis is left as frequency, and put into units of MHz.
+
+OTHER BUG-FIXING:
+
+* Several bugs related to the blank-pixels were dealt with.
+  The correct values were not propagating through correctly, meaning
+  that the default values were being used. Also, there was the
+  potential for blank pixels to be detected when the FDR method was
+  used. Finally, the image cutout displays occasionally did not
+  obscure the blank pixels. All these problems should be fixed now.
+
+* The FDR setup routine was occasionally failing with a segmentation
+  fault, due to it accessing unallocated memory. This has been fixed. 
+
+* Fixed bugs that affected the way 2D images (rather than 3D cubes)
+  were dealt with. The minChannels test failed when minChannels=0.
 
 * Other minor fixes to the code, to improve its structure and
   robustness.
