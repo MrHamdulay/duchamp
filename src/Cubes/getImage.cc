@@ -20,13 +20,11 @@ int Cube::getCube(string fname)
   /**
    * Cube::getCube(string )
    *  Read in a cube from the file fname (assumed to be in FITS format).
-   *  Function reads in the following:
-   *      - axis dimensions
-   *      - pixel array
-   *      - WCS information (in form of WCSLIB wcsprm structure)
-   *      - Header keywords: BUNIT (brightness unit), 
-   *                         BLANK, BZERO, BSCALE (for blank pixel value)
-   *                         BMAJ, BMIN, CDELT1, CDELT2 (for beam size)
+   *  Function is a front end to the I/O functions in the FitsIO/ directory.
+   *  This function will check that the file exists, report the dimensions
+   *   and then get other functions to read the data, WCS, and necessary 
+   *   header keywords.
+   *  Returns SUCCESS/FAILURE.
    */
 
   long nelements;
@@ -34,12 +32,15 @@ int Cube::getCube(string fname)
   int status = 0,  nkeys;  /* MUST initialize status */
   fitsfile *fptr;         
 
+  // Open the FITS file -- make sure it exists
   status = 0;
   if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
     fits_report_error(stderr, status);
     return FAILURE;
   }
 
+  // Read the size information -- number and lengths of all axes.
+  // Just use this for reporting purposes.
   status = 0;
   if(fits_get_img_dim(fptr, &numAxes, &status)){
     fits_report_error(stderr, status);
@@ -52,6 +53,8 @@ int Cube::getCube(string fname)
     fits_report_error(stderr, status);
     return FAILURE;
   }
+  
+  // Close the FITS file.
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
@@ -59,6 +62,7 @@ int Cube::getCube(string fname)
     fits_report_error(stderr, status);
   }
 
+  // Report the size of the FITS file
   if(numAxes<=3)  std::cout << "Dimensions of FITS file: ";
   int dim = 0;
   std::cout << dimAxes[dim];
@@ -67,11 +71,15 @@ int Cube::getCube(string fname)
 
   delete [] dimAxes;
 
+  // Get the WCS information
   this->head.defineWCS(fname, this->par);
 
   if(!this->head.isWCS()) 
     duchampWarning("getCube","WCS is not good enough to be used.\n");
 
+  // Get the data array from the FITS file.
+  // Report the dimensions of the data array that was read (this can be
+  //   different to the full FITS array).
   std::cerr << "Reading data ... ";
   this->getFITSdata(fname);
   std::cerr << "Done. Data array has dimensions: ";
@@ -79,6 +87,7 @@ int Cube::getCube(string fname)
 	    << this->axisDim[1] <<"x" 
 	    << this->axisDim[2] << std::endl;
 
+  // Read the necessary header information, and copy some of it into the Param.
   this->head.readHeaderInfo(fname, this->par);
   this->par.copyHeaderInfo(this->head);
 

@@ -12,14 +12,22 @@
 
 int FitsHeader::readHeaderInfo(string fname, Param &par)
 {
+  /** 
+   * FitsHeader::readHeaderInfo
+   *  A simple front-end function to the three header access
+   *   functions defined below.
+   *
+   */
 
-  this->getBUNIT(fname);
-  
-  this->getBLANKinfo(fname, par);
-  
-  this->getBeamInfo(fname);
+  int returnValue = SUCCESS;
 
-  return SUCCESS;
+  if(this->getBUNIT(fname)==FAILURE) returnValue=FAILURE;
+  
+  if(this->getBLANKinfo(fname, par)==FAILURE) returnValue=FAILURE;
+  
+  if(this->getBeamInfo(fname)==FAILURE) returnValue=FAILURE;
+
+  return returnValue;
 }
 
 
@@ -36,11 +44,15 @@ int FitsHeader::getBUNIT(string fname)
   char *comment = new char[FLEN_COMMENT];
   char *unit = new char[FLEN_VALUE];
   int returnStatus = 0, status = 0;
+
+  // Open the FITS file
   status = 0;
   if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
     fits_report_error(stderr, status);
     return FAILURE;
   }
+
+  // Read the BUNIT keyword, and translate to standard unit format if needs be
   fits_read_key(fptr, TSTRING, "BUNIT", unit, comment, &returnStatus);
   if (returnStatus){
     duchampWarning("getBUNIT","Error reading BUNIT keyword: ");
@@ -50,11 +62,12 @@ int FitsHeader::getBUNIT(string fname)
     wcsutrn(0,unit);
     this->fluxUnits = unit;
   }
-  
+
+  // Close the FITS file
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    duchampWarning("getCube","Error closing file: ");
+    duchampWarning("getBUNIT","Error closing file: ");
     fits_report_error(stderr, status);
   }
 
@@ -79,15 +92,24 @@ int FitsHeader::getBLANKinfo(string fname, Param &par)
    *            the bzero (offset) is 0.
    */
   int returnStatus = 0, status = 0;
-  if(par.getFlagBlankPix()){
+  if(par.getFlagBlankPix()){  // Only do this if we want the blank pix value
+
     fitsfile *fptr;         
     char *comment = new char[FLEN_COMMENT];
     int blank;
     float bscale, bzero;
+    
+    // Open the FITS file.
     if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
       fits_report_error(stderr, status);
       return FAILURE;
     }
+
+    // Read the BLANK keyword. 
+    //  If this isn't present, then report the error, and set to 
+    //     the nominal values given in Param
+    //  If it is, read the other two necessary keywords, and then set
+    //     the values accordingly.
     if(fits_read_key(fptr, TINT, "BLANK", &blank, comment, &returnStatus)){
       duchampWarning("getBLANKinfo","Error reading BLANK keyword: ");
       fits_report_error(stderr, returnStatus);
@@ -110,10 +132,11 @@ int FitsHeader::getBLANKinfo(string fname, Param &par)
       this->setBzeroKeyword(bzero);
     }
   
+    // Close the FITS file.
     status = 0;
     fits_close_file(fptr, &status);
     if (status){
-      duchampWarning("getCube","Error closing file: ");
+      duchampWarning("getBLANKinfo","Error closing file: ");
       fits_report_error(stderr, status);
     }
   
@@ -139,11 +162,17 @@ int FitsHeader::getBeamInfo(string fname)
   float bmaj,bmin,cdelt1,cdelt2;
   int returnStatus = 0, status = 0;
   fitsfile *fptr;         
+
+  // Open the FITS file
   status = 0;
   if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
     fits_report_error(stderr, status);
     return FAILURE;
   }
+
+  // Read the Keywords -- first look for BMAJ. If it is present, read the
+  //   others, and calculate the beam size.
+  // If it is not, give warning and set beam size to nominal value.
   if( !fits_read_key(fptr, TFLOAT, "BMAJ", &bmaj, comment, &returnStatus) ){
     fits_read_key(fptr, TFLOAT, "BMIN", &bmin, comment, &status);
     fits_read_key(fptr, TFLOAT, "CDELT1", &cdelt1, comment, &status);
@@ -157,11 +186,12 @@ int FitsHeader::getBeamInfo(string fname)
        "No beam information in header. Setting size to nominal 10 pixels.\n");
     this->setBeamSize(10.);
   }
-  
+
+  // Close the FITS file.
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    duchampWarning("getCube","Error closing file: ");
+    duchampWarning("getBeamInfo","Error closing file: ");
     fits_report_error(stderr, status);
   }
 

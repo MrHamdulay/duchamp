@@ -9,17 +9,31 @@
 
 int Cube::getFITSdata(string fname)
 {
+  /**
+   * Cube::getFITSdata(string fname)
+   *
+   *  This function retrieves the data array from the FITS file at the 
+   *   location given by the string argument.
+   *  Only the two spatial axes and the one spectral axis are stored in the
+   *   data array. These axes are given by the wcsprm variables wcs->lng, 
+   *   wcs->lat and wcs->spec. 
+   *  All other axes are just read by their first pixel, using the 
+   *   fits_read_subsetnull_ functions
+   */
 
   long nelements;
   int bitpix,numAxes;
   int status = 0,  nkeys;  /* MUST initialize status */
   fitsfile *fptr;  
 
+  // Open the FITS file
   status = 0;
   if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
     fits_report_error(stderr, status);
     return FAILURE;
   }
+
+  // Read the size of the FITS file -- number and sizes of the axes
   status = 0;
   if(fits_get_img_dim(fptr, &numAxes, &status)){
     fits_report_error(stderr, status);
@@ -33,17 +47,23 @@ int Cube::getFITSdata(string fname)
     return FAILURE;
   }
 
+  // Identify which axes are the "interesting" ones 
   int lng = this->head.getWCS()->lng;
   int lat = this->head.getWCS()->lat;
   int spc = this->head.getWCS()->spec;
 
   int anynul;
   int npix = dimAxes[lng]*dimAxes[lat]*dimAxes[spc];
-  float *array = new float[npix];
-  char *nullarray = new char[npix];
+
+  float *array = new float[npix];   // the array of data values
+  char *nullarray = new char[npix]; // the array of null pixels
+  long *inc = new long[numAxes];    // the data-sampling increment
+
+  // define the first and last pixels for each axis.
+  // set both to 1 for the axes we don't want, and to the full
+  //  range for the ones we do.
   long *fpixel = new long[numAxes];
   long *lpixel = new long[numAxes];
-  long *inc = new long[numAxes];    // the data-sampling increment
   for(int i=0;i<numAxes;i++){
     inc[i] = fpixel[i] = lpixel[i] = 1;
   }
@@ -51,7 +71,9 @@ int Cube::getFITSdata(string fname)
   lpixel[lat] = dimAxes[lat];
   lpixel[spc] = dimAxes[spc];
     
-  int colnum = 0;
+  int colnum = 0;  // want the first dataset in the FITS file
+
+  // read the relevant subset, defined by the first & last pixel ranges
   status = 0;
   if(fits_read_subsetnull_flt(fptr, colnum, numAxes, dimAxes,
 			      fpixel, lpixel, inc, 
