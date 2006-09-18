@@ -160,6 +160,32 @@ detected.)
 
 \secC{Graphical output -- spectra}
 
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=\textwidth]{example_spectrum}
+\end{center}
+\caption{\footnotesize An example of the spectrum output. Note several
+  of the features discussed in the text: the red lines indicating the
+  reconstructed spectrum; the blue dashed lines indicating the
+  spectral extent of the detection; the green hashed area indicating
+  the Milky Way channels that are ignored by the searching algorithm;
+  the blue border showing its spatial extent on the 0th moment map;
+  and the 15~arcmin-long scale bar.}
+\label{fig-spect}
+\end{figure}
+
+\begin{figure}[!t]
+\begin{center}
+\includegraphics[width=\textwidth]{example_moment_map}
+\end{center}
+\caption{\footnotesize An example of the moment map created by
+  \duchamp. The full extent of the cube is covered, and the 0th moment
+  of each object is shown (integrated individually over all the
+  detected channels). The purple line indicates the limit of the
+  non-BLANK pixels.}
+\label{fig-moment}
+\end{figure}
+
 As well as the output data file, a postscript file is created that
 shows the spectrum for each detection, together with a small cutout
 image (the 0th moment) and basic information about the detection (note
@@ -196,33 +222,7 @@ second is governed by the parameter \texttt{drawBlankEdges} (whose
 default is \texttt{true}), and obviously whether there are any BLANK
 pixel present.
 
-\begin{figure}[t]
-\begin{center}
-\includegraphics[width=\textwidth]{example_spectrum}
-\end{center}
-\caption{\footnotesize An example of the spectrum output. Note several
-  of the features discussed in the text: the red lines indicating the
-  reconstructed spectrum; the blue dashed lines indicating the
-  spectral extent of the detection; the green hashed area indicating
-  the Milky Way channels that are ignored by the searching algorithm;
-  the blue border showing its spatial extent on the 0th moment map;
-  and the 15~arcmin-long scale bar.}
-\label{fig-spect}
-\end{figure}
-
 \secC{Graphical output -- maps}
-
-\begin{figure}[!t]
-\begin{center}
-\includegraphics[width=\textwidth]{example_moment_map}
-\end{center}
-\caption{\footnotesize An example of the moment map created by
-  \duchamp. The full extent of the cube is covered, and the 0th moment
-  of each object is shown (integrated individually over all the
-  detected channels). The purple line indicates the limit of the
-  non-BLANK pixels.}
-\label{fig-moment}
-\end{figure}
 
 Finally, a couple of images are optionally produced: a 0th moment map
 of the cube, combining just the detected channels in each object,

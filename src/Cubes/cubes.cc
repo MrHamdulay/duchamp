@@ -410,8 +410,12 @@ Cube::~Cube()
 }
 
 void Cube::initialiseCube(long *dimensions){
-  int size   = dimensions[0] * dimensions[1] * dimensions[2];
-  int imsize = dimensions[0] * dimensions[1];
+  int lng = this->head.getWCS()->lng;
+  int lat = this->head.getWCS()->lat;
+  int spc = this->head.getWCS()->spec;
+//   int size   = dimensions[0] * dimensions[1] * dimensions[2];
+  int size   = dimensions[lng] * dimensions[lat] * dimensions[spc];
+  int imsize = dimensions[lng] * dimensions[lat];
   if((size<0) || (imsize<0) )
     duchampError("Cube::initialiseCube(dimArray)",
 		 "Negative size -- could not define Cube");
@@ -431,7 +435,10 @@ void Cube::initialiseCube(long *dimensions){
     }
     this->numDim  = 3;
     this->axisDim = new long[3];
-    for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
+//     for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
+    this->axisDim[0] = dimensions[lng];
+    this->axisDim[1] = dimensions[lat];
+    this->axisDim[2] = dimensions[spc];
     for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
   }
 }
@@ -457,8 +464,13 @@ int Cube::getopts(int argc, char ** argv)
       switch(c) {
       case 'p':
 	file = optarg;
-	this->readParam(file);
-	returnValue = SUCCESS;
+	if(this->readParam(file)==FAILURE){
+	  stringstream errmsg;
+	  errmsg << "Could not open parameter file " << file << ".\n";
+	  duchampError("Duchamp",errmsg.str());
+	  returnValue = FAILURE;
+	}
+	else returnValue = SUCCESS;
 	break;
       case 'f':
 	file = optarg;
@@ -482,12 +494,13 @@ int Cube::getopts(int argc, char ** argv)
   return returnValue;
 }
 
-
-
 void Cube::saveArray(float *input, long size){
-  if(size != this->numPixels)
-    duchampError("Cube::saveArray",
-		 "Input array different size to existing array. Cannot save.");
+  if(size != this->numPixels){
+    stringstream errmsg;
+    errmsg << "Input array different size to existing array ("
+	   << size << " cf. " << this->numPixels << "). Cannot save.\n";
+    duchampError("Cube::saveArray",errmsg.str());
+  }
   else {
     if(this->numPixels>0) delete [] array;
     this->numPixels = size;
@@ -497,9 +510,12 @@ void Cube::saveArray(float *input, long size){
 }
 
 void Cube::saveRecon(float *input, long size){
-  if(size != this->numPixels)
-    duchampError("Cube::saveRecon",
-		 "Input array different size to existing array. Cannot save.");
+  if(size != this->numPixels){
+    stringstream errmsg;
+    errmsg << "Input array different size to existing array ("
+	   << size << " cf. " << this->numPixels << "). Cannot save.\n";
+    duchampError("Cube::saveRecon",errmsg.str());
+  }
   else {
     if(this->numPixels>0) delete [] this->recon;
     this->numPixels = size;

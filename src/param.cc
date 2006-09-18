@@ -188,16 +188,17 @@ void FitsHeader::fixUnits(Param &par)
   double of=0.;
   double po=1.;;
   if(this->wcsIsGood){
-    int flag = wcsunits( this->wcs->cunit[2], this->spectralUnits.c_str(), 
+    int flag = wcsunits( this->wcs->cunit[wcs->spec], 
+			 this->spectralUnits.c_str(), 
 			 &sc, &of, &po);
     if(flag>0){
       std::stringstream errmsg;
       errmsg << "WCSUNITS Error, Code = " << flag 
 	     << ": "<< wcsunits_errmsg[flag];
       if(flag==10) errmsg << "\nTried to get conversion from '" 
-			  << wcs->cunit[2] << "' to '" 
+			  << wcs->cunit[wcs->spec] << "' to '" 
 			  << this->spectralUnits.c_str() << "'\n";
-      this->spectralUnits = this->wcs->cunit[2];
+      this->spectralUnits = this->wcs->cunit[wcs->spec];
       if(this->spectralUnits==""){
 	errmsg << "Setting coordinates to 'XX' for clarity.\n";
 	this->spectralUnits = "XX";
@@ -214,7 +215,6 @@ void FitsHeader::fixUnits(Param &par)
   // If flux is per beam, trim the /beam from the flux units and multiply 
   //  by the spectral units.
   // Otherwise, just muliply by the spectral units.
-  std::cerr << "%%%%%%%%% " << this->fluxUnits << std::endl;
   if(this->fluxUnits.size()>0){
     if(this->fluxUnits.substr(this->fluxUnits.size()-5,
 			      this->fluxUnits.size()   ) == "/beam"){
@@ -398,10 +398,11 @@ bool boolify( string s )
   else return false;
 }
 
-void Param::readParams(string paramfile)
+int Param::readParams(string paramfile)
 {
 
   std::ifstream fin(paramfile.c_str());
+  if(!fin.is_open()) return FAILURE;
   string line;
   string sval;
   float fval;
@@ -468,6 +469,7 @@ void Param::readParams(string paramfile)
       if(makelower(arg)=="verbose"){         ss >> sval; this->verbose = boolify(sval); }
     }
   }
+  return SUCCESS;
 }
 
 

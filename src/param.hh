@@ -23,10 +23,12 @@ public:
   virtual ~Param(){};
   Param& operator= (const Param& p);
   void parseSubsection();               // in param.cc
-  void readParams(string paramfile);    // in param.cc
+  int  readParams(string paramfile);    // in param.cc
   void copyHeaderInfo(FitsHeader &head);// in param.cc
   bool isBlank(float &value);           // in param.cc
-  bool isInMW(int z){return ( this->flagMW && (z>=this->minMW) && (z<=this->maxMW) );};
+  bool isInMW(int z){
+    return ( this->flagMW && (z>=this->minMW) && (z<=this->maxMW) );
+  };
   string outputReconFile();             // in param.cc
   string outputResidFile();             // in param.cc
   friend std::ostream& operator<< ( std::ostream& theStream, Param& par);

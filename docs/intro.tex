@@ -84,11 +84,15 @@ has a unique flux or intensity value associated with it.
 
 Note that it is possible for the FITS file to have more than three
 dimensions (for instance, a fourth dimension representing Stokes
-parameters). \duchamp\ assumes that these extra dimensions occur
-\emph{after} the spatial and spectral ones -- the data will not be
-read correctly if the order is different! Herein, we discuss the data
-in terms of the three basic dimensions, but you should be aware it is
-possible to have more than three.
+parameters). Only the two spatial dimensions and the spectral
+dimension are read into the array of pixel values that is searched for
+objects. All other dimensions are ignored\footnote{This actually means
+that the first pixel only of that axis is used, and the array is read
+by the \texttt{fits\_read\_subsetnull} command from the
+\textsc{cfitsio} library.}. Herein, we discuss the data in terms of
+the three basic dimensions, but you should be aware it is possible for
+the FITS file to have more than three. Note that the order of the
+dimensions in the FITS file does not matter.
 
 Each spatial pixel (a given $(x,y)$ coordinate) can be said to be a
 single spectrum, while a slice through the cube perpendicular to the
@@ -98,18 +102,16 @@ image is a channel map).
 Detection involves locating a contiguous group of voxels with fluxes
 above a certain threshold. \duchamp\ makes no assumptions as to the
 size or shape of the detected features, other than having
-user-selected minimum size criteria.
+user-selected minimum size criteria. Features that are detected are
+assumed to be positive. The user can choose to search for negative
+features by setting an input parameter -- this inverts the cube prior
+to the search (see \S\ref{sec-detection} for details).
 
-Features that are detected are assumed to be positive. The user can
-choose to search for negative features by setting an input parameter
--- this inverts the cube prior to the search (see
-\S\ref{sec-detection} for details).
-
-Note that it is possible to run \duchamp\ on a two-dimensional image
-(\ie one with no frequency or velocity information), or indeed a
-one-dimensional array, and many of the features of the program will
-work fine. The focus, however, is on object detection in three
-dimensions.
+Finally, note that it is possible to run \duchamp\ on a
+two-dimensional image (\ie one with no frequency or velocity
+information), or indeed a one-dimensional array, and many of the
+features of the program will work fine. The focus, however, is on
+object detection in three dimensions.
 
 \secB{Why \duchamp?}
 

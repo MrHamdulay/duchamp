@@ -62,7 +62,8 @@ public:
   long                 getNumObj(){return objectList.size();};
   void                 clearDetectionList(){this->objectList.clear();};
   // Parameter list related.
-  void                 readParam(string paramfile){par.readParams(paramfile);};
+  int                  readParam(string paramfile){
+    return par.readParams(paramfile);};
   void                 showParam(std::ostream &stream){stream << par;};
   Param                getParam(){return par;};
   void                 saveParam(Param newpar){par = newpar;};
@@ -199,6 +200,7 @@ public:
     }
     return getCube(fname);
   };
+  int     getFITSdata(string fname);         // in FitsIO/dataIO.cc
   void    initialiseCube(long *dimensions);  // in cubes.cc
   int     getopts(int argc, char ** argv);   // in cubes.cc
   void    saveReconstructedCube();

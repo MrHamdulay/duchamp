@@ -63,7 +63,7 @@ vector<Detection> readAndSearch(Param &par)
   int anynul;
   long *fpixel = new long[numAxes];
   long *lpixel = new long[numAxes];
-  long *inc = new long[numAxes];
+  long *inc = new long[numAxes];    // the data-sampling increment
   for(int i=0;i<numAxes;i++) inc[i]=1;
 
   //---------------------------------------------------------

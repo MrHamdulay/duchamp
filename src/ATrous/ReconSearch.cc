@@ -225,17 +225,16 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
   long fullSize = zdim * xySize;
   int num=0, goodSize;
 
-  float blankPixValue = par.getBlankPixVal();
   bool *isGood = new bool[fullSize];
   for(int pos=0;pos<fullSize;pos++){
-    isGood[pos] = !par.isBlank(originalArray[pos]) && !par.isInMW(pos/xySize);
+    isGood[pos] = ((!par.isBlank(originalArray[pos])) && 
+      (!par.isInMW(pos/xySize)));
   }
   bool *doChannel = new bool[xySize];
-  goodSize=0;
   for(int npix=0; npix<xySize; npix++){
-    for(int z=0;z<zdim;z++) if(isGood[z*xySize+npix]) goodSize++;
-    if(goodSize==0) doChannel[npix] = false;
-    else doChannel[npix] = true;
+    doChannel[npix] = false;
+    for(int z=0;z<zdim;z++) 
+      doChannel[npix] = doChannel[npix] || isGood[z*xySize+npix];
   }
  
   float dud;
@@ -334,6 +333,7 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
     }
 
     if(!par.isInMW(z)){ 
+
       // purpose of this is to ignore the Milky Way channels 
       //  if we are flagging them
 
