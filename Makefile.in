@@ -28,6 +28,7 @@ LIBS = @LDFLAGS@ $(WCSLIB) $(CFITSIOLIB) $(PGPLOTLIB) @LIBS@
 ATROUSDIR = $(BASE)/ATrous
 DETECTIONDIR = $(BASE)/Detection
 CUBESDIR = $(BASE)/Cubes
+FITSIODIR = $(BASE)/FitsIO
 UTILDIR = $(BASE)/Utils
 TESTDIR = ./verification
 
@@ -72,6 +73,10 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(CUBESDIR)/readRecon.o\
 	$(CUBESDIR)/saveImage.o\
 	$(CUBESDIR)/trimImage.o\
+	$(FITSIODIR)/dataIO.o\
+	$(FITSIODIR)/headerIO.o\
+	$(FITSIODIR)/subsection.o\
+	$(FITSIODIR)/wcsIO.o\
 	$(UTILDIR)/drawBlankEdges.o\
 	$(UTILDIR)/getStats.o\
 	$(UTILDIR)/get_random_spectrum.o\

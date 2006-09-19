@@ -55,9 +55,10 @@ TEXT-BASED OUTPUT:
 
 FITS I/O RELATED:
 
-* Fixed a bug that meant 4-dimensional FITS files were generating
+* Fixed a bug that meant 4+-dimensional FITS files were generating
   memory faults, both with the allocation of the necessary arrays and
-  with the WCS-related calculations.
+  with the WCS-related calculations. The FITS I/O routines will now work
+  with any sized FITS file, with the axes in any order.
 
 * When the FITS file does not have a rest frequency defined, there is
   no way to transform the frequency axis into velocity. In this case,
@@ -77,6 +78,9 @@ OTHER BUG-FIXING:
 
 * Fixed bugs that affected the way 2D images (rather than 3D cubes)
   were dealt with. The minChannels test failed when minChannels=0.
+
+* If there is no beam information in the FITS header, the user can now
+  enter a beam size as a parameter.
 
 * Other minor fixes to the code, to improve its structure and
   robustness.
