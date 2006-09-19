@@ -104,4 +104,4 @@ $(OBJECTS) : $(HEADS)
 	$(CC) -c $< $(CINC) -o $@
 
 clean : 
-	rm -f $(BASE)/*.o $(ATROUSDIR)/*.o $(CUBESDIR)/*.o $(DETECTIONDIR)/*.o $(UTILDIR)/*.o 
+	rm -f $(BASE)/*.o $(ATROUSDIR)/*.o $(CUBESDIR)/*.o $(FITSIODIR)/*.o $(DETECTIONDIR)/*.o $(UTILDIR)/*.o 
