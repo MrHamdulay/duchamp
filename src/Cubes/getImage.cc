@@ -36,6 +36,10 @@ int Cube::getCube(string fname)
   status = 0;
   if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
     fits_report_error(stderr, status);
+    if((status==URL_PARSE_ERROR)&&(this->pars().getFlagSubsection()))
+      duchampError("getCube",
+		   "It may be that the subsection you've entered is invalid.\n\
+Either it has the wrong number of axes, or one axis has too large a range.\n");
     return FAILURE;
   }
 
@@ -63,7 +67,7 @@ int Cube::getCube(string fname)
   }
 
   // Report the size of the FITS file
-  if(numAxes<=3)  std::cout << "Dimensions of FITS file: ";
+  std::cout << "Dimensions of FITS file: ";
   int dim = 0;
   std::cout << dimAxes[dim];
   while(dim+1<numAxes) std::cout << "x" << dimAxes[++dim];

@@ -96,6 +96,7 @@ int Cube::getFITSdata(string fname)
 
   this->initialiseCube(dimAxes);
   this->saveArray(array,npix);
+  this->par.setOffsets(this->head.getWCS());
   //-------------------------------------------------------------
   // Once the array is saved, change the value of the blank pixels from
   // 0 (as they are set by fits_read_pixnull) to the correct blank value

@@ -35,6 +35,8 @@ int main(int argc, char * argv[])
     return 1;
   }
 
+  if(cube->pars().getFlagSubsection()) cube->pars().verifySubsection();
+
   std::cout << "Opening image: " 
 	    << cube->pars().getFullImageFile() << std::endl;
 

@@ -16,12 +16,12 @@ void duchampWarning(std::string subroutine, std::string warning)
 
 void duchampError(std::string subroutine, std::string error)
 {
-  std::string preamble = "ERROR <" + subroutine + "> : ";
+  std::string preamble = "\aERROR <" + subroutine + "> : ";
   std::cerr << preamble;
   for(int i=0;i<error.size();i++){
     std::cerr << error[i];
     if((i!=error.size()-1)&&(error[i]=='\n'))
-      std::cerr << std::setw(preamble.size()) <<": ";
+      std::cerr << std::setw(preamble.size()-1) <<": ";
   }
 }
 

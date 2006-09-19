@@ -22,11 +22,12 @@ public:
   Param();
   virtual ~Param(){};
   Param& operator= (const Param& p);
-  void parseSubsection();               // in param.cc
-  int  readParams(string paramfile);    // in param.cc
-  void copyHeaderInfo(FitsHeader &head);// in param.cc
-  bool isBlank(float &value);           // in param.cc
-  bool isInMW(int z){
+  int    verifySubsection();              // in FitsIO/subsection.cc
+  void   setOffsets(wcsprm *wcs);         // in FitsIO/subsection.cc
+  int    readParams(string paramfile);    // in param.cc
+  void   copyHeaderInfo(FitsHeader &head);// in param.cc
+  bool   isBlank(float &value);           // in param.cc
+  bool   isInMW(int z){
     return ( this->flagMW && (z>=this->minMW) && (z<=this->maxMW) );
   };
   string outputReconFile();             // in param.cc
@@ -221,6 +222,7 @@ private:
   long   borderBottom;    // The number trimmed from the Bottom of the cube;
   long   borderTop;       // The number trimmed from the Top of the cube;
   // Subsection offsets
+  long  *offsets;         // The array of offsets for each FITS axis.
   long   xSubOffset;      // The offset in the x-direction from the subsection
   long   ySubOffset;      // The offset in the y-direction from the subsection
   long   zSubOffset;      // The offset in the z-direction from the subsection

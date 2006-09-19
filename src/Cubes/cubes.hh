@@ -194,10 +194,7 @@ public:
     // a front-end to the getCube function, that does subsection checks
     // assumes the Param is setup properly
     string fname = par.getImageFile();
-    if(par.getFlagSubsection()){
-      par.parseSubsection();
-      fname+=par.getSubsection();
-    }
+    if(par.getFlagSubsection()) fname+=par.getSubsection();
     return getCube(fname);
   };
   int     getFITSdata(string fname);         // in FitsIO/dataIO.cc
