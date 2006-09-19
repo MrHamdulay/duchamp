@@ -72,6 +72,7 @@ int FitsHeader::defineWCS(string fname, Param &par)
   wcsprm *wcs = new wcsprm;
 
   // Initialise the wcsprm structure
+  int flag;
   if(flag = wcsini(true,numAxes,wcs)){
     std::stringstream errmsg;
     errmsg << "wcsini failed! Code=" << flag
@@ -84,7 +85,7 @@ int FitsHeader::defineWCS(string fname, Param &par)
   int relax=1; // for wcspih -- admit all recognised informal WCS extensions
   int ctrl=2;  // for wcspih -- report each rejected card and its reason for
                //               rejection
-  int nwcs, nreject, flag;
+  int nwcs, nreject;
   // Parse the FITS header to fill in the wcsprm structure
   if(flag = wcspih(hdr, nkeys, relax, ctrl, &nreject, &nwcs, &wcs)) {
     // if here, something went wrong -- report what.
