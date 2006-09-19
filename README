@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
                The Duchamp Source Finder
 -----------------------------------------------------------------------
-Duchamp 1.0 -- an object finder for spectral-line data cubes
+Duchamp 1.0.5 -- an object finder for spectral-line data cubes
 Copyright (C) 2006, Matthew Whiting, ATNF
 
 Duchamp is free software; you can redistribute it and/or modify it
@@ -133,6 +133,6 @@ execution of Duchamp.
 Any questions, please contact me!
 
 Author: 
-  Matthew Whiting, Australia Telescope National Facility, June 2006
+  Matthew Whiting, Australia Telescope National Facility, September 2006
   Matthew.Whiting@csiro.au
 
