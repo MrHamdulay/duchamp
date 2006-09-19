@@ -9,20 +9,22 @@ libraries.
 \secB{Image input}
 \label{sec-input}
 
-The cube is read in using basic \textsc{cfitsio} commands, and stored as
-an array in a special C++ class. This class keeps track of the list of
-detected objects, as well as any reconstructed arrays that are made
-(see \S\ref{sec-recon}). The World Coordinate System (WCS) information
-for the cube is also obtained from the FITS header by \textsc{wcslib}
-functions \citep{greisen02, calabretta02}, and this information, in
-the form of a \texttt{wcsprm} structure, is also stored in the same
-class.
+The cube is read in using basic \textsc{cfitsio} commands, and stored
+as an array in a special C++ class. This class keeps track of the list
+of detected objects, as well as any reconstructed arrays that are made
+(see \S\ref{sec-recon}). The World Coordinate System
+(WCS)\footnote{This is the information necessary for translating the
+pixel locations to quantities such as position on the sky, frequency,
+velocity, and so on.} information for the cube is also obtained from
+the FITS header by \textsc{wcslib} functions \citep{greisen02,
+calabretta02}, and this information, in the form of a \texttt{wcsprm}
+structure, is also stored in the same class.
 
 A sub-section of an image can be requested via the \texttt{subsection}
 parameter -- this can be a good idea if the cube has very noisy edges,
 which may produce many spurious detections. The generalised form of
 the subsection that is used by \textsc{cfitsio} is
-\texttt{[x1:x2:dx,y1:y2:dy,z1:z2:dz]}, such that the x-coordinates run
+\texttt{[x1:x2:dx,y1:y2:dy,z1:z2:dz,...]}, such that the x-coordinates run
 from \texttt{x1} to \texttt{x2} (inclusive), with steps of
 \texttt{dx}. The step value can be omitted (so a subsection of the
 form \texttt{[2:50,2:50,10:1000]} is still valid). \duchamp\ does not
@@ -48,15 +50,16 @@ by the relevant flags in the parameter file).
 
 \secC{BLANK pixel removal}
 
-If the imaged area of a cube is non-rectangular, BLANK pixels are used
-to pad it out to a rectangular shape. The value of these pixels is
-given by the FITS header keywords BLANK, BSCALE and BZERO. While these
-pixels make the image a nice shape, they will unnecessarily interfere
-with the processing (as well as taking up needless memory). The first
-step, then, is to trim them from the edge. This is done when the
-parameter \texttt{flagBlankPix=true}. If the above keywords are not
-present, the user can specify the BLANK value by the parameter
-\texttt{blankPixValue}.
+If the imaged area of a cube is non-rectangular (see the example in
+Fig.~\ref{fig-moment}, a cube from the HIPASS survey), BLANK pixels are
+used to pad it out to a rectangular shape. The value of these pixels
+is given by the FITS header keywords BLANK, BSCALE and BZERO. While
+these pixels make the image a nice shape, they will unnecessarily
+interfere with the processing (as well as taking up needless
+memory). The first step, then, is to trim them from the edge. This is
+done when the parameter \texttt{flagBlankPix=true}. If the above
+keywords are not present, the user can specify the BLANK value by the
+parameter \texttt{blankPixValue}.
 
 Removing BLANK pixels is particularly important for the reconstruction
 step, as lots of BLANK pixels on the edges will smooth out features in
@@ -68,8 +71,8 @@ applicable to the original cube).
 
 Rows and columns are trimmed one at a time until the first non-BLANK
 pixel is reached, so that the image remains rectangular. In practice,
-this means that there will be BLANK pixels left in the trimmed image
-(if the non-BLANK region is non-rectangular). However, these are
+this means that there will be some BLANK pixels left in the trimmed
+image (if the non-BLANK region is non-rectangular). However, these are
 ignored in all further calculations done on the cube.
 
 \secC{Baseline removal}
@@ -88,8 +91,8 @@ detection (and reconstruction if applicable) is done on the
 baseline-removed cube.
 
 The presence of very strong signals (for instance, masers at several
-hundred Jy) can affect the determination of the baseline, leading to a
-large dip centred on the signal in the baseline-subtracted
+hundred Jy) could affect the determination of the baseline, and would
+lead to a large dip centred on the signal in the baseline-subtracted
 spectrum. To prevent this, the signal is trimmed prior to the
 reconstruction process at some standard threshold (at $8\sigma$ above
 the mean). The baseline determined should thus be representative of
@@ -135,7 +138,7 @@ relatively time- and memory-intensive.
 
 The steps in the \atrous\ reconstruction are as follows:
 \begin{enumerate}
-\item Set the reconstructed array to 0 everywhere.
+\item The reconstructed array is set to 0 everywhere.
 \item The input array is discretely convolved with a given filter
   function. This is determined from the parameter file via the
   \texttt{filterCode} parameter -- see Appendix~\ref{app-param} for
@@ -160,11 +163,12 @@ The steps in the \atrous\ reconstruction are as follows:
 
 The reconstruction has at least two iterations. The first iteration
 makes a first pass at the wavelet reconstruction (the process outlined
-in the 8 stages above), but the residual array will inevitably have
-some structure still in it, so the wavelet filtering is done on the
+in the 8 stages above), but the residual array will likely have some
+structure still in it, so the wavelet filtering is done on the
 residual, and any significant wavelet terms are added to the final
-reconstruction. This step is repeated until the change in the $\sigma$
-of the background is less than some fiducial amount.
+reconstruction. This step is repeated until the change in the measured
+standard deviation of the background (see note below on the evaluation
+of this quantity) is less than some fiducial amount.
 
 It is important to note that the \atrous\ decomposition is an example
 of a ``redundant'' transformation. If no thresholding is performed,
@@ -217,7 +221,7 @@ separately, whereas \texttt{reconDim=2} will mean the cube is
 reconstructed by doing each channel map separately. The merits of
 these choices are discussed in \S\ref{sec-notes}, but it should be
 noted that a 2-dimensional reconstruction can be susceptible to edge
-effects if the spatial shape is not rectangular.
+effects if the spatial shape of the pixel array is not rectangular.
 
 The user can also select the minimum scale to be used in the
 reconstruction. The first scale exhibits the highest frequency
@@ -249,7 +253,7 @@ have write permissions for that directory.
 The filename will be derived from the input filename, with extra
 information detailing the reconstruction that has been done. For
 example, suppose \texttt{image.fits} has been reconstructed using a
-3-dimensional reconstruction with filter 2, thresholded at $4\sigma$
+3-dimensional reconstruction with filter \#2, thresholded at $4\sigma$
 using all scales. The output filename will then be
 \texttt{image.RECON-3-2-4-1.fits} (\ie it uses the four parameters
 relevant for the \atrous\ reconstruction as listed in
@@ -282,7 +286,7 @@ The image is searched for detections in two ways: spectrally (a
 spatially (a 2-dimensional search in the spatial image in each
 channel). In both cases, the algorithm finds connected pixels that are
 above the user-specified threshold. In the case of the spatial image
-search, the algorithm of \citet{lutz80} is used to raster scan through
+search, the algorithm of \citet{lutz80} is used to raster-scan through
 the image and connect groups of pixels on neighbouring rows.
 
 Note that this algorithm cannot be applied directly to a 3-dimensional
@@ -343,21 +347,20 @@ used.
 If a reconstruction has been made, the residuals (defined in the sense
 of original $-$ reconstruction) are used to estimate the noise
 parameters of the cube. Otherwise they are estimated directly from the
-cube itself. In both cases, robust estimators are used as described
-above.
+cube itself. In both cases, robust estimators are used.
 
 Detections must have a minimum number of pixels to be counted. This
 minimum number is given by the input parameters \texttt{minPix} (for
 2-dimensional searches) and \texttt{minChannels} (for 1-dimensional
 searches).
 
-The search only looks for positive features. If one is interested
-instead in negative features (such as absorption lines), set the
-parameter \texttt{flagNegative = true}. This will invert the cube (\ie
-multiply all pixels by $-1$) prior to the search, and then re-invert
-the cube (and the fluxes of any detections) after searching is
-complete. All outputs are done in the same manner as normal, so that
-fluxes of detections will be negative.
+Finally, the search only looks for positive features. If one is
+interested instead in negative features (such as absorption lines),
+set the parameter \texttt{flagNegative = true}. This will invert the
+cube (\ie multiply all pixels by $-1$) prior to the search, and then
+re-invert the cube (and the fluxes of any detections) after searching
+is complete. All outputs are done in the same manner as normal, so
+that fluxes of detections will be negative.
 
 \secB{Merging detected objects}
 \label{sec-merger}

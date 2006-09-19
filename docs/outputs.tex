@@ -44,6 +44,15 @@ setting the parameter \texttt{verbose = 0}. In this case, the user is
 still informed as to the steps being undertaken, but the details of
 the progress are not shown.
 
+There may also be Warning or Error messages printed to screen. The
+Warning messages occur when something happens that is unexpected (for
+instance, a desired keyword is not present in the FITS header), but
+not detrimental to the execution. An Error message is something more
+serious, and indicates some part of the program was not able to
+complete its task. The message will also indicate which function or
+subroutine generated it -- this is primarily a tool for debugging, but
+can be useful in determining what went wrong.
+
 \secB{Results}
 
 \secC{Table of results}
@@ -51,12 +60,13 @@ the progress are not shown.
 Finally, we get to the results -- the reason for running \duchamp\ in
 the first place. Once the detection list is finalised, it is sorted by
 the mean velocity of the detections (or, if there is no good WCS
-associated with the cube, by the mean Z-pixel position). The results
+associated with the cube, by the mean $z$-pixel position). The results
 are then printed to the screen and to the output file, given by the
 \texttt{OutFile} parameter. The results list, an example of which can
 be seen in Appendix~\ref{app-output}, contains the following columns
 (note that the title of the columns depending on WCS information will
-depend on the projection of the WCS):
+depend on the details of the WCS projection: they are shown below for
+the Equatorial and Galactic projection cases).
 
 \begin{entry}
 \item[Obj\#] The ID number of the detection (simply the sequential
@@ -90,6 +100,7 @@ Galactic Longitude [arcmin].
   in the detection.
 \item[Flag] Whether the detection has any warning flags (see below).
 \end{entry}
+
 The Name is derived from the WCS position. For instance, a source
 centred on the RA,Dec position 12$^h$53$^m$45$^s$,
 -36$^\circ$24$'$12$''$ will be called J125345$-$362412 (if the epoch
@@ -125,7 +136,7 @@ be due to the interference, so caution is advised.
 
 \secC{Other results lists}
 
-Two alternative results files can also be requested. One option is a
+Two additional results files can also be requested. One option is a
 VOTable-format XML file, containing just the RA, Dec, Velocity and the
 corresponding widths of the detections, as well as the fluxes. The
 user should set \texttt{flagVOT = 1}, and put the desired filename in
@@ -136,11 +147,11 @@ web at
 \href{http://aladin.u-strasbg.fr/}{http://aladin.u-strasbg.fr/}}). The
 second option is an annotation file for use with the Karma toolkit of
 visualisation tools (in particular, with \texttt{kvis}). This will
-draw a circle at the position of each detection, and number it
-according to the Obj\# given above. To make use of this option, the
-user should set \texttt{flagKarma = 1}, and put the desired filename
-in the parameter \texttt{karmaFile} -- again, the default is for it
-not to be produced.
+draw a circle at the position of each detection, scaled by the spatial
+size of the detection, and number it according to the Obj\# given
+above. To make use of this option, the user should set
+\texttt{flagKarma = 1}, and put the desired filename in the parameter
+\texttt{karmaFile} -- again, the default is for it not to be produced.
 
 As the program is running, it also (optionally) records the detections
 made in each individual spectrum or channel (see \S\ref{sec-detection}
@@ -153,10 +164,7 @@ the merging process. The list of pixels (and their fluxes) in the
 final detection list are also printed to this file, again for
 diagnostic purposes. The file also records the execution time, as well
 as the command-line statement used to run \duchamp. The creation of
-this log file can be prevented by setting \texttt{flagLog =
-false}. (This may be a good idea if you are not interested in its
-contents, as it can be a large file if many pixels are being
-detected.)
+this log file can be prevented by setting \texttt{flagLog = false}.
 
 \secC{Graphical output -- spectra}
 
@@ -198,8 +206,8 @@ channels is shown by a green hashed box. An example detection can be
 seen below in Fig.~\ref{fig-spect}.
 
 The spectrum that is plotted is governed by the
-\texttt{spectralMethod} parameter. It can be either \texttt{peak},
-where the spectrum is from the spatial pixel containing the
+\texttt{spectralMethod} parameter. It can be either \texttt{peak} (the
+default), where the spectrum is from the spatial pixel containing the
 detection's peak flux; or \texttt{sum}, where the spectrum is summed
 over all spatial pixels, and then corrected for the beam size.  The
 spectral extent of the detection is indicated with blue lines, and a
@@ -213,14 +221,14 @@ indicated next to it (the choice of length depends on the size of the
 image).
 
 There may also be one or two extra lines on the image. A yellow line
-shows the limits of the cube -- the detected object is obviously close
-to the edge of the cube, and the box size extends outside the region
-covered by the data. A purple line, however, shows the dividing line
-between BLANK and non-BLANK pixels. The BLANK pixels will always be
-shown in black. The first type of line is always drawn, while the
-second is governed by the parameter \texttt{drawBlankEdges} (whose
-default is \texttt{true}), and obviously whether there are any BLANK
-pixel present.
+shows the limits of the cube's spatial region: when this is shown, the
+detected object will lie close to the edge, and the image box will
+extend outside the region covered by the data. A purple line, however,
+shows the dividing line between BLANK and non-BLANK pixels. The BLANK
+pixels will always be shown in black. The first type of line is always
+drawn, while the second is governed by the parameter
+\texttt{drawBlankEdges} (whose default is \texttt{true}), and
+obviously whether there are any BLANK pixel present.
 
 \secC{Graphical output -- maps}
 

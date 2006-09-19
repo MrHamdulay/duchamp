@@ -15,7 +15,7 @@
      \fi 
 \fi
 
-\textwidth=161 mm
+\textwidth=165 mm
 \textheight=245 mm
 \topmargin=0 mm
 \oddsidemargin=0 mm
@@ -90,7 +90,7 @@
 \begin{document}
 
 \ifPDF
-\pdfbookmark{Title Page}{title}
+\pdfbookmark[2]{Title Page}{title}
 \fi
 \newlength{\centreoff}
 \setlength{\centreoff}{-0.5\oddsidemargin}
@@ -120,12 +120,15 @@ September 15, 2006
 \end{minipage}}
 
 \begin{figure}[!h]
-\begin{center}
+%\begin{center}
 \includegraphics[width=\textwidth]{cover_image}
-\end{center}
+%\end{center}
 \end{figure}
 
 %\newpage
+\ifPDF
+\pdfbookmark[2]{Contents}{contents}
+\fi
 \tableofcontents
 
 %\newpage
