@@ -144,9 +144,19 @@ September 15, 2006
 \newpage
 \input{future} %Future developments
 
+%\bibliographystyle{plainnat}
+%\bibliographystyle{mn2e}
+%\bibliography{guide}
 
-\bibliographystyle{mn2e}
-\bibliography{guide}
+\newpage
+\ifPDF
+\pdfbookmark[1]{References}{references}
+\fi
+\ifPDF
+\input{Guide-URL-bib}
+\else
+\input{Guide-noURL-bib}
+\fi
 
 \appendix
 \newpage
