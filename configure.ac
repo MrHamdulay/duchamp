@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.57)
 AC_INIT([Duchamp], [1.0.5], [Matthew.Whiting@csiro.au])
-AC_CONFIG_SRCDIR([src/param.cc])
+AC_CONFIG_SRCDIR([src/duchamp.hh])
 AC_CONFIG_HEADER([src/config.h])
 
 # Checks for programs.
@@ -18,33 +18,27 @@ AC_CHECK_LIB([m], [log])
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h string.h unistd.h time.h math.h])
+if test "x$ac_cv_header_stdc" = xno; then
+  AC_MSG_ERROR([
+    -------------------------------------------------------------------
+    An ANSI standard C library is required to build Duchamp.  
+    One of the ANSI C header files it requires is missing or unusable.
+
+    ERROR: Duchamp configuration failure.
+    -------------------------------------------------------------------], [1])
+fi
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_CONST
 AC_C_INLINE
 
+# Utilities.
+AC_PROG_RANLIB
+
 # Checks for library functions.
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([floor pow sqrt strtol log atan fabs])
-
-# Look for a Fortran compiler.
-AC_PROG_F77
-if test "x$F77" = x; then
-  AC_MSG_WARN([Fortran compiler not found])
-else
-  if test "x$ac_cv_f77_compiler_gnu" = xyes ; then
-    FFLAGS="$FFLAGS -Wno-globals"
-  fi
-
-  AC_MSG_CHECKING(whether $F77 accepts -I)
-  AC_LANG_PUSH(Fortran 77)
-  FFLAGS_save=$FFLAGS
-  FFLAGS=-I.
-  AC_TRY_COMPILE([], [], [FFLAGS="$FFLAGS_save -I."; AC_MSG_RESULT(yes)],
-    [FFLAGS="$FFLAGS_save"; AC_MSG_RESULT(no)])
-  AC_LANG_POP(Fortran 77)
-fi
 
 # Extra places to look for third-party include files and libraries.
 INCDIRS="$INCDIRS           \

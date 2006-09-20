@@ -12,7 +12,7 @@
 #include "config.h"
 
 // how to convey whether a function has worked
-enum OUTCOME {SUCCESS, FAILURE};
+enum OUTCOME {SUCCESS=0, FAILURE};
 
 
 const std::string ERR_USAGE_MSG =

@@ -65,7 +65,7 @@ int FitsHeader::defineWCS(string fname, Param &par)
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    duchampWarning("getCube","Error closing file: ");
+    duchampWarning("defineWCS","Error closing file: ");
     fits_report_error(stderr, status);
   }
   

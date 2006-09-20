@@ -24,18 +24,25 @@ int main(int argc, char * argv[])
   string paramFile,fitsfile;
   Cube *cube = new Cube;
 
-  if(cube->getopts(argc,argv)==FAILURE) return 1;
+  if(cube->getopts(argc,argv)==FAILURE) return FAILURE;
 
   if(cube->pars().getImageFile().empty()){
     std::stringstream errmsg;
     errmsg << "No input image has been given!\n"
 	   << "Use the imageFile parameter in " 
 	   << paramFile << " to specify the FITS file.\nExiting...\n";
-    duchampError("mainDuchamp", errmsg.str());
-    return 1;
+    duchampError("Duchamp", errmsg.str());
+    return FAILURE;
   }
 
-  if(cube->pars().getFlagSubsection()) cube->pars().verifySubsection();
+  if(cube->pars().getFlagSubsection()){
+    // make sure the subsection is OK.
+    if(cube->pars().verifySubsection() == FAILURE){
+      duchampError("Duchamp", 
+		   "Unable to use the subsection provided.\nExiting...\n");
+      return FAILURE;
+    }
+  }      
 
   std::cout << "Opening image: " 
 	    << cube->pars().getFullImageFile() << std::endl;
@@ -45,8 +52,8 @@ int main(int argc, char * argv[])
     errmsg << "Unable to open image file "
 	   << cube->pars().getFullImageFile() 
 	   << "\nExiting...\n";
-    duchampError("mainDuchamp", errmsg.str());
-    return 1;
+    duchampError("Duchamp", errmsg.str());
+    return FAILURE;
   }
   else std::cout << "Opened successfully." << std::endl; 
 
@@ -57,7 +64,7 @@ int main(int argc, char * argv[])
       std::stringstream errmsg;
       errmsg <<"Could not read in existing reconstructed array.\n"
 	     <<"Will perform reconstruction using assigned parameters.\n";
-      duchampWarning("mainDuchamp", errmsg.str());
+      duchampWarning("Duchamp", errmsg.str());
       cube->pars().setFlagReconExists(false);
     }
     else std::cout << "Reconstructed array available.\n";
@@ -176,7 +183,8 @@ int main(int argc, char * argv[])
     std::cout << "done.\n";
   }
   else if(cube->getDimZ()<=1) 
-    duchampWarning("mainDuchamp","Not plotting any spectra  -- no third dimension.\n");
+    duchampWarning("Duchamp",
+		   "Not plotting any spectra  -- no third dimension.\n");
 
   cpgend();
 
@@ -208,6 +216,6 @@ int main(int argc, char * argv[])
 
   delete cube;
 
-  return 0;
+  return SUCCESS;
 }
 

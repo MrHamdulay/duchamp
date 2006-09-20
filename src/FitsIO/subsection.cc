@@ -40,7 +40,15 @@ int Param::verifySubsection()
   int numAxes,status = 0;  /* MUST initialize status */
   fitsfile *fptr;         
 
-  // Open the FITS file -- make sure it exists
+  // Make sure the FITS file exists
+  int exists;
+  fits_file_exists(fname.c_str(),&exists,&status);
+  if(exists<=0){
+    fits_report_error(stderr, status);
+    duchampWarning("verifySubsection", "Requested image does not exist!\n");
+    return FAILURE;
+  }
+  // Open the FITS file
   if( fits_open_file(&fptr,this->imageFile.c_str(),READONLY,&status) ){
     fits_report_error(stderr, status);
     return FAILURE;
@@ -55,7 +63,7 @@ int Param::verifySubsection()
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    duchampWarning("getCube","Error closing file: ");
+    duchampWarning("verifySubsection","Error closing file: ");
     fits_report_error(stderr, status);
   }
 
@@ -82,7 +90,7 @@ int Param::verifySubsection()
   if(numSections!=numAxes){
     std::stringstream errmsg;
     errmsg << "Subsection has "<<numSections
-	   <<" sections, whereas the FITS file has" << numAxes << " axes\n"
+	   <<" sections, whereas the FITS file has " << numAxes << " axes\n"
 	   << "Subsection provided was: " << this->subsection << std::endl;
     duchampError("verifySubsection",errmsg.str());
     return FAILURE;
@@ -137,7 +145,7 @@ int Param::verifySubsection()
      this->subsection += ',' + sections[str];
    this->subsection += "]";
    errmsg << this->subsection << std::endl;
-   duchampWarning("parseSubsection", errmsg.str());
+   duchampWarning("verifySubsection", errmsg.str());
   }
 
 }

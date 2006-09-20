@@ -32,11 +32,20 @@ int Cube::getCube(string fname)
   int status = 0,  nkeys;  /* MUST initialize status */
   fitsfile *fptr;         
 
+  int exists;
+  fits_file_exists(fname.c_str(),&exists,&status);
+  if(exists<=0){
+    fits_report_error(stderr, status);
+    duchampWarning("getCube", "Requested image does not exist!\n");
+    return FAILURE;    
+  }
+
   // Open the FITS file -- make sure it exists
   status = 0;
   if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
     fits_report_error(stderr, status);
-    if((status==URL_PARSE_ERROR)&&(this->pars().getFlagSubsection()))
+    if(((status==URL_PARSE_ERROR)||(status==BAD_NAXIS))
+       &&(this->pars().getFlagSubsection()))
       duchampError("getCube",
 		   "It may be that the subsection you've entered is invalid.\n\
 Either it has the wrong number of axes, or one axis has too large a range.\n");
