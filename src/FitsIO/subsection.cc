@@ -42,7 +42,7 @@ int Param::verifySubsection()
 
   // Make sure the FITS file exists
   int exists;
-  fits_file_exists(fname.c_str(),&exists,&status);
+  fits_file_exists(this->imageFile.c_str(),&exists,&status);
   if(exists<=0){
     fits_report_error(stderr, status);
     duchampWarning("verifySubsection", "Requested image does not exist!\n");
