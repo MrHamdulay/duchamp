@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <math.h>
 #include <wcs.h>
 
 using std::string;

@@ -1,5 +1,5 @@
 New run of the Duchamp sourcefinder: Fri Sep  8 11:04:23 2006
-Executing statement : Duchamp -p verification/input1 
+Executing statement : ./Duchamp -p verification/input1 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
 Intermediate Logfile...........................[logFile]  =  verification/log1.txt

@@ -86,9 +86,9 @@ AC_CHECK_LIB([M77],     [iand_],     [PGPLOTLIB="-lM77 $PGPLOTLIB"],
 AC_CHECK_LIB([F77],     [f77_init],  [PGPLOTLIB="-lF77 $PGPLOTLIB"],
              [], [$PGPLOTLIB $LIBS])
 # PGPLOT compiled with a GNU compiler but linked with something else.
-AC_CHECK_LIB([m],       [log],       [PGPLOTLIB="-lm $PGPLOTLIB"])
-AC_CHECK_LIB([g2c],     [gerror_],   [PGPLOTLIB="-lg2c $PGPLOTLIB"],
-             [], [$PGPLOTLIB $LIBS])
+#AC_CHECK_LIB([m],       [log],       [PGPLOTLIB="-lm $PGPLOTLIB"])
+#AC_CHECK_LIB([g2c],     [gerror_],   [PGPLOTLIB="-lg2c $PGPLOTLIB"],
+#             [], [$PGPLOTLIB $LIBS])
 
 # Search for X11 includes and libraries.
 AC_PATH_X

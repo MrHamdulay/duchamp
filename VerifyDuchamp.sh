@@ -4,7 +4,7 @@ echo " "
 echo "Running the first Duchamp test:"
 echo "  [This is a simple sigma-clipping search]"
 rm -f /tmp/duchamptest
-Duchamp -p verification/input1 > /tmp/duchamptest
+./Duchamp -p verification/input1 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
 echo "Differences with Results:"
 diff -I"Results of the Duchamp source finder:" verification/results1.txt verification/stdResults1.txt
@@ -15,7 +15,7 @@ echo " "
 echo "Running the second Duchamp test:"
 echo "  [This uses the FDR method]"
 rm -f /tmp/duchamptest
-Duchamp -p verification/input2 > /tmp/duchamptest
+./Duchamp -p verification/input2 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
 echo "Differences with Results:"
 diff -I"Results of the Duchamp source finder:" verification/results2.txt verification/stdResults2.txt
@@ -27,7 +27,7 @@ echo "Running the third Duchamp test:"
 echo "  [This reconstructs the cube, then searches with simple sigma-clipping]"
 echo "  [It should take a bit longer than the first two.]"
 rm -f /tmp/duchamptest
-Duchamp -p verification/input3 > /tmp/duchamptest
+./Duchamp -p verification/input3 > /tmp/duchamptest
 rm -f /tmp/duchamptest
 echo "Done. Comparison to standard result:"
 echo "Differences with Results:"
