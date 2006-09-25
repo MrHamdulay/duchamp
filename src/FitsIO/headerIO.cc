@@ -25,7 +25,7 @@ int FitsHeader::readHeaderInfo(string fname, Param &par)
   
   if(this->getBLANKinfo(fname, par)==FAILURE) returnValue=FAILURE;
   
-  if(this->getBeamInfo(fname)==FAILURE) returnValue=FAILURE;
+  if(this->getBeamInfo(fname, par)==FAILURE) returnValue=FAILURE;
 
   return returnValue;
 }
@@ -84,7 +84,7 @@ int FitsHeader::getBLANKinfo(string fname, Param &par)
    *   FitsHeader::getBLANKinfo(string fname, Param &par)
    *    Reading in the Blank pixel value keywords.
    *    If the BLANK keyword is in the header, use that and store the relevant 
-   *     values.
+   *     values. Also copy them into the parameter set.
    *    If not, use the default value (either the default from param.cc or 
    *     from the param file) and assume simple values for the keywords 
    *        --> the scale keyword is the same as the blank value, 
@@ -117,9 +117,11 @@ int FitsHeader::getBLANKinfo(string fname, Param &par)
       errmsg << "Using default BLANK value (" 
 	     << par.getBlankPixVal() << ").\n";
       duchampWarning("getBLANKinfo", errmsg.str());
-      this->setBlankKeyword(1);
-      this->setBscaleKeyword(par.getBlankPixVal());
-      this->setBzeroKeyword(0.);
+      this->blankKeyword  = 1;
+      this->bscaleKeyword = par.getBlankPixVal();
+      this->bzeroKeyword  = 0;
+      par.setBlankKeyword(1);
+      par.setBzeroKeyword(0);
       par.setFlagUsingBlank(true);
     }
     else{
@@ -127,9 +129,13 @@ int FitsHeader::getBLANKinfo(string fname, Param &par)
       fits_read_key(fptr, TFLOAT, "BZERO", &bzero, comment, &status);
       status = 0;
       fits_read_key(fptr, TFLOAT, "BSCALE", &bscale, NULL, &status);
-      this->setBlankKeyword(blank);
-      this->setBscaleKeyword(bscale);
-      this->setBzeroKeyword(bzero);
+      this->blankKeyword  = blank;
+      this->bscaleKeyword = bscale;
+      this->bzeroKeyword  = bzero;
+      par.setBlankKeyword(blank);
+      par.setBscaleKeyword(bscale);
+      par.setBzeroKeyword(bzero);
+      par.setBlankPixVal( blank*bscale + bzero );
     }
   
     // Close the FITS file.
@@ -150,13 +156,15 @@ int FitsHeader::getBLANKinfo(string fname, Param &par)
 
 //////////////////////////////////////////////////
 
-int FitsHeader::getBeamInfo(string fname)
+int FitsHeader::getBeamInfo(string fname, Param &par)
 {
   /**
-   *  FitsHeader::getBeamInfo(string fname)
+   *  FitsHeader::getBeamInfo(string fname, Param &par)
    *   Reading in the beam parameters from the header.
    *   Use these, plus the basic WCS parameters to calculate the size of
-   *    the beam in pixels.
+   *    the beam in pixels. Copy the beam size into the parameter set.
+   *   If information not present in FITS header, use the parameter
+   *    set to define the beam size.
    */
   char *comment = new char[80];
   float bmaj,bmin,cdelt1,cdelt2;
@@ -180,11 +188,14 @@ int FitsHeader::getBeamInfo(string fname)
     this->setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / fabs(cdelt1*cdelt2) );
     this->setBmajKeyword(bmaj);
     this->setBminKeyword(bmin);
+    par.setBeamSize(this->beamSize);
   }
   if (returnStatus){
     duchampWarning("getBeamInfo",
-       "No beam information in header. Setting size to nominal 10 pixels.\n");
-    this->setBeamSize(10.);
+       "No beam information in header.\n\
+Using parameter beamSize to determine size of beam.\n");
+    this->setBeamSize(par.getBeamSize());
+    par.setFlagUsingBeam(true);
   }
 
   // Close the FITS file.

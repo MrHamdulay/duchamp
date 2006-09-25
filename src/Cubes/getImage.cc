@@ -102,7 +102,6 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
 
   // Read the necessary header information, and copy some of it into the Param.
   this->head.readHeaderInfo(fname, this->par);
-  this->par.copyHeaderInfo(this->head);
 
   return SUCCESS;
 

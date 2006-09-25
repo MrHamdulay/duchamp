@@ -101,6 +101,8 @@ public:
   void   setMinMW(int m){minMW=m;};
   void   setBeamSize(float s){numPixBeam = s;};
   float  getBeamSize(){return numPixBeam;};
+  bool   getFlagUsingBeam(){return flagUsingBeam;};
+  void   setFlagUsingBeam(bool b){flagUsingBeam=b;};
   //
   bool   getFlagCubeTrimmed(){return flagTrimmed;};
   void   setFlagCubeTrimmed(bool flag){flagTrimmed = flag;};
@@ -214,6 +216,8 @@ private:
   int    maxMW;           // Last  Galactic velocity plane for HIPASS cubes
   int    minMW;           // First Galactic velocity plane for HIPASS cubes
   float  numPixBeam;      // Size (area) of the beam in pixels.
+  bool   flagUsingBeam;   // If true, we are using the numPixBeam parameter, 
+                          // otherwise we use the value in the FITS header.
   // Trim-related         
   bool   flagTrimmed;     // Has the cube been trimmed of excess BLANKs 
                           //  around the edge?
@@ -298,7 +302,7 @@ public:
   int     defineWCS(string fname, Param &par);
   int     getBUNIT(string fname);
   int     getBLANKinfo(string fname, Param &par);
-  int     getBeamInfo(string fname);
+  int     getBeamInfo(string fname, Param &par);
   string  getSpectralUnits(){return spectralUnits;};
   void    setSpectralUnits(string s){spectralUnits=s;};
   string  getFluxUnits(){return fluxUnits;};

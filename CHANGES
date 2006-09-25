@@ -55,14 +55,24 @@ TEXT-BASED OUTPUT:
 
 FITS I/O RELATED:
 
-* Fixed a bug that meant 4+-dimensional FITS files were generating
-  memory faults, both with the allocation of the necessary arrays and
-  with the WCS-related calculations. The FITS I/O routines will now work
-  with any sized FITS file, with the axes in any order.
+* The previous version was did not deal well with 4 (or greater)
+  dimensions in the FITS file -- the memory allocation was badly done,
+  and the axes needed to be in a particular order. This has been
+  fixed, so that the FITS I/O routines can now handle any sized FITS
+  file, with axes in any order (as long as there are two spatial and one
+  spectral axes).
 
 * When the FITS file does not have a rest frequency defined, there is
   no way to transform the frequency axis into velocity. In this case,
   the spectral axis is left as frequency, and put into units of MHz.
+
+* If the beam size is not indicated by the FITS header (through the
+  BMAJ and BMIN keywords), the user can manually specify the size
+  through the parameter file (using parameter beamSize).
+
+* The FITS I/O routines make use of the command fits_file_exists. This
+  was introduced into the CFITSIO package from version 2.5, so Duchamp
+  will only work with this version or higher. Version 3+ is preferred.
 
 OTHER BUG-FIXING:
 
