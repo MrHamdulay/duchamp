@@ -17,8 +17,8 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
    *  The Param object "par" contains all necessary info about the filter and 
    *   reconstruction parameters, although a Filter object has to be declared
    *   elsewhere previously.
-   *  The input array is in "input", of dimensions "xdim"x"ydim", and the reconstructed
-   *   array is in "output".
+   *  The input array is in "input", of dimensions "xdim"x"ydim", and the 
+   *   reconstructed array is in "output".
    */
 
   extern Filter reconFilter;
@@ -30,7 +30,8 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
   int numScales = reconFilter.getNumScales(mindim);
   double *sigmaFactors = new double[numScales+1];
   for(int i=0;i<=numScales;i++){
-    if(i<=reconFilter.maxFactor(2)) sigmaFactors[i] = reconFilter.sigmaFactor(2,i);
+    if(i<=reconFilter.maxFactor(2)) 
+      sigmaFactors[i] = reconFilter.sigmaFactor(2,i);
     else sigmaFactors[i] = sigmaFactors[i-1] / 2.;
   }
 
@@ -102,8 +103,10 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
   newsigma = 1.e9;
   for(int i=0;i<size;i++) output[i] = 0;
   do{
-    if(par.isVerbose()) std::cout << "Iteration #"<<setw(2)<<++iteration<<":             ";
-    // first, get the value of oldsigma and set it to the previous newsigma value
+    if(par.isVerbose()) 
+      std::cout << "Iteration #"<<setw(2)<<++iteration<<":             ";
+    // first, get the value of oldsigma and set it to the previous 
+    //   newsigma value
     oldsigma = newsigma;
     // we are transforming the residual array
     for(int i=0;i<size;i++)  coeffs[i] = input[i] - output[i];  
@@ -156,7 +159,8 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
 		int oldpos = oldrow + x;
 
 		float oldCoeff;
-		if((y>=yLim1[xpos])&&(y<=yLim2[xpos])&&(x>=xLim1[ypos])&&(x<=xLim2[ypos]))
+		if((y>=yLim1[xpos])&&(y<=yLim2[xpos])&&
+		   (x>=xLim1[ypos])&&(x<=xLim2[ypos])  )
 		  oldCoeff = coeffs[oldpos];
 		else oldCoeff = 0.;
 
@@ -179,14 +183,19 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
       if(scale>=par.getMinScale()){
 	array = new float[size];
 	goodSize=0;
-	for(int pos=0;pos<size;pos++) if(isGood[pos]) array[goodSize++] = wavelet[pos];
+	for(int pos=0;pos<size;pos++){
+	  if(isGood[pos]) array[goodSize++] = wavelet[pos];
+	}
 	findMedianStats(array,goodSize,mean,sigma);
 	delete [] array;
 
-	threshold = mean + par.getAtrousCut() * originalSigma * sigmaFactors[scale];
+	threshold = mean + 
+	  par.getAtrousCut() * originalSigma * sigmaFactors[scale];
 	for(int pos=0;pos<size;pos++){
-	  if(!isGood[pos]) output[pos] = blankPixValue; // preserve the Blank pixel values in the output.
-	  else if( fabs(wavelet[pos]) > threshold ) output[pos] += wavelet[pos];
+	  if(!isGood[pos]) output[pos] = blankPixValue; 
+	  // preserve the Blank pixel values in the output.
+	  else if( fabs(wavelet[pos]) > threshold ) 
+	    output[pos] += wavelet[pos];
 	}
       }
       spacing *= 2;
@@ -197,7 +206,9 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
 
     array = new float[size];
     goodSize=0;
-    for(int i=0;i<size;i++) if(isGood[i]) array[goodSize++] = input[i] - output[i];
+    for(int i=0;i<size;i++){
+      if(isGood[i]) array[goodSize++] = input[i] - output[i];
+    }
     findMedianStats(array,goodSize,mean,newsigma);
     newsigma /= correctionFactor; // correct from MADFM to sigma estimator.
     delete [] array;

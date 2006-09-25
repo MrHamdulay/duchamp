@@ -31,7 +31,8 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
   int numScales = reconFilter.getNumScales(xdim);
   double *sigmaFactors = new double[numScales+1];
   for(int i=0;i<=numScales;i++){
-    if(i<=reconFilter.maxFactor(1)) sigmaFactors[i] = reconFilter.sigmaFactor(1,i);
+    if(i<=reconFilter.maxFactor(1)) 
+      sigmaFactors[i] = reconFilter.sigmaFactor(1,i);
     else sigmaFactors[i] = sigmaFactors[i-1] / sqrt(2.);
   }
 
@@ -55,8 +56,10 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
   int iteration=0;
   newsigma = 1.e9;
   do{
-    if(par.isVerbose()) std::cout << "Iteration #"<<++iteration<<":             ";
-    // first, get the value of oldsigma and set it to the previous newsigma value
+    if(par.isVerbose()) 
+      std::cout << "Iteration #"<<++iteration<<":             ";
+    // first, get the value of oldsigma and set it to the previous 
+    //   newsigma value
     oldsigma = newsigma;
     // all other times round, we are transforming the residual array
     for(int i=0;i<xdim;i++)  coeffs[i] = input[i] - output[i];
@@ -65,7 +68,7 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
     int goodSize=0;
     for(int i=0;i<xdim;i++) if(isGood[i]) array[goodSize++] = input[i];
     findMedianStats(array,goodSize,originalMean,originalSigma);
-    originalSigma /= correctionFactor; // correct from MADFM to sigma estimator.
+    originalSigma /= correctionFactor; // correct from MADFM to sigma estimator
     delete [] array;
 
     int spacing = 1;
@@ -89,8 +92,8 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
 	    int x = xpos + spacing*xoffset;
 
 	    while((x<0)||(x>=xdim)){
-	      if(x<0) x = 0 - x;                    // boundary conditions are  
-	      else if(x>=xdim) x = 2*(xdim-1) - x;  //    reflection.               
+	      if(x<0) x = 0 - x;                    // boundary conditions are
+	      else if(x>=xdim) x = 2*(xdim-1) - x;  //    reflection. 
 	    }
 
 	    int filterpos = (xoffset+filterHW);
@@ -111,14 +114,16 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
       if(scale>=MIN_SCALE){
 	array = new float[xdim];
 	goodSize=0;
-	for(int pos=0;pos<xdim;pos++) if(isGood[pos]) array[goodSize++] = wavelet[pos];
+	for(int pos=0;pos<xdim;pos++) 
+	  if(isGood[pos]) array[goodSize++] = wavelet[pos];
 	findMedianStats(array,goodSize,mean,sigma);
 	delete [] array;
 	
 	for(int pos=0;pos<xdim;pos++){
 	  // preserve the Blank pixel values in the output.
 	  if(!isGood[pos]) output[pos] = blankPixValue;
-	  else if(fabs(wavelet[pos])>(mean+SNR_THRESH*originalSigma*sigmaFactors[scale]))
+	  else if( fabs(wavelet[pos]) > 
+		   (mean+SNR_THRESH*originalSigma*sigmaFactors[scale]) )
 	    output[pos] += wavelet[pos];
 	}
       }
@@ -131,12 +136,14 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
 
     array = new float[xdim];
     goodSize=0;
-    for(int i=0;i<xdim;i++) if(isGood[i]) array[goodSize++] = input[i] - output[i];
+    for(int i=0;i<xdim;i++)
+      if(isGood[i]) array[goodSize++] = input[i] - output[i];
     findMedianStats(array,goodSize,mean,newsigma);
     newsigma /= correctionFactor; // correct from MADFM to sigma estimator.
     delete [] array;
 
-    if(par.isVerbose())     std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+    if(par.isVerbose()) 
+      std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
 
   } while( (iteration==1) || 
 	   (fabs(oldsigma-newsigma)/newsigma > reconTolerance) );

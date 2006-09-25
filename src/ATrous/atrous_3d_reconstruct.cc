@@ -32,7 +32,8 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
 
   double *sigmaFactors = new double[numScales+1];
   for(int i=0;i<=numScales;i++){
-    if(i<=reconFilter.maxFactor(3)) sigmaFactors[i] = reconFilter.sigmaFactor(3,i);
+    if(i<=reconFilter.maxFactor(3)) 
+      sigmaFactors[i] = reconFilter.sigmaFactor(3,i);
     else sigmaFactors[i] = sigmaFactors[i-1] / sqrt(8.);
   }
 
@@ -69,8 +70,9 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
     }
   }
 
-  // locating the borders of the image -- ignoring BLANK pixels
-  //  Only do this if flagBlankPix is true. Otherwise use the full range of x and y.
+  // Locating the borders of the image -- ignoring BLANK pixels
+  //  Only do this if flagBlankPix is true. 
+  //  Otherwise use the full range of x and y.
   //  No trimming is done in the z-direction at this point.
   int *xLim1 = new int[ydim];
   for(int i=0;i<ydim;i++) xLim1[i] = 0;
@@ -86,8 +88,6 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
     for(int row=0;row<ydim;row++){
       int ct1 = 0;
       int ct2 = xdim - 1;
-//       while((ct1<ct2)&&(input[row*xdim+ct1]==blankPixValue) ) ct1++;
-//       while((ct2>ct1)&&(input[row*xdim+ct2]==blankPixValue) ) ct2--;
       while((ct1<ct2)&&(par.isBlank(input[row*xdim+ct1]))) ct1++;
       while((ct2>ct1)&&(par.isBlank(input[row*xdim+ct2]))) ct2--;
       xLim1[row] = ct1;
@@ -99,8 +99,6 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
     for(int col=0;col<xdim;col++){
       int ct1=0;
       int ct2=ydim-1;
-//       while((ct1<ct2)&&(input[col+xdim*ct1]==blankPixValue) ) ct1++;
-//       while((ct2>ct1)&&(input[col+xdim*ct2]==blankPixValue) ) ct2--;
       while((ct1<ct2)&&(par.isBlank(input[col+xdim*ct1]))) ct1++;
       while((ct2>ct1)&&(par.isBlank(input[col+xdim*ct2]))) ct2--;
       yLim1[col] = ct1;
@@ -119,7 +117,7 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
   newsigma = 1.e9;
   for(int i=0;i<size;i++) output[i] = 0;
   do{
-    if(par.isVerbose())  std::cout << "Iteration #"<<setw(2)<<++iteration<<": ";
+    if(par.isVerbose()) std::cout << "Iteration #"<<setw(2)<<++iteration<<": ";
     // first, get the value of oldsigma, set it to the previous newsigma value
     oldsigma = newsigma;
     // we are transforming the residual array (input array first time around)
@@ -160,7 +158,7 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
 		  // Boundary conditions -- assume reflection at boundaries.
 		  // Use limits as calculated above
 		  if(yLim1[xpos]!=yLim2[xpos]){ 
-		    // if these are equal we will get into an infinite loop here 
+		    // if these are equal we will get into an infinite loop
 		    while((y<yLim1[xpos])||(y>yLim2[xpos])){
 		      if(y<yLim1[xpos]) y = 2*yLim1[xpos] - y;      
 		      else if(y>yLim2[xpos]) y = 2*yLim2[xpos] - y;      
@@ -174,14 +172,13 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
 		    // Boundary conditions -- assume reflection at boundaries.
 		    // Use limits as calculated above
 		    if(xLim1[ypos]!=xLim2[ypos]){
-		      // if these are equal we will get into an infinite loop here 
+		      // if these are equal we will get into an infinite loop
 		      while((x<xLim1[ypos])||(x>xLim2[ypos])){
 			if(x<xLim1[ypos]) x = 2*xLim1[ypos] - x;      
 			else if(x>xLim2[ypos]) x = 2*xLim2[ypos] - x;      
 		      }
 		    }
 
-// 		    int oldpos = z*spatialSize + y*xdim + x;
 		    int oldpos = oldchan + oldrow + x;
 
 		    filterpos++;
@@ -205,11 +202,13 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
       if(scale>=par.getMinScale()){
 	array = new float[size];
 	goodSize=0;
-	for(int pos=0;pos<size;pos++) if(isGood[pos]) array[goodSize++] = wavelet[pos];
+	for(int pos=0;pos<size;pos++) 
+	  if(isGood[pos]) array[goodSize++] = wavelet[pos];
 	findMedianStats(array,goodSize,mean,sigma);
 	delete [] array;
 	
-	threshold = mean + par.getAtrousCut() * originalSigma * sigmaFactors[scale];
+	threshold = mean + 
+	  par.getAtrousCut()*originalSigma*sigmaFactors[scale];
 	for(int pos=0;pos<size;pos++){
 	  if(!isGood[pos]){
 	    output[pos] = blankPixValue; 
@@ -230,7 +229,9 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
 
     array = new float[size];
     goodSize=0;
-    for(int i=0;i<size;i++) if(isGood[i]) array[goodSize++] = input[i] - output[i];
+    for(int i=0;i<size;i++) {
+      if(isGood[i]) array[goodSize++] = input[i] - output[i];
+    }
     findMedianStats(array,goodSize,mean,newsigma);
     newsigma /= correctionFactor; // correct from MADFM to sigma estimator.
     delete [] array;
