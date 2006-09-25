@@ -24,8 +24,3 @@ void duchampError(std::string subroutine, std::string error)
       std::cerr << std::setw(preamble.size()-1) <<": ";
   }
 }
-
-// void backSpace(int num)
-// {
-//   for(int i=0;i<num;i++) std::cerr << '\b';  
-// }
