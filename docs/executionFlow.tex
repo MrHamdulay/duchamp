@@ -334,7 +334,8 @@ i^{-1}$. \citet{hopkins02} consider real radio data, where the pixels
 are correlated over the beam. In this case the sum is made over the
 $N$ pixels that make up the beam. The value of $N$ is calculated from
 the FITS header (if the correct keywords -- BMAJ, BMIN -- are not
-present, a default value of 10 pixels is assumed).
+present, the size of the beam is taken from the parameter
+\texttt{beamSize}). 
 
 The theory behind the FDR method implies a direct connection between
 the choice of $\alpha$ and the fraction of detections that will be
