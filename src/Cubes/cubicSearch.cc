@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <fstream>
 #include <vector>
+#include <duchamp.hh>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
 
@@ -56,17 +57,15 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
   
   // FIRST SEARCH --  IN EACH SPECTRUM.
   if(zdim>1){
-    if(par.isVerbose()) std::cout << "  1D: |                    |" 
-				  << std::flush;
+    if(par.isVerbose()) {
+      std::cout << "  1D: ";
+      initialiseMeter();
+    }
 
     for(int npix=0; npix<xySize; npix++){
 
-      if( par.isVerbose() && ((100*(npix+1)/xySize)%5 == 0) ){
-	std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b|";
-	for(int i=0;i<(100*(npix+1)/xySize)/5;i++) std::cout << "#";
-	for(int i=(100*(npix+1)/xySize)/5;i<20;i++) std::cout << " ";
-	std::cout << "|" << std::flush;
-      }
+      if( par.isVerbose() && ((100*(npix+1)/xySize)%5 == 0) )
+	updateMeter((100*(npix+1)/xySize)/5);
 
       if(doChannel[npix]){
 
@@ -112,25 +111,25 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
     }
 
     //    num = outputList.size();
-    if(par.isVerbose()) 
-      std::cout <<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " 
-		<< num <<";" << std::flush;
+    if(par.isVerbose()) {
+      printBackSpace(22);
+      std::cout <<"Found " << num <<";" << std::flush;
+    }
 
   }
 
   // SECOND SEARCH --  IN EACH CHANNEL
-  if(par.isVerbose()) std::cout << "  2D: |                    |" 
-				<< std::flush;
+  if(par.isVerbose()){
+    std::cout << "  2D: ";
+    initialiseMeter();
+  }
+  
   num = 0;
 
   for(int z=0; z<zdim; z++){
 
-    if( par.isVerbose() && ((100*(z+1)/zdim)%5 == 0) ){
-      std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b|";
-      for(int i=0;i<(100*(z+1)/zdim)/5;i++) std::cout << "#";
-      for(int i=(100*(z+1)/zdim)/5;i<20;i++) std::cout << " ";
-      std::cout << "|" << std::flush;
-    }
+    if( par.isVerbose() && ((100*(z+1)/zdim)%5 == 0) )
+      updateMeter((100*(z+1)/zdim)/5);
 
     if(!par.isInMW(z)){
 
@@ -170,11 +169,12 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
 
   }
 
-  if(par.isVerbose())
-    std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " 
-	      << num 
-	      << ".                                           " 
-	      << std::endl << std::flush;
+  if(par.isVerbose()){
+    printBackSpace(22);
+    std::cout << "Found " << num << ".";
+    printSpace(44);
+    std::cout << std::endl << std::flush;
+  }
 
   delete [] isGood;
   delete [] doChannel;

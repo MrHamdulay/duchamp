@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <math.h>
 #include <vector>
+#include <duchamp.hh>
 #include <Cubes/cubes.hh>
 #include <Detection/detection.hh>
 #include <Utils/utils.hh>
@@ -21,8 +22,8 @@ void Cube::ObjectMerger()
 
   if(this->objectList.size() > 0){
 
-    // make a vector "currentList", which starts as a copy of the Cube's objectList,
-    //  but is the one worked on.
+    // make a vector "currentList", which starts as a copy of the Cube's 
+    //  objectList, but is the one worked on.
     vector <Detection> *currentList = new vector <Detection>(this->objectList.size());
     *currentList = this->objectList;
     this->objectList.clear();
@@ -34,11 +35,12 @@ void Cube::ObjectMerger()
       std::cout << "Growing objects...     "<< std::flush;
       this->setCubeStats();
       vector <Detection> *newList = new vector <Detection>;
-      std::cout<< "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
+      printBackSpace(23);
       std::cout << " Growing object #      "<< std::flush;
       std::cout.setf(std::ios::left);
       for(int i=0;i<currentList->size();i++){
-	std::cout<< "\b\b\b\b\b\b"<<std::setw(6)<<i+1<<std::flush;
+	printBackSpace(6);
+	std::cout << std::setw(6) << i+1 << std::flush;
 	Detection *obj = new Detection;
 	*obj = (*currentList)[i];
 	growObject(*obj,*this);
@@ -48,7 +50,8 @@ void Cube::ObjectMerger()
       delete currentList;
       currentList = newList;
       std::cout.unsetf(std::ios::left);
-      std::cout<< "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
+      printBackSpace(23);
+      std::cout << std::flush;
 
       // and do the merging again to pick up objects that have
       //  grown into each other.
@@ -95,14 +98,12 @@ void mergeList(vector<Detection> &objList, Param &par)
     while( counter < (objList.size()-1) ){
       if(isVerb){
 	std::cout.setf(std::ios::right);
-// if(nloop>0) std::cout << "Progress#2: " << std::setw(6) << counter << "/" ;
-// 	else 
 	std::cout << "Progress: " << std::setw(6) << counter << "/" ;
 	std::cout.unsetf(std::ios::right);
 	std::cout.setf(std::ios::left);
-	std::cout << std::setw(6) << objList.size() 
-		  << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b" << std::flush;
-// 	if(nloop>0) std::cout << "\b\b" << std::flush; ;
+	std::cout << std::setw(6) << objList.size();
+	printBackSpace(23);
+	std::cout << std::flush;
 	std::cout.unsetf(std::ios::left);
       }
 
@@ -129,9 +130,9 @@ void mergeList(vector<Detection> &objList, Param &par)
 		      << std::setw(6) << counter << "/";
 	    std::cout.unsetf(std::ios::right);
 	    std::cout.setf(std::ios::left);
-	    std::cout << std::setw(6) << objList.size() 
-		      << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b" 
-		      << std::flush;
+	    std::cout << std::setw(6) << objList.size();
+	    printBackSpace(23);
+	    std::cout << std::flush;
 	    std::cout.unsetf(std::ios::left);
 	  }
 
@@ -176,9 +177,10 @@ void finaliseList(vector<Detection> &objList, Param &par)
 
       listCounter++;
       if(par.isVerbose()){
-	std::cout << "Final total:"<<std::setw(5)<<listCounter<<"      "
-		  << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
-
+	std::cout << "Final total:" << std::setw(5) << listCounter;
+	printSpace(6);
+	printBackSpace(23);
+	std::cout << std::flush;
       }
     }      
     else objList.erase(objList.begin()+listCounter);

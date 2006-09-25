@@ -80,9 +80,10 @@ vector<Detection> readAndSearch(Param &par)
   int numDetected = 0;
   
   std::cout << "   0: |";
-  for(int i=0;i<50;i++) std::cout << " ";
+  printSpace(50);
   std::cout << "| " << std::setw(5) << numDetected << std::flush;
-  for(int i=0;i<64;i++) std::cout << "\b" << std::flush;
+  printBackSpace(64);
+  std::cout << std::flush;
 
   float *bigarray = new float[dimAxes[0] * dimAxes[2]];
   float *array = new float[dimAxes[2]];
@@ -126,10 +127,10 @@ vector<Detection> readAndSearch(Param &par)
       frac = 100*(pos+1)/(dimAxes[1]*dimAxes[0]);
       if(frac%2 == 0){
 	std::cout << "|";
-	for(int i=0;i<frac/2;i++) std::cout << "#";
-	for(int i=frac/2;i<50;i++) std::cout << " ";
+	printHash(frac/2);
+	printSpace(50-frac/2);
 	std::cout << "| " << std::setw(5) << numDetected;
-	for(int i=0;i<58;i++) std::cout << "\b";
+	printBackSpace(58);
 	std::cout << std::flush;
       }
  
@@ -182,7 +183,8 @@ vector<Detection> readAndSearch(Param &par)
     
     } // end of loop over y
 
-    std::cout << "\b\b\b\b\b\b" << std::flush;
+    printBackSpace(6);
+    std::cout << std::flush;
   }   // end of loop over x
 
   delete spectrum;

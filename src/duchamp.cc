@@ -25,3 +25,7 @@ void duchampError(std::string subroutine, std::string error)
   }
 }
 
+// void backSpace(int num)
+// {
+//   for(int i=0;i<num;i++) std::cerr << '\b';  
+// }

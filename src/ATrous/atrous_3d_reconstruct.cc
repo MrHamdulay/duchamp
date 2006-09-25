@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
+#include <duchamp.hh>
 #include <ATrous/atrous.hh>
 #include <Utils/utils.hh>
 
@@ -128,8 +129,9 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
 
       if(par.isVerbose()){
 	std::cout << "Scale ";
-	std::cout << setw(2)<<scale<<" / "<<setw(2)<<numScales
-		  << "\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
+	std::cout << setw(2)<<scale<<" / "<<setw(2)<<numScales;
+	printBackSpace(13);
+	std::cout << std::flush;
       }
 
       int pos = -1;
@@ -236,7 +238,7 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
     newsigma /= correctionFactor; // correct from MADFM to sigma estimator.
     delete [] array;
 
-    if(par.isVerbose()) std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+    if(par.isVerbose()) printBackSpace(15);
 
   } while( (iteration==1) || 
 	   (fabs(oldsigma-newsigma)/newsigma > reconTolerance) );

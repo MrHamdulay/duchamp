@@ -2,6 +2,7 @@
 #ifndef DUCHAMP_HH
 #define DUCHAMP_HH
 
+#include <iostream>
 #include <string>
 
 #undef PACKAGE_BUGREPORT
@@ -33,6 +34,17 @@ const std::string VERSION = PACKAGE_VERSION;
 void duchampWarning(std::string subroutine, std::string warning);
 void duchampError(std::string subroutine, std::string error);
 
+// A simple functions to print a given number of backspaces or spaces
+//  to std::cout
+inline void printBackSpace(int num){for(int i=0;i<num;i++) std::cout << '\b';};
+inline void printSpace(int num){ for(int i=0;i<num;i++) std::cout << ' '; };
+inline void printHash(int num){ for(int i=0;i<num;i++) std::cout << '#'; };
+inline void initialiseMeter(){
+  std::cout << "|"; printSpace(20); std::cout << "|" << std::flush;};
+inline void updateMeter(int num){
+  printBackSpace(22); std::cout << "|"; printHash(num); printSpace(20-num); 
+  std::cout << "|" << std::flush;};
+
 // The spectral type that we want the wcsprm structs to be in
 const char duchampVelocityType[9] = "VELO-F2V";
 const char duchampFrequencyType[9] = "FREQ";
@@ -43,7 +55,7 @@ const std::string keyword_scaleMin   = "DU_MINSC";
 const std::string keyword_snrRecon   = "DU_ATCUT";
 const std::string keyword_reconDim   = "DU_ATDIM";
 const std::string keyword_filterCode = "DU_FILTR";
-const std::string keyword_ReconResid = "DU_RECON"; //reconstruction or residual?
+const std::string keyword_ReconResid = "DU_RECON";//reconstruction or residual?
 const std::string keyword_subsection = "DU_IMSUB";
 
 // And these are the comments corresponding to the relevant keywords

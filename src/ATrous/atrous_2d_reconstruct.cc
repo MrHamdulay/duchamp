@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
+#include <duchamp.hh>
 #include <ATrous/atrous.hh>
 #include <Utils/utils.hh>
 
@@ -103,8 +104,11 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
   newsigma = 1.e9;
   for(int i=0;i<size;i++) output[i] = 0;
   do{
-    if(par.isVerbose()) 
-      std::cout << "Iteration #"<<setw(2)<<++iteration<<":             ";
+    if(par.isVerbose()) {
+      std::cout << "Iteration #"<<setw(2)<<++iteration<<":";
+      printBackSpace(13);
+    }
+
     // first, get the value of oldsigma and set it to the previous 
     //   newsigma value
     oldsigma = newsigma;
@@ -116,8 +120,9 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
 
       if(par.isVerbose()){
 	std::cout << "Scale ";
-	std::cout << setw(2)<<scale<<" / "<<setw(2)<<numScales
-		  << "\b\b\b\b\b\b\b\b\b\b\b\b\b"<<std::flush;
+	std::cout << setw(2)<<scale<<" / "<<setw(2)<<numScales;
+	printBackSpace(13);
+	std::cout <<std::flush;
       }
 
       for(int ypos = 0; ypos<ydim; ypos++){
@@ -213,7 +218,7 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
     newsigma /= correctionFactor; // correct from MADFM to sigma estimator.
     delete [] array;
     
-    if(par.isVerbose()) std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+    if(par.isVerbose()) printBackSpace(15);
 
   } while( (iteration==1) || 
 	   (fabs(oldsigma-newsigma)/newsigma > reconTolerance) );

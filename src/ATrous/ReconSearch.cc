@@ -75,14 +75,12 @@ void Cube::ReconSearch1D()
   // Reconstruct the cube by 1d atrous transform in each spatial pixel
   if(!this->reconExists){
     std::cout<<"  Reconstructing... ";
-    if(par.isVerbose()) std::cout << "|                    |" << std::flush;
+    if(par.isVerbose()) initialiseMeter();
     for(int npix=0; npix<xySize; npix++){
-      if( par.isVerbose() && ((100*(npix+1)/xySize)%5 == 0) ){
-	std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b|";
-	for(int i=0;i<(100*(npix+1)/xySize)/5;i++) std::cout << "#";
-	for(int i=(100*(npix+1)/xySize)/5;i<20;i++) std::cout << " ";
-	std::cout << "|" << std::flush;
-      }
+
+      if( par.isVerbose() && ((100*(npix+1)/xySize)%5 == 0) )
+	updateMeter((100*(npix+1)/xySize)/5);
+
       float *spec = new float[zdim];
       float *newSpec = new float[zdim];
       for(int z=0;z<zdim;z++) spec[z] = this->array[z*xySize + npix];
@@ -95,9 +93,10 @@ void Cube::ReconSearch1D()
       delete newSpec;
     }
     this->reconExists = true;
-    std::cout<<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
-	     <<"  All Done.                      \n"
-	     <<"  Searching... "<<std::flush;
+    printBackSpace(22);
+    std::cout << "  All Done.";
+    printSpace(22);
+    std::cout << "\n  Searching... "<<std::flush;
   }
     
   this->objectList = searchReconArray(this->axisDim,this->array,
@@ -124,14 +123,12 @@ void Cube::ReconSearch2D()
   if(!this->reconExists){
     // RECONSTRUCT THE CUBE BY 2D ATROUS TRANSFORM IN EACH CHANNEL  
     std::cout<<"  Reconstructing... ";
-    if(par.isVerbose()) std::cout << "|                    |" << std::flush;
+    if(par.isVerbose()) initialiseMeter();
     for(int z=0;z<this->axisDim[2];z++){
-      if( par.isVerbose() && ((100*(z+1)/this->axisDim[2])%5 == 0) ){
-	std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b|";
-	for(int i=0;i<(100*(z+1)/this->axisDim[2])/5;i++) std::cout << "#";
-	for(int i=(100*(z+1)/this->axisDim[2])/5;i<20;i++) std::cout << " ";
-	std::cout << "|" << std::flush;
-      }
+
+      if( par.isVerbose() && ((100*(z+1)/this->axisDim[2])%5 == 0) )
+	updateMeter((100*(z+1)/this->axisDim[2])/5);
+
       if(!this->par.isInMW(z)){
 	float *im = new float[xySize];
 	float *newIm = new float[xySize];
@@ -153,9 +150,10 @@ void Cube::ReconSearch2D()
       }
     }
     this->reconExists = true;
-    std::cout<<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"
-	     <<"  All Done.                      \n"
-	     <<"Searching... "<<std::flush;
+    printBackSpace(22);
+    std::cout << "  All Done.";
+    printSpace(22);
+    std::cout << "\nSearching... "<<std::flush;
 
   }
 
@@ -185,8 +183,9 @@ void Cube::ReconSearch3D()
       atrous3DReconstruct(this->axisDim[0],this->axisDim[1],this->axisDim[2],
 			  this->array,this->recon,this->par);
       this->reconExists = true;
-      std::cout << "All Done.                      \n  Searching... "
-	        << std::flush;
+      std::cout << "  All Done.";
+      printSpace(22);
+      std::cout << "\n  Searching... "<<std::flush;
     }
 
     this->objectList = searchReconArray(this->axisDim,this->array,
@@ -241,17 +240,15 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
 
   // First search --  in each spectrum.
   if(zdim > 1){
-    if(par.isVerbose()) std::cout << "1D: |                    |" 
-				  << std::flush;
+    if(par.isVerbose()){
+      std::cout << "1D: ";
+      initialiseMeter();
+    }
 
     for(int npix=0; npix<xySize; npix++){
 
-      if( par.isVerbose() && ((100*(npix+1)/xySize)%5 == 0) ){
-	std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b|";
-	for(int i=0;i<(100*(npix+1)/xySize)/5;i++) std::cout << "#";
-	for(int i=(100*(npix+1)/xySize)/5;i<20;i++) std::cout << " ";
-	std::cout << "|" << std::flush;
-      }
+      if( par.isVerbose() && ((100*(npix+1)/xySize)%5 == 0) )
+	updateMeter((100*(npix+1)/xySize)/5);
 
       if(doChannel[npix]){
 	
@@ -311,26 +308,24 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
     }
 
     num = outputList.size();
-    if(par.isVerbose()) 
-      std::cout <<"\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " 
-		<< num <<"; " << std::flush;
-
+    if(par.isVerbose()) {
+      printBackSpace(22);
+      std::cout <<"Found " << num <<"; " << std::flush;
+    }
   }
 
   // Second search --  in each channel
-  if(par.isVerbose()) std::cout << "2D: |                    |" 
-				<< std::flush;
+  if(par.isVerbose()){
+    std::cout << "2D: ";
+    initialiseMeter();
+  }
 
   num = 0;
 
   for(int z=0; z<zdim; z++){  // loop over all channels
 
-    if( par.isVerbose() && ((100*(z+1)/zdim)%5 == 0) ){
-      std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b|";
-      for(int i=0;i<(100*(z+1)/zdim)/5;i++)  std::cout << "#";
-      for(int i=(100*(z+1)/zdim)/5;i<20;i++) std::cout << " ";
-      std::cout << "|" << std::flush;
-    }
+    if( par.isVerbose() && ((100*(z+1)/zdim)%5 == 0) )
+      updateMeter((100*(z+1)/zdim)/5);
 
     if(!par.isInMW(z)){ 
 
@@ -388,11 +383,10 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
 
   }
 
-
-  std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bFound " 
-	    << num 
-	    << ".                                           "  
-	    << std::endl << std::flush;
+  printBackSpace(22);
+  std::cout << "Found " << num << ".";
+  printSpace(22);  
+  std::cout << std::endl << std::flush;
 
   delete [] isGood;
   delete [] doChannel;

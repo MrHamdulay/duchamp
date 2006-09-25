@@ -1,9 +1,10 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
+#include <duchamp.hh>
+#include <param.hh>
 #include <ATrous/atrous.hh>
 #include <Utils/utils.hh>
-#include <param.hh>
 
 void baselineSubtract(long numSpec, long specLength, float *originalCube, 
 		      float *baselineValues, Param &par)
@@ -30,15 +31,11 @@ void baselineSubtract(long numSpec, long specLength, float *originalCube,
   bool flagVerb = par.isVerbose();
   par.setVerbosity(false);
 
-  std::cout << "|                    |" << std::flush;
+  if(flagVerb) initialiseMeter();
   for(int pix=0; pix<numSpec; pix++){ // for each spatial pixel...
 
-    if(flagVerb && ((100*(pix+1)/numSpec)%5 == 0) ){
-      std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b|";
-      for(int i=0;i<(100*(pix+1)/numSpec)/5;i++) std::cout << "#";
-      for(int i=(100*(pix+1)/numSpec)/5;i<20;i++) std::cout << " ";
-      std::cout << "|" << std::flush;
-    }
+    if(flagVerb && ((100*(pix+1)/numSpec)%5 == 0) )
+      updateMeter((100*(pix+1)/numSpec)/5);
 
     for(int z=0; z<specLength; z++) 
       spec[z] = originalCube[z*numSpec + pix];
@@ -48,11 +45,12 @@ void baselineSubtract(long numSpec, long specLength, float *originalCube,
     for(int z=0; z<specLength; z++) {
       baselineValues[z*numSpec+pix] = thisBaseline[z];
       if(!par.isBlank(originalCube[z*numSpec+pix])) 
-	originalCube[z*numSpec+pix] = originalCube[z*numSpec+pix] - baselineValues[z*numSpec+pix];
+	originalCube[z*numSpec+pix] = originalCube[z*numSpec+pix] - 
+	  baselineValues[z*numSpec+pix];
     }
 
   }    
-  if(flagVerb) std::cout << "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+  if(flagVerb) printBackSpace(22);
 
   par.setMinScale(minscale);
   par.setAtrousCut(atrouscut);
@@ -68,11 +66,12 @@ void getBaseline(long size, float *input, float *baseline, Param &par)
   /**
    *  getBaseline(long size, float *input, float *baseline, Param &par)
    *    A function to find the baseline of an input (1-D) spectrum.
-   *    Uses the a trous reconstruction, keeping only the highest two scales, to
-   *       reconstruct the baseline.
-   *    To avoid contamination by very strong signals, the input spectrum is trimmed
-   *       at 8*MADFM above the median before reconstruction. This reduces the strong
-   *       dips created by the presence of very strong signals.
+   *    Uses the a trous reconstruction, keeping only the highest two scales, 
+   *     to reconstruct the baseline.
+   *    To avoid contamination by very strong signals, the input spectrum is 
+   *     trimmed at 8*MADFM above the median before reconstruction. 
+   *     This reduces the strong dips created by the presence of very strong 
+   *     signals.
    *    The baseline array is returned -- no change is made to the input array.
    */
 
@@ -113,13 +112,14 @@ void getBaseline(long size, float *input, float *baseline)
   /**
    *  getBaseline(long size, float *input, float *baseline)
    *    A function to find the baseline of an input (1-D) spectrum.
-   *    This version is designed for programs not using Param classes -- it keeps
-   *       that side of things hidden from the user.
-   *    Uses the a trous reconstruction, keeping only the highest two scales, to
-   *       reconstruct the baseline.
-   *    To avoid contamination by very strong signals, the input spectrum is trimmed
-   *       at 8*MADFM above the median before reconstruction. This reduces the strong
-   *       dips created by the presence of very strong signals.
+   *    This version is designed for programs not using Param classes -- it 
+   *     keeps that side of things hidden from the user.
+   *    Uses the a trous reconstruction, keeping only the highest two scales, 
+   *     to reconstruct the baseline.
+   *    To avoid contamination by very strong signals, the input spectrum is 
+   *     trimmed at 8*MADFM above the median before reconstruction. This 
+   *     reduces the strong dips created by the presence of very strong 
+   *     signals.
    *    The baseline array is returned -- no change is made to the input array.
    */
 
