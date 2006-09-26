@@ -18,17 +18,17 @@ int linear_regression(int num, float *x, float *y, int ilow, int ihigh, float &s
   if (ilow>ihigh) {
     std::cerr << "Error! linear_regression.cc :: ilow (" << ilow 
 	      << ") > ihigh (" << ihigh << ")!!\n";
-    std::exit(1);
+    return 1;
   }
   if (ihigh>num-1) {
     std::cerr << "Error! linear_regression.cc :: ihigh (" <<ihigh
 	      << ") out of bounds of array (>" << num-1 << ")!!\n";
-    std::exit(1);
+    return 1;
   }
   if(ilow<0){
     std::cerr << "Error! linear_regression.cc :: ilow (" << ilow
 	      << ") < 0. !!\n";
-    std::exit(1);
+    return 1;
   }
 
   double sumx,sumy,sumxx,sumxy,sumyy;
@@ -46,20 +46,21 @@ int linear_regression(int num, float *x, float *y, int ilow, int ihigh, float &s
     sumxy = sumxy + x[i]*y[i];
     sumyy = sumyy + y[i]*y[i];
   }
-  if(count!=(ihigh-ilow+1)){
-    std::cerr << "Whoops!! count (" << count <<") doesn't equal what it should ("
-	      << (ihigh-ilow+1) << ")!!\n";
-    std::exit(1);
-  }
 
-  if(fabs(count*sumxx-sumx*sumx)<1.e-6) return 1;
+  const float SMALLTHING=1.e-6;
+  if(fabs(count*sumxx-sumx*sumx)<SMALLTHING) return 1;
   else{
+
     slope = (count*sumxy - sumx*sumy)/(count*sumxx - sumx*sumx);
     errSlope = count / (count*sumxx - sumx*sumx);
+
     intercept = (sumy*sumxx - sumxy*sumx)/(count*sumxx - sumx*sumx);
     errIntercept = sumxx / (count*sumxx - sumx*sumx);
     
-    r = (count*sumxy - sumx*sumy)/(sqrt(count*sumxx-sumx*sumx)*sqrt(count*sumyy-sumy*sumy));
+    r = (count*sumxy - sumx*sumy) /
+      (sqrt(count*sumxx-sumx*sumx) * sqrt(count*sumyy-sumy*sumy) );
+
     return 0;
+
   }
 }

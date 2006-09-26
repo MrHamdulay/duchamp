@@ -29,7 +29,7 @@ DataArray::DataArray(short int nDim, long size){
 		 "Negative size -- could not define DataArray");
   else if(nDim<0)
     duchampError("DataArray(nDim,size)",
-		 "Negative number of dimensions -- could not define DataArray");
+		 "Negative number of dimensions: could not define DataArray");
   else {
     if(size>0) this->array = new float[size];
     this->numPixels = size;
@@ -41,13 +41,13 @@ DataArray::DataArray(short int nDim, long size){
 DataArray::DataArray(short int nDim, long *dimensions){
   if(nDim<0)
     duchampError("DataArray(nDim,dimArray)",
-		 "Negative number of dimensions -- could not define DataArray");
+		 "Negative number of dimensions: could not define DataArray");
   else {
     int size = dimensions[0];
     for(int i=1;i<nDim;i++) size *= dimensions[i];
     if(size<0)
       duchampError("DataArray(nDim,dimArray)",
-		   "Negative size -- could not define DataArray");
+		   "Negative size: could not define DataArray");
     else{
       this->numPixels = size;
       if(size>0){
@@ -109,9 +109,12 @@ void DataArray::addObjectList(vector <Detection> newlist) {
 void DataArray::addObjectOffsets(){
   for(int i=0;i<this->objectList.size();i++){
     for(int p=0;p<this->objectList[i].getSize();p++){
-      this->objectList[i].setX(p,this->objectList[i].getX(p)+this->par.getXOffset());
-      this->objectList[i].setY(p,this->objectList[i].getY(p)+this->par.getYOffset());
-      this->objectList[i].setZ(p,this->objectList[i].getZ(p)+this->par.getZOffset());
+      this->objectList[i].setX(p,this->objectList[i].getX(p)+
+			       this->par.getXOffset());
+      this->objectList[i].setY(p,this->objectList[i].getY(p)+
+			       this->par.getYOffset());
+      this->objectList[i].setZ(p,this->objectList[i].getZ(p)+
+			       this->par.getZOffset());
     }
   }
 }
@@ -311,14 +314,16 @@ void Image::findStats(int code)
    *  Image::findStats(int code)
    *    Front-end to function to find the stats (mean/median & sigma/madfm) and
    *     store them in the "mean" and "sigma" members of Image.
-   *    The choice of normal(mean & sigma) or robust (median & madfm) is made via the 
-   *      code parameter. This is stored as a decimal number, with 0s representing 
-   *      normal stats, and 1s representing robust. 
+   *    The choice of normal(mean & sigma) or robust (median & madfm) is made 
+   *      via the code parameter. This is stored as a decimal number, with 0s 
+   *      representing normal stats, and 1s representing robust. 
    *      The 10s column is the mean, the 1s column the sigma.
-   *      Eg: 00 -- mean&sigma; 01 -- mean&madfm; 10 -- median&sigma; 11 -- median&madfm
+   *      Eg: 00 -- mean&sigma;   01 -- mean&madfm; 
+   *          10 -- median&sigma; 11 -- median&madfm
    *    If calculated, the madfm value is corrected to sigma units.
-   *    The Image member "cut" is also assigned using the parameter in Image's par 
-   *      (needs to be defined first -- also for the blank pixel determination).
+   *    The Image member "cut" is also assigned using the parameter in Image's 
+   *     par (needs to be defined first -- also for the blank pixel 
+   *          determination).
    */
   float *tempArray = new float[this->numPixels];
   int goodSize=0;
@@ -409,37 +414,54 @@ Cube::~Cube()
   delete [] specMean,specSigma,chanMean,chanSigma;
 }
 
-void Cube::initialiseCube(long *dimensions){
-  int lng = this->head.getWCS()->lng;
-  int lat = this->head.getWCS()->lat;
-  int spc = this->head.getWCS()->spec;
-//   int size   = dimensions[0] * dimensions[1] * dimensions[2];
-  int size   = dimensions[lng] * dimensions[lat] * dimensions[spc];
-  int imsize = dimensions[lng] * dimensions[lat];
-  if((size<0) || (imsize<0) )
-    duchampError("Cube::initialiseCube(dimArray)",
-		 "Negative size -- could not define Cube");
+void Cube::initialiseCube(long *dimensions)
+{
+  /**
+   *  Cube::initialiseCube(long *dim)
+   *   A function that defines the sizes of all the necessary
+   *    arrays in the Cube class.
+   *   It also defines the values of the axis dimensions.
+   *   This is done with the WCS in the FitsHeader class, so the 
+   *    WCS needs to be good and have three axes.
+   */ 
+  if(!this->head.isWCS()){
+    duchampError("Cube::initialiseCube",
+ "The WCS is not sufficiently defined. Not able to define Cube.");
+  }
+  else if(this->head.getWCS()->naxis<3){
+    duchampError("Cube::initialiseCube",
+ "The WCS does not have three axes defined. Not able to define Cube.");
+  }
   else{
-    this->numPixels = size;
-    if(size>0){
-      this->array      = new float[size];
-      this->detectMap  = new short[imsize];
-      this->specMean   = new float[imsize];
-      this->specSigma  = new float[imsize];
-      this->chanMean   = new float[dimensions[2]];
-      this->chanSigma  = new float[dimensions[2]];
-      if(this->par.getFlagATrous())
-	this->recon    = new float[size];
-      if(this->par.getFlagBaseline())
-	this->baseline = new float[size];
+    int lng = this->head.getWCS()->lng;
+    int lat = this->head.getWCS()->lat;
+    int spc = this->head.getWCS()->spec;
+    int size   = dimensions[lng] * dimensions[lat] * dimensions[spc];
+    int imsize = dimensions[lng] * dimensions[lat];
+    if((size<0) || (imsize<0) )
+      duchampError("Cube::initialiseCube(dimArray)",
+		   "Negative size -- could not define Cube");
+    else{
+      this->numPixels = size;
+      if(size>0){
+	this->array      = new float[size];
+	this->detectMap  = new short[imsize];
+	this->specMean   = new float[imsize];
+	this->specSigma  = new float[imsize];
+	this->chanMean   = new float[dimensions[spc]];
+	this->chanSigma  = new float[dimensions[spc]];
+	if(this->par.getFlagATrous())
+	  this->recon    = new float[size];
+	if(this->par.getFlagBaseline())
+	  this->baseline = new float[size];
+      }
+      this->numDim  = 3;
+      this->axisDim = new long[3];
+      this->axisDim[0] = dimensions[lng];
+      this->axisDim[1] = dimensions[lat];
+      this->axisDim[2] = dimensions[spc];
+      for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
     }
-    this->numDim  = 3;
-    this->axisDim = new long[3];
-//     for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
-    this->axisDim[0] = dimensions[lng];
-    this->axisDim[1] = dimensions[lat];
-    this->axisDim[2] = dimensions[spc];
-    for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
   }
 }
 
@@ -552,8 +574,8 @@ void Cube::calcObjectWCSparams()
    * Cube::calcObjectWCSparams()
    *  A function that calculates the WCS parameters for each object in the 
    *  cube's list of detections.
-   *  Each object gets an ID number set (just the order in the list), and if the 
-   *   WCS is good, the WCS paramters are calculated.
+   *  Each object gets an ID number set (just the order in the list), and if 
+   *   the WCS is good, the WCS paramters are calculated.
    */
   
   for(int i=0; i<this->objectList.size();i++){
@@ -584,8 +606,8 @@ void Cube::updateDetectMap()
 {
   /** 
    * Cube::updateDetectMap()
-   *  A function that, for each detected object in the cube's list, increments the 
-   *  cube's detection map by the required amount at each pixel.
+   *  A function that, for each detected object in the cube's list, increments 
+   *   the cube's detection map by the required amount at each pixel.
    */
 
   for(int obj=0;obj<this->objectList.size();obj++){
@@ -624,7 +646,8 @@ void Cube::setCubeStats()
       else
 	spec[z] = this->array[z*xySize+i];
     }
-    findMedianStats(spec,this->axisDim[2],this->specMean[i],this->specSigma[i]);
+    findMedianStats(spec, this->axisDim[2],
+		    this->specMean[i], this->specSigma[i]);
   }
   delete spec;
   // Then set the stats for each channel map

@@ -62,7 +62,7 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(DETECTIONDIR)/thresholding_functions.o\
 	$(CUBESDIR)/cubes.o\
 	$(CUBESDIR)/baseline.o\
-	$(CUBESDIR)/cubicSearch.o\
+	$(CUBESDIR)/CubicSearch.o\
 	$(CUBESDIR)/detectionIO.o\
 	$(CUBESDIR)/drawMomentCutout.o\
 	$(CUBESDIR)/getImage.o\

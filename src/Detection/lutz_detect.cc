@@ -12,6 +12,7 @@
  *
  */
 #include <Cubes/cubes.hh>
+#include <Detection/detection.hh>
 #include <vector>
 
 enum STATUS { NONOBJECT, OBJECT, COMPLETE, INCOMPLETE };
@@ -54,7 +55,8 @@ void Image::lutz_detect()
       pix->setX(posX);
 
       bool isObject = false;
-      if((posX<this->axisDim[0])&&(posY<this->axisDim[1])){ // if we are in the original image
+      if((posX<this->axisDim[0])&&(posY<this->axisDim[1])){ 
+	// if we are in the original image
 	isObject = this->isDetection(posX,posY);
 	pix->setF( this->array[posY*this->axisDim[0] + posX] );
       }
@@ -64,7 +66,7 @@ void Image::lutz_detect()
        * ------------------------------ START SEGMENT ------------------------
        * If the current pixel is object and the previous pixel is not, then
        * start a new segment.
-       * If the pixel touches an object on the prior row, the marker is either  
+       * If the pixel touches an object on the prior row, the marker is either
        * an S or an s, depending on whether the object has started yet.
        * If it doesn't touch a prior object, this is the start of a completly
        * new object on this row.
@@ -91,7 +93,7 @@ void Image::lutz_detect()
       }
 
       /**
-       * ------------------------------ PROCESS MARKER --------------------------
+       * ------------------------------ PROCESS MARKER -----------------------
        * If the current marker is not blank, then we need to deal with it. 
        * Four cases:
        *   S --> start of object on prior row. Push priorStatus onto PSSTACK 
@@ -101,9 +103,10 @@ void Image::lutz_detect()
        *	 Set priorStatus to OBJECT.
        *   f --> end of a secondary segment of object on prior row.
        *         Set priorStatus to INCOMPLETE.
-       *   F --> end of object on prior row. If no more of the object is to come
-       *         (priorStatus=COMPLETE), then finish it and output data.
-       *         Addition -- only if it has more than the minimum no. of pixels.
+       *   F --> end of object on prior row. If no more of the object is to 
+       *          come (priorStatus=COMPLETE), then finish it and output data.
+       *         Add to list, but only if it has more than the minimum number
+       *           of pixels.
        */
       if(currentMarker != NULLMARKER){
 
@@ -130,7 +133,8 @@ void Image::lutz_detect()
 // 	    if(oS->at(oS->size()-2).start == NULLSTART) oS->at(oS->size()-2).start = oS->back().start;
 // 	    else marker[oS->back().start] = 's';
 	    (*oS)[oS->size()-2].info.addAnObject( oS->back().info );
-	    if((*oS)[oS->size()-2].start == NULLSTART) (*oS)[oS->size()-2].start = oS->back().start;
+	    if((*oS)[oS->size()-2].start == NULLSTART) 
+	      (*oS)[oS->size()-2].start = oS->back().start;
 	    else marker[oS->back().start] = 's';
 
 	    oS->pop_back();
@@ -151,7 +155,8 @@ void Image::lutz_detect()
 	  if( (status[CURRENT] == NONOBJECT) && (status[PRIOR] == COMPLETE) ){
 
 	    if(oS->back().start == NULLSTART){ // object completed
-	      if(oS->back().info.getSize() >= this->minSize){ // is it big enough?
+	      if(oS->back().info.getSize() >= this->minSize){ 
+		// is it big enough?
 		oS->back().info.calcParams(); // work out midpoints, fluxes etc
 		this->addObject(oS->back().info);
 		this->maskObject(oS->back().info);
@@ -176,12 +181,12 @@ void Image::lutz_detect()
       }
       else{
 	/**
-	 *------------------------------ END SEGMENT ---------------------------
+	 *------------------------------ END SEGMENT -------------------------
 	 * If the current pixel is background and the previous pixel was an 
 	 * object, then finish the segment.
 	 * If the prior status is COMPLETE, it's the end of the final segment 
 	 * of the object section.
-	 * If not, it's the end of the segment, but not necessarily the section.
+	 * If not, it's end of the segment, but not necessarily the section.
 	 */
 	if ( status[CURRENT] == OBJECT) {
 
