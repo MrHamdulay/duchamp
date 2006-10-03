@@ -3,7 +3,7 @@
 #include <string>
 #include <wcs.h>
 #include <wcshdr.h>
-#define WCSLIB_GETWCSTAB // define this so that we don't try and redefine wtbarr 
+#define WCSLIB_GETWCSTAB // define this so that we don't try to redefine wtbarr
                          // (this is a problem when using gcc v.4+
 #include <fitsio.h>
 #include <duchamp.hh>
@@ -25,7 +25,7 @@ int Cube::readReconCube()
 
   int status = 0;
 
-  // Check to see whether the parameters reconFile and/or residFile are defined.
+  // Check to see whether the parameters reconFile and/or residFile are defined
   bool reconGood = false;
   int exists;
   std::stringstream errmsg;
@@ -58,7 +58,8 @@ int Cube::readReconCube()
     }
 
     if(reconGood){ 
-      // were able to open this new file -- use this, so reset the relevant parameter
+      // were able to open this new file -- use this, so reset the 
+      //  relevant parameter
       this->par.setReconFile(reconFile);
     }
     else { // if STILL bad, give error message and exit.
@@ -89,8 +90,8 @@ int Cube::readReconCube()
 
   if(numAxesNew != this->numDim){
     std::stringstream errmsg;
-    errmsg << "  Reconstructed cube has a different number of axes to original! ("
-	   << numAxesNew << " cf. " << this->numDim << ")\n";
+    errmsg << "Reconstructed cube has a different number of axes to original!"
+	   << " (" << numAxesNew << " cf. " << this->numDim << ")\n";
     duchampError("readReconCube", errmsg.str());
     return FAILURE;
   }
@@ -98,9 +99,9 @@ int Cube::readReconCube()
   for(int i=0;i<numAxesNew;i++){
     if(dimAxesNew[i]!=this->axisDim[i]){
       std::stringstream errmsg;
-      errmsg << "Reconstructed cube has different axis dimensions to original!\n"
-	     << "                          Axis #" << i+1 << " has size " << dimAxesNew[i] 
-	     << "   cf. " << this->axisDim[i] <<" in original.\n";	
+      errmsg << "Reconstructed cube has different axis dimensions to original!"
+	     << "\nAxis #" << i+1 << " has size " << dimAxesNew[i] 
+	     << " cf. " << this->axisDim[i] <<" in original.\n";	
       duchampError("readReconCube", errmsg.str());
       return FAILURE;
     }
@@ -111,17 +112,19 @@ int Cube::readReconCube()
   if(this->par.getFlagSubsection()){
     char *subsection = new char[80];
     status = 0;
-    fits_read_key(fptr, TSTRING, (char *)keyword_subsection.c_str(), subsection, comment, &status);
+    fits_read_key(fptr, TSTRING, (char *)keyword_subsection.c_str(), 
+		  subsection, comment, &status);
     if(status){
-      duchampError("readReconCube", "subsection keyword not present in reconFile.\n");
+      duchampError("readReconCube", 
+		   "subsection keyword not present in reconFile.\n");
       return FAILURE;
     }
     else{
       if(this->par.getSubsection() != subsection){
 	std::stringstream errmsg;
 	errmsg << "subsection keyword in reconFile (" << subsection 
-	       << ") does not match that requested (" << this->par.getSubsection() 
-	       << ").\n";
+	       << ") does not match that requested (" 
+	       << this->par.getSubsection() << ").\n";
 	duchampError("readReconCube", errmsg.str());
 	return FAILURE;
       }
@@ -132,49 +135,58 @@ int Cube::readReconCube()
   int scaleMin,filterCode,reconDim;
   float snrRecon;
   status = 0;
-  fits_read_key(fptr, TINT, (char *)keyword_reconDim.c_str(), &reconDim, comment, &status);
+  fits_read_key(fptr, TINT, (char *)keyword_reconDim.c_str(), 
+		&reconDim, comment, &status);
   if(reconDim != this->par.getReconDim()){
     std::stringstream errmsg;
     errmsg << "reconDim keyword in reconFile (" << reconDim
-	   << ") does not match that requested (" << this->par.getReconDim() << ").\n";
+	   << ") does not match that requested (" 
+	   << this->par.getReconDim() << ").\n";
     duchampError("readReconCube", errmsg.str());
     return FAILURE;
   }
   status = 0;
-  fits_read_key(fptr, TINT, (char *)keyword_filterCode.c_str(), &filterCode, comment, &status);
+  fits_read_key(fptr, TINT, (char *)keyword_filterCode.c_str(), 
+		&filterCode, comment, &status);
   if(filterCode != this->par.getFilterCode()){
     std::stringstream errmsg;
     errmsg << "filterCode keyword in reconFile (" << filterCode
-	   << ") does not match that requested (" << this->par.getFilterCode() << ").\n";
+	   << ") does not match that requested (" 
+	   << this->par.getFilterCode() << ").\n";
     duchampError("readReconCube", errmsg.str());
     return FAILURE;
   }
   status = 0;
-  fits_read_key(fptr, TFLOAT, (char *)keyword_snrRecon.c_str(), &snrRecon, comment, &status);
+  fits_read_key(fptr, TFLOAT, (char *)keyword_snrRecon.c_str(), 
+		&snrRecon, comment, &status);
   if(snrRecon != this->par.getAtrousCut()){
     std::stringstream errmsg;
     errmsg << "snrRecon keyword in reconFile (" << snrRecon
-	   << ") does not match that requested (" << this->par.getAtrousCut() << ").\n";
+	   << ") does not match that requested (" 
+	   << this->par.getAtrousCut() << ").\n";
     duchampError("readReconCube", errmsg.str());
     return FAILURE;
   }
   status = 0;
-  fits_read_key(fptr, TINT, (char *)keyword_scaleMin.c_str(), &scaleMin, comment, &status);
+  fits_read_key(fptr, TINT, (char *)keyword_scaleMin.c_str(), 
+		&scaleMin, comment, &status);
   if(scaleMin != this->par.getMinScale()){
     std::stringstream errmsg;
     errmsg << "scaleMin keyword in reconFile (" << scaleMin
-	   << ") does not match that requested (" << this->par.getMinScale() << ").\n";
+	   << ") does not match that requested (" 
+	   << this->par.getMinScale() << ").\n";
     duchampError("readReconCube", errmsg.str());
     return FAILURE;
   }
   
   //
-  // If we get to here, the reconFile exists and matches the atrous parameters the user has requested.
-  //
+  // If we get to here, the reconFile exists and matches the atrous parameters 
+  // the user has requested.
 
   float *reconArray = new float[this->numPixels];
   status = 0;
-  fits_read_pix(fptr, TFLOAT, fpixel, this->numPixels, NULL, reconArray, &anynul, &status);
+  fits_read_pix(fptr, TFLOAT, fpixel, this->numPixels, NULL, reconArray, 
+		&anynul, &status);
   this->saveRecon(reconArray,this->numPixels);
   
   status = 0;
