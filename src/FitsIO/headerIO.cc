@@ -167,46 +167,58 @@ int FitsHeader::getBeamInfo(string fname, Param &par)
    *    set to define the beam size.
    */
   char *comment = new char[80];
+  string keyword[4]={"BMAJ","BMIN","CDELT1","CDELT2"};
   float bmaj,bmin,cdelt1,cdelt2;
-  int returnStatus = 0, status = 0;
+  int status[6];
   fitsfile *fptr;         
 
+  for(int i=0;i<6;i++) status[i] = 0;
+
   // Open the FITS file
-  status = 0;
-  if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
-    fits_report_error(stderr, status);
+  if( fits_open_file(&fptr,fname.c_str(),READONLY,&status[0]) ){
+    fits_report_error(stderr, status[0]);
     return FAILURE;
   }
 
   // Read the Keywords -- first look for BMAJ. If it is present, read the
   //   others, and calculate the beam size.
   // If it is not, give warning and set beam size to nominal value.
-  if( !fits_read_key(fptr, TFLOAT, "BMAJ", &bmaj, comment, &returnStatus) ){
-    fits_read_key(fptr, TFLOAT, "BMIN", &bmin, comment, &status);
-    fits_read_key(fptr, TFLOAT, "CDELT1", &cdelt1, comment, &status);
-    fits_read_key(fptr, TFLOAT, "CDELT2", &cdelt2, comment, &status);
+  fits_read_key(fptr, TFLOAT, (char *)keyword[0].c_str(), &bmaj, 
+		comment, &status[1]);
+  fits_read_key(fptr, TFLOAT, (char *)keyword[1].c_str(), &bmin, 
+		comment, &status[2]);
+  fits_read_key(fptr, TFLOAT, (char *)keyword[2].c_str(), &cdelt1, 
+		comment, &status[3]);
+  fits_read_key(fptr, TFLOAT, (char *)keyword[3].c_str(), &cdelt2, 
+		comment, &status[4]);
+
+  if(status[1]||status[2]||status[3]||status[4]){ // error
+    stringstream errmsg;
+    errmsg << "Header keywords not present: ";
+    for(int i=0;i<4;i++) if(status[i+1]) errmsg<<keyword[i]<<" ";
+    errmsg << "\nUsing parameter beamSize to determine size of beam.\n";
+    duchampWarning("getBeamInfo",errmsg.str());
+    this->setBeamSize(par.getBeamSize());
+    par.setFlagUsingBeam(true);
+  }
+  else{ // all keywords present
     this->setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / fabs(cdelt1*cdelt2) );
     this->setBmajKeyword(bmaj);
     this->setBminKeyword(bmin);
     par.setBeamSize(this->beamSize);
   }
-  if (returnStatus){
-    duchampWarning("getBeamInfo",
-       "No beam information in header.\n\
-Using parameter beamSize to determine size of beam.\n");
-    this->setBeamSize(par.getBeamSize());
-    par.setFlagUsingBeam(true);
-  }
-
+   
   // Close the FITS file.
-  status = 0;
-  fits_close_file(fptr, &status);
-  if (status){
+  fits_close_file(fptr, &status[5]);
+  if (status[5]){
     duchampWarning("getBeamInfo","Error closing file: ");
-    fits_report_error(stderr, status);
+    fits_report_error(stderr, status[5]);
   }
 
   delete [] comment;
+
+  int returnStatus = status[0];
+  for(int i=1;i<6;i++) if(status[i]>returnStatus) returnStatus=status[i];
 
   return returnStatus;
 }
