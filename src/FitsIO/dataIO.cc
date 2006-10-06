@@ -48,9 +48,18 @@ int Cube::getFITSdata(string fname)
   }
 
   // Identify which axes are the "interesting" ones 
-  int lng = this->head.getWCS()->lng;
-  int lat = this->head.getWCS()->lat;
-  int spc = this->head.getWCS()->spec;
+  int lng,lat,spc;
+  if(this->head.isWCS()){
+    lng = this->head.getWCS()->lng;
+    lat = this->head.getWCS()->lat;
+    spc = this->head.getWCS()->spec;
+  }
+  else{
+    lng = 0;
+    lat = 1;
+    spc = 2;
+  }
+    
 
   int anynul;
   int npix = dimAxes[lng]*dimAxes[lat]*dimAxes[spc];

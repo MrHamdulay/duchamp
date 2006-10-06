@@ -305,6 +305,8 @@ public:
   int     getBeamInfo(string fname, Param &par);
   string  getSpectralUnits(){return spectralUnits;};
   void    setSpectralUnits(string s){spectralUnits=s;};
+  string  getSpectralDescription(){return spectralDescription;};
+  void    setSpectralDescription(string s){spectralDescription=s;};
   string  getFluxUnits(){return fluxUnits;};
   void    setFluxUnits(string s){fluxUnits=s;};
   string  getIntFluxUnits(){return intFluxUnits;};
@@ -340,21 +342,25 @@ public:
   void    fixUnits(Param &par);
  
 private:
-  wcsprm *wcs;             // The WCS parameters for the cube -- a struct from wcslib
-  int     nwcs;            // The number of WCS parameters
-  bool    wcsIsGood;       // A flag indicating whether there is a valid WCS present.
-  string  spectralUnits;   // The units of the spectral dimension
-  string  fluxUnits;       // The units of pixel flux (from header)
-  string  intFluxUnits;    // The units of pixel flux (from header)
-  float   beamSize;        // The calculated beam size in pixels.
-  float   bmajKeyword;     // The FITS header keyword BMAJ.
-  float   bminKeyword;     // The FITS header keyword BMIN.
-  int     blankKeyword;    // The FITS header keyword BLANK.
-  float   bzeroKeyword;    // The FITS header keyword BZERO.
-  float   bscaleKeyword;   // The FITS header keyword BSCALE.
-  double  scale;           // scale parameter for converting spectral coords
-  double  offset;          // offset parameter for converting spectral coords
-  double  power;           // power parameter for converting spectral coords
+  wcsprm *wcs;                  // The WCS parameters for the cube in a 
+                                //  struct from the wcslib library.
+  int     nwcs;                 // The number of WCS parameters
+  bool    wcsIsGood;            // A flag indicating whether there is a 
+                                //  valid WCS present.
+  string  spectralUnits;        // The units of the spectral dimension
+  string  spectralDescription;  // The description of the spectral dimension
+                                //   (Frequency, Velocity, ...)
+  string  fluxUnits;            // The units of pixel flux (from header)
+  string  intFluxUnits;         // The units of pixel flux (from header)
+  float   beamSize;             // The calculated beam size in pixels.
+  float   bmajKeyword;          // The FITS header keyword BMAJ.
+  float   bminKeyword;          // The FITS header keyword BMIN.
+  int     blankKeyword;         // The FITS header keyword BLANK.
+  float   bzeroKeyword;         // The FITS header keyword BZERO.
+  float   bscaleKeyword;        // The FITS header keyword BSCALE.
+  double  scale;                // scale param for converting spectral coords
+  double  offset;               // offset param for converting spectral coords
+  double  power;                // power param for converting spectral coords
 };
 
 string makelower( string s );

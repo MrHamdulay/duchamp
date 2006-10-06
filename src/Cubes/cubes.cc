@@ -424,23 +424,43 @@ void Cube::initialiseCube(long *dimensions)
    *   This is done with the WCS in the FitsHeader class, so the 
    *    WCS needs to be good and have three axes.
    */ 
-  if(!this->head.isWCS()){
-    duchampError("Cube::initialiseCube",
- "The WCS is not sufficiently defined. Not able to define Cube.");
-  }
-  else if(this->head.getWCS()->naxis<3){
-    duchampError("Cube::initialiseCube",
- "The WCS does not have three axes defined. Not able to define Cube.");
+
+  int lng,lat,spc,size,imsize;
+
+  if(this->head.isWCS() && (this->head.getWCS()->naxis>=3)){
+    // if there is a WCS and there is at least 3 axes
+    lng = this->head.getWCS()->lng;
+    lat = this->head.getWCS()->lat;
+    spc = this->head.getWCS()->spec;
   }
   else{
-    int lng = this->head.getWCS()->lng;
-    int lat = this->head.getWCS()->lat;
-    int spc = this->head.getWCS()->spec;
-    int size   = dimensions[lng] * dimensions[lat] * dimensions[spc];
-    int imsize = dimensions[lng] * dimensions[lat];
+    // just take dimensions[] at face value
+    lng = 0;
+    lat = 1;
+    spc = 2;
+  }
+  size   = dimensions[lng] * dimensions[lat] * dimensions[spc];
+  imsize = dimensions[lng] * dimensions[lat];
+
+
+
+//   if(!this->head.isWCS()){
+//     duchampError("Cube::initialiseCube",
+//  "The WCS is not sufficiently defined. Not able to define Cube.\n");
+//   }
+//   else if(this->head.getWCS()->naxis<3){
+//     duchampError("Cube::initialiseCube",
+//  "The WCS does not have three axes defined. Not able to define Cube.\n");
+//   }
+//   else{
+//     int lng = this->head.getWCS()->lng;
+//     int lat = this->head.getWCS()->lat;
+//     int spc = this->head.getWCS()->spec;
+//     int size   = dimensions[lng] * dimensions[lat] * dimensions[spc];
+//     int imsize = dimensions[lng] * dimensions[lat];
     if((size<0) || (imsize<0) )
       duchampError("Cube::initialiseCube(dimArray)",
-		   "Negative size -- could not define Cube");
+		   "Negative size -- could not define Cube.\n");
     else{
       this->numPixels = size;
       if(size>0){
@@ -463,7 +483,7 @@ void Cube::initialiseCube(long *dimensions)
       for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
     }
   }
-}
+//}
 
 int Cube::getopts(int argc, char ** argv)
 {

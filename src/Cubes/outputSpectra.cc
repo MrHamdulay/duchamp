@@ -161,7 +161,8 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   // now plot the resulting spectrum
   string label;
   if(this->head.isWCS()){
-    label = "Velocity [" + this->head.getSpectralUnits() + "]";
+    label = this->head.getSpectralDescription() + " [" + 
+      this->head.getSpectralUnits() + "]";
     plot.gotoHeader(label);
   }
   else plot.gotoHeader("Spectral pixel value");
@@ -274,7 +275,7 @@ void getSmallVelRange(Detection &obj, FitsHeader head,
     *minvel = head.specToVel(world[2]);
     pixcrd[2] = obj.getZcentre() + 10.;
     head.pixToWCS(pixcrd,world);
-//     *maxvel = setVel_kms(wcs,world[2]);
+    //     *maxvel = setVel_kms(wcs,world[2]);
     *maxvel = head.specToVel(world[2]);
     if(*maxvel<*minvel) swap(*maxvel,*minvel);
   }

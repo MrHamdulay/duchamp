@@ -133,30 +133,37 @@ int     FitsHeader::pixToWCS(const double *pix, double *world, const int npts){
 
 double  FitsHeader::pixToVel(double &x, double &y, double &z)
 {
-//   return pixelToVelocity(this->wcs,x,y,z,this->spectralUnits);};
-  double *pix   = new double[3]; 
-  double *world = new double[3];
-  pix[0] = x; pix[1] = y; pix[2] = z;
-  pixToWCSSingle(this->wcs,pix,world);
-  double vel = this->specToVel(world[2]);
-  delete [] pix;
-  delete [] world;
+  double vel;
+  if(this->wcsIsGood){
+    double *pix   = new double[3]; 
+    double *world = new double[3];
+    pix[0] = x; pix[1] = y; pix[2] = z;
+    pixToWCSSingle(this->wcs,pix,world);
+    vel = this->specToVel(world[2]);
+    delete [] pix;
+    delete [] world;
+  }
+  else vel = z;
   return vel;
 }
 
 double* FitsHeader::pixToVel(double &x, double &y, double *zarray, int size)
 {
-//   return pixelToVelocity(this->wcs,x,y,z,this->spectralUnits);};
-  double *pix   = new double[size*3];
-  for(int i=0;i<size;i++){
-    pix[3*i] = x; pix[3*i+1] = y; pix[3*i+2] = zarray[i];
-  }
-  double *world = new double[size*3];
-  pixToWCSMulti(this->wcs,pix,world,size);
-  delete [] pix;
   double *newzarray = new double[size];
-  for(int i=0;i<size;i++) newzarray[i] = this->specToVel(world[3*i+2]);
-  delete [] world;
+  if(this->wcsIsGood){
+    double *pix   = new double[size*3];
+    for(int i=0;i<size;i++){
+      pix[3*i] = x; pix[3*i+1] = y; pix[3*i+2] = zarray[i];
+    }
+    double *world = new double[size*3];
+    pixToWCSMulti(this->wcs,pix,world,size);
+    delete [] pix;
+    for(int i=0;i<size;i++) newzarray[i] = this->specToVel(world[3*i+2]);
+    delete [] world;
+  }
+  else{
+    for(int i=0;i<size;i++) newzarray[i] = zarray[i];
+  }
   return newzarray;
 }
 

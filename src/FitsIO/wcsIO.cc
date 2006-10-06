@@ -123,6 +123,7 @@ int FitsHeader::defineWCS(string fname, Param &par)
 	// Set the spectral axis to a standard specification: VELO-F2V
 	desiredType = duchampVelocityType;
 	if(wcs->restwav == 0) wcs->restwav = 299792458.0 / wcs->restfrq;
+	this->spectralDescription = duchampSpectralDescription[VELOCITY];
       }
       else{
 	// No rest frequency defined, so put spectral dimension in frequency. 
@@ -136,6 +137,7 @@ int FitsHeader::defineWCS(string fname, Param &par)
 	  "No frequency unit given. Assuming frequency axis is in Hz.\n");
 	  strcpy(wcs->cunit[index],"Hz");
 	}
+	this->spectralDescription = duchampSpectralDescription[FREQUENCY];
       }
 
       // Check to see if the spectral type (eg VELO-F2V) matches that wanted

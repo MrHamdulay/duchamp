@@ -49,6 +49,10 @@ inline void updateMeter(int num){
 const char duchampVelocityType[9] = "VELO-F2V";
 const char duchampFrequencyType[9] = "FREQ";
 
+enum TYPEDESC {FREQUENCY=0,VELOCITY,WAVELENGTH};
+const std::string duchampSpectralDescription[3]=
+  {"Frequency", "Velocity", "Wavelength"};
+
 // The following are the FITS Header Keywords corresponding to the
 //  parameters related to the atrous reconstruction.
 const std::string keyword_scaleMin   = "DU_MINSC";

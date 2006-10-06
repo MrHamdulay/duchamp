@@ -19,20 +19,20 @@ void Cube::plotDetectionMap(string pgDestination)
 {
   /** 
    *  Cube::plotDetectionMap(string)
-   *    Creates a map of the spatial locations of the detections, which is written to the 
-   *     PGPlot device given by pgDestination.
-   *    The map is done in greyscale, where the scale indicates the number of velocity channels
-   *     that each spatial pixel is detected in.
-   *    The boundaries of each detection are drawn, and each object is numbered (to match
-   *     the output list and spectra).
-   *    The primary grid scale is pixel coordinate, and if the WCS is valid, the correct
-   *     WCS gridlines are also drawn.
+   *    Creates a map of the spatial locations of the detections, which is 
+   *     written to the PGPlot device given by pgDestination.
+   *    The map is done in greyscale, where the scale indicates the number of 
+   *     velocity channels that each spatial pixel is detected in.
+   *    The boundaries of each detection are drawn, and each object is numbered
+   *     (to match the output list and spectra).
+   *    The primary grid scale is pixel coordinate, and if the WCS is valid, 
+   *     the correct WCS gridlines are also drawn.
    */
 
-  // These are the minimum values for the X and Y ranges of the box drawn by pgplot 
-  //   (without the half-pixel difference).
-  // The -1 is necessary because the arrays we are dealing with start at 0 index, while
-  // the ranges given in the subsection start at 1... 
+  // These are the minimum values for the X and Y ranges of the box drawn by 
+  //   pgplot (without the half-pixel difference).
+  // The -1 is necessary because the arrays we are dealing with start at 0 
+  //  index, while the ranges given in the subsection start at 1... 
   float boxXmin = this->par.getXOffset() - 1;
   float boxYmin = this->par.getYOffset() - 1;
 
@@ -42,21 +42,27 @@ void Cube::plotDetectionMap(string pgDestination)
   int flag = newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
 
   if(flag<=0){
-    duchampError("plotDetectionMap", "Could not open PGPlot device "+pgDestination+".\n");
+    duchampError("plotDetectionMap", 
+		 "Could not open PGPlot device " + pgDestination + ".\n");
   }
   else{
 
     newplot.makeTitle(this->pars().getImageFile());
 
-    newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,boxYmin+0.5,boxYmin+ydim+0.5,"X pixel","Y pixel");
+    newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,
+		       boxYmin+0.5,boxYmin+ydim+0.5,
+		       "X pixel","Y pixel");
 
-    if(this->objectList.size()>0){ // if there are no detections, there will be nothing to plot here
+    if(this->objectList.size()>0){ 
+      // if there are no detections, there will be nothing to plot here
 
       float *detectMap = new float[xdim*ydim];
       int maxNum;
       for(int pix=0;pix<xdim*ydim;pix++){
 	detectMap[pix] = float(this->detectMap[pix]);  
-	if((pix==0)||(this->detectMap[pix]>maxNum)) maxNum = this->detectMap[pix];
+	if((pix==0)||(this->detectMap[pix]>maxNum)) {
+	  maxNum = this->detectMap[pix];
+	}
       }
 
       maxNum = 5 * ((maxNum-1)%5 + 1);  // move to next multiple of 5
@@ -74,12 +80,13 @@ void Cube::plotDetectionMap(string pgDestination)
 
     if(this->head.isWCS()) this->plotWCSaxes();
   
-    if(this->objectList.size()>0){ // now show and label each detection, drawing over the WCS lines.
+    if(this->objectList.size()>0){ 
+      // now show and label each detection, drawing over the WCS lines.
 
       cpgsch(1.0);
       cpgslw(2);    
-      float xoffset=0.;
-      float yoffset=newplot.cmToCoord(0.5);
+      float xoff=0.;
+      float yoff=newplot.cmToCoord(0.5);
       if(this->par.drawBorders()){
 	cpgsci(BLUE);
 	for(int i=0;i<this->objectList.size();i++) 
@@ -94,8 +101,8 @@ void Cube::plotDetectionMap(string pgDestination)
 	       CROSS);
 	label.str("");
 	label << this->objectList[i].getID();
-	cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoffset, 
-		this->par.getYOffset()+this->objectList[i].getYcentre()-yoffset, 
+	cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoff, 
+		this->par.getYOffset()+this->objectList[i].getYcentre()-yoff, 
 		0, 0.5, label.str().c_str());
       }
 
@@ -113,12 +120,12 @@ void Cube::plotMomentMap(string pgDestination)
    *  Cube::plotMomentMap(string)
    *    Creates a 0th moment map of the detections, which is written to the 
    *     PGPlot device given by pgDestination.
-   *    The map is done in greyscale, where the scale indicates the integrated flux at each
-   *     spatial pixel.
-   *    The boundaries of each detection are drawn, and each object is numbered (to match
-   *     the output list and spectra).
-   *    The primary grid scale is pixel coordinate, and if the WCS is valid, the correct
-   *     WCS gridlines are also drawn.
+   *    The map is done in greyscale, where the scale indicates the integrated 
+   *     flux at each spatial pixel.
+   *    The boundaries of each detection are drawn, and each object is numbered
+   *     (to match the output list and spectra).
+   *    The primary grid scale is pixel coordinate, and if the WCS is valid, 
+   *     the correct WCS gridlines are also drawn.
    */
 
   float boxXmin = this->par.getXOffset() - 1;
@@ -133,36 +140,46 @@ void Cube::plotMomentMap(string pgDestination)
   int flag = newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
     
   if(flag<=0){
-    duchampError("plotMomentMap", "Could not open PGPlot device "+pgDestination+".\n");
+    duchampError("plotMomentMap", 
+		 "Could not open PGPlot device " + pgDestination + ".\n");
   }
   else{
 
-    if(this->objectList.size()==0){ // if there are no detections, we plot an empty field.
+    if(this->objectList.size()==0){ 
+      // if there are no detections, we plot an empty field.
 
       newplot.makeTitle(this->pars().getImageFile());
     
-      newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,boxYmin+0.5,boxYmin+ydim+0.5,"X pixel","Y pixel");
+      newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,
+			 boxYmin+0.5,boxYmin+ydim+0.5,
+			 "X pixel","Y pixel");
 
       this->plotBlankEdges();
 
       if(this->head.isWCS()) this->plotWCSaxes();
 
     }
-    else {  // if there are some detections, do the calculations first before plotting anything.
+    else {  
+      // if there are some detections, do the calculations first before
+      //  plotting anything.
   
       newplot.makeTitle(this->pars().getImageFile());
     
-      newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,boxYmin+0.5,boxYmin+ydim+0.5,"X pixel","Y pixel");
+      newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,
+			 boxYmin+0.5,boxYmin+ydim+0.5,
+			 "X pixel","Y pixel");
 
       if(pgDestination=="/xs") 
-	cpgptxt(boxXmin+0.5+xdim/2.,boxYmin+0.5+ydim/2.,0,0.5,"Calculating map...");
+	cpgptxt(boxXmin+0.5+xdim/2., boxYmin+0.5+ydim/2., 0, 0.5,
+		"Calculating map...");
 
       bool *isObj = new bool[xdim*ydim*zdim];
       for(int i=0;i<xdim*ydim*zdim;i++) isObj[i] = false;
       for(int i=0;i<this->objectList.size();i++){
 	for(int p=0;p<this->objectList[i].getSize();p++){
-	  int pixelpos = this->objectList[i].getX(p) + xdim*this->objectList[i].getY(p) 
-	    + xdim*ydim*this->objectList[i].getZ(p);
+	  int pixelpos = this->objectList[i].getX(p) + 
+	    xdim*this->objectList[i].getY(p) +
+	    xdim*ydim*this->objectList[i].getZ(p);
 	  isObj[pixelpos] = true;
 	}
       }
@@ -171,7 +188,8 @@ void Cube::plotMomentMap(string pgDestination)
       // Initialise to zero
       for(int i=0;i<xdim*ydim;i++) momentMap[i] = 0.;
 
-      // if we are looking for negative features, we need to invert the detected pixels for the moment map
+      // if we are looking for negative features, we need to invert the 
+      //  detected pixels for the moment map
       float sign = 1.;
       if(this->pars().getFlagNegative()) sign = -1.;
 
@@ -202,7 +220,7 @@ void Cube::plotMomentMap(string pgDestination)
 	    // delta-vel is half the distance between adjacent channels.
 	    // if at end, then just use 0-1 or (zdim-1)-(zdim-2) distance
 	    if(z==0){
-	      if(zdim==1) deltaVel=1.; // pathological case -- if 2D image instead of cube.
+	      if(zdim==1) deltaVel=1.; // pathological case -- if 2D image.
 	      else deltaVel = world[z+1] - world[z];
 	    }
 	    else if(z==(zdim-1)) deltaVel = world[z-1] - world[z];
@@ -251,7 +269,8 @@ void Cube::plotMomentMap(string pgDestination)
       cpgsch(1.5);
       string wedgeLabel = "Flux ";
       if(this->pars().getFlagNegative()) wedgeLabel = "-1. * " + wedgeLabel;
-      if(this->head.isWCS()) wedgeLabel += "[" + this->head.getIntFluxUnits() + "]";
+      if(this->head.isWCS()) 
+	wedgeLabel += "[" + this->head.getIntFluxUnits() + "]";
       cpgwedglog("rg",3.2,2,z2,z1,wedgeLabel.c_str());
 
       delete [] momentMap;
@@ -265,8 +284,8 @@ void Cube::plotMomentMap(string pgDestination)
       // now show and label each detection, drawing over the WCS lines.
       cpgsch(1.0);
       cpgslw(2);
-      float xoffset=0.;
-      float yoffset=newplot.cmToCoord(0.5);
+      float xoff=0.;
+      float yoff=newplot.cmToCoord(0.5);
       if(this->par.drawBorders()){
 	cpgsci(BLUE);
 	for(int i=0;i<this->objectList.size();i++) 
@@ -281,8 +300,8 @@ void Cube::plotMomentMap(string pgDestination)
 	       CROSS);
 	label.str("");
 	label << this->objectList[i].getID();
-	cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoffset, 
-		this->par.getYOffset()+this->objectList[i].getYcentre()-yoffset, 
+	cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoff, 
+		this->par.getYOffset()+this->objectList[i].getYcentre()-yoff, 
 		0, 0.5, label.str().c_str());
       }
 
@@ -301,11 +320,11 @@ void Cube::plotWCSaxes()
 {
   /**
    *  Cube::plotWCSaxes()
-   *    A front-end to the cpgsbox command, to draw the gridlines for the WCS over the 
-   *      current plot.
-   *    Lines are drawn in dark green over the full plot area, and the axis labels are
-   *      written on the top and on the right hand sides, so as not to conflict with
-   *      other labels.
+   *    A front-end to the cpgsbox command, to draw the gridlines for the WCS 
+   *      over the current plot.
+   *    Lines are drawn in dark green over the full plot area, and the axis 
+   *      labels are written on the top and on the right hand sides, so as not 
+   *      to conflict with other labels.
    */
 
   float boxXmin,boxYmin;
@@ -358,7 +377,8 @@ void Cube::plotWCSaxes()
   // Draw the celestial grid with no intermediate tick marks.
   // Set LABCTL=2100 to write 1st coord on top, and 2nd on right
 
-  //Colour indices used by cpgsbox: make it all the same colour for thin line case.
+  //Colour indices used by cpgsbox: make it all the same colour for thin 
+  // line case.
   ci[0] = 17; // grid lines, coord 1
   ci[1] = 17; // grid lines, coord 2
   ci[2] = 17; // numeric labels, coord 1
