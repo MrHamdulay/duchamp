@@ -77,8 +77,14 @@ public:
 class Detection
 {
 public:
-  Detection(){flagWCS=false; negativeSource = false; flagText="";};
-  Detection(long numPix){vector <Voxel> pix(numPix); flagWCS = false; negativeSource = false;};
+  Detection(){
+    flagWCS=false; negativeSource = false; flagText="";
+    xcentre = ycentre = zcentre = totalFlux = peakFlux = 0.;
+    xmin=xmax=ymin=ymax=zmin=zmax=0;
+  };
+  Detection(long numPix){
+    vector <Voxel> pix(numPix); flagWCS = false; negativeSource = false;
+  };
   virtual ~Detection(){};
 
   void   addPixel(Voxel point){pix.push_back(point);};
@@ -192,9 +198,10 @@ public:
   string outputLabelInfo();
   void   outputDetectionTextHeader(std::ostream &stream, vector<Col> columns);
   void   outputDetectionTextWCS(std::ostream &stream, vector<Col> columns);
-  void   outputDetectionText(std::ostream &stream, vector<Col> columns, int idNumber);
+  void   outputDetectionText(std::ostream &stream, vector<Col> columns, 
+			     int idNumber);
   // For plotting routines...
-  void   drawBorders(int xoffset, int yoffset);  // in Cubes/drawMomentCutout.cc
+  void   drawBorders(int xoffset, int yoffset); // in Cubes/drawMomentCutout.cc
   //
   friend std::ostream& operator<< ( std::ostream& theStream, Detection& obj);
   //
@@ -207,22 +214,27 @@ private:
   long           ymin,ymax;   // min and max y-values of object
   long           zmin,zmax;   // min and max z-values of object
   // Subsection offsets
-  long           xSubOffset;  // The offset in the x-direction from the subsectioned cube
-  long           ySubOffset;  // The offset in the y-direction from the subsectioned cube
-  long           zSubOffset;  // The offset in the z-direction from the subsectioned cube
+  long           xSubOffset;  // The x-offset from the subsectioned cube
+  long           ySubOffset;  // The y-offset from the subsectioned cube
+  long           zSubOffset;  // The z-offset from the subsectioned cube
   // Flux related
   float          totalFlux;   // sum of the fluxes of all the pixels
-  float          intFlux;     // integrated flux --> involves integration over velocity.
+  float          intFlux;     // integrated flux 
+                              //   --> involves integration over velocity.
   float          peakFlux;    // maximum flux over all the pixels
   long           xpeak,ypeak,zpeak; // location of peak flux
-  bool           negativeSource; // is the source defined as a negative feature?
-  string         flagText;    // any warning flags about the quality of the detection.
+  bool           negativeSource; // is the source a negative feature?
+  string         flagText;    // any warning flags about the quality of 
+                              //   the detection.
   // WCS related
   int            id;          // ID -- generally number in list
   string         name;	      // IAU-style name (based on position)
-  bool           flagWCS;     // A flag indicating whether the WCS parameters have been set.
-  string         raS;	      // Central Right Ascension (or Longitude) in form 12:34:23
-  string         decS;	      // Central Declination(or Latitude), in form -12:23:34
+  bool           flagWCS;     // A flag indicating whether the WCS parameters 
+                              //  have been set.
+  string         raS;	      // Central Right Ascension (or Longitude) in 
+                              //  form 12:34:23
+  string         decS;	      // Central Declination(or Latitude), in 
+                              //  form -12:23:34
   float          ra;	      // Central Right Ascension in degrees
   float          dec;	      // Central Declination in degrees
   float          raWidth;     // Width of detection in RA direction in arcmin
@@ -255,13 +267,14 @@ private:
 void SortByZ(vector <Detection> &inputList);
 void SortByVel(vector <Detection> &inputList);
 Detection combineObjects(Detection &first, Detection &second);
-vector <Detection> combineLists(vector <Detection> &first, vector <Detection> &second);
+vector <Detection> combineLists(vector <Detection> &first, 
+				vector <Detection> &second);
 
 bool areClose(Detection &object1, Detection &object2, Param &par);
 void mergeIntoList(Detection &object, vector <Detection> &objList, Param &par);
-void mergeList(vector<Detection> &objList, Param &par);     //in Cubes/Merger.cc
-void finaliseList(vector<Detection> &objList, Param &par);  //in Cubes/Merger.cc
-void ObjectMerger(vector<Detection> &objList, Param &par);  //in Cubes/Merger.cc
+void mergeList(vector<Detection> &objList, Param &par);    //in Cubes/Merger.cc
+void finaliseList(vector<Detection> &objList, Param &par); //in Cubes/Merger.cc
+void ObjectMerger(vector<Detection> &objList, Param &par); //in Cubes/Merger.cc
 
 // A GENERIC DETECTION TEST  -- in thresholding_functions.cc
 bool isDetection(float value, float mean, float sigma, float cut);

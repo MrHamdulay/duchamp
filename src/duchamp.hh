@@ -15,7 +15,6 @@
 // how to convey whether a function has worked
 enum OUTCOME {SUCCESS=0, FAILURE};
 
-
 const std::string ERR_USAGE_MSG =
 "Usage:: Duchamp -p [parameter file]\n\
   Other options:\n\
@@ -39,11 +38,40 @@ void duchampError(std::string subroutine, std::string error);
 inline void printBackSpace(int num){for(int i=0;i<num;i++) std::cout << '\b';};
 inline void printSpace(int num){ for(int i=0;i<num;i++) std::cout << ' '; };
 inline void printHash(int num){ for(int i=0;i<num;i++) std::cout << '#'; };
-inline void initialiseMeter(){
-  std::cout << "|"; printSpace(20); std::cout << "|" << std::flush;};
-inline void updateMeter(int num){
-  printBackSpace(22); std::cout << "|"; printHash(num); printSpace(20-num); 
-  std::cout << "|" << std::flush;};
+class ProgressBar
+{
+  /**
+   *  ProgressBar Class
+   *   A class that prints out a progress bar in the form |####    |
+   *    that shows how far through a function or loop you are.
+   *   The length of it defaults to 20, but can be set when declaring the
+   *    object.
+   *   There are three functions: 
+   *        init(size) --> prints an empty bar, and defines the increment
+   *        update(num) --> prints the correct number of #s, but only when
+   *                        num is a multiple of the increment.
+   *        rewind(num) --> prints backspaces to cover the entire bar.
+   */
+public:
+  ProgressBar(){length=20;};
+  ProgressBar(int newlength){length=newlength;};
+  void init(int size){  
+    std::cout << "|"; printSpace(length); 
+    std::cout << "|" << std::flush;
+    fraction = size/length;
+  };
+  void update(int num){
+    if(num%fraction==0){
+      printBackSpace(length+2); std::cout << "|"; 
+      printHash(num/fraction); printSpace(length-num/fraction); 
+      std::cout << "|" << std::flush;
+    }
+  };
+  void rewind(){printBackSpace(length+2);};
+private:
+  int fraction;
+  int length;
+};
 
 // The spectral type that we want the wcsprm structs to be in
 const char duchampVelocityType[9] = "VELO-F2V";

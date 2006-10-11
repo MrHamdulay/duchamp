@@ -38,18 +38,19 @@ void Detection::calcParams()
    *   and total & peak fluxes for a detection.
    */
 
+  this->xcentre = 0;
+  this->ycentre = 0;
+  this->zcentre = 0;
+  this->totalFlux = 0;
+  this->peakFlux = 0;
+  this->xmin = 0;
+  this->xmax = 0;
+  this->ymin = 0;
+  this->ymax = 0;
+  this->zmin = 0;
+  this->zmax = 0;
   if(this->pix.size()>0){
-    this->xcentre = 0;
-    this->ycentre = 0;
-    this->zcentre = 0;
-    this->totalFlux = 0;
     this->peakFlux = this->pix[0].itsF;
-    this->xmin = 0;
-    this->xmax = 0;
-    this->ymin = 0;
-    this->ymax = 0;
-    this->zmin = 0;
-    this->zmax = 0;
     for(int ctr=0;ctr<this->pix.size();ctr++){
       this->xcentre   += this->pix[ctr].itsX;
       this->ycentre   += this->pix[ctr].itsY;
@@ -234,49 +235,61 @@ void Detection::addAnObject(Detection &toAdd)
    *  All pixel & flux parameters are recalculated (so that 
    *   calcParams does not need to be called a second time), 
    *   but WCS parameters are not.
+   *  If the instigator is empty (pix.size()==0) then we just make it 
+   *   equal to the argument, and call calcParams to initialise the 
+   *   necessary parameters
    */
 
-  this->xcentre *= this->pix.size();
-  this->ycentre *= this->pix.size();
-  this->zcentre *= this->pix.size();
-  for(int ctr=0;ctr<toAdd.getSize();ctr++){
-    long x  = toAdd.getX(ctr);
-    long y  = toAdd.getY(ctr);
-    long z  = toAdd.getZ(ctr);
-    float f = toAdd.getF(ctr);
-    bool isNewPix = true;
-    int ctr2 = 0;
-    // For each pixel in the new object, test to see if it already 
-    //  appears in the object
-    while( isNewPix && (ctr2<this->pix.size()) ){
-      isNewPix = isNewPix && (( this->pix[ctr2].itsX != x ) || 
-			      ( this->pix[ctr2].itsY != y ) ||
-			      ( this->pix[ctr2].itsZ != z ) );
-      ctr2++;
-    }
-    if(isNewPix){
-      // If the pixel is new, add it to the object and re-calculate the parameters.
-      this->pix.push_back(toAdd.getPixel(ctr));
-      this->xcentre += toAdd.getX(ctr);
-      this->ycentre += toAdd.getY(ctr);
-      this->zcentre += toAdd.getZ(ctr);
-      this->totalFlux += toAdd.getF(ctr);
-      if(toAdd.getX(ctr)<this->xmin) this->xmin=toAdd.getX(ctr);
-      if(toAdd.getX(ctr)>this->xmax) this->xmax=toAdd.getX(ctr);
-      if(toAdd.getY(ctr)<this->ymin) this->ymin=toAdd.getY(ctr);
-      if(toAdd.getY(ctr)>this->ymax) this->ymax=toAdd.getY(ctr);
-      if(toAdd.getZ(ctr)<this->zmin) this->zmin=toAdd.getZ(ctr);
-      if(toAdd.getZ(ctr)>this->zmax) this->zmax=toAdd.getZ(ctr);
-      if(toAdd.getF(ctr)>this->peakFlux) this->peakFlux=toAdd.getF(ctr);
-    }
+  int size = this->pix.size();
+  if(size==0){
+    *this = toAdd;
+    this->calcParams();
   }
-  this->xcentre /= this->pix.size();
-  this->ycentre /= this->pix.size();
-  this->zcentre /= this->pix.size();
+  else if(size>0){
 
+    this->xcentre *= size;
+    this->ycentre *= size;
+    this->zcentre *= size;
+  
+    for(int ctr=0;ctr<toAdd.getSize();ctr++){
+      long x  = toAdd.getX(ctr);
+      long y  = toAdd.getY(ctr);
+      long z  = toAdd.getZ(ctr);
+      float f = toAdd.getF(ctr);
+      bool isNewPix = true;
+      int ctr2 = 0;
+      // For each pixel in the new object, test to see if it already 
+      //  appears in the object
+      while( isNewPix && (ctr2<this->pix.size()) ){
+	isNewPix = isNewPix && (( this->pix[ctr2].itsX != x ) || 
+				( this->pix[ctr2].itsY != y ) ||
+				( this->pix[ctr2].itsZ != z ) );
+	ctr2++;
+      }
+      if(isNewPix){
+	// If the pixel is new, add it to the object and 
+	//   re-calculate the parameters.
+	this->pix.push_back(toAdd.getPixel(ctr));
+	this->xcentre += x;
+	this->ycentre += y;
+	this->zcentre += z;
+	this->totalFlux += f;
+	if     (x < this->xmin) this->xmin = x;
+	else if(x > this->xmax) this->xmax = x;
+	if     (y < this->ymin) this->ymin = y;
+	else if(y > this->ymax) this->ymax = y;
+	if     (z < this->zmin) this->zmin = z;
+	else if(z > this->zmax) this->zmax = z;
+	if(f > this->peakFlux) this->peakFlux = f;
+      }
+    }
+    size = this->pix.size();
+    this->xcentre /= size;
+    this->ycentre /= size;
+    this->zcentre /= size;
+
+  }
 }
-/*  */
-
 
 void Detection::addOffsets(Param &par)
 {

@@ -54,18 +54,18 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
     if(goodSize==0) doChannel[npix] = false;
     else doChannel[npix] = true;
   }
-  
+
+  ProgressBar bar;
   // FIRST SEARCH --  IN EACH SPECTRUM.
   if(zdim>1){
     if(par.isVerbose()) {
       std::cout << "  1D: ";
-      initialiseMeter();
+      bar.init(xySize);
     }
 
     for(int npix=0; npix<xySize; npix++){
 
-      if( par.isVerbose() && ((100*(npix+1)/xySize)%5 == 0) )
-	updateMeter((100*(npix+1)/xySize)/5);
+      if( par.isVerbose() ) bar.update(npix+1);
 
       if(doChannel[npix]){
 
@@ -81,7 +81,7 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
 	long *specdim = new long[2];
 	specdim[0] = zdim; specdim[1]=1;
 	Image *spectrum = new Image(specdim);
-	delete specdim;
+	delete [] specdim;
 	spectrum->saveParam(par);
 	spectrum->pars().setBeamSize(2.); 
 	// beam size: for spectrum, only neighbouring channels correlated
@@ -112,7 +112,7 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
 
     //    num = outputList.size();
     if(par.isVerbose()) {
-      printBackSpace(22);
+      bar.rewind();
       std::cout <<"Found " << num <<";" << std::flush;
     }
 
@@ -121,15 +121,14 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
   // SECOND SEARCH --  IN EACH CHANNEL
   if(par.isVerbose()){
     std::cout << "  2D: ";
-    initialiseMeter();
+    bar.init(zdim);
   }
   
   num = 0;
 
   for(int z=0; z<zdim; z++){
 
-    if( par.isVerbose() && ((100*(z+1)/zdim)%5 == 0) )
-      updateMeter((100*(z+1)/zdim)/5);
+    if( par.isVerbose() ) bar.update(z+1);
 
     if(!par.isInMW(z)){
 
@@ -146,7 +145,7 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
       long *imdim = new long[2];
       imdim[0] = dim[0]; imdim[1] = dim[1];
       Image *channelImage = new Image(imdim);
-      delete imdim;
+      delete [] imdim;
       channelImage->saveParam(par);
       channelImage->extractImage(Array,dim,z);
       channelImage->setStats(imageMedian,imageSigma,par.getCut());
@@ -170,7 +169,7 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
   }
 
   if(par.isVerbose()){
-    printBackSpace(22);
+    bar.rewind();
     std::cout << "Found " << num << ".";
     printSpace(44);
     std::cout << std::endl << std::flush;

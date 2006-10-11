@@ -1,6 +1,6 @@
 #ifndef MYCPGPLOT_H
 #define MYCPGPLOT_H
-
+#include <string>
 namespace mycpgplot
 {
 
@@ -23,11 +23,11 @@ namespace mycpgplot
 		CIRCLE1, CIRCLE2, CIRCLE3, CIRCLE4, CIRCLE5, CIRCLE6,
 		CIRCLE7, CIRCLE8, CIRCLE9, LEFT, RIGHT, UP, DOWN};
 
-  const string degrees="\\(0718)";
-  const string plusminus="\\(2233)";
-  const string tick="\\(2267)";
-  const string odot="\\(2281)";
-  const string integral="\\(2268)";
+  const std::string degrees="\\(0718)";
+  const std::string plusminus="\\(2233)";
+  const std::string tick="\\(2267)";
+  const std::string odot="\\(2281)";
+  const std::string integral="\\(2268)";
 
 }
 

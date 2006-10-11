@@ -72,14 +72,14 @@ void Cube::ReconSearch1D()
   long xySize = this->axisDim[0] * this->axisDim[1];
   long zdim = this->axisDim[2];
 
+  ProgressBar bar;
   // Reconstruct the cube by 1d atrous transform in each spatial pixel
   if(!this->reconExists){
     std::cout<<"  Reconstructing... ";
-    if(par.isVerbose()) initialiseMeter();
+    if(par.isVerbose()) bar.init(xySize);
     for(int npix=0; npix<xySize; npix++){
 
-      if( par.isVerbose() && ((100*(npix+1)/xySize)%5 == 0) )
-	updateMeter((100*(npix+1)/xySize)/5);
+      if( par.isVerbose() ) bar.update(npix+1);
 
       float *spec = new float[zdim];
       float *newSpec = new float[zdim];
@@ -89,11 +89,10 @@ void Cube::ReconSearch1D()
       atrous1DReconstruct(this->axisDim[2],spec,newSpec,this->par);
       this->par.setVerbosity(verboseFlag);
       for(int z=0;z<zdim;z++) this->recon[z*xySize+npix] = newSpec[z];
-      delete spec;
-      delete newSpec;
+      delete [] spec,newSpec;
     }
     this->reconExists = true;
-    printBackSpace(22);
+    bar.rewind();
     std::cout << "  All Done.";
     printSpace(22);
     std::cout << "\n  Searching... "<<std::flush;
@@ -119,15 +118,15 @@ void Cube::ReconSearch2D()
    *   The resulting object list is stored in the Cube.
    */
   long xySize = this->axisDim[0] * this->axisDim[1];
+  ProgressBar bar;
 
   if(!this->reconExists){
     // RECONSTRUCT THE CUBE BY 2D ATROUS TRANSFORM IN EACH CHANNEL  
     std::cout<<"  Reconstructing... ";
-    if(par.isVerbose()) initialiseMeter();
+    if(par.isVerbose()) bar.init(this->axisDim[2]);
     for(int z=0;z<this->axisDim[2];z++){
 
-      if( par.isVerbose() && ((100*(z+1)/this->axisDim[2])%5 == 0) )
-	updateMeter((100*(z+1)/this->axisDim[2])/5);
+      if( par.isVerbose() ) bar.update((z+1));
 
       if(!this->par.isInMW(z)){
 	float *im = new float[xySize];
@@ -141,8 +140,7 @@ void Cube::ReconSearch2D()
 	this->par.setVerbosity(verboseFlag);
 	for(int npix=0; npix<xySize; npix++) 
 	  this->recon[z*xySize+npix] = newIm[npix];
-	delete im;
-	delete newIm;
+	delete [] im, newIm;
       }
       else {
 	for(int i=z*xySize; i<(z+1)*xySize; i++) 
@@ -150,7 +148,7 @@ void Cube::ReconSearch2D()
       }
     }
     this->reconExists = true;
-    printBackSpace(22);
+    bar.rewind();
     std::cout << "  All Done.";
     printSpace(22);
     std::cout << "\nSearching... "<<std::flush;
@@ -236,19 +234,17 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
       doChannel[npix] = doChannel[npix] || isGood[z*xySize+npix];
   }
  
-  float dud;
-
+  ProgressBar bar;
   // First search --  in each spectrum.
   if(zdim > 1){
     if(par.isVerbose()){
       std::cout << "1D: ";
-      initialiseMeter();
+      bar.init(xySize);
     }
 
     for(int npix=0; npix<xySize; npix++){
 
-      if( par.isVerbose() && ((100*(npix+1)/xySize)%5 == 0) )
-	updateMeter((100*(npix+1)/xySize)/5);
+      if( par.isVerbose() ) bar.update(npix+1);
 
       if(doChannel[npix]){
 	
@@ -309,7 +305,7 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
 
     num = outputList.size();
     if(par.isVerbose()) {
-      printBackSpace(22);
+      bar.rewind();
       std::cout <<"Found " << num <<"; " << std::flush;
     }
   }
@@ -317,15 +313,14 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
   // Second search --  in each channel
   if(par.isVerbose()){
     std::cout << "2D: ";
-    initialiseMeter();
+    bar.init(zdim);
   }
 
   num = 0;
 
   for(int z=0; z<zdim; z++){  // loop over all channels
 
-    if( par.isVerbose() && ((100*(z+1)/zdim)%5 == 0) )
-      updateMeter((100*(z+1)/zdim)/5);
+    if( par.isVerbose() ) bar.update(z+1);
 
     if(!par.isInMW(z)){ 
 
@@ -383,7 +378,7 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
 
   }
 
-  printBackSpace(22);
+  bar.rewind();
   std::cout << "Found " << num << ".";
   printSpace(22);  
   std::cout << std::endl << std::flush;

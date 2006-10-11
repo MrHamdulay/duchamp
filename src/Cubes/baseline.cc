@@ -21,11 +21,11 @@ void Cube::removeBaseline()
   float *thisBaseline = new float[this->axisDim[2]];
   int numSpec = this->axisDim[0]*this->axisDim[1];
 
-  initialiseMeter();
+  ProgressBar bar;
+  if(this->par.isVerbose()) bar.init(numSpec);
   for(int pix=0; pix<numSpec; pix++){ // for each spatial pixel...
 
-    if(this->par.isVerbose() && ((100*(pix+1)/numSpec)%5 == 0) )
-      updateMeter((100*(pix+1)/numSpec)/5);
+    if(this->par.isVerbose() ) bar.update(pix+1);
 
     for(int z=0; z<this->axisDim[2]; z++)  
       spec[z] = this->array[z*numSpec + pix];

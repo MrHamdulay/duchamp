@@ -46,6 +46,7 @@ void Cube::drawMomentCutout(Detection &object)
     for(int i=0;i<size*size;i++) image[i]=0.;
 
     bool *isGood = new bool[size*size];
+    for(int i=0;i<size*size;i++) isGood[i]=true;
     for(int z=zmin; z<=zmax; z++){
       for(int x=xmin; x<=xmax; x++){
 	for(int y=ymin; y<=ymax; y++){

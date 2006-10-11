@@ -90,28 +90,29 @@ int FitsHeader::defineWCS(string fname, Param &par)
   if(flag = wcspih(hdr, nkeys, relax, ctrl, &nreject, &nwcs, &wcs)) {
     // if here, something went wrong -- report what.
     std::stringstream errmsg;
-    errmsg << "wcspih failed! Code="<<flag<<": "<<wcs_errmsg[flag]<<std::endl;
+    errmsg << "wcspih failed!\n"
+	   << "WCSLIB error code="<<flag<<": "<<wcs_errmsg[flag]<<std::endl;
     duchampWarning("defineWCS",errmsg.str());
   }
   else{  
-    int stat[6];
-    int axes[3]={dimAxes[wcs->lng],dimAxes[wcs->lat],dimAxes[wcs->spec]};
-
+    int stat[NWCSFIX];
     // Applies all necessary corrections to the wcsprm structure
     //  (missing cards, non-standard units or spectral types, ...)
-    if(flag=wcsfix(1,axes,wcs,stat)) {
+    if(flag=wcsfix(1,(const int*)dimAxes,wcs,stat)) {
       std::stringstream errmsg;
       errmsg << "wcsfix failed:\n";
       for(int i=0; i<NWCSFIX; i++)
 	if (stat[i] > 0) 
-	  errmsg <<" flag="<<flag<<": "<< wcsfix_errmsg[stat[i]]<<std::endl;
+	  errmsg <<"WCSLIB error code="<<flag<<": "
+		 << wcsfix_errmsg[stat[i]]<<std::endl;
       duchampWarning("defineWCS", errmsg.str() );
     }
 
     // Set up the wcsprm struct. Report if something goes wrong.
     if(flag=wcsset(wcs)){
       std::stringstream errmsg;
-      errmsg<<"wcsset failed! Code="<<flag <<": "<<wcs_errmsg[flag]<<std::endl;
+      errmsg<<"wcsset failed!\n"
+	    <<"WCSLIB error code="<<flag <<": "<<wcs_errmsg[flag]<<std::endl;
       duchampWarning("defineWCS",errmsg.str());
     }
 

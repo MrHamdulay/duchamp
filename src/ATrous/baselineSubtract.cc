@@ -31,11 +31,11 @@ void baselineSubtract(long numSpec, long specLength, float *originalCube,
   bool flagVerb = par.isVerbose();
   par.setVerbosity(false);
 
-  if(flagVerb) initialiseMeter();
+  ProgressBar bar;
+  if(flagVerb) bar.init(numSpec);
   for(int pix=0; pix<numSpec; pix++){ // for each spatial pixel...
 
-    if(flagVerb && ((100*(pix+1)/numSpec)%5 == 0) )
-      updateMeter((100*(pix+1)/numSpec)/5);
+    if(flagVerb) bar.update(pix+1);
 
     for(int z=0; z<specLength; z++) 
       spec[z] = originalCube[z*numSpec + pix];
@@ -50,7 +50,7 @@ void baselineSubtract(long numSpec, long specLength, float *originalCube,
     }
 
   }    
-  if(flagVerb) printBackSpace(22);
+  if(flagVerb) bar.rewind();
 
   par.setMinScale(minscale);
   par.setAtrousCut(atrouscut);

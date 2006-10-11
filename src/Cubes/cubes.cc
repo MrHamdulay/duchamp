@@ -297,13 +297,9 @@ void Image::removeMW()
    *    equal to 1.
    *  The values of the MW channels are set to 0, unless they are BLANK.
    */ 
-  if(this->par.getFlagMW()){
-    int maxMW = this->par.getMaxMW();
-    int minMW = this->par.getMinMW();
-    if(this->axisDim[1]==1){
-      for(int z=0;z<this->axisDim[0];z++){
-	if(!this->isBlank(z) && this->par.isInMW(z)) this->array[z]=0.;
-      }
+  if(this->par.getFlagMW() && (this->axisDim[1]==1) ){
+    for(int z=0;z<this->axisDim[0];z++){
+      if(!this->isBlank(z) && this->par.isInMW(z)) this->array[z]=0.;
     }
   }
 }
@@ -403,6 +399,7 @@ Cube::Cube(long *dimensions){
     this->axisDim = new long[3];
     for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
     for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
+    this->reconExists = false;
   }
 }
 
@@ -481,6 +478,7 @@ void Cube::initialiseCube(long *dimensions)
       this->axisDim[1] = dimensions[lat];
       this->axisDim[2] = dimensions[spc];
       for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
+      this->reconExists = false;
     }
   }
 //}
@@ -723,7 +721,9 @@ void Cube::setupColumns()
    *  Cube::setupColumns()
    *   A front-end to the two setup routines in columns.cc.
    */ 
-  for(int i=0; i<this->objectList.size();i++) this->objectList[i].setID(i+1);
+  this->calcObjectWCSparams();  
+  // need this as the colSet functions use vel, RA, Dec, etc...
+  
   this->fullCols.clear();
   this->fullCols = getFullColSet(this->objectList, this->head);
 

@@ -112,7 +112,7 @@ int Cube::getFITSdata(string fname)
   // as determined by the above code.
   for(int i=0; i<npix;i++){
 //     if(nullarray[i]==1) this->array[i] = blank*bscale + bzero;  
-    if(isnan(array[i])) this->array[i] = par.getBlankPixVal();
+//     if(isnan(array[i])) this->array[i] = par.getBlankPixVal();
     if(nullarray[i]==1) this->array[i] = this->par.getBlankPixVal();  
   }
 

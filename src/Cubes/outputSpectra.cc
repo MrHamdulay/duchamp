@@ -36,16 +36,16 @@ void Cube::outputSpectra()
 
   string spectrafile = this->par.getSpectraFile() + "/vcps";
   Plot::SpectralPlot newplot;
-  newplot.setUpPlot(spectrafile.c_str());
+  if(newplot.setUpPlot(spectrafile.c_str())>0) {
 
-  for(int nobj=0;nobj<this->objectList.size();nobj++){
-    // for each object in the cube:
-    this->plotSpectrum(this->objectList[nobj],newplot);
+    for(int nobj=0;nobj<this->objectList.size();nobj++){
+      // for each object in the cube:
+      this->plotSpectrum(this->objectList[nobj],newplot);
+      
+    }// end of loop over objects.
 
-  }// end of loop over objects.
-
-  cpgclos();
-
+    cpgclos();
+  }
 }
 
 void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)

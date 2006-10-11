@@ -180,11 +180,10 @@ private:
 class Cube : public DataArray
 {
 public:
-  Cube(){numPixels=0; numDim=3; // flagWCS=false;
-  };
+  Cube(){numPixels=0; numDim=3; reconExists = false;};
   Cube(long nPix);
   Cube(long *dimensions);
-  virtual ~Cube();            // destructor
+  virtual ~Cube();
 
   // additional accessor functions
   //       -- in Cubes/cubes.cc unless otherwise specified.
