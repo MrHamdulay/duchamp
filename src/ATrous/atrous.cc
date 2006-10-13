@@ -40,6 +40,7 @@ Filter::Filter()
 {
   this->sigmaFactors.resize(3);
   for(int i=0;i<3;i++) this->sigmaFactors[i] = new vector<double>(20);
+  this->loadSpline();
 }
 
 

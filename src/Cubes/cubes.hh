@@ -256,9 +256,10 @@ public:
 
   // Reconstruction and Searching functions
   void    ReconSearch();     // in ATrous/ReconSearch.cc
-  void    ReconSearch1D();   // in ATrous/ReconSearch.cc
-  void    ReconSearch2D();   // in ATrous/ReconSearch.cc
-  void    ReconSearch3D();   // in ATrous/ReconSearch.cc
+  void    ReconCube();       // in ATrous/ReconSearch.cc
+  void    ReconCube1D();     // in ATrous/ReconSearch.cc
+  void    ReconCube2D();     // in ATrous/ReconSearch.cc
+  void    ReconCube3D();     // in ATrous/ReconSearch.cc
   void    CubicSearch();     // in Cubes/CubicSearch.cc
 
   // Dealing with the WCS

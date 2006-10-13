@@ -36,8 +36,10 @@ int Cube::getCube(string fname)
   fits_file_exists(fname.c_str(),&exists,&status);
   if(exists<=0){
     fits_report_error(stderr, status);
-    duchampWarning("getCube", "Requested image does not exist!\n");
-    return FAILURE;    
+    std::stringstream errmsg;
+    errmsg << "Requested image (" << fname << ") does not exist!\n";
+    duchampError("getCube", errmsg.str());
+    return FAILURE;
   }
 
   // Open the FITS file -- make sure it exists

@@ -205,7 +205,7 @@ void findTrimmedHistStats(float *array, const int size, float &tmean, float &tsi
   int finish = maxpt;
   while((finish < size-1)&&(angle[finish]>45.)) finish++;
 
-  std::cerr << "npts = " << size << ", start = " << start << ", finish = " << finish << std::endl;
+//   std::cerr << "npts = " << size << ", start = " << start << ", finish = " << finish << std::endl;
 
   int trimSize=0;
   float *newarray = new float[finish-start+1];

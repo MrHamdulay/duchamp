@@ -10,16 +10,38 @@
 
 using std::setw;
 
-/////////////////////////////////////////////////////////////////////////////
 void Cube::ReconSearch()
 {
   /**
    * Cube::ReconSearch()
-   *   A front-end to the various ReconSearch functions, the choice of 
-   *   which is determined by the use of the reconDim parameter.
+   *   The Cube is first reconstructed, using Cube::ReconCube().
+   *   It is then searched, using searchReconArray.
+   *   The resulting object list is stored in the Cube, and outputted
+   *    to the log file if the user so requests.
+   */
+  
+  this->ReconCube();
+
+  std::cout << "  Searching... " << std::flush;
+  
+  this->objectList = searchReconArray(this->axisDim,this->array,
+				      this->recon,this->par);
+
+  this->updateDetectMap();
+  if(this->par.getFlagLog()) this->logDetectionList();
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+void Cube::ReconCube()
+{
+  /**
+   * Cube::ReconSearch()
+   *   A front-end to the various reconstruction functions, the choice of 
+   *    which is determined by the use of the reconDim parameter.
+   *   Differs from ReconSearch only in that no searching is done.
    */
   int dimRecon = this->par.getReconDim();
-  
   // Test whether we have eg. an image, but have requested a 3-d 
   //  reconstruction.
   // If dimension of data array is less than dimRecon, change dimRecon 
@@ -31,49 +53,44 @@ void Cube::ReconSearch()
 
   switch(dimRecon)
     {
-    case 1: this->ReconSearch1D(); break;
-    case 2: this->ReconSearch2D(); break;
-    case 3: this->ReconSearch3D(); break;
+    case 1: this->ReconCube1D(); break;
+    case 2: this->ReconCube2D(); break;
+    case 3: this->ReconCube3D(); break;
     default:
       if(dimRecon<=0){
 	std::stringstream errmsg;
 	errmsg << "reconDim (" << dimRecon
 	       << ") is less than 1. Performing 1-D reconstruction.\n";
-	duchampWarning("ReconSearch", errmsg.str());
+	duchampWarning("ReconCube", errmsg.str());
 	this->par.setReconDim(1);
-	this->ReconSearch1D();
+	this->ReconCube1D();
       }
       else if(dimRecon>3){ 
 	//this probably won't happen with new code above, but just in case...
 	std::stringstream errmsg;
 	errmsg << "reconDim (" << dimRecon
 	       << ") is more than 3. Performing 3-D reconstruction.\n";
-	duchampWarning("ReconSearch", errmsg.str());
+	duchampWarning("ReconCube", errmsg.str());
 	this->par.setReconDim(3);
-	this->ReconSearch3D();
+	this->ReconCube3D();
       }
       break;
     }
-  
 }
 
-
 /////////////////////////////////////////////////////////////////////////////
-void Cube::ReconSearch1D()
+void Cube::ReconCube1D()
 {
   /**
-   * Cube::ReconSearch1D()
+   * Cube::ReconCube1D()
    *   This reconstructs a cube by performing a 1D a trous reconstruction
    *   in the spectrum of each spatial pixel.
-   *   It then searches the cube using searchReconArray (below).
-   *
-   *   The resulting object list is stored in the Cube.
    */
   long xySize = this->axisDim[0] * this->axisDim[1];
+
   long zdim = this->axisDim[2];
 
   ProgressBar bar;
-  // Reconstruct the cube by 1d atrous transform in each spatial pixel
   if(!this->reconExists){
     std::cout<<"  Reconstructing... ";
     if(par.isVerbose()) bar.init(xySize);
@@ -95,33 +112,23 @@ void Cube::ReconSearch1D()
     bar.rewind();
     std::cout << "  All Done.";
     printSpace(22);
-    std::cout << "\n  Searching... "<<std::flush;
+    std::cout << "\n";
   }
-    
-  this->objectList = searchReconArray(this->axisDim,this->array,
-				      this->recon,this->par);
-
-  this->updateDetectMap();
-  if(this->par.getFlagLog()) this->logDetectionList();
 
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void Cube::ReconSearch2D()
+void Cube::ReconCube2D()
 {
   /**
-   * Cube::ReconSearch2D()
+   * Cube::ReconCube2D()
    *   This reconstructs a cube by performing a 2D a trous reconstruction
    *   in each spatial image (ie. each channel map) of the cube.
-   *   It then searches the cube using searchReconArray (below).
-   *
-   *   The resulting object list is stored in the Cube.
    */
   long xySize = this->axisDim[0] * this->axisDim[1];
   ProgressBar bar;
 
   if(!this->reconExists){
-    // RECONSTRUCT THE CUBE BY 2D ATROUS TRANSFORM IN EACH CHANNEL  
     std::cout<<"  Reconstructing... ";
     if(par.isVerbose()) bar.init(this->axisDim[2]);
     for(int z=0;z<this->axisDim[2];z++){
@@ -151,29 +158,18 @@ void Cube::ReconSearch2D()
     bar.rewind();
     std::cout << "  All Done.";
     printSpace(22);
-    std::cout << "\nSearching... "<<std::flush;
-
+    std::cout << "\n";
   }
-
-  this->objectList = searchReconArray(this->axisDim,this->array,
-				      this->recon,this->par);
-  
-  this->updateDetectMap();
-  if(this->par.getFlagLog()) this->logDetectionList();
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void Cube::ReconSearch3D()
+void Cube::ReconCube3D()
 {
   /**
-   * Cube::ReconSearch3D()
+   * Cube::ReconCube3D()
    *   This performs a full 3D a trous reconstruction of the cube
-   *   It then searches the cube using searchReconArray (below).
-   *
-   *   The resulting object list is stored in the Cube.
    */
-  if(this->axisDim[2]==1) this->ReconSearch2D();
+  if(this->axisDim[2]==1) this->ReconCube2D();
   else {
 
     if(!this->reconExists){
@@ -183,19 +179,11 @@ void Cube::ReconSearch3D()
       this->reconExists = true;
       std::cout << "  All Done.";
       printSpace(22);
-      std::cout << "\n  Searching... "<<std::flush;
+      std::cout << "\n";
     }
 
-    this->objectList = searchReconArray(this->axisDim,this->array,
-					this->recon,this->par);
-
-    this->updateDetectMap();
-    if(this->par.getFlagLog()) this->logDetectionList();
-
   }
-
 }
-
 
 /////////////////////////////////////////////////////////////////////////////
 vector <Detection> searchReconArray(long *dim, float *originalArray, 
