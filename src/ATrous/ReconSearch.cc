@@ -8,8 +8,6 @@
 #include <ATrous/atrous.hh>
 #include <Utils/utils.hh>
 
-using std::setw;
-
 void Cube::ReconSearch()
 {
   /**
@@ -22,6 +20,8 @@ void Cube::ReconSearch()
   
   this->ReconCube();
 
+  this->setCubeStats();
+    
   std::cout << "  Searching... " << std::flush;
   
   this->objectList = searchReconArray(this->axisDim,this->array,
@@ -207,19 +207,24 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
   vector <Detection> outputList;
   long zdim = dim[2];
   long xySize = dim[0] * dim[1];
-  long fullSize = zdim * xySize;
-  int num=0, goodSize;
+//   long fullSize = zdim * xySize;
+  int num=0// , goodSize
+    ;
 
-  bool *isGood = new bool[fullSize];
-  for(int pos=0;pos<fullSize;pos++){
-    isGood[pos] = ((!par.isBlank(originalArray[pos])) && 
-      (!par.isInMW(pos/xySize)));
-  }
-  bool *doChannel = new bool[xySize];
+//   bool *isGood = new bool[fullSize];
+//   for(int pos=0;pos<fullSize;pos++){
+//     isGood[pos] = ((!par.isBlank(originalArray[pos])) && 
+//       (!par.isInMW(pos/xySize)));
+//   }
+  bool *doPixel = new bool[xySize];
   for(int npix=0; npix<xySize; npix++){
-    doChannel[npix] = false;
-    for(int z=0;z<zdim;z++) 
-      doChannel[npix] = doChannel[npix] || isGood[z*xySize+npix];
+    doPixel[npix] = false;
+    for(int z=0;z<zdim;z++) {
+      doPixel[npix] = doPixel[npix] || 
+	(!par.isBlank(originalArray[npix]) && !par.isInMW(z));
+    }
+    // doPixel[i] is false only when there are no good pixels in spectrum
+    //  of pixel #i.
   }
  
   ProgressBar bar;
@@ -234,25 +239,25 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
 
       if( par.isVerbose() ) bar.update(npix+1);
 
-      if(doChannel[npix]){
+      if(doPixel[npix]){
 	
 	// First, get stats
-	float *spec = new float[zdim];
-	float specMedian,specSigma;
-	goodSize=0;
-	for(int z=0;z<zdim;z++) {
-	  if(isGood[z*xySize+npix]) 
-	    spec[goodSize++] = originalArray[z*xySize+npix];
-	}
-	specMedian = findMedian(spec,goodSize);
-	goodSize=0;
-	for(int z=0;z<zdim;z++) {
-	  if(isGood[z*xySize+npix]) 
-	    spec[goodSize++] = originalArray[z*xySize+npix] -
-	      reconArray[z*xySize+npix];
-	}
-	specSigma = findMADFM(spec,goodSize) / correctionFactor;
-	delete [] spec;
+// 	float *spec = new float[zdim];
+// 	float specMedian,specSigma;
+// 	goodSize=0;
+// 	for(int z=0;z<zdim;z++) {
+// 	  if(isGood[z*xySize+npix]) 
+// 	    spec[goodSize++] = originalArray[z*xySize+npix];
+// 	}
+// 	specMedian = findMedian(spec,goodSize);
+// 	goodSize=0;
+// 	for(int z=0;z<zdim;z++) {
+// 	  if(isGood[z*xySize+npix]) 
+// 	    spec[goodSize++] = originalArray[z*xySize+npix] -
+// 	      reconArray[z*xySize+npix];
+// 	}
+// 	specSigma = findMADFM(spec,goodSize) / correctionFactor;
+// 	delete [] spec;
 	
 	// Next, do source finding.
 	long *specdim = new long[2];
@@ -264,7 +269,7 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
 	// beam size: for spectrum, only neighbouring channels correlated
 	spectrum->extractSpectrum(reconArray,dim,npix);
 	spectrum->removeMW(); // only works if flagMW is true
-	spectrum->setStats(specMedian,specSigma,par.getCut());
+// 	spectrum->setStats(specMedian,specSigma,par.getCut());
 	if(par.getFlagFDR()) spectrum->setupFDR();
 	spectrum->setMinSize(par.getMinChannels());
 	spectrum->spectrumDetect();
@@ -316,21 +321,21 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
       //  if we are flagging them
 
       //  First, get stats
-      float *image = new float[xySize];
-      float imageMedian,imageSigma;
-      goodSize=0;
-      for(int npix=0; npix<xySize; npix++) {
-	if(isGood[z*xySize + npix]) 
-	  image[goodSize++] = originalArray[z*xySize + npix];
-      }
-      imageMedian = findMedian(image,goodSize);
-      goodSize=0;
-      for(int npix=0; npix<xySize; npix++) 
-	if(isGood[z*xySize+npix]) 
-	  image[goodSize++]=originalArray[z*xySize+npix]-
-	    reconArray[z*xySize+npix];
-      imageSigma = findMADFM(image,goodSize) / correctionFactor;
-      delete [] image;
+//       float *image = new float[xySize];
+//       float imageMedian,imageSigma;
+//       goodSize=0;
+//       for(int npix=0; npix<xySize; npix++) {
+// 	if(isGood[z*xySize + npix]) 
+// 	  image[goodSize++] = originalArray[z*xySize + npix];
+//       }
+//       imageMedian = findMedian(image,goodSize);
+//       goodSize=0;
+//       for(int npix=0; npix<xySize; npix++) 
+// 	if(isGood[z*xySize+npix]) 
+// 	  image[goodSize++]=originalArray[z*xySize+npix]-
+// 	    reconArray[z*xySize+npix];
+//       imageSigma = findMADFM(image,goodSize) / correctionFactor;
+//       delete [] image;
 
       // Next, do source finding.
       long *imdim = new long[2];
@@ -339,7 +344,7 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
       channelImage->saveParam(par);
       delete [] imdim;
       channelImage->extractImage(reconArray,dim,z);
-      channelImage->setStats(imageMedian,imageSigma,par.getCut());
+//       channelImage->setStats(imageMedian,imageSigma,par.getCut());
       if(par.getFlagFDR()) channelImage->setupFDR();
       channelImage->setMinSize(par.getMinPix());
       channelImage->lutz_detect();
@@ -371,8 +376,8 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
   printSpace(22);  
   std::cout << std::endl << std::flush;
 
-  delete [] isGood;
-  delete [] doChannel;
+//   delete [] isGood;
+  delete [] doPixel;
 
   return outputList;
 }

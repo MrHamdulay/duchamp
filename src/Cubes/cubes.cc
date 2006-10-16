@@ -652,35 +652,104 @@ void Cube::updateDetectMap(Detection obj)
 
 void Cube::setCubeStats()
 {
-  // First set the stats for each spectrum (ie. each spatial pixel)
-  long xySize = this->axisDim[0]*this->axisDim[1];
-  float *spec = new float[this->axisDim[2]];
-  for(int i=0;i<xySize;i++){
-    for(int z=0;z<this->axisDim[2];z++){
-      //Two cases: i) have reconstructed -- use residuals 
-      //          ii) otherwise          -- use original array
-      if(this->reconExists) 
-	spec[z] = this->array[z*xySize+i] - this->recon[z*xySize+1];
-      else
-	spec[z] = this->array[z*xySize+i];
+//   // First set the stats for each spectrum (ie. each spatial pixel)
+//   long xySize = this->axisDim[0]*this->axisDim[1];
+//   float *spec = new float[this->axisDim[2]];
+//   for(int i=0;i<xySize;i++){
+//     for(int z=0;z<this->axisDim[2];z++){
+//       //Two cases: i) have reconstructed -- use residuals 
+//       //          ii) otherwise          -- use original array
+//       if(this->reconExists) 
+// 	spec[z] = this->array[z*xySize+i] - this->recon[z*xySize+1];
+//       else
+// 	spec[z] = this->array[z*xySize+i];
+//     }
+//     findMedianStats(spec, this->axisDim[2],
+// 		    this->specMean[i], this->specSigma[i]);
+//   }
+//   delete spec;
+//   // Then set the stats for each channel map
+//   float *im = new float[xySize];
+//   for(int z=0;z<this->axisDim[2];z++){
+//     for(int i=0;i<xySize;i++){
+//       if(this->reconExists) 
+// 	im[i] = this->array[z*xySize+i] - this->recon[z*xySize+1];
+//       else 
+// 	im[i] = this->array[z*xySize+i];
+//     }
+//     findMedianStats(im,this->axisDim[2],this->chanMean[z],this->chanSigma[z]);
+//     this->chanSigma[z] /= correctionFactor;
+//   }
+//   delete im;
+
+  /**
+   *  Cube::setCubeStats()
+   *   Calculates the full statistics for the cube:
+   *     mean, rms, median, madfm
+   *   Only do this if the threshold has not been defined (ie. is still 0.,
+   *    its default). 
+   *   Also work out the threshold and store it in the par set.
+   *   
+   *   For stats calculations, ignore BLANKs and MW channels.
+   */
+
+  // use the following instead of "if(threshold==0.)" to avoid the dreaded
+  //  equality of floats test.
+  if(!(this->par.getThreshold()>0.)||!(this->par.getThreshold()<0.)) {
+
+    // get number of good pixels;
+    int goodSize = 0;
+    for(int x=0;x<this->axisDim[0];x++){
+      for(int y=0;y<this->axisDim[1];y++){
+	for(int z=0;z<this->axisDim[2];z++){
+	  int vox = z * this->axisDim[0] * this->axisDim[1] + 
+	    this->axisDim[0] * y + x;
+	  if(!this->isBlank(vox) && !this->par.isInMW(z)) goodSize++;
+	}
+      }
     }
-    findMedianStats(spec, this->axisDim[2],
-		    this->specMean[i], this->specSigma[i]);
-  }
-  delete spec;
-  // Then set the stats for each channel map
-  float *im = new float[xySize];
-  for(int z=0;z<this->axisDim[2];z++){
-    for(int i=0;i<xySize;i++){
-      if(this->reconExists) 
-	im[i] = this->array[z*xySize+i] - this->recon[z*xySize+1];
-      else 
-	im[i] = this->array[z*xySize+i];
+    float *tempArray = new float[goodSize];
+
+    goodSize=0;
+    for(int x=0;x<this->axisDim[0];x++){
+      for(int y=0;y<this->axisDim[1];y++){
+	for(int z=0;z<this->axisDim[2];z++){
+	  int pix = x + this->axisDim[0] * y;
+	  int vox = z * this->axisDim[0] * this->axisDim[1] + pix;
+	  if(!this->isBlank(vox) && !this->par.isInMW(z))
+	    tempArray[goodSize++] = this->array[vox];
+	}
+      }
     }
-    findMedianStats(im,this->axisDim[2],this->chanMean[z],this->chanSigma[z]);
-    this->chanSigma[z] /= correctionFactor;
+    if(!this->reconExists){
+      // if there's no recon array, calculate everything from orig array
+      findNormalStats(tempArray,goodSize,this->mean,this->stddev);
+      findMedianStats(tempArray,goodSize,this->median,this->madfm);
+    }
+    else{
+      // just get mean & median from orig array, and rms & madfm from recon
+      this->mean = findMean(tempArray,goodSize);
+      this->median = findMedian(tempArray,goodSize);
+      goodSize=0;
+      for(int x=0;x<this->axisDim[0];x++){
+	for(int y=0;y<this->axisDim[1];y++){
+	  for(int z=0;z<this->axisDim[2];z++){
+	    int pix = x + this->axisDim[0] * y;
+	    int vox = z * this->axisDim[0] * this->axisDim[1] + pix;
+	    if(!this->isBlank(vox) && !this->par.isInMW(z))
+	      tempArray[goodSize++] = this->array[vox] - this->recon[vox];
+	  }
+	}
+      }
+      this->stddev = findStddev(tempArray,goodSize);
+      this->madfm  = findMADFM(tempArray,goodSize);
+    }
+
+    float threshold = median + this->par.getCut()*this->madfm*correctionFactor;
+
+    this->par.setThreshold(threshold);
+
   }
-  delete im;
 
 }
 

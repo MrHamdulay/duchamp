@@ -299,6 +299,7 @@ Param::Param(){
   this->alphaFDR        = 0.01;
   // Other detection      
   this->snrCut          = 3.;
+  this->threshold       = 0.;
   // A trous reconstruction parameters
   this->flagATrous      = true;
   this->reconDim        = 3;
@@ -364,6 +365,7 @@ Param& Param::operator= (const Param& p)
   this->flagFDR         = p.flagFDR;
   this->alphaFDR        = p.alphaFDR;
   this->snrCut          = p.snrCut;
+  this->threshold       = p.threshold;
   this->flagATrous      = p.flagATrous;
   this->reconDim        = p.reconDim;
   this->scaleMin        = p.scaleMin;
@@ -479,6 +481,7 @@ int Param::readParams(string paramfile)
       if(arg=="alphafdr")        this->alphaFDR = readFval(ss); 
 
       if(arg=="snrcut")          this->snrCut = readFval(ss); 
+      if(arg=="threshold")       this->threshold = readFval(ss);
 
       if(arg=="flagatrous")      this->flagATrous = readFlag(ss); 
       if(arg=="recondim")        this->reconDim = readIval(ss); 
@@ -669,10 +672,18 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<par.getAlpha()          <<endl;
   }	     					       
   else {
-    theStream<<setw(widthText)<<"SNR Threshold"                        
-	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[snrCut]"
-	     <<"  =  " <<resetiosflags(std::ios::right)
-	     <<par.getCut()            <<endl;
+    if(par.getThreshold()>0.){
+      theStream<<setw(widthText)<<"Detection Threshold"                        
+	       <<setw(widthPar)<<setiosflags(std::ios::right)<<"[threshold]"
+	       <<"  =  " <<resetiosflags(std::ios::right)
+	       <<par.getThreshold()            <<endl;
+    }
+    else{
+      theStream<<setw(widthText)<<"SNR Threshold (in sigma)"
+	       <<setw(widthPar)<<setiosflags(std::ios::right)<<"[snrCut]"
+	       <<"  =  " <<resetiosflags(std::ios::right)
+	       <<par.getCut()            <<endl;
+    }
   }
   theStream  <<setw(widthText)<<"Using Adjacent-pixel criterion?"      
 	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[flagAdjacent]"

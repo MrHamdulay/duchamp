@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <duchamp.hh>
+#include <param.hh>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
 
@@ -17,8 +18,10 @@ void Cube::CubicSearch()
    *  the intermediate detections are logged in the log file.
    */
 
-  this->objectList = search3DArray(this->axisDim,this->array,this->par);
+  this->setCubeStats();
     
+  this->objectList = search3DArray(this->axisDim,this->array,this->par);
+
   this->updateDetectMap();
   if(this->par.getFlagLog()) this->logDetectionList();
 
@@ -39,20 +42,24 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
   vector <Detection> outputList;
   long zdim = dim[2];
   long xySize = dim[0] * dim[1];
-  long fullSize = zdim * xySize;
+//   long fullSize = zdim * xySize;
   int num = 0;
 
-  float blankPixValue = par.getBlankPixVal();
-  bool *isGood = new bool[fullSize];
-  for(int pos=0;pos<fullSize;pos++){ 
-    isGood[pos] = !par.isBlank(Array[pos]) && !par.isInMW(pos/xySize);
-  }
-  bool *doChannel = new bool[xySize];
+//   float blankPixValue = par.getBlankPixVal();
+//   bool *isGood = new bool[fullSize];
+//   for(int pos=0;pos<fullSize;pos++){ 
+//     isGood[pos] = !par.isBlank(Array[pos]) && !par.isInMW(pos/xySize);
+//   }
+  bool *doPixel = new bool[xySize];
   int goodSize=0;
   for(int npix=0; npix<xySize; npix++){
-    for(int z=0;z<zdim;z++) if(isGood[z*xySize+npix]) goodSize++;
-    if(goodSize==0) doChannel[npix] = false;
-    else doChannel[npix] = true;
+    doPixel[npix] = false;
+    for(int z=0;z<zdim;z++){
+      doPixel[npix] = doPixel[npix] || 
+	(!par.isBlank(Array[npix]) && !par.isInMW(z));
+    }
+    // doPixel[i] is false only when there are no good pixels in spectrum
+    //  of pixel #i.
   }
 
   ProgressBar bar;
@@ -67,15 +74,15 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
 
       if( par.isVerbose() ) bar.update(npix+1);
 
-      if(doChannel[npix]){
+      if(doPixel[npix]){
 
 	float *spec = new float[zdim];
-	float specMedian,specSigma;
-	goodSize=0;
-	for(int z=0;z<zdim;z++) 
-	  if(isGood[z*xySize+npix]) spec[goodSize++] = Array[z*xySize+npix];
-	findMedianStats(spec,goodSize,specMedian,specSigma);
-	specSigma /= correctionFactor;
+// 	float specMedian,specSigma;
+// 	goodSize=0;
+// 	for(int z=0;z<zdim;z++) 
+// 	  if(isGood[z*xySize+npix]) spec[goodSize++] = Array[z*xySize+npix];
+// 	findMedianStats(spec,goodSize,specMedian,specSigma);
+// 	specSigma /= correctionFactor;
 
 
 	long *specdim = new long[2];
@@ -87,7 +94,7 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
 	// beam size: for spectrum, only neighbouring channels correlated
 	spectrum->extractSpectrum(Array,dim,npix);
 	spectrum->removeMW(); // only works if flagMW is true
-	spectrum->setStats(specMedian,specSigma,par.getCut());
+// 	spectrum->setStats(specMedian,specSigma,par.getCut());
 	if(par.getFlagFDR()) spectrum->setupFDR();
 	spectrum->setMinSize(par.getMinChannels());
 	spectrum->spectrumDetect(); 
@@ -133,14 +140,14 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
     if(!par.isInMW(z)){
 
       float *image = new float[xySize];
-      float imageMedian, imageSigma;
-      goodSize=0;
-      for(int npix=0; npix<xySize; npix++) {
-	if(isGood[z*xySize + npix]) 
-	  image[goodSize++] = Array[z*xySize + npix];
-      }
-      findMedianStats(image,goodSize,imageMedian,imageSigma);
-      imageSigma /= correctionFactor;
+//       float imageMedian, imageSigma;
+//       goodSize=0;
+//       for(int npix=0; npix<xySize; npix++) {
+// 	if(isGood[z*xySize + npix]) 
+// 	  image[goodSize++] = Array[z*xySize + npix];
+//       }
+//       findMedianStats(image,goodSize,imageMedian,imageSigma);
+//       imageSigma /= correctionFactor;
 
       long *imdim = new long[2];
       imdim[0] = dim[0]; imdim[1] = dim[1];
@@ -148,7 +155,7 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
       delete [] imdim;
       channelImage->saveParam(par);
       channelImage->extractImage(Array,dim,z);
-      channelImage->setStats(imageMedian,imageSigma,par.getCut());
+//       channelImage->setStats(imageMedian,imageSigma,par.getCut());
       if(par.getFlagFDR()) channelImage->setupFDR();
       channelImage->setMinSize(par.getMinPix());
       channelImage->lutz_detect();
@@ -175,8 +182,8 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
     std::cout << std::endl << std::flush;
   }
 
-  delete [] isGood;
-  delete [] doChannel;
+//   delete [] isGood;
+  delete [] doPixel;
   
   return outputList;
 }

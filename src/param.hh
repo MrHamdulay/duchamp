@@ -138,6 +138,8 @@ public:
   //
   float  getCut(){return snrCut;};
   void   setCut(float c){snrCut=c;};
+  float  getThreshold(){return threshold;};
+  void   setThreshold(float f){threshold=f;};
   //	 
   bool   getFlagATrous(){return flagATrous;};
   void   setFlagATrous(bool flag){flagATrous=flag;};
@@ -241,9 +243,10 @@ private:
   // FDR analysis         
   bool   flagFDR;         // Should the FDR method be used? 
   float  alphaFDR;        // Alpha value for FDR detection algorithm
-  // Other detection      
+  // Basic detection      
   float  snrCut;          // How many sigma above mean is a detection 
                           //   when sigma-clipping
+  float  threshold;       // What the threshold is (when sigma-clipping).
   // A trous reconstruction parameters
   bool   flagATrous;      // Are we using the a trous reconstruction?
   int    reconDim;        // How many dimensions to use for the reconstruction?

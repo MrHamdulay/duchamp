@@ -239,6 +239,14 @@ public:
 
 
   // Statistics for cube
+  float   getMean(){return mean;};
+  void    setMean(float m){mean=m;};
+  float   getStddev(){return stddev;};
+  void    setStddev(float s){stddev=s;};
+  float   getMedian(){return median;};
+  void    setMedian(float m){median=m;};
+  float   getMadfm(){return madfm;};
+  void    setMadfm(float s){madfm=s;};
   float   getSpecMean(int pixel){return specMean[pixel];};
   float   getSpecSigma(int pixel){return specSigma[pixel];};
   float   getChanMean(int channel){return chanMean[channel];};
@@ -315,6 +323,11 @@ private:
   short  *detectMap;       // "moment map" -- x,y locations of detected pixels
   float  *baseline;        // array of spectral baseline values.
 		       
+  float  mean;             // the mean background level of the entire cube
+  float  stddev;           // the standard deviation of the cube's background
+  float  median;           // the median background level of the entire cube   
+  float  madfm;	           // the median deviation from the median of the 
+                           //  cube's background
   float  *specMean;        // array of means  for each spectrum in cube
   float  *specSigma;       // array of sigmas for each spectrum in cube
   float  *chanMean;        // array of means  for each channel map in cube

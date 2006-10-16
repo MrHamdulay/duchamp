@@ -276,7 +276,8 @@ void mergeList(vector<Detection> &objList, Param &par);    //in Cubes/Merger.cc
 void finaliseList(vector<Detection> &objList, Param &par); //in Cubes/Merger.cc
 void ObjectMerger(vector<Detection> &objList, Param &par); //in Cubes/Merger.cc
 
-// A GENERIC DETECTION TEST  -- in thresholding_functions.cc
+// GENERIC DETECTION TESTS  -- in thresholding_functions.cc
 bool isDetection(float value, float mean, float sigma, float cut);
+bool isDetection(float value, float threshold);
 
 #endif

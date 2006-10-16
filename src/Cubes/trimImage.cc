@@ -1,4 +1,5 @@
 #include <iostream>
+#include <param.hh>
 #include <Cubes/cubes.hh>
 
 void Cube::trimCube()
@@ -6,13 +7,13 @@ void Cube::trimCube()
   /**
    *  Cube::trimCube()
    *
-   *   If the blankPix flag has been set, this routine trims excess blank pixels 
-   *    from the edges of the spatial image.
-   *   It uses as its template the first channel, assuming that its non-BLANK size
-   *    is representative of the rest of the channels.
+   *   If the blankPix flag has been set, this routine trims excess blank 
+   *    pixels from the edges of the spatial image.
+   *   It uses as its template the first channel, assuming that its non-BLANK 
+   *    size is representative of the rest of the channels.
    *   The edges are moved in until the first non-BLANK pixel is encountered.
-   *   All other arrays are similarly edited, and the amount of trimming is recorded.
-   *
+   *   All other arrays are similarly edited, and the amount of trimming is 
+   *    recorded.
    */
 
   if(this->par.getFlagBlankPix()) {
