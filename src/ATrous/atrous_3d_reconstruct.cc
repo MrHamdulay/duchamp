@@ -4,6 +4,8 @@
 #include <duchamp.hh>
 #include <ATrous/atrous.hh>
 #include <Utils/utils.hh>
+#include <Utils/Statistics.hh>
+using Statistics::madfmToSigma;
 
 using std::endl;
 using std::setw;
@@ -49,7 +51,7 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
   int goodSize=0;
   for(int i=0;i<size;i++) if(isGood[i]) array[goodSize++] = input[i];
   findMedianStats(array,goodSize,originalMean,originalSigma);
-  originalSigma /= correctionFactor; // correct from MADFM to sigma estimator.
+  originalSigma = madfmToSigma(originalSigma);
   delete [] array;
 
   float *coeffs = new float[size];
@@ -235,7 +237,7 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
       if(isGood[i]) array[goodSize++] = input[i] - output[i];
     }
     findMedianStats(array,goodSize,mean,newsigma);
-    newsigma /= correctionFactor; // correct from MADFM to sigma estimator.
+    newsigma = madfmToSigma(newsigma);
     delete [] array;
 
     if(par.isVerbose()) printBackSpace(15);

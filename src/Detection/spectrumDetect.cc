@@ -7,7 +7,7 @@
  *    image     -- an Image object, containing a 1-D image that has been 
  *                 processed such that its pValue array is defined.
  * OUTPUTS:
- *   The detection and mask arrays in image will be filled, according to 
+ *   The detection array in image will be filled, according to 
  *   the location of the objects in the image.
  *
  */
@@ -42,7 +42,6 @@ void Image::spectrumDetect()
 	if(obj->getSize() >= this->minSize){ // if it's big enough
 	  obj->calcParams(); // work out midpoints, fluxes etc
 	  this->addObject(*obj);  // add to list.
-	  this->maskObject(*obj);
 	}
 	obj->clearDetection();
       }

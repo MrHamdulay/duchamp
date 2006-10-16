@@ -8,13 +8,6 @@
 // define the speed of light for WCS-related accessor functions 
 const float C_kms = 299792.458;
 
-// Divide by the following correction factor to convert from 
-//   MADFM to sigma estimator.
-const float correctionFactor = 0.6744888;
-// Multiply by the following correction factor to convert from 
-//   trimmedSigma to sigma estimator.
-const double trimToNormal = 1.17036753077;
-
 // MENU ROUTINES FOR DIGANOSTIC/TEST PROGRAMS
 std::string menu();
 std::string specMenu();
@@ -27,19 +20,27 @@ int linear_regression(int num, float *x, float *y, int ilow, int ihigh,
 		      float &intercept, float &errIntercept, float &r);
 void zscale(long imagesize, float *image, float &z1, float &z2);
 void zscale(long imagesize, float *image, float &z1, float &z2, float nullVal);
-void swap(float &a, float &b);
-void sort(float *arr, int begin, int end);
-void sort(float *arr, float *matchingArray, int begin, int end);
+template <class T> void swap(T &a, T &b){T t=a;a=b;b=t;};
+template <class T> void sort(T *arr, int begin, int end);
+template <class T1, class T2> void sort(T1 *arr, T2 *matchingArray, 
+					int begin, int end);
 
 // STATISTICS-RELATED ROUTINES
-void findMinMax(const float *array, const int size, float &min, float &max);
-float findMean(float *&array, int size);
-float findStddev(float *&array, int size);
-float findMedian(float *&array, int size);
-float findMADFM(float *&array, int size);
-void findMedianStats(float *&array, int size, float &median, float &madfm);
-void findMedianStats(float *&array, long size, float &median, float &madfm);
-void findNormalStats(float *&array, int size, float &mean, float &sig);
+template <class T> void findMinMax(const T *array, const int size, 
+				   T &min, T &max);
+template <class T> float findMean(T *array, int size);
+template <class T> float findStddev(T *array, int size);
+template <class T> T findMedian(T *array, int size);
+template <class T> T findMADFM(T *array, int size);
+template <class T> void findMedianStats(T *array, int size, 
+					T &median, T &madfm);
+template <class T> void findMedianStats(T *array, int size, bool *isGood, 
+					T &median, T &madfm);
+template <class T> void findNormalStats(T *array, int size, 
+					float &mean, float &stddev);
+template <class T> void findNormalStats(T *array, int size, bool *isGood, 
+		     float &mean, float &stddev);
+
 void findTrimmedHistStats(float *array, const int size, 
 			  float &tmean, float &tsigma);
 void getRandomSpectrum(int length, float *x, float *y);

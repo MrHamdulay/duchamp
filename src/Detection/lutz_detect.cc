@@ -7,7 +7,7 @@
  *    image     -- an Image object, containing a 2D image that has been 
  *                 processed such that its pValue array is defined.
  * OUTPUTS:
- *   The detection and mask arrays in image will be filled, according to 
+ *   The detection array in image will be filled, according to 
  *   the location of the objects in the image.
  *
  */
@@ -159,7 +159,6 @@ void Image::lutz_detect()
 		// is it big enough?
 		oS->back().info.calcParams(); // work out midpoints, fluxes etc
 		this->addObject(oS->back().info);
-		this->maskObject(oS->back().info);
 	      }
 	    }
 	    else{

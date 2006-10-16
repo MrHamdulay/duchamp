@@ -246,140 +246,142 @@ Param::Param(){
    * imageFile has no default value!
    */
   // Input files
-  this->imageFile       = "";
-  this->flagSubsection  = false;
-  this->subsection      = "[*,*,*]";
-  this->flagReconExists = false;
-  this->reconFile       = "";
+  this->imageFile         = "";
+  this->flagSubsection    = false;
+  this->subsection        = "[*,*,*]";
+  this->flagReconExists   = false;
+  this->reconFile         = "";
   // Output files
-  this->flagLog         = true;
-  this->logFile         = "duchamp-Logfile.txt";
-  this->outFile         = "duchamp-Results.txt";
-  this->spectraFile     = "duchamp-Spectra.ps";
-  this->flagOutputRecon = false;
-  this->flagOutputResid = false;
-  this->flagVOT         = false;
-  this->votFile         = "duchamp-Results.xml";
-  this->flagKarma       = false;
-  this->karmaFile       = "duchamp-Results.ann";
-  this->flagMaps        = true;
-  this->detectionMap    = "duchamp-DetectionMap.ps";
-  this->momentMap       = "duchamp-MomentMap.ps";
+  this->flagLog           = true;
+  this->logFile           = "duchamp-Logfile.txt";
+  this->outFile           = "duchamp-Results.txt";
+  this->spectraFile       = "duchamp-Spectra.ps";
+  this->flagOutputRecon   = false;
+  this->flagOutputResid   = false;
+  this->flagVOT           = false;
+  this->votFile           = "duchamp-Results.xml";
+  this->flagKarma         = false;
+  this->karmaFile         = "duchamp-Results.ann";
+  this->flagMaps          = true;
+  this->detectionMap      = "duchamp-DetectionMap.ps";
+  this->momentMap         = "duchamp-MomentMap.ps";
   // Cube related parameters 
-  this->flagBlankPix    = true;
-  this->blankPixValue   = -8.00061;
-  this->blankKeyword    = 1;
-  this->bscaleKeyword   = -8.00061;
-  this->bzeroKeyword    = 0.;
-  this->flagUsingBlank  = false;
-  this->flagMW          = false;
-  this->maxMW           = 112;
-  this->minMW           = 75;
-  this->numPixBeam      = 10.;
-  this->flagUsingBeam   = false;
+  this->flagBlankPix      = true;
+  this->blankPixValue     = -8.00061;
+  this->blankKeyword      = 1;
+  this->bscaleKeyword     = -8.00061;
+  this->bzeroKeyword      = 0.;
+  this->flagUsingBlank    = false;
+  this->flagMW            = false;
+  this->maxMW             = 112;
+  this->minMW             = 75;
+  this->numPixBeam        = 10.;
+  this->flagUsingBeam     = false;
   // Trim-related         
-  this->flagTrimmed     = false;
-  this->borderLeft      = 0;
-  this->borderRight     = 0;
-  this->borderBottom    = 0;
-  this->borderTop       = 0;
+  this->flagTrimmed       = false;
+  this->borderLeft        = 0;
+  this->borderRight       = 0;
+  this->borderBottom      = 0;
+  this->borderTop         = 0;
   // Subsection offsets
-  this->xSubOffset      = 0;
-  this->ySubOffset      = 0;
-  this->zSubOffset      = 0;
+  this->xSubOffset        = 0;
+  this->ySubOffset        = 0;
+  this->zSubOffset        = 0;
   // Baseline related
-  this->flagBaseline    = false;
+  this->flagBaseline      = false;
   // Detection-related    
-  this->flagNegative    = false;
+  this->flagNegative      = false;
   // Object growth        
-  this->flagGrowth      = false;
-  this->growthCut       = 2.;
+  this->flagGrowth        = false;
+  this->growthCut         = 2.;
   // FDR analysis         
-  this->flagFDR         = false;
-  this->alphaFDR        = 0.01;
+  this->flagFDR           = false;
+  this->alphaFDR          = 0.01;
   // Other detection      
-  this->snrCut          = 3.;
-  this->threshold       = 0.;
+  this->snrCut            = 3.;
+  this->threshold         = 0.;
+  this->flagUserThreshold = false;
   // A trous reconstruction parameters
-  this->flagATrous      = true;
-  this->reconDim        = 3;
-  this->scaleMin        = 1;
-  this->snrRecon        = 4.;
-  this->filterCode      = 1;
+  this->flagATrous        = true;
+  this->reconDim          = 3;
+  this->scaleMin          = 1;
+  this->snrRecon          = 4.;
+  this->filterCode        = 1;
   // Volume-merging parameters
-  this->flagAdjacent    = true;
-  this->threshSpatial   = 3.;
-  this->threshVelocity  = 7.;
-  this->minChannels     = 3;
-  this->minPix          = 2;
+  this->flagAdjacent      = true;
+  this->threshSpatial     = 3.;
+  this->threshVelocity    = 7.;
+  this->minChannels       = 3;
+  this->minPix            = 2;
   // Input-Output related
-  this->spectralMethod  = "peak";
-  this->borders         = true;
-  this->blankEdge       = true;
-  this->verbose         = true;
-  this->spectralUnits   = "km/s";
+  this->spectralMethod    = "peak";
+  this->borders           = true;
+  this->blankEdge         = true;
+  this->verbose           = true;
+  this->spectralUnits     = "km/s";
 };
 
 Param& Param::operator= (const Param& p)
 {
-  this->imageFile       = p.imageFile;
-  this->flagSubsection  = p.flagSubsection; 
-  this->subsection      = p.subsection;     
-  this->flagReconExists = p.flagReconExists;
-  this->reconFile       = p.reconFile;      
-  this->flagLog         = p.flagLog;        
-  this->logFile         = p.logFile;       
-  this->outFile         = p.outFile;        
-  this->spectraFile     = p.spectraFile;    
-  this->flagOutputRecon = p.flagOutputRecon;
-  this->flagOutputResid = p.flagOutputResid;
-  this->flagVOT         = p.flagVOT;         
-  this->votFile         = p.votFile;        
-  this->flagKarma       = p.flagKarma;      
-  this->karmaFile       = p.karmaFile;      
-  this->flagMaps        = p.flagMaps;       
-  this->detectionMap    = p.detectionMap;   
-  this->momentMap       = p.momentMap;      
-  this->flagBlankPix    = p.flagBlankPix;   
-  this->blankPixValue   = p.blankPixValue;  
-  this->blankKeyword    = p.blankKeyword;   
-  this->bscaleKeyword   = p.bscaleKeyword;  
-  this->bzeroKeyword    = p.bzeroKeyword;   
-  this->flagUsingBlank  = p.flagUsingBlank; 
-  this->flagMW          = p.flagMW;         
-  this->maxMW           = p.maxMW;          
-  this->minMW           = p.minMW;         
-  this->numPixBeam      = p.numPixBeam;     
-  this->flagTrimmed     = p.flagTrimmed;    
-  this->borderLeft      = p.borderLeft;     
-  this->borderRight     = p.borderRight;    
-  this->borderBottom    = p.borderBottom;   
-  this->borderTop       = p.borderTop;      
-  this->xSubOffset      = p.xSubOffset;     
-  this->ySubOffset      = p.ySubOffset;     
-  this->zSubOffset      = p.zSubOffset;
-  this->flagBaseline    = p.flagBaseline;
-  this->flagNegative    = p.flagNegative;
-  this->flagGrowth      = p.flagGrowth;
-  this->growthCut       = p.growthCut;
-  this->flagFDR         = p.flagFDR;
-  this->alphaFDR        = p.alphaFDR;
-  this->snrCut          = p.snrCut;
-  this->threshold       = p.threshold;
-  this->flagATrous      = p.flagATrous;
-  this->reconDim        = p.reconDim;
-  this->scaleMin        = p.scaleMin;
-  this->snrRecon        = p.snrRecon;
-  this->filterCode      = p.filterCode;
-  this->flagAdjacent    = p.flagAdjacent;
-  this->threshSpatial   = p.threshSpatial;
-  this->threshVelocity  = p.threshVelocity;
-  this->minChannels     = p.minChannels;
-  this->minPix          = p.minPix;
-  this->spectralMethod  = p.spectralMethod;
-  this->borders         = p.borders;
-  this->verbose         = p.verbose;
-  this->spectralUnits   = p.spectralUnits;
+  this->imageFile         = p.imageFile;
+  this->flagSubsection    = p.flagSubsection; 
+  this->subsection        = p.subsection;     
+  this->flagReconExists   = p.flagReconExists;
+  this->reconFile         = p.reconFile;      
+  this->flagLog           = p.flagLog;        
+  this->logFile           = p.logFile;       
+  this->outFile           = p.outFile;        
+  this->spectraFile       = p.spectraFile;    
+  this->flagOutputRecon   = p.flagOutputRecon;
+  this->flagOutputResid   = p.flagOutputResid;
+  this->flagVOT           = p.flagVOT;         
+  this->votFile           = p.votFile;        
+  this->flagKarma         = p.flagKarma;      
+  this->karmaFile         = p.karmaFile;      
+  this->flagMaps          = p.flagMaps;       
+  this->detectionMap      = p.detectionMap;   
+  this->momentMap         = p.momentMap;      
+  this->flagBlankPix      = p.flagBlankPix;   
+  this->blankPixValue     = p.blankPixValue;  
+  this->blankKeyword      = p.blankKeyword;   
+  this->bscaleKeyword     = p.bscaleKeyword;  
+  this->bzeroKeyword      = p.bzeroKeyword;   
+  this->flagUsingBlank    = p.flagUsingBlank; 
+  this->flagMW            = p.flagMW;         
+  this->maxMW             = p.maxMW;          
+  this->minMW             = p.minMW;         
+  this->numPixBeam        = p.numPixBeam;     
+  this->flagTrimmed       = p.flagTrimmed;    
+  this->borderLeft        = p.borderLeft;     
+  this->borderRight       = p.borderRight;    
+  this->borderBottom      = p.borderBottom;   
+  this->borderTop         = p.borderTop;      
+  this->xSubOffset        = p.xSubOffset;     
+  this->ySubOffset        = p.ySubOffset;     
+  this->zSubOffset        = p.zSubOffset;
+  this->flagBaseline      = p.flagBaseline;
+  this->flagNegative      = p.flagNegative;
+  this->flagGrowth        = p.flagGrowth;
+  this->growthCut         = p.growthCut;
+  this->flagFDR           = p.flagFDR;
+  this->alphaFDR          = p.alphaFDR;
+  this->snrCut            = p.snrCut;
+  this->threshold         = p.threshold;
+  this->flagUserThreshold = p.threshold;
+  this->flagATrous        = p.flagATrous;
+  this->reconDim          = p.reconDim;
+  this->scaleMin          = p.scaleMin;
+  this->snrRecon          = p.snrRecon;
+  this->filterCode        = p.filterCode;
+  this->flagAdjacent      = p.flagAdjacent;
+  this->threshSpatial     = p.threshSpatial;
+  this->threshVelocity    = p.threshVelocity;
+  this->minChannels       = p.minChannels;
+  this->minPix            = p.minPix;
+  this->spectralMethod    = p.spectralMethod;
+  this->borders           = p.borders;
+  this->verbose           = p.verbose;
+  this->spectralUnits     = p.spectralUnits;
 }
 
 /****************************************************************/
@@ -481,7 +483,10 @@ int Param::readParams(string paramfile)
       if(arg=="alphafdr")        this->alphaFDR = readFval(ss); 
 
       if(arg=="snrcut")          this->snrCut = readFval(ss); 
-      if(arg=="threshold")       this->threshold = readFval(ss);
+      if(arg=="threshold"){
+	                         this->threshold = readFval(ss);
+                                 this->flagUserThreshold = true;
+      }
 
       if(arg=="flagatrous")      this->flagATrous = readFlag(ss); 
       if(arg=="recondim")        this->reconDim = readIval(ss); 
@@ -672,7 +677,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<par.getAlpha()          <<endl;
   }	     					       
   else {
-    if(par.getThreshold()>0.){
+    if(par.getFlagUserThreshold()){
       theStream<<setw(widthText)<<"Detection Threshold"                        
 	       <<setw(widthPar)<<setiosflags(std::ios::right)<<"[threshold]"
 	       <<"  =  " <<resetiosflags(std::ios::right)

@@ -20,7 +20,8 @@ void Cube::CubicSearch()
 
   this->setCubeStats();
     
-  this->objectList = search3DArray(this->axisDim,this->array,this->par);
+  this->objectList = search3DArray(this->axisDim,this->array,
+				   this->par,this->Stats);
 
   this->updateDetectMap();
   if(this->par.getFlagLog()) this->logDetectionList();
@@ -28,7 +29,8 @@ void Cube::CubicSearch()
 }
 
 
-vector <Detection> search3DArray(long *dim, float *Array, Param &par)
+vector <Detection> search3DArray(long *dim, float *Array, Param &par,
+				 StatsContainer<float> &stats)
 {
   /**
    * cubicSearch
@@ -90,12 +92,13 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
 	Image *spectrum = new Image(specdim);
 	delete [] specdim;
 	spectrum->saveParam(par);
+	spectrum->saveStats(stats);
 	spectrum->pars().setBeamSize(2.); 
 	// beam size: for spectrum, only neighbouring channels correlated
 	spectrum->extractSpectrum(Array,dim,npix);
 	spectrum->removeMW(); // only works if flagMW is true
 // 	spectrum->setStats(specMedian,specSigma,par.getCut());
-	if(par.getFlagFDR()) spectrum->setupFDR();
+// 	if(par.getFlagFDR()) spectrum->setupFDR();
 	spectrum->setMinSize(par.getMinChannels());
 	spectrum->spectrumDetect(); 
 	num += spectrum->getNumObj();
@@ -154,9 +157,10 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par)
       Image *channelImage = new Image(imdim);
       delete [] imdim;
       channelImage->saveParam(par);
+      channelImage->saveStats(stats);
       channelImage->extractImage(Array,dim,z);
 //       channelImage->setStats(imageMedian,imageSigma,par.getCut());
-      if(par.getFlagFDR()) channelImage->setupFDR();
+//       if(par.getFlagFDR()) channelImage->setupFDR();
       channelImage->setMinSize(par.getMinPix());
       channelImage->lutz_detect();
       num += channelImage->getNumObj();

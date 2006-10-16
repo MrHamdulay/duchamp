@@ -140,6 +140,8 @@ public:
   void   setCut(float c){snrCut=c;};
   float  getThreshold(){return threshold;};
   void   setThreshold(float f){threshold=f;};
+  bool   getFlagUserThreshold(){return flagUserThreshold;};
+  void   setFlagUserThreshold(bool b){flagUserThreshold=b;};
   //	 
   bool   getFlagATrous(){return flagATrous;};
   void   setFlagATrous(bool flag){flagATrous=flag;};
@@ -247,6 +249,8 @@ private:
   float  snrCut;          // How many sigma above mean is a detection 
                           //   when sigma-clipping
   float  threshold;       // What the threshold is (when sigma-clipping).
+  bool   flagUserThreshold;// Whether the user has defined a threshold of 
+                           //  their own.
   // A trous reconstruction parameters
   bool   flagATrous;      // Are we using the a trous reconstruction?
   int    reconDim;        // How many dimensions to use for the reconstruction?

@@ -25,7 +25,7 @@ void Cube::ReconSearch()
   std::cout << "  Searching... " << std::flush;
   
   this->objectList = searchReconArray(this->axisDim,this->array,
-				      this->recon,this->par);
+				      this->recon,this->par,this->Stats);
 
   this->updateDetectMap();
   if(this->par.getFlagLog()) this->logDetectionList();
@@ -187,7 +187,8 @@ void Cube::ReconCube3D()
 
 /////////////////////////////////////////////////////////////////////////////
 vector <Detection> searchReconArray(long *dim, float *originalArray, 
-				    float *reconArray, Param &par)
+				    float *reconArray, Param &par,
+				    StatsContainer<float> &stats)
 {
   /**
    * searchReconArray(long *dim, float *originalArray, 
@@ -265,12 +266,13 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
 	Image *spectrum = new Image(specdim);
 	delete [] specdim;
 	spectrum->saveParam(par);
+	spectrum->saveStats(stats);
 	spectrum->pars().setBeamSize(2.); 
 	// beam size: for spectrum, only neighbouring channels correlated
 	spectrum->extractSpectrum(reconArray,dim,npix);
 	spectrum->removeMW(); // only works if flagMW is true
 // 	spectrum->setStats(specMedian,specSigma,par.getCut());
-	if(par.getFlagFDR()) spectrum->setupFDR();
+// 	if(par.getFlagFDR()) spectrum->setupFDR();
 	spectrum->setMinSize(par.getMinChannels());
 	spectrum->spectrumDetect();
 	num += spectrum->getNumObj();
@@ -342,10 +344,11 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
       imdim[0] = dim[0]; imdim[1] = dim[1];
       Image *channelImage = new Image(imdim);
       channelImage->saveParam(par);
+      channelImage->saveStats(stats);
       delete [] imdim;
       channelImage->extractImage(reconArray,dim,z);
 //       channelImage->setStats(imageMedian,imageSigma,par.getCut());
-      if(par.getFlagFDR()) channelImage->setupFDR();
+//       if(par.getFlagFDR()) channelImage->setupFDR();
       channelImage->setMinSize(par.getMinPix());
       channelImage->lutz_detect();
       num += channelImage->getNumObj();

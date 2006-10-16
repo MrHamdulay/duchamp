@@ -13,9 +13,11 @@
 #include <Detection/columns.hh>
 #include <Utils/utils.hh>
 #include <Utils/mycpgplot.hh>
+#include <Utils/Statistics.hh>
 using std::endl;
 using namespace Column;
 using namespace mycpgplot;
+using namespace Statistics;
 
 /****************************************************************/
 ///////////////////////////////////////////////////
@@ -37,6 +39,7 @@ DataArray::DataArray(short int nDim, long size){
     this->numDim = nDim;
   }
 }
+//--------------------------------------------------------------------
 
 DataArray::DataArray(short int nDim, long *dimensions){
   if(nDim<0)
@@ -59,6 +62,7 @@ DataArray::DataArray(short int nDim, long *dimensions){
     }
   }
 }
+//--------------------------------------------------------------------
 
 DataArray::~DataArray()
 {
@@ -66,14 +70,17 @@ DataArray::~DataArray()
   delete [] axisDim;
   objectList.clear();
 }
+//--------------------------------------------------------------------
 
 void DataArray::getDimArray(long *output){
   for(int i=0;i<this->numDim;i++) output[i] = this->axisDim[i];
 }
+//--------------------------------------------------------------------
 
 void DataArray::getArray(float *output){
   for(int i=0;i<this->numPixels;i++) output[i] = this->array[i];
 }
+//--------------------------------------------------------------------
 
 void DataArray::saveArray(float *input, long size){
   if(size != this->numPixels)
@@ -86,6 +93,7 @@ void DataArray::saveArray(float *input, long size){
     for(int i=0;i<size;i++) this->array[i] = input[i];
   }
 }
+//--------------------------------------------------------------------
 
 void DataArray::getDim(long &x, long &y, long &z){
   if(numDim>0) x=axisDim[0]; 
@@ -95,16 +103,19 @@ void DataArray::getDim(long &x, long &y, long &z){
   if(numDim>2) z=axisDim[2]; 
   else z=0;
 }
+//--------------------------------------------------------------------
 
 void DataArray::addObject(Detection object){ 
   // adds a single detection to the object list
   // objectList is a vector, so just use push_back()
   this->objectList.push_back(object);
 }
+//--------------------------------------------------------------------
 
 void DataArray::addObjectList(vector <Detection> newlist) {
   for(int i=0;i<newlist.size();i++) this->objectList.push_back(newlist[i]);
 }
+//--------------------------------------------------------------------
 
 void DataArray::addObjectOffsets(){
   for(int i=0;i<this->objectList.size();i++){
@@ -118,7 +129,7 @@ void DataArray::addObjectOffsets(){
     }
   }
 }
-
+//--------------------------------------------------------------------
 
 std::ostream& operator<< ( std::ostream& theStream, DataArray &array)
 {
@@ -155,14 +166,15 @@ Image::Image(long size){
   else{
     if(size>0){
       this->array = new float[size];
-      this->pValue = new float[size];
-      this->mask = new short int[size];
+//       this->pValue = new float[size];
+//       this->mask = new short int[size];
     }
     this->numPixels = size;
     this->axisDim = new long[2];
     this->numDim = 2;
   }
 }
+//--------------------------------------------------------------------
 
 Image::Image(long *dimensions){
   int size = dimensions[0] * dimensions[1];
@@ -172,23 +184,24 @@ Image::Image(long *dimensions){
     this->numPixels = size;
     if(size>0){
       this->array = new float[size];
-      this->pValue = new float[size];
-      this->mask = new short int[size];
+//       this->pValue = new float[size];
+//       this->mask = new short int[size];
     }
     this->numDim=2;
     this->axisDim = new long[2];
     for(int i=0;i<2;i++) this->axisDim[i] = dimensions[i];
-    for(int i=0;i<size;i++) this->mask[i] = 0;
+//     for(int i=0;i<size;i++) this->mask[i] = 0;
   }
 }
+//--------------------------------------------------------------------
 
 Image::~Image(){
   if(this->numPixels > 0){
-    delete [] this->pValue;
-    delete [] this->mask;
+//     delete [] this->pValue;
+//     delete [] this->mask;
   }
 }
-
+//--------------------------------------------------------------------
 
 void Image::saveArray(float *input, long size){
   if(size != this->numPixels)
@@ -197,30 +210,20 @@ void Image::saveArray(float *input, long size){
   else {
     if(this->numPixels>0){
       delete [] array;
-      delete [] pValue;
-      delete [] mask;
+//       delete [] pValue;
+//       delete [] mask;
     }
     this->numPixels = size;
     if(this->numPixels>0){
       this->array = new float[size];
-      this->pValue = new float[size];
-      this->mask = new short int[size];
+//       this->pValue = new float[size];
+//       this->mask = new short int[size];
     }
     for(int i=0;i<size;i++) this->array[i] = input[i];
-    for(int i=0;i<size;i++) this->mask[i] = 0;
+//     for(int i=0;i<size;i++) this->mask[i] = 0;
   }
 }
-
-void Image::maskObject(Detection &object)
-{
-  /**
-   * Image::maskObject(Detection &)
-   *  A function that increments the mask for each pixel of the detection.
-   */
-  for(long i=0;i<object.getSize();i++){
-    this->setMaskValue(object.getX(i),object.getY(i),1);
-  }
-}
+//--------------------------------------------------------------------
 
 void Image::extractSpectrum(float *Array, long *dim, long pixel)
 {
@@ -237,6 +240,7 @@ void Image::extractSpectrum(float *Array, long *dim, long pixel)
   this->saveArray(spec,dim[2]);
   delete [] spec;
 }
+//--------------------------------------------------------------------
 
 void Image::extractSpectrum(Cube &cube, long pixel)
 {
@@ -253,6 +257,7 @@ void Image::extractSpectrum(Cube &cube, long pixel)
   this->saveArray(spec,zdim);
   delete [] spec;
 }
+//--------------------------------------------------------------------
 
 void Image::extractImage(float *Array, long *dim, long channel)
 {
@@ -271,6 +276,7 @@ void Image::extractImage(float *Array, long *dim, long channel)
   this->saveArray(image,dim[0]*dim[1]);
   delete [] image;
 }
+//--------------------------------------------------------------------
 
 void Image::extractImage(Cube &cube, long channel)
 {
@@ -287,6 +293,7 @@ void Image::extractImage(Cube &cube, long channel)
   this->saveArray(image,spatSize);
   delete [] image;
 }
+//--------------------------------------------------------------------
 
 void Image::removeMW()
 {
@@ -302,61 +309,6 @@ void Image::removeMW()
       if(!this->isBlank(z) && this->par.isInMW(z)) this->array[z]=0.;
     }
   }
-}
-
-void Image::findStats(int code)
-{
-  /**
-   *  Image::findStats(int code)
-   *    Front-end to function to find the stats (mean/median & sigma/madfm) and
-   *     store them in the "mean" and "sigma" members of Image.
-   *    The choice of normal(mean & sigma) or robust (median & madfm) is made 
-   *      via the code parameter. This is stored as a decimal number, with 0s 
-   *      representing normal stats, and 1s representing robust. 
-   *      The 10s column is the mean, the 1s column the sigma.
-   *      Eg: 00 -- mean&sigma;   01 -- mean&madfm; 
-   *          10 -- median&sigma; 11 -- median&madfm
-   *    If calculated, the madfm value is corrected to sigma units.
-   *    The Image member "cut" is also assigned using the parameter in Image's 
-   *     par (needs to be defined first -- also for the blank pixel 
-   *          determination).
-   */
-  float *tempArray = new float[this->numPixels];
-  int goodSize=0;
-  for(int i=0; i<this->numPixels; i++) 
-    if(!this->isBlank(i)) tempArray[goodSize++] = this->array[i];
-  float tempMean,tempSigma,tempMedian,tempMADFM;
-  if(code != 0) findMedianStats(tempArray,goodSize,tempMedian,tempMADFM);
-  if(code != 11) findNormalStats(tempArray,goodSize,tempMean,tempSigma);
-  switch(code)
-    {
-    case 0:
-      findNormalStats(tempArray,goodSize,tempMean,tempSigma);
-      this->mean = tempMean;
-      this->sigma = tempSigma;
-      break;
-    case 10:
-      this->mean  = findMedian(tempArray,goodSize);;
-      this->sigma = findStddev(tempArray,goodSize);
-      break;
-    case 1:
-      this->mean  = findMean(tempArray,goodSize);
-      this->sigma = findMADFM(tempArray,goodSize)/correctionFactor;
-      break;
-    case 11:
-    default:
-      if(code!=11) {
-	std::stringstream errmsg;
-	errmsg << "Invalid code ("<<code<<") in findStats. Using robust method.\n";
-	duchampWarning("Image::findStats", errmsg.str());
-      }
-      findMedianStats(tempArray,goodSize,tempMedian,tempMADFM);
-      this->mean = tempMedian;
-      this->sigma = tempMADFM/correctionFactor;
-      break;
-    }
-  this->cutLevel = this->par.getCut();
-  delete [] tempArray;
 }
 
 /****************************************************************/
@@ -379,6 +331,7 @@ Cube::Cube(long size){
     this->reconExists = false;
   }
 }
+//--------------------------------------------------------------------
 
 Cube::Cube(long *dimensions){
   int size   = dimensions[0] * dimensions[1] * dimensions[2];
@@ -402,14 +355,15 @@ Cube::Cube(long *dimensions){
     this->reconExists = false;
   }
 }
+//--------------------------------------------------------------------
 
 Cube::~Cube()
 {
   delete [] detectMap;
   if(this->par.getFlagATrous())   delete [] recon;
   if(this->par.getFlagBaseline()) delete [] baseline;
-  delete [] specMean,specSigma,chanMean,chanSigma;
 }
+//--------------------------------------------------------------------
 
 void Cube::initialiseCube(long *dimensions)
 {
@@ -440,48 +394,29 @@ void Cube::initialiseCube(long *dimensions)
   imsize = dimensions[lng] * dimensions[lat];
 
 
-
-//   if(!this->head.isWCS()){
-//     duchampError("Cube::initialiseCube",
-//  "The WCS is not sufficiently defined. Not able to define Cube.\n");
-//   }
-//   else if(this->head.getWCS()->naxis<3){
-//     duchampError("Cube::initialiseCube",
-//  "The WCS does not have three axes defined. Not able to define Cube.\n");
-//   }
-//   else{
-//     int lng = this->head.getWCS()->lng;
-//     int lat = this->head.getWCS()->lat;
-//     int spc = this->head.getWCS()->spec;
-//     int size   = dimensions[lng] * dimensions[lat] * dimensions[spc];
-//     int imsize = dimensions[lng] * dimensions[lat];
-    if((size<0) || (imsize<0) )
-      duchampError("Cube::initialiseCube(dimArray)",
-		   "Negative size -- could not define Cube.\n");
-    else{
-      this->numPixels = size;
-      if(size>0){
-	this->array      = new float[size];
-	this->detectMap  = new short[imsize];
-	this->specMean   = new float[imsize];
-	this->specSigma  = new float[imsize];
-	this->chanMean   = new float[dimensions[spc]];
-	this->chanSigma  = new float[dimensions[spc]];
-	if(this->par.getFlagATrous())
-	  this->recon    = new float[size];
-	if(this->par.getFlagBaseline())
-	  this->baseline = new float[size];
-      }
-      this->numDim  = 3;
-      this->axisDim = new long[3];
-      this->axisDim[0] = dimensions[lng];
-      this->axisDim[1] = dimensions[lat];
-      this->axisDim[2] = dimensions[spc];
-      for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
-      this->reconExists = false;
+  if((size<0) || (imsize<0) )
+    duchampError("Cube::initialiseCube(dimArray)",
+		 "Negative size -- could not define Cube.\n");
+  else{
+    this->numPixels = size;
+    if(size>0){
+      this->array      = new float[size];
+      this->detectMap  = new short[imsize];
+      if(this->par.getFlagATrous())
+	this->recon    = new float[size];
+      if(this->par.getFlagBaseline())
+	this->baseline = new float[size];
     }
+    this->numDim  = 3;
+    this->axisDim = new long[3];
+    this->axisDim[0] = dimensions[lng];
+    this->axisDim[1] = dimensions[lat];
+    this->axisDim[2] = dimensions[spc];
+    for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
+    this->reconExists = false;
   }
-//}
+}
+//--------------------------------------------------------------------
 
 int Cube::getopts(int argc, char ** argv)
 {
@@ -533,6 +468,7 @@ int Cube::getopts(int argc, char ** argv)
   }
   return returnValue;
 }
+//--------------------------------------------------------------------
 
 void Cube::saveArray(float *input, long size){
   if(size != this->numPixels){
@@ -548,6 +484,7 @@ void Cube::saveArray(float *input, long size){
     for(int i=0;i<size;i++) this->array[i] = input[i];
   }
 }
+//--------------------------------------------------------------------
 
 void Cube::saveRecon(float *input, long size){
   if(size != this->numPixels){
@@ -564,6 +501,7 @@ void Cube::saveRecon(float *input, long size){
     this->reconExists = true;
   }
 }
+//--------------------------------------------------------------------
 
 void Cube::getRecon(float *output){
   // Need check for change in number of pixels!
@@ -573,6 +511,7 @@ void Cube::getRecon(float *output){
     else output[i] = 0.;
   }
 }
+//--------------------------------------------------------------------
 
 void Cube::removeMW()
 {
@@ -585,6 +524,7 @@ void Cube::removeMW()
     }
   }
 }
+//--------------------------------------------------------------------
 
 void Cube::calcObjectWCSparams()
 {
@@ -603,6 +543,7 @@ void Cube::calcObjectWCSparams()
 
   
 }
+//--------------------------------------------------------------------
 
 void Cube::sortDetections()
 {
@@ -619,6 +560,7 @@ void Cube::sortDetections()
   for(int i=0; i<this->objectList.size();i++) this->objectList[i].setID(i+1);
 
 }
+//--------------------------------------------------------------------
 
 void Cube::updateDetectMap()
 {
@@ -636,6 +578,7 @@ void Cube::updateDetectMap()
     }
   }
 }
+//--------------------------------------------------------------------
 
 void Cube::updateDetectMap(Detection obj)
 {
@@ -649,39 +592,10 @@ void Cube::updateDetectMap(Detection obj)
     this->detectMap[spatialPos]++;
   }
 }
+//--------------------------------------------------------------------
 
 void Cube::setCubeStats()
 {
-//   // First set the stats for each spectrum (ie. each spatial pixel)
-//   long xySize = this->axisDim[0]*this->axisDim[1];
-//   float *spec = new float[this->axisDim[2]];
-//   for(int i=0;i<xySize;i++){
-//     for(int z=0;z<this->axisDim[2];z++){
-//       //Two cases: i) have reconstructed -- use residuals 
-//       //          ii) otherwise          -- use original array
-//       if(this->reconExists) 
-// 	spec[z] = this->array[z*xySize+i] - this->recon[z*xySize+1];
-//       else
-// 	spec[z] = this->array[z*xySize+i];
-//     }
-//     findMedianStats(spec, this->axisDim[2],
-// 		    this->specMean[i], this->specSigma[i]);
-//   }
-//   delete spec;
-//   // Then set the stats for each channel map
-//   float *im = new float[xySize];
-//   for(int z=0;z<this->axisDim[2];z++){
-//     for(int i=0;i<xySize;i++){
-//       if(this->reconExists) 
-// 	im[i] = this->array[z*xySize+i] - this->recon[z*xySize+1];
-//       else 
-// 	im[i] = this->array[z*xySize+i];
-//     }
-//     findMedianStats(im,this->axisDim[2],this->chanMean[z],this->chanSigma[z]);
-//     this->chanSigma[z] /= correctionFactor;
-//   }
-//   delete im;
-
   /**
    *  Cube::setCubeStats()
    *   Calculates the full statistics for the cube:
@@ -693,23 +607,38 @@ void Cube::setCubeStats()
    *   For stats calculations, ignore BLANKs and MW channels.
    */
 
-  // use the following instead of "if(threshold==0.)" to avoid the dreaded
-  //  equality of floats test.
-  if(!(this->par.getThreshold()>0.)||!(this->par.getThreshold()<0.)) {
-
-    // get number of good pixels;
-    int goodSize = 0;
-    for(int x=0;x<this->axisDim[0];x++){
-      for(int y=0;y<this->axisDim[1];y++){
-	for(int z=0;z<this->axisDim[2];z++){
-	  int vox = z * this->axisDim[0] * this->axisDim[1] + 
-	    this->axisDim[0] * y + x;
-	  if(!this->isBlank(vox) && !this->par.isInMW(z)) goodSize++;
-	}
+  // get number of good pixels;
+  int goodSize = 0;
+  for(int x=0;x<this->axisDim[0];x++){
+    for(int y=0;y<this->axisDim[1];y++){
+      for(int z=0;z<this->axisDim[2];z++){
+	int vox = z * this->axisDim[0] * this->axisDim[1] + 
+	  this->axisDim[0] * y + x;
+	if(!this->isBlank(vox) && !this->par.isInMW(z)) goodSize++;
       }
     }
-    float *tempArray = new float[goodSize];
+  }
+  float *tempArray = new float[goodSize];
 
+  goodSize=0;
+  for(int x=0;x<this->axisDim[0];x++){
+    for(int y=0;y<this->axisDim[1];y++){
+      for(int z=0;z<this->axisDim[2];z++){
+	int pix = x + this->axisDim[0] * y;
+	int vox = z * this->axisDim[0] * this->axisDim[1] + pix;
+	if(!this->isBlank(vox) && !this->par.isInMW(z))
+	  tempArray[goodSize++] = this->array[vox];
+      }
+    }
+  }
+  if(!this->reconExists){
+    // if there's no recon array, calculate everything from orig array
+    this->Stats.calculate(tempArray,goodSize);
+  }
+  else{
+    // just get mean & median from orig array, and rms & madfm from recon
+    StatsContainer<float> origStats,reconStats;
+    origStats.calculate(tempArray,goodSize);
     goodSize=0;
     for(int x=0;x<this->axisDim[0];x++){
       for(int y=0;y<this->axisDim[1];y++){
@@ -717,41 +646,103 @@ void Cube::setCubeStats()
 	  int pix = x + this->axisDim[0] * y;
 	  int vox = z * this->axisDim[0] * this->axisDim[1] + pix;
 	  if(!this->isBlank(vox) && !this->par.isInMW(z))
-	    tempArray[goodSize++] = this->array[vox];
+	    tempArray[goodSize++] = this->array[vox] - this->recon[vox];
 	}
       }
     }
-    if(!this->reconExists){
-      // if there's no recon array, calculate everything from orig array
-      findNormalStats(tempArray,goodSize,this->mean,this->stddev);
-      findMedianStats(tempArray,goodSize,this->median,this->madfm);
+    reconStats.calculate(tempArray,goodSize);
+
+    // Get the "middle" estimators from the original array.
+    // Get the "spread" estimators from the residual (orig-recon) array
+    this->Stats.setMean(origStats.getMean());
+    this->Stats.setMedian(origStats.getMedian());
+    this->Stats.setStddev(reconStats.getStddev());
+    this->Stats.setMadfm(reconStats.getMadfm());
+  }
+
+  this->Stats.setUseFDR( this->par.getFlagFDR() );
+  // If the FDR method has been requested
+  if(this->par.getFlagFDR())  this->setupFDR();
+  else{
+    if(this->par.getFlagUserThreshold()){
+      // if the user has defined a threshold, set this in the StatsContainer
+      this->Stats.setThreshold( this->par.getThreshold() );
     }
     else{
-      // just get mean & median from orig array, and rms & madfm from recon
-      this->mean = findMean(tempArray,goodSize);
-      this->median = findMedian(tempArray,goodSize);
-      goodSize=0;
-      for(int x=0;x<this->axisDim[0];x++){
-	for(int y=0;y<this->axisDim[1];y++){
-	  for(int z=0;z<this->axisDim[2];z++){
-	    int pix = x + this->axisDim[0] * y;
-	    int vox = z * this->axisDim[0] * this->axisDim[1] + pix;
-	    if(!this->isBlank(vox) && !this->par.isInMW(z))
-	      tempArray[goodSize++] = this->array[vox] - this->recon[vox];
-	  }
-	}
-      }
-      this->stddev = findStddev(tempArray,goodSize);
-      this->madfm  = findMADFM(tempArray,goodSize);
+      // otherwise, calculate one based on the requested SNR cut level, and 
+      //   then set the threshold parameter in the Par set.
+      this->Stats.setThresholdSNR( this->par.getCut() );
+      this->par.setThreshold( this->Stats.getThreshold() );
+      std::cout << "Using flux threshold of: " << this->Stats.getThreshold()
+		<< std::endl;
+      std::cout << "Median = " << this->Stats.getMedian()
+		<< ", MADFM = " << this->Stats.getMadfm()
+		<< ", Robust Threshold = " 
+		<< this->Stats.getMedian() + 
+	this->par.getCut()*madfmToSigma(this->Stats.getMadfm()) << std::endl;
+      std::cout << "Mean = " << this->Stats.getMean()
+		<< ", Sigma = " << this->Stats.getStddev()
+		<< ", Threshold = " 
+		<< this->Stats.getMean() + this->par.getCut()*this->Stats.getStddev() << std::endl;
     }
-
-    float threshold = median + this->par.getCut()*this->madfm*correctionFactor;
-
-    this->par.setThreshold(threshold);
-
   }
 
 }
+//--------------------------------------------------------------------
+
+int Cube::setupFDR()
+{
+  /**
+   *  Cube::setupFDR()
+   *   Determines the critical Prob value for the False Discovery Rate
+   *    detection routine. All pixels with Prob less than this value will
+   *    be considered detections.
+   *   The Prob here is the probability, assuming a Normal distribution, of
+   *    obtaining a value as high or higher than the pixel value (ie. only the
+   *    positive tail of the PDF)
+   */
+
+  // first calculate p-value for each pixel -- assume Gaussian for now.
+
+  float *orderedP = new float[this->numPixels];
+  int count = 0;
+  for(int pix=0; pix<this->numPixels; pix++){
+
+    if( !(this->par.isBlank(this->array[pix])) ){ 
+      // only look at non-blank pixels
+      float zStat = (this->array[pix] - this->Stats.getMiddle()) / 
+	this->Stats.getSpread();
+      
+      orderedP[count++] = 0.5 * erfc(zStat/M_SQRT2);
+      // Need the factor of 0.5 here, as we are only considering the positive 
+      //  tail of the distribution. Don't care about negative detections.
+    }
+  }
+
+  // now order them 
+  sort(orderedP,0,count);
+  
+  // now find the maximum P value.
+  int max = 0;
+  float cN = 0.;
+  int psfCtr;
+  int numPix = int(this->par.getBeamSize());
+  for(psfCtr=1;psfCtr<=numPix;(psfCtr)++) 
+    cN += 1./float(psfCtr);
+
+  for(int loopCtr=0;loopCtr<count;loopCtr++) {
+    if( orderedP[loopCtr] < 
+	(double(loopCtr+1)*this->par.getAlpha()/(cN * double(count))) ) {
+      max = loopCtr;
+    }
+  }
+
+  this->Stats.setPThreshold( orderedP[max] );
+
+  delete [] orderedP;
+
+}
+//--------------------------------------------------------------------
 
 float Cube::enclosedFlux(Detection obj)
 {
@@ -783,6 +774,7 @@ float Cube::enclosedFlux(Detection obj)
     if(!this->par.isBlank(fluxArray[i])) sum+=fluxArray[i];
   return sum;
 }
+//--------------------------------------------------------------------
 
 void Cube::setupColumns()
 {
@@ -819,6 +811,7 @@ void Cube::setupColumns()
   }
 
 }
+//--------------------------------------------------------------------
 
 bool Cube::objAtEdge(Detection obj)
 {
@@ -858,6 +851,7 @@ bool Cube::objAtEdge(Detection obj)
 
   return atEdge;
 }
+//--------------------------------------------------------------------
 
 void Cube::setObjectFlags()
 {
@@ -881,6 +875,7 @@ void Cube::setObjectFlags()
   }
 
 }
+//--------------------------------------------------------------------
 
 void Cube::plotBlankEdges()
 {

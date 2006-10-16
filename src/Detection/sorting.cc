@@ -1,5 +1,6 @@
 #include <vector>
 #include <Detection/detection.hh>
+#include <Utils/utils.hh>
 
 using std::vector;
 

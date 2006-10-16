@@ -33,7 +33,6 @@ void Cube::ObjectMerger()
     // Do growth stuff
     if(this->par.getFlagGrowth()) {
       std::cout << "Growing objects...     "<< std::flush;
-      this->setCubeStats();
       vector <Detection> *newList = new vector <Detection>;
       printBackSpace(23);
       std::cout << " Growing object #      "<< std::flush;

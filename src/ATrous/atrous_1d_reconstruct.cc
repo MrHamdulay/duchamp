@@ -2,11 +2,10 @@
 #include <iomanip>
 #include <math.h>
 #include <duchamp.hh>
-#include <ATrous/atrous.hh>
 #include <Utils/utils.hh>
-
-using std::endl;
-using std::setw;
+#include <ATrous/atrous.hh>
+#include <Utils/Statistics.hh>
+using Statistics::madfmToSigma;
 
 void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
 {
@@ -71,7 +70,7 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
     int goodSize=0;
     for(int i=0;i<xdim;i++) if(isGood[i]) array[goodSize++] = input[i];
     findMedianStats(array,goodSize,originalMean,originalSigma);
-    originalSigma /= correctionFactor; // correct from MADFM to sigma estimator
+    originalSigma = madfmToSigma(originalSigma); 
     delete [] array;
 
     int spacing = 1;
@@ -79,8 +78,8 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
 
       if(par.isVerbose()) {
 	printBackSpace(12);
-	std::cout << "Scale " << setw(2) << scale
-		  << " /"     <<setw(2)  << numScales <<std::flush;
+	std::cout << "Scale " << std::setw(2) << scale
+		  << " /"     << std::setw(2) << numScales <<std::flush;
       }
 
       for(int xpos = 0; xpos<xdim; xpos++){
@@ -143,7 +142,7 @@ void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
     for(int i=0;i<xdim;i++)
       if(isGood[i]) array[goodSize++] = input[i] - output[i];
     findMedianStats(array,goodSize,mean,newsigma);
-    newsigma /= correctionFactor; // correct from MADFM to sigma estimator.
+    newsigma = madfmToSigma(newsigma); 
     delete [] array;
 
     if(par.isVerbose()) printBackSpace(26);
