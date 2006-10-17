@@ -126,6 +126,8 @@ public:
   void   setYPeak(long y){ypeak = y;};
   long   getZPeak(){return zpeak;};
   void   setZPeak(long z){zpeak = z;};
+  float  getPeakSNR(){return peakSNR;};
+  void   setPeakSNR(float f){peakSNR=f;};
   bool   isNegative(){return negativeSource;};
   void   setNegative(bool f){negativeSource = f;};
   string getFlagText(){return flagText;};
@@ -154,14 +156,6 @@ public:
   void   setRAWidth(float f){raWidth = f;};
   float  getDecWidth(){return decWidth;};
   void   setDecWidth(float f){decWidth = f;};
-//   string getLNGtype(){return lngtype;};
-//   void   setLNGtype(string s){lngtype = s;};
-//   string getLATtype(){return lattype;};
-//   void   setLATtype(string s){lattype = s;};
-//   string getZtype(){return ztype;};
-//   void   setZtype(string s){ztype = s;};
-//   float  getNuRest(){return nuRest;};
-//   void   setNuRest(float f){nuRest = f;};
   float  getVel(){return vel;};
   void   setVel(float f){vel = f;};
   float  getVelWidth(){return velWidth;};
@@ -183,6 +177,8 @@ public:
   void   setFpeakPrec(int i){fpeakPrec=i;};
   int    getVelPrec(){return velPrec;};
   void   setVelPrec(int i){velPrec=i;};
+  int    getSNRPrec(){return snrPrec;};
+  void   setSNRPrec(int i){snrPrec=i;};
   //
   void   addAnObject(Detection &toAdd);
   void   calcWCSparams(FitsHeader &head);
@@ -223,6 +219,7 @@ private:
                               //   --> involves integration over velocity.
   float          peakFlux;    // maximum flux over all the pixels
   long           xpeak,ypeak,zpeak; // location of peak flux
+  float          peakSNR;     // signal-to-noise ratio at peak
   bool           negativeSource; // is the source a negative feature?
   string         flagText;    // any warning flags about the quality of 
                               //   the detection.
@@ -244,8 +241,6 @@ private:
   string         intFluxUnits;// Units of integrated flux
   string         lngtype;     // Type of longitude axis (RA/GLON)
   string         lattype;     // Type of latitude axis (DEC/GLAT)
-//   string         ztype;	      // Type of z-axis (FREQ/VEL/...)
-//   float          nuRest;      // Rest frequency
   float          vel;	      // Central velocity (from zCentre)
   float          velWidth;    // Full velocity width
   float          velMin;      // Minimum velocity
@@ -256,6 +251,7 @@ private:
   int            fintPrec;    // Precision of F_int/F_tot values
   int            fpeakPrec;   // Precision of F_peak values
   int            velPrec;     // Precision of velocity values.
+  int            snrPrec;     // Precision of S/N_max values.
 
 };
 
@@ -276,8 +272,5 @@ void mergeList(vector<Detection> &objList, Param &par);    //in Cubes/Merger.cc
 void finaliseList(vector<Detection> &objList, Param &par); //in Cubes/Merger.cc
 void ObjectMerger(vector<Detection> &objList, Param &par); //in Cubes/Merger.cc
 
-// GENERIC DETECTION TESTS  -- in thresholding_functions.cc
-bool isDetection(float value, float mean, float sigma, float cut);
-bool isDetection(float value, float threshold);
 
 #endif

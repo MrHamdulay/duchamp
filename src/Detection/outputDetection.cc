@@ -23,7 +23,7 @@ void Detection::outputDetectionTextHeader(std::ostream &stream, vector<Col> colu
    */
 
   vector<Col> local = columns;
-  if(local.size()==22){
+  if(local.size()==Column::numColumns){
     vector <Col>::iterator iter;
     if(this->flagWCS) iter = local.begin() + FTOT;
     else iter = local.begin() + FINT;
@@ -40,6 +40,7 @@ void Detection::outputDetectionTextHeader(std::ostream &stream, vector<Col> colu
   for(int i=0;i<local.size();i++) local[i].printDash(stream);
   stream << std::endl;
 }
+//--------------------------------------------------------------------
 
 void Detection::outputDetectionTextWCS(std::ostream &stream, vector<Col> columns)
 {
@@ -51,10 +52,11 @@ void Detection::outputDetectionTextWCS(std::ostream &stream, vector<Col> columns
    *  WCS-related outputs are left blank.
    */
 
-  if(columns.size()!=22){
+  if(columns.size()!=Column::numColumns){
     std::stringstream errmsg;
     errmsg << "columnSet used has wrong number of columns (" 
-	   << columns.size() << ")\nshould be 22.\n";
+	   << columns.size() << ")\nshould be " 
+	   << Column::numColumns << ".\n";
     duchampError("outputDetectionTextWCS",errmsg.str());
   }
   else{
@@ -76,6 +78,7 @@ void Detection::outputDetectionTextWCS(std::ostream &stream, vector<Col> columns
     if(this->flagWCS) columns[FINT].printEntry(stream,this->intFlux);
     else columns[FTOT].printEntry(stream,this->totalFlux);
     columns[FPEAK].printEntry(stream,this->peakFlux);
+    columns[SNRPEAK].printEntry(stream,this->peakSNR);
     columns[X1].printEntry(stream,this->xmin + this->xSubOffset);
     columns[X2].printEntry(stream,this->xmax + this->xSubOffset);
     columns[Y1].printEntry(stream,this->ymin + this->ySubOffset);
@@ -87,6 +90,7 @@ void Detection::outputDetectionTextWCS(std::ostream &stream, vector<Col> columns
     stream << std::endl;
   }
 }
+//--------------------------------------------------------------------
 
 void Detection::outputDetectionText(std::ostream &stream, vector<Col> columns, int idNumber)
 {
@@ -98,10 +102,11 @@ void Detection::outputDetectionText(std::ostream &stream, vector<Col> columns, i
    *  Also prints a counter, provided as an input.
    */
 
-  if(columns.size()!=13){
+  if(columns.size()!=Column::numColumnsLog){
     std::stringstream errmsg;
     errmsg << "columnSet used has wrong number of columns (" 
-	   << columns.size() << ")\nshould be 13.\n";
+	   << columns.size() << ")\nshould be "
+	   << Column::numColumnsLog <<".\n";
     duchampError("outputDetectionText",errmsg.str());
   }
   else{
@@ -123,6 +128,7 @@ void Detection::outputDetectionText(std::ostream &stream, vector<Col> columns, i
    stream<<std::endl;
   }
 }
+//--------------------------------------------------------------------
 
 string Detection::outputLabelWCS()
 {
@@ -142,9 +148,8 @@ string Detection::outputLabelWCS()
 
   return ss.str();
 
-
 }
-
+//--------------------------------------------------------------------
 
 string Detection::outputLabelInfo()
 {
@@ -170,6 +175,8 @@ string Detection::outputLabelInfo()
     ss << ", F\\dint\\u=" << this->intFlux << " " << this->intFluxUnits;
     ss << std::setprecision(this->fpeakPrec);
     ss << ", F\\dpeak\\u=" << this->peakFlux << " " << this->fluxUnits;
+    ss << std::setprecision(this->snrPrec);
+    ss << ", S/N\\dmax\\u=" << this->peakSNR;
   }
   else{ 
     ss << "#" << std::setfill('0') << std::setw(3) << this->id << ": ";
@@ -177,12 +184,14 @@ string Detection::outputLabelInfo()
     ss << "F\\dtot\\u=" << this->totalFlux << this->fluxUnits;
     ss << std::setprecision(this->fpeakPrec);
     ss << ", F\\dpeak\\u=" << this->peakFlux << this->fluxUnits;
+    ss << std::setprecision(this->snrPrec);
+    ss << ", S/N\\dmax\\u=" << this->peakSNR;
   }
   string output = ss.str();
 
   return output;
 }
-
+//--------------------------------------------------------------------
 
 string Detection::outputLabelPix()
 {

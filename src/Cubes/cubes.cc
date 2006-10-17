@@ -539,6 +539,7 @@ void Cube::calcObjectWCSparams()
   for(int i=0; i<this->objectList.size();i++){
     this->objectList[i].setID(i+1);
     this->objectList[i].calcWCSparams(this->head);
+    this->objectList[i].setPeakSNR( (this->objectList[i].getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
   }  
 
   
@@ -609,26 +610,20 @@ void Cube::setCubeStats()
 
   // get number of good pixels;
   int goodSize = 0;
-  for(int x=0;x<this->axisDim[0];x++){
-    for(int y=0;y<this->axisDim[1];y++){
-      for(int z=0;z<this->axisDim[2];z++){
-	int vox = z * this->axisDim[0] * this->axisDim[1] + 
-	  this->axisDim[0] * y + x;
-	if(!this->isBlank(vox) && !this->par.isInMW(z)) goodSize++;
-      }
+  for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
+    for(int z=0;z<this->axisDim[2];z++){
+      int vox = z * this->axisDim[0] * this->axisDim[1] + p;
+      if(!this->isBlank(vox) && !this->par.isInMW(z)) goodSize++;
     }
   }
   float *tempArray = new float[goodSize];
 
   goodSize=0;
-  for(int x=0;x<this->axisDim[0];x++){
-    for(int y=0;y<this->axisDim[1];y++){
-      for(int z=0;z<this->axisDim[2];z++){
-	int pix = x + this->axisDim[0] * y;
-	int vox = z * this->axisDim[0] * this->axisDim[1] + pix;
-	if(!this->isBlank(vox) && !this->par.isInMW(z))
-	  tempArray[goodSize++] = this->array[vox];
-      }
+  for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
+    for(int z=0;z<this->axisDim[2];z++){
+      int vox = z * this->axisDim[0] * this->axisDim[1] + p;
+      if(!this->isBlank(vox) && !this->par.isInMW(z))
+	tempArray[goodSize++] = this->array[vox];
     }
   }
   if(!this->reconExists){
@@ -640,14 +635,11 @@ void Cube::setCubeStats()
     StatsContainer<float> origStats,reconStats;
     origStats.calculate(tempArray,goodSize);
     goodSize=0;
-    for(int x=0;x<this->axisDim[0];x++){
-      for(int y=0;y<this->axisDim[1];y++){
-	for(int z=0;z<this->axisDim[2];z++){
-	  int pix = x + this->axisDim[0] * y;
-	  int vox = z * this->axisDim[0] * this->axisDim[1] + pix;
-	  if(!this->isBlank(vox) && !this->par.isInMW(z))
-	    tempArray[goodSize++] = this->array[vox] - this->recon[vox];
-	}
+    for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
+      for(int z=0;z<this->axisDim[2];z++){
+	int vox = z * this->axisDim[0] * this->axisDim[1] + p;
+	if(!this->isBlank(vox) && !this->par.isInMW(z))
+	  tempArray[goodSize++] = this->array[vox] - this->recon[vox];
       }
     }
     reconStats.calculate(tempArray,goodSize);
@@ -683,7 +675,9 @@ void Cube::setCubeStats()
       std::cout << "Mean = " << this->Stats.getMean()
 		<< ", Sigma = " << this->Stats.getStddev()
 		<< ", Threshold = " 
-		<< this->Stats.getMean() + this->par.getCut()*this->Stats.getStddev() << std::endl;
+		<< this->Stats.getMean() + 
+	this->par.getCut()*this->Stats.getStddev() 
+		<< std::endl;
     }
   }
 
@@ -791,9 +785,10 @@ void Cube::setupColumns()
   this->logCols.clear();
   this->logCols = getLogColSet(this->objectList, this->head);
 
-  int vel,fpeak,fint,pos,xyz,temp;
+  int vel,fpeak,fint,pos,xyz,temp,snr;
   vel = fullCols[VEL].getPrecision();
   fpeak = fullCols[FPEAK].getPrecision();
+  snr = fullCols[SNRPEAK].getPrecision();
   xyz = fullCols[X].getPrecision();
   if(temp=fullCols[Y].getPrecision() > xyz) xyz = temp;
   if(temp=fullCols[Z].getPrecision() > xyz) xyz = temp;
@@ -808,6 +803,7 @@ void Cube::setupColumns()
     this->objectList[obj].setXYZPrec(xyz);
     this->objectList[obj].setPosPrec(pos);
     this->objectList[obj].setFintPrec(fint);
+    this->objectList[obj].setSNRPrec(snr);
   }
 
 }

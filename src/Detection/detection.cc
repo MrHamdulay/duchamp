@@ -27,7 +27,7 @@ std::ostream& operator<< ( std::ostream& theStream, Voxel& vox)
   theStream << "  " << vox.itsF;
 
 }
-
+//--------------------------------------------------------------------
 
 void Detection::calcParams()
 {
@@ -93,6 +93,7 @@ void Detection::calcParams()
     this->zcentre /= this->pix.size();
   }
 }
+//--------------------------------------------------------------------
 
 void Detection::calcWCSparams(FitsHeader &head)
 {
@@ -162,6 +163,7 @@ void Detection::calcWCSparams(FitsHeader &head)
 
   }
 }
+//--------------------------------------------------------------------
 
 float Detection::getIntegFlux(FitsHeader &head)
 {
@@ -224,7 +226,7 @@ float Detection::getIntegFlux(FitsHeader &head)
 
   delete [] world;
 }
-
+//--------------------------------------------------------------------
 
 void Detection::addAnObject(Detection &toAdd)
 {
@@ -290,6 +292,7 @@ void Detection::addAnObject(Detection &toAdd)
 
   }
 }
+//--------------------------------------------------------------------
 
 void Detection::addOffsets(Param &par)
 {
@@ -297,6 +300,7 @@ void Detection::addOffsets(Param &par)
   this->ySubOffset = par.getYOffset();
   this->zSubOffset = par.getZOffset();
 }
+//--------------------------------------------------------------------
 
 bool Detection::hasEnoughChannels(int minNumber)
 {
@@ -334,6 +338,7 @@ bool Detection::hasEnoughChannels(int minNumber)
   return result;
   
 }
+//--------------------------------------------------------------------
 
 int Detection::getSpatialSize()
 {
@@ -361,6 +366,7 @@ int Detection::getSpatialSize()
   }
   return spatialPix.size();
 }
+//--------------------------------------------------------------------
 
 std::ostream& operator<< ( std::ostream& theStream, Detection& obj)
 {
@@ -374,6 +380,7 @@ std::ostream& operator<< ( std::ostream& theStream, Detection& obj)
   for(int i=0;i<obj.pix.size();i++) theStream << obj.pix[i] << endl;
   theStream<<"---"<<endl;
 }
+//--------------------------------------------------------------------
 
 Detection combineObjects(Detection &first, Detection &second)
 {
@@ -390,6 +397,7 @@ Detection combineObjects(Detection &first, Detection &second)
   newObject->calcParams();
   return *newObject;
 }
+//--------------------------------------------------------------------
 
 vector <Detection> combineLists(vector <Detection> &first, vector <Detection> &second)
 {

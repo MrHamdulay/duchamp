@@ -18,38 +18,46 @@ namespace Column
   // The default values for the columns, and default values for
   //  the precision of different types of columns.
 
-  enum PrecType {prFLUX, prVEL, prXYZ, prPOS, prWPOS};
-  const int prec[5]={3, 3, 1, 6, 2};
+  const int numColumns=23;
+  const int numColumnsLog=14;
+  const int numPrec=6;
+
+  enum PrecType {prFLUX, prVEL, prXYZ, prPOS, prWPOS, prSNR};
+  const int prec[numPrec]={3, 3, 1, 6, 2, 2};
 
   enum COLNAME {NUM=0, NAME, X, Y, Z,
 		RA, DEC, VEL, 
 		WRA, WDEC, WVEL,
-		FINT, FTOT, FPEAK,
+		FINT, FTOT, FPEAK, SNRPEAK,
 		X1, X2, Y1, Y2, Z1, Z2, NPIX, FLAG};
 
   enum LOGNAME {lNUM, lX, lY, lZ,
-		lFTOT, lFPEAK,
+		lFTOT, lFPEAK, lSNRPEAK,
 		lX1, lX2, lY1, lY2, lZ1, lZ2, lNPIX};
 
-  const int defaultWidth[22]={5, 8, 6, 6, 6,
-			      13, 13, 7, 9, 9, 7,
-			      10, 10, 9,
-			      4, 4, 4, 4, 4, 4, 6, 5};
-  const int defaultPrec[22]={0, 0, prec[prXYZ], prec[prXYZ], prec[prXYZ],
-			     0, 0, prec[prVEL], 
-			     prec[prWPOS], prec[prWPOS], prec[prVEL],
-			     prec[prFLUX], prec[prFLUX], prec[prFLUX], 
-			     0, 0, 0, 0, 0, 0, 0, 0};
-  const string defaultName[22]={"Obj#","Name","X","Y","Z",
-				"RA","DEC","VEL",
-				"w_RA","w_DEC","w_VEL",
-				"F_int","F_tot","F_peak",
-				"X1","X2","Y1","Y2","Z1","Z2","Npix","Flag"};
-  const string defaultUnits[22]={"","","","","",
-				 "","","",
-				 "[arcmin]","[arcmin]","",
-				 "","","",
-				 "","","","","","","[pix]",""};
+  const int defaultWidth[numColumns]=
+    {5, 8, 6, 6, 6,
+     13, 13, 7, 9, 9, 7,
+     10, 10, 9, 7,
+     4, 4, 4, 4, 4, 4, 6, 5};
+  const int defaultPrec[numColumns]=
+    {0, 0, prec[prXYZ], prec[prXYZ], prec[prXYZ],
+     0, 0, prec[prVEL], 
+     prec[prWPOS], prec[prWPOS], prec[prVEL],
+     prec[prFLUX], prec[prFLUX], prec[prFLUX], 
+     prec[prSNR], 0, 0, 0, 0, 0, 0, 0, 0};
+  const string defaultName[numColumns]=
+    {"Obj#","Name","X","Y","Z",
+     "RA","DEC","VEL",
+     "w_RA","w_DEC","w_VEL",
+     "F_int","F_tot","F_peak", "S/Nmax",
+     "X1","X2","Y1","Y2","Z1","Z2","Npix","Flag"};
+  const string defaultUnits[numColumns]=
+    {"","","","","",
+     "","","",
+     "[arcmin]","[arcmin]","",
+     "","","", "",
+     "","","","","","","[pix]",""};
 
 
   // Now define the Col class. 
@@ -106,8 +114,10 @@ namespace Column
 
   
 }
-vector<Column::Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head);
-vector<Column::Col> getLogColSet(vector<Detection> &objectList, FitsHeader &head);
+vector<Column::Col> getFullColSet(vector<Detection> &objectList, 
+				  FitsHeader &head);
+vector<Column::Col> getLogColSet(vector<Detection> &objectList, 
+				 FitsHeader &head);
 
 
 #endif

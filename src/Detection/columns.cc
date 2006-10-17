@@ -20,7 +20,7 @@ Col::Col(int num)
    *   A specialised constructor that defines one of the default 
    *    columns, as defined in the Column namespace
    */ 
-  if((num>=0)&&(num<22)){
+  if((num>=0)&&(num<numColumns)){
     this->width =     defaultWidth[num];
     this->precision = defaultPrec[num];
     this->name =      defaultName[num];
@@ -71,6 +71,7 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
   newset.push_back( Col(FINT) );
   newset.push_back( Col(FTOT) );
   newset.push_back( Col(FPEAK) );
+  newset.push_back( Col(SNRPEAK) );
   newset.push_back( Col(X1) );
   newset.push_back( Col(X2) );
   newset.push_back( Col(Y1) );
@@ -228,6 +229,17 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
       if(val < minval) newset[FPEAK].upPrec();
     }
 
+    // S/N_peak
+    val = objectList[obj].getPeakSNR();
+    tempwidth = int( log10(fabs(val)) + 1) + newset[SNRPEAK].getPrecision() +1;
+    if(val<0) tempwidth++;
+    for(int i=newset[SNRPEAK].getWidth();i<tempwidth;i++) 
+      newset[SNRPEAK].widen();
+    if(fabs(val) < 1.){
+      minval = pow(10, -1. * newset[SNRPEAK].getPrecision()+1); 
+      if(val < minval) newset[SNRPEAK].upPrec();
+    }
+
     // X1 position
     tempwidth = int( log10(objectList[obj].getXmin()) + 1) + 
       newset[X1].getPrecision() + 1;
@@ -282,19 +294,20 @@ vector<Col> getLogColSet(vector<Detection> &objectList, FitsHeader &head)
   //  get from FullColSet, and select only the ones we want.
   tempset = getFullColSet(objectList,head);
 
-  newset.push_back( tempset[0] );
-  newset.push_back( tempset[2] );
-  newset.push_back( tempset[3] );
-  newset.push_back( tempset[4] );
-  newset.push_back( tempset[12] );
-  newset.push_back( tempset[13] );
-  newset.push_back( tempset[14] );
-  newset.push_back( tempset[15] );
-  newset.push_back( tempset[16] );
-  newset.push_back( tempset[17] );
-  newset.push_back( tempset[18] );
-  newset.push_back( tempset[19] );
-  newset.push_back( tempset[20] );
+  newset.push_back( tempset[NUM] );
+  newset.push_back( tempset[X] );
+  newset.push_back( tempset[Y] );
+  newset.push_back( tempset[Z] );
+  newset.push_back( tempset[FTOT] );
+  newset.push_back( tempset[FPEAK] );
+  newset.push_back( tempset[SNRPEAK] );
+  newset.push_back( tempset[X1] );
+  newset.push_back( tempset[X2] );
+  newset.push_back( tempset[Y1] );
+  newset.push_back( tempset[Y2] );
+  newset.push_back( tempset[Z1] );
+  newset.push_back( tempset[Z2] );
+  newset.push_back( tempset[NPIX] );
 
   return newset;
 
