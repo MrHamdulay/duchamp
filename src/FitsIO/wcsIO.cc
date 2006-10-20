@@ -20,7 +20,7 @@ int FitsHeader::defineWCS(string fname, Param &par)
    *    FITS file given by fptr.
    *   It will also sort out the spectral axis, and covert to the correct 
    *    velocity type, or frequency type if need be.
-   *   It calls FitsHeader::getBUNIT so that the Integrated Flux units can
+   *   It calls FitsHeader::readBUNIT so that the Integrated Flux units can
    *    be calculated by FitsHeader::fixUnits.
    */
 
@@ -167,7 +167,7 @@ int FitsHeader::defineWCS(string fname, Param &par)
   // Get the brightness unit, so that we can set the units for the 
   //  integrated flux when we go to fixUnits.
 
-  this->getBUNIT(fname);
+  this->readBUNIT(fname);
 
   this->fixUnits(par);
 

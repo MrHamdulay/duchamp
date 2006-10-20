@@ -26,6 +26,8 @@ namespace Statistics
   public:
     StatsContainer(){useRobust=true;defined=false;useFDR=false;};
     virtual ~StatsContainer(){};
+    StatsContainer(const StatsContainer<Type>& s);
+    StatsContainer<Type>& operator= (const StatsContainer<Type>& s);
 
     float getMean(){return mean;};
     void  setMean(float f){mean=f;};

@@ -120,16 +120,20 @@ int Param::verifySubsection()
   sections[numSections-1]=temp;
 
   for(int str=0;str<numSections;str++){
-    int a = sections[str].find(':');     // first occurence of ':' in section
-    int b = sections[str].find(':',a+1); // location of second ':' -- will be 
-                                         //  -1 if there is no second occurence
-    this->offsets[str] = atoi( sections[str].substr(0,a).c_str() ) - 1;
-    // store the minimum pixel value in offsets array
-    if(b>0){  
-      // if there is a step component, rewrite section string without 
-      //  the step part.
-      sections[str] = sections[str].substr(0,b); 
-      removeStep = true;
+    if(sections[str]=="*") this->offsets[str] = 0;
+    else{
+      // if it is a genuine subsection and not everything.
+      int a = sections[str].find(':');     // first occurence of ':' in section
+      int b = sections[str].find(':',a+1); // location of second ':' - will be 
+                                           //  -1 if there is no second ':'
+      this->offsets[str] = atoi( sections[str].substr(0,a).c_str() ) - 1;
+      // store the minimum pixel value in offsets array
+      if(b>0){  
+	// if there is a step component, rewrite section string without 
+	//  the step part.
+	sections[str] = sections[str].substr(0,b); 
+	removeStep = true;
+      }
     }
   }
 

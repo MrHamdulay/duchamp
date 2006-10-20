@@ -4,9 +4,8 @@
  * A detection algorithm that searches in a single 1-D spectrum.
  *
  * INPUTS: 
- *    image     -- an Image object, containing a 1-D image that has been 
- *                 processed such that its pValue array is defined.
- * OUTPUTS:
+ *    image     -- an Image object, containing a 1-D image that has had
+ *                 its StatsContainer object defined.
  *   The detection array in image will be filled, according to 
  *   the location of the objects in the image.
  *

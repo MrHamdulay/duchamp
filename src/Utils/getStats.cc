@@ -68,7 +68,7 @@ template <class T> T findMADFM(T *array, int size)
 {
   // NOTE: madfm = median absolute deviation from median
   T *newarray = new T[size];
-  T median = findMedian(array,size);
+  T median = findMedian<T>(array,size);
   T madfm;
   for(int i=0;i<size;i++) newarray[i] = absval(array[i]-median);
   sort(newarray,0,size);

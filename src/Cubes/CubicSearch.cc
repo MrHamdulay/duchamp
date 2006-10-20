@@ -6,6 +6,7 @@
 #include <param.hh>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
+#include <Utils/Statistics.hh>
 
 void Cube::CubicSearch()
 {

@@ -29,7 +29,7 @@ Col::Col(int num)
   else{
     std::stringstream errmsg;
     errmsg << "Incorrect value for Col(num) --> num="<<num
-	   << ", should be between 0 and 21.\n";
+	   << ", should be between 0 and " << numColumns-1 << ".\n";
     duchampError("Col constructor", errmsg.str());
     this->width = 1;
     this->precision = 0;
@@ -100,7 +100,7 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
     val = objectList[obj].getXcentre();
     tempwidth = int( log10(val) + 1) + newset[X].getPrecision() + 2;
     for(int i=newset[X].getWidth();i<tempwidth;i++) newset[X].widen();
-    if(val < 1.){
+    if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[X].getPrecision()+1); 
       if(val < minval) newset[X].upPrec();
     }
@@ -108,7 +108,7 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
     val = objectList[obj].getYcentre();
     tempwidth = int( log10(val) + 1) + newset[Y].getPrecision() + 2;
     for(int i=newset[Y].getWidth();i<tempwidth;i++) newset[Y].widen();
-    if(val < 1.){
+    if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[Y].getPrecision()+1); 
       if(val < minval) newset[Y].upPrec();
     }
@@ -116,7 +116,7 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
     val = objectList[obj].getZcentre();
     tempwidth = int( log10(val) + 1) + newset[Z].getPrecision() + 2;
     for(int i=newset[Z].getWidth();i<tempwidth;i++) newset[Z].widen();
-    if(val < 1.){
+    if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[Z].getPrecision()+1); 
       if((val>0.)&&(val < minval)) newset[Z].upPrec();
     }
@@ -145,7 +145,7 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
       tempwidth = int( log10(fabs(val)) + 1) + newset[VEL].getPrecision() + 2;
       if(val<0) tempwidth++;
       for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
-      if(fabs(val) < 1.){
+      if((fabs(val) < 1.)&&(val>0.)){
 	minval = pow(10, -1. * newset[VEL].getPrecision()+1); 
 	if(val < minval) newset[VEL].upPrec();
       }
@@ -157,7 +157,7 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
       tempwidth = int( log10(fabs(val)) + 1) + newset[WRA].getPrecision() + 2;
       if(val<0) tempwidth++;
       for(int i=newset[WRA].getWidth();i<tempwidth;i++) newset[WRA].widen();
-      if(fabs(val) < 1.){
+      if((fabs(val) < 1.)&&(val>0.)){
 	minval = pow(10, -1. * newset[WRA].getPrecision()+1); 
 	if(val < minval) newset[WRA].upPrec();
       }
@@ -169,7 +169,7 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
       tempwidth = int( log10(fabs(val)) + 1) + newset[WDEC].getPrecision() + 2;
       if(val<0) tempwidth++;
       for(int i=newset[WDEC].getWidth();i<tempwidth;i++) newset[WDEC].widen();
-      if(fabs(val) < 1.){
+      if((fabs(val) < 1.)&&(val>0.)){
 	minval = pow(10, -1. * newset[WDEC].getPrecision()+1); 
 	if(val < minval) newset[WDEC].upPrec();
       }
@@ -184,7 +184,7 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
       tempwidth = int( log10(fabs(val)) + 1) + newset[WVEL].getPrecision() + 2;
       if(val<0) tempwidth++;
       for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
-      if(fabs(val) < 1.){
+      if((fabs(val) < 1.)&&(val>0.)){
 	minval = pow(10, -1. * newset[WVEL].getPrecision()+1); 
 	if(val < minval) newset[WVEL].upPrec();
       }
@@ -197,7 +197,7 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
       tempwidth = int( log10(fabs(val)) + 1) + newset[FINT].getPrecision() + 2;
       if(val<0) tempwidth++;
       for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
-      if(fabs(val) < 1.){
+      if((fabs(val) < 1.)&&(val>0.)){
 	minval = pow(10, -1. * newset[FINT].getPrecision()+1); 
 	if(val < minval) newset[FINT].upPrec();
       }
@@ -211,7 +211,7 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
     tempwidth = int( log10(fabs(val)) + 1) + newset[FTOT].getPrecision() + 2;
     if(val<0) tempwidth++;
     for(int i=newset[FTOT].getWidth();i<tempwidth;i++) newset[FTOT].widen();
-    if(fabs(val) < 1.){
+    if((fabs(val) < 1.)&&(val>0.)){
       minval = pow(10, -1. * newset[FTOT].getPrecision()+1); 
       if(val < minval) newset[FTOT].upPrec();
     }
@@ -224,18 +224,18 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
     tempwidth = int( log10(fabs(val)) + 1) + newset[FPEAK].getPrecision() + 2;
     if(val<0) tempwidth++;
     for(int i=newset[FPEAK].getWidth();i<tempwidth;i++) newset[FPEAK].widen();
-    if(fabs(val) < 1.){
+    if((fabs(val) < 1.)&&(val>0.)){
       minval = pow(10, -1. * newset[FPEAK].getPrecision()+1); 
       if(val < minval) newset[FPEAK].upPrec();
     }
 
     // S/N_peak
     val = objectList[obj].getPeakSNR();
-    tempwidth = int( log10(fabs(val)) + 1) + newset[SNRPEAK].getPrecision() +1;
+    tempwidth = int( log10(fabs(val)) + 1) + newset[SNRPEAK].getPrecision() +2;
     if(val<0) tempwidth++;
     for(int i=newset[SNRPEAK].getWidth();i<tempwidth;i++) 
       newset[SNRPEAK].widen();
-    if(fabs(val) < 1.){
+    if((fabs(val) < 1.)&&(val>0.)){
       minval = pow(10, -1. * newset[SNRPEAK].getPrecision()+1); 
       if(val < minval) newset[SNRPEAK].upPrec();
     }

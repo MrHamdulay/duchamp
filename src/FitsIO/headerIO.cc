@@ -21,11 +21,11 @@ int FitsHeader::readHeaderInfo(string fname, Param &par)
 
   int returnValue = SUCCESS;
 
-  if(this->getBUNIT(fname)==FAILURE) returnValue=FAILURE;
+  if(this->readBUNIT(fname)==FAILURE) returnValue=FAILURE;
   
-  if(this->getBLANKinfo(fname, par)==FAILURE) returnValue=FAILURE;
+  if(this->readBLANKinfo(fname, par)==FAILURE) returnValue=FAILURE;
   
-  if(this->getBeamInfo(fname, par)==FAILURE) returnValue=FAILURE;
+  if(this->readBeamInfo(fname, par)==FAILURE) returnValue=FAILURE;
 
   return returnValue;
 }
@@ -33,10 +33,10 @@ int FitsHeader::readHeaderInfo(string fname, Param &par)
 
 //////////////////////////////////////////////////
 
-int FitsHeader::getBUNIT(string fname)
+int FitsHeader::readBUNIT(string fname)
 {
   /**
-   *  FitsHeader::getBUNIT(string fname)
+   *  FitsHeader::readBUNIT(string fname)
    *   Read the BUNIT header keyword, to store the units
    *    of brightness (flux).
    */
@@ -55,7 +55,7 @@ int FitsHeader::getBUNIT(string fname)
   // Read the BUNIT keyword, and translate to standard unit format if needs be
   fits_read_key(fptr, TSTRING, "BUNIT", unit, comment, &returnStatus);
   if (returnStatus){
-    duchampWarning("getBUNIT","Error reading BUNIT keyword: ");
+    duchampWarning("readBUNIT","Error reading BUNIT keyword: ");
     fits_report_error(stderr, returnStatus);
   }
   else{
@@ -67,7 +67,7 @@ int FitsHeader::getBUNIT(string fname)
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    duchampWarning("getBUNIT","Error closing file: ");
+    duchampWarning("readBUNIT","Error closing file: ");
     fits_report_error(stderr, status);
   }
 
@@ -78,10 +78,10 @@ int FitsHeader::getBUNIT(string fname)
 
 //////////////////////////////////////////////////
 
-int FitsHeader::getBLANKinfo(string fname, Param &par)
+int FitsHeader::readBLANKinfo(string fname, Param &par)
 {
   /**
-   *   FitsHeader::getBLANKinfo(string fname, Param &par)
+   *   FitsHeader::readBLANKinfo(string fname, Param &par)
    *    Reading in the Blank pixel value keywords.
    *    If the BLANK keyword is in the header, use that and store the relevant 
    *     values. Also copy them into the parameter set.
@@ -111,12 +111,12 @@ int FitsHeader::getBLANKinfo(string fname, Param &par)
     //  If it is, read the other two necessary keywords, and then set
     //     the values accordingly.
     if(fits_read_key(fptr, TINT, "BLANK", &blank, comment, &returnStatus)){
-      duchampWarning("getBLANKinfo","Error reading BLANK keyword: ");
+      duchampWarning("readBLANKinfo","Error reading BLANK keyword: ");
       fits_report_error(stderr, returnStatus);
       std::stringstream errmsg;
       errmsg << "Using default BLANK value (" 
 	     << par.getBlankPixVal() << ").\n";
-      duchampWarning("getBLANKinfo", errmsg.str());
+      duchampWarning("readBLANKinfo", errmsg.str());
       this->blankKeyword  = 1;
       this->bscaleKeyword = par.getBlankPixVal();
       this->bzeroKeyword  = 0;
@@ -142,7 +142,7 @@ int FitsHeader::getBLANKinfo(string fname, Param &par)
     status = 0;
     fits_close_file(fptr, &status);
     if (status){
-      duchampWarning("getBLANKinfo","Error closing file: ");
+      duchampWarning("readBLANKinfo","Error closing file: ");
       fits_report_error(stderr, status);
     }
   
@@ -156,10 +156,10 @@ int FitsHeader::getBLANKinfo(string fname, Param &par)
 
 //////////////////////////////////////////////////
 
-int FitsHeader::getBeamInfo(string fname, Param &par)
+int FitsHeader::readBeamInfo(string fname, Param &par)
 {
   /**
-   *  FitsHeader::getBeamInfo(string fname, Param &par)
+   *  FitsHeader::readBeamInfo(string fname, Param &par)
    *   Reading in the beam parameters from the header.
    *   Use these, plus the basic WCS parameters to calculate the size of
    *    the beam in pixels. Copy the beam size into the parameter set.
@@ -197,7 +197,7 @@ int FitsHeader::getBeamInfo(string fname, Param &par)
     errmsg << "Header keywords not present: ";
     for(int i=0;i<4;i++) if(status[i+1]) errmsg<<keyword[i]<<" ";
     errmsg << "\nUsing parameter beamSize to determine size of beam.\n";
-    duchampWarning("getBeamInfo",errmsg.str());
+    duchampWarning("readBeamInfo",errmsg.str());
     this->setBeamSize(par.getBeamSize());
     par.setFlagUsingBeam(true);
   }
@@ -211,7 +211,7 @@ int FitsHeader::getBeamInfo(string fname, Param &par)
   // Close the FITS file.
   fits_close_file(fptr, &status[5]);
   if (status[5]){
-    duchampWarning("getBeamInfo","Error closing file: ");
+    duchampWarning("readBeamInfo","Error closing file: ");
     fits_report_error(stderr, status[5]);
   }
 

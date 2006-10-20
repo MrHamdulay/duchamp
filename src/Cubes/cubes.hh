@@ -151,8 +151,11 @@ public:
   // the rest are in Detection/thresholding_functions.cc
   bool      isDetection(long x, long y){
     long voxel = y*axisDim[0] + x;
-    return DataArray::isDetection(array[voxel]);
-  };
+    if(isBlank(x,y)) return false;
+    else return Stats.isDetection(array[voxel]);
+  };  
+//     return DataArray::isDetection(array[voxel]);
+//   };
 
   void      removeMW();
   
@@ -273,7 +276,8 @@ public:
   void    updateDetectMap(Detection obj);
   void    setObjectFlags();
   float   enclosedFlux(Detection obj);
-  bool    objAtEdge(Detection obj);
+  bool    objAtSpatialEdge(Detection obj);
+  bool    objAtSpectralEdge(Detection obj);
   
   // Text outputting of detected objects.
   //    the next five in Cubes/detectionIO.cc

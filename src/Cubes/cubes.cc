@@ -665,21 +665,23 @@ void Cube::setCubeStats()
       //   then set the threshold parameter in the Par set.
       this->Stats.setThresholdSNR( this->par.getCut() );
       this->par.setThreshold( this->Stats.getThreshold() );
-      std::cout << "Using flux threshold of: " << this->Stats.getThreshold()
-		<< std::endl;
-      std::cout << "Median = " << this->Stats.getMedian()
-		<< ", MADFM = " << this->Stats.getMadfm()
-		<< ", Robust Threshold = " 
-		<< this->Stats.getMedian() + 
-	this->par.getCut()*madfmToSigma(this->Stats.getMadfm()) << std::endl;
-      std::cout << "Mean = " << this->Stats.getMean()
-		<< ", Sigma = " << this->Stats.getStddev()
-		<< ", Threshold = " 
-		<< this->Stats.getMean() + 
-	this->par.getCut()*this->Stats.getStddev() 
-		<< std::endl;
     }
+//       std::cout << "Median = " << this->Stats.getMedian()
+// 		<< ", MADFM = " << this->Stats.getMadfm()
+// 		<< ", Robust Threshold = " 
+// 		<< this->Stats.getMedian() + 
+// 	this->par.getCut()*madfmToSigma(this->Stats.getMadfm()) << std::endl;
+//       std::cout << "Mean = " << this->Stats.getMean()
+// 		<< ", Sigma = " << this->Stats.getStddev()
+// 		<< ", Threshold = " 
+// 		<< this->Stats.getMean() + 
+// 	           this->par.getCut()*this->Stats.getStddev() 
+// 		<< std::endl;
   }
+  std::cout << "Using ";
+  if(this->par.getFlagFDR()) std::cout << "effective ";
+  std::cout << "flux threshold of: " << this->Stats.getThreshold()
+		<< std::endl;
 
 }
 //--------------------------------------------------------------------
@@ -700,11 +702,12 @@ int Cube::setupFDR()
 
   float *orderedP = new float[this->numPixels];
   int count = 0;
+  float zStat;
   for(int pix=0; pix<this->numPixels; pix++){
 
     if( !(this->par.isBlank(this->array[pix])) ){ 
       // only look at non-blank pixels
-      float zStat = (this->array[pix] - this->Stats.getMiddle()) / 
+      zStat = (this->array[pix] - this->Stats.getMiddle()) / 
 	this->Stats.getSpread();
       
       orderedP[count++] = 0.5 * erfc(zStat/M_SQRT2);
@@ -720,8 +723,11 @@ int Cube::setupFDR()
   int max = 0;
   float cN = 0.;
   int psfCtr;
-  int numPix = int(this->par.getBeamSize());
-  for(psfCtr=1;psfCtr<=numPix;(psfCtr)++) 
+  int numVox = int(this->par.getBeamSize()) * 2;
+  // why beamSize*2? we are doing this in 3D, so spectrally assume just the
+  //  neighbouring channels are correlated, but spatially all those within
+  //  the beam, so total number of voxels is 2*beamSize
+  for(psfCtr=1;psfCtr<=numVox;(psfCtr)++) 
     cN += 1./float(psfCtr);
 
   for(int loopCtr=0;loopCtr<count;loopCtr++) {
@@ -734,6 +740,23 @@ int Cube::setupFDR()
   this->Stats.setPThreshold( orderedP[max] );
 
   delete [] orderedP;
+
+  // Find real value of the P threshold by finding the inverse of the 
+  //  error function -- root finding with brute force technique 
+  //  (relatively slow, but we only do it once).
+  zStat = 0;
+  float deltaZ = 0.1;
+  float tolerance = 1.e-6;
+  float zeroP = 0.5 * erfc(zStat/M_SQRT2) - this->Stats.getPThreshold();
+  do{
+    zStat+=deltaZ;
+    if((zeroP * (erfc(zStat/M_SQRT2)-this->Stats.getPThreshold()))<0.){
+      zStat-=deltaZ;
+      deltaZ/=2.;
+    }
+  }while(deltaZ>tolerance);
+  this->Stats.setThreshold( zStat*this->Stats.getSpread() + 
+			    this->Stats.getMiddle() );
 
 }
 //--------------------------------------------------------------------
@@ -809,12 +832,12 @@ void Cube::setupColumns()
 }
 //--------------------------------------------------------------------
 
-bool Cube::objAtEdge(Detection obj)
+bool Cube::objAtSpatialEdge(Detection obj)
 {
   /**
-   *  bool Cube::objAtEdge()
+   *  bool Cube::objAtSpatialEdge()
    *   A function to test whether the object obj
-   *    lies at the edge of the cube's field --
+   *    lies at the edge of the cube's spatial field --
    *    either at the boundary, or next to BLANKs
    */
 
@@ -836,6 +859,28 @@ bool Cube::objAtEdge(Detection obj)
       else if(this->isBlank(vox.getX(),vox.getY()+dy,vox.getZ())) 
 	atEdge = true;
     }
+    pix++;
+  }
+
+  return atEdge;
+}
+//--------------------------------------------------------------------
+
+bool Cube::objAtSpectralEdge(Detection obj)
+{
+  /**
+   *  bool Cube::objAtSpectralEdge()
+   *   A function to test whether the object obj
+   *    lies at the edge of the cube's spectral extent --
+   *    either at the boundary, or next to BLANKs
+   */
+
+  bool atEdge = false;
+
+  int pix = 0;
+  while(!atEdge && pix<obj.getSize()){
+    // loop over each pixel in the object, until we find an edge pixel.
+    Voxel vox = obj.getPixel(pix);
     for(int dz=-1;dz<=1;dz+=2){
       if(((vox.getZ()+dz)<0) || ((vox.getZ()+dz)>=this->axisDim[2])) 
 	atEdge = true;
@@ -865,8 +910,11 @@ void Cube::setObjectFlags()
     if( this->enclosedFlux(this->objectList[i]) < 0. )  
       this->objectList[i].addToFlagText("N");
 
-    if( this->objAtEdge(this->objectList[i]) ) 
+    if( this->objAtSpatialEdge(this->objectList[i]) ) 
       this->objectList[i].addToFlagText("E");
+
+    if( this->objAtSpectralEdge(this->objectList[i]) ) 
+      this->objectList[i].addToFlagText("S");
 
   }
 

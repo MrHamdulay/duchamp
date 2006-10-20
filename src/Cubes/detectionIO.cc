@@ -211,6 +211,14 @@ void Cube::outputDetectionList()
   time_t now = time(NULL);
   output << asctime( localtime(&now) );
   this->showParam(output);
+  output<<"--------------------"<<endl;
+  output<<"Detection threshold = " << this->Stats.getThreshold()
+	<<" " << this->head.getFluxUnits();
+  if(this->par.getFlagFDR())
+    output<<" (or S/N=" << this->Stats.getThresholdSNR()<<")";
+  output<<endl;
+  output<<"  Noise level = " << this->Stats.getMiddle()
+	<<", Noise spread = " << this->Stats.getSpread() << endl;
   output<<"Total number of detections = "<<this->objectList.size()<<endl;
   output<<"--------------------"<<endl;
   this->setupColumns();

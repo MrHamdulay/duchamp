@@ -7,6 +7,7 @@
 #include <Detection/detection.hh>
 #include <ATrous/atrous.hh>
 #include <Utils/utils.hh>
+#include <Utils/Statistics.hh>
 
 void Cube::ReconSearch()
 {
@@ -208,16 +209,10 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
   vector <Detection> outputList;
   long zdim = dim[2];
   long xySize = dim[0] * dim[1];
-//   long fullSize = zdim * xySize;
-  int num=0// , goodSize
-    ;
+  int num=0;
 
-//   bool *isGood = new bool[fullSize];
-//   for(int pos=0;pos<fullSize;pos++){
-//     isGood[pos] = ((!par.isBlank(originalArray[pos])) && 
-//       (!par.isInMW(pos/xySize)));
-//   }
   bool *doPixel = new bool[xySize];
+  // doPixel is a bool array to say whether to look in a given spectrum
   for(int npix=0; npix<xySize; npix++){
     doPixel[npix] = false;
     for(int z=0;z<zdim;z++) {
@@ -241,39 +236,17 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
       if( par.isVerbose() ) bar.update(npix+1);
 
       if(doPixel[npix]){
-	
-	// First, get stats
-// 	float *spec = new float[zdim];
-// 	float specMedian,specSigma;
-// 	goodSize=0;
-// 	for(int z=0;z<zdim;z++) {
-// 	  if(isGood[z*xySize+npix]) 
-// 	    spec[goodSize++] = originalArray[z*xySize+npix];
-// 	}
-// 	specMedian = findMedian(spec,goodSize);
-// 	goodSize=0;
-// 	for(int z=0;z<zdim;z++) {
-// 	  if(isGood[z*xySize+npix]) 
-// 	    spec[goodSize++] = originalArray[z*xySize+npix] -
-// 	      reconArray[z*xySize+npix];
-// 	}
-// 	specSigma = findMADFM(spec,goodSize) / correctionFactor;
-// 	delete [] spec;
-	
-	// Next, do source finding.
+
 	long *specdim = new long[2];
 	specdim[0] = zdim; specdim[1]=1;
 	Image *spectrum = new Image(specdim);
 	delete [] specdim;
 	spectrum->saveParam(par);
 	spectrum->saveStats(stats);
-	spectrum->pars().setBeamSize(2.); 
 	// beam size: for spectrum, only neighbouring channels correlated
 	spectrum->extractSpectrum(reconArray,dim,npix);
-	spectrum->removeMW(); // only works if flagMW is true
-// 	spectrum->setStats(specMedian,specSigma,par.getCut());
-// 	if(par.getFlagFDR()) spectrum->setupFDR();
 	spectrum->setMinSize(par.getMinChannels());
+	spectrum->removeMW(); // only works if flagMW is true
 	spectrum->spectrumDetect();
 	num += spectrum->getNumObj();
 	for(int obj=0;obj<spectrum->getNumObj();obj++){
@@ -318,28 +291,9 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
     if( par.isVerbose() ) bar.update(z+1);
 
     if(!par.isInMW(z)){ 
-
       // purpose of this is to ignore the Milky Way channels 
       //  if we are flagging them
 
-      //  First, get stats
-//       float *image = new float[xySize];
-//       float imageMedian,imageSigma;
-//       goodSize=0;
-//       for(int npix=0; npix<xySize; npix++) {
-// 	if(isGood[z*xySize + npix]) 
-// 	  image[goodSize++] = originalArray[z*xySize + npix];
-//       }
-//       imageMedian = findMedian(image,goodSize);
-//       goodSize=0;
-//       for(int npix=0; npix<xySize; npix++) 
-// 	if(isGood[z*xySize+npix]) 
-// 	  image[goodSize++]=originalArray[z*xySize+npix]-
-// 	    reconArray[z*xySize+npix];
-//       imageSigma = findMADFM(image,goodSize) / correctionFactor;
-//       delete [] image;
-
-      // Next, do source finding.
       long *imdim = new long[2];
       imdim[0] = dim[0]; imdim[1] = dim[1];
       Image *channelImage = new Image(imdim);
@@ -347,8 +301,6 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
       channelImage->saveStats(stats);
       delete [] imdim;
       channelImage->extractImage(reconArray,dim,z);
-//       channelImage->setStats(imageMedian,imageSigma,par.getCut());
-//       if(par.getFlagFDR()) channelImage->setupFDR();
       channelImage->setMinSize(par.getMinPix());
       channelImage->lutz_detect();
       num += channelImage->getNumObj();
@@ -379,7 +331,6 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
   printSpace(22);  
   std::cout << std::endl << std::flush;
 
-//   delete [] isGood;
   delete [] doPixel;
 
   return outputList;

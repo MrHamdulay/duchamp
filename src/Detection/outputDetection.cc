@@ -13,7 +13,8 @@
 
 using namespace Column;
 
-void Detection::outputDetectionTextHeader(std::ostream &stream, vector<Col> columns)
+void Detection::outputDetectionTextHeader(std::ostream &stream, 
+					  vector<Col> columns)
 {
   /**
    * outputDetectionTextHeader
@@ -42,7 +43,8 @@ void Detection::outputDetectionTextHeader(std::ostream &stream, vector<Col> colu
 }
 //--------------------------------------------------------------------
 
-void Detection::outputDetectionTextWCS(std::ostream &stream, vector<Col> columns)
+void Detection::outputDetectionTextWCS(std::ostream &stream, 
+				       vector<Col> columns)
 {
   /**
    * outputDetectionTextWCS
@@ -92,13 +94,14 @@ void Detection::outputDetectionTextWCS(std::ostream &stream, vector<Col> columns
 }
 //--------------------------------------------------------------------
 
-void Detection::outputDetectionText(std::ostream &stream, vector<Col> columns, int idNumber)
+void Detection::outputDetectionText(std::ostream &stream, 
+				    vector<Col> columns, int idNumber)
 {
   /**
    * outputDetectionText
    *  Print to a stream the relevant details of a detected object.
    *  This does not include any WCS parameters, only pixel positions & extent, 
-   *    and flux info.
+   *    and flux info (including peak SNR).
    *  Also prints a counter, provided as an input.
    */
 
@@ -118,6 +121,7 @@ void Detection::outputDetectionText(std::ostream &stream, vector<Col> columns, i
    columns[lZ].printEntry(stream,this->zcentre + this->zSubOffset);
    columns[lFTOT].printEntry(stream,this->totalFlux);
    columns[lFPEAK].printEntry(stream,this->peakFlux);
+   columns[lSNRPEAK].printEntry(stream,this->peakSNR);
    columns[lX1].printEntry(stream,this->xmin + this->xSubOffset);
    columns[lX2].printEntry(stream,this->xmax + this->xSubOffset);
    columns[lY1].printEntry(stream,this->ymin + this->ySubOffset);
@@ -158,8 +162,8 @@ string Detection::outputLabelInfo()
    *  Prints to a string the widths of the object (in position and velocity), 
    *  as well as the flux information.
    *  Assumes the WCS parameters of the object have been calculated.
-   *  If they have not (given by the isWCS() function), then the WCS-related outputs 
-   *  are left blank.
+   *  If they have not (given by the isWCS() function), then the WCS-related 
+   *   outputs are left blank.
    *  Returns the string.
    */
 

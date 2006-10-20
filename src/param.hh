@@ -294,7 +294,7 @@ class FitsHeader
 
 public:
   FitsHeader();
-  ~FitsHeader(){};
+  virtual ~FitsHeader(){};
   FitsHeader(const FitsHeader& h);
   FitsHeader& operator= (const FitsHeader& h);
 
@@ -305,9 +305,9 @@ public:
   void    setNWCS(int i){nwcs=i;};
   int     readHeaderInfo(string fname, Param &par);
   int     defineWCS(string fname, Param &par);
-  int     getBUNIT(string fname);
-  int     getBLANKinfo(string fname, Param &par);
-  int     getBeamInfo(string fname, Param &par);
+  int     readBUNIT(string fname);
+  int     readBLANKinfo(string fname, Param &par);
+  int     readBeamInfo(string fname, Param &par);
   string  getSpectralUnits(){return spectralUnits;};
   void    setSpectralUnits(string s){spectralUnits=s;};
   string  getSpectralDescription(){return spectralDescription;};
