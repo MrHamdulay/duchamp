@@ -25,6 +25,7 @@ namespace mycpgplot
 
   const std::string degrees="\\(0718)";
   const std::string plusminus="\\(2233)";
+  const std::string times="\\(2235)";
   const std::string tick="\\(2267)";
   const std::string odot="\\(2281)";
   const std::string integral="\\(2268)";

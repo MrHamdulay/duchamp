@@ -680,8 +680,10 @@ void Cube::setCubeStats()
   }
   std::cout << "Using ";
   if(this->par.getFlagFDR()) std::cout << "effective ";
-  std::cout << "flux threshold of: " << this->Stats.getThreshold()
-		<< std::endl;
+  std::cout << "flux threshold of: ";
+  float thresh = this->Stats.getThreshold();
+  if(this->par.getFlagNegative()) thresh *= -1.;
+  std::cout << thresh << std::endl;
 
 }
 //--------------------------------------------------------------------

@@ -267,10 +267,12 @@ void Cube::plotMomentMap(string pgDestination)
       cpggray(momentMap,xdim,ydim,1,xdim,1,ydim,z2,z1,tr);
       cpgbox("bcnst",0.,0,"bcnst",0.,0);
       cpgsch(1.5);
-      string wedgeLabel = "Flux ";
-      if(this->pars().getFlagNegative()) wedgeLabel = "-1. * " + wedgeLabel;
-      if(this->head.isWCS()) 
+      string wedgeLabel = "Integrated Flux ";
+      if(this->par.getFlagNegative()) 
+	wedgeLabel = "-1. " + times + " " + wedgeLabel;
+      if(this->head.isWCS())
 	wedgeLabel += "[" + this->head.getIntFluxUnits() + "]";
+      else wedgeLabel += "[" + this->head.getFluxUnits() + "]";
       cpgwedglog("rg",3.2,2,z2,z1,wedgeLabel.c_str());
 
       delete [] momentMap;

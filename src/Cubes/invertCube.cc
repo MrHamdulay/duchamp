@@ -1,4 +1,5 @@
 #include <Cubes/cubes.hh>
+#include <Detection/detection.hh>
 
 void Cube::invert()
 {
@@ -8,7 +9,10 @@ void Cube::invert()
    *   This is used when searching for negative features.
    */
   for(int i=0; i<this->numPixels; i++)
-    if(!this->isBlank(i)) this->array[i] *= -1.;
+    if(!this->isBlank(i)){
+      this->array[i] *= -1.;
+      if(this->reconExists) this->recon[i] *= -1.;
+    }
 }
 
 void Cube::reInvert()
