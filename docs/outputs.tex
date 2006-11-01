@@ -132,33 +132,33 @@ from RA/GLON to w\_VEL will be left blank. Also, F\_int will be
 replaced with the more simple F\_tot -- the total flux in the
 detection, being the sum of all detected voxels.
 
-The last column contains any warning flags about the detection. There
-are currently three options here. An `E' is printed if the detection is
-next to the edge of the image, meaning either the limit of the pixels,
-or the limit of the non-BLANK pixel region. An `S' is printed if the
-detection lies at the edge of the spectral region. An `N' is printed
-if the total flux, summed over all the (non-BLANK) pixels in the
-smallest box that completely encloses the detection, is negative. Note
-that this sum is likely to include non-detected pixels. It is of use
-in pointing out detections that lie next to strongly negative pixels,
-such as might arise due to interference -- the detected pixels might
-then also be due to the interference, so caution is advised.
+%The last column contains any warning flags about the detection. There
+%are currently three options here. An `E' is printed if the detection is
+%next to the edge of the image, meaning either the limit of the pixels,
+%or the limit of the non-BLANK pixel region. An `S' is printed if the
+%detection lies at the edge of the spectral region. An `N' is printed
+%if the total flux, summed over all the (non-BLANK) pixels in the
+%smallest box that completely encloses the detection, is negative. Note
+%that this sum is likely to include non-detected pixels. It is of use
+%in pointing out detections that lie next to strongly negative pixels,
+%such as might arise due to interference -- the detected pixels might
+%then also be due to the interference, so caution is advised.
 
-%The last column contains any warning flags about the detection, such
-%as: 
-%\begin{itemize}
-%\item \textbf{E} -- The detection is next to the spatial edge of the image,
-%meaning either the limit of the pixels, or the limit of the non-BLANK
-%pixel region.
-%\item \textbf{S} -- The detection lies at the edge of the spectral region. 
-%\item \textbf{N} -- The total flux, summed over all the (non-BLANK)
-%pixels in the smallest box that completely encloses the detection, is
-%negative. Note that this sum is likely to include non-detected
-%pixels. It is of use in pointing out detections that lie next to
-%strongly negative pixels, such as might arise due to interference --
-%the detected pixels might then also be due to the interference, so
-%caution is advised.
-%\end{itemize}
+The last column contains any warning flags about the detection, such
+as: 
+\begin{itemize}
+\item \textbf{E} -- The detection is next to the spatial edge of the image,
+meaning either the limit of the pixels, or the limit of the non-BLANK
+pixel region.
+\item \textbf{S} -- The detection lies at the edge of the spectral region. 
+\item \textbf{N} -- The total flux, summed over all the (non-BLANK)
+pixels in the smallest box that completely encloses the detection, is
+negative. Note that this sum is likely to include non-detected
+pixels. It is of use in pointing out detections that lie next to
+strongly negative pixels, such as might arise due to interference --
+the detected pixels might then also be due to the interference, so
+caution is advised.
+\end{itemize}
 
 \secC{Other results lists}
 
@@ -269,6 +269,12 @@ purple line dividing BLANK and non-BLANK pixels (as described above)
 is drawn. An example moment map is shown in Fig.~\ref{fig-moment}.
 The production or otherwise of these images is governed by the
 \texttt{flagMaps} parameter.
+
+The moment map is also displayed in a PGPlot XWindow. This feature can
+be turned off by setting the \texttt{flagXOutput} parameter to
+\texttt{false} -- this might be useful if running \duchamp\ on a
+terminal with no window display capability, or if you have set up a
+script to run it in a batch mode.
 
 The purpose of these images are to provide a visual guide to where the
 detections have been made, and, particularly in the case of the moment

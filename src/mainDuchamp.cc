@@ -170,7 +170,8 @@ int main(int argc, char * argv[])
   }
 
   std::cout<<"Creating the maps...  "<<std::flush;
-  cube->plotMomentMap("/xs");
+  if(cube->pars().getFlagXOutput()) cube->plotMomentMap("/xs");
+
   if(cube->pars().getFlagMaps()){
     cube->plotMomentMap(cube->pars().getMomentMap()+"/vcps");
     cube->plotDetectionMap(cube->pars().getDetectionMap()+"/vcps");

@@ -13,6 +13,13 @@ Some incremental improvements and changes to the code:
   detection. This is given in the text-based output, as well as in the
   summary information above the spectral output for each source.
 
+* The user can now elect not to have the moment map displayed in a
+  PGPlot window, through the use of the new flagXOutput
+  parameter. This should help in cases of running Duchamp on a dumb
+  terminal (with no X-display capabilities), or as part of a batch
+  script where the continual popping-up of the PGPlot window might
+  become annoying. 
+
 * There a different Flags reported for the case of an object lying on
   the spatial edge and spectral edge of the cube (E and S respectively).
 

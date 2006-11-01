@@ -265,6 +265,7 @@ Param::Param(){
   this->flagMaps          = true;
   this->detectionMap      = "duchamp-DetectionMap.ps";
   this->momentMap         = "duchamp-MomentMap.ps";
+  this->flagXOutput       = true;
   // Cube related parameters 
   this->flagBlankPix      = true;
   this->blankPixValue     = -8.00061;
@@ -341,6 +342,7 @@ Param& Param::operator= (const Param& p)
   this->flagMaps          = p.flagMaps;       
   this->detectionMap      = p.detectionMap;   
   this->momentMap         = p.momentMap;      
+  this->flagXOutput       = p.flagXOutput;       
   this->flagBlankPix      = p.flagBlankPix;   
   this->blankPixValue     = p.blankPixValue;  
   this->blankKeyword      = p.blankKeyword;   
@@ -465,6 +467,7 @@ int Param::readParams(string paramfile)
       if(arg=="flagmaps")        this->flagMaps = readFlag(ss); 
       if(arg=="detectionmap")    this->detectionMap = readSval(ss); 
       if(arg=="momentmap")       this->momentMap = readSval(ss); 
+      if(arg=="flagxoutput")     this->flagXOutput = readFlag(ss); 
 
       if(arg=="flagnegative")    this->flagNegative = readFlag(ss);
       if(arg=="flagblankpix")    this->flagBlankPix = readFlag(ss); 
@@ -581,6 +584,10 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<par.getDetectionMap()   <<endl;
   }
+  theStream  <<setw(widthText)<<"Display a map in a pgplot xwindow?" 
+	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[flagXOutput]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<stringize(par.getFlagXOutput())     <<endl;
   if(par.getFlagATrous()){			       
     theStream<<setw(widthText)<<"Saving reconstructed cube?"           
 	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[flagoutputrecon]"

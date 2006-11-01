@@ -76,6 +76,8 @@ public:
   void   setDetectionMap(string fname){detectionMap = fname;};
   string getMomentMap(){return momentMap;};
   void   setMomentMap(string fname){momentMap = fname;};
+  bool   getFlagXOutput(){return flagXOutput;};
+  void   setFlagXOutput(bool b){flagXOutput=b;};
   //
   bool   getFlagNegative(){return flagNegative;};
   void   setFlagNegative(bool flag){flagNegative=flag;};
@@ -201,6 +203,8 @@ private:
                           //  in postscript form?
   string detectionMap;    // The name of the detection map (ps file).
   string momentMap;       // The name of the 0th moment map (ps file).
+  bool   flagXOutput;     // Should there be an xwindows output of the
+                          //  detection map?
 
   // Cube related parameters 
   bool   flagNegative;    // Are we going to search for negative features? 

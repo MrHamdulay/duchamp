@@ -35,6 +35,7 @@ reconFile	your-reconstructed-file-here
 # karmaFile -- the file to put it in
 # flagMaps -- save postscript versions of the detection and 0th moment maps?
 # detectionMap, momentMap -- the postscript files produced.
+# flagXOutput -- display the moment map in a pgplot window
 
 flagLog         1
 logFile		duchamp-Logfile.txt
@@ -49,6 +50,7 @@ karmaFile       duchamp-Results.ann
 flagMaps        1
 detectionMap    duchamp-DetectionMap.ps
 momentMap       duchamp-MomentMap.ps
+flagXOutput     1
 
 # FIXING UP THE CUBE
 # flagBlankPix -- whether to replace & ignore blank pixels. 
@@ -69,11 +71,15 @@ flagBaseline    0
 # flagNegative -- Are the features being searched for negative (set to true) 
 #                 or positive (false -- the default)?
 # snrCut --  How many sigma above mean is a detection when sigma-clipping
+# threshold -- The threshold flux dividing source and non-source. Used instead 
+#              of calculating it from the cube's statistics. If not specified,
+#              it will be calculated.
 # flagGrowth -- Should the detections be "grown" to a lower significance value?
 # growthCut -- The lower threshold used when growing detections
 
 flagNegative    0
 snrCut		3.
+threshold	0.
 flagGrowth	0
 growthCut	2.
 
