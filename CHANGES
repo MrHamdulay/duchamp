@@ -1,3 +1,31 @@
+Duchamp version 1.0.6 (2006/11/01)
+----------------------------------
+
+Some incremental improvements and changes to the code:
+
+* The statistics used for the detection are now calculated once for
+  the entire cube, rather than being calculated separately for each
+  channel map and spectrum. This results in a uniform threshold value
+  across the entire cube. The way the statistics calculations are
+  implemented in the code was changed, using a new statistics class.
+
+* This means we can report a peak signal-to-noise value for each
+  detection. This is given in the text-based output, as well as in the
+  summary information above the spectral output for each source.
+
+* There a different Flags reported for the case of an object lying on
+  the spatial edge and spectral edge of the cube (E and S respectively).
+
+* A few minor bug fixes:
+  - When providing a subsection, any axes with the range given by *
+    had the pixel values offset incorrectly. This has been fixed.
+  - Negative searches now correctly invert the reconstructed array
+    when it is read in from a file.
+
+* Other minor changes to the code, to improve memory handling and
+  remove redundant arrays and variables.
+
+
 Duchamp version 1.0.5 (2006/09/06)
 ----------------------------------
 

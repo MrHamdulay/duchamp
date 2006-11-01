@@ -297,6 +297,17 @@ another starts, you know that you will not get back to the first one
 row. Three-dimensional data does not have this property, which is why
 we break up the searching into 1- and 2-dimensional cases.
 
+The basic idea behind detection is to locate sets of contiguous voxels
+that lie above some threshold. \duchamp\ now calculates one threshold
+for the entire cube (previous versions calculated thresholds for each
+spectrum and image). This enables calculation of signal-to-noise
+ratios for each source (see Section~\ref{sec-output} for details). The
+user can manually specify a value (using the parameter
+\texttt{threshold}) for the threshold, which will override the
+calculated value. Note that this only applies for the first of the two
+cases discussed below -- the FDR case ignores any manually-set
+threshold value.
+
 The determination of the threshold is done in one of two ways. The
 first way is a simple sigma-clipping, where a threshold is set at a
 fixed number $n$ of standard deviations above the mean, and pixels

@@ -62,11 +62,19 @@ the first place. Once the detection list is finalised, it is sorted by
 the mean velocity of the detections (or, if there is no good WCS
 associated with the cube, by the mean $z$-pixel position). The results
 are then printed to the screen and to the output file, given by the
-\texttt{OutFile} parameter. The results list, an example of which can
-be seen in Appendix~\ref{app-output}, contains the following columns
-(note that the title of the columns depending on WCS information will
-depend on the details of the WCS projection: they are shown below for
-the Equatorial and Galactic projection cases).
+\texttt{OutFile} parameter. 
+
+The output consists of three parts. First, a list of the parameters
+are printed to the output file, for future reference. Next, the
+detection level that was used is given, so comparison can be made with
+other searches. The noise level and its spread are also reported.
+
+The most interesting part, however, is the list of detected
+objects. This list, an example of which can be seen in
+Appendix~\ref{app-output}, contains the following columns (note that
+the title of the columns depending on WCS information will depend on
+the details of the WCS projection: they are shown below for the
+Equatorial and Galactic projection cases).
 
 \begin{entry}
 \item[Obj\#] The ID number of the detection (simply the sequential
@@ -93,6 +101,7 @@ Galactic Longitude [arcmin].
 \item[F\_int] The integrated flux over the object, in the units of
   flux times velocity, corrected for the beam if necessary.
 \item[F\_peak] The peak flux over the object, in the units of flux.
+\item[S/Nmax] The signal-to-noise ratio at the peak pixel.
 \item[X1, X2] The minimum and maximum X-pixel coordinates.
 \item[Y1, Y2] The minimum and maximum Y-pixel coordinates.
 \item[Z1, Z2] The minimum and maximum Z-pixel coordinates.
@@ -118,21 +127,38 @@ are also used to give the units of integrated flux. Note that if there
 is no rest frequency specified in the FITS header, the \duchamp\
 output will instead default to using Frequency, with units of MHz.
 
-If the WCS is not specified sufficiently to be used, then all columns
+If the WCS is absent or not sufficiently specified, then all columns
 from RA/GLON to w\_VEL will be left blank. Also, F\_int will be
 replaced with the more simple F\_tot -- the total flux in the
 detection, being the sum of all detected voxels.
 
 The last column contains any warning flags about the detection. There
-are currently two options here. An `E' is printed if the detection is
+are currently three options here. An `E' is printed if the detection is
 next to the edge of the image, meaning either the limit of the pixels,
-or the limit of the non-BLANK pixel region. An `N' is printed if the
-total flux, summed over all the (non-BLANK) pixels in the smallest box
-that completely encloses the detection, is negative. Note that this
-sum is likely to include non-detected pixels. It is of use in pointing
-out detections that lie next to strongly negative pixels, such as
-might arise due to interference -- the detected pixels might then also
-be due to the interference, so caution is advised.
+or the limit of the non-BLANK pixel region. An `S' is printed if the
+detection lies at the edge of the spectral region. An `N' is printed
+if the total flux, summed over all the (non-BLANK) pixels in the
+smallest box that completely encloses the detection, is negative. Note
+that this sum is likely to include non-detected pixels. It is of use
+in pointing out detections that lie next to strongly negative pixels,
+such as might arise due to interference -- the detected pixels might
+then also be due to the interference, so caution is advised.
+
+%The last column contains any warning flags about the detection, such
+%as: 
+%\begin{itemize}
+%\item \textbf{E} -- The detection is next to the spatial edge of the image,
+%meaning either the limit of the pixels, or the limit of the non-BLANK
+%pixel region.
+%\item \textbf{S} -- The detection lies at the edge of the spectral region. 
+%\item \textbf{N} -- The total flux, summed over all the (non-BLANK)
+%pixels in the smallest box that completely encloses the detection, is
+%negative. Note that this sum is likely to include non-detected
+%pixels. It is of use in pointing out detections that lie next to
+%strongly negative pixels, such as might arise due to interference --
+%the detected pixels might then also be due to the interference, so
+%caution is advised.
+%\end{itemize}
 
 \secC{Other results lists}
 

@@ -105,6 +105,13 @@ not matter, they are grouped here in logical sections.
   prior to searching.
 \item[snrCut \texttt{[3.]}] The cut-off value for thresholding, in
   terms of number of $\sigma$ above the mean.
+\item[threshold (no default assumed)] The actual value of the
+  threshold. Normally the threshold is calculated from the cube's
+  statistics, but the user can manually specify a value to be used
+  that overrides the calculated value. If this is not specified, the
+  calculated value is used. Also, when the FDR method is requested
+  (see below), the value of the \texttt{threshold} parameter is
+  ignored. 
 \item[flagGrowth \texttt{[false]}] A flag indicating whether or not to
   grow the detected objects to a smaller threshold.
 \item[growthCut \texttt{[2.]}] The smaller threshold using in growing

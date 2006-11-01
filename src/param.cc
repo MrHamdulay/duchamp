@@ -11,8 +11,8 @@
 #include <duchamp.hh>
 #include <Utils/utils.hh>
 
-// Define funtion to print bools as words, in case the compiler doesn't recognise
-// the setf(ios::boolalpha) command...
+// Define funtion to print bools as words, in case the compiler doesn't 
+//  recognise the setf(ios::boolalpha) command...
 #ifdef HAVE_STDBOOL_H
 string stringize(bool b){
   std::stringstream ss;
