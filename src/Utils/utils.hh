@@ -62,6 +62,7 @@ void getSigmaFactors3DNew(int &numScales);
 
 // PLOTTING ROUTINES
 extern "C" int  cpgtest();
+extern "C" int  cpgIsPS();
 extern "C" void cpgwedglog(const char* side, float disp, float width, 
 			   float fg, float bg, const char *label);
 extern "C" void cpghistlog(int npts, float *data, float datamin, 

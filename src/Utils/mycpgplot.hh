@@ -4,13 +4,23 @@
 namespace mycpgplot
 {
 
-  enum COLOUR {WHITE=0, BLACK, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW,
-	       ORANGE, GREENYELLOW, GREENCYAN, BLUECYAN, BLUEMAGENTA,
-	       REDMAGENTA, DARKGREY, LIGHTGREY, DARKGREEN};
+  enum COLOUR {BACKGND=0, FOREGND, RED, GREEN, BLUE, CYAN, 
+	       MAGENTA, YELLOW, ORANGE, GREENYELLOW, GREENCYAN, BLUECYAN, 
+	       BLUEMAGENTA, REDMAGENTA, DARKGREY, LIGHTGREY, DARKGREEN};
 
   enum INVERSE {XS_BLACK, XS_WHITE};
 
   inline void setDarkGreen(){cpgscr(DARKGREEN,0.,0.7,0.);};
+
+  inline void setWhite(){
+    if(cpgIsPS()) cpgsci(BACKGND);
+    else cpgsci(FOREGND);
+  };
+
+  inline void setBlack(){
+    if(cpgIsPS()) cpgsci(FOREGND);
+    else cpgsci(BACKGND);
+  };
 
   enum LINESTYLE {FULL=1, DASHED, DASHDOT, DOTTED, DASHDOT3};
 

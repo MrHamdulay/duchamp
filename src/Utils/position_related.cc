@@ -3,28 +3,11 @@
 #include <iomanip>
 #include <string>
 #include <math.h>
-#include <duchamp.hh>
-#include <param.hh>
 #include <Utils/utils.hh>
 
 using std::setw;
 using std::setfill;
 using std::setprecision;
-
-string getIAUName(double ra, double dec, FitsHeader head)
-{
-  /**
-   *  string getIAUName(double, double, FitsHeader)
-   *   front end to the two getIAUName tasks. It parses the FitsHeader
-   *   object and works out the coord type and, if necessary, the
-   *   equinox.
-   */
-  string longitudeType = head.getWCS()->lngtyp;
-  if(longitudeType=="RA") 
-    return getIAUNameEQ(ra, dec, head.getWCS()->equinox);
-  else
-    return getIAUNameGAL(ra, dec);
-}
 
 string getIAUNameEQ(double ra, double dec, float equinox)
 {
@@ -114,8 +97,10 @@ string decToDMS(const double dec, const string type)
     else sign = "+";
   }
   else { // UNKNOWN TYPE -- DEFAULT TO RA.
-    duchampWarning("decToDMS",
-		   "Unknown axis type (" + type + "). Defaulting to using RA.\n");
+//     duchampWarning("decToDMS",
+// 		   "Unknown axis type (" + type + "). Defaulting to using RA.\n");
+    std::cerr << "WARNING <decToDMS> : Unknown axis type ("
+	      << type << "). Defaulting to using RA.\n";
     while (thisDec < 0.) { thisDec += 360.; }
     while (thisDec >= 360.) { thisDec -= 360.; }
     thisDec /= 15.;

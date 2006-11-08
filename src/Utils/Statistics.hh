@@ -1,6 +1,7 @@
 #ifndef STATS_H
 #define STATS_H
 
+#include <iostream>
 #include <math.h>
 #ifndef UTILS_H
 #include <Utils/utils.hh>
@@ -28,6 +29,7 @@ namespace Statistics
     virtual ~StatsContainer(){};
     StatsContainer(const StatsContainer<Type>& s);
     StatsContainer<Type>& operator= (const StatsContainer<Type>& s);
+    template <class T> friend std::ostream& operator<< ( std::ostream& theStream, StatsContainer<T> &s);
 
     float getMean(){return mean;};
     void  setMean(float f){mean=f;};
@@ -86,10 +88,10 @@ namespace Statistics
 
     float  threshold;    // a threshold for simple sigma-clipping
     float  pThreshold;   // a threshold for the FDR case -- the upper limit
-    //   of P values that detected pixels can have.
+                         //   of P values that detected pixels can have.
     bool   useRobust;    // whether we use the two robust stats or not
     bool   useFDR;       // whether the FDR method is used for determining a
-    //  detection
+                         //  detection
 
   };
 

@@ -112,7 +112,8 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
 	for(int z=0;z<zdim;z++){
 	  if(!(this->isBlank(pos+z*xdim*ydim))){
 	    specy[z] += this->array[pos + z*xdim*ydim] / beam;
-	    if(this->par.getFlagATrous())
+// 	    if(this->par.getFlagATrous())
+	    if(this->reconExists)
 	      specy2[z] += this->recon[pos + z*xdim*ydim] / beam;
 	  }
 	}
@@ -125,7 +126,8 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
     for(int z=0;z<zdim;z++){
       int pos = obj.getXPeak() + xdim*obj.getYPeak();
       specy[z] = this->array[pos + z*xdim*ydim];
-      if(this->par.getFlagATrous()) specy2[z] = this->recon[pos + z*xdim*ydim];
+//       if(this->par.getFlagATrous()) specy2[z] = this->recon[pos + z*xdim*ydim];
+      if(this->reconExists) specy2[z] = this->recon[pos + z*xdim*ydim];
     }
   }
     
@@ -178,10 +180,11 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
     
   plot.gotoMainSpectrum(vmin,vmax,min,max,fluxLabel);
   cpgline(zdim,specx,specy);
-  if(this->par.getFlagATrous()){
+//   if(this->par.getFlagATrous()){
+  if(this->reconExists){
     cpgsci(RED);
     cpgline(zdim,specx,specy2);    
-    cpgsci(BLACK);
+    cpgsci(FOREGND);
   }
   if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
   if(this->head.isWCS()) plot.drawVelRange(obj.getVelMin(),obj.getVelMax());
@@ -211,10 +214,11 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
 
   plot.gotoZoomSpectrum(minvel,maxvel,min,max);
   cpgline(zdim,specx,specy);
-  if(this->par.getFlagATrous()){
+//   if(this->par.getFlagATrous()){
+  if(this->reconExists){
     cpgsci(RED);
     cpgline(zdim,specx,specy2);    
-    cpgsci(BLACK);
+    cpgsci(FOREGND);
   }
   if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
   if(this->head.isWCS()) plot.drawVelRange(obj.getVelMin(),obj.getVelMax());

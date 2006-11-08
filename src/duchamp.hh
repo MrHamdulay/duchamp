@@ -53,12 +53,15 @@ class ProgressBar
    *        rewind(num) --> prints backspaces to cover the entire bar.
    */
 public:
-  ProgressBar(){length=20;};
-  ProgressBar(int newlength){length=newlength;};
+  ProgressBar(){length=20; loc=BEG;};
+  ProgressBar(int newlength){length=newlength; loc=BEG;};
+  enum POS {BEG=0,END};
+
   void init(int size){  
     std::cout << "|"; printSpace(length); 
     std::cout << "|" << std::flush;
     fraction = size/length;
+    loc = END;
   };
   void update(int num){
     if(num%fraction==0){
@@ -66,9 +69,18 @@ public:
       printHash(num/fraction); printSpace(length-num/fraction); 
       std::cout << "|" << std::flush;
     }
+    loc=END;
   };
-  void rewind(){printBackSpace(length+2);};
+  void rewind(){if(loc==END) printBackSpace(length+2); loc=BEG;};
+  void remove(){rewind();printSpace(length+2);loc=END; rewind();};
+  void fillSpace(std::string someString){
+    rewind();
+    std::cout << someString;
+    printSpace(length+2-someString.size());
+    loc=END;
+  }
 private:
+  POS loc;
   int fraction;
   int length;
 };

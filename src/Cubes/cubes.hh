@@ -254,6 +254,8 @@ public:
   void    ReconCube2D();     // in ATrous/ReconSearch.cc
   void    ReconCube3D();     // in ATrous/ReconSearch.cc
   void    CubicSearch();     // in Cubes/CubicSearch.cc
+  void    SmoothSearch();    // in Cubes/smoothCube.cc
+  void    SmoothCube();      // in Cubes/smoothCube.cc
 
   // Dealing with the WCS
   FitsHeader getHead(){return head;};

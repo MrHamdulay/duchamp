@@ -145,6 +145,11 @@ public:
   bool   getFlagUserThreshold(){return flagUserThreshold;};
   void   setFlagUserThreshold(bool b){flagUserThreshold=b;};
   //	 
+  bool   getFlagSmooth(){return flagSmooth;};
+  void   setFlagSmooth(bool b){flagSmooth=b;};
+  int    getHanningWidth(){return hanningWidth;};
+  void   setHanningWidth(int f){hanningWidth=f;};
+  //	 
   bool   getFlagATrous(){return flagATrous;};
   void   setFlagATrous(bool flag){flagATrous=flag;};
   int    getReconDim(){return reconDim;};
@@ -255,6 +260,9 @@ private:
   float  threshold;       // What the threshold is (when sigma-clipping).
   bool   flagUserThreshold;// Whether the user has defined a threshold of 
                            //  their own.
+  // Smoothing of the cube
+  bool   flagSmooth;      // Should the cube be smoothed before searching?
+  int    hanningWidth;    // Width for hanning smoothing.
   // A trous reconstruction parameters
   bool   flagATrous;      // Are we using the a trous reconstruction?
   int    reconDim;        // How many dimensions to use for the reconstruction?

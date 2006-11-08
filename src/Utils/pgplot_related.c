@@ -45,6 +45,23 @@ int cpgtest()
 }
 
 /********************************************************************/
+/*   CPGTYPE
+/********************************************************************/
+
+int cpgIsPS()
+{
+  /** 
+   *  cpgIsPS
+   *     A front-end to cpgqinf, that tests whether the device is using a 
+   *     postscript (by which we mean "hardcopy") device
+   */
+  char answer[50];
+  int answer_len = sizeof(answer);
+  cpgqinf("TYPE", answer, &answer_len);
+  return ((answer[answer_len-2]=='P')&&((answer[answer_len-1]=='S')));
+}
+
+/********************************************************************/
 /*   CPGWEDGLOG
 /********************************************************************/
 

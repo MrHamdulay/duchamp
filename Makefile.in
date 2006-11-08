@@ -39,6 +39,7 @@ HEADS = $(BASE)/duchamp.hh\
 	$(DETECTIONDIR)/columns.hh\
 	$(CUBESDIR)/cubes.hh\
 	$(CUBESDIR)/plots.hh\
+	$(UTILDIR)/Statistics.hh\
 	$(UTILDIR)/utils.hh
 
 OBJECTS = $(BASE)/mainDuchamp.o \
@@ -59,7 +60,6 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(DETECTIONDIR)/outputDetection.o\
 	$(DETECTIONDIR)/sorting.o\
 	$(DETECTIONDIR)/spectrumDetect.o\
-	$(DETECTIONDIR)/thresholding_functions.o\
 	$(CUBESDIR)/cubes.o\
 	$(CUBESDIR)/baseline.o\
 	$(CUBESDIR)/CubicSearch.o\
@@ -72,11 +72,13 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(CUBESDIR)/plotting.o\
 	$(CUBESDIR)/readRecon.o\
 	$(CUBESDIR)/saveImage.o\
+	$(CUBESDIR)/smoothCube.o\
 	$(CUBESDIR)/trimImage.o\
 	$(FITSIODIR)/dataIO.o\
 	$(FITSIODIR)/headerIO.o\
 	$(FITSIODIR)/subsection.o\
 	$(FITSIODIR)/wcsIO.o\
+	$(UTILDIR)/Statistics.o\
 	$(UTILDIR)/drawBlankEdges.o\
 	$(UTILDIR)/getStats.o\
 	$(UTILDIR)/get_random_spectrum.o\

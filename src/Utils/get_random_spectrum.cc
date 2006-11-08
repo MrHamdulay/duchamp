@@ -42,6 +42,23 @@ float getNormalRV(float mean, float sigma)
   return z*sigma + mean;
 }
 
+void getRandomSpectrum(int length, float *x, float *y)
+{
+  srandom(time(0));
+  rand();
+  for(int i=0;i<length;i++){
+    x[i] = (float)i;
+    // simulate a standard normal RV via polar method
+    double v1,v2,s;
+    do{
+      v1 = 2.*(1.*rand())/(RAND_MAX+1.0) - 1.;
+      v2 = 2.*(1.*rand())/(RAND_MAX+1.0) - 1.;
+      s = v1*v1+v2*v2;
+    }while(s>1);
+    y[i] = sqrt(-2.*log(s)/s)*v1;
+  }
+}
+
 void getRandomSpectrum(int length, float *x, double *y)
 {
   srandom(time(0));

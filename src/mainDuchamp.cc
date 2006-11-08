@@ -120,22 +120,22 @@ int main(int argc, char * argv[])
     std::cout<<" Done."<<std::endl;
   }
 
-  if(cube->pars().getFlagATrous()){
+  if(cube->pars().getFlagSmooth()){
+    std::cout<<"Commencing search in hanning smoothed cube..."<<std::endl;
+    cube->SmoothSearch();
+  }
+  else if(cube->pars().getFlagATrous()){
     std::cout<<"Commencing search in reconstructed cube..."<<std::endl;
     cube->ReconSearch();
-    std::cout << "Done. Intermediate list has "
-	      << cube->getNumObj();
-    if(cube->getNumObj()==1) std::cout << " object.\n";
-    else std::cout << " objects.\n";
-  }
+   }
   else{
     std::cout<<"Commencing search in cube..."<<std::endl;
     cube->CubicSearch();
-    std::cout << "Done. Intermediate list has "
-	      << cube->getNumObj();
-    if(cube->getNumObj()==1) std::cout << " object.\n";
-    else std::cout << " objects.\n";
   }
+  std::cout << "Done. Intermediate list has "
+	    << cube->getNumObj();
+  if(cube->getNumObj()==1) std::cout << " object.\n";
+  else std::cout << " objects.\n";
 
   if(cube->getNumObj() > 1){
     std::cout<<"Merging lists...  "<<std::flush;

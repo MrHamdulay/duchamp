@@ -343,7 +343,7 @@ Cube::Cube(long *dimensions){
     if(size>0){
       this->array      = new float[size];
       this->detectMap  = new short[imsize];
-      if(this->par.getFlagATrous())
+      if(this->par.getFlagATrous()||this->par.getFlagSmooth())
 	this->recon    = new float[size];
       if(this->par.getFlagBaseline())
 	this->baseline = new float[size];
@@ -360,8 +360,10 @@ Cube::Cube(long *dimensions){
 Cube::~Cube()
 {
   delete [] detectMap;
-  if(this->par.getFlagATrous())   delete [] recon;
-  if(this->par.getFlagBaseline()) delete [] baseline;
+  if(this->par.getFlagATrous()||this->par.getFlagSmooth())
+    delete [] recon;
+  if(this->par.getFlagBaseline())
+    delete [] baseline;
 }
 //--------------------------------------------------------------------
 
@@ -402,7 +404,7 @@ void Cube::initialiseCube(long *dimensions)
     if(size>0){
       this->array      = new float[size];
       this->detectMap  = new short[imsize];
-      if(this->par.getFlagATrous())
+      if(this->par.getFlagATrous() || this->par.getFlagSmooth())
 	this->recon    = new float[size];
       if(this->par.getFlagBaseline())
 	this->baseline = new float[size];
@@ -607,6 +609,8 @@ void Cube::setCubeStats()
    *   
    *   For stats calculations, ignore BLANKs and MW channels.
    */
+
+  std::cout << "Calculating the cube statistics... " << std::flush;
 
   // get number of good pixels;
   int goodSize = 0;

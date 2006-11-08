@@ -184,8 +184,10 @@ double  FitsHeader::velToSpec(const float &velocity)
 
 string  FitsHeader::getIAUName(double ra, double dec)
 {
-  if(strcmp(this->wcs->lngtyp,"RA")==0) return getIAUNameEQ(ra, dec, this->wcs->equinox);
-  else return getIAUNameGAL(ra, dec);
+  if(strcmp(this->wcs->lngtyp,"RA")==0) 
+    return getIAUNameEQ(ra, dec, this->wcs->equinox);
+  else 
+    return getIAUNameGAL(ra, dec);
 }
 
 void FitsHeader::fixUnits(Param &par)
@@ -302,6 +304,9 @@ Param::Param(){
   this->snrCut            = 3.;
   this->threshold         = 0.;
   this->flagUserThreshold = false;
+  // Hanning Smoothing 
+  this->flagSmooth        = false;
+  this->hanningWidth      = 5;
   // A trous reconstruction parameters
   this->flagATrous        = true;
   this->reconDim          = 3;
@@ -370,6 +375,8 @@ Param& Param::operator= (const Param& p)
   this->snrCut            = p.snrCut;
   this->threshold         = p.threshold;
   this->flagUserThreshold = p.threshold;
+  this->flagSmooth        = p.flagSmooth;
+  this->hanningWidth      = p.hanningWidth;
   this->flagATrous        = p.flagATrous;
   this->reconDim          = p.reconDim;
   this->scaleMin          = p.scaleMin;
@@ -490,6 +497,9 @@ int Param::readParams(string paramfile)
 	                         this->threshold = readFval(ss);
                                  this->flagUserThreshold = true;
       }
+      
+      if(arg=="flagsmooth")      this->flagSmooth = readFlag(ss);
+      if(arg=="hanningwidth")    this->hanningWidth = readIval(ss);
 
       if(arg=="flagatrous")      this->flagATrous = readFlag(ss); 
       if(arg=="recondim")        this->reconDim = readIval(ss); 
@@ -509,6 +519,7 @@ int Param::readParams(string paramfile)
       if(arg=="verbose")         this->verbose = readFlag(ss); 
     }
   }
+  if(this->flagSmooth) this->flagATrous = false;
   return SUCCESS;
 }
 
@@ -650,6 +661,15 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<par.getGrowthCut()      <<endl;
   }
+  theStream  <<setw(widthText)<<"Hanning-smoothing each spectrum first?"        
+	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[flagSmooth]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<stringize(par.getFlagSmooth())     <<endl;
+  if(par.getFlagSmooth())			       
+    theStream<<setw(widthText)<<"Width of hanning filter"      
+	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[hanningWidth]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<par.getHanningWidth()       <<endl;
   theStream  <<setw(widthText)<<"Using A Trous reconstruction?"        
 	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[flagATrous]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
