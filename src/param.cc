@@ -211,7 +211,8 @@ void FitsHeader::fixUnits(Param &par)
 			  << this->spectralUnits.c_str() << "'\n";
       this->spectralUnits = this->wcs->cunit[wcs->spec];
       if(this->spectralUnits==""){
-	errmsg << "Setting coordinates to 'XX' for clarity.\n";
+	errmsg << 
+	  "Spectral units not specified. Setting them to 'XX' for clarity.\n";
 	this->spectralUnits = "XX";
       }
       duchampError("fixUnits", errmsg.str());
