@@ -170,12 +170,18 @@ int main(int argc, char * argv[])
   }
 
   std::cout<<"Creating the maps...  "<<std::flush;
-  if(cube->pars().getFlagXOutput()) cube->plotMomentMap("/xs");
-
-  if(cube->pars().getFlagMaps()){
-    cube->plotMomentMap(cube->pars().getMomentMap()+"/vcps");
+//   if(cube->pars().getFlagXOutput()) cube->plotMomentMap("/xs");
+//   if(cube->pars().getFlagMaps()){
+//     cube->plotMomentMap(cube->pars().getMomentMap()+"/vcps");
+//     cube->plotDetectionMap(cube->pars().getDetectionMap()+"/vcps");
+//   }
+  vector<string> devices;
+  if(cube->pars().getFlagXOutput()) devices.push_back("/xs");
+  if(cube->pars().getFlagMaps()) 
+    devices.push_back(cube->pars().getMomentMap()+"/vcps");
+  cube->plotMomentMap(devices);
+  if(cube->pars().getFlagMaps())
     cube->plotDetectionMap(cube->pars().getDetectionMap()+"/vcps");
-  }
   std::cout << "done.\n";
 
   if((cube->getDimZ()>1) && (cube->getNumObj()>0)){

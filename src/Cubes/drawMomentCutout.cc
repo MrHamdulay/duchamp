@@ -168,19 +168,22 @@ void Cube::drawScale(float xstart, float ystart, float channel)
       const float angleScale[3] = {3600., 60., 1.};
       //  degree, arcmin, arcsec symbols
     
-      const float lengths[11] = {1./3600., 5./3600., 15./3600., 30./3600.,
-				 1./60., 5./60., 15./60., 30./60.,
-				 1., 5., 15.};
+      const int numLengths = 15;
+      const float lengths[numLengths] = 
+	{0.01/3600., 0.05/3600., 0.1/3600., 0.5/3600., 
+	 1./3600., 5./3600., 15./3600., 30./3600.,
+	 1./60., 5./60., 15./60., 30./60.,
+	 1., 5., 15.};
       const float desiredRatio = 0.2;
 
       // first, work out what is the optimum length of the scale bar,
       //   based on the pixel scale and size of the image.
       float pixscale = this->head.getAvPixScale();
-      float *fraction = new float[11];
+      float *fraction = new float[numLengths];
       int best;
       float x1,x2,y1,y2;
       cpgqwin(&x1,&x2,&y1,&y2);
-      for(int i=0;i<11;i++){
+      for(int i=0;i<numLengths;i++){
 	fraction[i] = (lengths[i]/pixscale) / (x2-x1);
 	if(i==0) best=0;
 	else if(fabs(fraction[i] - desiredRatio) < 

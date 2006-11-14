@@ -295,6 +295,7 @@ public:
   //    the next three in Cubes/plotting.cc
   void    plotDetectionMap(string pgDestination);          
   void    plotMomentMap(string pgDestination);             
+  void    plotMomentMap(vector<string> pgDestination);
   void    plotWCSaxes();                                   
   //    the next two in Cubes/outputSpectra.cc
   void    outputSpectra();

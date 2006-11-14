@@ -59,10 +59,10 @@ namespace Plot
 	paperHeight = a4height - 2*psVoffset;
 	paperWidth = paperHeight / M_SQRT2;
       }
-      int flag = cpgopen(pgDestination.c_str());
-      if(flag>0) cpgpap(paperWidth, paperHeight/paperWidth); 
+      identifier = cpgopen(pgDestination.c_str());
+      if(identifier>0) cpgpap(paperWidth, paperHeight/paperWidth); 
                  // make paper size to fit on A4.
-      return flag;
+      return identifier;
     }
 
     void calcCoords(){
@@ -227,6 +227,8 @@ namespace Plot
     void  setPaperWidth(float f){paperWidth=f;};
     float getPaperHeight(){return paperHeight;};
     void  setPaperHeight(float f){paperHeight=f;};
+    void  goToPlot(){cpgslct(identifier);}; // goes to the plot when more 
+                                            //  than one are open
 
   private:
     int numOnPage;       // Number of spectra to put on one page.
@@ -238,6 +240,7 @@ namespace Plot
     float paperHeight;   // Height of plottable region of the paper [inches]
     float indexSize;     // PGPlot character height for tick mark labels
     float labelSize;     // PGPlot character height for axis labels.
+    int   identifier;    // The identifier code used by cpgslct.
     
   };
 
@@ -285,9 +288,9 @@ namespace Plot
 	marginWidth *= correction;
 	wedgeWidth *= correction;
       }
-      int flag = cpgopen(pgDestination.c_str());
-      if(flag>0) cpgpap(paperWidth, aspectRatio);
-      return flag;
+      identifier = cpgopen(pgDestination.c_str());
+      if(identifier>0) cpgpap(paperWidth, aspectRatio);
+      return identifier;
     }
 
     void  drawMapBox(float x1, float x2, float y1, float y2, 
@@ -332,7 +335,8 @@ namespace Plot
     float getPaperWidth() {return paperWidth;};
     float getImageHeight(){return imageWidth()*imageRatio;};
     float getAspectRatio(){return aspectRatio;};
-
+    void  goToPlot(){cpgslct(identifier);}; // goes to the plot when more 
+                                            //  than one are open
 
   private:
     float paperWidth;     // Default (maximum) width of "paper" [inches]
@@ -346,6 +350,7 @@ namespace Plot
     float aspectRatio;    // Aspect ratio of whole plot.
     float xdim;           // Width of main plot, in display units.
     float ydim;           // Height of main plot, in display units.
+    int   identifier;     // The identifier code used by cpgslct.
   };
 
 }
