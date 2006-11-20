@@ -15,9 +15,9 @@
 int FitsHeader::defineWCS(string fname, Param &par)
 {
   /**
-   *  FitsHeader::defineWCS(wcsprm *wcs, char *hdr, Param &par) 
+   *  FitsHeader::defineWCS(string fname, Param &par) 
    *   A function that reads the WCS header information from the 
-   *    FITS file given by fptr.
+   *    FITS file given by fname
    *   It will also sort out the spectral axis, and covert to the correct 
    *    velocity type, or frequency type if need be.
    *   It calls FitsHeader::readBUNIT so that the Integrated Flux units can
@@ -69,25 +69,27 @@ int FitsHeader::defineWCS(string fname, Param &par)
     fits_report_error(stderr, status);
   }
   
-  wcsprm *wcs = new wcsprm;
+  struct wcsprm *localwcs;
+  localwcs = (struct wcsprm *)malloc(sizeof(struct wcsprm));
+  localwcs->flag=-1;
 
   // Initialise the wcsprm structure
   int flag;
-  if(flag = wcsini(true,numAxes,wcs)){
+  if(flag = wcsini(true, numAxes, localwcs)){
     std::stringstream errmsg;
     errmsg << "wcsini failed! Code=" << flag
 	   << ": " << wcs_errmsg[flag] << std::endl;
     duchampError("defineWCS",errmsg.str());
     return FAILURE;
   }
-  wcs->flag=-1;
+  localwcs->flag=-1;
 
   int relax=1; // for wcspih -- admit all recognised informal WCS extensions
   int ctrl=2;  // for wcspih -- report each rejected card and its reason for
                //               rejection
-  int nwcs, nreject;
+  int localnwcs, nreject;
   // Parse the FITS header to fill in the wcsprm structure
-  if(flag = wcspih(hdr, nkeys, relax, ctrl, &nreject, &nwcs, &wcs)) {
+  if(flag = wcspih(hdr, nkeys, relax, ctrl, &nreject, &localnwcs, &localwcs)) {
     // if here, something went wrong -- report what.
     std::stringstream errmsg;
     errmsg << "wcspih failed!\n"
@@ -98,7 +100,7 @@ int FitsHeader::defineWCS(string fname, Param &par)
     int stat[NWCSFIX];
     // Applies all necessary corrections to the wcsprm structure
     //  (missing cards, non-standard units or spectral types, ...)
-    if(flag=wcsfix(1,(const int*)dimAxes,wcs,stat)) {
+    if(flag=wcsfix(1, (const int*)dimAxes, localwcs, stat)) {
       std::stringstream errmsg;
       errmsg << "wcsfix failed:\n";
       for(int i=0; i<NWCSFIX; i++)
@@ -109,21 +111,22 @@ int FitsHeader::defineWCS(string fname, Param &par)
     }
 
     // Set up the wcsprm struct. Report if something goes wrong.
-    if(flag=wcsset(wcs)){
+    if(flag=wcsset(localwcs)){
       std::stringstream errmsg;
       errmsg<<"wcsset failed!\n"
 	    <<"WCSLIB error code="<<flag <<": "<<wcs_errmsg[flag]<<std::endl;
       duchampWarning("defineWCS",errmsg.str());
     }
 
-    if(wcs->naxis>2){  // if there is a spectral axis
+    if(localwcs->naxis>2){  // if there is a spectral axis
 
-      int index = wcs->spec;
-      string desiredType,specType = wcs->ctype[index];
-      if(wcs->restfrq != 0){
+      int index = localwcs->spec;
+      string desiredType,specType = localwcs->ctype[index];
+      if(localwcs->restfrq != 0){
 	// Set the spectral axis to a standard specification: VELO-F2V
 	desiredType = duchampVelocityType;
-	if(wcs->restwav == 0) wcs->restwav = 299792458.0 / wcs->restfrq;
+	if(localwcs->restwav == 0) 
+	  localwcs->restwav = 299792458.0 /  localwcs->restfrq;
 	this->spectralDescription = duchampSpectralDescription[VELOCITY];
       }
       else{
@@ -133,10 +136,10 @@ int FitsHeader::defineWCS(string fname, Param &par)
        "No rest frequency defined. Using frequency units in spectral axis.\n");
 	desiredType = duchampFrequencyType;
  	par.setSpectralUnits("MHz");
-	if(strcmp(wcs->cunit[index],"")==0){
+	if(strcmp(localwcs->cunit[index],"")==0){
 	  duchampWarning("defineWCS",
 	  "No frequency unit given. Assuming frequency axis is in Hz.\n");
-	  strcpy(wcs->cunit[index],"Hz");
+	  strcpy(localwcs->cunit[index],"Hz");
 	}
 	this->spectralDescription = duchampSpectralDescription[FREQUENCY];
       }
@@ -146,7 +149,7 @@ int FitsHeader::defineWCS(string fname, Param &par)
       if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0){
 	index = -1;
 	// If not a match, translate the spectral axis to the desired type
-	if( flag = wcssptr(wcs, &index, (char *)desiredType.c_str())){
+	if( flag = wcssptr(localwcs, &index, (char *)desiredType.c_str())){
 	  std::stringstream errmsg;
 	  errmsg<<"wcssptr failed! Code="<<flag <<": "
 		<<wcs_errmsg[flag]<<std::endl;
@@ -157,10 +160,10 @@ int FitsHeader::defineWCS(string fname, Param &par)
     } // end of if(numAxes>2)
     
     // Save the wcs to the FitsHeader class that is running this function
-    this->setWCS(wcs);
-    this->setNWCS(nwcs);
+    this->setWCS(localwcs);
+    this->setNWCS(localnwcs);
 
-    wcsfree(wcs);
+    wcsfree(localwcs);
 
   }
 

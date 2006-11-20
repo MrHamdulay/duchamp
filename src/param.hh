@@ -6,6 +6,7 @@
 #include <vector>
 #include <math.h>
 #include <wcs.h>
+#include <wcshdr.h>
 
 using std::string;
 using std::vector;
@@ -21,10 +22,11 @@ class Param
 {
 public:
   Param();
-  virtual ~Param(){};
+  virtual ~Param(){if(sizeOffsets>0) delete [] offsets;};
+  Param(const Param& p);
   Param& operator= (const Param& p);
   int    verifySubsection();              // in FitsIO/subsection.cc
-  void   setOffsets(wcsprm *wcs);         // in FitsIO/subsection.cc
+  void   setOffsets(struct wcsprm *wcs);  // in FitsIO/subsection.cc
   int    readParams(string paramfile);    // in param.cc
   void   copyHeaderInfo(FitsHeader &head);// in param.cc
   bool   isBlank(float &value);           // in param.cc
@@ -239,6 +241,7 @@ private:
   long   borderTop;       // The number trimmed from the Top of the cube;
   // Subsection offsets
   long  *offsets;         // The array of offsets for each FITS axis.
+  long   sizeOffsets;     // The size of the offsets array.
   long   xSubOffset;      // The offset in the x-direction from the subsection
   long   ySubOffset;      // The offset in the y-direction from the subsection
   long   zSubOffset;      // The offset in the z-direction from the subsection
@@ -306,12 +309,12 @@ class FitsHeader
 
 public:
   FitsHeader();
-  virtual ~FitsHeader(){};
+  virtual ~FitsHeader(){wcsvfree(&nwcs,&wcs);};
   FitsHeader(const FitsHeader& h);
   FitsHeader& operator= (const FitsHeader& h);
 
-  wcsprm *getWCS();             // in param.cc
-  void    setWCS(wcsprm *w);    // in param.cc
+  struct wcsprm *getWCS();             // in param.cc
+  void    setWCS(struct wcsprm *w);    // in param.cc
   bool    isWCS(){return wcsIsGood;};
   int     getNWCS(){return nwcs;};
   void    setNWCS(int i){nwcs=i;};
@@ -359,7 +362,7 @@ public:
   void    fixUnits(Param &par);
  
 private:
-  wcsprm *wcs;                  // The WCS parameters for the cube in a 
+  struct wcsprm *wcs;           // The WCS parameters for the cube in a 
                                 //  struct from the wcslib library.
   int     nwcs;                 // The number of WCS parameters
   bool    wcsIsGood;            // A flag indicating whether there is a 

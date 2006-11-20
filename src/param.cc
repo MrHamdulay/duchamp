@@ -37,10 +37,11 @@ using std::endl;
 //// Functions for FitsHeader class:
 ///////////////////////////////////////////////////
 
-FitsHeader::FitsHeader(){
-  this->wcs = new wcsprm;
+FitsHeader::FitsHeader()
+{
+  this->wcs = (struct wcsprm *)malloc(sizeof(struct wcsprm));
   this->wcs->flag=-1;
-  wcsini(true,3,this->wcs); 
+  wcsini(true, 3, this->wcs); 
   this->wcsIsGood = false;
   this->nwcs = 0;
   this->scale=1.;
@@ -49,11 +50,12 @@ FitsHeader::FitsHeader(){
   this->fluxUnits="counts";
 }
 
-FitsHeader::FitsHeader(const FitsHeader& h){
-  this->wcs = new wcsprm;
+FitsHeader::FitsHeader(const FitsHeader& h)
+{
+  this->wcs = (struct wcsprm *)malloc(sizeof(struct wcsprm));
   this->wcs->flag=-1;
-  wcsini(true,h.wcs->naxis,this->wcs); 
-  wcscopy(true,h.wcs,this->wcs); 
+  wcsini(true, h.wcs->naxis, this->wcs); 
+  wcscopy(true, h.wcs, this->wcs); 
   wcsset(this->wcs);
   this->nwcs = h.nwcs;
   this->wcsIsGood = h.wcsIsGood;
@@ -71,11 +73,12 @@ FitsHeader::FitsHeader(const FitsHeader& h){
   this->power = h.power;
 }
 
-FitsHeader& FitsHeader::operator= (const FitsHeader& h){
-  this->wcs = new wcsprm;
+FitsHeader& FitsHeader::operator= (const FitsHeader& h)
+{
+  this->wcs = (struct wcsprm *)malloc(sizeof(struct wcsprm));
   this->wcs->flag=-1;
-  wcsini(true,h.wcs->naxis,this->wcs); 
-  wcscopy(true,h.wcs,this->wcs); 
+  wcsini(true, h.wcs->naxis, this->wcs); 
+  wcscopy(true, h.wcs, this->wcs); 
   wcsset(this->wcs);
   this->nwcs = h.nwcs;
   this->wcsIsGood = h.wcsIsGood;
@@ -93,45 +96,45 @@ FitsHeader& FitsHeader::operator= (const FitsHeader& h){
   this->power = h.power;
 }
 
-void FitsHeader::setWCS(wcsprm *w)
+void FitsHeader::setWCS(struct wcsprm *w)
 {
   /** 
-   * FitsHeader::setWCS(wcsprm *)
+   * FitsHeader::setWCS(struct wcsprm)
    *  A function that assigns the wcs parameters, and runs
    *   wcsset to set it up correctly.
    *  Performs a check to see if the WCS is good (by looking at 
    *   the lng and lat wcsprm parameters), and sets the wcsIsGood 
    *   flag accordingly.
    */
-  wcscopy(true,w,this->wcs);
+  wcscopy(true, w, this->wcs);
   wcsset(this->wcs);
   if( (w->lng!=-1) && (w->lat!=-1) ) this->wcsIsGood = true;
 }
 
-wcsprm *FitsHeader::getWCS()
+struct wcsprm *FitsHeader::getWCS()
 {
   /** 
    * FitsHeader::getWCS()
    *  A function that returns a wcsprm object corresponding to the WCS.
    */
-  wcsprm *wNew = new wcsprm;
+  struct wcsprm *wNew = (struct wcsprm *)malloc(sizeof(struct wcsprm));
   wNew->flag=-1;
-  wcsini(true,this->wcs->naxis,wNew); 
-  wcscopy(true,this->wcs,wNew); 
+  wcsini(true, this->wcs->naxis, wNew); 
+  wcscopy(true, this->wcs, wNew); 
   wcsset(wNew);
   return wNew;
 }
 
 int     FitsHeader::wcsToPix(const double *world, double *pix){
-  return wcsToPixSingle(this->wcs,world,pix);}
+  return wcsToPixSingle(this->wcs, world, pix);}
 int     FitsHeader::wcsToPix(const double *world, double *pix, const int npts){
-  return wcsToPixMulti(this->wcs,world,pix,npts);}
+  return wcsToPixMulti(this->wcs, world, pix, npts);}
 int     FitsHeader::pixToWCS(const double *pix, double *world){
-  return pixToWCSSingle(this->wcs,pix,world);}
+  return pixToWCSSingle(this->wcs, pix, world);}
 int     FitsHeader::pixToWCS(const double *pix, double *world, const int npts){
-  return pixToWCSMulti(this->wcs,pix,world,npts);}
+  return pixToWCSMulti(this->wcs, pix,world, npts);}
 
-double  FitsHeader::pixToVel(double &x, double &y, double &z)
+double FitsHeader::pixToVel(double &x, double &y, double &z)
 {
   double vel;
   if(this->wcsIsGood){
@@ -199,7 +202,7 @@ void FitsHeader::fixUnits(Param &par)
   double of=0.;
   double po=1.;;
   if(this->wcsIsGood){
-    int flag = wcsunits( this->wcs->cunit[wcs->spec], 
+    int flag = wcsunits( this->wcs->cunit[this->wcs->spec], 
 			 this->spectralUnits.c_str(), 
 			 &sc, &of, &po);
     if(flag>0){
@@ -207,9 +210,9 @@ void FitsHeader::fixUnits(Param &par)
       errmsg << "WCSUNITS Error, Code = " << flag 
 	     << ": "<< wcsunits_errmsg[flag];
       if(flag==10) errmsg << "\nTried to get conversion from '" 
-			  << wcs->cunit[wcs->spec] << "' to '" 
+			  << this->wcs->cunit[this->wcs->spec] << "' to '" 
 			  << this->spectralUnits.c_str() << "'\n";
-      this->spectralUnits = this->wcs->cunit[wcs->spec];
+      this->spectralUnits = this->wcs->cunit[this->wcs->spec];
       if(this->spectralUnits==""){
 	errmsg << 
 	  "Spectral units not specified. Setting them to 'XX' for clarity.\n";
@@ -288,6 +291,7 @@ Param::Param(){
   this->borderBottom      = 0;
   this->borderTop         = 0;
   // Subsection offsets
+  this->sizeOffsets       = 0;
   this->xSubOffset        = 0;
   this->ySubOffset        = 0;
   this->zSubOffset        = 0;
@@ -328,6 +332,75 @@ Param::Param(){
   this->spectralUnits     = "km/s";
 };
 
+Param::Param (const Param& p)
+{
+  this->imageFile         = p.imageFile;
+  this->flagSubsection    = p.flagSubsection; 
+  this->subsection        = p.subsection;     
+  this->flagReconExists   = p.flagReconExists;
+  this->reconFile         = p.reconFile;      
+  this->flagLog           = p.flagLog;        
+  this->logFile           = p.logFile;       
+  this->outFile           = p.outFile;        
+  this->spectraFile       = p.spectraFile;    
+  this->flagOutputRecon   = p.flagOutputRecon;
+  this->flagOutputResid   = p.flagOutputResid;
+  this->flagVOT           = p.flagVOT;         
+  this->votFile           = p.votFile;        
+  this->flagKarma         = p.flagKarma;      
+  this->karmaFile         = p.karmaFile;      
+  this->flagMaps          = p.flagMaps;       
+  this->detectionMap      = p.detectionMap;   
+  this->momentMap         = p.momentMap;      
+  this->flagXOutput       = p.flagXOutput;       
+  this->flagBlankPix      = p.flagBlankPix;   
+  this->blankPixValue     = p.blankPixValue;  
+  this->blankKeyword      = p.blankKeyword;   
+  this->bscaleKeyword     = p.bscaleKeyword;  
+  this->bzeroKeyword      = p.bzeroKeyword;   
+  this->flagUsingBlank    = p.flagUsingBlank; 
+  this->flagMW            = p.flagMW;         
+  this->maxMW             = p.maxMW;          
+  this->minMW             = p.minMW;         
+  this->numPixBeam        = p.numPixBeam;     
+  this->flagTrimmed       = p.flagTrimmed;    
+  this->borderLeft        = p.borderLeft;     
+  this->borderRight       = p.borderRight;    
+  this->borderBottom      = p.borderBottom;   
+  this->borderTop         = p.borderTop;      
+  this->sizeOffsets       = p.sizeOffsets;
+  if(this->sizeOffsets>0)
+    for(int i=0;i<this->sizeOffsets;i++) this->offsets[i] = p.offsets[i];
+  this->xSubOffset        = p.xSubOffset;     
+  this->ySubOffset        = p.ySubOffset;     
+  this->zSubOffset        = p.zSubOffset;
+  this->flagBaseline      = p.flagBaseline;
+  this->flagNegative      = p.flagNegative;
+  this->flagGrowth        = p.flagGrowth;
+  this->growthCut         = p.growthCut;
+  this->flagFDR           = p.flagFDR;
+  this->alphaFDR          = p.alphaFDR;
+  this->snrCut            = p.snrCut;
+  this->threshold         = p.threshold;
+  this->flagUserThreshold = p.threshold;
+  this->flagSmooth        = p.flagSmooth;
+  this->hanningWidth      = p.hanningWidth;
+  this->flagATrous        = p.flagATrous;
+  this->reconDim          = p.reconDim;
+  this->scaleMin          = p.scaleMin;
+  this->snrRecon          = p.snrRecon;
+  this->filterCode        = p.filterCode;
+  this->flagAdjacent      = p.flagAdjacent;
+  this->threshSpatial     = p.threshSpatial;
+  this->threshVelocity    = p.threshVelocity;
+  this->minChannels       = p.minChannels;
+  this->minPix            = p.minPix;
+  this->spectralMethod    = p.spectralMethod;
+  this->borders           = p.borders;
+  this->verbose           = p.verbose;
+  this->spectralUnits     = p.spectralUnits;
+}
+
 Param& Param::operator= (const Param& p)
 {
   this->imageFile         = p.imageFile;
@@ -364,6 +437,9 @@ Param& Param::operator= (const Param& p)
   this->borderRight       = p.borderRight;    
   this->borderBottom      = p.borderBottom;   
   this->borderTop         = p.borderTop;      
+  this->sizeOffsets       = p.sizeOffsets;
+  if(this->sizeOffsets>0)
+    for(int i=0;i<this->sizeOffsets;i++) this->offsets[i] = p.offsets[i];
   this->xSubOffset        = p.xSubOffset;     
   this->ySubOffset        = p.ySubOffset;     
   this->zSubOffset        = p.zSubOffset;

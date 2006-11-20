@@ -1,5 +1,6 @@
 #include <cpgplot.h>
 #include <iostream>
+#include <algorithm>
 #include <math.h>
 #include <Utils/utils.hh>
 
@@ -93,11 +94,14 @@ template <class T> void findMedianStats(T *array, int size,
 
   for(int i=0;i<size;i++) newarray[i] = array[i];
   sort(newarray,0,size);
+//   int newsize = sizeof(newarray)-1;
+//   stable_sort(newarray,newarray+newsize);
   if((size%2)==0) median = (newarray[size/2-1]+newarray[size/2])/2;
   else median = newarray[size/2];
 
   for(int i=0;i<size;i++) newarray[i] = absval(array[i]-median);
   sort(newarray,0,size);
+//   stable_sort(newarray,newarray+newsize);
   if((size%2)==0) madfm = (newarray[size/2-1]+newarray[size/2])/2;
   else madfm = newarray[size/2];
 
@@ -165,7 +169,10 @@ template <class T> void findNormalStats(T *array, int size,
   mean /= float(size);
 
   stddev = (array[0]-mean) * (array[0]-mean);
-  for(int i=1;i<size;i++) stddev += (array[i]-mean)*(array[i]-mean);
+  for(int i=1;i<size;i++){
+    float sqdiff = (array[i]-mean)*(array[i]-mean);
+    stddev += sqdiff;
+  }
   stddev = sqrt(stddev/float(size-1));
 
 }

@@ -6,10 +6,10 @@
 #include <duchamp.hh>
 #include <Utils/utils.hh>
 
-int pixToWCSSingle(wcsprm *wcs, const double *pix, double *world)
+int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
 {
   /** 
-   *  pixToWCSSingle(wcsprm *wcs, const double *pix, double *world)
+   *  pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
    *   Uses wcs to convert the three-dimensional pixel position referenced 
    *    by pix to world coordinates, which are placed in the array world[].
    *   Assumes that pix only has one point with an x,y,and z pixel positions.
@@ -55,10 +55,10 @@ int pixToWCSSingle(wcsprm *wcs, const double *pix, double *world)
   return flag;
 }
 
-int wcsToPixSingle(wcsprm *wcs, const double *world, double *pix)
+int wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix)
 {
   /** 
-   *  wcsToPixSingle(wcsprm *wcs, const double *world, double *pix)
+   *  wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix)
    *   Uses wcs to convert the three-dimensional world coordinate position 
    *    referenced by world to pixel coordinates, which are placed in the 
    *    array pix[].
@@ -105,10 +105,10 @@ int wcsToPixSingle(wcsprm *wcs, const double *world, double *pix)
   return flag;
 }
 
-int pixToWCSMulti(wcsprm *wcs, const double *pix, double *world, const int npts)
+int pixToWCSMulti(struct wcsprm *wcs, const double *pix, double *world, const int npts)
 {
   /** 
-   *  pixToWCSSingle(wcsprm *wcs, const double *pix, double *world)
+   *  pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
    *   Uses wcs to convert the three-dimensional pixel positions referenced 
    *    by pix to world coordinates, which are placed in the array world[].
    *   pix is assumed to hold the positions of npts points.
@@ -162,10 +162,10 @@ int pixToWCSMulti(wcsprm *wcs, const double *pix, double *world, const int npts)
   return flag;
 }
 
-int wcsToPixMulti(wcsprm *wcs, const double *world, double *pix, const int npts)
+int wcsToPixMulti(struct wcsprm *wcs, const double *world, double *pix, const int npts)
 {
   /** 
-   *  wcsToPixSingle(wcsprm *wcs, const double *world, double *pix)
+   *  wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix)
    *   Uses wcs to convert the three-dimensional world coordinate position 
    *    referenced by world to pixel coordinates, which are placed in the
    *    array pix[].
@@ -221,11 +221,11 @@ int wcsToPixMulti(wcsprm *wcs, const double *world, double *pix, const int npts)
   return flag;
 }
 
-double pixelToVelocity(wcsprm *wcs, double &x, double &y, double &z, 
+double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z, 
 		       string velUnits)
 {
   /** 
-   *  pixelToVelocity(wcsprm *wcs, double &x, double &y, double &z, 
+   *  pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z, 
    *                  string velUnits)
    *   Uses wcs to convert the three-dimensional pixel position (x,y,z)
    *   to world coordinates.
@@ -264,10 +264,10 @@ double pixelToVelocity(wcsprm *wcs, double &x, double &y, double &z,
   return vel;
 }
  
-double coordToVel(wcsprm *wcs, const double coord, string outputUnits)
+double coordToVel(struct wcsprm *wcs, const double coord, string outputUnits)
 {
   /** 
-   *  coordToVel(wcsprm *wcs, const double coord, string outputUnits)
+   *  coordToVel(struct wcsprm *wcs, const double coord, string outputUnits)
    *   Convert the wcs coordinate given by coord to a velocity in km/s.
    *   Does this by checking the ztype parameter in wcs to see if it is 
    *    FREQ or otherwise, and converts accordingly.
@@ -297,10 +297,10 @@ double coordToVel(wcsprm *wcs, const double coord, string outputUnits)
 
 }
 
-double velToCoord(wcsprm *wcs, const float velocity, string outputUnits)
+double velToCoord(struct wcsprm *wcs, const float velocity, string outputUnits)
 {
   /** 
-   *  velToCoord(wcsprm *wcs, const double coord)
+   *  velToCoord(struct wcsprm *wcs, const double coord)
    *   Convert the velocity given to the appropriate world coordinate for wcs.
    *   Does this by checking the ztype parameter in wcs to see if it is 
    *    FREQ or otherwise, and converts accordingly.

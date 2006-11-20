@@ -134,7 +134,7 @@ void Cube::drawMomentCutout(Detection &object)
     if(this->head.isWCS()){
       // Now draw a tick mark to indicate size -- 15 arcmin in length
       //     this->drawScale(xmin+2.,ymin+2.,object.getZcentre(),0.25);
-      this->drawScale(xmin+2.,ymin+2.,object.getZcentre());
+//       this->drawScale(xmin+2.,ymin+2.,object.getZcentre());
     }
 
     cpgsci(ci);
@@ -169,7 +169,7 @@ void Cube::drawScale(float xstart, float ystart, float channel)
       //  degree, arcmin, arcsec symbols
     
       const int numLengths = 15;
-      const float lengths[numLengths] = 
+      const double lengths[numLengths] = 
 	{0.01/3600., 0.05/3600., 0.1/3600., 0.5/3600., 
 	 1./3600., 5./3600., 15./3600., 30./3600.,
 	 1./60., 5./60., 15./60., 30./60.,
@@ -179,7 +179,8 @@ void Cube::drawScale(float xstart, float ystart, float channel)
       // first, work out what is the optimum length of the scale bar,
       //   based on the pixel scale and size of the image.
       float pixscale = this->head.getAvPixScale();
-      float *fraction = new float[numLengths];
+      std::cerr << "Pixscale = " << pixscale << "\n";
+      double *fraction = new double[numLengths];
       int best;
       float x1,x2,y1,y2;
       cpgqwin(&x1,&x2,&y1,&y2);
@@ -195,7 +196,7 @@ void Cube::drawScale(float xstart, float ystart, float channel)
       if(best<4)      angleType = ARCSEC;
       else if(best<8) angleType = ARCMIN;
       else            angleType = DEGREE;
-      float scaleLength = lengths[best];  // this is currently in degrees
+      double scaleLength = lengths[best];  // this is currently in degrees
 
       // Now work out actual pixel locations for the ends of the scale bar
       double *pix1   = new double[3];
@@ -209,7 +210,8 @@ void Cube::drawScale(float xstart, float ystart, float channel)
 
       double angSep=0.;
       bool keepGoing=false;
-      float step = 1.;
+      float error;
+      float step=1.;
       do{
 	if(angSep>scaleLength){
 	  pix2[0] -= step;
@@ -218,7 +220,9 @@ void Cube::drawScale(float xstart, float ystart, float channel)
 	pix2[0] += step;
 	this->head.pixToWCS(pix2,world2);
 	angSep = angularSeparation(world1[0],world1[1],world2[0],world2[1]);
-      }while((fabs(angSep-scaleLength)/scaleLength)>0.01); // look for 1% change
+	error = (angSep-scaleLength)/scaleLength;
+	if(error<0) error = 0 - error;
+      }while(error>0.01); // look for 1% change
 
       float tickpt1 = pix1[0] - this->par.getXOffset();
       float tickpt2 = pix2[0] - this->par.getXOffset();

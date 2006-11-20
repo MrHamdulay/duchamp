@@ -196,10 +196,13 @@ Image::Image(long *dimensions){
 //--------------------------------------------------------------------
 
 Image::~Image(){
-  if(this->numPixels > 0){
-//     delete [] this->pValue;
-//     delete [] this->mask;
-  }
+//   delete [] array;
+//   delete [] axisDim;
+//   objectList.clear();
+//   if(this->numPixels > 0){
+// //     delete [] this->pValue;
+// //     delete [] this->mask;
+//   }
 }
 //--------------------------------------------------------------------
 
@@ -359,6 +362,10 @@ Cube::Cube(long *dimensions){
 
 Cube::~Cube()
 {
+//   delete [] array;
+//   delete [] axisDim;
+//   objectList.clear();
+
   delete [] detectMap;
   if(this->par.getFlagATrous()||this->par.getFlagSmooth())
     delete [] recon;
@@ -610,77 +617,74 @@ void Cube::setCubeStats()
    *   For stats calculations, ignore BLANKs and MW channels.
    */
 
-  std::cout << "Calculating the cube statistics... " << std::flush;
-
-  // get number of good pixels;
-  int goodSize = 0;
-  for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
-    for(int z=0;z<this->axisDim[2];z++){
-      int vox = z * this->axisDim[0] * this->axisDim[1] + p;
-      if(!this->isBlank(vox) && !this->par.isInMW(z)) goodSize++;
-    }
-  }
-  float *tempArray = new float[goodSize];
-
-  goodSize=0;
-  for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
-    for(int z=0;z<this->axisDim[2];z++){
-      int vox = z * this->axisDim[0] * this->axisDim[1] + p;
-      if(!this->isBlank(vox) && !this->par.isInMW(z))
-	tempArray[goodSize++] = this->array[vox];
-    }
-  }
-  if(!this->reconExists){
-    // if there's no recon array, calculate everything from orig array
-    this->Stats.calculate(tempArray,goodSize);
+  if(!this->par.getFlagFDR() && this->par.getFlagUserThreshold() ){
+    // if the user has defined a threshold, set this in the StatsContainer
+    this->Stats.setThreshold( this->par.getThreshold() );
   }
   else{
-    // just get mean & median from orig array, and rms & madfm from recon
-    StatsContainer<float> origStats,reconStats;
-    origStats.calculate(tempArray,goodSize);
+    // only work out the mean etc if we need to.
+    // the only reason we don't is if the user has specified a threshold.
+    
+    std::cout << "Calculating the cube statistics... " << std::flush;
+    
+    // get number of good pixels;
+    int goodSize = 0;
+    for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
+      for(int z=0;z<this->axisDim[2];z++){
+	int vox = z * this->axisDim[0] * this->axisDim[1] + p;
+	if(!this->isBlank(vox) && !this->par.isInMW(z)) goodSize++;
+      }
+    }
+
+    float *tempArray = new float[goodSize];
+
     goodSize=0;
     for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
       for(int z=0;z<this->axisDim[2];z++){
 	int vox = z * this->axisDim[0] * this->axisDim[1] + p;
 	if(!this->isBlank(vox) && !this->par.isInMW(z))
-	  tempArray[goodSize++] = this->array[vox] - this->recon[vox];
+	  tempArray[goodSize++] = this->array[vox];
       }
     }
-    reconStats.calculate(tempArray,goodSize);
-
-    // Get the "middle" estimators from the original array.
-    // Get the "spread" estimators from the residual (orig-recon) array
-    this->Stats.setMean(origStats.getMean());
-    this->Stats.setMedian(origStats.getMedian());
-    this->Stats.setStddev(reconStats.getStddev());
-    this->Stats.setMadfm(reconStats.getMadfm());
-  }
-
-  this->Stats.setUseFDR( this->par.getFlagFDR() );
-  // If the FDR method has been requested
-  if(this->par.getFlagFDR())  this->setupFDR();
-  else{
-    if(this->par.getFlagUserThreshold()){
-      // if the user has defined a threshold, set this in the StatsContainer
-      this->Stats.setThreshold( this->par.getThreshold() );
+    if(!this->reconExists){
+      // if there's no recon array, calculate everything from orig array
+      this->Stats.calculate(tempArray,goodSize);
     }
+    else{
+      // just get mean & median from orig array, and rms & madfm from recon
+      StatsContainer<float> origStats,reconStats;
+      origStats.calculate(tempArray,goodSize);
+      goodSize=0;
+      for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
+	for(int z=0;z<this->axisDim[2];z++){
+	  int vox = z * this->axisDim[0] * this->axisDim[1] + p;
+	  if(!this->isBlank(vox) && !this->par.isInMW(z))
+	    tempArray[goodSize++] = this->array[vox] - this->recon[vox];
+	}
+      }
+      reconStats.calculate(tempArray,goodSize);
+
+      // Get the "middle" estimators from the original array.
+      // Get the "spread" estimators from the residual (orig-recon) array
+      this->Stats.setMean(origStats.getMean());
+      this->Stats.setMedian(origStats.getMedian());
+      this->Stats.setStddev(reconStats.getStddev());
+      this->Stats.setMadfm(reconStats.getMadfm());
+    }
+
+    delete [] tempArray;
+
+    this->Stats.setUseFDR( this->par.getFlagFDR() );
+    // If the FDR method has been requested
+    if(this->par.getFlagFDR())  this->setupFDR();
     else{
       // otherwise, calculate one based on the requested SNR cut level, and 
       //   then set the threshold parameter in the Par set.
       this->Stats.setThresholdSNR( this->par.getCut() );
       this->par.setThreshold( this->Stats.getThreshold() );
     }
-//       std::cout << "Median = " << this->Stats.getMedian()
-// 		<< ", MADFM = " << this->Stats.getMadfm()
-// 		<< ", Robust Threshold = " 
-// 		<< this->Stats.getMedian() + 
-// 	this->par.getCut()*madfmToSigma(this->Stats.getMadfm()) << std::endl;
-//       std::cout << "Mean = " << this->Stats.getMean()
-// 		<< ", Sigma = " << this->Stats.getStddev()
-// 		<< ", Threshold = " 
-// 		<< this->Stats.getMean() + 
-// 	           this->par.getCut()*this->Stats.getStddev() 
-// 		<< std::endl;
+    
+    
   }
   std::cout << "Using ";
   if(this->par.getFlagFDR()) std::cout << "effective ";

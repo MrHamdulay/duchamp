@@ -64,7 +64,7 @@ int Cube::getFITSdata(string fname)
   int anynul;
   int npix = dimAxes[lng]*dimAxes[lat]*dimAxes[spc];
 
-  float *array = new float[npix];   // the array of data values
+  float *pixarray = new float[npix];// the array of pixel values
   char *nullarray = new char[npix]; // the array of null pixels
   long *inc = new long[numAxes];    // the data-sampling increment
 
@@ -82,16 +82,23 @@ int Cube::getFITSdata(string fname)
     
   int colnum = 0;  // want the first dataset in the FITS file
 
+  // prepare the Cube's pixel array -- so that we don't have to use saveArray;
+//   if(this->numPixels>0) delete [] array;
+//   this->array = new float[npix];
+//   this->numPixels = npix;
   // read the relevant subset, defined by the first & last pixel ranges
   status = 0;
   if(fits_read_subsetnull_flt(fptr, colnum, numAxes, dimAxes,
 			      fpixel, lpixel, inc, 
-			      array, nullarray, &anynul, &status)){
+// 			      this->array, nullarray, &anynul, &status)){
+			      pixarray, nullarray, &anynul, &status)){
     duchampError("getFITSdata",
 		 "There was an error reading in the data array:");
     fits_report_error(stderr, status);
     return FAILURE;
   }
+
+  delete [] fpixel,lpixel,inc;
 
   if(anynul==0){    
     // no blank pixels, so don't bother with any trimming or checking...
@@ -104,7 +111,9 @@ int Cube::getFITSdata(string fname)
   }
 
   this->initialiseCube(dimAxes);
-  this->saveArray(array,npix);
+  this->saveArray(pixarray,npix);
+  delete [] pixarray,dimAxes;
+//   delete [] dimAxes;
   this->par.setOffsets(this->head.getWCS());
   //-------------------------------------------------------------
   // Once the array is saved, change the value of the blank pixels from
@@ -115,6 +124,8 @@ int Cube::getFITSdata(string fname)
 //     if(isnan(array[i])) this->array[i] = par.getBlankPixVal();
     if(nullarray[i]==1) this->array[i] = this->par.getBlankPixVal();  
   }
+
+  delete [] nullarray;
 
   return SUCCESS;
 

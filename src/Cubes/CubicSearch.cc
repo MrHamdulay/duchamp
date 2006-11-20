@@ -79,15 +79,6 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 
       if(doPixel[npix]){
 
-	float *spec = new float[zdim];
-// 	float specMedian,specSigma;
-// 	goodSize=0;
-// 	for(int z=0;z<zdim;z++) 
-// 	  if(isGood[z*xySize+npix]) spec[goodSize++] = Array[z*xySize+npix];
-// 	findMedianStats(spec,goodSize,specMedian,specSigma);
-// 	specSigma /= correctionFactor;
-
-
 	long *specdim = new long[2];
 	specdim[0] = zdim; specdim[1]=1;
 	Image *spectrum = new Image(specdim);
@@ -98,8 +89,6 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 	// beam size: for spectrum, only neighbouring channels correlated
 	spectrum->extractSpectrum(Array,dim,npix);
 	spectrum->removeMW(); // only works if flagMW is true
-// 	spectrum->setStats(specMedian,specSigma,par.getCut());
-// 	if(par.getFlagFDR()) spectrum->setupFDR();
 	spectrum->setMinSize(par.getMinChannels());
 	spectrum->spectrumDetect(); 
 	num += spectrum->getNumObj();
@@ -143,16 +132,6 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 
     if(!par.isInMW(z)){
 
-      float *image = new float[xySize];
-//       float imageMedian, imageSigma;
-//       goodSize=0;
-//       for(int npix=0; npix<xySize; npix++) {
-// 	if(isGood[z*xySize + npix]) 
-// 	  image[goodSize++] = Array[z*xySize + npix];
-//       }
-//       findMedianStats(image,goodSize,imageMedian,imageSigma);
-//       imageSigma /= correctionFactor;
-
       long *imdim = new long[2];
       imdim[0] = dim[0]; imdim[1] = dim[1];
       Image *channelImage = new Image(imdim);
@@ -160,8 +139,6 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
       channelImage->saveParam(par);
       channelImage->saveStats(stats);
       channelImage->extractImage(Array,dim,z);
-//       channelImage->setStats(imageMedian,imageSigma,par.getCut());
-//       if(par.getFlagFDR()) channelImage->setupFDR();
       channelImage->setMinSize(par.getMinPix());
       channelImage->lutz_detect();
       num += channelImage->getNumObj();

@@ -9,7 +9,7 @@
 #include <param.hh>
 #include <duchamp.hh>
 
-void Param::setOffsets(wcsprm *wcs)
+void Param::setOffsets(struct wcsprm *wcs)
 {
   if(this->flagSubsection){ // if so, then the offsets array is defined.
     this->xSubOffset = this->offsets[wcs->lng];
@@ -101,6 +101,7 @@ int Param::verifySubsection()
   // If we get to here, should have correct number of entries.
 
   this->offsets = new long[numAxes];
+  this->sizeOffsets = numAxes;
 
   vector<string> sections(numSections); // this will hold the individual 
                                         //   section strings

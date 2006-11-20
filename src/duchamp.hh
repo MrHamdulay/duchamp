@@ -71,8 +71,18 @@ public:
     }
     loc=END;
   };
-  void rewind(){if(loc==END) printBackSpace(length+2); loc=BEG;};
-  void remove(){rewind();printSpace(length+2);loc=END; rewind();};
+  void rewind(){
+    if(loc==END) printBackSpace(length+2); 
+    loc=BEG;
+    std::cout << std::flush;
+  };
+  void remove(){
+    rewind();
+    printSpace(length+2);
+    loc=END; 
+    rewind(); 
+    std::cout << std::flush;
+  };
   void fillSpace(std::string someString){
     rewind();
     std::cout << someString;

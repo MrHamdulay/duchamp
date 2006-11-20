@@ -101,7 +101,9 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   string fluxLabel = "Flux";
 
   if(this->par.getSpectralMethod()=="sum"){
-    if(this->head.isWCS()) fluxLabel += " [Jy]";
+    fluxLabel = "Integrated " + fluxLabel;
+    if(this->head.isWCS()) 
+      fluxLabel += " ["+this->head.getIntFluxUnits()+"]";
     bool *done = new bool[xdim*ydim]; 
     for(int i=0;i<xdim*ydim;i++) done[i]=false;
     int thisSize = obj.getSize();
@@ -122,11 +124,12 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
     delete [] done;
   }
   else {// if(par.getSpectralMethod()=="peak"){
-    if(this->head.isWCS()) fluxLabel += " [Jy/beam]";
+    if(this->head.isWCS()) 
+      fluxLabel += " [" + this->head.getFluxUnits() + "]";
     for(int z=0;z<zdim;z++){
       int pos = obj.getXPeak() + xdim*obj.getYPeak();
       specy[z] = this->array[pos + z*xdim*ydim];
-//       if(this->par.getFlagATrous()) specy2[z] = this->recon[pos + z*xdim*ydim];
+//if(this->par.getFlagATrous()) specy2[z] = this->recon[pos + z*xdim*ydim];
       if(this->reconExists) specy2[z] = this->recon[pos + z*xdim*ydim];
     }
   }

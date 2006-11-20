@@ -90,16 +90,16 @@ double dmsToDec(string dms);
 double angularSeparation(double &ra1, double &dec1, double &ra2, double &dec2);
 
 // WCS-RELATED ROUTINES
-int wcsToPixSingle(wcsprm *wcs, const double *world, double *pix);
-int pixToWCSSingle(wcsprm *wcs, const double *pix, double *world);
-int wcsToPixMulti(wcsprm *wcs, const double *world, 
+int wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix);
+int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world);
+int wcsToPixMulti(struct wcsprm *wcs, const double *world, 
 		  double *pix, const int npts);
-int pixToWCSMulti(wcsprm *wcs, const double *pix, 
+int pixToWCSMulti(struct wcsprm *wcs, const double *pix, 
 		  double *world, const int npts);
-double pixelToVelocity(wcsprm *wcs, double &x, double &y, 
+double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, 
 		       double &z, string velUnits);
-double coordToVel(wcsprm *wcs, const double coord, string outputUnits);
-double velToCoord(wcsprm *wcs, const float velocity, string outputUnits);
+double coordToVel(struct wcsprm *wcs, const double coord, string outputUnits);
+double velToCoord(struct wcsprm *wcs, const float velocity, string outputUnits);
 
 // FILTER SMOOTHING ROUTINES
 void waveletSmooth(int dim,float *array, int arraySize, float sigma);

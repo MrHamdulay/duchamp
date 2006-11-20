@@ -53,28 +53,32 @@ void Cube::plotDetectionMap(string pgDestination)
 		       boxYmin+0.5,boxYmin+ydim+0.5,
 		       "X pixel","Y pixel");
 
-    if(this->objectList.size()>0){ 
+//     if(this->objectList.size()>0){ 
       // if there are no detections, there will be nothing to plot here
 
       float *detectMap = new float[xdim*ydim];
-      int maxNum;
-      for(int pix=0;pix<xdim*ydim;pix++){
+      int maxNum = this->detectMap[0];
+      detectMap[0] = float(maxNum);
+      for(int pix=1;pix<xdim*ydim;pix++){
 	detectMap[pix] = float(this->detectMap[pix]);  
-	if((pix==0)||(this->detectMap[pix]>maxNum)) {
-	  maxNum = this->detectMap[pix];
-	}
+	if(this->detectMap[pix] > maxNum)  maxNum = this->detectMap[pix];
       }
 
-      maxNum = 5 * ((maxNum-1)%5 + 1);  // move to next multiple of 5
+      if(maxNum>0){ // if there are no detections, it will be 0.
+	std::cerr << "maxNum="<<maxNum<<" ";
+
+      maxNum = 5 * ((maxNum-1)/5 + 1);  // move to next multiple of 5
+	std::cerr << "maxNum="<<maxNum<<" ";
 
       float tr[6] = {boxXmin,1.,0.,boxYmin,0.,1.};
       cpggray(detectMap,xdim,ydim,1,xdim,1,ydim,maxNum,0,tr);  
 
-      delete [] detectMap;
+//       delete [] detectMap;
       cpgbox("bcnst",0.,0,"bcnst",0.,0);
       cpgsch(1.5);
       cpgwedg("rg",3.2,2,maxNum,0,"Number of detected channels");
     }
+      delete [] detectMap;
 
     this->plotBlankEdges();
 
@@ -559,7 +563,7 @@ void Cube::plotWCSaxes()
 
   char idents[3][80], opt[2], nlcprm[1];
 
-  wcsprm *tempwcs;
+  struct wcsprm *tempwcs;
   tempwcs = this->head.getWCS();
 
   strcpy(idents[0], tempwcs->lngtyp);

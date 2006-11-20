@@ -50,29 +50,29 @@ public:
   long                getSize(){return numPixels;};
   short int           getNumDim(){return numDim;};
   // Related to the various arrays
-  void                   getDimArray(long *output);
-  void                   getArray(float *output);
-  virtual void           saveArray(float *input, long size);
-  float                  getPixValue(long pos){return array[pos];};
-  void                   setPixValue(long pos, float f){array[pos] = f;};
+  void                getDimArray(long *output);
+  void                getArray(float *output);
+  virtual void        saveArray(float *input, long size);
+  float               getPixValue(long pos){return array[pos];};
+  void                setPixValue(long pos, float f){array[pos] = f;};
   // Related to the object lists
-  Detection              getObject(long number){return objectList[number];};
-  void                   addObject(Detection object);   
+  Detection           getObject(long number){return objectList[number];};
+  void                addObject(Detection object);   
                   // adds a single detection to the object list
-  vector <Detection>     getObjectList(){return objectList;};
-  void                   addObjectList(vector <Detection> newlist);  
+  vector <Detection>  getObjectList(){return objectList;};
+  void                addObjectList(vector <Detection> newlist);  
                   // adds all objects in a detection list to the object list
-  void                   addObjectOffsets();
-  long                   getNumObj(){return objectList.size();};
-  void                   clearDetectionList(){this->objectList.clear();};
+  void                addObjectOffsets();
+  long                getNumObj(){return objectList.size();};
+  void                clearDetectionList(){this->objectList.clear();};
   // Parameter list related.
-  int                    readParam(string paramfile){
+  int                 readParam(string paramfile){
     return par.readParams(paramfile);};
-  void                   showParam(std::ostream &stream){stream << par;};
-  Param                  getParam(){return par;};
-  void                   saveParam(Param newpar){par = newpar;};
-  Param&                 pars(){Param &rpar = par; return rpar;};
-  bool                   isBlank(int vox){return par.isBlank(array[vox]);};
+  void                showParam(std::ostream &stream){stream << par;};
+  Param               getParam(){return par;};
+  void                saveParam(Param newpar){par = newpar;};
+  Param&              pars(){Param &rpar = par; return rpar;};
+  bool                isBlank(int vox){return par.isBlank(array[vox]);};
   // Statistics
   StatsContainer<float> getStats(){return Stats;};
   StatsContainer<float>& stats(){
