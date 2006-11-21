@@ -761,6 +761,9 @@ void Cube::setCubeStats()
 	    tempArray[goodSize++] = this->array[vox] - this->recon[vox];
 	}
       }
+      mean = tempArray[0];
+      for(int i=1;i<goodSize;i++) mean += tempArray[i];
+      mean /= float(goodSize);
       stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
       for(int i=1;i<goodSize;i++) 
 	stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
