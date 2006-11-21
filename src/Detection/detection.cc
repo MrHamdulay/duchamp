@@ -147,7 +147,7 @@ void Detection::calcWCSparams(FitsHeader &head)
     this->dec  = world[1];
     this->raS  = decToDMS(this->ra, this->lngtype);
     this->decS = decToDMS(this->dec,this->lattype);
-    this->raWidth   = angularSeparation(world[9],world[1],world[12],world[1]) * 60.;
+    this->raWidth = angularSeparation(world[9],world[1],world[12],world[1])*60.;
     this->decWidth  = angularSeparation(world[0],world[10],world[0],world[13]) * 60.;
     this->name = head.getIAUName(this->ra, this->dec);
     this->vel    = head.specToVel(world[2]);
@@ -385,21 +385,20 @@ std::ostream& operator<< ( std::ostream& theStream, Detection& obj)
 Detection combineObjects(Detection &first, Detection &second)
 {
   // make the new object
-  int *ctr = new int;
   Detection *newObject = new Detection;
-  for(*ctr=0;(*ctr)<first.getSize();(*ctr)++){
-    newObject->addPixel(first.getPixel(*ctr));
+  for(int ctr=0;ctr<first.getSize();ctr++){
+    newObject->addPixel(first.getPixel(ctr));
   }
-  for(*ctr=0;(*ctr)<second.getSize();(*ctr)++){
-    newObject->addPixel(second.getPixel(*ctr));
+  for(int ctr=0;ctr<second.getSize();ctr++){
+    newObject->addPixel(second.getPixel(ctr));
   }
-  delete ctr;
   newObject->calcParams();
   return *newObject;
 }
 //--------------------------------------------------------------------
 
-vector <Detection> combineLists(vector <Detection> &first, vector <Detection> &second)
+vector <Detection> combineLists(vector <Detection> &first, 
+				vector <Detection> &second)
 {
   // make the new object
   vector <Detection> newList(first.size()+second.size());

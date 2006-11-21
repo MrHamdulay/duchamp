@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <stdlib.h>
 #include <math.h>
 #include <wcs.h>
 #include <wcsunits.h>
@@ -39,7 +40,7 @@ using std::endl;
 
 FitsHeader::FitsHeader()
 {
-  this->wcs = (struct wcsprm *)malloc(sizeof(struct wcsprm));
+  this->wcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
   this->wcs->flag=-1;
   wcsini(true, 3, this->wcs); 
   this->wcsIsGood = false;
@@ -52,7 +53,7 @@ FitsHeader::FitsHeader()
 
 FitsHeader::FitsHeader(const FitsHeader& h)
 {
-  this->wcs = (struct wcsprm *)malloc(sizeof(struct wcsprm));
+  this->wcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
   this->wcs->flag=-1;
   wcsini(true, h.wcs->naxis, this->wcs); 
   wcscopy(true, h.wcs, this->wcs); 
@@ -75,7 +76,7 @@ FitsHeader::FitsHeader(const FitsHeader& h)
 
 FitsHeader& FitsHeader::operator= (const FitsHeader& h)
 {
-  this->wcs = (struct wcsprm *)malloc(sizeof(struct wcsprm));
+  this->wcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
   this->wcs->flag=-1;
   wcsini(true, h.wcs->naxis, this->wcs); 
   wcscopy(true, h.wcs, this->wcs); 
@@ -117,7 +118,7 @@ struct wcsprm *FitsHeader::getWCS()
    * FitsHeader::getWCS()
    *  A function that returns a wcsprm object corresponding to the WCS.
    */
-  struct wcsprm *wNew = (struct wcsprm *)malloc(sizeof(struct wcsprm));
+  struct wcsprm *wNew = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
   wNew->flag=-1;
   wcsini(true, this->wcs->naxis, wNew); 
   wcscopy(true, this->wcs, wNew); 
@@ -202,16 +203,16 @@ void FitsHeader::fixUnits(Param &par)
   double of=0.;
   double po=1.;;
   if(this->wcsIsGood){
-    int flag = wcsunits( this->wcs->cunit[this->wcs->spec], 
+    int status = wcsunits( this->wcs->cunit[this->wcs->spec], 
 			 this->spectralUnits.c_str(), 
 			 &sc, &of, &po);
-    if(flag>0){
+    if(status > 0){
       std::stringstream errmsg;
-      errmsg << "WCSUNITS Error, Code = " << flag 
-	     << ": "<< wcsunits_errmsg[flag];
-      if(flag==10) errmsg << "\nTried to get conversion from '" 
-			  << this->wcs->cunit[this->wcs->spec] << "' to '" 
-			  << this->spectralUnits.c_str() << "'\n";
+      errmsg << "WCSUNITS Error, Code = " << status
+	     << ": " << wcsunits_errmsg[status];
+      if(status == 10) errmsg << "\nTried to get conversion from '" 
+			      << this->wcs->cunit[this->wcs->spec] << "' to '" 
+			      << this->spectralUnits.c_str() << "'\n";
       this->spectralUnits = this->wcs->cunit[this->wcs->spec];
       if(this->spectralUnits==""){
 	errmsg << 
@@ -382,7 +383,7 @@ Param::Param (const Param& p)
   this->alphaFDR          = p.alphaFDR;
   this->snrCut            = p.snrCut;
   this->threshold         = p.threshold;
-  this->flagUserThreshold = p.threshold;
+  this->flagUserThreshold = p.flagUserThreshold;
   this->flagSmooth        = p.flagSmooth;
   this->hanningWidth      = p.hanningWidth;
   this->flagATrous        = p.flagATrous;
@@ -451,7 +452,7 @@ Param& Param::operator= (const Param& p)
   this->alphaFDR          = p.alphaFDR;
   this->snrCut            = p.snrCut;
   this->threshold         = p.threshold;
-  this->flagUserThreshold = p.threshold;
+  this->flagUserThreshold = p.flagUserThreshold;
   this->flagSmooth        = p.flagSmooth;
   this->hanningWidth      = p.hanningWidth;
   this->flagATrous        = p.flagATrous;

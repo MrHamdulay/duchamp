@@ -249,7 +249,9 @@ void findTrimmedHistStatsOLD(float *array, const int size,
   }
 
   findNormalStats(newarray,newsize,tmean,tsigma);
-  delete [] num,keep,newarray;
+  delete [] num;
+  delete [] keep;
+  delete [] newarray;
 
 }
 //--------------------------------------------------------------------

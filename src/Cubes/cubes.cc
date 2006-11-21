@@ -14,7 +14,6 @@
 #include <Utils/utils.hh>
 #include <Utils/mycpgplot.hh>
 #include <Utils/Statistics.hh>
-using std::endl;
 using namespace Column;
 using namespace mycpgplot;
 using namespace Statistics;
@@ -53,9 +52,7 @@ DataArray::DataArray(short int nDim, long *dimensions){
 		   "Negative size: could not define DataArray");
     else{
       this->numPixels = size;
-      if(size>0){
-	this->array = new float[size];
-      }
+      if(size>0) this->array = new float[size];
       this->numDim=nDim;
       if(nDim>0) this->axisDim = new long[nDim];
       for(int i=0;i<nDim;i++) this->axisDim[i] = dimensions[i];
@@ -66,9 +63,9 @@ DataArray::DataArray(short int nDim, long *dimensions){
 
 DataArray::~DataArray()
 {
-  delete [] array;
-  delete [] axisDim;
-  objectList.clear();
+  delete [] this->array;
+  delete [] this->axisDim;
+  this->objectList.clear();
 }
 //--------------------------------------------------------------------
 
@@ -137,10 +134,10 @@ std::ostream& operator<< ( std::ostream& theStream, DataArray &array)
     if(i>0) theStream<<"x";
     theStream<<array.axisDim[i];
   }
-  theStream<<endl;
-  theStream<<array.objectList.size()<<" detections:"<<endl<<"--------------\n";
+  theStream<<std::endl;
+  theStream<<array.objectList.size()<<" detections:\n--------------\n";
   for(int i=0;i<array.objectList.size();i++){
-    theStream << "Detection #" << array.objectList[i].getID()<<endl;
+    theStream << "Detection #" << array.objectList[i].getID()<<std::endl;
     Detection *obj = new Detection;
     *obj = array.objectList[i];
     for(int j=0;j<obj->getSize();j++){
@@ -164,11 +161,7 @@ Image::Image(long size){
   if(size<0)
     duchampError("Image(size)","Negative size -- could not define Image");
   else{
-    if(size>0){
-      this->array = new float[size];
-//       this->pValue = new float[size];
-//       this->mask = new short int[size];
-    }
+    if(size>0) this->array = new float[size];
     this->numPixels = size;
     this->axisDim = new long[2];
     this->numDim = 2;
@@ -182,28 +175,13 @@ Image::Image(long *dimensions){
     duchampError("Image(dimArray)","Negative size -- could not define Image");
   else{
     this->numPixels = size;
-    if(size>0){
-      this->array = new float[size];
-//       this->pValue = new float[size];
-//       this->mask = new short int[size];
-    }
+    if(size>0) this->array = new float[size];
     this->numDim=2;
     this->axisDim = new long[2];
     for(int i=0;i<2;i++) this->axisDim[i] = dimensions[i];
-//     for(int i=0;i<size;i++) this->mask[i] = 0;
   }
 }
 //--------------------------------------------------------------------
-
-Image::~Image(){
-//   delete [] array;
-//   delete [] axisDim;
-//   objectList.clear();
-//   if(this->numPixels > 0){
-// //     delete [] this->pValue;
-// //     delete [] this->mask;
-//   }
-}
 //--------------------------------------------------------------------
 
 void Image::saveArray(float *input, long size){
@@ -211,19 +189,10 @@ void Image::saveArray(float *input, long size){
     duchampError("Image::saveArray",
 		 "Input array different size to existing array. Cannot save.");
   else {
-    if(this->numPixels>0){
-      delete [] array;
-//       delete [] pValue;
-//       delete [] mask;
-    }
+    if(this->numPixels>0) delete [] array;
     this->numPixels = size;
-    if(this->numPixels>0){
-      this->array = new float[size];
-//       this->pValue = new float[size];
-//       this->mask = new short int[size];
-    }
+    if(this->numPixels>0) this->array = new float[size];
     for(int i=0;i<size;i++) this->array[i] = input[i];
-//     for(int i=0;i<size;i++) this->mask[i] = 0;
   }
 }
 //--------------------------------------------------------------------
@@ -321,12 +290,15 @@ void Image::removeMW()
 
 Cube::Cube(long size){
   // need error handling in case size<0 !!!
+  this->reconAllocated = false;
+  this->baselineAllocated = false;
   if(size<0)
     duchampError("Cube(size)","Negative size -- could not define Cube");
   else{
     if(size>0){
       this->array = new float[size];
       this->recon = new float[size];
+      this->reconAllocated = true;
     }
     this->numPixels = size;
     this->axisDim = new long[2];
@@ -339,6 +311,8 @@ Cube::Cube(long size){
 Cube::Cube(long *dimensions){
   int size   = dimensions[0] * dimensions[1] * dimensions[2];
   int imsize = dimensions[0] * dimensions[1];
+  this->reconAllocated = false;
+  this->baselineAllocated = false;
   if((size<0) || (imsize<0) )
     duchampError("Cube(dimArray)","Negative size -- could not define Cube");
   else{
@@ -346,10 +320,14 @@ Cube::Cube(long *dimensions){
     if(size>0){
       this->array      = new float[size];
       this->detectMap  = new short[imsize];
-      if(this->par.getFlagATrous()||this->par.getFlagSmooth())
+      if(this->par.getFlagATrous()||this->par.getFlagSmooth()){
 	this->recon    = new float[size];
-      if(this->par.getFlagBaseline())
+	this->reconAllocated = true;
+      }
+      if(this->par.getFlagBaseline()){
 	this->baseline = new float[size];
+	this->baselineAllocated = true;
+      }
     }
     this->numDim  = 3;
     this->axisDim = new long[3];
@@ -366,11 +344,9 @@ Cube::~Cube()
 //   delete [] axisDim;
 //   objectList.clear();
 
-  delete [] detectMap;
-  if(this->par.getFlagATrous()||this->par.getFlagSmooth())
-    delete [] recon;
-  if(this->par.getFlagBaseline())
-    delete [] baseline;
+  delete [] this->detectMap;
+  if(this->reconAllocated)    delete [] this->recon;
+  if(this->baselineAllocated) delete [] this->baseline;
 }
 //--------------------------------------------------------------------
 
@@ -402,6 +378,8 @@ void Cube::initialiseCube(long *dimensions)
   size   = dimensions[lng] * dimensions[lat] * dimensions[spc];
   imsize = dimensions[lng] * dimensions[lat];
 
+  this->reconAllocated = false;
+  this->baselineAllocated = false;
 
   if((size<0) || (imsize<0) )
     duchampError("Cube::initialiseCube(dimArray)",
@@ -411,10 +389,14 @@ void Cube::initialiseCube(long *dimensions)
     if(size>0){
       this->array      = new float[size];
       this->detectMap  = new short[imsize];
-      if(this->par.getFlagATrous() || this->par.getFlagSmooth())
+      if(this->par.getFlagATrous() || this->par.getFlagSmooth()){
 	this->recon    = new float[size];
-      if(this->par.getFlagBaseline())
+	this->reconAllocated = true;
+      }
+      if(this->par.getFlagBaseline()){
 	this->baseline = new float[size];
+	this->baselineAllocated = true;
+      }
     }
     this->numDim  = 3;
     this->axisDim = new long[3];
@@ -503,19 +485,21 @@ void Cube::saveRecon(float *input, long size){
     duchampError("Cube::saveRecon",errmsg.str());
   }
   else {
-    if(this->numPixels>0) delete [] this->recon;
-    this->numPixels = size;
-    this->recon = new float[size];
-    for(int i=0;i<size;i++) this->recon[i] = input[i];
-    this->reconExists = true;
+    if(this->numPixels>0){
+      if(this->reconAllocated) delete [] this->recon;
+      this->numPixels = size;
+      this->recon = new float[size];
+      this->reconAllocated = true;
+      for(int i=0;i<size;i++) this->recon[i] = input[i];
+      this->reconExists = true;
+    }
   }
 }
 //--------------------------------------------------------------------
 
 void Cube::getRecon(float *output){
   // Need check for change in number of pixels!
-  long size = this->numPixels;
-  for(int i=0;i<size;i++){
+  for(int i=0;i<this->numPixels;i++){
     if(this->reconExists) output[i] = this->recon[i];
     else output[i] = 0.;
   }
@@ -604,10 +588,10 @@ void Cube::updateDetectMap(Detection obj)
 }
 //--------------------------------------------------------------------
 
-void Cube::setCubeStats()
+void Cube::setCubeStatsOld()
 {
   /**
-   *  Cube::setCubeStats()
+   *  Cube::setCubeStatsOld()
    *   Calculates the full statistics for the cube:
    *     mean, rms, median, madfm
    *   Only do this if the threshold has not been defined (ie. is still 0.,
@@ -674,6 +658,129 @@ void Cube::setCubeStats()
 
     delete [] tempArray;
 
+    this->Stats.setUseFDR( this->par.getFlagFDR() );
+    // If the FDR method has been requested
+    if(this->par.getFlagFDR())  this->setupFDR();
+    else{
+      // otherwise, calculate one based on the requested SNR cut level, and 
+      //   then set the threshold parameter in the Par set.
+      this->Stats.setThresholdSNR( this->par.getCut() );
+      this->par.setThreshold( this->Stats.getThreshold() );
+    }
+    
+    
+  }
+  std::cout << "Using ";
+  if(this->par.getFlagFDR()) std::cout << "effective ";
+  std::cout << "flux threshold of: ";
+  float thresh = this->Stats.getThreshold();
+  if(this->par.getFlagNegative()) thresh *= -1.;
+  std::cout << thresh << std::endl;
+
+}
+//--------------------------------------------------------------------
+
+void Cube::setCubeStats()
+{
+  /**
+   *  Cube::setCubeStats()
+   *   Calculates the full statistics for the cube:
+   *     mean, rms, median, madfm
+   *   Only do this if the threshold has not been defined (ie. is still 0.,
+   *    its default). 
+   *   Also work out the threshold and store it in the par set.
+   *   
+   *   Different from setCubeStatsOld as it doesn't use the getStats functions
+   *    but has own versions of them hardcoded to ignore BLANKs and 
+   *    MW channels.
+   */
+
+  if(!this->par.getFlagFDR() && this->par.getFlagUserThreshold() ){
+    // if the user has defined a threshold, set this in the StatsContainer
+    this->Stats.setThreshold( this->par.getThreshold() );
+  }
+  else{
+    // only work out the mean etc if we need to.
+    // the only reason we don't is if the user has specified a threshold.
+    
+    std::cout << "Calculating the cube statistics... " << std::flush;
+    
+    // get number of good pixels;
+    int goodSize = 0;
+    for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
+      for(int z=0;z<this->axisDim[2];z++){
+	int vox = z * this->axisDim[0] * this->axisDim[1] + p;
+	if(!this->isBlank(vox) && !this->par.isInMW(z)) goodSize++;
+      }
+    }
+
+    float *tempArray = new float[goodSize];
+
+    goodSize=0;
+    for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
+      for(int z=0;z<this->axisDim[2];z++){
+	int vox = z * this->axisDim[0] * this->axisDim[1] + p;
+	if(!this->isBlank(vox) && !this->par.isInMW(z))
+	  tempArray[goodSize++] = this->array[vox];
+      }
+    }
+    float mean,median,stddev,madfm;
+    mean = tempArray[0];
+    for(int i=1;i<goodSize;i++) mean += tempArray[i];
+    mean /= float(goodSize);
+    this->Stats.setMean(mean);
+    sort(tempArray,0,goodSize);
+    if((goodSize%2)==0) 
+      median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
+    else median = tempArray[goodSize/2];
+    this->Stats.setMedian(median);
+    
+    if(!this->reconExists){
+      // if there's no recon array, calculate everything from orig array
+      goodSize = 0;
+      for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
+	for(int z=0;z<this->axisDim[2];z++){
+	  int vox = z * this->axisDim[0] * this->axisDim[1] + p;
+	  if(!this->isBlank(vox) && !this->par.isInMW(z))
+	    tempArray[goodSize++] = this->array[vox];
+	}
+      }
+      stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
+      for(int i=1;i<goodSize;i++) 
+	stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
+      stddev = sqrt(stddev/float(goodSize-1));
+      this->Stats.setStddev(stddev);
+      for(int i=0;i<goodSize;i++) tempArray[i] = absval(array[i]-median);
+      sort(tempArray,0,goodSize);
+      if((goodSize%2)==0) 
+	madfm = (tempArray[goodSize/2-1]+tempArray[goodSize/2])/2;
+      else madfm = tempArray[goodSize/2];
+      this->Stats.setMadfm(madfm);
+    }
+    else{
+      // just get mean & median from orig array, and rms & madfm from recon
+      goodSize = 0;
+      for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
+	for(int z=0;z<this->axisDim[2];z++){
+	  int vox = z * this->axisDim[0] * this->axisDim[1] + p;
+	  if(!this->isBlank(vox) && !this->par.isInMW(z))
+	    tempArray[goodSize++] = this->array[vox] - this->recon[vox];
+	}
+      }
+      stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
+      for(int i=1;i<goodSize;i++) 
+	stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
+      stddev = sqrt(stddev/float(goodSize-1));
+      this->Stats.setStddev(stddev);
+      for(int i=0;i<goodSize;i++) tempArray[i] = absval(array[i]-median);
+      sort(tempArray,0,goodSize);
+      if((goodSize%2)==0) 
+	madfm = (tempArray[goodSize/2-1]+tempArray[goodSize/2])/2;
+      else madfm = tempArray[goodSize/2];
+      this->Stats.setMadfm(madfm);
+    }
+
+    delete [] tempArray;
     this->Stats.setUseFDR( this->par.getFlagFDR() );
     // If the FDR method has been requested
     if(this->par.getFlagFDR())  this->setupFDR();

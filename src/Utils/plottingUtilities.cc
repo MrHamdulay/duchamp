@@ -100,7 +100,8 @@ void lineOfBestFitPB(const int size, const float *x, const float *y)
     slope += a;
     intercept += b;
   }
-  delete [] xboot,yboot;
+  delete [] xboot;
+  delete [] yboot;
   slope /= float(numSim);
   intercept /= float(numSim);
   

@@ -50,5 +50,6 @@ void Image::spectrumDetect()
   }
 
   // clean up and remove declared memory
-  delete obj,pix;
+  delete obj;
+  delete pix;
 }

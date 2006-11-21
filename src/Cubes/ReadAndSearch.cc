@@ -145,7 +145,8 @@ vector<Detection> readAndSearch(Param &par)
 	for(int i=0;i<dimAxes[2];i++) resid[i] = array[i] - recon[i];
 	sigma  = findMADFM(recon,dimAxes[2])/correctionFactor;
 	spectrum->saveArray(recon,dimAxes[2]);
-	delete [] recon, resid; 
+	delete [] recon;
+	delete [] resid; 
 	spectrum->removeMW(); // only works if flagMW is true
 	spectrum->setStats(median,sigma,par.getCut());
 	if(par.getFlagFDR()) spectrum->setupFDR();
@@ -188,7 +189,13 @@ vector<Detection> readAndSearch(Param &par)
   }   // end of loop over x
 
   delete spectrum;
-  delete [] bigarray, array, fpixel, lpixel, inc, dimAxes, specdim;
+  delete [] bigarray;
+  delete [] array;
+  delete [] fpixel;
+  delete [] lpixel;
+  delete [] inc;
+  delete [] dimAxes;
+  delete [] specdim;
 
   return outputList;
 

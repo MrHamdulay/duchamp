@@ -98,7 +98,9 @@ int Cube::getFITSdata(string fname)
     return FAILURE;
   }
 
-  delete [] fpixel,lpixel,inc;
+  delete [] fpixel;
+  delete [] lpixel;
+  delete [] inc;
 
   if(anynul==0){    
     // no blank pixels, so don't bother with any trimming or checking...
@@ -112,8 +114,8 @@ int Cube::getFITSdata(string fname)
 
   this->initialiseCube(dimAxes);
   this->saveArray(pixarray,npix);
-  delete [] pixarray,dimAxes;
-//   delete [] dimAxes;
+  delete [] pixarray;
+  delete [] dimAxes;
   this->par.setOffsets(this->head.getWCS());
   //-------------------------------------------------------------
   // Once the array is saved, change the value of the blank pixels from
@@ -126,6 +128,13 @@ int Cube::getFITSdata(string fname)
   }
 
   delete [] nullarray;
+  // Close the FITS file -- not needed any more in this function.
+  status = 0;
+  fits_close_file(fptr, &status);
+  if (status){
+    duchampWarning("defineWCS","Error closing file: ");
+    fits_report_error(stderr, status);
+  }
 
   return SUCCESS;
 

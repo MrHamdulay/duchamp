@@ -26,6 +26,7 @@ template <class T1, class T2> void sort(T1 *arr, T2 *matchingArray,
 					int begin, int end);
 
 // STATISTICS-RELATED ROUTINES
+template <class T> T absval(T value);
 template <class T> void findMinMax(const T *array, const int size, 
 				   T &min, T &max);
 template <class T> float findMean(T *array, int size);

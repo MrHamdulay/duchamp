@@ -58,10 +58,10 @@ public:
   // Related to the object lists
   Detection           getObject(long number){return objectList[number];};
   void                addObject(Detection object);   
-                  // adds a single detection to the object list
+                      // adds a single detection to the object list
   vector <Detection>  getObjectList(){return objectList;};
   void                addObjectList(vector <Detection> newlist);  
-                  // adds all objects in a detection list to the object list
+                     // adds all objects in a detection list to the object list
   void                addObjectOffsets();
   long                getNumObj(){return objectList.size();};
   void                clearDetectionList(){this->objectList.clear();};
@@ -87,11 +87,6 @@ public:
     if(par.isBlank(value)) return false;
     else return Stats.isDetection(value);
   };  
-// bool isDetection(long voxel)
-// {
-//   if(isBlank(voxel)) return false;
-//   else return Stats.isDetection(this->array[voxel]);
-// }
 
   friend std::ostream& operator<< ( std::ostream& theStream, DataArray &array);
 
@@ -121,12 +116,10 @@ class Cube;
 class Image : public DataArray
 {
 public:
-  Image(){
-    numPixels=0;
-    numDim=2;};
+  Image(){numPixels=0; numDim=2;};
   Image(long nPix);
   Image(long *dimensions);
-  virtual ~Image();
+  virtual ~Image(){};
 
   // Defining the array
   void      saveArray(float *input, long size);
@@ -154,8 +147,6 @@ public:
     if(isBlank(x,y)) return false;
     else return Stats.isDetection(array[voxel]);
   };  
-//     return DataArray::isDetection(array[voxel]);
-//   };
 
   void      removeMW();
   
@@ -173,7 +164,10 @@ private:
 class Cube : public DataArray
 {
 public:
-  Cube(){numPixels=0; numDim=3; reconExists = false;};
+  Cube(){
+    numPixels=0; numDim=3; 
+    reconExists = false; reconAllocated = false; baselineAllocated = false;
+  };
   Cube(long nPix);
   Cube(long *dimensions);
   virtual ~Cube();
@@ -231,6 +225,7 @@ public:
   void         setFullCols(vector<Col> C){fullCols=C;};
 
   // Statistics for cube
+  void    setCubeStatsOld(); // in Cubes/cubes.cc
   void    setCubeStats();    // in Cubes/cubes.cc
   int     setupFDR();
   bool    isDetection(long x, long y, long z){
@@ -311,6 +306,9 @@ private:
   bool    reconExists;     // flag saying whether there is a reconstruction
   short  *detectMap;       // "moment map" -- x,y locations of detected pixels
   float  *baseline;        // array of spectral baseline values.
+
+  bool    reconAllocated;   // have we allocated memory for the recon array?
+  bool    baselineAllocated;// have we allocated memory for the baseline array?
 	
   FitsHeader head;         // the WCS and other header information.
   vector<Col> fullCols;    // the list of all columns as printed in the 
@@ -323,9 +321,6 @@ private:
 //////////////////////////////////////////////////////
 // Prototypes for functions that use above classes
 //////////////////////////////////////////////////////
-
-DataArray getImage(string fname, short int maxdim);
-Image getImage(string fname);
 
 void findSources(Image &image);
 void findSources(Image &image, float mean, float sigma); 

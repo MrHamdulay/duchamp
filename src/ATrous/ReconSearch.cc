@@ -107,7 +107,8 @@ void Cube::ReconCube1D()
       atrous1DReconstruct(this->axisDim[2],spec,newSpec,this->par);
       this->par.setVerbosity(verboseFlag);
       for(int z=0;z<zdim;z++) this->recon[z*xySize+npix] = newSpec[z];
-      delete [] spec,newSpec;
+      delete [] spec;
+      delete [] newSpec;
     }
     this->reconExists = true;
     bar.rewind();
@@ -148,7 +149,8 @@ void Cube::ReconCube2D()
 	this->par.setVerbosity(verboseFlag);
 	for(int npix=0; npix<xySize; npix++) 
 	  this->recon[z*xySize+npix] = newIm[npix];
-	delete [] im, newIm;
+	delete [] im;
+	delete [] newIm;
       }
       else {
 	for(int i=z*xySize; i<(z+1)*xySize; i++) 

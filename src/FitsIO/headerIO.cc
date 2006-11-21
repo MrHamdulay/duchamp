@@ -71,7 +71,8 @@ int FitsHeader::readBUNIT(string fname)
     fits_report_error(stderr, status);
   }
 
-  delete [] comment, unit;
+  delete [] comment;
+  delete [] unit;
 
   return returnStatus;
 }

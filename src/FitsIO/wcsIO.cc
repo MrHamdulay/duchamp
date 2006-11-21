@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <stdlib.h>
 #include <wcs.h>
 #include <wcshdr.h>
 #include <fitshdr.h>
@@ -70,51 +71,50 @@ int FitsHeader::defineWCS(string fname, Param &par)
   }
   
   struct wcsprm *localwcs;
-  localwcs = (struct wcsprm *)malloc(sizeof(struct wcsprm));
+  localwcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
   localwcs->flag=-1;
 
   // Initialise the wcsprm structure
-  int flag;
-  if(flag = wcsini(true, numAxes, localwcs)){
+  if(status = wcsini(true, numAxes, localwcs)){
     std::stringstream errmsg;
-    errmsg << "wcsini failed! Code=" << flag
-	   << ": " << wcs_errmsg[flag] << std::endl;
+    errmsg << "wcsini failed! Code=" << status
+	   << ": " << wcs_errmsg[status] << std::endl;
     duchampError("defineWCS",errmsg.str());
     return FAILURE;
   }
-  localwcs->flag=-1;
 
   int relax=1; // for wcspih -- admit all recognised informal WCS extensions
   int ctrl=2;  // for wcspih -- report each rejected card and its reason for
                //               rejection
   int localnwcs, nreject;
   // Parse the FITS header to fill in the wcsprm structure
-  if(flag = wcspih(hdr, nkeys, relax, ctrl, &nreject, &localnwcs, &localwcs)) {
+  if(status=wcspih(hdr, nkeys, relax, ctrl, &nreject, &localnwcs, &localwcs)){
     // if here, something went wrong -- report what.
     std::stringstream errmsg;
-    errmsg << "wcspih failed!\n"
-	   << "WCSLIB error code="<<flag<<": "<<wcs_errmsg[flag]<<std::endl;
+    errmsg << "wcspih failed!\nWCSLIB error code=" << status
+	   << ": " << wcs_errmsg[status] << std::endl;
     duchampWarning("defineWCS",errmsg.str());
   }
   else{  
     int stat[NWCSFIX];
     // Applies all necessary corrections to the wcsprm structure
     //  (missing cards, non-standard units or spectral types, ...)
-    if(flag=wcsfix(1, (const int*)dimAxes, localwcs, stat)) {
+    if(status = wcsfix(1, (const int*)dimAxes, localwcs, stat)) {
       std::stringstream errmsg;
       errmsg << "wcsfix failed:\n";
       for(int i=0; i<NWCSFIX; i++)
 	if (stat[i] > 0) 
-	  errmsg <<"WCSLIB error code="<<flag<<": "
-		 << wcsfix_errmsg[stat[i]]<<std::endl;
+	  errmsg << "WCSLIB error code=" << status << ": "
+		 << wcsfix_errmsg[stat[i]] << std::endl;
       duchampWarning("defineWCS", errmsg.str() );
     }
 
     // Set up the wcsprm struct. Report if something goes wrong.
-    if(flag=wcsset(localwcs)){
+    if(status = wcsset(localwcs)){
       std::stringstream errmsg;
       errmsg<<"wcsset failed!\n"
-	    <<"WCSLIB error code="<<flag <<": "<<wcs_errmsg[flag]<<std::endl;
+	    <<"WCSLIB error code=" << status 
+	    <<": "<<wcs_errmsg[status] << std::endl;
       duchampWarning("defineWCS",errmsg.str());
     }
 
@@ -149,10 +149,10 @@ int FitsHeader::defineWCS(string fname, Param &par)
       if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0){
 	index = -1;
 	// If not a match, translate the spectral axis to the desired type
-	if( flag = wcssptr(localwcs, &index, (char *)desiredType.c_str())){
+	if(status = wcssptr(localwcs, &index, (char *)desiredType.c_str())){
 	  std::stringstream errmsg;
-	  errmsg<<"wcssptr failed! Code="<<flag <<": "
-		<<wcs_errmsg[flag]<<std::endl;
+	  errmsg<< "wcssptr failed! Code=" << status << ": "
+		<< wcs_errmsg[status] << std::endl;
 	  duchampWarning("defineWCS",errmsg.str());
 	}	
       }
@@ -163,13 +163,13 @@ int FitsHeader::defineWCS(string fname, Param &par)
     this->setWCS(localwcs);
     this->setNWCS(localnwcs);
 
-    wcsfree(localwcs);
-
   }
+
+  wcsvfree(&localnwcs,&localwcs);
+  delete [] dimAxes;
 
   // Get the brightness unit, so that we can set the units for the 
   //  integrated flux when we go to fixUnits.
-
   this->readBUNIT(fname);
 
   this->fixUnits(par);

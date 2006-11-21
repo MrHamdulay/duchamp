@@ -247,7 +247,10 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
 
   if(par.isVerbose()) std::cout << "Completed "<<iteration<<" iterations. ";
 
-  delete [] xLim1,xLim2,yLim1,yLim2;
+  delete [] xLim1;
+  delete [] xLim2;
+  delete [] yLim1;
+  delete [] yLim2;
   delete [] coeffs;
   delete [] wavelet;
   delete [] isGood;

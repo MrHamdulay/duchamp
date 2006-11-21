@@ -246,8 +246,10 @@ void Cube::drawScale(float xstart, float ystart, float channel)
       cpgsch(size);
       cpgsci(colour);
 
-      delete [] pix1,pix2;
-      delete [] world1,world2;
+      delete [] pix1;
+      delete [] pix2;
+      delete [] world1;
+      delete [] world2;
 
     }
   }
