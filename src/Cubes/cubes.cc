@@ -737,20 +737,13 @@ void Cube::setCubeStats()
     
     if(!this->reconExists){
       // if there's no recon array, calculate everything from orig array
-      goodSize = 0;
-      for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
-	for(int z=0;z<this->axisDim[2];z++){
-	  int vox = z * this->axisDim[0] * this->axisDim[1] + p;
-	  if(!this->isBlank(vox) && !this->par.isInMW(z))
-	    tempArray[goodSize++] = this->array[vox];
-	}
-      }
       stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
       for(int i=1;i<goodSize;i++) 
 	stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
       stddev = sqrt(stddev/float(goodSize-1));
       this->Stats.setStddev(stddev);
-      for(int i=0;i<goodSize;i++) tempArray[i] = absval(array[i]-median);
+
+      for(int i=0;i<goodSize;i++) tempArray[i] = absval(tempArray[i]-median);
       sort(tempArray,0,goodSize);
       if((goodSize%2)==0) 
 	madfm = (tempArray[goodSize/2-1]+tempArray[goodSize/2])/2;
@@ -758,7 +751,8 @@ void Cube::setCubeStats()
       this->Stats.setMadfm(madfm);
     }
     else{
-      // just get mean & median from orig array, and rms & madfm from recon
+      // just get mean & median from orig array, and rms & madfm from residual
+      // recompute array values to be residuals & then find stddev & madfm
       goodSize = 0;
       for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
 	for(int z=0;z<this->axisDim[2];z++){
@@ -772,15 +766,21 @@ void Cube::setCubeStats()
 	stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
       stddev = sqrt(stddev/float(goodSize-1));
       this->Stats.setStddev(stddev);
-      for(int i=0;i<goodSize;i++) tempArray[i] = absval(array[i]-median);
+
       sort(tempArray,0,goodSize);
       if((goodSize%2)==0) 
-	madfm = (tempArray[goodSize/2-1]+tempArray[goodSize/2])/2;
+	median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
+      else median = tempArray[goodSize/2];
+      for(int i=0;i<goodSize;i++) tempArray[i] = absval(tempArray[i]-median);
+      sort(tempArray,0,goodSize);
+      if((goodSize%2)==0) 
+	madfm = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
       else madfm = tempArray[goodSize/2];
       this->Stats.setMadfm(madfm);
     }
 
     delete [] tempArray;
+
     this->Stats.setUseFDR( this->par.getFlagFDR() );
     // If the FDR method has been requested
     if(this->par.getFlagFDR())  this->setupFDR();
