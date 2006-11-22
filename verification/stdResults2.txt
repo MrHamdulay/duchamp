@@ -1,9 +1,10 @@
-Results of the Duchamp source finder: Fri Sep  8 11:03:45 2006
+Results of the Duchamp source finder: Wed Nov 22 13:44:40 2006
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
 Intermediate Logfile...........................[logFile]  =  verification/log2.txt
 Final Results file.............................[outFile]  =  verification/results2.txt
 Spectrum file..............................[spectraFile]  =  verification/spectra2.ps
+Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 ------
 Searching for Negative features?..........[flagNegative]  =  false
 Fixing Blank Pixels?......................[flagBlankPix]  =  false
@@ -13,6 +14,7 @@ Removing baselines before search?.........[flagBaseline]  =  false
 Minimum # Pixels in a detection.................[minPix]  =  2
 Minimum # Channels in a detection..........[minChannels]  =  2
 Growing objects after detection?............[flagGrowth]  =  false
+Hanning-smoothing each spectrum first?......[flagSmooth]  =  false
 Using A Trous reconstruction?...............[flagATrous]  =  false
 Using FDR analysis?............................[flagFDR]  =  true
 Alpha value for FDR analysis..................[alphaFDR]  =  0.05
@@ -20,14 +22,17 @@ Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
 Max. velocity separation for merging....[threshVelocity]  =  7
 Method of spectral plotting.............[spectralMethod]  =  peak
 --------------------
+--------------------
+Detection threshold = 4.25591 Jy/beam (or S/N=4.20217)
+  Noise level = 0.0148019, Noise spread = 1.00927
 Total number of detections = 5
 --------------------
------------------------------------------------------------------------------------------------------------------------------------------------------------
- Obj#           Name     X     Y     Z           RA          DEC      VEL     w_RA    w_DEC    w_VEL     F_int    F_peak  X1  X2  Y1  Y2  Z1  Z2  Npix Flag
-                                                                   [km/s] [arcmin] [arcmin]   [km/s] [Jy km/s] [Jy/beam]                         [pix]     
------------------------------------------------------------------------------------------------------------------------------------------------------------
-    1 J060912-273534  25.1  24.9  20.0  06:09:12.07 -27:35:34.69 -566.652    52.66    43.29  145.105  4111.771    11.489  19  31  20  30  14  25   551     
-    2 J055407-273514  75.1  25.0  41.9  05:54:07.88 -27:35:14.80 -277.967    47.18    52.75  158.296  4103.963    11.766  70  81  19  31  36  48   556     
-    3 J060144-255557  49.9  50.0  63.9  06:01:44.37 -25:55:57.33   12.186    47.95    48.04  145.105  4152.457    10.926  45  56  45  56  58  69   551     
-    4 J060902-241452  24.9  75.1  86.1  06:09:02.66 -24:14:52.32  304.128    48.59    43.36  131.913  4119.956    10.445  19  30  70  80  81  91   562     
-    5 J055424-241523  75.0  75.0 108.1  05:54:24.43 -24:15:23.81  594.688    43.37    48.66  158.296  4231.886    11.304  70  80  69  80 102 114   575     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Obj#           Name     X     Y     Z           RA          DEC      VEL     w_RA    w_DEC    w_VEL     F_int    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2  Npix Flag
+                                                                   [km/s] [arcmin] [arcmin]   [km/s] [Jy km/s] [Jy/beam]                                [pix]     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    1 J060912-273504  25.0  25.1  20.0  06:09:12.52 -27:35:04.42 -566.616    48.67    43.33  145.105  3738.998    11.489  11.37  19  30  20  30  14  25   475     
+    2 J055408-273503  75.1  25.0  41.9  05:54:08.99 -27:35:03.28 -277.735    47.23    48.74  145.105  3635.196    11.766  11.64  70  81  20  31  36  47   460     
+    3 J060144-255601  49.9  50.0  63.9  06:01:44.69 -25:56:01.92   12.406    43.98    44.03  145.105  3841.191    10.926  10.81  45  55  45  55  58  69   487     
+    4 J060859-241507  25.1  75.1  86.1  06:08:59.86 -24:15:07.58  304.946    44.57    43.43  131.913  3630.105    10.445  10.33  20  30  70  80  81  91   461     
+    5 J055425-241533  74.9  74.9 108.2  05:54:25.67 -24:15:33.54  595.945    43.41    44.66  145.105  3771.235    11.304  11.19  70  80  70  80 103 114   480     
