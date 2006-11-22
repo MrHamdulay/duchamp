@@ -186,8 +186,11 @@ public:
   int     getFITSdata(string fname);         // in FitsIO/dataIO.cc
   void    initialiseCube(long *dimensions);  // in cubes.cc
   int     getopts(int argc, char ** argv);   // in cubes.cc
-  void    saveReconstructedCube();
-  int     readReconCube();
+  void    readSavedArrays();                 // in cubes.cc
+  void    saveSmoothedCube();                // in saveImage.cc
+  void    saveReconstructedCube();           // in saveImage.cc
+  int     readReconCube();                   // in readRecon.cc
+  int     readSmoothCube();                  // in readSmooth.cc
 
   bool    isBlank(int vox){return par.isBlank(array[vox]);};
   bool    isBlank(long x, long y, long z){

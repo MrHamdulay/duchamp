@@ -258,11 +258,14 @@ Param::Param(){
   this->subsection        = "[*,*,*]";
   this->flagReconExists   = false;
   this->reconFile         = "";
+  this->flagSmoothExists  = false;
+  this->smoothFile        = "";
   // Output files
   this->flagLog           = true;
   this->logFile           = "duchamp-Logfile.txt";
   this->outFile           = "duchamp-Results.txt";
   this->spectraFile       = "duchamp-Spectra.ps";
+  this->flagOutputSmooth  = false;
   this->flagOutputRecon   = false;
   this->flagOutputResid   = false;
   this->flagVOT           = false;
@@ -340,10 +343,13 @@ Param::Param (const Param& p)
   this->subsection        = p.subsection;     
   this->flagReconExists   = p.flagReconExists;
   this->reconFile         = p.reconFile;      
+  this->flagSmoothExists  = p.flagSmoothExists;
+  this->smoothFile        = p.smoothFile;      
   this->flagLog           = p.flagLog;        
   this->logFile           = p.logFile;       
   this->outFile           = p.outFile;        
   this->spectraFile       = p.spectraFile;    
+  this->flagOutputSmooth  = p.flagOutputSmooth;
   this->flagOutputRecon   = p.flagOutputRecon;
   this->flagOutputResid   = p.flagOutputResid;
   this->flagVOT           = p.flagVOT;         
@@ -409,10 +415,13 @@ Param& Param::operator= (const Param& p)
   this->subsection        = p.subsection;     
   this->flagReconExists   = p.flagReconExists;
   this->reconFile         = p.reconFile;      
+  this->flagSmoothExists  = p.flagSmoothExists;
+  this->smoothFile        = p.smoothFile;      
   this->flagLog           = p.flagLog;        
   this->logFile           = p.logFile;       
   this->outFile           = p.outFile;        
   this->spectraFile       = p.spectraFile;    
+  this->flagOutputSmooth  = p.flagOutputSmooth;
   this->flagOutputRecon   = p.flagOutputRecon;
   this->flagOutputResid   = p.flagOutputResid;
   this->flagVOT           = p.flagVOT;         
@@ -538,11 +547,14 @@ int Param::readParams(string paramfile)
       if(arg=="subsection")      this->subsection = readSval(ss); 
       if(arg=="flagreconexists") this->flagReconExists = readFlag(ss); 
       if(arg=="reconfile")       this->reconFile = readSval(ss); 
+      if(arg=="flagsmoothexists")this->flagSmoothExists = readFlag(ss); 
+      if(arg=="smoothfile")      this->smoothFile = readSval(ss); 
 
       if(arg=="flaglog")         this->flagLog = readFlag(ss); 
       if(arg=="logfile")         this->logFile = readSval(ss); 
       if(arg=="outfile")         this->outFile = readSval(ss); 
       if(arg=="spectrafile")     this->spectraFile = readSval(ss); 
+      if(arg=="flagoutputsmooth")this->flagOutputSmooth = readFlag(ss); 
       if(arg=="flagoutputrecon") this->flagOutputRecon = readFlag(ss); 
       if(arg=="flagoutputresid") this->flagOutputResid = readFlag(ss); 
       if(arg=="flagvot")         this->flagVOT = readFlag(ss); 
@@ -597,7 +609,7 @@ int Param::readParams(string paramfile)
       if(arg=="verbose")         this->verbose = readFlag(ss); 
     }
   }
-  if(this->flagSmooth) this->flagATrous = false;
+  if(this->flagATrous) this->flagSmooth = false;
   return SUCCESS;
 }
 
@@ -637,6 +649,16 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[reconFile]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<par.getReconFile()      <<endl;
+  }
+  if(par.getFlagSmoothExists() && par.getFlagSmooth()){
+    theStream<<setw(widthText)<<"Hanning-smoothed array exists?"          
+	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[smoothExists]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<stringize(par.getFlagSmoothExists())<<endl;
+    theStream<<setw(widthText)<<"FITS file containing smoothed array"  
+	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[smoothFile]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<par.getSmoothFile()      <<endl;
   }
   theStream  <<setw(widthText)<<"Intermediate Logfile"
 	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[logFile]"
@@ -686,6 +708,12 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[flagoutputresid]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<stringize(par.getFlagOutputResid())<<endl;
+  }						       
+  if(par.getFlagSmooth()){			       
+    theStream<<setw(widthText)<<"Saving Hanning-smoothed cube?"           
+	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[flagoutputsmooth]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<stringize(par.getFlagOutputSmooth())<<endl;
   }						       
   theStream  <<"------"<<endl;
   theStream  <<setw(widthText)<<"Searching for Negative features?"     
@@ -851,6 +879,25 @@ bool Param::isBlank(float &value)
 
   return this->flagBlankPix &&
     (this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword));
+}
+
+string Param::outputSmoothFile()
+{
+  /** 
+   *  outputSmoothFile()
+   *   This function produces the required filename in which to save
+   *    the Hanning-smoothed array. If the input image is image.fits, then
+   *    the output will be eg. image.SMOOTH-3.fits, where the width of the 
+   *    Hanning filter was 3 pixels.
+   */
+  string inputName = this->imageFile;
+  std::stringstream ss;
+  ss << inputName.substr(0,inputName.size()-5);  
+                          // remove the ".fits" on the end.
+  if(this->flagSubsection) ss<<".sub";
+  ss << ".SMOOTH-" << this->hanningWidth
+     << ".fits";
+  return ss.str();
 }
 
 string Param::outputReconFile()

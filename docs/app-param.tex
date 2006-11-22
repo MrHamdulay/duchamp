@@ -6,7 +6,7 @@ given here. If not listed, they take the default value given in
 parentheses. Since the order of the parameters in the input file does
 not matter, they are grouped here in logical sections.
 
-\secB*{Input-output related}
+\secB*{Input related}
 \begin{entry}
 \item[ImageFile (no default assumed)] The filename of the
   data cube to be analysed.
@@ -26,6 +26,19 @@ not matter, they are grouped here in logical sections.
   reconstructed array. If \texttt{flagReconExists} is true and this
   parameter is not defined, the default file searched will be
   determined by the \atrous\ parameters (see \S\ref{sec-recon}).
+\item[flagSmoothExists \texttt{[false]}] A flag to indicate whether the
+  Hanning-smoothed array has been saved by a previous run of \duchamp. If
+  set true, the smoothed array will be read from the file given
+  by \texttt{smoothFile}, rather than calculated directly.
+\item[smoothFile (no default assumed)] The FITS file that contains the
+  Hanning-smoothed array. If \texttt{flagSmoothExists} is true and
+  this parameter is not defined, the default file searched will be
+  determined by the Hanning width parameter (see
+  \S\ref{sec-smoothing}).
+\end{entry}
+
+\secB*{Output related}
+\begin{entry}
 \item[OutFile \texttt{[duchamp-Results.txt]}] The file containing the
   final list of detections. This also records the list of input
   parameters.
@@ -48,6 +61,10 @@ not matter, they are grouped here in logical sections.
   difference between the original cube and the reconstructed cube. The
   filename will be derived according to the naming scheme detailed in
   Section~\ref{sec-reconIO}.
+\item[flagOutputSmooth \texttt{[false]}] A flag to say whether or not
+  to save the smoothed cube as a FITS file. The filename will be
+  derived according to the naming scheme detailed in
+  Section~\ref{sec-smoothing}.
 \item[flagVOT \texttt{[false]}] A flag to say whether to create a
   VOTable file corresponding to the information in
   \texttt{outfile}. This will be an XML file in the Virtual
@@ -148,6 +165,14 @@ not matter, they are grouped here in logical sections.
   \item \textbf{3:} Haar wavelet: coefficients = 
     $(0, \frac{1}{2}, \frac{1}{2})$
   \end{itemize}
+\end{entry}
+
+\secC*{Smoothing the cube}
+\begin{entry}
+\item [flagSmooth \texttt{[false]}] A flag indicating whether to
+  Hanning-smooth the cube. See \S\ref{sec-smoothing} for details.
+\item [hanningWidth \texttt{[5]}] The width of the Hanning smoothing
+kernel. 
 \end{entry}
 
 \secC*{FDR method}

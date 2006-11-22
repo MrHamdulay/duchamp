@@ -57,18 +57,8 @@ int main(int argc, char * argv[])
   }
   else std::cout << "Opened successfully." << std::endl; 
 
-  // If the reconstructed array is to be read in from disk
-  if( cube->pars().getFlagReconExists() && cube->pars().getFlagATrous() ){
-    std::cout << "Reading reconstructed array: "<<std::endl;
-    if( cube->readReconCube() == FAILURE){
-      std::stringstream errmsg;
-      errmsg <<"Could not read in existing reconstructed array.\n"
-	     <<"Will perform reconstruction using assigned parameters.\n";
-      duchampWarning("Duchamp", errmsg.str());
-      cube->pars().setFlagReconExists(false);
-    }
-    else std::cout << "Reconstructed array available.\n";
-  }
+  // Read in any saved arrays that are in FITS files on disk.
+  cube->readSavedArrays();
 
   // Filter needed for baseline removal and a trous reconstruction
   if(cube->pars().getFlagATrous() || cube->pars().getFlagBaseline()){
@@ -120,14 +110,14 @@ int main(int argc, char * argv[])
     std::cout<<" Done."<<std::endl;
   }
 
-  if(cube->pars().getFlagSmooth()){
+  if(cube->pars().getFlagATrous()){
+    std::cout<<"Commencing search in reconstructed cube..."<<std::endl;
+    cube->ReconSearch();
+  }  
+  else if(cube->pars().getFlagSmooth()){
     std::cout<<"Commencing search in hanning smoothed cube..."<<std::endl;
     cube->SmoothSearch();
   }
-  else if(cube->pars().getFlagATrous()){
-    std::cout<<"Commencing search in reconstructed cube..."<<std::endl;
-    cube->ReconSearch();
-   }
   else{
     std::cout<<"Commencing search in cube..."<<std::endl;
     cube->CubicSearch();
@@ -197,8 +187,15 @@ int main(int argc, char * argv[])
 
   if(cube->pars().getFlagATrous()&&
      (cube->pars().getFlagOutputRecon()||cube->pars().getFlagOutputResid()) ){
-    std::cout << "Saving reconstructed cube... "<<std::flush;
+    std::cout << "Saving reconstructed cube"
+	      << cube->pars().outputReconFile() << "... "<<std::flush;
     cube->saveReconstructedCube();
+    std::cout << "done.\n";
+  }
+  if(cube->pars().getFlagSmooth()&& cube->pars().getFlagOutputSmooth()){
+    std::cout << "Saving Hanning-smoothed cube to"
+	      << cube->pars().outputSmoothFile() << "... " <<std::flush;
+    cube->saveSmoothedCube();
     std::cout << "done.\n";
   }
 

@@ -278,6 +278,44 @@ performed as normal. Note that to do this, the user needs to set
 \texttt{flagAtrous = true} (obviously, if this is \texttt{false}, the
 reconstruction is not needed).
 
+\secB{Smoothing the cube}
+\label{sec-smoothing}
+
+An alternative to doing the wavelet reconstruction is to Hanning
+smooth the cube. This technique can be useful in reducing the noise
+level slightly (at the cost of making neighbouring pixels correlated
+and blurring any signal present), and is particularly well suited to
+the case where a particular signal width is believed to be present in
+the data. It is also substantially faster than the wavelet
+reconstruction.
+
+The cube is smoothed only in the spectral domain. That is, each
+spectrum is independently smoothed, and then put together to form the
+smoothed cube. This is then treated in the same way as the
+reconstructed cube, and is used for the searching algorithm (see
+below). Note that in the case of both the reconstruction and the
+smoothing options being requested, the reconstruction will take
+precedence and the smoothing will \emph{not} be done.
+
+There is only one parameter necessary to define the degree of
+smoothing -- the Hanning width $a$ (given by the user parameter
+\texttt{hanningWidth}). The coefficients of the Hanning filter are
+defined by
+\[
+\frac{1+\cos(\pi x/a)}{2},\ \frac{-(a+1)}{2}\leq x \leq \frac{a+1}{2},
+\]
+and zero elsewhere. Note that the width specified must be an odd
+integer (if the parameter provided is even, it is incremented by one).
+
+The user is able to save the smoothed array in exactly the same manner
+as for the reconstructed array -- set \texttt{flagOutputSmooth =
+true}, and then the smoothed array will be saved in
+\texttt{image.SMOOTH-a.fits}, where a is replaced by the Hanning width
+used. Similarly, a saved file can be read in by setting
+\texttt{flagSmoothExists = true} and either specifying a file to be
+read with the \texttt{smoothFile} parameter or relying on \duchamp\ to
+find the file with the name as given above. 
+
 \secB{Searching the image}
 \label{sec-detection}
 
@@ -356,10 +394,10 @@ see discussion in \S\ref{sec-notes}. The effect is that the number of
 false detections will be less than indicated by the $\alpha$ value
 used.
 
-If a reconstruction has been made, the residuals (defined in the sense
-of original $-$ reconstruction) are used to estimate the noise
-parameters of the cube. Otherwise they are estimated directly from the
-cube itself. In both cases, robust estimators are used.
+If the cube has been reconstructed or smoothed, the residuals (defined
+in the sense of original $-$ reconstruction) are used to estimate the
+noise parameters of the cube. Otherwise they are estimated directly
+from the cube itself. In both cases, robust estimators are used.
 
 Detections must have a minimum number of pixels to be counted. This
 minimum number is given by the input parameters \texttt{minPix} (for

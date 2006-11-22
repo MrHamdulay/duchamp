@@ -43,17 +43,17 @@ to calculate the necessary values for all scales, dimensions and
 filters used by \duchamp.
 
 Calculating these values is clearly a critical step in performing the
-reconstruction. \citet{starck02:book} did so by simulating data sets
-with Gaussian noise, taking the wavelet transform, and measuring the
-value of $\sigma$ for each scale. We take a different approach, by
-calculating the scaling factors directly from the filter coefficients
-by taking the wavelet transform of an array made up of a 1 in the
-central pixel and 0s everywhere else. The scaling value is then
-derived by taking the square root of the sum (in quadrature) of all
-the wavelet coefficient values at each scale. We give the scaling
-factors for the three filters available to \duchamp\ on the following
-page. These values are hard-coded into \duchamp, so no on-the-fly
-calculation of them is necessary.
+reconstruction. The method used by \citet{starck02:book} was to
+simulate data sets with Gaussian noise, take the wavelet transform,
+and measure the value of $\sigma$ for each scale. We take a
+different approach, by calculating the scaling factors directly from
+the filter coefficients by taking the wavelet transform of an array
+made up of a 1 in the central pixel and 0s everywhere else. The
+scaling value is then derived by taking the square root of the sum (in
+quadrature) of all the wavelet coefficient values at each scale. We
+give the scaling factors for the three filters available to \duchamp\
+on the following page. These values are hard-coded into \duchamp, so
+no on-the-fly calculation of them is necessary.
 
 Memory limitations prevent us from calculating factors for large
 scales, particularly for the three-dimensional case (hence the --

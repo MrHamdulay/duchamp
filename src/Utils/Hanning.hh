@@ -6,7 +6,7 @@
 class Hanning
 {
 public:
-  Hanning(){};
+  Hanning(){allocated=false;};
   Hanning(int size){
     if(size%2==0){ 
       std::cerr << "Hanning: need an odd number for the size. "
@@ -14,13 +14,14 @@ public:
     }
     hanningSize = size;
     coeffs = new float[size];
+    allocated = true;
     float a = (size+1.)/2.;
     for(int i=0;i<size;i++){
       float x = i-(size-1)/2.;
       coeffs[i] = 0.5 + 0.5*cos(x * M_PI / a);
     }
   };
-  virtual ~Hanning(){delete [] coeffs;};
+  virtual ~Hanning(){if(allocated) delete [] coeffs;};
 
   float *smooth(float *array, int npts){
     float *newarray = new float[npts];
@@ -40,6 +41,7 @@ public:
 private:
   int hanningSize;
   float *coeffs;
+  bool allocated;
 
 };
 

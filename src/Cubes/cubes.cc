@@ -461,6 +461,37 @@ int Cube::getopts(int argc, char ** argv)
 }
 //--------------------------------------------------------------------
 
+void Cube::readSavedArrays()
+{
+  // If the reconstructed array is to be read in from disk
+  if( this->par.getFlagReconExists() && this->par.getFlagATrous() ){
+    std::cout << "Reading reconstructed array: "<<std::endl;
+    if( this->readReconCube() == FAILURE){
+      std::stringstream errmsg;
+      errmsg <<"Could not read in existing reconstructed array.\n"
+	     <<"Will perform reconstruction using assigned parameters.\n";
+      duchampWarning("Duchamp", errmsg.str());
+      this->par.setFlagReconExists(false);
+    }
+    else std::cout << "Reconstructed array available.\n";
+  }
+
+  if( this->par.getFlagSmoothExists() && this->par.getFlagSmooth() ){
+    std::cout << "Reading Hanning-smoothed array: "<<std::endl;
+    if( this->readSmoothCube() == FAILURE){
+      std::stringstream errmsg;
+      errmsg <<"Could not read in existing smoothed array.\n"
+	     <<"Will smooth the cube using assigned parameters.\n";
+      duchampWarning("Duchamp", errmsg.str());
+      this->par.setFlagSmoothExists(false);
+    }
+    else std::cout << "Smoothed array available.\n";
+  }
+    
+}
+
+//--------------------------------------------------------------------
+
 void Cube::saveArray(float *input, long size){
   if(size != this->numPixels){
     stringstream errmsg;

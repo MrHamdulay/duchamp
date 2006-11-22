@@ -53,35 +53,33 @@ void Cube::plotDetectionMap(string pgDestination)
 		       boxYmin+0.5,boxYmin+ydim+0.5,
 		       "X pixel","Y pixel");
 
-//     if(this->objectList.size()>0){ 
-      // if there are no detections, there will be nothing to plot here
+    //     if(this->objectList.size()>0){ 
+    // if there are no detections, there will be nothing to plot here
 
-      float *detectMap = new float[xdim*ydim];
-      int maxNum = this->detectMap[0];
-      detectMap[0] = float(maxNum);
-      for(int pix=1;pix<xdim*ydim;pix++){
-	detectMap[pix] = float(this->detectMap[pix]);  
-	if(this->detectMap[pix] > maxNum)  maxNum = this->detectMap[pix];
-      }
+    float *detectMap = new float[xdim*ydim];
+    int maxNum = this->detectMap[0];
+    detectMap[0] = float(maxNum);
+    for(int pix=1;pix<xdim*ydim;pix++){
+      detectMap[pix] = float(this->detectMap[pix]);  
+      if(this->detectMap[pix] > maxNum)  maxNum = this->detectMap[pix];
+    }
 
-      if(maxNum>0){ // if there are no detections, it will be 0.
-	std::cerr << "maxNum="<<maxNum<<" ";
+    if(maxNum>0){ // if there are no detections, it will be 0.
 
       maxNum = 5 * ((maxNum-1)/5 + 1);  // move to next multiple of 5
-	std::cerr << "maxNum="<<maxNum<<" ";
 
       float tr[6] = {boxXmin,1.,0.,boxYmin,0.,1.};
       cpggray(detectMap,xdim,ydim,1,xdim,1,ydim,maxNum,0,tr);  
-
-//       delete [] detectMap;
+	
+      //       delete [] detectMap;
       cpgbox("bcnst",0.,0,"bcnst",0.,0);
       cpgsch(1.5);
       cpgwedg("rg",3.2,2,maxNum,0,"Number of detected channels");
     }
-      delete [] detectMap;
-
+    delete [] detectMap;
+      
     this->plotBlankEdges();
-
+      
     if(this->head.isWCS()) this->plotWCSaxes();
   
     if(this->objectList.size()>0){ 
@@ -589,7 +587,7 @@ void Cube::plotWCSaxes()
   cpgsch(0.8);
   int    c0[7], ci[7], gcode[2], ic, ierr;
   for(int i=0;i<7;i++) c0[i] = -1;
-   /* define a Dark Green colour. */
+  /* define a Dark Green colour. */
   cpgscr(17, 0.3, 0.5, 0.3);
 
   gcode[0] = 2;  // type of grid to draw: 0=none, 1=ticks only, 2=full grid

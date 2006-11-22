@@ -31,8 +31,9 @@ public:
   void   copyHeaderInfo(FitsHeader &head);// in param.cc
   bool   isBlank(float &value);           // in param.cc
   bool   isInMW(int z){return ( flagMW && (z>=minMW) && (z<=maxMW) );};
-  string outputReconFile();             // in param.cc
-  string outputResidFile();             // in param.cc
+  string outputSmoothFile();              // in param.cc
+  string outputReconFile();               // in param.cc
+  string outputResidFile();               // in param.cc
   friend std::ostream& operator<< ( std::ostream& theStream, Param& par);
   friend class Image;
  
@@ -51,6 +52,10 @@ public:
   void   setFlagReconExists(bool flag){flagReconExists=flag;};
   string getReconFile(){return reconFile;};
   void   setReconFile(string file){reconFile = file;};
+  bool   getFlagSmoothExists(){return flagSmoothExists;};
+  void   setFlagSmoothExists(bool flag){flagSmoothExists=flag;};
+  string getSmoothFile(){return smoothFile;};
+  void   setSmoothFile(string file){smoothFile = file;};
   //
   bool   getFlagLog(){return flagLog;};
   void   setFlagLog(bool flag){flagLog=flag;};
@@ -60,6 +65,8 @@ public:
   void   setOutFile(string fname){outFile = fname;};
   string getSpectraFile(){return spectraFile;};
   void   setSpectraFile(string fname){spectraFile = fname;};
+  bool   getFlagOutputSmooth(){return flagOutputSmooth;};
+  void   setFlagOutputSmooth(bool flag){flagOutputSmooth=flag;};
   bool   getFlagOutputRecon(){return flagOutputRecon;};
   void   setFlagOutputRecon(bool flag){flagOutputRecon=flag;};
   bool   getFlagOutputResid(){return flagOutputResid;};
@@ -194,12 +201,15 @@ private:
                           //  If you want the full range of one index, use *
   bool   flagReconExists; // The reconstructed array is in a FITS file on disk.
   string reconFile;       // The FITS file containing the reconstructed array.
+  bool   flagSmoothExists;// The Hanning-smoothed array is in a FITS file.
+  string smoothFile;      // The FITS file containing the smoothed array.
 
   // Output files
   bool   flagLog;         // Should we do the intermediate logging?
   string logFile;         // Where the intermediate logging goes.
   string outFile;         // Where the final results get put.
   string spectraFile;     // Where the spectra are displayed
+  bool   flagOutputSmooth;// Should the Hanning-smoothed cube be written?
   bool   flagOutputRecon; // Should the reconstructed cube be written?
   bool   flagOutputResid; // Should the reconstructed cube be written?
   bool   flagVOT;         // Should we save results in VOTable format?
