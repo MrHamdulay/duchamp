@@ -168,12 +168,18 @@ void Cube::drawScale(float xstart, float ystart, float channel)
       const float angleScale[3] = {3600., 60., 1.};
       //  degree, arcmin, arcsec symbols
     
-      const int numLengths = 15;
+      const int numLengths = 17;
       const double lengths[numLengths] = 
-	{0.01/3600., 0.05/3600., 0.1/3600., 0.5/3600., 
+	{0.001/3600., 0.005/3600., 0.01/3600., 0.05/3600., 
+	 0.1/3600., 0.5/3600., 
 	 1./3600., 5./3600., 15./3600., 30./3600.,
 	 1./60., 5./60., 15./60., 30./60.,
 	 1., 5., 15.};
+      const ANGLE angleType[numLengths] = 
+	{ARCSEC, ARCSEC, ARCSEC, ARCSEC,
+	 ARCSEC, ARCSEC,
+	 ARCMIN, ARCMIN, ARCMIN, ARCMIN,
+	 DEGREE, DEGREE, DEGREE};
       const float desiredRatio = 0.2;
 
       // first, work out what is the optimum length of the scale bar,
@@ -192,12 +198,6 @@ void Cube::drawScale(float xstart, float ystart, float channel)
       }
       delete [] fraction;
 
-      ANGLE angleType;
-      if(best<4)      angleType = ARCSEC;
-      else if(best<8) angleType = ARCMIN;
-      else            angleType = DEGREE;
-      double scaleLength = lengths[best];  // this is currently in degrees
-
       // Now work out actual pixel locations for the ends of the scale bar
       double *pix1   = new double[3];
       double *pix2   = new double[3];
@@ -212,6 +212,7 @@ void Cube::drawScale(float xstart, float ystart, float channel)
       bool keepGoing=false;
       float error;
       float step=1.;
+      double scaleLength = lengths[best];  // this is in degrees
       do{
 	if(angSep>scaleLength){
 	  pix2[0] -= step;
@@ -237,7 +238,8 @@ void Cube::drawScale(float xstart, float ystart, float channel)
       cpgslw(thickness);
 
       std::stringstream text;
-      text << scaleLength * angleScale[angleType] << symbol[angleType];
+      text << scaleLength * angleScale[angleType[best]] 
+	   << symbol[angleType[best]];
       float size,xch,ych;
       cpgqch(&size);
       cpgsch(0.4);

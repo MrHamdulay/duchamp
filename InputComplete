@@ -12,21 +12,27 @@
 # flagSubsection -- whether to get a subsection of that image. 
 # subsection -- the subsection to read in, in format [x1:x2,y1:y2,z1:z2],
 #               or * to indicate the full range 
-# flagReconExists -- set to true if the reconstructed image exists as a FITS 
+# flagReconExists -- set to true if the reconstructed cube exists as a FITS 
 #                    file (ie. it has been saved from a previous Duchamp run)
-# reconFile -- the location of the FITS file containing the reconstructed image
+# reconFile -- the location of the FITS file containing the reconstructed cube
+# flagSmoothExists -- set to true if the smoothed cube exists as a FITS 
+#                    file (ie. it has been saved from a previous Duchamp run)
+# smoothFile -- the location of the FITS file containing the smoothed cube
 
 imageFile       your-file-here
 flagSubsection  0
 subsection      [*,*,*]
 flagReconExists	0
 reconFile	your-reconstructed-file-here
+flagReconExists	1
+reconFile	your-smoothed-file-here
 
 # OUTPUT RELATED
 # flagLog -- log the intermediate results?   
 # logfile-- the file to put that in.
 # outFile -- the final output list. 
 # spectraFile -- the postscript file of spectra
+# flagOutputSmooth -- whether to save the smoothed arrays as a FITS file
 # flagOutputRecon/Resid -- whether to save the reconstruction & residual arrays
 #                          as FITS files
 # flagVOT -- make a VOTable file of the results?  
@@ -41,6 +47,7 @@ flagLog         1
 logFile		duchamp-Logfile.txt
 outFile		duchamp-Results.txt
 spectraFile	duchamp-Spectra.ps
+flagOutputSmooth 0
 flagOutputRecon	0
 flagOutputResid	0
 flagVOT         0
@@ -98,6 +105,13 @@ reconDim        3
 scaleMin	1
 snrRecon	4.
 filterCode      1
+
+# HANNING SMOOTHING
+# flagSmooth -- whether to Hanning-smooth the spectral dimension of the cube.
+# hanningWidth -- the width parameter of the Hanning smoothing function
+
+flagSmooth      false
+hanningWidth    5
 
 # FALSE DISCOVERY RATE METHOD
 # flagFDR -- Whether or not to use the false discovery rate method instead of 

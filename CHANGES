@@ -1,3 +1,30 @@
+Duchamp version 1.0.7 (2006/11/22)
+----------------------------------
+
+One new feature, and some improvements and bug-fixes.
+
+* The user can now elect to Hanning-smooth the spectral direction of the cube 
+  before the searching is done. This can be done instead of the wavelet 
+  reconstruction (although if both are selected, the reconstruction takes
+  precendence). The width of the Hanning kernel is governed by the hanningWidth
+  parameter.
+
+* The smoothed array can also be written to a FITS file and read in at the 
+  start in the same manner as the reconstructed array.
+
+* Several improvements have been made to the memory management. Several
+  memory leaks were fixed, and the memory usage of Duchamp is considerably
+  less, which will be a help for running it on large cubes. The speed of 
+  some routines has also been improved, by removing unnecessarily repetitive 
+  loops.
+
+* Enabled the scale bar (plotted on the 0th moment map in the spectral output 
+  file) to be able to deal with much finer spatial scales (as may be expected
+  from VLBI data).
+
+* Other minor changes.
+
+
 Duchamp version 1.0.6 (2006/11/01)
 ----------------------------------
 

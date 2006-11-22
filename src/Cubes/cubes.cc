@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <vector>
 #include <string>
+#include <math.h>
 
 #include <wcs.h>
 
@@ -736,11 +737,13 @@ void Cube::setCubeStats()
     
     std::cout << "Calculating the cube statistics... " << std::flush;
     
+    long xysize = this->axisDim[0]*this->axisDim[1];
+
     // get number of good pixels;
     int goodSize = 0;
-    for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
+    for(int p=0;p<xysize;p++){
       for(int z=0;z<this->axisDim[2];z++){
-	int vox = z * this->axisDim[0] * this->axisDim[1] + p;
+	int vox = z * xysize + p;
 	if(!this->isBlank(vox) && !this->par.isInMW(z)) goodSize++;
       }
     }
@@ -748,22 +751,27 @@ void Cube::setCubeStats()
     float *tempArray = new float[goodSize];
 
     goodSize=0;
-    for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
+    for(int p=0;p<xysize;p++){
       for(int z=0;z<this->axisDim[2];z++){
-	int vox = z * this->axisDim[0] * this->axisDim[1] + p;
-	if(!this->isBlank(vox) && !this->par.isInMW(z))
-	  tempArray[goodSize++] = this->array[vox];
+	int vox = z * xysize + p;
+	if(!this->isBlank(vox) && !this->par.isInMW(z)){
+	  tempArray[goodSize] = this->array[vox];
+	  goodSize++;
+	}
       }
     }
     float mean,median,stddev,madfm;
     mean = tempArray[0];
     for(int i=1;i<goodSize;i++) mean += tempArray[i];
     mean /= float(goodSize);
+    mean = findMean(tempArray,goodSize);
     this->Stats.setMean(mean);
+
     sort(tempArray,0,goodSize);
     if((goodSize%2)==0) 
       median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
     else median = tempArray[goodSize/2];
+//     median = findMedian(tempArray,goodSize);
     this->Stats.setMedian(median);
     
     if(!this->reconExists){
@@ -785,32 +793,39 @@ void Cube::setCubeStats()
       // just get mean & median from orig array, and rms & madfm from residual
       // recompute array values to be residuals & then find stddev & madfm
       goodSize = 0;
-      for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
+      for(int p=0;p<xysize;p++){
 	for(int z=0;z<this->axisDim[2];z++){
-	  int vox = z * this->axisDim[0] * this->axisDim[1] + p;
-	  if(!this->isBlank(vox) && !this->par.isInMW(z))
-	    tempArray[goodSize++] = this->array[vox] - this->recon[vox];
+	  int vox = z * xysize + p;
+	  if(!this->isBlank(vox) && !this->par.isInMW(z)){
+	    tempArray[goodSize] = this->array[vox] - this->recon[vox];
+	    goodSize++;
+	  }
 	}
       }
-      mean = tempArray[0];
-      for(int i=1;i<goodSize;i++) mean += tempArray[i];
-      mean /= float(goodSize);
-      stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
-      for(int i=1;i<goodSize;i++) 
-	stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
-      stddev = sqrt(stddev/float(goodSize-1));
-      this->Stats.setStddev(stddev);
+//       mean = tempArray[0];
+//       for(int i=1;i<goodSize;i++) mean += tempArray[i];
+//       mean /= float(goodSize);
+//       stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
+//       for(int i=1;i<goodSize;i++) 
+// 	stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
+//       stddev = sqrt(stddev/float(goodSize-1));
+//       this->Stats.setStddev(stddev);
+        this->Stats.setStddev(findStddev<float>(tempArray,goodSize));
 
       sort(tempArray,0,goodSize);
       if((goodSize%2)==0) 
 	median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
       else median = tempArray[goodSize/2];
-      for(int i=0;i<goodSize;i++) tempArray[i] = absval(tempArray[i]-median);
+      for(int i=0;i<goodSize;i++){
+	if(tempArray[i]>median) tempArray[i] = tempArray[i]-median;
+	else tempArray[i] = median - tempArray[i];
+      }
       sort(tempArray,0,goodSize);
       if((goodSize%2)==0) 
 	madfm = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
       else madfm = tempArray[goodSize/2];
       this->Stats.setMadfm(madfm);
+//        this->Stats.setMadfm(findMADFM<float>(tempArray,goodSize));
     }
 
     delete [] tempArray;
@@ -819,14 +834,14 @@ void Cube::setCubeStats()
     // If the FDR method has been requested
     if(this->par.getFlagFDR())  this->setupFDR();
     else{
-      // otherwise, calculate one based on the requested SNR cut level, and 
-      //   then set the threshold parameter in the Par set.
+      // otherwise, calculate threshold based on the requested SNR cut level,
+      //  and then set the threshold parameter in the Par set.
       this->Stats.setThresholdSNR( this->par.getCut() );
       this->par.setThreshold( this->Stats.getThreshold() );
     }
     
-    
   }
+
   std::cout << "Using ";
   if(this->par.getFlagFDR()) std::cout << "effective ";
   std::cout << "flux threshold of: ";
