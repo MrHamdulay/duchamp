@@ -1,10 +1,10 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
-#include <duchamp.hh>
 #include <param.hh>
 #include <ATrous/atrous.hh>
 #include <Utils/utils.hh>
+#include <Utils/feedback.hh>
 
 void baselineSubtract(long numSpec, long specLength, float *originalCube, 
 		      float *baselineValues, Param &par)
@@ -13,13 +13,15 @@ void baselineSubtract(long numSpec, long specLength, float *originalCube,
    *  baselineSubtract(long numSpec, long specLength, float *originalCube, 
    *                   float *baselineValues, Param &par)
    *    
-   *    A routine to find the baseline of spectra in a cube (spectral direction 
-   *     assumed to be the third dimension) and subtract it off the original.
-   *    The original cube has numSpec spatial pixels, each containing a spectrum 
-   *     of length specLength.
+   *    A routine to find the baseline of spectra in a cube (the spectral 
+   *     direction is assumed to be the third dimension) and subtract it off 
+   *     the original.
+   *    The original cube has numSpec spatial pixels, each containing a 
+   *     spectrum of length specLength.
    *    The original cube is read in, and returned with the baseline removed.
    *    This baseline is stored in the array baselineValues.
-   *    The Param variable par is needed to test for blank pixels -- these are kept as blank.
+   *    The Param variable par is needed to test for blank pixels -- these are 
+   *     kept as blank.
    */
   extern Filter reconFilter;
   float *spec     = new float[specLength];

@@ -156,6 +156,8 @@ double dmsToDec(string dms)
   return dec;
 
 }
+
+const long double degToRadian=M_PI/180.;
  
 double angularSeparation(double &ra1, double &dec1, double &ra2, double &dec2)
 {
@@ -166,10 +168,19 @@ double angularSeparation(double &ra1, double &dec1, double &ra2, double &dec2)
    *  Returns the angular separation in degrees.
    */
 
-  double angsep = cos((ra1-ra2)*M_PI/180.)*cos(dec1*M_PI/180.)*cos(dec2*M_PI/180.) 
-    + sin(dec1*M_PI/180.)*sin(dec2*M_PI/180.);
-  angsep = acos(angsep)*180./M_PI;
-
-  return angsep;
+  long double dra = (ra1-ra2)*degToRadian;
+  long double d1 = dec1*degToRadian;
+  long double d2 = dec2*degToRadian;
+  long double angsep;
+  if((fabs(ra1-ra2) < 1./3600.)&&(fabs(dec1-dec2)<1./3600.))
+    return sqrt(dra*dra + (d1-d2)*(d1-d2)) / degToRadian;
+  else {
+    if(fabs(ra1-ra2) < 1./3600.)
+      angsep = cos(d1)*cos(d2) - dra*dra*cos(d1)*cos(d2)/2. + sin(d1)*sin(d2);
+    else
+      angsep = cos(dra)*cos(d1)*cos(d2) + sin(d1)*sin(d2);
+    double dangsep = acos(angsep) / degToRadian;
+    return dangsep;
+  }
 
 }

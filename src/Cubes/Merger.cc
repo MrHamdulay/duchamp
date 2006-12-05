@@ -2,10 +2,10 @@
 #include <iomanip>
 #include <math.h>
 #include <vector>
-#include <duchamp.hh>
 #include <Cubes/cubes.hh>
 #include <Detection/detection.hh>
 #include <Utils/utils.hh>
+#include <Utils/feedback.hh>
 
 void Cube::ObjectMerger()
 {

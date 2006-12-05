@@ -100,6 +100,7 @@ int Param::verifySubsection()
 
   // If we get to here, should have correct number of entries.
 
+  if(this->sizeOffsets>0) delete [] this->offsets;
   this->offsets = new long[numAxes];
   this->sizeOffsets = numAxes;
 

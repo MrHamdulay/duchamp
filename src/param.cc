@@ -376,6 +376,7 @@ Param::Param (const Param& p)
   this->borderBottom      = p.borderBottom;   
   this->borderTop         = p.borderTop;      
   this->sizeOffsets       = p.sizeOffsets;
+  this->offsets           = new long[this->sizeOffsets];
   if(this->sizeOffsets>0)
     for(int i=0;i<this->sizeOffsets;i++) this->offsets[i] = p.offsets[i];
   this->xSubOffset        = p.xSubOffset;     
@@ -448,6 +449,7 @@ Param& Param::operator= (const Param& p)
   this->borderBottom      = p.borderBottom;   
   this->borderTop         = p.borderTop;      
   this->sizeOffsets       = p.sizeOffsets;
+  this->offsets           = new long[this->sizeOffsets];
   if(this->sizeOffsets>0)
     for(int i=0;i<this->sizeOffsets;i++) this->offsets[i] = p.offsets[i];
   this->xSubOffset        = p.xSubOffset;     

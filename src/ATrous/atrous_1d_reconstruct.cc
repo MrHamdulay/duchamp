@@ -1,8 +1,8 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
-#include <duchamp.hh>
 #include <Utils/utils.hh>
+#include <Utils/feedback.hh>
 #include <ATrous/atrous.hh>
 #include <Utils/Statistics.hh>
 using Statistics::madfmToSigma;

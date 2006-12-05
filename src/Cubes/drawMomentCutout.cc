@@ -134,7 +134,7 @@ void Cube::drawMomentCutout(Detection &object)
     if(this->head.isWCS()){
       // Now draw a tick mark to indicate size -- 15 arcmin in length
       //     this->drawScale(xmin+2.,ymin+2.,object.getZcentre(),0.25);
-//       this->drawScale(xmin+2.,ymin+2.,object.getZcentre());
+      this->drawScale(xmin+2.,ymin+2.,object.getZcentre());
     }
 
     cpgsci(ci);
@@ -177,6 +177,7 @@ void Cube::drawScale(float xstart, float ystart, float channel)
 	 1., 5., 15.};
       const ANGLE angleType[numLengths] = 
 	{ARCSEC, ARCSEC, ARCSEC, ARCSEC,
+	 ARCSEC, ARCSEC, ARCSEC, ARCSEC,
 	 ARCSEC, ARCSEC,
 	 ARCMIN, ARCMIN, ARCMIN, ARCMIN,
 	 DEGREE, DEGREE, DEGREE};
@@ -185,7 +186,6 @@ void Cube::drawScale(float xstart, float ystart, float channel)
       // first, work out what is the optimum length of the scale bar,
       //   based on the pixel scale and size of the image.
       float pixscale = this->head.getAvPixScale();
-      std::cerr << "Pixscale = " << pixscale << "\n";
       double *fraction = new double[numLengths];
       int best;
       float x1,x2,y1,y2;
@@ -210,20 +210,21 @@ void Cube::drawScale(float xstart, float ystart, float channel)
 
       double angSep=0.;
       bool keepGoing=false;
-      float error;
-      float step=1.;
+      double error;
+      double step=1.; // this is in pixels
       double scaleLength = lengths[best];  // this is in degrees
+      pix2[0] = pix1[0] + scaleLength/(2.*pixscale);
       do{
+	this->head.pixToWCS(pix2,world2);
+	angSep = angularSeparation(world1[0],world1[1],world2[0],world2[1]);
+	error = (angSep-scaleLength)/scaleLength;
+	if(error<0) error = 0 - error;
 	if(angSep>scaleLength){
 	  pix2[0] -= step;
 	  step /= 2.;
 	}
 	pix2[0] += step;
-	this->head.pixToWCS(pix2,world2);
-	angSep = angularSeparation(world1[0],world1[1],world2[0],world2[1]);
-	error = (angSep-scaleLength)/scaleLength;
-	if(error<0) error = 0 - error;
-      }while(error>0.01); // look for 1% change
+      }while(error>0.05); // look for 1% change
 
       float tickpt1 = pix1[0] - this->par.getXOffset();
       float tickpt2 = pix2[0] - this->par.getXOffset();

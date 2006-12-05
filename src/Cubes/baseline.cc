@@ -1,9 +1,9 @@
 #include <iostream>
 #include <iomanip>
-#include <duchamp.hh>
 #include <param.hh>
 #include <ATrous/atrous.hh>
 #include <Cubes/cubes.hh>
+#include <Utils/feedback.hh>
 
 void Cube::removeBaseline()
 {
@@ -45,7 +45,7 @@ void Cube::removeBaseline()
   delete [] spec;
   delete [] thisBaseline;
   
-  if(this->par.isVerbose()) printBackSpace(22);
+  if(this->par.isVerbose()) bar.remove();
 }
 
 

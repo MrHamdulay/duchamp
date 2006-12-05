@@ -2,10 +2,10 @@
 #include <iomanip>
 #include <fstream>
 #include <vector>
-#include <duchamp.hh>
 #include <param.hh>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
+#include <Utils/feedback.hh>
 #include <Utils/Statistics.hh>
 
 void Cube::CubicSearch()
@@ -45,14 +45,8 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
   vector <Detection> outputList;
   long zdim = dim[2];
   long xySize = dim[0] * dim[1];
-//   long fullSize = zdim * xySize;
   int num = 0;
 
-//   float blankPixValue = par.getBlankPixVal();
-//   bool *isGood = new bool[fullSize];
-//   for(int pos=0;pos<fullSize;pos++){ 
-//     isGood[pos] = !par.isBlank(Array[pos]) && !par.isInMW(pos/xySize);
-//   }
   bool *doPixel = new bool[xySize];
   int goodSize=0;
   for(int npix=0; npix<xySize; npix++){
@@ -164,7 +158,6 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
     std::cout << std::endl << std::flush;
   }
 
-//   delete [] isGood;
   delete [] doPixel;
   
   return outputList;

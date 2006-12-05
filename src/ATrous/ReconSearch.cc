@@ -7,6 +7,7 @@
 #include <Detection/detection.hh>
 #include <ATrous/atrous.hh>
 #include <Utils/utils.hh>
+#include <Utils/feedback.hh>
 #include <Utils/Statistics.hh>
 
 void Cube::ReconSearch()
@@ -22,7 +23,6 @@ void Cube::ReconSearch()
   this->ReconCube();
 
   this->setCubeStats();
-//this->setCubeStatsOld();
     
   std::cout << "  Searching... " << std::flush;
   
