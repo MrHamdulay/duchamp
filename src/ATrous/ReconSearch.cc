@@ -112,8 +112,7 @@ void Cube::ReconCube1D()
       delete [] newSpec;
     }
     this->reconExists = true;
-    bar.rewind();
-    std::cout << "  All Done.";
+    bar.fillSpace(" All Done.");
     printSpace(22);
     std::cout << "\n";
   }
@@ -159,8 +158,7 @@ void Cube::ReconCube2D()
       }
     }
     this->reconExists = true;
-    bar.rewind();
-    std::cout << "  All Done.";
+    bar.fillSpace(" All Done.");
     printSpace(22);
     std::cout << "\n";
   }
