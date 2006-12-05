@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <algorithm>
 #include <string>
 #include <math.h>
 
@@ -740,40 +741,41 @@ void Cube::setCubeStats()
     long xysize = this->axisDim[0]*this->axisDim[1];
 
     // get number of good pixels;
-    int goodSize = 0;
+    int vox,goodSize = 0;
     for(int p=0;p<xysize;p++){
       for(int z=0;z<this->axisDim[2];z++){
-	int vox = z * xysize + p;
+	vox = z*xysize+p;
 	if(!this->isBlank(vox) && !this->par.isInMW(z)) goodSize++;
       }
     }
 
     float *tempArray = new float[goodSize];
-
+    
     goodSize=0;
     for(int p=0;p<xysize;p++){
       for(int z=0;z<this->axisDim[2];z++){
-	int vox = z * xysize + p;
+	vox = z * xysize + p;
 	if(!this->isBlank(vox) && !this->par.isInMW(z)){
 	  tempArray[goodSize] = this->array[vox];
 	  goodSize++;
 	}
       }
     }
-    float mean,median,stddev,madfm;
-    mean = tempArray[0];
-    for(int i=1;i<goodSize;i++) mean += tempArray[i];
-    mean /= float(goodSize);
-    mean = findMean(tempArray,goodSize);
-    this->Stats.setMean(mean);
 
-    sort(tempArray,0,goodSize);
-    if((goodSize%2)==0) 
-      median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
-    else median = tempArray[goodSize/2];
-//     median = findMedian(tempArray,goodSize);
-    this->Stats.setMedian(median);
-    
+    float mean,median,stddev,madfm;
+      mean = tempArray[0];
+      for(int i=1;i<goodSize;i++) mean += tempArray[i];
+      mean /= float(goodSize);
+      mean = findMean(tempArray,goodSize);
+      this->Stats.setMean(mean);
+
+      std::sort(tempArray,tempArray+goodSize);
+      if((goodSize%2)==0) 
+	median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
+      else median = tempArray[goodSize/2];
+      this->Stats.setMedian(median);
+
+   
     if(!this->reconExists){
       // if there's no recon array, calculate everything from orig array
       stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
@@ -782,8 +784,12 @@ void Cube::setCubeStats()
       stddev = sqrt(stddev/float(goodSize-1));
       this->Stats.setStddev(stddev);
 
-      for(int i=0;i<goodSize;i++) tempArray[i] = absval(tempArray[i]-median);
-      sort(tempArray,0,goodSize);
+      for(int i=0;i<goodSize;i++)// tempArray[i] = absval(tempArray[i]-median);
+	{
+	  if(tempArray[i]>median) tempArray[i] -= median;
+	  else tempArray[i] = median - tempArray[i];
+	}
+      std::sort(tempArray,tempArray+goodSize);
       if((goodSize%2)==0) 
 	madfm = (tempArray[goodSize/2-1]+tempArray[goodSize/2])/2;
       else madfm = tempArray[goodSize/2];
@@ -795,24 +801,23 @@ void Cube::setCubeStats()
       goodSize = 0;
       for(int p=0;p<xysize;p++){
 	for(int z=0;z<this->axisDim[2];z++){
-	  int vox = z * xysize + p;
+	  vox = z * xysize + p;
 	  if(!this->isBlank(vox) && !this->par.isInMW(z)){
 	    tempArray[goodSize] = this->array[vox] - this->recon[vox];
 	    goodSize++;
 	  }
 	}
       }
-//       mean = tempArray[0];
-//       for(int i=1;i<goodSize;i++) mean += tempArray[i];
-//       mean /= float(goodSize);
-//       stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
-//       for(int i=1;i<goodSize;i++) 
-// 	stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
-//       stddev = sqrt(stddev/float(goodSize-1));
-//       this->Stats.setStddev(stddev);
-        this->Stats.setStddev(findStddev<float>(tempArray,goodSize));
+      mean = tempArray[0];
+      for(int i=1;i<goodSize;i++) mean += tempArray[i];
+      mean /= float(goodSize);
+      stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
+      for(int i=1;i<goodSize;i++) 
+	stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
+      stddev = sqrt(stddev/float(goodSize-1));
+      this->Stats.setStddev(stddev);
 
-      sort(tempArray,0,goodSize);
+      std::sort(tempArray,tempArray+goodSize);
       if((goodSize%2)==0) 
 	median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
       else median = tempArray[goodSize/2];
@@ -820,12 +825,11 @@ void Cube::setCubeStats()
 	if(tempArray[i]>median) tempArray[i] = tempArray[i]-median;
 	else tempArray[i] = median - tempArray[i];
       }
-      sort(tempArray,0,goodSize);
+      std::sort(tempArray,tempArray+goodSize);
       if((goodSize%2)==0) 
 	madfm = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
       else madfm = tempArray[goodSize/2];
       this->Stats.setMadfm(madfm);
-//        this->Stats.setMadfm(findMADFM<float>(tempArray,goodSize));
     }
 
     delete [] tempArray;

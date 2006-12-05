@@ -21,8 +21,8 @@ void Cube::ReconSearch()
   
   this->ReconCube();
 
-   this->setCubeStats();
-//  this->setCubeStatsOld();
+  this->setCubeStats();
+//this->setCubeStatsOld();
     
   std::cout << "  Searching... " << std::flush;
   

@@ -1,4 +1,3 @@
-#include <cpgplot.h>
 #include <iostream>
 #include <algorithm>
 #include <math.h>
@@ -55,7 +54,7 @@ template <class T> T findMedian(T *array, int size)
   T *newarray = new T[size];
   T median;
   for(int i=0;i<size;i++) newarray[i] = array[i];
-  sort(newarray,0,size);
+  std::sort(newarray,newarray+size);
   if((size%2)==0) median = (newarray[size/2-1]+newarray[size/2])/2;
   else median = newarray[size/2];
   delete [] newarray;
@@ -72,7 +71,7 @@ template <class T> T findMADFM(T *array, int size)
   T median = findMedian<T>(array,size);
   T madfm;
   for(int i=0;i<size;i++) newarray[i] = absval(array[i]-median);
-  sort(newarray,0,size);
+  std::sort(newarray,newarray+size);
   if((size%2)==0) madfm = (newarray[size/2-1]+newarray[size/2])/2;
   else madfm = newarray[size/2];
   delete [] newarray;
@@ -93,15 +92,12 @@ template <class T> void findMedianStats(T *array, int size,
   T *newarray = new T[size];
 
   for(int i=0;i<size;i++) newarray[i] = array[i];
-  sort(newarray,0,size);
-//   int newsize = sizeof(newarray)-1;
-//   stable_sort(newarray,newarray+newsize);
+  std::sort(newarray,newarray+size);
   if((size%2)==0) median = (newarray[size/2-1]+newarray[size/2])/2;
   else median = newarray[size/2];
 
   for(int i=0;i<size;i++) newarray[i] = absval(array[i]-median);
-  sort(newarray,0,size);
-//   stable_sort(newarray,newarray+newsize);
+  std::sort(newarray,newarray+size);
   if((size%2)==0) madfm = (newarray[size/2-1]+newarray[size/2])/2;
   else madfm = newarray[size/2];
 
@@ -129,14 +125,14 @@ template <class T> void findMedianStats(T *array, int size, bool *isGood,
   }
   T *newarray = new T[goodSize];
   for(int i=0;i<size;i++) if(isGood[i]) newarray[goodSize++] = array[i];
-  sort(newarray,0,goodSize);
+  std::sort(newarray,newarray+goodSize);
   if((goodSize%2)==0) 
     median = (newarray[goodSize/2-1]+newarray[goodSize/2])/2;
   else 
     median = newarray[goodSize/2];
 
   for(int i=0;i<goodSize;i++) newarray[i] = absval(newarray[i]-median);
-  sort(newarray,0,goodSize);
+  std::sort(newarray,newarray+goodSize);
   if((goodSize%2)==0) 
     madfm = (newarray[goodSize/2-1]+newarray[goodSize/2])/2;
   else 
@@ -301,7 +297,7 @@ void findTrimmedHistStats(float *array, const int size,
   float *cumul  = new float[size];
   float *angle  = new float[size];
   for(int i=0;i<size;i++) sorted[i] = array[i]/(datamax-datamin);
-  sort(sorted,0,size);
+  std::sort(sorted,sorted+size);
   for(int i=0;i<size;i++) cumul[i] = (float)i/(float)size;
   int width =(int)( 20. * log10((float)size));
   for(int i=0;i<size;i++){
@@ -326,11 +322,9 @@ void findTrimmedHistStats(float *array, const int size,
   int finish = maxpt;
   while((finish < size-1)&&(angle[finish]>45.)) finish++;
 
-//   std::cerr << "npts = " << size << ", start = " << start << ", finish = " << finish << std::endl;
-
-  int trimSize=0;
   float *newarray = new float[finish-start+1];
-  for(int i=0;i<finish-start+1;i++) newarray[i] = sorted[i+start]*(datamax-datamin);
+  for(int i=0;i<finish-start+1;i++) 
+    newarray[i] = sorted[i+start]*(datamax-datamin);
 
   findNormalStats(newarray,finish-start+1,tmean,tsigma);
   

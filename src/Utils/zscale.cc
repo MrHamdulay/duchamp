@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include <Utils/utils.hh>
 const int nsample=1000;
 // const int width=300;
@@ -37,7 +38,7 @@ void zscale(long imagesize, float *image, float &z1, float &z2)
     size=imagesize;
   }
 
-  sort(smallarray,0,size);
+  std::sort(smallarray,smallarray+size);
   
   /* fit a linear slope to the centre of the cumulative distribution */
   long midpt = size/2;
@@ -100,7 +101,7 @@ void zscale(long imagesize, float *image, float &z1, float &z2, float blankVal)
     size=newsize;
   }
 
-  sort(smallarray,0,size);
+  std::sort(smallarray,smallarray+size);
   
   /* fit a linear slope to the centre of the cumulative distribution */
   long midpt = size/2;

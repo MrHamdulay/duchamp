@@ -20,7 +20,7 @@ int linear_regression(int num, float *x, float *y, int ilow, int ihigh,
 		      float &intercept, float &errIntercept, float &r);
 void zscale(long imagesize, float *image, float &z1, float &z2);
 void zscale(long imagesize, float *image, float &z1, float &z2, float nullVal);
-template <class T> void swap(T &a, T &b){T t=a;a=b;b=t;};
+template <class T> inline void swap(T &a, T &b){T t=a;a=b;b=t;};
 template <class T> void sort(T *arr, int begin, int end);
 template <class T1, class T2> void sort(T1 *arr, T2 *matchingArray, 
 					int begin, int end);
