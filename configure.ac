@@ -17,7 +17,7 @@ AC_CHECK_LIB([m], [log])
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([stdlib.h string.h unistd.h time.h math.h])
+AC_CHECK_HEADERS([unistd.h time.h math.h iostream fstream sstream iomanip vector string algorithm functional])
 if test "x$ac_cv_header_stdc" = xno; then
   AC_MSG_ERROR([
     -------------------------------------------------------------------

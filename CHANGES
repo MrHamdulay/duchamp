@@ -6,8 +6,9 @@ One new feature, and some improvements and bug-fixes.
 * The user can now elect to Hanning-smooth the spectral direction of the cube 
   before the searching is done. This can be done instead of the wavelet 
   reconstruction (although if both are selected, the reconstruction takes
-  precendence). The width of the Hanning kernel is governed by the hanningWidth
-  parameter.
+  precendence). This functionality is switched on and off by the flagSmooth
+  parameter, and the width of the Hanning kernel is governed by the 
+  hanningWidth parameter.
 
 * The smoothed array can also be written to a FITS file and read in at the 
   start in the same manner as the reconstructed array.
@@ -18,11 +19,14 @@ One new feature, and some improvements and bug-fixes.
   some routines has also been improved, by removing unnecessarily repetitive 
   loops.
 
+* The sorting routines have been changed, and should now be slightly quicker 
+  (and a bit more robust).
+
 * Enabled the scale bar (plotted on the 0th moment map in the spectral output 
   file) to be able to deal with much finer spatial scales (as may be expected
   from VLBI data).
 
-* Other minor changes.
+* Other minor changes to code and presentation.
 
 
 Duchamp version 1.0.6 (2006/11/01)
