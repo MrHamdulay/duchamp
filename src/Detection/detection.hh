@@ -24,6 +24,9 @@ class Voxel
 public:
   Voxel(){};
   Voxel(long x, long y, long z, float f){ itsX=x; itsY=y; itsZ=z; itsF=f;};
+  Voxel(const Voxel& v){itsX=v.itsX; itsY=v.itsY; itsZ=v.itsZ; itsF=v.itsF;};
+  Voxel& operator= (const Voxel& v){
+    itsX=v.itsX; itsY=v.itsY; itsZ=v.itsZ; itsF=v.itsF;};
   virtual ~Voxel(){};
   friend class Detection;
   // accessor functions
@@ -85,6 +88,8 @@ public:
   Detection(long numPix){
     vector <Voxel> pix(numPix); flagWCS = false; negativeSource = false;
   };
+  Detection(const Detection& d);
+  Detection& operator= (const Detection& d);
   virtual ~Detection(){};
 
   void   addPixel(Voxel point){pix.push_back(point);};

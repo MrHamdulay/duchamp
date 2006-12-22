@@ -887,7 +887,7 @@ int Cube::setupFDR()
   }
 
   // now order them 
-  sort(orderedP,0,count);
+  std::sort(orderedP,orderedP+count);
   
   // now find the maximum P value.
   int max = 0;

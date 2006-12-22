@@ -29,6 +29,104 @@ std::ostream& operator<< ( std::ostream& theStream, Voxel& vox)
 }
 //--------------------------------------------------------------------
 
+Detection::Detection(const Detection& d)
+{
+  pix             = d.pix;
+  xcentre	  = d.xcentre;
+  ycentre	  = d.ycentre;
+  zcentre	  = d.zcentre;
+  xmin,xmax	  = d.xmin,xmax;
+  ymin,ymax	  = d.ymin,ymax;
+  zmin,zmax	  = d.zmin,zmax;
+  xSubOffset	  = d.xSubOffset;
+  ySubOffset	  = d.ySubOffset;
+  zSubOffset	  = d.zSubOffset;
+  totalFlux	  = d.totalFlux;
+  intFlux	  = d.intFlux;
+  peakFlux	  = d.peakFlux;
+  xpeak		  = d.xpeak;
+  ypeak		  = d.ypeak;
+  zpeak		  = d.zpeak;
+  peakSNR	  = d.peakSNR;
+  negativeSource  = d.negativeSource;
+  flagText	  = d.flagText;
+  id		  = d.id;
+  name		  = d.name;
+  flagWCS	  = d.flagWCS;
+  raS		  = d.raS;
+  decS		  = d.decS;
+  ra		  = d.ra;
+  dec		  = d.dec;
+  raWidth	  = d.raWidth;
+  decWidth	  = d.decWidth;
+  specUnits	  = d.specUnits;
+  fluxUnits	  = d.fluxUnits;
+  intFluxUnits	  = d.intFluxUnits;
+  lngtype	  = d.lngtype;
+  lattype	  = d.lattype;
+  vel		  = d.vel;
+  velWidth	  = d.velWidth;
+  velMin	  = d.velMin;
+  velMax	  = d.velMax;
+  posPrec	  = d.posPrec;
+  xyzPrec	  = d.xyzPrec;
+  fintPrec	  = d.fintPrec;
+  fpeakPrec	  = d.fpeakPrec;
+  velPrec	  = d.velPrec;
+  snrPrec         = d.snrPrec;
+}
+
+//--------------------------------------------------------------------
+
+  Detection& Detection::operator= (const Detection& d)
+{
+  pix             = d.pix;
+  xcentre	  = d.xcentre;
+  ycentre	  = d.ycentre;
+  zcentre	  = d.zcentre;
+  xmin,xmax	  = d.xmin,xmax;
+  ymin,ymax	  = d.ymin,ymax;
+  zmin,zmax	  = d.zmin,zmax;
+  xSubOffset	  = d.xSubOffset;
+  ySubOffset	  = d.ySubOffset;
+  zSubOffset	  = d.zSubOffset;
+  totalFlux	  = d.totalFlux;
+  intFlux	  = d.intFlux;
+  peakFlux	  = d.peakFlux;
+  xpeak		  = d.xpeak;
+  ypeak		  = d.ypeak;
+  zpeak		  = d.zpeak;
+  peakSNR	  = d.peakSNR;
+  negativeSource  = d.negativeSource;
+  flagText	  = d.flagText;
+  id		  = d.id;
+  name		  = d.name;
+  flagWCS	  = d.flagWCS;
+  raS		  = d.raS;
+  decS		  = d.decS;
+  ra		  = d.ra;
+  dec		  = d.dec;
+  raWidth	  = d.raWidth;
+  decWidth	  = d.decWidth;
+  specUnits	  = d.specUnits;
+  fluxUnits	  = d.fluxUnits;
+  intFluxUnits	  = d.intFluxUnits;
+  lngtype	  = d.lngtype;
+  lattype	  = d.lattype;
+  vel		  = d.vel;
+  velWidth	  = d.velWidth;
+  velMin	  = d.velMin;
+  velMax	  = d.velMax;
+  posPrec	  = d.posPrec;
+  xyzPrec	  = d.xyzPrec;
+  fintPrec	  = d.fintPrec;
+  fpeakPrec	  = d.fpeakPrec;
+  velPrec	  = d.velPrec;
+  snrPrec         = d.snrPrec;
+}
+
+//--------------------------------------------------------------------
+
 void Detection::calcParams()
 {
   /**
