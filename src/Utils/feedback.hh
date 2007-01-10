@@ -17,30 +17,43 @@ class ProgressBar
    *    that shows how far through a function or loop you are.
    *   The length of it defaults to 20, but can be set when declaring the
    *    object.
-   *   There are three functions: 
-   *        init(size) --> prints an empty bar, and defines the increment
+   *   There are five functions: 
+   *        init(size)  --> prints an empty bar, and defines the increment
    *        update(num) --> prints the correct number of #s, but only when
-   *                        num is a multiple of the increment.
-   *        rewind(num) --> prints backspaces to cover the entire bar.
+   *                         num is a multiple of the increment.
+   *        rewind()    --> prints backspaces to cover the entire bar.
+   *        remove()    --> does a rewind(), then prints spaces to overwrite
+   *                         the bar area -- more clean.
+   *        fillSpace(string) --> does a remove(), then writes the string into
+   *                               the same space.
    */
 public:
-  ProgressBar(){length=20; loc=BEG;};
-  ProgressBar(int newlength){length=newlength; loc=BEG;};
+  ProgressBar(){length=20; loc=BEG; numVisible = 0;};
+  ProgressBar(int newlength){length=newlength; loc=BEG; numVisible = 0;};
+  virtual ~ProgressBar(){};
   enum POS {BEG=0,END};
 
-  void init(int size){  
-    std::cout << "|"; printSpace(length); 
+  void init(int size){ 
+    stepSize = float(size) / float(length);
+    std::cout << "|"; 
+    printSpace(length); 
     std::cout << "|" << std::flush;
-    fraction = size/length;
     loc = END;
   };
   void update(int num){
-    if(num%fraction==0){
-      printBackSpace(length+2); std::cout << "|"; 
-      printHash(num/fraction); printSpace(length-num/fraction); 
+    int numNeeded = 0;
+    for(int i=0;i<length;i++)
+      if(num>(i*stepSize)) numNeeded++;
+    
+    if(numNeeded != numVisible){
+      numVisible = numNeeded;
+      if(loc==END) printBackSpace(length+2); 
+      std::cout << "|"; 
+      printHash(numNeeded);
+      printSpace(length-numNeeded);
       std::cout << "|" << std::flush;
+      loc=END;
     }
-    loc=END;
   };
   void rewind(){
     if(loc==END) printBackSpace(length+2); 
@@ -55,15 +68,15 @@ public:
     std::cout << std::flush;
   };
   void fillSpace(std::string someString){
-    rewind();
+    remove();
     std::cout << someString;
-    printSpace(length+2-someString.size());
     loc=END;
   }
 private:
   POS loc;
-  int fraction;
+  float stepSize;
   int length;
+  int numVisible;
 };
 
 #endif // FEEDBACK_HH

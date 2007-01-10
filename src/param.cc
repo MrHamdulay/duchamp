@@ -216,8 +216,8 @@ void FitsHeader::fixUnits(Param &par)
       this->spectralUnits = this->wcs->cunit[this->wcs->spec];
       if(this->spectralUnits==""){
 	errmsg << 
-	  "Spectral units not specified. Setting them to 'XX' for clarity.\n";
-	this->spectralUnits = "XX";
+	  "Spectral units not specified. Setting them to 'SPC' for clarity.\n";
+	this->spectralUnits = "SPC";
       }
       duchampError("fixUnits", errmsg.str());
       
@@ -628,7 +628,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   // BUG -- can get error: `boolalpha' is not a member of type `ios' -- old compilers: gcc 2.95.3?
   //   theStream.setf(std::ios::boolalpha);
   theStream.setf(std::ios::left);
-  theStream  <<"---- Parameters ----"<<endl;
+  theStream  <<"\n---- Parameters ----"<<endl;
   theStream  << std::setfill('.');
   const int widthText = 38;
   const int widthPar  = 18;
@@ -843,7 +843,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<setw(widthPar)<<setiosflags(std::ios::right)<<"[spectralMethod]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<par.getSpectralMethod() <<endl;
-  theStream  <<"--------------------"<<endl;
+  theStream  <<"--------------------\n\n";
   theStream  << std::setfill(' ');
   theStream.unsetf(std::ios::left);
   //  theStream.unsetf(std::ios::boolalpha);

@@ -65,8 +65,8 @@ DataArray::DataArray(short int nDim, long *dimensions){
 
 DataArray::~DataArray()
 {
-  delete [] this->array;
-  delete [] this->axisDim;
+  if(this->numPixels>0) delete [] this->array;
+  if(this->numDim>0)    delete [] this->axisDim;
   this->objectList.clear();
 }
 //--------------------------------------------------------------------
@@ -160,6 +160,7 @@ std::ostream& operator<< ( std::ostream& theStream, DataArray &array)
 
 Image::Image(long size){
   // need error handling in case size<0 !!!
+  this->numPixels = this->numDim = 0;
   if(size<0)
     duchampError("Image(size)","Negative size -- could not define Image");
   else{
@@ -172,6 +173,7 @@ Image::Image(long size){
 //--------------------------------------------------------------------
 
 Image::Image(long *dimensions){
+  this->numPixels = this->numDim = 0;
   int size = dimensions[0] * dimensions[1];
   if(size<0)
     duchampError("Image(dimArray)","Negative size -- could not define Image");
@@ -292,15 +294,23 @@ void Image::removeMW()
 
 Cube::Cube(long size){
   // need error handling in case size<0 !!!
+
   this->reconAllocated = false;
   this->baselineAllocated = false;
+  this->numPixels = this->numDim = 0;
   if(size<0)
     duchampError("Cube(size)","Negative size -- could not define Cube");
   else{
     if(size>0){
       this->array = new float[size];
-      this->recon = new float[size];
-      this->reconAllocated = true;
+      if(this->par.getFlagATrous()||this->par.getFlagSmooth()){
+	this->recon = new float[size];
+	this->reconAllocated = true;
+      }
+      if(this->par.getFlagBaseline()){
+	this->baseline = new float[size];
+	this->baselineAllocated = true;
+      }
     }
     this->numPixels = size;
     this->axisDim = new long[2];
@@ -315,6 +325,7 @@ Cube::Cube(long *dimensions){
   int imsize = dimensions[0] * dimensions[1];
   this->reconAllocated = false;
   this->baselineAllocated = false;
+  this->numPixels = this->numDim = 0;
   if((size<0) || (imsize<0) )
     duchampError("Cube(dimArray)","Negative size -- could not define Cube");
   else{
@@ -342,10 +353,12 @@ Cube::Cube(long *dimensions){
 
 Cube::~Cube()
 {
-//   delete [] array;
-//   delete [] axisDim;
-//   objectList.clear();
-
+  /**
+   *  Destructor for the Cube class.
+   *
+   *  The destructor deletes the memory allocated for Cube::detectMap, and,
+   *  if these have been allocated, Cube::recon and Cube::baseline.
+   */
   delete [] this->detectMap;
   if(this->reconAllocated)    delete [] this->recon;
   if(this->baselineAllocated) delete [] this->baseline;
@@ -355,12 +368,17 @@ Cube::~Cube()
 void Cube::initialiseCube(long *dimensions)
 {
   /**
-   *  Cube::initialiseCube(long *dim)
-   *   A function that defines the sizes of all the necessary
+   *  A function that defines the sizes of all the necessary
    *    arrays in the Cube class.
-   *   It also defines the values of the axis dimensions.
-   *   This is done with the WCS in the FitsHeader class, so the 
-   *    WCS needs to be good and have three axes.
+   *  
+   *  The function will set the sizes of all arrays that will be used by Cube. 
+   *  It will also define the values of the axis dimensions: this will be done 
+   *   using the WCS in the FitsHeader class, so the WCS needs to be good and 
+   *   have three axes. If this is not the case, the axes are assumed to be 
+   *   ordered in the sense of lng,lat,spc.
+   *
+   *  \param dimensions An array of values giving the dimensions (sizes) for 
+   *  all axes.  
    */ 
 
   int lng,lat,spc,size,imsize;
@@ -413,10 +431,15 @@ void Cube::initialiseCube(long *dimensions)
 
 int Cube::getopts(int argc, char ** argv)
 {
-  /**
-   *   Cube::getopt
-   *    A front-end to read in the command-line options,
-   *     and then read in the correct parameters to the cube->par
+  /**  Read in command-line options.
+   *
+   *   A function that reads in the command-line options, in a manner 
+   *    tailored for use with the main Duchamp program.
+   *   Based on the options given, the appropriate Param set will be read
+   *    in to the Cube class.
+   *
+   *   \param argc The number of command line arguments.
+   *   \param argv The array of command line arguments.
    */
 
   int returnValue;
@@ -554,28 +577,38 @@ void Cube::removeMW()
 
 void Cube::calcObjectWCSparams()
 {
-  /** 
-   * Cube::calcObjectWCSparams()
+  /** Calculate the WCS parameters for each Cube Detection.
+   * 
    *  A function that calculates the WCS parameters for each object in the 
-   *  cube's list of detections.
-   *  Each object gets an ID number set (just the order in the list), and if 
-   *   the WCS is good, the WCS paramters are calculated.
+   *  Cube's list of detections.
+   *  Each object gets an ID number assigned to it (which is simply its order 
+   *   in the list), and if the WCS is good, the WCS paramters are calculated.
    */
   
-  for(int i=0; i<this->objectList.size();i++){
+  for(int i=0;i<this->objectList.size();i++){
     this->objectList[i].setID(i+1);
     this->objectList[i].calcWCSparams(this->head);
     this->objectList[i].setPeakSNR( (this->objectList[i].getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
   }  
 
+  if(!this->head.isWCS()){ 
+    // if the WCS is bad, set the object names to Obj01 etc
+    int numspaces = int(log10(this->objectList.size())) + 1;
+    stringstream ss;
+    for(int i=0;i<this->objectList.size();i++){
+      ss.str("");
+      ss << "Obj" << std::setfill('0') << std::setw(numspaces) << i+1;
+      this->objectList[i].setName(ss.str());
+    }
+  }
   
 }
 //--------------------------------------------------------------------
 
 void Cube::sortDetections()
 {
-  /** 
-   * Cube::sortDetections()
+  /** Sort the list of detections.
+   *
    *  A front end to the sort-by functions.
    *  If there is a good WCS, the detection list is sorted by velocity.
    *  Otherwise, it is sorted by increasing z-pixel value.
@@ -591,8 +624,8 @@ void Cube::sortDetections()
 
 void Cube::updateDetectMap()
 {
-  /** 
-   * Cube::updateDetectMap()
+  /** Update the map of detected pixels.
+   *
    *  A function that, for each detected object in the cube's list, increments 
    *   the cube's detection map by the required amount at each pixel.
    */
@@ -609,10 +642,12 @@ void Cube::updateDetectMap()
 
 void Cube::updateDetectMap(Detection obj)
 {
-  /** 
-   * Cube::updateDetectMap(Detection)
+  /** Update the map of detected pixels for a given Detection.
+   *
    *  A function that, for the given object, increments the cube's
    *  detection map by the required amount at each pixel.
+   * 
+   *  \param obj A Detection object that is being incorporated into the map.
    */
   for(int pix=0;pix<obj.getSize();pix++) {
     int spatialPos = obj.getX(pix)+obj.getY(pix)*this->axisDim[0];
@@ -623,15 +658,16 @@ void Cube::updateDetectMap(Detection obj)
 
 void Cube::setCubeStatsOld()
 {
-  /**
-   *  Cube::setCubeStatsOld()
-   *   Calculates the full statistics for the cube:
-   *     mean, rms, median, madfm
+  /**  Calculate the statistics for the Cube.
+   *  
+   *   \deprecated
+   *
+   *   Calculates the full statistics for the cube:  mean, rms, median, madfm.
    *   Only do this if the threshold has not been defined (ie. is still 0.,
    *    its default). 
-   *   Also work out the threshold and store it in the par set.
+   *   Also work out the threshold and store it in the Param set.
    *   
-   *   For stats calculations, ignore BLANKs and MW channels.
+   *   For the stats calculations, we ignore BLANKs and MW channels.
    */
 
   if(!this->par.getFlagFDR() && this->par.getFlagUserThreshold() ){
@@ -682,9 +718,9 @@ void Cube::setCubeStatsOld()
       reconStats.calculate(tempArray,goodSize);
 
       // Get the "middle" estimators from the original array.
-      // Get the "spread" estimators from the residual (orig-recon) array
       this->Stats.setMean(origStats.getMean());
       this->Stats.setMedian(origStats.getMedian());
+      // Get the "spread" estimators from the residual (orig-recon) array
       this->Stats.setStddev(reconStats.getStddev());
       this->Stats.setMadfm(reconStats.getMadfm());
     }
@@ -715,17 +751,18 @@ void Cube::setCubeStatsOld()
 
 void Cube::setCubeStats()
 {
-  /**
-   *  Cube::setCubeStats()
+  /**  Calculate the statistics for the Cube.
+   *
    *   Calculates the full statistics for the cube:
    *     mean, rms, median, madfm
    *   Only do this if the threshold has not been defined (ie. is still 0.,
    *    its default). 
    *   Also work out the threshold and store it in the par set.
    *   
-   *   Different from setCubeStatsOld as it doesn't use the getStats functions
-   *    but has own versions of them hardcoded to ignore BLANKs and 
-   *    MW channels.
+   *   Different from Cube::setCubeStatsOld() as it doesn't use the 
+   *    getStats functions but has own versions of them hardcoded to 
+   *    ignore BLANKs and MW channels. This saves on memory usage -- necessary
+   *    for dealing with very big files.
    */
 
   if(!this->par.getFlagFDR() && this->par.getFlagUserThreshold() ){
@@ -858,11 +895,12 @@ void Cube::setCubeStats()
 
 int Cube::setupFDR()
 {
-  /**
-   *  Cube::setupFDR()
-   *   Determines the critical Prob value for the False Discovery Rate
+  /**  Set up thresholds for the False Discovery Rate routine.
+   *  
+   *   Determines the critical Probability value for the False Discovery Rate
    *    detection routine. All pixels with Prob less than this value will
    *    be considered detections.
+   *
    *   The Prob here is the probability, assuming a Normal distribution, of
    *    obtaining a value as high or higher than the pixel value (ie. only the
    *    positive tail of the PDF)
@@ -933,11 +971,13 @@ int Cube::setupFDR()
 
 float Cube::enclosedFlux(Detection obj)
 {
-  /** 
-   *  float Cube::enclosedFlux(Detection obj)
+  /** Find the flux enclosed by a Detection.
+   *  
    *   A function to calculate the flux enclosed by the range
    *    of pixels detected in the object obj (not necessarily all
    *    pixels will have been detected).
+   *
+   *   \param obj The Detection under consideration.
    */
   obj.calcParams();
   int xsize = obj.getXmax()-obj.getXmin()+1;
@@ -965,9 +1005,12 @@ float Cube::enclosedFlux(Detection obj)
 
 void Cube::setupColumns()
 {
-  /**
-   *  Cube::setupColumns()
+  /** Set up the columns for the Cube.
+   *  
    *   A front-end to the two setup routines in columns.cc.
+   *   This first calculates the WCS parameters for all objects, then
+   *    sets up the columns (calculates their widths and precisions and so on).
+   *   The precisions are also stored in each Detection object.
    */ 
   this->calcObjectWCSparams();  
   // need this as the colSet functions use vel, RA, Dec, etc...
@@ -1004,11 +1047,13 @@ void Cube::setupColumns()
 
 bool Cube::objAtSpatialEdge(Detection obj)
 {
-  /**
-   *  bool Cube::objAtSpatialEdge()
+  /** Is the object at the edge of the image?
+   * 
    *   A function to test whether the object obj
    *    lies at the edge of the cube's spatial field --
-   *    either at the boundary, or next to BLANKs
+   *    either at the boundary, or next to BLANKs.
+   *
+   *   /param obj The Detection under consideration.
    */
 
   bool atEdge = false;
@@ -1038,11 +1083,13 @@ bool Cube::objAtSpatialEdge(Detection obj)
 
 bool Cube::objAtSpectralEdge(Detection obj)
 {
-  /**
-   *  bool Cube::objAtSpectralEdge()
+  /**  Is the object at an end of the spectrum?
+   *  
    *   A function to test whether the object obj
    *    lies at the edge of the cube's spectral extent --
-   *    either at the boundary, or next to BLANKs
+   *    either at the boundary, or next to BLANKs.
+   *
+   *   /param obj The Detection under consideration.
    */
 
   bool atEdge = false;
@@ -1066,13 +1113,15 @@ bool Cube::objAtSpectralEdge(Detection obj)
 
 void Cube::setObjectFlags()
 {
-  /**
-   *  void Cube::setObjectFlags()
+  /**  Set warning flags for the detections.
+   *  
    *   A function to set any warning flags for all the detected objects
    *    associated with the cube.
    *   Flags to be looked for:
-   *       * Negative enclosed flux (N)
-   *       * Object at edge of field (E)
+   *    <ul><li> Negative enclosed flux (N)
+   *        <li> Detection at edge of field (spatially) (E)
+   *        <li> Detection at edge of spectral region (S)
+   *    </ul>
    */
 
   for(int i=0;i<this->objectList.size();i++){
@@ -1093,6 +1142,16 @@ void Cube::setObjectFlags()
 
 void Cube::plotBlankEdges()
 {
+  /** Draw blank edges of cube.
+   *
+   *  A front end to the drawBlankEdges() function. This draws the lines
+   *   indicating the extent of the non-BLANK region of the cube in the 
+   *   PGPLOT colour MAGENTA (from the namespace mycpgplot), using the Cube's
+   *   arrays and dimensions.
+   *
+   *  Note that a PGPLOT device needs to be open. This is only done if the 
+   *   appropriate Param parameter is set.
+   */
   if(this->par.drawBlankEdge()){
     int colour;
     cpgqci(&colour);

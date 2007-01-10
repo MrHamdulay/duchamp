@@ -19,6 +19,7 @@ void Cube::CubicSearch()
    *  the intermediate detections are logged in the log file.
    */
 
+  if(this->par.isVerbose()) std::cout << "  ";
   this->setCubeStats();
     
   this->objectList = search3DArray(this->axisDim,this->array,
@@ -106,8 +107,8 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 
     //    num = outputList.size();
     if(par.isVerbose()) {
-      bar.rewind();
-      std::cout <<"Found " << num <<";" << std::flush;
+      bar.fillSpace("Found ");
+      std::cout << num <<";" << std::flush;
     }
 
   }
@@ -152,10 +153,8 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
   }
 
   if(par.isVerbose()){
-    bar.rewind();
-    std::cout << "Found " << num << ".";
-    printSpace(44);
-    std::cout << std::endl << std::flush;
+    bar.fillSpace("Found ");
+    std::cout << num << ".\n";
   }
 
   delete [] doPixel;

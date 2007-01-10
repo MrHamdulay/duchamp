@@ -22,9 +22,11 @@ void Cube::ReconSearch()
   
   this->ReconCube();
 
+  if(this->par.isVerbose()) std::cout << "  ";
+
   this->setCubeStats();
     
-  std::cout << "  Searching... " << std::flush;
+  if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
   
   this->objectList = searchReconArray(this->axisDim,this->array,
 				      this->recon,this->par,this->Stats);
@@ -274,14 +276,14 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
 
     num = outputList.size();
     if(par.isVerbose()) {
-      bar.rewind();
-      std::cout <<"Found " << num <<"; " << std::flush;
+      bar.fillSpace("Found ");
+      std::cout << num <<";" << std::flush;
     }
   }
 
   // Second search --  in each channel
   if(par.isVerbose()){
-    std::cout << "2D: ";
+    std::cout << "  2D: ";
     bar.init(zdim);
   }
 
@@ -327,10 +329,10 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
 
   }
 
-  bar.rewind();
-  std::cout << "Found " << num << ".";
-  printSpace(22);  
-  std::cout << std::endl << std::flush;
+  if(par.isVerbose()){
+    bar.fillSpace("Found ");
+    std::cout << num << ".\n";
+  }
 
   delete [] doPixel;
 

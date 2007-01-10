@@ -21,12 +21,14 @@ void Cube::SmoothCube()
   float *spectrum = new float[this->axisDim[2]];
 
   ProgressBar bar;
-  std::cout<<"  Smoothing... ";
-  if(par.isVerbose()) bar.init(xySize);
+  if(this->par.isVerbose()) {
+    std::cout<<"  Smoothing... ";
+    bar.init(xySize);
+  }
 
   for(int pix=0;pix<xySize;pix++){
 
-    if( par.isVerbose() ) bar.update(pix+1);
+    if( this->par.isVerbose() ) bar.update(pix+1);
     
     for(int z=0;z<zdim;z++){
       if(this->isBlank(z*xySize+pix)) spectrum[z]=0.;
@@ -44,8 +46,7 @@ void Cube::SmoothCube()
     delete [] smoothed;
   }
   this->reconExists = true;
-  bar.remove();
-  std::cout << "All Done.\n";
+  if(this->par.isVerbose()) bar.fillSpace("All Done.\n");
 
   delete [] spectrum;
 
@@ -63,8 +64,9 @@ void Cube::SmoothSearch()
    */
   
   this->SmoothCube();
+  if(this->par.isVerbose()) std::cout << "  ";
   this->setCubeStats();
-  std::cout << "  Searching... " << std::flush;
+  if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
   
   this->objectList = search3DArray(this->axisDim,this->recon,
 				   this->par,this->Stats);

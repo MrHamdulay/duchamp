@@ -15,7 +15,7 @@ using std::vector;
 using namespace Column;
 
 /**
- * Voxel class
+ * Voxel class.
  *  A 3-dimensional pixel, with x,y,z position + flux
  */
 
@@ -53,7 +53,7 @@ protected:
 };
 
 /**
- * Pixel class
+ * Pixel class.
  *  A 2-dimensional type of voxel, with just x & y position + flux
  */
 

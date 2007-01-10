@@ -27,12 +27,13 @@ using namespace Column;
 using namespace Statistics;
 
 /****************************************************************/
-/////////////////////////////////////////////////////////////
-//// Definition of an n-dimensional data array:
-////     array of pixel values, size & dimensions
-////     array of Detection objects
-/////////////////////////////////////////////////////////////
-
+/** 
+ * Base class for the image container.
+ *
+ * Definition of an n-dimensional data array:
+ *     array of pixel values, size & dimensions
+ *     array of Detection objects
+ */
 
 class DataArray
 {
@@ -91,75 +92,20 @@ public:
   friend std::ostream& operator<< ( std::ostream& theStream, DataArray &array);
 
 protected:
-  short int               numDim;     // number of dimensions.
-  long                   *axisDim;    // array of dimensions of cube 
-                                      //     (ie. how large in each direction).
-  long                    numPixels;  // total number of pixels in cube
-  float                  *array;      // array of data
-  vector <Detection>      objectList; // the list of detected objects
-  Param                   par;        // a parameter list.
-  StatsContainer<float>   Stats;      // The statistics for the dataArray
-};
-
-
-/****************************************************************/
-/////////////////////////////////////////////////////////////
-//// Definition of an image object (2D):
-////     a DataArray object
-////     arrays for: probability values (for FDR)
-////                 mask image to indicate location of objects
-////                 detected objects
-////     statistics information
-/////////////////////////////////////////////////////////////
-
-class Cube;
-class Image : public DataArray
-{
-public:
-  Image(){numPixels=0; numDim=2;};
-  Image(long nPix);
-  Image(long *dimensions);
-  virtual ~Image(){};
-
-  // Defining the array
-  void      saveArray(float *input, long size);
-  void      extractSpectrum(float *Array, long *dim, long pixel);
-  void      extractImage(float *Array, long *dim, long channel);
-  void      extractSpectrum(Cube &cube, long pixel);
-  void      extractImage(Cube &cube, long channel);
-  // Accessing the data.
-  float     getPixValue(long x, long y){return array[y*axisDim[0] + x];};
-  float     getPixValue(long pos){return array[pos];};
-  // the next few should have checks against array overflow...
-  void      setPixValue(long x, long y, float f){array[y*axisDim[0] + x] = f;};
-  void      setPixValue(long pos, float f){array[pos] = f;};
-  bool      isBlank(int vox){return par.isBlank(array[vox]);};
-  bool      isBlank(long x,long y){return par.isBlank(array[y*axisDim[0]+x]);};
-
-  // Detection-related
-  void      lutz_detect();            // in Detection/lutz_detect.cc
-  void      spectrumDetect();         // in Detection/spectrumDetect.cc
-  int       getMinSize(){return minSize;};
-  void      setMinSize(int i){minSize=i;};
-  // the rest are in Detection/thresholding_functions.cc
-  bool      isDetection(long x, long y){
-    long voxel = y*axisDim[0] + x;
-    if(isBlank(x,y)) return false;
-    else return Stats.isDetection(array[voxel]);
-  };  
-
-  void      removeMW();
-  
-private: 
-  int        minSize;    // the minimum number of pixels for a detection 
-                         //  to be accepted.
+  short int               numDim;     ///< Number of dimensions.
+  long                   *axisDim;    ///< Array of dimensions of cube (ie. how large in each direction).
+  long                    numPixels;  ///< Total number of pixels in cube.
+  float                  *array;      ///< Array of data.
+  vector <Detection>      objectList; ///< The list of detected objects.
+  Param                   par;        ///< A parameter list.
+  StatsContainer<float>   Stats;      ///< The statistics for the DataArray.
 };
 
 /****************************************************************/
-/////////////////////////////////////////////////////////////
-//// Definition of an data-cube object (3D):
-////     a DataArray object limited to dim=3
-/////////////////////////////////////////////////////////////
+/**
+ * Definition of an data-cube object (3D):
+ *     a DataArray object limited to dim=3
+ */
 
 class Cube : public DataArray
 {
@@ -304,21 +250,70 @@ public:
   void    drawFieldEdge();
 
 private: 
-  float  *recon;           // reconstructed array -- used when doing a trous 
-                           //   reconstruction.
-  bool    reconExists;     // flag saying whether there is a reconstruction
-  short  *detectMap;       // "moment map" -- x,y locations of detected pixels
-  float  *baseline;        // array of spectral baseline values.
-
-  bool    reconAllocated;   // have we allocated memory for the recon array?
-  bool    baselineAllocated;// have we allocated memory for the baseline array?
-	
-  FitsHeader head;         // the WCS and other header information.
-  vector<Col> fullCols;    // the list of all columns as printed in the 
-                           //  results file
-  vector<Col> logCols;     // the list of columns as printed in the log file
+  float  *recon;            ///< reconstructed array - used when doing a trous reconstruction.
+  bool    reconExists;      ///< flag saying whether there is a reconstruction
+  short  *detectMap;        ///< "moment map" - x,y locations of detected pixels
+  float  *baseline;         ///< array of spectral baseline values.
+			     
+  bool    reconAllocated;   ///< have we allocated memory for the recon array?
+  bool    baselineAllocated;///< have we allocated memory for the baseline array?
+			     
+  FitsHeader head;          ///< the WCS and other header information.
+  vector<Col> fullCols;     ///< the list of all columns as printed in the results file
+  vector<Col> logCols;      ///< the list of columns as printed in the log file
 
 };
+
+/****************************************************************/
+/**
+ *  A DataArray object limited to two dimensions, and with some additional
+ *   special functions. 
+ *
+ *  It is used primarily for searching a 1- or 2-D array with 
+ *   lutz_detect() and spectrumDetect().
+ */
+
+class Image : public DataArray
+{
+public:
+  Image(){numPixels=0; numDim=2;};
+  Image(long nPix);
+  Image(long *dimensions);
+  virtual ~Image(){};
+
+  // Defining the array
+  void      saveArray(float *input, long size);
+  void      extractSpectrum(float *Array, long *dim, long pixel);
+  void      extractImage(float *Array, long *dim, long channel);
+  void      extractSpectrum(Cube &cube, long pixel);
+  void      extractImage(Cube &cube, long channel);
+  // Accessing the data.
+  float     getPixValue(long x, long y){return array[y*axisDim[0] + x];};
+  float     getPixValue(long pos){return array[pos];};
+  // the next few should have checks against array overflow...
+  void      setPixValue(long x, long y, float f){array[y*axisDim[0] + x] = f;};
+  void      setPixValue(long pos, float f){array[pos] = f;};
+  bool      isBlank(int vox){return par.isBlank(array[vox]);};
+  bool      isBlank(long x,long y){return par.isBlank(array[y*axisDim[0]+x]);};
+
+  // Detection-related
+  void      lutz_detect();            // in Detection/lutz_detect.cc
+  void      spectrumDetect();         // in Detection/spectrumDetect.cc
+  int       getMinSize(){return minSize;};
+  void      setMinSize(int i){minSize=i;};
+  // the rest are in Detection/thresholding_functions.cc
+  bool      isDetection(long x, long y){
+    long voxel = y*axisDim[0] + x;
+    if(isBlank(x,y)) return false;
+    else return Stats.isDetection(array[voxel]);
+  };  
+
+  void      removeMW();
+  
+private: 
+  int        minSize;    ///< the minimum number of pixels for a detection to be accepted.
+};
+
 
 /****************************************************************/
 //////////////////////////////////////////////////////
