@@ -9,19 +9,16 @@
 void baselineSubtract(long numSpec, long specLength, float *originalCube, 
 		      float *baselineValues, Param &par)
 {
-  /** 
-   *  baselineSubtract(long numSpec, long specLength, float *originalCube, 
-   *                   float *baselineValues, Param &par)
-   *    
-   *    A routine to find the baseline of spectra in a cube (the spectral 
-   *     direction is assumed to be the third dimension) and subtract it off 
-   *     the original.
-   *    The original cube has numSpec spatial pixels, each containing a 
-   *     spectrum of length specLength.
-   *    The original cube is read in, and returned with the baseline removed.
-   *    This baseline is stored in the array baselineValues.
-   *    The Param variable par is needed to test for blank pixels -- these are 
-   *     kept as blank.
+  /** Remove spectral basline from a cube
+   *  
+   *  A routine to find the baseline of each spectrum in a cube (the spectral 
+   *    direction is assumed to be the third dimension) and subtract it off 
+   *    the original.
+   * \param numSpec Number of spatial pixels in original cube.
+   * \param specLength Size of spectral dimension of original cube.
+   * \param originalCube The cube that is to have its baseline removed. 
+   * \param baselineValues The cube of baseline values -- the same size as the original
+   * \param par The Param set: information on BLANK values and on how the subtraction is done.
    */
   extern Filter reconFilter;
   float *spec     = new float[specLength];
@@ -66,7 +63,6 @@ void baselineSubtract(long numSpec, long specLength, float *originalCube,
 void getBaseline(long size, float *input, float *baseline, Param &par)
 {
   /**
-   *  getBaseline(long size, float *input, float *baseline, Param &par)
    *    A function to find the baseline of an input (1-D) spectrum.
    *    Uses the a trous reconstruction, keeping only the highest two scales, 
    *     to reconstruct the baseline.
@@ -74,7 +70,11 @@ void getBaseline(long size, float *input, float *baseline, Param &par)
    *     trimmed at 8*MADFM above the median before reconstruction. 
    *     This reduces the strong dips created by the presence of very strong 
    *     signals.
-   *    The baseline array is returned -- no change is made to the input array.
+   *  \param size Length of the spectrum.
+   *  \param input The input array : this is not affected.
+   *  \param baseline The returned baseline array. This needs to be allocated
+   *   before the function is called.
+   *  \param par The Param set, needed for the atrous reconstruction.
    */
 
   extern Filter reconFilter;
@@ -112,17 +112,19 @@ void getBaseline(long size, float *input, float *baseline, Param &par)
 void getBaseline(long size, float *input, float *baseline)
 {
   /**
-   *  getBaseline(long size, float *input, float *baseline)
-   *    A function to find the baseline of an input (1-D) spectrum.
-   *    This version is designed for programs not using Param classes -- it 
-   *     keeps that side of things hidden from the user.
-   *    Uses the a trous reconstruction, keeping only the highest two scales, 
-   *     to reconstruct the baseline.
-   *    To avoid contamination by very strong signals, the input spectrum is 
-   *     trimmed at 8*MADFM above the median before reconstruction. This 
-   *     reduces the strong dips created by the presence of very strong 
-   *     signals.
-   *    The baseline array is returned -- no change is made to the input array.
+   *  A function to find the baseline of an input (1-D) spectrum.
+   *  This version is designed for programs not using Param classes -- it 
+   *   keeps that side of things hidden from the user.
+   *  Uses the a trous reconstruction, keeping only the highest two scales, 
+   *   to reconstruct the baseline.
+   *  To avoid contamination by very strong signals, the input spectrum is 
+   *   trimmed at 8*MADFM above the median before reconstruction. This 
+   *   reduces the strong dips created by the presence of very strong 
+   *   signals.
+   *  \param size Length of the spectrum.
+   *  \param input The input array : this is not affected.
+   *  \param baseline The returned baseline array. This needs to be allocated
+   *   before the function is called.
    */
 
   extern Filter reconFilter;

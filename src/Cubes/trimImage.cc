@@ -5,9 +5,7 @@
 void Cube::trimCube()
 {
   /**
-   *  Cube::trimCube()
-   *
-   *   If the blankPix flag has been set, this routine trims excess blank 
+   *  If the blankPix flag has been set, this routine trims excess blank 
    *    pixels from the edges of the spatial image.
    *   It uses as its template the first channel, assuming that its non-BLANK 
    *    size is representative of the rest of the channels.
@@ -128,10 +126,8 @@ void Cube::trimCube()
 void Cube::unTrimCube()
 {
   /**
-   *  Cube::unTrimCube()
-   *
-   *   If the cube has been trimmed by trimCube(), this task adds back the BLANK pixels on
-   *    the edges, so that it returns to its original size.
+   *  If the cube has been trimmed by trimCube(), this task adds back the 
+   *   BLANK pixels on the edges, so that it returns to its original size.
    *   All arrays are similarly edited.
    */
 

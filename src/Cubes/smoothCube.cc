@@ -6,8 +6,6 @@
 void Cube::SmoothCube()
 {
   /**
-   *  Cube::SmoothCube()
-   *
    *   A function that smooths each spectrum in the cube using the 
    *    Hanning smoothing function. The degree of smoothing is given
    *    by the parameter hannWidth.
@@ -56,11 +54,10 @@ void Cube::SmoothCube()
 void Cube::SmoothSearch()
 {
   /**
-   * Cube::SmoothSearch()
-   *   The Cube is first smoothed, using Cube::SmoothCube().
-   *   It is then searched, using searchReconArray.
-   *   The resulting object list is stored in the Cube, and outputted
-   *    to the log file if the user so requests.
+   * The Cube is first smoothed, using Cube::SmoothCube().
+   * It is then searched, using searchReconArray()
+   * The resulting object list is stored in the Cube, and outputted
+   *  to the log file if the user so requests.
    */
   
   this->SmoothCube();

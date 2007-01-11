@@ -6,43 +6,21 @@
 #include <ATrous/atrous.hh>
 #include <math.h>
 
-int Filter::getNumScales(long length)
-{
-  switch(this->filter1D.size()){
-  case 5: 
-    return int(log(double(length-1))/M_LN2) - 1;
-    break;
-  case 3:
-    return int(log(double(length-1))/M_LN2);
-    break;
-  default:
-    return 1 + int(log(double(length-1)/double(this->filter1D.size()-1))/M_LN2);
-    break;
-  }
-}
-
-int Filter::getMaxSize(int scale)
-{
-  switch(this->filter1D.size()){
-  case 5:
-    return int(pow(2,scale+1)) + 1;
-    break;
-  case 3:
-    return int(pow(2,scale)) + 1;
-    break;
-  default:
-    return int(pow(2,scale-1))*(this->filter1D.size()-1) + 1;
-    break;
-  }
-}
-
 Filter::Filter()
 {
   this->sigmaFactors.resize(3);
   for(int i=0;i<3;i++) this->sigmaFactors[i] = new vector<double>(20);
   this->loadSpline();
 }
+//-----------------------------------------------------------------------
 
+Filter::~Filter()
+{
+  filter1D.clear();
+  maxNumScales.clear();
+  sigmaFactors.clear();
+}
+//-----------------------------------------------------------------------
 
 void Filter::define(int filtercode)
 {
@@ -76,6 +54,39 @@ void Filter::define(int filtercode)
     }
   
 }
+//-----------------------------------------------------------------------
+
+int Filter::getNumScales(long length)
+{
+  switch(this->filter1D.size()){
+  case 5: 
+    return int(log(double(length-1))/M_LN2) - 1;
+    break;
+  case 3:
+    return int(log(double(length-1))/M_LN2);
+    break;
+  default:
+    return 1 + int(log(double(length-1)/double(this->filter1D.size()-1))/M_LN2);
+    break;
+  }
+}
+//-----------------------------------------------------------------------
+
+int Filter::getMaxSize(int scale)
+{
+  switch(this->filter1D.size()){
+  case 5:
+    return int(pow(2,scale+1)) + 1;
+    break;
+  case 3:
+    return int(pow(2,scale)) + 1;
+    break;
+  default:
+    return int(pow(2,scale-1))*(this->filter1D.size()-1) + 1;
+    break;
+  }
+}
+//-----------------------------------------------------------------------
 
 void Filter::loadSpline()
 {
@@ -108,6 +119,7 @@ void Filter::loadSpline()
   this->sigmaFactors[2]->resize(8);
   for(int i=0;i<12;i++)(*this->sigmaFactors[2])[i] = sigmaFactors3D[i]; 
 }
+//-----------------------------------------------------------------------
 
 void Filter::loadTriangle()
 {
@@ -142,6 +154,7 @@ void Filter::loadTriangle()
   this->sigmaFactors[2]->resize(9);
   for(int i=0;i<12;i++)(*this->sigmaFactors[2])[i] = sigmaFactors3D[i]; 
 }
+//-----------------------------------------------------------------------
 
 void Filter::loadHaar()
 {

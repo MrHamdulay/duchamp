@@ -61,6 +61,7 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(DETECTIONDIR)/sorting.o\
 	$(DETECTIONDIR)/spectrumDetect.o\
 	$(CUBESDIR)/cubes.o\
+	$(CUBESDIR)/plots.o\
 	$(CUBESDIR)/baseline.o\
 	$(CUBESDIR)/CubicSearch.o\
 	$(CUBESDIR)/detectionIO.o\
@@ -80,6 +81,7 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(FITSIODIR)/subsection.o\
 	$(FITSIODIR)/wcsIO.o\
 	$(UTILDIR)/Statistics.o\
+	$(UTILDIR)/feedback.o\
 	$(UTILDIR)/drawBlankEdges.o\
 	$(UTILDIR)/getStats.o\
 	$(UTILDIR)/get_random_spectrum.o\

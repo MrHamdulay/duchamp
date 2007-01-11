@@ -18,13 +18,13 @@ string imageType[4] = {"point", "spectrum", "image", "cube"};
 int Cube::getCube(string fname)
 {
   /**
-   * Cube::getCube(string )
-   *  Read in a cube from the file fname (assumed to be in FITS format).
+   * Read in a cube from the file fname (assumed to be in FITS format).
    *  Function is a front end to the I/O functions in the FitsIO/ directory.
    *  This function will check that the file exists, report the dimensions
    *   and then get other functions to read the data, WCS, and necessary 
    *   header keywords.
-   *  Returns SUCCESS/FAILURE.
+   *  \par fname A string with name of FITS file.
+   *  \return SUCCESS or FAILURE.
    */
 
   long nelements;

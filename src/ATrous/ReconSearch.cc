@@ -13,11 +13,11 @@
 void Cube::ReconSearch()
 {
   /**
-   * Cube::ReconSearch()
-   *   The Cube is first reconstructed, using Cube::ReconCube().
-   *   It is then searched, using searchReconArray.
-   *   The resulting object list is stored in the Cube, and outputted
-   *    to the log file if the user so requests.
+   * The Cube is first reconstructed, using Cube::ReconCube().
+   * The statistics of the cube are calculated next.
+   * It is then searched, using searchReconArray.
+   * The resulting object list is stored in the Cube, and outputted
+   *  to the log file if the user so requests.
    */
   
   this->ReconCube();
@@ -40,10 +40,9 @@ void Cube::ReconSearch()
 void Cube::ReconCube()
 {
   /**
-   * Cube::ReconSearch()
-   *   A front-end to the various reconstruction functions, the choice of 
-   *    which is determined by the use of the reconDim parameter.
-   *   Differs from ReconSearch only in that no searching is done.
+   * A front-end to the various reconstruction functions, the choice of 
+   *  which is determined by the use of the reconDim parameter.
+   * Differs from ReconSearch only in that no searching is done.
    */
   int dimRecon = this->par.getReconDim();
   // Test whether we have eg. an image, but have requested a 3-d 
@@ -86,9 +85,8 @@ void Cube::ReconCube()
 void Cube::ReconCube1D()
 {
   /**
-   * Cube::ReconCube1D()
-   *   This reconstructs a cube by performing a 1D a trous reconstruction
-   *   in the spectrum of each spatial pixel.
+   * This reconstructs a cube by performing a 1D a trous reconstruction
+   *  in the spectrum of each spatial pixel.
    */
   long xySize = this->axisDim[0] * this->axisDim[1];
 
@@ -125,9 +123,8 @@ void Cube::ReconCube1D()
 void Cube::ReconCube2D()
 {
   /**
-   * Cube::ReconCube2D()
-   *   This reconstructs a cube by performing a 2D a trous reconstruction
-   *   in each spatial image (ie. each channel map) of the cube.
+   * This reconstructs a cube by performing a 2D a trous reconstruction
+   *  in each spatial image (ie. each channel map) of the cube.
    */
   long xySize = this->axisDim[0] * this->axisDim[1];
   ProgressBar bar;
@@ -170,8 +167,7 @@ void Cube::ReconCube2D()
 void Cube::ReconCube3D()
 {
   /**
-   * Cube::ReconCube3D()
-   *   This performs a full 3D a trous reconstruction of the cube
+   * This performs a full 3D a trous reconstruction of the cube
    */
   if(this->axisDim[2]==1) this->ReconCube2D();
   else {
@@ -195,19 +191,21 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
 				    StatsContainer<float> &stats)
 {
   /**
-   * searchReconArray(long *dim, float *originalArray, 
-   *                  float *reconArray, Param &par)
-   *   This searches for objects in a cube that has been reconstructed.
+   *  This searches for objects in a cube that has been reconstructed.
    *
-   *   Inputs:   - dimension array
-   *             - original, un-reconstructed image array
-   *             - reconstructed image array
-   *             - parameters
+   *  The search is conducted first in each spatial pixel (xdim*ydim 1D 
+   *   searches), then in each channel image (zdim 2D searches).
+   *  The searches are done on the reconstructed array, although the detected
+   *   objects have fluxes drawn from the corresponding pixels of the original
+   *   array.
    *
-   *   Searches first in each spatial pixel (1D search), 
-   *   then in each channel image (2D search).
+   *  \param dim Array of dimension sizes
+   *  \param originalArray Original, un-reconstructed image array.
+   *  \param reconArray Reconstructed image array
+   *  \param par The Param set.
+   *  \param stats The StatsContainer that defines what a detection is.
    *
-   *   Returns: vector of Detections resulting from the search.
+   *  \return A vector of Detections resulting from the search.
    */
   vector <Detection> outputList;
   long zdim = dim[2];

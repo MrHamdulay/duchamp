@@ -1,5 +1,6 @@
 #ifndef MYCPGPLOT_H
 #define MYCPGPLOT_H
+#include <Utils/utils.hh>
 #include <string>
 namespace mycpgplot
 {

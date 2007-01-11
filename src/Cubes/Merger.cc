@@ -10,14 +10,13 @@
 void Cube::ObjectMerger()
 {
   /**
-   * Cube::ObjectMerger():
-   *   A Function that takes a Cube's list of Detections and
-   *   combines those that are close (according to the 
-   *   thresholds specified in the parameter list par).
-   *   It also excludes those that do not make the minimum
-   *   number of channels requirement.
-   *   A front end to simpler functions mergeList and finaliseList,
-   *    with code to cover the option of growing objects.
+   * A Function that takes a Cube's list of Detections and
+   * combines those that are close (according to the 
+   * thresholds specified in the parameter list par).
+   * It also excludes those that do not make the minimum
+   * number of channels requirement.
+   * A front end to simpler functions mergeList and finaliseList,
+   *  with code to cover the option of growing objects.
    */
 
   if(this->objectList.size() > 0){

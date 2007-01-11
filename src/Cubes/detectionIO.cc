@@ -17,7 +17,6 @@ using namespace Column;
 void Cube::outputDetectionsKarma(std::ostream &stream)
 {
   /**
-   * outputDetectionsKarma
    *  Prints to a stream (provided) the list of detected objects in the cube
    *   in the format of an annotation file for the Karma suite of programs.
    *  Annotation file draws a box enclosing the detection, and writes the 
@@ -79,7 +78,6 @@ void Cube::outputDetectionsKarma(std::ostream &stream)
 void Cube::outputDetectionsVOTable(std::ostream &stream)
 {
   /**
-   * outputDetectionsVOTable
    *  Prints to a stream (provided) the list of detected objects in the cube
    *   in a VOTable format.
    *  Uses WCS information and assumes WCS parameters have been calculated for each
@@ -196,7 +194,6 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
 void Cube::outputDetectionList()
 {
   /** 
-   * outputDetectionList
    *  A front-end to writing the full list of detected objects to a results 
    *   file and to cout.
    *  Uses outputDetectionTextWCS for each objects.
@@ -270,13 +267,16 @@ void Cube::logDetectionList()
 void Cube::logDetection(Detection obj, int counter)
 {
   /**
-   * logDetection
    *  A front-end to writing a detected object to the log file.
    *  Does not assume WCS, so uses outputDetectionText.
-   *  obj is passed by value, as we want to potentially change positions etc, but not for 
-   *  object in the calling function.
    *  Corrects for changes to positions of pixels and removal of baselines.
-   *  Designed to be used by searching routines before returning their final list.
+   *  Designed to be used by searching routines before returning their final 
+   *   list.
+   *  \param obj Detection object to be written : passed by value, as we want 
+   *    to potentially change positions etc, but not for the object in the 
+   *    calling function.
+   *  \param counter The number to assign to the object : ideally its number
+   *    in a list of some kind.
    */
 
   std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);

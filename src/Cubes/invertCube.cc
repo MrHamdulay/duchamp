@@ -4,9 +4,8 @@
 void Cube::invert()
 {
   /**
-   *  Cube::invert()
-   *   A function that multiplies all non-Blank pixels by -1. 
-   *   This is used when searching for negative features.
+   *  A function that multiplies all non-Blank pixels by -1. 
+   *  This is used when searching for negative features.
    */
   for(int i=0; i<this->numPixels; i++)
     if(!this->isBlank(i)){
@@ -18,10 +17,9 @@ void Cube::invert()
 void Cube::reInvert()
 {
   /**
-   *  Cube::reInvert()
-   *   A function that switches the array back to the original sign.
-   *   Any objects will have the flux of each pixel inverted as well.
-   *   This is used when searching for negative features.
+   *  A function that switches the array back to the original sign.
+   *  Any objects will have the flux of each pixel inverted as well.
+   *  This is used when searching for negative features.
    */
   for(int i=0; i<this->numPixels; i++){
     if(!this->isBlank(i)){

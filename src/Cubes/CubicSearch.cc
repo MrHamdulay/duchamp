@@ -11,9 +11,9 @@
 void Cube::CubicSearch()
 {
   /**
-   * Cube::SimpleSearch3D()
    *  A front end to the cubic searching routine that does not
    *  involve any wavelet reconstruction. 
+   *  The statistics of the cube are calculated first of all.
    *  If baseline-removal is required that is done prior to searching.
    *  Once searching is complete, the detection map is updated and
    *  the intermediate detections are logged in the log file.

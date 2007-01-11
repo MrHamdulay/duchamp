@@ -15,8 +15,6 @@ using namespace mycpgplot;
 void Cube::drawMomentCutout(Detection &object)
 {
   /** 
-   *  Cube::drawMomentCutout(object)
-   *
    *   A routine to draw the 0th moment for the given detection
    *    using the flux given by the pixel array in the Cube.
    *   The 0th moment is constructed by adding the flux of each
@@ -24,6 +22,7 @@ void Cube::drawMomentCutout(Detection &object)
    *    pixels than were actually detected in the object)
    *   A tick mark is also drawn to indicate angular scale (but only
    *    if the WCS for the Cube is valid).
+   * \param object The Detection to be drawn.
    */
 
   if(!cpgtest())
@@ -146,14 +145,14 @@ void Cube::drawMomentCutout(Detection &object)
 void Cube::drawScale(float xstart, float ystart, float channel)
 {
   /** 
-   *  Cube::drawScale(xstart, ystart, channel)
-   *
    *   A routine to draw a scale bar on a (pre-existing) PGPlot image.
    *   It uses an iterative technique to move from the given start position 
    *    (xstart,ystart) along the positive x-direction so that the length is
    *    within 1% of the scaleLength (length in degrees), calculated 
    *    according to the pixel scale of the cube.
-   *   The parameter "channel" is required for the wcslib calculations, as the 
+   *  \param xstart X-coordinate of the start position (left-hand edge of tick mark typically).
+   *  \param ystart Y-coordinate of the start position
+   *  \param channel Which channel to base WCS calculations on: needed as the 
    *    positions could theoretically change with channel.
    */
 
@@ -310,6 +309,7 @@ void Detection::drawBorders(int xoffset, int yoffset)
 
 void Cube::drawFieldEdge()
 {
+ 
   if(!cpgtest())
     duchampError("drawFieldEdge","There is no PGPlot device open!\n");
   else{

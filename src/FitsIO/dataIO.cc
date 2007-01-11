@@ -10,9 +10,7 @@
 int Cube::getFITSdata(string fname)
 {
   /**
-   * Cube::getFITSdata(string fname)
-   *
-   *  This function retrieves the data array from the FITS file at the 
+   * This function retrieves the data array from the FITS file at the 
    *   location given by the string argument.
    *  Only the two spatial axes and the one spectral axis are stored in the
    *   data array. These axes are given by the wcsprm variables wcs->lng, 

@@ -17,8 +17,6 @@ void writeSmoothHeaderInfo(fitsfile *fptr, Param &par);
 void Cube::saveSmoothedCube()
 {
   /**
-   *  Cube::saveSmoothedCube()
-   *
    *   A function to save the Hanning-smoothed arrays to a FITS file.
    *   Additional header keywords are written as well, indicating the 
    *    width of the Hanning filter.
@@ -98,9 +96,7 @@ void Cube::saveSmoothedCube()
 void Cube::saveReconstructedCube()
 {
   /**
-   *  Cube::saveReconstructedCube()
-   *
-   *   A function to save the reconstructed and/or residual arrays.
+   *  A function to save the reconstructed and/or residual arrays.
    *   A number of header keywords are written as well, indicating the 
    *    nature of the reconstruction that has been done.
    *   The file is always written -- if the filename (as calculated 

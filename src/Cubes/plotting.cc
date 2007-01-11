@@ -18,15 +18,14 @@ using namespace mycpgplot;
 void Cube::plotDetectionMap(string pgDestination)
 {
   /** 
-   *  Cube::plotDetectionMap(string)
-   *    Creates a map of the spatial locations of the detections, which is 
-   *     written to the PGPlot device given by pgDestination.
-   *    The map is done in greyscale, where the scale indicates the number of 
-   *     velocity channels that each spatial pixel is detected in.
-   *    The boundaries of each detection are drawn, and each object is numbered
-   *     (to match the output list and spectra).
-   *    The primary grid scale is pixel coordinate, and if the WCS is valid, 
-   *     the correct WCS gridlines are also drawn.
+   *  Creates a map of the spatial locations of the detections, which is 
+   *   written to the PGPlot device given by pgDestination.
+   *  The map is done in greyscale, where the scale indicates the number of 
+   *   velocity channels that each spatial pixel is detected in.
+   *  The boundaries of each detection are drawn, and each object is numbered
+   *   (to match the output list and spectra).
+   *  The primary grid scale is pixel coordinate, and if the WCS is valid, 
+   *   the correct WCS gridlines are also drawn.
    */
 
   // These are the minimum values for the X and Y ranges of the box drawn by 
@@ -119,15 +118,14 @@ void Cube::plotDetectionMap(string pgDestination)
 void Cube::plotMomentMap(string pgDestination)
 {
   /** 
-   *  Cube::plotMomentMap(string)
-   *    Creates a 0th moment map of the detections, which is written to the 
-   *     PGPlot device given by pgDestination.
-   *    The map is done in greyscale, where the scale indicates the integrated 
-   *     flux at each spatial pixel.
-   *    The boundaries of each detection are drawn, and each object is numbered
-   *     (to match the output list and spectra).
-   *    The primary grid scale is pixel coordinate, and if the WCS is valid, 
-   *     the correct WCS gridlines are also drawn.
+   *  Creates a 0th moment map of the detections, which is written to the 
+   *   PGPlot device given by pgDestination.
+   *  The map is done in greyscale, where the scale indicates the integrated 
+   *   flux at each spatial pixel.
+   *  The boundaries of each detection are drawn, and each object is numbered
+   *   (to match the output list and spectra).
+   *  The primary grid scale is pixel coordinate, and if the WCS is valid, 
+   *   the correct WCS gridlines are also drawn.
    */
 
   float boxXmin = this->par.getXOffset() - 1;
@@ -317,17 +315,16 @@ void Cube::plotMomentMap(string pgDestination)
 void Cube::plotMomentMap(vector<string> pgDestination)
 {
   /** 
-   *  Cube::plotMomentMap(vector<string>)
-   *    Creates a 0th moment map of the detections, which is written to each
-   *     of the PGPlot devices mentioned in pgDestination.
-   *    The advantage of this function is that the map is only calculated once,
-   *     even if multiple maps are required.
-   *    The map is done in greyscale, where the scale indicates the integrated 
-   *     flux at each spatial pixel.
-   *    The boundaries of each detection are drawn, and each object is numbered
-   *     (to match the output list and spectra).
-   *    The primary grid scale is pixel coordinate, and if the WCS is valid, 
-   *     the correct WCS gridlines are also drawn.
+   *  Creates a 0th moment map of the detections, which is written to each
+   *   of the PGPlot devices mentioned in pgDestination.
+   *  The advantage of this function is that the map is only calculated once,
+   *   even if multiple maps are required.
+   *  The map is done in greyscale, where the scale indicates the integrated 
+   *   flux at each spatial pixel.
+   *  The boundaries of each detection are drawn, and each object is numbered
+   *   (to match the output list and spectra).
+   *  The primary grid scale is pixel coordinate, and if the WCS is valid, 
+   *   the correct WCS gridlines are also drawn.
    */
 
   float boxXmin = this->par.getXOffset() - 1;
@@ -549,12 +546,11 @@ void Cube::plotMomentMap(vector<string> pgDestination)
 void Cube::plotWCSaxes()
 {
   /**
-   *  Cube::plotWCSaxes()
-   *    A front-end to the cpgsbox command, to draw the gridlines for the WCS 
-   *      over the current plot.
-   *    Lines are drawn in dark green over the full plot area, and the axis 
-   *      labels are written on the top and on the right hand sides, so as not 
-   *      to conflict with other labels.
+   *  A front-end to the cpgsbox command, to draw the gridlines for the WCS 
+   *    over the current plot.
+   *  Lines are drawn in dark green over the full plot area, and the axis 
+   *    labels are written on the top and on the right hand sides, so as not 
+   *    to conflict with other labels.
    */
 
   float boxXmin=0,boxYmin=0;

@@ -17,18 +17,16 @@ void getSmallZRange(Detection &obj, float *minz, float *maxz);
 void Cube::outputSpectra()
 {
   /** 
-   *   Cube::outputSpectra()
-   *
-   *    The way to print out the spectra of the detected objects.
-   *    Make use of the SpectralPlot class in plots.h, which sizes everything 
-   *      correctly.
-   *    Main choice is whether to use the peak pixel, in which case the 
-   *     spectrum is just that of the peak pixel, or the sum, where the 
-   *     spectrum is summed over all spatial pixels that are in the object.
-   *    If a reconstruction has been done, that spectrum is plotted in red.
-   *    The limits of the detection are marked in blue.
-   *    A 0th moment map of the detection is also plotted, with a scale bar 
-   *     indicating the spatial scale.
+   * The way to print out the spectra of the detected objects.
+   * Make use of the SpectralPlot class in plots.h, which sizes everything 
+   *   correctly.
+   * Main choice is whether to use the peak pixel, in which case the 
+   *  spectrum is just that of the peak pixel, or the sum, where the 
+   *  spectrum is summed over all spatial pixels that are in the object.
+   * If a reconstruction has been done, that spectrum is plotted in red.
+   * The limits of the detection are marked in blue.
+   * A 0th moment map of the detection is also plotted, with a scale bar 
+   *  indicating the spatial scale.
    */
 
   if(this->fullCols.size()==0) this->setupColumns(); 
@@ -51,18 +49,18 @@ void Cube::outputSpectra()
 void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
 {
   /** 
-   *   Cube::plotSpectrum(obj)
-   *
-   *    The way to print out the spectrum of a Detection.
-   *    Makes use of the SpectralPlot class in plots.hh, which sizes 
-   *     everything correctly.
-   *    Main choice is whether to use the peak pixel, in which case the 
-   *     spectrum is just that of the peak pixel, or the sum, where the 
-   *     spectrum is summed over all spatial pixels that are in the object.
-   *    If a reconstruction has been done, that spectrum is plotted in red.
-   *    The limits of the detection are marked in blue.
-   *    A 0th moment map of the detection is also plotted, with a scale bar 
-   *     indicating the spatial size.
+   * The way to print out the spectrum of a Detection.
+   * Makes use of the SpectralPlot class in plots.hh, which sizes 
+   *  everything correctly.
+   * Main choice is whether to use the peak pixel, in which case the 
+   *  spectrum is just that of the peak pixel, or the sum, where the 
+   *  spectrum is summed over all spatial pixels that are in the object.
+   * If a reconstruction has been done, that spectrum is plotted in red.
+   * The limits of the detection are marked in blue.
+   * A 0th moment map of the detection is also plotted, with a scale bar 
+   *  indicating the spatial size.
+   * \param obj The Detection to be plotted.
+   * \param plot The PGPLOT device to plot the spectrum on.
    */
 
   long xdim = this->axisDim[0];
@@ -244,7 +242,6 @@ void getSmallVelRange(Detection &obj, FitsHeader head,
 		      float *minvel, float *maxvel)
 {
   /** 
-   * getSmallVelRange(obj,wcs,minvel,maxvel)
    *  Routine to calculate the velocity range for the zoomed-in region.
    *  This range should be the maximum of 20 pixels, or 3x the wdith of 
    *   the detection.
@@ -253,6 +250,10 @@ void getSmallVelRange(Detection &obj, FitsHeader head,
    *      If smaller than 20, calculate velocities of central vel +- 10 pixels
    *      If not, use the 3x-detection-width
    *  Range returned via "minvel" and "maxvel" parameters.
+   *  \param obj Detection under examination.
+   *  \param head FitsHeader, containing the WCS information.
+   *  \param minvel Returned value of minimum velocity
+   *  \param maxvel Returned value of maximum velocity
    */
 
   double *pixcrd = new double[3];
@@ -294,7 +295,6 @@ void getSmallVelRange(Detection &obj, FitsHeader head,
 void getSmallZRange(Detection &obj, float *minz, float *maxz)
 {
   /** 
-   * getSmallZRange(obj,minz,maxz)
    *  Routine to calculate the pixel range for the zoomed-in spectrum.
    *  This range should be the maximum of 20 pixels, or 3x the width 
    *   of the detection.
@@ -302,6 +302,9 @@ void getSmallZRange(Detection &obj, float *minz, float *maxz)
    *      Calculate pixel width of a 3x-detection-width region.
    *       If smaller than 20, use central pixel +- 10 pixels
    *  Range returned via "minz" and "maxz" parameters.
+   *  \param obj Detection under examination.
+   *  \param minz Returned value of minimum z-pixel coordinate
+   *  \param maxz Returned value of maximum z-pixel coordinate
    */
 
   *minz = 2.*obj.getZmin() - obj.getZmax();
