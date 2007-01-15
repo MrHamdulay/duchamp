@@ -175,7 +175,7 @@ vector<Detection> readAndSearch(Param &par)
 	  object->setF(pix, array[object->getZ(pix)]); 
 	  // NB: set F to the original value, not the recon value.
 	}
-	object->addOffsets(par);
+	object->setOffsets(par);
 	object->calcParams();
 	mergeIntoList(*object,outputList,par);
 	delete object;

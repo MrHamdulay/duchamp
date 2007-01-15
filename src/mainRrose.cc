@@ -84,7 +84,7 @@ int main(int argc, char * argv[])
       Voxel vox(xpix,ypix,zpix,fpix);
       obj.addPixel(vox);
     }
-    obj.addOffsets(cube->pars());
+    obj.setOffsets(cube->pars());
     obj.calcParams();
     if(obj.getSize()>0) cube->addObject(obj);
     getline(logfile,temp); // reads next line -- should be Detection #...

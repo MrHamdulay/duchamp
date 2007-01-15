@@ -24,8 +24,6 @@ void Param::setOffsets(struct wcsprm *wcs)
 int Param::verifySubsection()
 {
   /**
-   *  Param::verifySubsection()
-   *
    *   Checks that the subsection string is in the appropriate format, with
    *    the correct number of entries (one for each axis).
    *   This involves reading the individual substrings and converting to

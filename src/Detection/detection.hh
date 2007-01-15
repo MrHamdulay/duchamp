@@ -5,14 +5,14 @@
 #include <string>
 #include <vector>
 #include <param.hh>
-#ifndef COLUMNS_H
 #include <Detection/columns.hh>
-#endif
 #include <Utils/utils.hh>
 
 using std::string;
 using std::vector;
 using namespace Column;
+
+//==========================================================================
 
 /**
  * Voxel class.
@@ -22,9 +22,13 @@ using namespace Column;
 class Voxel
 {
 public:
+  /** Default constructor. */
   Voxel(){};
+  /** Specific constructor, defining an (x,y,z) location and flux f. */
   Voxel(long x, long y, long z, float f){ itsX=x; itsY=y; itsZ=z; itsF=f;};
+  /** Copy constructor. */
   Voxel(const Voxel& v){itsX=v.itsX; itsY=v.itsY; itsZ=v.itsZ; itsF=v.itsF;};
+  /** Copy constructor. */
   Voxel& operator= (const Voxel& v){
     itsX=v.itsX; itsY=v.itsY; itsZ=v.itsZ; itsF=v.itsF;};
   virtual ~Voxel(){};
@@ -34,23 +38,30 @@ public:
   void   setY(long y){itsY = y;};
   void   setZ(long z){itsZ = z;};
   void   setF(float f){itsF = f;};
+  /* Define an (x,y) coordinate */
   void   setXY(long x, long y){itsX = x; itsY = y;};
+  /* Define an (x,y,z) coordinate */
   void   setXYZ(long x, long y, long z){itsX = x; itsY = y; itsZ = z;};
+  /* Define an (x,y) coordinate with a flux f */
   void   setXYF(long x, long y, float f){itsX = x; itsY = y; itsF = f;};
+  /* Define an (x,y,z) coordinate with a flux f */
   void   setXYZF(long x, long y, long z, float f){itsX = x; itsY = y; itsZ = z; itsF = f;};
   long   getX(){return itsX;};
   long   getY(){return itsY;};
   long   getZ(){return itsZ;};
   float  getF(){return itsF;};
   //
+  /** Operator to print information of voxel. */
   friend std::ostream& operator<< ( std::ostream& theStream, Voxel& vox);
   //
 protected:
-  long  itsX;         // x-position of pixel
-  long  itsY;         // y-position of pixel
-  long  itsZ;         // z-position of pixel
-  float itsF;         // flux of pixel
+  long  itsX;         ///< x-position of pixel
+  long  itsY;         ///< y-position of pixel
+  long  itsZ;         ///< z-position of pixel
+  float itsF;         ///< flux of pixel
 };
+
+//==========================================================================
 
 /**
  * Pixel class.
@@ -70,11 +81,14 @@ public:
 
 };
 
+//==========================================================================
+
 /**
- * Detection class
- *  A detected object, featuring:
- *   a vector of voxels, centroid positions, total & peak fluxes
- *   the possibility of WCS-calculated parameters (RA, Dec, velocity) etc.
+ * Class to represent a contiguous set of detected voxels.
+ *  This is a detected object, which features:
+ *   a vector of voxels, centroid positions, total & peak fluxes,
+ *   the possibility of WCS-calculated parameters (RA, Dec, velocity, related widths).
+ *  Also many functions with which to manipulate the Detections.
  */
 
 class Detection
@@ -91,11 +105,68 @@ public:
   Detection(const Detection& d);
   Detection& operator= (const Detection& d);
   virtual ~Detection(){};
+  //------------------------------
+  // These are functions in detection.cc. 
+  //
+  void   addAnObject(Detection &toAdd); ///< Add all voxels of one object to another.
+  void   calcWCSparams(FitsHeader &head); ///< Calculate parameters related to the World Coordinate System.
+  float  getIntegFlux(FitsHeader &head); ///< Calculate the integrated flux over the entire Detection.
+  void   calcParams();   ///< Calculate basic parameters of the Detection.
+  void   setOffsets(Param &par); ///< Set the values of the axis offsets from the cube.
+  bool   hasEnoughChannels(int minNumber);  ///< Is there at least the acceptable minimum number of channels in the Detection?
+  //
+  friend std::ostream& operator<< ( std::ostream& theStream, Detection& obj);
+  //---------------------------------
+  // Text Output -- all in Detection/outputDetection.cc
+  //
+  /** The spectral output label that contains info on the WCS position & velocity.*/
+  string outputLabelWCS();  
+
+  /** The spectral output label that contains info on the pixel location. */
+  string outputLabelPix(); 
+
+  /** The spectral output label that contains info on widths & fluxes of the Detection. */
+  string outputLabelInfo(); 
+
+  /** Prints the column headers. */
+  void   outputDetectionTextHeader(std::ostream &stream, vector<Col> columns); 
+
+  /** Prints the full set of columns, including the WCS information. */
+  void   outputDetectionTextWCS(std::ostream &stream, vector<Col> columns); 
+
+  /** Prints a limited set of columns, excluding any WCS information. */
+  void   outputDetectionText(std::ostream &stream, vector<Col> columns, int idNumber); 
+  //---------------------------------- 
+  // For plotting routines... in Cubes/drawMomentCutout.cc
+  //
+  /** Draw spatial borders for a particular Detection. */
+  void   drawBorders(int xoffset, int yoffset); 
+  //---------------------------------- 
+  // For sorting routines... in Detection/sorting.cc
+  //
+  /** Sort the pixels by central z-value. */
+  void   SortByZ();
+  //
+  //----------------------------------
+  // Basic functions
+  //
+  /** Delete all pixel information from Detection. Does not clear other parameters. */
+  void   clearDetection(){this->pix.clear();};
+
+  /** Add a single voxel to the pixel list. Does not re-calculate parameters.*/
 
   void   addPixel(Voxel point){pix.push_back(point);};
+
+  /** Return the nth voxel in the list */
   Voxel  getPixel(long pixNum){return pix[pixNum];};
+
+  /** How many voxels are in the Detection? */
   int    getSize(){return pix.size();};
-  int    getSpatialSize();// in detection.cc
+
+  /** How many distinct spatial pixels are there? */
+  int    getSpatialSize();
+  //-----------------------------------
+  // Basic accessor functions for private members follow...
   //
   long   getX(long pixCount){return pix[pixCount].getX();};
   void   setX(long pixCount, long x){pix[pixCount].setX(x);};
@@ -146,6 +217,7 @@ public:
   long   getYmax(){return ymax;};
   long   getZmax(){return zmax;};
   //
+  /** Is the WCS good enough to be used? \return Detection::flagWCS True/False */
   bool   isWCS(){return flagWCS;};
   string getName(){return name;};
   void   setName(string s){name = s;};
@@ -185,97 +257,104 @@ public:
   int    getSNRPrec(){return snrPrec;};
   void   setSNRPrec(int i){snrPrec=i;};
   //
-  void   addAnObject(Detection &toAdd);
-  void   calcWCSparams(FitsHeader &head);
-  float  getIntegFlux(FitsHeader &head);
-  void   calcParams();
-  void   clearDetection(){this->pix.clear();};
-  void   addOffsets(Param &par);
-  void   SortByZ();   // in Detection/sorting.cc
-  bool   hasEnoughChannels(int minNumber); 
-  // Text Output -- all in Detection/outputDetection.cc
-  string outputLabelWCS();
-  string outputLabelPix();
-  string outputLabelInfo();
-  void   outputDetectionTextHeader(std::ostream &stream, vector<Col> columns);
-  void   outputDetectionTextWCS(std::ostream &stream, vector<Col> columns);
-  void   outputDetectionText(std::ostream &stream, vector<Col> columns, 
-			     int idNumber);
-  // For plotting routines...
-  void   drawBorders(int xoffset, int yoffset); // in Cubes/drawMomentCutout.cc
-  //
-  friend std::ostream& operator<< ( std::ostream& theStream, Detection& obj);
-  //
 private:
-  vector <Voxel> pix;         // array of pixels
-  float          xcentre;     // x-value of centre pixel of object
-  float          ycentre;     // y-value of centre pixel of object
-  float          zcentre;     // z-value of centre pixel of object
-  long           xmin,xmax;   // min and max x-values of object
-  long           ymin,ymax;   // min and max y-values of object
-  long           zmin,zmax;   // min and max z-values of object
+  vector <Voxel> pix;            ///< array of pixels
+  float          xcentre;        ///< x-value of centre pixel of object
+  float          ycentre;        ///< y-value of centre pixel of object
+  float          zcentre;        ///< z-value of centre pixel of object
+  long           xmin,xmax;      ///< min and max x-values of object
+  long           ymin,ymax;      ///< min and max y-values of object
+  long           zmin,zmax;      ///< min and max z-values of object
   // Subsection offsets
-  long           xSubOffset;  // The x-offset from the subsectioned cube
-  long           ySubOffset;  // The y-offset from the subsectioned cube
-  long           zSubOffset;  // The z-offset from the subsectioned cube
+  long           xSubOffset;     ///< The x-offset, taken from the subsectioned cube
+  long           ySubOffset;     ///< The y-offset, taken from the subsectioned cube
+  long           zSubOffset;     ///< The z-offset, taken from the subsectioned cube
   // Flux related
-  float          totalFlux;   // sum of the fluxes of all the pixels
-  float          intFlux;     // integrated flux 
-                              //   --> involves integration over velocity.
-  float          peakFlux;    // maximum flux over all the pixels
-  long           xpeak,ypeak,zpeak; // location of peak flux
-  float          peakSNR;     // signal-to-noise ratio at peak
-  bool           negativeSource; // is the source a negative feature?
-  string         flagText;    // any warning flags about the quality of 
-                              //   the detection.
+  float          totalFlux;      ///< sum of the fluxes of all the pixels
+  float          intFlux;        ///< integrated flux 
+                                 ///<   --> involves integration over velocity.
+  float          peakFlux;       ///< maximum flux over all the pixels
+  long           xpeak;          ///< x-pixel location of peak flux
+  long           ypeak;          ///< y-pixel location of peak flux
+  long           zpeak;          ///< z-pixel location of peak flux
+  float          peakSNR;        ///< signal-to-noise ratio at peak
+  bool           negativeSource; ///< is the source a negative feature?
+  string         flagText;       ///< any warning flags about the quality of the detection.
   // WCS related
-  int            id;          // ID -- generally number in list
-  string         name;	      // IAU-style name (based on position)
-  bool           flagWCS;     // A flag indicating whether the WCS parameters 
-                              //  have been set.
-  string         raS;	      // Central Right Ascension (or Longitude) in 
-                              //  form 12:34:23
-  string         decS;	      // Central Declination(or Latitude), in 
-                              //  form -12:23:34
-  float          ra;	      // Central Right Ascension in degrees
-  float          dec;	      // Central Declination in degrees
-  float          raWidth;     // Width of detection in RA direction in arcmin
-  float          decWidth;    // Width of detection in Dec direction in arcmin
-  string         specUnits;   // Units of the spectral dimension
-  string         fluxUnits;   // Units of flux
-  string         intFluxUnits;// Units of integrated flux
-  string         lngtype;     // Type of longitude axis (RA/GLON)
-  string         lattype;     // Type of latitude axis (DEC/GLAT)
-  float          vel;	      // Central velocity (from zCentre)
-  float          velWidth;    // Full velocity width
-  float          velMin;      // Minimum velocity
-  float          velMax;      // Maximum velocity
-  //  The next four are the precision of values printed in the spectral plots
-  int            posPrec;     // Precision of WCS positional values 
-  int            xyzPrec;     // Precision of pixel positional values 
-  int            fintPrec;    // Precision of F_int/F_tot values
-  int            fpeakPrec;   // Precision of F_peak values
-  int            velPrec;     // Precision of velocity values.
-  int            snrPrec;     // Precision of S/N_max values.
+  int            id;             ///< ID -- generally number in list
+  string         name;	         ///< IAU-style name (based on position)
+  bool           flagWCS;        ///< A flag indicating whether the WCS parameters have been set.
+  string         raS;	         ///< Central Right Ascension (or Longitude) in form 12:34:23
+  string         decS;	         ///< Central Declination(or Latitude), in form -12:23:34
+  float          ra;	         ///< Central Right Ascension in degrees
+  float          dec;	         ///< Central Declination in degrees
+  float          raWidth;        ///< Width of detection in RA direction in arcmin
+  float          decWidth;       ///< Width of detection in Dec direction in arcmin
+  string         specUnits;      ///< Units of the spectral dimension
+  string         fluxUnits;      ///< Units of flux
+  string         intFluxUnits;   ///< Units of integrated flux
+  string         lngtype;        ///< Type of longitude axis (RA/GLON)
+  string         lattype;        ///< Type of latitude axis (DEC/GLAT)
+  float          vel;	         ///< Central velocity (from zCentre)
+  float          velWidth;       ///< Full velocity width
+  float          velMin;         ///< Minimum velocity
+  float          velMax;         ///< Maximum velocity
+  //  The next six are the precision of values printed in the headers of the spectral plots
+  int            posPrec;        ///< Precision of WCS positional values 
+  int            xyzPrec;        ///< Precision of pixel positional values 
+  int            fintPrec;       ///< Precision of F_int/F_tot values
+  int            fpeakPrec;      ///< Precision of F_peak values
+  int            velPrec;        ///< Precision of velocity values.
+  int            snrPrec;        ///< Precision of S/N_max values.
 
 };
 
-/****************************************************************/
+//==========================================================================
+
 //////////////////////////////////////////////////////
 // Prototypes for functions that use above classes
 //////////////////////////////////////////////////////
 
-void SortByZ(vector <Detection> &inputList);
-void SortByVel(vector <Detection> &inputList);
+//----------------
+// These are in detection.cc
+//
+/** Combine two Detections to form a new one. */
 Detection combineObjects(Detection &first, Detection &second);
+
+/** Combine two lists Detections to form a new one. */
 vector <Detection> combineLists(vector <Detection> &first, 
 				vector <Detection> &second);
 
+//----------------
+// These are in sorting.cc
+//
+/** Sort a list of Detections by Z-pixel value. */
+void SortByZ(vector <Detection> &inputList);
+
+/** Sort a list of Detections by Velocity.*/
+void SortByVel(vector <Detection> &inputList);
+
+//----------------
+// This is in areClose.cc
+//
+/** Determine whether two objects are close according to set parameters.*/
 bool areClose(Detection &object1, Detection &object2, Param &par);
+
+//----------------
+// This is in mergeIntoList.cc
+//
+/** Add an object into a list, combining with adjacent objects if need be. */
 void mergeIntoList(Detection &object, vector <Detection> &objList, Param &par);
-void mergeList(vector<Detection> &objList, Param &par);    //in Cubes/Merger.cc
-void finaliseList(vector<Detection> &objList, Param &par); //in Cubes/Merger.cc
-void ObjectMerger(vector<Detection> &objList, Param &par); //in Cubes/Merger.cc
+
+//----------------
+// These are in Cubes/Merger.cc
+//
+/** Merge a list of Detections so that all adjacent voxels are in the same Detection. */
+void mergeList(vector<Detection> &objList, Param &par);   
+/** Culls a list of Detections that do not meet minimum requirements. */
+void finaliseList(vector<Detection> &objList, Param &par);
+/** Manage both the merging and the cleaning up of the list. */
+void ObjectMerger(vector<Detection> &objList, Param &par);
 
 
 #endif

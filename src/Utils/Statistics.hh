@@ -7,16 +7,20 @@
 #include <Utils/utils.hh>
 #endif
 
+/**
+ * A namespace to control everything to do with statistical calculations.
+ */
+
 namespace Statistics
 {
 
-  // Divide by the following correction factor to convert from 
-  //   MADFM to sigma estimator.
+  /** Divide by the following correction factor to convert from MADFM to sigma (rms) estimator. */
   const float correctionFactor = 0.6744888;
-  // Multiply by the following correction factor to convert from 
-  //   trimmedSigma to sigma estimator.
+
+  /** Multiply by the following correction factor to convert from trimmedSigma to sigma estimator. */
   const double trimToNormal = 1.17036753077;
 
+  /** A templated function to do the MADFM-to-rms conversion. */
   template <class T> float madfmToSigma(T madfm){
     return float(madfm)/correctionFactor;
   };
@@ -24,6 +28,17 @@ namespace Statistics
   template float madfmToSigma<long>(long madfm);
   template float madfmToSigma<float>(float madfm);
   template float madfmToSigma<double>(double madfm);
+
+  /**
+   *  Class to hold statistics for a given set.
+   *
+   *  This class is designed to hold all useful statistics for a given
+   *  array of numbers.  It does *not* hold the data themselves. It
+   *  provides the functions to calculate mean, rms, median and MADFM
+   *  (median absolute deviation from median), as well as functions to
+   *  control detection (ie. defining thresholds) in both standard
+   *  (sigma-clipping) cases and False Detection Rate scenarios.
+   */
 
   template <class Type> 
   class StatsContainer
@@ -33,6 +48,8 @@ namespace Statistics
     virtual ~StatsContainer(){};
     StatsContainer(const StatsContainer<Type>& s);
     StatsContainer<Type>& operator= (const StatsContainer<Type>& s);
+
+    /** A way of printing the statistics and thresholds. */
     template <class T> friend std::ostream& operator<< ( std::ostream& theStream, StatsContainer<T> &s);
 
     float getMean(){return mean;};
@@ -62,11 +79,13 @@ namespace Statistics
       else return stddev;
     };
 
+    /** Get the "probability", under the assumption of normality, of a value. */
     float getPValue(float value){
       float zStat = (value - this->getMiddle()) / this->getSpread();
       return 0.5 * erfc( zStat / M_SQRT2 );
     };
 
+    /** Is a value above the threshold? */
     bool isDetection(float value){
       if(useFDR) return (this->getPValue(value) < this->pThreshold);
       else       return (value > this->threshold);
@@ -85,17 +104,15 @@ namespace Statistics
     bool   defined;      // a flag indicating whether the stats are defined.
 
     // basic statistics
-    float  mean;   
-    float  stddev; 
+    float  mean;    
+    float  stddev;       ///< The standard deviation, or R.M.S., or sigma...
     Type   median; 
-    Type   madfm;	 
+    Type   madfm;	 ///< The median absolute deviation from the median 
 
-    float  threshold;    // a threshold for simple sigma-clipping
-    float  pThreshold;   // a threshold for the FDR case -- the upper limit
-                         //   of P values that detected pixels can have.
-    bool   useRobust;    // whether we use the two robust stats or not
-    bool   useFDR;       // whether the FDR method is used for determining a
-                         //  detection
+    float  threshold;    ///< a threshold for simple sigma-clipping
+    float  pThreshold;   ///< a threshold for the FDR case -- the upper limit of P values that detected pixels can have.
+    bool   useRobust;    ///< whether we use the two robust stats or not
+    bool   useFDR;       ///< whether the FDR method is used for determining a detection
 
   };
 

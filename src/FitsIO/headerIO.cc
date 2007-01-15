@@ -13,7 +13,6 @@
 int FitsHeader::readHeaderInfo(string fname, Param &par)
 {
   /** 
-   * FitsHeader::readHeaderInfo
    *  A simple front-end function to the three header access
    *   functions defined below.
    *
@@ -36,7 +35,6 @@ int FitsHeader::readHeaderInfo(string fname, Param &par)
 int FitsHeader::readBUNIT(string fname)
 {
   /**
-   *  FitsHeader::readBUNIT(string fname)
    *   Read the BUNIT header keyword, to store the units
    *    of brightness (flux).
    */
@@ -82,7 +80,6 @@ int FitsHeader::readBUNIT(string fname)
 int FitsHeader::readBLANKinfo(string fname, Param &par)
 {
   /**
-   *   FitsHeader::readBLANKinfo(string fname, Param &par)
    *    Reading in the Blank pixel value keywords.
    *    If the BLANK keyword is in the header, use that and store the relevant 
    *     values. Also copy them into the parameter set.
@@ -160,7 +157,6 @@ int FitsHeader::readBLANKinfo(string fname, Param &par)
 int FitsHeader::readBeamInfo(string fname, Param &par)
 {
   /**
-   *  FitsHeader::readBeamInfo(string fname, Param &par)
    *   Reading in the beam parameters from the header.
    *   Use these, plus the basic WCS parameters to calculate the size of
    *    the beam in pixels. Copy the beam size into the parameter set.

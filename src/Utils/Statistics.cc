@@ -68,6 +68,9 @@ namespace Statistics
   template <class T> 
   std::ostream& operator<< (std::ostream& theStream, StatsContainer<T> &s)
   {
+    /**
+     * Prints out the four key statistics to the requested stream.
+     */
     theStream << "Mean   = "   << s.mean   << "\t"
 	      << "Std.Dev. = " << s.stddev << "\n"
 	      << "Median = "   << s.median << "\t"

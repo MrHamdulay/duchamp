@@ -16,13 +16,14 @@
 int FitsHeader::defineWCS(string fname, Param &par)
 {
   /**
-   *  FitsHeader::defineWCS(string fname, Param &par) 
    *   A function that reads the WCS header information from the 
    *    FITS file given by fname
    *   It will also sort out the spectral axis, and covert to the correct 
    *    velocity type, or frequency type if need be.
    *   It calls FitsHeader::readBUNIT so that the Integrated Flux units can
    *    be calculated by FitsHeader::fixUnits.
+   * \param fname Fits file to read.
+   * \param par Param set to help fix the units with.
    */
 
   fitsfile *fptr;

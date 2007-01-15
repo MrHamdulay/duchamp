@@ -5,14 +5,21 @@
 void mergeIntoList(Detection &object, vector <Detection> &objList, Param &par)
 {
   /**
-   *  mergeIntoList(Detection &, vector<Detection> &, Param &)
+   * A function to add a detection to a list of detections, checking
+   * first to see if it can be combined with existing members of the
+   * list.
    *
-   *   A function to add a detection to a list of detections, checking 
-   *   first to see if it can be merged with existing members of the list.
-   *   The merging is only done if the object is adjacent to one of the existing
-   *   members -- this is considered in all three directions.
-   *    To this end, the adjacent flag in par is set true, and the velocity
-   *    threshold is set to 1. These parameters are changed back before returning.
+   * The combining is only done if the object is adjacent to one of
+   * the existing members -- this is considered in all three
+   * directions.
+   *
+   *  To this end, the adjacent flag in par is set true, and the
+   *  velocity threshold is set to 1. These parameters are changed
+   *  back before returning.
+   *
+   * \param object The Detection to be merged into the list.
+   * \param objList The vector list of Detections.
+   * \param par The Param set, used for testing if merging needs to be done.
    */
 
   bool haveMerged = false;

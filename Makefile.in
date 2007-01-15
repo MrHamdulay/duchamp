@@ -82,6 +82,7 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(FITSIODIR)/wcsIO.o\
 	$(UTILDIR)/Statistics.o\
 	$(UTILDIR)/feedback.o\
+	$(UTILDIR)/Hanning.o\
 	$(UTILDIR)/drawBlankEdges.o\
 	$(UTILDIR)/getStats.o\
 	$(UTILDIR)/get_random_spectrum.o\

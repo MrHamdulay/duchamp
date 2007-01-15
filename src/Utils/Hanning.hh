@@ -1,47 +1,28 @@
 #ifndef HANNING_H
 #define HANNING_H
 
-#include <math.h>
+/**
+ *  Define a Hanning filter.
+ *
+ *  A simple class to define a Hanning filter. 
+ *  It is characterised by a full width \f$2a-1\f$ (this is the number of coefficients
+ *   and a set of coefficients that follow the functional form of 
+ *   \f$c(x) = 0.5 + 0.5\cos(\pi x / a)\f$.
+ */
 
 class Hanning
 {
 public:
-  Hanning(){allocated=false;};
-  Hanning(int size){
-    if(size%2==0){ 
-      std::cerr << "Hanning: need an odd number for the size. "
-		<< "Changing "<< size << " to " << ++size<<".\n";
-    }
-    hanningSize = size;
-    coeffs = new float[size];
-    allocated = true;
-    float a = (size+1.)/2.;
-    for(int i=0;i<size;i++){
-      float x = i-(size-1)/2.;
-      coeffs[i] = 0.5 + 0.5*cos(x * M_PI / a);
-    }
-  };
-  virtual ~Hanning(){if(allocated) delete [] coeffs;};
+  Hanning();          ///< basic constructor -- no filter width set
+  virtual ~Hanning(); ///< destructor
+  Hanning(int size);  ///< specific constructor that sets width and coefficients
 
-  float *smooth(float *array, int npts){
-    float *newarray = new float[npts];
-    float scale = (hanningSize+1.)/2.;
-    for(int i=0;i<npts;i++){
-      newarray[i] = 0.;
-      for(int j=0;j<hanningSize;j++){
-        int x = j-(hanningSize-1)/2;
-        if((i+x>0)&&(i+x<npts)) newarray[i]+=coeffs[j] * array[i+x];
-      }
-      newarray[i] /= scale;
-    }
-    return newarray;
-  };
+  float *smooth(float *array, int npts);  ///< Smooth an array with the Hanning filter.
     
-
 private:
-  int hanningSize;
-  float *coeffs;
-  bool allocated;
+  int hanningSize; ///< The full width of the filter (number of coefficients)
+  float *coeffs;   ///< The coefficients of the filter
+  bool allocated;  ///< Have the coefficients been allocated in memory?
 
 };
 

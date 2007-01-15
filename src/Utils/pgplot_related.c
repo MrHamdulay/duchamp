@@ -8,23 +8,25 @@
 #define WDGPIX 100  /* used by cpgwedglog 
 		       --> number of increments in the wedge. */
 
-/**
- *  This file contains the following programs, all in C code:
- *
- *   int cpgtest() --> a front-end to cpgqinf, to test whether a pgplot
- *                     device is currently open. 
- *   void cpgwedglog(const char* side, float disp, float width, 
- *                   float fg, float bg, const char *label)
- *                 --> a C-code version of pgwedg, plotting the wedge 
- *                     scale in logarithmic units.
- *   void cpgcumul(int npts, float *data, float datamin, float datamax, 
- *                        int pgflag)
- *                 --> a new pgplot routine that draws a cumulative 
- *                     distribution. Uses _swap and _sort.
- *   void cpghistlog(npts, data, datamin, datamax, nbin, pgflag)
- *                 --> as for cpghist, with the y-axis on a logarithmic scale.
- * 
- */
+//
+// This file contains the following programs, all in C code:
+//
+//  int cpgtest() --> a front-end to cpgqinf, to test whether a pgplot
+//                    device is currently open. 
+//  int cpgIsPS() --> a front-end to cpgqinf, to test whether a postscript
+//                    device is currently open.
+//  void cpgwedglog(const char* side, float disp, float width, 
+//                  float fg, float bg, const char *label)
+//                --> a C-code version of pgwedg, plotting the wedge 
+//                    scale in logarithmic units.
+//  void cpgcumul(int npts, float *data, float datamin, float datamax, 
+//                       int pgflag)
+//                --> a new pgplot routine that draws a cumulative 
+//                    distribution. Uses _swap and _sort.
+//  void cpghistlog(npts, data, datamin, datamax, nbin, pgflag)
+//                --> as for cpghist, with the y-axis on a logarithmic scale.
+//
+//
 
 
 /********************************************************************/
@@ -34,7 +36,6 @@
 int cpgtest()
 {
   /** 
-   *  cpgtest
    *     A front-end to cpgqinf, to test whether a pgplot device is 
    *     currently open. Returns 1 if there is, else 0.
    */
@@ -51,7 +52,6 @@ int cpgtest()
 int cpgIsPS()
 {
   /** 
-   *  cpgIsPS
    *     A front-end to cpgqinf, that tests whether the device is using a 
    *     postscript (by which we mean "hardcopy") device
    */
@@ -69,7 +69,6 @@ void cpgwedglog(const char* side, float disp, float width, float fg, float bg,
 		const char *label)
 {
   /** 
-   *  cpgwedglog
    *     A C-code version of PGWEDG that writes the scale of the wedge in 
    *      logarithmic coordinates. All parameters are exactly as for cpgwedg.
    */
@@ -267,11 +266,11 @@ void _sort(float *array, int begin, int end)
 void cpgcumul(int npts, float *data, float datamin, float datamax, int pgflag)
 {
   /** 
-   *  cpgcumul(npts, data, datamin, datamax, pgflag)
-   *    A new pgplot routine that draws a cumulative distribution.
+   *  A new pgplot routine that draws a cumulative distribution.
    *   The use of pgflag is similar to cpghist & cpghist_log:
-   *    0 --> draw a new graph using cpgenv, going from 0 to 1 on the y-axis.
-   *    2 --> draw the plot on the current graph, without re-drawing any axes.
+   *   <ul><li> 0 --> draw a new graph using cpgenv, going from 0 to 1 on the y-axis.
+   *       <li> 2 --> draw the plot on the current graph, without re-drawing any axes.
+   *   </ul>
    */
 
   int i;
@@ -307,8 +306,6 @@ void cpghistlog(int npts, float *data, float datamin, float datamax, int nbin,
 		int pgflag)
 {
   /**
-   * cpghistlog(npts, data, datamin, datamax, nbin, pgflag)
-   * 
    *  Works exactly as for cpghist, except the y-axis is a logarithmic scale.
    *
    */

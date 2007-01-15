@@ -61,15 +61,32 @@ void getSigmaFactors2DNew(int &numScales);
 void getSigmaFactors3DNew(int &numScales);
 
 
+//--------------------
 // PLOTTING ROUTINES
+//--------------------
+// The following are in pgplot_related.c
+//
+/** Is a PGPLOT device open? */
 extern "C" int  cpgtest();
-extern "C" int  cpgIsPS();
+
+/** Is a PGPLOT device a postscript (hardcopy) device? */ 
+extern "C" int  cpgIsPS(); 
+
+/** Do a logarithmic-scaled wedge, as in PGWEDG */
 extern "C" void cpgwedglog(const char* side, float disp, float width, 
 			   float fg, float bg, const char *label);
+
+/** Do CPGHIST but with the y-axis logarithmic */
 extern "C" void cpghistlog(int npts, float *data, float datamin, 
 			   float datamax, int nbin, int pgflag);
+
+/** Do a PGPLOT cumulative distribution */
 extern "C" void cpgcumul(int npts, float *data, float datamin, 
 			 float datamax, int pgflag);
+
+//--------------------
+// The following are in plottingUtilities.cc
+//
 void plotLine(const float slope, const float intercept);
 void lineOfEquality();
 void lineOfBestFit(int size, float *x, float *y);

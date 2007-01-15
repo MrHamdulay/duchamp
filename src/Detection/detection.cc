@@ -15,9 +15,9 @@ using std::endl;
 std::ostream& operator<< ( std::ostream& theStream, Voxel& vox)
 {
   /**
-   * << operator for Voxel class
-   * A convenient way of printing the coordinate 
-   *  and flux values of a voxel.
+   * A convenient way of printing the coordinate and flux values of a voxel.
+   * They are all printed to a single line (with no carriage-return), with the
+   * flux to precision of 4.
    */  
 
   theStream << setw(4) << vox.itsX ;
@@ -136,10 +136,8 @@ Detection::Detection(const Detection& d)
 void Detection::calcParams()
 {
   /**
-   * Detection::calcParams()
-   *  A function that calculates centroid positions, 
-   *   minima & maxima of coordinates,
-   *   and total & peak fluxes for a detection.
+   *  A function that calculates centroid positions, minima & maxima
+   *  of coordinates, and total & peak fluxes for a Detection.
    */
 
   this->xcentre = 0;
@@ -202,16 +200,19 @@ void Detection::calcParams()
 void Detection::calcWCSparams(FitsHeader &head)
 {
   /**
-   * Detection::calcWCSparams(FitsHeader &)
    *  Use the input wcs to calculate the position and velocity 
    *    information for the Detection.
    *  Quantities calculated:
-   *     RA: ra [deg], ra (string), ra width.
-   *     Dec: dec [deg], dec (string), dec width.
-   *     Vel: vel [km/s], min & max vel, vel width.
-   *     Other: coord type for all three axes, nuRest, 
-   *            name (IAU-style, in equatorial or Galactic)
-   *     Uses getIntegFlux to calculate the integrated flux in (say) [Jy km/s]
+   *  <ul><li> RA: ra [deg], ra (string), ra width.
+   *      <li> Dec: dec [deg], dec (string), dec width.
+   *      <li> Vel: vel [km/s], min & max vel, vel width.
+   *      <li> coord type for all three axes, nuRest, 
+   *      <li> name (IAU-style, in equatorial or Galactic) 
+   *  </ul>
+   *  Uses Detection::getIntegFlux(FitsHeader &) to calculate the
+   *  integrated flux in (say) [Jy km/s]
+   *
+   *  \param head FitsHeader object that contains the WCS information.
    */
 
   if(head.isWCS()){
@@ -272,13 +273,14 @@ void Detection::calcWCSparams(FitsHeader &head)
 float Detection::getIntegFlux(FitsHeader &head)
 {
   /**
-   * Detection::getIntegFlux(FitsHeader)
-   *  Uses the input wcs to calculate the velocity-integrated flux, 
+   *  Uses the input WCS to calculate the velocity-integrated flux, 
    *   putting velocity in units of km/s.
    *  Integrates over full spatial and velocity range as given 
    *   by the extrema calculated by calcWCSparams.
    *  If the flux units end in "/beam" (eg. Jy/beam), then the
    *   flux is corrected by the beam size (in pixels).
+   *
+   *  \param head FitsHeader object that contains the WCS information.
    */
 
   // include one pixel either side in each direction
@@ -335,7 +337,6 @@ float Detection::getIntegFlux(FitsHeader &head)
 void Detection::addAnObject(Detection &toAdd)
 {
   /**
-   * Detection::addAnObject(Detection &)
    *  Combines two objects by adding all the pixels of the argument 
    *   to the instigator.
    *  All pixel & flux parameters are recalculated (so that 
@@ -398,8 +399,14 @@ void Detection::addAnObject(Detection &toAdd)
 }
 //--------------------------------------------------------------------
 
-void Detection::addOffsets(Param &par)
+void Detection::setOffsets(Param &par)
 {
+  /**
+   * This function stores the values of the offsets for each cube axis.
+   * The offsets are the starting values of the cube axes that may differ from
+   *  the default value of 0 (for instance, if a subsection is being used).
+   * The values will be used when the detection is outputted.
+   */
   this->xSubOffset = par.getXOffset();
   this->ySubOffset = par.getYOffset();
   this->zSubOffset = par.getZOffset();
@@ -409,12 +416,12 @@ void Detection::addOffsets(Param &par)
 bool Detection::hasEnoughChannels(int minNumber)
 {
   /**
-   *  bool hasEnoughChannels(int)
-   *    A function to determine if the Detection has enough
-   *    contiguous channels to meet the minimum requirement
-   *    given as the argument. 
-   *    Needs to have at least one occurence of minNumber consecutive
-   *    channels present to return true. Otherwise returns false.
+   * A function to determine if the Detection has enough
+   * contiguous channels to meet the minimum requirement
+   * given as the argument. 
+   * \param minNumber How many channels is the minimum acceptable number?
+   * \return True if there is at least one occurence of minNumber consecutive
+   * channels present to return true. False otherwise.
    */
 
   // Original requirement -- based on total span
@@ -447,9 +454,8 @@ bool Detection::hasEnoughChannels(int minNumber)
 int Detection::getSpatialSize()
 {
   /**
-   *  int getSpatialSize()
-   *    A function that returns the number of distinct spatial
-   *     pixels in a Detection.
+   *  A function that returns the number of distinct spatial pixels in
+   *  a Detection.
    */
 
   vector<Pixel> spatialPix;
@@ -475,10 +481,9 @@ int Detection::getSpatialSize()
 std::ostream& operator<< ( std::ostream& theStream, Detection& obj)
 {
   /**
-   * << operator for Detection class
    *  A convenient way of printing the coordinate & flux 
-   *  values for each pixel in the Detection
-   *   --> use as front end to the << operator for Voxels.
+   *  values for each pixel in the Detection.
+   *  Use as front end to the Voxel::operator<< function.
    */  
 
   for(int i=0;i<obj.pix.size();i++) theStream << obj.pix[i] << endl;
@@ -488,7 +493,15 @@ std::ostream& operator<< ( std::ostream& theStream, Detection& obj)
 
 Detection combineObjects(Detection &first, Detection &second)
 {
-  // make the new object
+  /** 
+   * Function that combines two Detection objects and returns the
+   * combination. Basic parameters are recalculated using
+   * Detection::calcParams(), but WCS ones are not.
+   *
+   * \param first,second The two Detection objects to be combined.
+   * \return A Detection object that includes all voxels in the two
+   * input objects.
+   */ 
   Detection *newObject = new Detection;
   for(int ctr=0;ctr<first.getSize();ctr++){
     newObject->addPixel(first.getPixel(ctr));
@@ -504,7 +517,14 @@ Detection combineObjects(Detection &first, Detection &second)
 vector <Detection> combineLists(vector <Detection> &first, 
 				vector <Detection> &second)
 {
-  // make the new object
+  /** 
+   * Function that combines two lists of Detection objects and returns
+   * the combination. 
+   * \param first,second The two lists of Detection objects to be combined.
+   * \return A vector list Detection objects that includes all objects
+   * in the two input lists.
+   */ 
+
   vector <Detection> newList(first.size()+second.size());
   for(int i=0;i<first.size();i++) newList[i] = first[i];
   for(int i=0;i<second.size();i++) newList[i+first.size()] = second[i];

@@ -96,7 +96,7 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 	    object->setX(pix, npix%dim[0]);
 	    object->setY(pix, npix/dim[0]);
 	  }
-	  object->addOffsets(par);
+	  object->setOffsets(par);
 	  object->calcParams();
 	  mergeIntoList(*object,outputList,par);
 	  delete object;
@@ -142,7 +142,7 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 	*object = channelImage->getObject(obj);
 	// Fix up coordinates of each pixel to match original array
 	for(int pix=0;pix<object->getSize();pix++) object->setZ(pix, z);
-	object->addOffsets(par);
+	object->setOffsets(par);
 	object->calcParams();
 	mergeIntoList(*object,outputList,par);
 	delete object;

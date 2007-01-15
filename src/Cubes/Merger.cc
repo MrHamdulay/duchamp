@@ -68,8 +68,7 @@ void Cube::ObjectMerger()
 void ObjectMerger(vector<Detection> &objList, Param &par)
 {
   /**
-   *  ObjectMerger(objList, par)
-   *   A simple front-end to the two following functions,
+   *   A simple front-end to the mergeList() and finaliseList() functions,
    *    so that if you want to merge a single list, it will
    *    do both the merging and the cleaning up afterwards.
    */
@@ -80,7 +79,6 @@ void ObjectMerger(vector<Detection> &objList, Param &par)
 void mergeList(vector<Detection> &objList, Param &par)
 {
   /**
-   *  mergeList(objList, par)
    *   A function that merges any objects in the list of 
    *    Detections that are within stated threshold distances.
    *   Determination of whether objects are close is done by
@@ -154,8 +152,7 @@ void mergeList(vector<Detection> &objList, Param &par)
 void finaliseList(vector<Detection> &objList, Param &par)
 {
   /**
-   *  finaliseList(objList, par)
-   *   A function that looks at each object in the Detection vector
+   *  A function that looks at each object in the Detection vector
    *    and determines whether is passes the requirements for the
    *    minimum number of channels and spatial pixels, as provided by
    *    the Param set par.
@@ -167,7 +164,7 @@ void finaliseList(vector<Detection> &objList, Param &par)
   int listCounter = 0;
   while(listCounter < objList.size()){
 
-    objList[listCounter].addOffsets(par);
+    objList[listCounter].setOffsets(par);
     objList[listCounter].calcParams();
 
     if( objList[listCounter].hasEnoughChannels(par.getMinChannels())

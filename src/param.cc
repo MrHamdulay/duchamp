@@ -100,12 +100,12 @@ FitsHeader& FitsHeader::operator= (const FitsHeader& h)
 void FitsHeader::setWCS(struct wcsprm *w)
 {
   /** 
-   * FitsHeader::setWCS(struct wcsprm)
    *  A function that assigns the wcs parameters, and runs
    *   wcsset to set it up correctly.
    *  Performs a check to see if the WCS is good (by looking at 
    *   the lng and lat wcsprm parameters), and sets the wcsIsGood 
    *   flag accordingly.
+   * \param w A WCSLIB wcsprm struct with the correct parameters.
    */
   wcscopy(true, w, this->wcs);
   wcsset(this->wcs);
@@ -115,8 +115,8 @@ void FitsHeader::setWCS(struct wcsprm *w)
 struct wcsprm *FitsHeader::getWCS()
 {
   /** 
-   * FitsHeader::getWCS()
-   *  A function that returns a wcsprm object corresponding to the WCS.
+   *  A function that returns a properly initilized wcsprm object
+   *  corresponding to the WCS.
    */
   struct wcsprm *wNew = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
   wNew->flag=-1;
@@ -125,15 +125,6 @@ struct wcsprm *FitsHeader::getWCS()
   wcsset(wNew);
   return wNew;
 }
-
-int     FitsHeader::wcsToPix(const double *world, double *pix){
-  return wcsToPixSingle(this->wcs, world, pix);}
-int     FitsHeader::wcsToPix(const double *world, double *pix, const int npts){
-  return wcsToPixMulti(this->wcs, world, pix, npts);}
-int     FitsHeader::pixToWCS(const double *pix, double *world){
-  return pixToWCSSingle(this->wcs, pix, world);}
-int     FitsHeader::pixToWCS(const double *pix, double *world, const int npts){
-  return pixToWCSMulti(this->wcs, pix,world, npts);}
 
 double FitsHeader::pixToVel(double &x, double &y, double &z)
 {
@@ -532,7 +523,16 @@ inline int readIval(std::stringstream& ss)
 
 int Param::readParams(string paramfile)
 {
-
+  /**
+   * The parameters are read in from a disk file, on the assumption that each
+   *  line of the file has the format "parameter value" (eg. alphafdr 0.1)
+   * 
+   * The case of the parameter name does not matter, nor does the
+   * formatting of the spaces (it can be any amount of whitespace or
+   * tabs). 
+   *
+   * \param paramfile A std::string containing the parameter filename.
+   */
   std::ifstream fin(paramfile.c_str());
   if(!fin.is_open()) return FAILURE;
   string line;
@@ -618,6 +618,11 @@ int Param::readParams(string paramfile)
 
 std::ostream& operator<< ( std::ostream& theStream, Param& par)
 {
+  /**
+   * Print out the parameter set in a formatted, easy to read style.
+   * Lists the parameters, a description of them, and their value.
+   */
+
   // Only show the [blankPixValue] bit if we are using the parameter
   // otherwise we have read it from the FITS header.
   string blankParam = "";
@@ -853,10 +858,10 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 void Param::copyHeaderInfo(FitsHeader &head)
 {
   /**
-   *  Param::copyHeaderInfo(FitsHeader &head)
    * A function to copy across relevant header keywords from the 
    *  FitsHeader class to the Param class, as they are needed by
    *  functions in the Param class.
+   * The parameters are the keywords BLANK, BSCALE, BZERO, and the beam size. 
    */
 
   this->blankKeyword  = head.getBlankKeyword();
@@ -868,29 +873,13 @@ void Param::copyHeaderInfo(FitsHeader &head)
   this->numPixBeam    = head.getBeamSize();
 }
 
-bool Param::isBlank(float &value)
-{
-  /** 
-   *  Param::isBlank(float)
-   *   Tests whether the value passed as the argument is BLANK or not.
-   *   If flagBlankPix is false, return false.
-   *   Otherwise, compare to the relevant FITS keywords, using integer 
-   *     comparison.
-   *   Return a bool.
-   */
-
-  return this->flagBlankPix &&
-    (this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword));
-}
-
 string Param::outputSmoothFile()
 {
   /** 
-   *  outputSmoothFile()
-   *   This function produces the required filename in which to save
-   *    the Hanning-smoothed array. If the input image is image.fits, then
-   *    the output will be eg. image.SMOOTH-3.fits, where the width of the 
-   *    Hanning filter was 3 pixels.
+   * This function produces the required filename in which to save
+   *  the Hanning-smoothed array. If the input image is image.fits, then
+   *  the output will be eg. image.SMOOTH-3.fits, where the width of the 
+   *  Hanning filter was 3 pixels.
    */
   string inputName = this->imageFile;
   std::stringstream ss;
@@ -905,12 +894,10 @@ string Param::outputSmoothFile()
 string Param::outputReconFile()
 {
   /** 
-   *  outputReconFile()
-   *
-   *   This function produces the required filename in which to save
-   *    the reconstructed array. If the input image is image.fits, then
-   *    the output will be eg. image.RECON-3-2-4-1.fits, where the numbers are
-   *    3=reconDim, 2=filterCode, 4=snrRecon, 1=minScale
+   * This function produces the required filename in which to save
+   *  the reconstructed array. If the input image is image.fits, then
+   *  the output will be eg. image.RECON-3-2-4-1.fits, where the numbers are
+   *  3=reconDim, 2=filterCode, 4=snrRecon, 1=minScale
    */
   string inputName = this->imageFile;
   std::stringstream ss;
@@ -927,12 +914,10 @@ string Param::outputReconFile()
 string Param::outputResidFile()
 {
   /** 
-   *  outputResidFile()
-   *
-   *   This function produces the required filename in which to save
-   *    the reconstructed array. If the input image is image.fits, then
-   *    the output will be eg. image.RESID-3-2-4-1.fits, where the numbers are
-   *    3=reconDim, 2=filterCode, 4=snrRecon, 1=scaleMin
+   * This function produces the required filename in which to save
+   *  the reconstructed array. If the input image is image.fits, then
+   *  the output will be eg. image.RESID-3-2-4-1.fits, where the numbers are
+   *  3=reconDim, 2=filterCode, 4=snrRecon, 1=scaleMin
    */
   string inputName = this->imageFile;
   std::stringstream ss;

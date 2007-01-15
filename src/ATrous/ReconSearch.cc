@@ -263,7 +263,7 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
 					    object->getZ(pix)*xySize]); 
 	    // NB: set F to the original value, not the recon value.
 	  }
-	  object->addOffsets(par);
+	  object->setOffsets(par);
 	  object->calcParams();
 	  mergeIntoList(*object,outputList,par);
 	  delete object;
@@ -317,7 +317,7 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
 					  z*xySize]); 
 	  // NB: set F to the original value, not the recon value.
 	}
-	object->addOffsets(par);
+	object->setOffsets(par);
 	object->calcParams();
 	mergeIntoList(*object,outputList,par);
 	delete object;

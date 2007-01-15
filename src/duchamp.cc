@@ -5,6 +5,13 @@
 
 void duchampWarning(std::string subroutine, std::string warning)
 {
+  /**
+   * Prints a WARNING message to the standard error stream, quoting
+   * the subroutine that the problem occurred in, and a descriptive
+   * warning text.
+   *
+   * Format: WARNING \<function\> : Something happened that you should be aware of.
+   */
   std::string preamble = "WARNING <" + subroutine + "> : ";
   std::cerr << preamble;
   for(int i=0;i<warning.size();i++){
@@ -16,6 +23,13 @@ void duchampWarning(std::string subroutine, std::string warning)
 
 void duchampError(std::string subroutine, std::string error)
 {
+  /**
+   * Prints an ERROR message to the standard error stream, quoting
+   * the subroutine that the problem occurred in, a descriptive
+   * warning text, and sounding the bell.
+   *
+   * Format: ERROR \<function\> : Something bad happened.
+   */
   std::string preamble = "\aERROR <" + subroutine + "> : ";
   std::cerr << preamble;
   for(int i=0;i<error.size();i++){
