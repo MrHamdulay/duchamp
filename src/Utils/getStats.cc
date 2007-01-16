@@ -5,14 +5,28 @@
 
 template <class T> T absval(T value)
 {
+  /**
+   * Type-independent way of getting the absolute value.
+   */
   if( value > 0) return value;
   else return 0-value;
 }
+template int absval<int>(int value);
+template long absval<long>(long value);
+template float absval<float>(float value);
+template double absval<double>(double value);
 //--------------------------------------------------------------------
 
 template <class T> void findMinMax(const T *array, const int size, 
 				   T &min, T &max)
 {
+  /**
+   * A function to find the minimum and maximum values of a set of numbers.
+   * \param array The array of data values. Type independent.
+   * \param size The length of the array
+   * \param min The returned value of the minimum value in the array.
+   * \param max The returned value of the maximum value in the array.
+   */
   min = max = array[0];
   for(int i=1;i<size;i++) {
     if(array[i]<min) min=array[i];
@@ -20,24 +34,42 @@ template <class T> void findMinMax(const T *array, const int size,
   }
 }
 template void findMinMax<int>(const int *array, const int size, 
-			      int &min, int &max);
+				 int &min, int &max);
+template void findMinMax<long>(const long *array, const int size, 
+				  long &min, long &max);
 template void findMinMax<float>(const float *array, const int size, 
-				float &min, float &max);
+				   float &min, float &max);
+template void findMinMax<double>(const double *array, const int size, 
+				    double &min, double &max);
 //--------------------------------------------------------------------
 
 template <class T> float findMean(T *array, int size)
 {
+  /**
+   * Find the mean of an array of numbers. Type independent.
+   * \param array The array of numbers.
+   * \param size The length of the array.
+   * \return The mean value of the array, returned as a float
+   */
   float mean = array[0];
   for(int i=1;i<size;i++) mean += array[i];
   mean /= float(size);
   return mean;
 }
 template float findMean<int>(int *array, int size);
+template float findMean<long>(long *array, int size);
 template float findMean<float>(float *array, int size);
+template float findMean<double>(double *array, int size);
 //--------------------------------------------------------------------
 
 template <class T> float findStddev(T *array, int size)
 {
+  /**
+   * Find the rms or standard deviation of an array of numbers. Type independent.
+   * \param array The array of numbers.
+   * \param size The length of the array.
+   * \return The rms value of the array, returned as a float
+   */
   float mean = findMean(array,size);
   float stddev = (array[0]-mean) * (array[0]-mean);
   for(int i=1;i<size;i++) stddev += (array[i]-mean)*(array[i]-mean);
@@ -45,12 +77,19 @@ template <class T> float findStddev(T *array, int size)
   return stddev;
 }
 template float findStddev<int>(int *array, int size);
+template float findStddev<long>(long *array, int size);
 template float findStddev<float>(float *array, int size);
+template float findStddev<double>(double *array, int size);
 //--------------------------------------------------------------------
 
 template <class T> T findMedian(T *array, int size)
 {
-  // NOTE: madfm = median absolute deviation from median
+  /**
+   * Find the median value of an array of numbers. Type independent.
+   * \param array The array of numbers.
+   * \param size The length of the array.
+   * \return The median value of the array, returned as the same type as the array.
+   */
   T *newarray = new T[size];
   T median;
   for(int i=0;i<size;i++) newarray[i] = array[i];
@@ -61,12 +100,22 @@ template <class T> T findMedian(T *array, int size)
   return median;
 }
 template int findMedian<int>(int *array, int size);
+template long findMedian<long>(long *array, int size);
 template float findMedian<float>(float *array, int size);
+template double findMedian<double>(double *array, int size);
 //--------------------------------------------------------------------
 
 template <class T> T findMADFM(T *array, int size)
 {
-  // NOTE: madfm = median absolute deviation from median
+  /**
+   * Find the median absolute deviation from the median value of an
+   * array of numbers. Type independent.
+   *
+   * \param array The array of numbers.
+   * \param size The length of the array.
+   * \return The median absolute deviation from the median value of
+   * the array, returned as the same type as the array.
+   */
   T *newarray = new T[size];
   T median = findMedian<T>(array,size);
   T madfm;
@@ -78,13 +127,24 @@ template <class T> T findMADFM(T *array, int size)
   return madfm;
 }
 template int findMADFM<int>(int *array, int size);
+template long findMADFM<long>(long *array, int size);
 template float findMADFM<float>(float *array, int size);
+template double findMADFM<double>(double *array, int size);
 //--------------------------------------------------------------------
 
 template <class T> void findMedianStats(T *array, int size, 
 					T &median, T &madfm)
 {
-  // NOTE: madfm = median absolute deviation from median
+  /**
+   * Find the median and the median absolute deviation from the median
+   * value of an array of numbers. Type independent.
+   *
+   * \param array The array of numbers.
+   * \param size The length of the array.
+   * \param median The median value of the array, returned as the same type as the array.
+   * \param madfm The median absolute deviation from the median value of
+   * the array, returned as the same type as the array.
+   */
   if(size==0){
     std::cerr << "Error in findMedianStats: zero sized array!\n";
     return;
@@ -104,19 +164,31 @@ template <class T> void findMedianStats(T *array, int size,
   delete [] newarray;
 }
 template void findMedianStats<int>(int *array, int size, 
-				   int &median, int &madfm);
+				      int &median, int &madfm);
 template void findMedianStats<long>(long *array, int size, 
-				    long &median, long &madfm);
+				       long &median, long &madfm);
 template void findMedianStats<float>(float *array, int size, 
-				     float &median, float &madfm);
+					float &median, float &madfm);
 template void findMedianStats<double>(double *array, int size, 
-				      double &median, double &madfm);
+					 double &median, double &madfm);
 //--------------------------------------------------------------------
 
 template <class T> void findMedianStats(T *array, int size, bool *isGood, 
 					T &median, T &madfm)
 {
-  // NOTE: madfm = median absolute deviation from median
+  /**
+   * Find the median and the median absolute deviation from the median
+   * value of a subset of an array of numbers. The subset is defined
+   * by an array of bool variables. Type independent.
+   *
+   * \param array The array of numbers.
+   * \param size The length of the array.
+   * \param isGood An array of the same length that says whether to
+   * include each member of the array in the calculations.
+   * \param median The median value of the array, returned as the same type as the array.
+   * \param madfm The median absolute deviation from the median value of
+   * the array, returned as the same type as the array.
+   */
   int goodSize=0;
   for(int i=0;i<size;i++) if(isGood[i]) goodSize++;
   if(goodSize==0){
@@ -141,19 +213,27 @@ template <class T> void findMedianStats(T *array, int size, bool *isGood,
   delete [] newarray;
 }
 template void findMedianStats<int>(int *array, int size, bool *isGood, 
-				   int &median, int &madfm);
+				      int &median, int &madfm);
 template void findMedianStats<long>(long *array, int size, bool *isGood, 
-				    long &median, long &madfm);
+				       long &median, long &madfm);
 template void findMedianStats<float>(float *array, int size, bool *isGood, 
-				     float &median, float &madfm);
+					float &median, float &madfm);
 template void findMedianStats<double>(double *array, int size, bool *isGood, 
-				      double &median, double &madfm);
+					 double &median, double &madfm);
 //--------------------------------------------------------------------
   
 
 template <class T> void findNormalStats(T *array, int size, 
 					float &mean, float &stddev)
 {
+  /**
+   * Find the mean and rms or standard deviation of an array of numbers. Type independent.
+   *
+   * \param array The array of numbers.
+   * \param size The length of the array.
+   * \param mean The mean value of the array, returned as a float.
+   * \param stddev The rms or standard deviation of the array, returned as a float.
+   */
   if(size==0){
     std::cerr << "Error in findNormalStats: zero sized array!\n";
     return;
@@ -173,18 +253,30 @@ template <class T> void findNormalStats(T *array, int size,
 
 }
 template void findNormalStats<int>(int *array, int size, 
-				   float &mean, float &stddev);
-template void findNormalStats<long>(long *array, int size, 
-				    float &mean, float &stddev);
-template void findNormalStats<float>(float *array, int size, 
-				     float &mean, float &stddev);
-template void findNormalStats<double>(double *array, int size, 
 				      float &mean, float &stddev);
+template void findNormalStats<long>(long *array, int size, 
+				       float &mean, float &stddev);
+template void findNormalStats<float>(float *array, int size, 
+					float &mean, float &stddev);
+template void findNormalStats<double>(double *array, int size, 
+					 float &mean, float &stddev);
 //--------------------------------------------------------------------
 
 template <class T> void findNormalStats(T *array, int size, bool *isGood, 
 					float &mean, float &stddev)
 {
+  /**
+   * Find the mean and rms or standard deviation of a subset of an
+   * array of numbers. The subset is defined by an array of bool
+   * variables. Type independent.
+   *
+   * \param array The array of numbers.
+   * \param size The length of the array.
+   * \param isGood An array of the same length that says whether to
+   * include each member of the array in the calculations.
+   * \param mean The mean value of the array, returned as a float.
+   * \param stddev The rms or standard deviation of the array, returned as a float.
+   */
   int goodSize=0;
   for(int i=0;i<size;i++) if(isGood[i]) goodSize++;
   if(goodSize==0){
@@ -207,125 +299,11 @@ template <class T> void findNormalStats(T *array, int size, bool *isGood,
 
 }
 template void findNormalStats<int>(int *array, int size, bool *isGood, 
-				   float &mean, float &stddev);
-template void findNormalStats<long>(long *array, int size, bool *isGood, 
-				    float &mean, float &stddev);
-template void findNormalStats<float>(float *array, int size, bool *isGood, 
-				     float &mean, float &stddev);
-template void findNormalStats<double>(double *array, int size, bool *isGood, 
 				      float &mean, float &stddev);
+template void findNormalStats<long>(long *array, int size, bool *isGood, 
+				       float &mean, float &stddev);
+template void findNormalStats<float>(float *array, int size, bool *isGood, 
+					float &mean, float &stddev);
+template void findNormalStats<double>(double *array, int size, bool *isGood, 
+					 float &mean, float &stddev);
 //--------------------------------------------------------------------
-
-void findTrimmedHistStatsOLD(float *array, const int size, 
-			     float &tmean, float &tsigma)
-{
-
-  const int nbin = 100;
-  float *num = new float[nbin];
-  bool *keep = new bool[nbin];
-
-  // HOW MANY VALUES IN EACH BIN?
-  float min,max;
-  findMinMax(array,size,min,max);
-  for(int i=0; i<nbin; i++) num[i]=0;
-  for(int i=0; i<size; i++){
-    float fraction = (array[i] - min) / (max - min);
-    int bin = (int)( floor(fraction*nbin) );
-    if((bin>=0)&&(bin<nbin)) num[bin]++;
-  }
-  int binmax = 0;
-  for(int i=1; i<nbin; i++)  if(num[i]>num[binmax]) binmax = i;
-  for(int i=0; i<nbin; i++) keep[i] = (num[i]>=num[binmax]/2);
-  float *newarray = new float[size];
-  int newsize = 0;
-  for(int i=0; i<size; i++){
-    float fraction = (array[i] - min) / (max - min);
-    int bin = (int)( floor(fraction*nbin) );
-    if(keep[bin]) newarray[newsize++] = array[i];
-  }
-
-  findNormalStats(newarray,newsize,tmean,tsigma);
-  delete [] num;
-  delete [] keep;
-  delete [] newarray;
-
-}
-//--------------------------------------------------------------------
-
-void findTrimmedHistStats2(float *array, const int size, 
-			   float &tmean, float &tsigma)
-{
-
-  const int nbin = 200;
-  float *num = new float[nbin];
-  bool *keep = new bool[nbin];
-
-  // HOW MANY VALUES IN EACH BIN?
-  float min,max;
-  findMinMax(array,size,min,max);
-  for(int i=0; i<nbin; i++) num[i]=0;
-  for(int i=0; i<size; i++){
-    float fraction = (array[i] - min) / (max - min);
-    int bin = (int)( floor(fraction*nbin) );
-    if((bin>=0)&&(bin<nbin)) num[bin]++;
-  }
-  int binmax = 0;
-  for(int i=1; i<nbin; i++)  if(num[i]>num[binmax]) binmax = i;
-  for(int i=0; i<nbin; i++) keep[i] = (num[i]>=num[binmax]/2);
-  float *newarray = new float[size];
-  int newsize = 0;
-  for(int i=0; i<size; i++){
-    float fraction = (array[i] - min) / (max - min);
-    int bin = (int)( floor(fraction*nbin) );
-    if(keep[bin]) newarray[newsize++] = array[i];
-  }
-
-  tmean = findMean(newarray,newsize);
-
-  tsigma = newsize * (max-min)/float(nbin) / 
-    (num[binmax] * erf(sqrt(M_LN2)) * sqrt(2.*M_PI));
-
-}
-//--------------------------------------------------------------------
-
-void findTrimmedHistStats(float *array, const int size, 
-			  float &tmean, float &tsigma)
-{
-  float datamin,datamax;
-  findMinMax(array,size,datamin,datamax);
-  float *sorted = new float[size];
-  float *cumul  = new float[size];
-  float *angle  = new float[size];
-  for(int i=0;i<size;i++) sorted[i] = array[i]/(datamax-datamin);
-  std::sort(sorted,sorted+size);
-  for(int i=0;i<size;i++) cumul[i] = (float)i/(float)size;
-  int width =(int)( 20. * log10((float)size));
-  for(int i=0;i<size;i++){
-    int beg,end;
-    float slope,eSlope,inter,eInter,r;
-    if(i<width/2) beg=0; else beg=i-width/2;
-    if(i>=size-width/2) end=size-1; else end=i+width/2;
-    if(linear_regression(size,sorted,cumul,beg,end,slope,eSlope,inter,eInter,r)==0)
-      angle[i] = atan( fabs(slope) ) * 180. / M_PI;
-    else angle[i] = 90.;
-  }
-
-//   int start = 0;
-//   while(angle[start] < 45.) start++;
-//   int finish = size-1;
-//   while(angle[finish] < 45.) finish--;
-
-  int maxpt = 0;
-  for(int i = 1; i<size; i++) if(angle[i]>angle[maxpt]) maxpt=i;
-  int start = maxpt;
-  while((start>0)&&(angle[start]>45.)) start--;
-  int finish = maxpt;
-  while((finish < size-1)&&(angle[finish]>45.)) finish++;
-
-  float *newarray = new float[finish-start+1];
-  for(int i=0;i<finish-start+1;i++) 
-    newarray[i] = sorted[i+start]*(datamax-datamin);
-
-  findNormalStats(newarray,finish-start+1,tmean,tsigma);
-  
-}

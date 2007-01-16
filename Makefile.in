@@ -66,6 +66,7 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(CUBESDIR)/CubicSearch.o\
 	$(CUBESDIR)/detectionIO.o\
 	$(CUBESDIR)/drawMomentCutout.o\
+	$(CUBESDIR)/drawBlankEdges.o\
 	$(CUBESDIR)/getImage.o\
 	$(CUBESDIR)/invertCube.o\
 	$(CUBESDIR)/Merger.o\
@@ -83,7 +84,6 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(UTILDIR)/Statistics.o\
 	$(UTILDIR)/feedback.o\
 	$(UTILDIR)/Hanning.o\
-	$(UTILDIR)/drawBlankEdges.o\
 	$(UTILDIR)/getStats.o\
 	$(UTILDIR)/get_random_spectrum.o\
 	$(UTILDIR)/linear_regression.o\

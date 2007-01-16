@@ -11,6 +11,12 @@
 
 void Param::setOffsets(struct wcsprm *wcs)
 {
+  /** 
+   * If there is a subsection being used, set the offset values according to the 
+   * correct dimensions given by the WCS struct.
+   * If not, set the offsets to zero.
+   * \param wcs The WCSLIB wcsprm struct that defines which axis is which.
+   */
   if(this->flagSubsection){ // if so, then the offsets array is defined.
     this->xSubOffset = this->offsets[wcs->lng];
     this->ySubOffset = this->offsets[wcs->lat];

@@ -35,12 +35,16 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 				 StatsContainer<float> &stats)
 {
   /**
-   * cubicSearch
    *  Takes a dimension array and data array as input (and Parameter set)
    *  and searches for detections in a combination of 1D and 2D searches.
    *  Returns a vector list of Detections.
    *  No reconstruction is assumed to have taken place, so statistics are
    *  calculated (using robust methods) from the data array itself.
+   * \param dim Array of dimension sizes for the data array.
+   * \param Array Array of data.
+   * \param par Param set defining how to do detection, and what a BLANK pixel is etc.
+   * \param stats The statistics that define what a detection is.
+   * \return Vector of detected objects.
    */
 
   vector <Detection> outputList;

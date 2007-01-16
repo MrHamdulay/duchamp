@@ -1,16 +1,3 @@
-/**
- *  LUTZ_DETECT.CC
- *
- * A detection algorithm based on that of Lutz (1980).
- *
- * INPUTS: 
- *    image     -- an Image object, containing a 2D image that has been 
- *                 processed such that its pValue array is defined.
- * OUTPUTS:
- *   The detection array in image will be filled, according to 
- *   the location of the objects in the image.
- *
- */
 #include <Cubes/cubes.hh>
 #include <Detection/detection.hh>
 #include <vector>
@@ -19,16 +6,37 @@ enum STATUS { NONOBJECT, OBJECT, COMPLETE, INCOMPLETE };
 enum ROW { PRIOR=0, CURRENT};
 enum NULLS { NULLSTART=-1, NULLMARKER=45}; //ASCII 45 = '-' --> eases printing in case of debugging
 
+/**
+ * Local class to manage locating detections.
+ * Keeps a track of a detection, as well as the start and finish
+ * locations of the detection on the current row.
+ */
 class Object{
 public:
   Object(){start=NULLSTART; end=NULLSTART;};
-  int start;
-  int end;
-  Detection info;
+  int start; ///< Pixel on the current row where the detection starts.
+  int end;   ///< Pixel on the current row where the detection finishes.
+  Detection info; ///< Collection of detected pixels.
 };
 
 void Image::lutz_detect() 
 {
+/**
+ *  A detection algorithm for 2-dimensional images based on that of
+ *  Lutz (1980).
+ *  
+ *  The image is raster-scanned, and searched row-by-row. Objects
+ *  detected in each row are compared to objects in subsequent rows,
+ *  and combined if they are connected (in an 8-fold sense).
+ * 
+ *  Note that "detected" here means according to the
+ *  Image::isDetection(long,long) function.
+ *
+ *  Upon return, the detected objects are stored in the
+ *  Image::objectList vector.
+ *
+ */
+
   // Allocate necessary arrays.
   STATUS *status   = new STATUS[2];
   Detection *store = new Detection[this->axisDim[0]+1];
@@ -62,15 +70,15 @@ void Image::lutz_detect()
       }
       // else we're in the padding row/col and isObject=FALSE;
 
-      /**
-       * ------------------------------ START SEGMENT ------------------------
-       * If the current pixel is object and the previous pixel is not, then
-       * start a new segment.
-       * If the pixel touches an object on the prior row, the marker is either
-       * an S or an s, depending on whether the object has started yet.
-       * If it doesn't touch a prior object, this is the start of a completly
-       * new object on this row.
-       */
+      // 
+      // ------------------------------ START SEGMENT ------------------------
+      // If the current pixel is object and the previous pixel is not, then
+      // start a new segment.
+      // If the pixel touches an object on the prior row, the marker is either
+      // an S or an s, depending on whether the object has started yet.
+      // If it doesn't touch a prior object, this is the start of a completly
+      // new object on this row.
+      // 
       if ( (isObject) && (status[CURRENT] != OBJECT) ){
 
 	status[CURRENT] = OBJECT;
@@ -92,22 +100,22 @@ void Image::lutz_detect()
 	}
       }
 
-      /**
-       * ------------------------------ PROCESS MARKER -----------------------
-       * If the current marker is not blank, then we need to deal with it. 
-       * Four cases:
-       *   S --> start of object on prior row. Push priorStatus onto PSSTACK 
-       *         and set priorStatus to OBJECT
-       *   s --> start of a secondary segment of object on prior row.
-       *         If current object joined, pop PSSTACK and join the objects.
-       *	 Set priorStatus to OBJECT.
-       *   f --> end of a secondary segment of object on prior row.
-       *         Set priorStatus to INCOMPLETE.
-       *   F --> end of object on prior row. If no more of the object is to 
-       *          come (priorStatus=COMPLETE), then finish it and output data.
-       *         Add to list, but only if it has more than the minimum number
-       *           of pixels.
-       */
+      // 
+      // ------------------------------ PROCESS MARKER -----------------------
+      // If the current marker is not blank, then we need to deal with it. 
+      // Four cases:
+      //   S --> start of object on prior row. Push priorStatus onto PSSTACK 
+      //         and set priorStatus to OBJECT
+      //   s --> start of a secondary segment of object on prior row.
+      //         If current object joined, pop PSSTACK and join the objects.
+      // 	 Set priorStatus to OBJECT.
+      //   f --> end of a secondary segment of object on prior row.
+      //         Set priorStatus to INCOMPLETE.
+      //   F --> end of object on prior row. If no more of the object is to 
+      //          come (priorStatus=COMPLETE), then finish it and output data.
+      //         Add to list, but only if it has more than the minimum number
+      //           of pixels.
+      // 
       if(currentMarker != NULLMARKER){
 
 	if(currentMarker == 'S'){
@@ -179,14 +187,14 @@ void Image::lutz_detect()
 	oS->back().info.addPixel(*pix);
       }
       else{
-	/**
-	 *------------------------------ END SEGMENT -------------------------
-	 * If the current pixel is background and the previous pixel was an 
-	 * object, then finish the segment.
-	 * If the prior status is COMPLETE, it's the end of the final segment 
-	 * of the object section.
-	 * If not, it's end of the segment, but not necessarily the section.
-	 */
+	// 
+	// ----------------------------- END SEGMENT -------------------------
+	// If the current pixel is background and the previous pixel was an 
+	// object, then finish the segment.
+	// If the prior status is COMPLETE, it's the end of the final segment 
+	// of the object section.
+	// If not, it's end of the segment, but not necessarily the section.
+	// 
 	if ( status[CURRENT] == OBJECT) {
 
 	  status[CURRENT] = NONOBJECT;

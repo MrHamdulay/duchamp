@@ -11,7 +11,10 @@
 #include <duchamp.hh>
 #include <Cubes/cubes.hh>
 
+/** Write FITS headers in correct format for reconstructed array output */
 void writeReconHeaderInfo(fitsfile *fptr, Param &par, string nature);
+
+/** Write FITS headers in correct format for smoothed array output */
 void writeSmoothHeaderInfo(fitsfile *fptr, Param &par);
 
 void Cube::saveSmoothedCube()
@@ -238,8 +241,6 @@ void Cube::saveReconstructedCube()
 void writeReconHeaderInfo(fitsfile *fptr, Param &par, string nature)
 {
   /**
-   *  writeReconHeaderInfo(fptr, par, nature)
-   *
    *   A simple function that writes all the necessary keywords and comments
    *    to the FITS header pointed to by fptr.
    *   The keyword names and comments are taken from duchamp.hh
@@ -305,8 +306,6 @@ void writeReconHeaderInfo(fitsfile *fptr, Param &par, string nature)
 void writeSmoothHeaderInfo(fitsfile *fptr, Param &par)
 {
   /**
-   *  writeSmoothHeaderInfo(fptr, par)
-   *
    *   A simple function that writes all the necessary keywords and comments
    *    to the FITS header pointed to by fptr.
    *   The keyword names and comments are taken from duchamp.hh

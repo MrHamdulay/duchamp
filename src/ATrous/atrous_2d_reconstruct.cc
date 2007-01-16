@@ -13,15 +13,16 @@ using std::setw;
 void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, Param &par)
 {
   /**
-   *  atrous2DReconstruct(xdim, ydim, input, output, par)
-   *
    *  A routine that uses the a trous wavelet method to reconstruct a 
    *   2-dimensional image.
    *  The Param object "par" contains all necessary info about the filter and 
    *   reconstruction parameters, although a Filter object has to be declared
    *   elsewhere previously.
-   *  The input array is in "input", of dimensions "xdim"x"ydim", and the 
-   *   reconstructed array is in "output".
+   *  \param xdim The length of the x-axis of the image.
+   *  \param ydim The length of the y-axis of the image.
+   *  \param input The input spectrum.
+   *  \param output The returned reconstructed spectrum. This array needs to be declared beforehand.
+   *  \param par The Param set.
    */
 
   extern Filter reconFilter;

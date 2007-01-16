@@ -6,8 +6,7 @@
 
 void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par)
 {
-  /** Draw the edge of the BLANK region on a map.
-   *     
+  /**    
    *   A subroutine that is designed to draw the
    *    edges of the blank region of the cube on a moment/detection map.
    *   Uses the same procedure as used in the reconstruction subroutines.

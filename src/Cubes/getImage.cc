@@ -23,7 +23,7 @@ int Cube::getCube(string fname)
    *  This function will check that the file exists, report the dimensions
    *   and then get other functions to read the data, WCS, and necessary 
    *   header keywords.
-   *  \par fname A string with name of FITS file.
+   *  \param fname A string with name of FITS file.
    *  \return SUCCESS or FAILURE.
    */
 

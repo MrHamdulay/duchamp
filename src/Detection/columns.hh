@@ -12,6 +12,10 @@ using std::vector;
 class Detection;
 class FitsHeader;
 
+/**
+ * A namespace controlling the formatting of columns of output for Duchamp.
+ */
+
 namespace Column
 {
   // First, define some basic quantities.
@@ -72,24 +76,53 @@ namespace Column
     Col();          ///< Basic constructor
     Col(int num);   ///< Specific constructor
     virtual ~Col(); ///< Default destructor;
+    //--------------
     // basic accessor functions
-    int    getWidth();          ///< return column width
-    void   setWidth(int i);     ///< set the column width
-    int    getPrecision();      ///< return the column precision
-    void   setPrecision(int i); ///< set the column precision
-    string getName();           ///< return the title of the column
-    void   setName(string s);   ///< set the column's title
-    string getUnits();          ///< return the units of the column
-    void   setUnits(string s);  ///< set the units of the column
+    //
+    int    getWidth(){return width;};         
+    void   setWidth(int i){width=i;};    
+    int    getPrecision(){return precision;};     
+    void   setPrecision(int i){precision=i;};
+    string getName(){return name;};          
+    void   setName(string s){name=s;};  
+    string getUnits(){return units;};         
+    void   setUnits(string s){units=s;}; 
+
+    //--------------
     // other functions
-    int    widen();             ///< Make the column one space wider.
-    int    upPrec();            ///< Increase the precision by one, widening the column if necessary.
-    // outputting functions -- all in columns.cc
-    void   printTitle(std::ostream &stream); ///< write the title of the column to the stream
-    void   printUnits(std::ostream &stream); ///< write the units of the column to the stream
-    void   printDash (std::ostream &stream); ///< write dashes the full width of the column to the stream
-    void   printBlank(std::ostream &stream); ///< write blanks the full width of the column to the stream
-    template <class T> void printEntry(std::ostream &stream, T value); ///< Print a given value in a column with correct width & precision.
+    //
+    /** Make the column one space wider. */
+    int    widen(){width++;};
+
+    /** Increase the precision by one, widening the column if necessary. */
+    int    upPrec(){precision++; if(width<precision+3) width++;};
+
+    //--------------
+    // Outputting functions -- all in columns.cc
+    //
+    /** write the title of the column to the stream */
+    void   printTitle(std::ostream &stream){
+      stream << std::setw(this->width) << std::setfill(' ') << this->name;
+    };
+
+    /** write the units of the column to the stream */
+    void   printUnits(std::ostream &stream){
+      stream << std::setw(this->width) << std::setfill(' ') << this->units;
+    };
+
+    /** write dashes the full width of the column to the stream */
+    void   printDash (std::ostream &stream){
+      stream << std::setw(this->width) << std::setfill('-')
+	     << "" << std::setfill(' ');
+    };
+
+    /** write blanks the full width of the column to the stream */
+    void   printBlank(std::ostream &stream){
+      stream << std::setw(this->width) << std::setfill(' ') << "";
+    };
+
+    /** Print a given value in a column with correct width & precision. */
+    template <class T> void printEntry(std::ostream &stream, T value);
 
   private:
     int width;          ///< How wide is the column (in ascii spaces)
@@ -98,35 +131,13 @@ namespace Column
     string units;       ///< The units that the values in the column are expressed in.
   };
 
-  // inline Col functions
-  inline int    Col::getWidth(){return width;}
-  inline void   Col::setWidth(int i){width=i;}
-  inline int    Col::getPrecision(){return precision;}
-  inline void   Col::setPrecision(int i){precision=i;}
-  inline string Col::getName(){return name;}
-  inline void   Col::setName(string s){name=s;}
-  inline string Col::getUnits(){return units;}
-  inline void   Col::setUnits(string s){units=s;}
-  inline int    Col::widen(){width++;}
-  inline int    Col::upPrec(){precision++; if(width<precision+3) width++;}
-  inline void   Col::printTitle(std::ostream &stream){
-    stream << std::setw(this->width) << std::setfill(' ') << this->name;
-  }
-  inline void   Col::printUnits(std::ostream &stream){
-    stream << std::setw(this->width) << std::setfill(' ') << this->units;
-  }
-  inline void   Col::printDash (std::ostream &stream){
-    stream << std::setw(this->width) << std::setfill('-')
-	   << "" << std::setfill(' ');
-  }
-  inline void   Col::printBlank(std::ostream &stream){
-    stream << std::setw(this->width) << std::setfill(' ') << "";
-  }
-
   
 }
+/** Returns a vector of Col for results file output.*/
 vector<Column::Col> getFullColSet(vector<Detection> &objectList, 
 				  FitsHeader &head);
+
+/** Returns a vector of Col for logfile output.*/
 vector<Column::Col> getLogColSet(vector<Detection> &objectList, 
 				 FitsHeader &head);
 

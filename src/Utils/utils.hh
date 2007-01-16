@@ -1,19 +1,12 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <param.hh>
 #include <wcs.h>
 #include <string>
+#include <param.hh>
 
 // define the speed of light for WCS-related accessor functions 
 const float C_kms = 299792.458;
-
-// MENU ROUTINES FOR DIGANOSTIC/TEST PROGRAMS
-std::string menu();
-std::string specMenu();
-std::string orionMenu();
-std::string imageMenu();
-std::string twoblMenu();
 
 int linear_regression(int num, float *x, float *y, int ilow, int ihigh, 
 		      float &slope, float &errSlope, 
@@ -41,24 +34,6 @@ template <class T> void findNormalStats(T *array, int size,
 					float &mean, float &stddev);
 template <class T> void findNormalStats(T *array, int size, bool *isGood, 
 		     float &mean, float &stddev);
-
-void findTrimmedHistStats(float *array, const int size, 
-			  float &tmean, float &tsigma);
-void getRandomSpectrum(int length, float *x, float *y);
-void getRandomSpectrum(int length, float *x, double *y);
-void getRandomSpectrum(int length, float mean, float sigma, 
-		       float *x, double *y);
-void getRandomSpectrum(int length, float mean, float sigma, 
-		       float *x, float *y);
-float getNormalRV();
-float getNormalRVtrunc();
-float getNormalRV(float mean, float sigma);
-void getSigmaFactors(int &numScales, float *factors);
-void getSigmaFactors2D(int &numScales, float *factors);
-void getSigmaFactors3D(int &numScales, float *factors);
-void getSigmaFactors1DNew(int &numScales);
-void getSigmaFactors2DNew(int &numScales);
-void getSigmaFactors3DNew(int &numScales);
 
 
 //--------------------
@@ -98,13 +73,12 @@ void plotHorizLine(const float yval, const int colour, const int style);
 void plotHorizLine(const float yval);
 void plotHorizLine(const float yval, const int colour);
 void drawContours(const int size, const float *x, const float *y);
-void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par);
 
 // POSITION-RELATED ROUTINES
-string getIAUNameEQ(double ra, double dec, float equinox);
-string getIAUNameGAL(double ra, double dec);
-string decToDMS(double dec, string type);
-double dmsToDec(string dms);
+std::string getIAUNameEQ(double ra, double dec, float equinox);
+std::string getIAUNameGAL(double ra, double dec);
+std::string decToDMS(double dec, std::string type);
+double dmsToDec(std::string dms);
 double angularSeparation(double &ra1, double &dec1, double &ra2, double &dec2);
 
 // WCS-RELATED ROUTINES
@@ -115,9 +89,9 @@ int wcsToPixMulti(struct wcsprm *wcs, const double *world,
 int pixToWCSMulti(struct wcsprm *wcs, const double *pix, 
 		  double *world, const int npts);
 double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, 
-		       double &z, string velUnits);
-double coordToVel(struct wcsprm *wcs, const double coord, string outputUnits);
-double velToCoord(struct wcsprm *wcs, const float velocity, string outputUnits);
+		       double &z, std::string velUnits);
+double coordToVel(struct wcsprm *wcs, const double coord, std::string outputUnits);
+double velToCoord(struct wcsprm *wcs, const float velocity, std::string outputUnits);
 
 // FILTER SMOOTHING ROUTINES
 void waveletSmooth(int dim,float *array, int arraySize, float sigma);

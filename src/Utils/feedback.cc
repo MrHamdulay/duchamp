@@ -19,8 +19,9 @@ ProgressBar::ProgressBar(int newlength){
   /**
    * This alternative constructor enables the user to define how many
    * hashes should appear. Again, the number visible is set to 0 and
-   * the location to be at the beginning.  \param newlength The new
-   * number of hashes to appear in the bar.
+   * the location to be at the beginning.  
+   *
+   * \param newlength The new number of hashes to appear in the bar.
    */
   length=newlength; 
   loc=BEG; 
@@ -34,8 +35,10 @@ void ProgressBar::init(int size){
    * This initialises the bar to deal with a loop of a certain size.
    * This size will imply a certain step size, dependent on the number
    * of hashes that will be written.  A blank bar is written out as
-   * well, and we remain at the end.  \param size The maximum number
-   * of iterations to be covered by the progress bar.
+   * well, and we remain at the end.  
+   *
+   * \param size The maximum number of iterations to be covered by the
+   * progress bar.
    */
   stepSize = float(size) / float(length);
   std::cout << "|"; 
@@ -51,8 +54,10 @@ void ProgressBar::update(int num){
    * Based on the number provided, as well as the stepsize, we compare
    * the number of hashes we expect to see with the number that are
    * there, and if they differ, the correct number are drawn. Again,
-   * we remain at the end.  \param num The loop counter to be
-   * translated into the progress bar.
+   * we remain at the end.  
+   *
+   * \param num The loop counter to be translated into the progress
+   * bar.
    */
   int numNeeded = 0;
   for(int i=0;i<length;i++)

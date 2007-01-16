@@ -7,6 +7,7 @@
 #include <math.h>
 #include <wcs.h>
 #include <wcshdr.h>
+#include <Utils/utils.hh>
 
 using std::string;
 using std::vector;
@@ -354,24 +355,16 @@ public:
 
   // front ends to WCS functions
   /** Convert pixel coords to world coords for a single point. */
-  int     wcsToPix(const double *world, double *pix){  
-    return wcsToPixSingle(this->wcs, world, pix);
-  }
+  int     wcsToPix(const double *world, double *pix);
 
   /** Convert pixel coords to world coords for many points. */
-  int     wcsToPix(const double *world, double *pix, const int npts){  
-    return wcsToPixMulti(this->wcs, world, pix, npts);
-  }
+  int     wcsToPix(const double *world, double *pix, const int npts);
 
   /** Convert world coords to pixel coords for a single point. */
-  int     pixToWCS(const double *pix, double *world){  
-    return pixToWCSSingle(this->wcs, pix, world);
-  }
+  int     pixToWCS(const double *pix, double *world);
 
   /** Convert world coords to pixel coords for many points. */
-  int     pixToWCS(const double *pix, double *world, const int npts){  
-    return pixToWCSMulti(this->wcs, pix,world, npts);
-  }
+  int     pixToWCS(const double *pix, double *world, const int npts);
 
   /** Convert a (x,y,z) position to a velocity. */
   double  pixToVel(double &x, double &y, double &z);

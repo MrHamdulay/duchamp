@@ -14,15 +14,17 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
 			 float *&output, Param &par)
 {
   /**
-   *  atrous3DReconstruct(xdim, ydim, zdim, input, output, par)
-   *
    *  A routine that uses the a trous wavelet method to reconstruct a 
    *   3-dimensional image cube.
    *  The Param object "par" contains all necessary info about the filter and 
    *   reconstruction parameters, although a Filter object has to be declared
    *   elsewhere previously.
-   *  The input array is in "input", of dimensions "xdim"x"ydim"x"zdim", and 
-   *   the reconstructed array is in "output".
+   *  \param xdim The length of the x-axis.
+   *  \param ydim The length of the y-axis.
+   *  \param zdim The length of the z-axis.
+   *  \param input The input spectrum.
+   *  \param output The returned reconstructed spectrum. This array needs to be declared beforehand.
+   *  \param par The Param set.
    */
 
   extern Filter reconFilter;

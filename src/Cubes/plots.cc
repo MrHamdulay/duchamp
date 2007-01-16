@@ -3,6 +3,7 @@
 #include <string>
 #include <math.h>
 #include <cpgplot.h>
+#include <param.hh>
 #include <Utils/mycpgplot.hh>
 #include <Cubes/plots.hh>
 

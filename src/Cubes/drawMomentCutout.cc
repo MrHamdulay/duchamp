@@ -260,7 +260,11 @@ void Cube::drawScale(float xstart, float ystart, float channel)
 
 void Detection::drawBorders(int xoffset, int yoffset)
 {
-
+  /** 
+   * For a given object, draw borders around the spatial extent of the object.
+   * \param xoffset The offset from 0 of the x-axis of the plotting window
+   * \param yoffset The offset from 0 of the y-axis of the plotting window
+   */ 
   if(!cpgtest())
     duchampError("drawBorders","There is no PGPlot device open!\n");
   else{
@@ -309,7 +313,11 @@ void Detection::drawBorders(int xoffset, int yoffset)
 
 void Cube::drawFieldEdge()
 {
- 
+  /**
+   * Draw a border around the spatial edge of the data. Lines are drawn in yellow
+   * at 0 and the values of xdim & ydim.
+   * Must be a PGPLOT window open, else error message returned.
+   */
   if(!cpgtest())
     duchampError("drawFieldEdge","There is no PGPlot device open!\n");
   else{

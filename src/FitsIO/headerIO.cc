@@ -35,8 +35,8 @@ int FitsHeader::readHeaderInfo(string fname, Param &par)
 int FitsHeader::readBUNIT(string fname)
 {
   /**
-   *   Read the BUNIT header keyword, to store the units
-   *    of brightness (flux).
+   *   Read the BUNIT header keyword, to store the units of brightness (flux).
+   *  \param fname The name of the FITS file.
    */
   fitsfile *fptr;         
   char *comment = new char[FLEN_COMMENT];
@@ -80,14 +80,19 @@ int FitsHeader::readBUNIT(string fname)
 int FitsHeader::readBLANKinfo(string fname, Param &par)
 {
   /**
-   *    Reading in the Blank pixel value keywords.
+   *    Reading in the Blank pixel value keywords, which is only done
+   *    if requested via the flagBlankPix parameter.
+   * 
    *    If the BLANK keyword is in the header, use that and store the relevant 
    *     values. Also copy them into the parameter set.
    *    If not, use the default value (either the default from param.cc or 
-   *     from the param file) and assume simple values for the keywords 
-   *        --> the scale keyword is the same as the blank value, 
-   *            the blank keyword (which is an int) is 1 and 
-   *            the bzero (offset) is 0.
+   *     from the param file) and assume simple values for the keywords:
+   *     <ul><li> The scale keyword is the same as the blank value, 
+   *         <li> The blank keyword (which is an int) is 1 and 
+   *         <li> The bzero (offset) is 0.
+   *    </ul>
+   * \param fname The name of the FITS file.
+   * \param par The Param set: to know the flagBlankPix value and to store the keywords.
    */
   int returnStatus = 0, status = 0;
   if(par.getFlagBlankPix()){  // Only do this if we want the blank pix value
@@ -162,6 +167,8 @@ int FitsHeader::readBeamInfo(string fname, Param &par)
    *    the beam in pixels. Copy the beam size into the parameter set.
    *   If information not present in FITS header, use the parameter
    *    set to define the beam size.
+   * \param fname The name of the FITS file.
+   * \param par The Param set.
    */
   char *comment = new char[80];
   string keyword[4]={"BMAJ","BMIN","CDELT1","CDELT2"};

@@ -4,7 +4,15 @@
 
 namespace Statistics
 {
-  template <class T> Statistics::StatsContainer<T>::StatsContainer(const StatsContainer<T>& s)
+  template StatsContainer<int>;
+  template StatsContainer<long>;
+  template StatsContainer<float>;
+  template StatsContainer<double>;
+  //--------------------------------------------------------------------
+  //--------------------------------------------------------------------
+
+  template <class Type> 
+  StatsContainer<Type>::StatsContainer(const StatsContainer<Type>& s)
   {
     this->defined    = s.defined;
     this->mean       = s.mean;
@@ -22,7 +30,8 @@ namespace Statistics
   template StatsContainer<double>::StatsContainer(const StatsContainer<double>& s);
   //--------------------------------------------------------------------
 
-  template <class T> Statistics::StatsContainer<T>& StatsContainer<T>::operator= (const StatsContainer<T>& s)
+  template <class Type> 
+  StatsContainer<Type>& StatsContainer<Type>::operator= (const StatsContainer<Type>& s)
   {
     this->defined    = s.defined;
     this->mean       = s.mean;
@@ -40,33 +49,51 @@ namespace Statistics
   template StatsContainer<double>& StatsContainer<double>::operator= (const StatsContainer<double>& s);
   //--------------------------------------------------------------------
 
-  template <class T> void Statistics::StatsContainer<T>::calculate(T *array, long size)
+  template <class Type> 
+  void StatsContainer<Type>::calculate(Type *array, long size)
   {
+    /**
+     * Calculate all four statistics for all elements of a given
+     * array.
+     *
+     * \param array The input data array.
+     * \param size The length of the input array
+     */
     findNormalStats(array, size, this->mean, this->stddev);
     findMedianStats(array, size, this->median, this->madfm);
     this->defined = true;
   }
-  template void Statistics::StatsContainer<int>::calculate(int *array, long size);
-  template void Statistics::StatsContainer<long>::calculate(long *array, long size);
-  template void Statistics::StatsContainer<float>::calculate(float *array, long size);
-  template void Statistics::StatsContainer<double>::calculate(double *array, long size);
+  template void StatsContainer<int>::calculate(int *array, long size);
+  template void StatsContainer<long>::calculate(long *array, long size);
+  template void StatsContainer<float>::calculate(float *array, long size);
+  template void StatsContainer<double>::calculate(double *array, long size);
   //--------------------------------------------------------------------
 
-  template <class T> 
-  void Statistics::StatsContainer<T>::calculate(T *array, long size, bool *isGood)
+  template <class Type> 
+  void StatsContainer<Type>::calculate(Type *array, long size, bool *isGood)
   {
+    /**
+     * Calculate all four statistics for a subset of a given
+     * array. The subset is defined by an array of bool 
+     * variables.  
+     *
+     * \param array The input data array.
+     * \param size The length of the input array
+     * \param isGood An array of the same length that says whether to
+     * include each member of the array in the calculations.
+     */
     findNormalStats(array, size, isGood, this->mean, this->stddev);
     findMedianStats(array, size, isGood, this->median, this->madfm);
     this->defined = true;
   }
-  template void Statistics::StatsContainer<int>::calculate(int *array, long size, bool *isGood);
-  template void Statistics::StatsContainer<long>::calculate(long *array, long size, bool *isGood);
-  template void Statistics::StatsContainer<float>::calculate(float *array, long size, bool *isGood);
-  template void Statistics::StatsContainer<double>::calculate(double *array, long size, bool *isGood);
+  template void StatsContainer<int>::calculate(int *array, long size, bool *isGood);
+  template void StatsContainer<long>::calculate(long *array, long size, bool *isGood);
+  template void StatsContainer<float>::calculate(float *array, long size, bool *isGood);
+  template void StatsContainer<double>::calculate(double *array, long size, bool *isGood);
   //--------------------------------------------------------------------
 
-  template <class T> 
-  std::ostream& operator<< (std::ostream& theStream, StatsContainer<T> &s)
+  template <class Type> 
+  std::ostream& operator<< (std::ostream& theStream, StatsContainer<Type> &s)
   {
     /**
      * Prints out the four key statistics to the requested stream.

@@ -7,18 +7,18 @@
 #include <Utils/Statistics.hh>
 using Statistics::madfmToSigma;
 
-void atrous1DReconstruct(long &xdim, float *&input,float *&output, Param &par)
+void atrous1DReconstruct(long &xdim, float *&input, float *&output, Param &par)
 {
   /**
-   *  atrous1DReconstruct(xdim, input, output, par)
-   *
    *  A routine that uses the a trous wavelet method to reconstruct a 
    *   1-dimensional spectrum. 
    *  The Param object "par" contains all necessary info about the filter and 
    *   reconstruction parameters, although a Filter object has to be declared
    *   elsewhere previously.
-   *  The input array is in "input", of length "xdim", and the reconstructed
-   *   array is in "output".
+   *  \param xdim The length of the spectrum.
+   *  \param input The input spectrum.
+   *  \param output The returned reconstructed spectrum. This array needs to be declared beforehand.
+   *  \param par The Param set.
    */
 
 

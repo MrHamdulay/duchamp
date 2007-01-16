@@ -1,16 +1,3 @@
-/**
- *  spectrumDetect.cc
- *
- * A detection algorithm that searches in a single 1-D spectrum.
- *
- * INPUTS: 
- *    image     -- an Image object, containing a 1-D image that has had
- *                 its StatsContainer object defined.
- *   The detection array in image will be filled, according to 
- *   the location of the objects in the image.
- *
- */
-
 #include <Cubes/cubes.hh>
 #include <Detection/detection.hh>
 
@@ -18,6 +5,17 @@ enum STATUS { NONOBJECT, OBJECT };
 
 void Image::spectrumDetect() 
 {
+/**
+ *  A detection algorithm that searches in a single 1-D spectrum.  It
+ *  simply scans along the spectrum, storing connected sets of
+ *  detected pixels, where "detected" means according to the
+ *  Image::isDetection(long,long) function.
+ *
+ *  Upon return, the detected objects are stored in the
+ *  Image::objectList vector.
+ *
+ */
+
   STATUS status;
   Detection *obj = new Detection;
   Pixel *pix = new Pixel;

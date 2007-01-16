@@ -12,8 +12,6 @@
 int Cube::readSmoothCube()
 {
   /** 
-   *  Cube::readSmoothCube()
-   *   
    *   A way to read in a previously Hanning-smoothed array, corresponding 
    *    to the requested parameters, or in the filename given by smoothFile.
    *   Performs various tests to make sure there are no clashes between 

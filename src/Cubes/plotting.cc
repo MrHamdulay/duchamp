@@ -26,6 +26,7 @@ void Cube::plotDetectionMap(string pgDestination)
    *   (to match the output list and spectra).
    *  The primary grid scale is pixel coordinate, and if the WCS is valid, 
    *   the correct WCS gridlines are also drawn.
+   * \param pgDestination The PGPLOT device to be opened, in the typical PGPLOT format.
    */
 
   // These are the minimum values for the X and Y ranges of the box drawn by 
@@ -126,6 +127,7 @@ void Cube::plotMomentMap(string pgDestination)
    *   (to match the output list and spectra).
    *  The primary grid scale is pixel coordinate, and if the WCS is valid, 
    *   the correct WCS gridlines are also drawn.
+   * \param pgDestination The PGPLOT device to be opened, in the typical PGPLOT format.
    */
 
   float boxXmin = this->par.getXOffset() - 1;
@@ -325,6 +327,8 @@ void Cube::plotMomentMap(vector<string> pgDestination)
    *   (to match the output list and spectra).
    *  The primary grid scale is pixel coordinate, and if the WCS is valid, 
    *   the correct WCS gridlines are also drawn.
+   * \param pgDestination A set of PGPLOT devices that are to be
+   * opened, each in the typical PGPLOT format.
    */
 
   float boxXmin = this->par.getXOffset() - 1;

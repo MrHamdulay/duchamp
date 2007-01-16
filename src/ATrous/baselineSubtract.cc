@@ -9,8 +9,7 @@
 void baselineSubtract(long numSpec, long specLength, float *originalCube, 
 		      float *baselineValues, Param &par)
 {
-  /** Remove spectral basline from a cube
-   *  
+  /** 
    *  A routine to find the baseline of each spectrum in a cube (the spectral 
    *    direction is assumed to be the third dimension) and subtract it off 
    *    the original.
@@ -63,8 +62,7 @@ void baselineSubtract(long numSpec, long specLength, float *originalCube,
 void getBaseline(long size, float *input, float *baseline, Param &par)
 {
   /**
-   *    A function to find the baseline of an input (1-D) spectrum.
-   *    Uses the a trous reconstruction, keeping only the highest two scales, 
+   *   Uses the a trous reconstruction, keeping only the highest two scales, 
    *     to reconstruct the baseline.
    *    To avoid contamination by very strong signals, the input spectrum is 
    *     trimmed at 8*MADFM above the median before reconstruction. 
@@ -112,7 +110,6 @@ void getBaseline(long size, float *input, float *baseline, Param &par)
 void getBaseline(long size, float *input, float *baseline)
 {
   /**
-   *  A function to find the baseline of an input (1-D) spectrum.
    *  This version is designed for programs not using Param classes -- it 
    *   keeps that side of things hidden from the user.
    *  Uses the a trous reconstruction, keeping only the highest two scales, 

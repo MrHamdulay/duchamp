@@ -11,14 +11,17 @@ using std::setw;
 void growObject(Detection &object, Cube &cube)
 {
   /** 
-   *  growObject(Detection, Cube)
-   *    A function to grow an object (given by the Detection)
-   *     out to some lower threshold.
-   *    The Cube is necessary to see both the Param list, containing
-   *     the growth threshold, and the actual array of pixel fluxes.
-   *    Each pixel has each of its neighbours examined, and if one of 
-   *     them is not in the object but above the growth threshold, it
-   *     is added to the object.
+   *    A function to grow an object (given by the Detection) by
+   *    including neighbouring voxels out to some lower threshold than
+   *    what was previously used in the detection.  
+   *
+   *    Each pixel has each of its neighbours examined, and if one of
+   *    them is not in the object but above the growth threshold, it
+   *    is added to the object.
+   *
+   *    \param object Object to be grown.
+   *    \param cube  Necessary to see both the Param list, containing the growth
+   *    threshold, and the actual array of pixel fluxes.  
    */
 
 

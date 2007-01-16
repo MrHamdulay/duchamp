@@ -12,6 +12,11 @@ using std::string;
 using std::stringstream;
 using namespace mycpgplot;
 
+/**
+ * A namespace to control plotting of the spectral output and the
+ * spatial image output.
+ */
+
 namespace Plot
 {
   const float inchToCm=2.54;        ///< Conversion factor from inches to centimetres.

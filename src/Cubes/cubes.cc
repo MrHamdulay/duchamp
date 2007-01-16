@@ -1231,7 +1231,15 @@ Image::Image(long *dimensions){
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 
-void Image::saveArray(float *input, long size){
+void Image::saveArray(float *input, long size)
+{
+  /**
+   * Saves the array in input to the pixel array Image::array.
+   * The size of the array given must be the same as the current number of
+   * pixels, else an error message is returned and nothing is done.
+   * \param input The array of values to be saved.
+   * \param size The size of input.
+   */
   if(size != this->numPixels)
     duchampError("Image::saveArray",
 		 "Input array different size to existing array. Cannot save.");
@@ -1247,12 +1255,14 @@ void Image::saveArray(float *input, long size){
 void Image::extractSpectrum(float *Array, long *dim, long pixel)
 {
   /**
-   * Image::extractSpectrum(float *, long *, int)
    *  A function to extract a 1-D spectrum from a 3-D array.
    *  The array is assumed to be 3-D with the third dimension the spectral one.
-   *  The dimensions of the array are in the dim[] array.
    *  The spectrum extracted is the one lying in the spatial pixel referenced
    *    by the third argument.
+   *  The extracted spectrum is stored in the pixel array Image::array.
+   * \param Array The array containing the pixel values, from which the spectrum is extracted.
+   * \param dim The array of dimension values.
+   * \param pixel The spatial pixel that contains the desired spectrum.
    */ 
   float *spec = new float[dim[2]];
   for(int z=0;z<dim[2];z++) spec[z] = Array[z*dim[0]*dim[1] + pixel];
@@ -1264,10 +1274,12 @@ void Image::extractSpectrum(float *Array, long *dim, long pixel)
 void Image::extractSpectrum(Cube &cube, long pixel)
 {
   /**
-   * Image::extractSpectrum(Cube &, int)
    *  A function to extract a 1-D spectrum from a Cube class
    *  The spectrum extracted is the one lying in the spatial pixel referenced
    *    by the second argument.
+   *  The extracted spectrum is stored in the pixel array Image::array.
+   * \param cube The Cube containing the pixel values, from which the spectrum is extracted.
+   * \param pixel The spatial pixel that contains the desired spectrum.
    */ 
   long zdim = cube.getDimZ();
   long spatSize = cube.getDimX()*cube.getDimY();
@@ -1281,12 +1293,15 @@ void Image::extractSpectrum(Cube &cube, long pixel)
 void Image::extractImage(float *Array, long *dim, long channel)
 {
   /**
-   * Image::extractImage(float *, long *, int)
    *  A function to extract a 2-D image from a 3-D array.
    *  The array is assumed to be 3-D with the third dimension the spectral one.
    *  The dimensions of the array are in the dim[] array.
    *  The image extracted is the one lying in the channel referenced
    *    by the third argument.
+   *  The extracted image is stored in the pixel array Image::array.
+   * \param Array The array containing the pixel values, from which the image is extracted.
+   * \param dim The array of dimension values.
+   * \param channel The spectral channel that contains the desired image.
    */ 
   float *image = new float[dim[0]*dim[1]];
   for(int npix=0; npix<dim[0]*dim[1]; npix++){ 
@@ -1300,10 +1315,12 @@ void Image::extractImage(float *Array, long *dim, long channel)
 void Image::extractImage(Cube &cube, long channel)
 {
   /**
-   * Image::extractImage(Cube &, int)
    *  A function to extract a 2-D image from Cube class.
    *  The image extracted is the one lying in the channel referenced
    *    by the second argument.
+   *  The extracted image is stored in the pixel array Image::array.
+   * \param cube The Cube containing the pixel values, from which the image is extracted.
+   * \param channel The spectral channel that contains the desired image.
    */ 
   long spatSize = cube.getDimX()*cube.getDimY();
   float *image = new float[spatSize];
@@ -1317,7 +1334,6 @@ void Image::extractImage(Cube &cube, long channel)
 void Image::removeMW()
 {
   /**
-   * Image::removeMW()
    *  A function to remove the Milky Way range of channels from a 1-D spectrum.
    *  The array in this Image is assumed to be 1-D, with only the first axisDim
    *    equal to 1.
