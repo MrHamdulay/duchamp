@@ -209,8 +209,8 @@ void FitsHeader::fixUnits(Param &par)
   double po=1.;;
   if(this->wcsIsGood){
     int status = wcsunits( this->wcs->cunit[this->wcs->spec], 
-			 this->spectralUnits.c_str(), 
-			 &sc, &of, &po);
+			   this->spectralUnits.c_str(), 
+			   &sc, &of, &po);
     if(status > 0){
       std::stringstream errmsg;
       errmsg << "WCSUNITS Error, Code = " << status
