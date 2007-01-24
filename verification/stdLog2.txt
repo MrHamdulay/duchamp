@@ -1,5 +1,6 @@
-New run of the Duchamp sourcefinder: Wed Dec  6 09:45:14 2006
+New run of the Duchamp sourcefinder: Wed Jan 24 12:07:19 2007
 Executing statement : ./Duchamp -p verification/input2 
+
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
 Intermediate Logfile...........................[logFile]  =  verification/log2.txt
@@ -23,6 +24,7 @@ Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
 Max. velocity separation for merging....[threshVelocity]  =  7
 Method of spectral plotting.............[spectralMethod]  =  peak
 --------------------
+
 --------------------------------------------------------------------------------
  Obj#     X     Y     Z     F_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2  Npix
                         [Jy/beam] [Jy/beam]                                [pix]

@@ -1,4 +1,5 @@
-Results of the Duchamp source finder: Wed Nov 22 13:44:30 2006
+Results of the Duchamp source finder: Wed Jan 24 12:07:18 2007
+
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
 Intermediate Logfile...........................[logFile]  =  verification/log1.txt
@@ -22,6 +23,7 @@ Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
 Max. velocity separation for merging....[threshVelocity]  =  7
 Method of spectral plotting.............[spectralMethod]  =  peak
 --------------------
+
 --------------------
 Detection threshold = 3.0426 Jy/beam
   Noise level = 0.0148019, Noise spread = 1.00927
