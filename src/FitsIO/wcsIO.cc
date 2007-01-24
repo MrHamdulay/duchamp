@@ -147,6 +147,10 @@ int FitsHeader::defineWCS(string fname, Param &par)
       }
 
 
+      // Now we need to make sure the spectral axis has the correct setup.
+      //  We use wcssptr to translate it if it is not of the desired type,
+      //  or if the spectral units are not defined.
+
       bool needToTranslate = false;
 
       if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0) 
@@ -174,63 +178,6 @@ int FitsHeader::defineWCS(string fname, Param &par)
 	}
 
       }
-
-      /*
-
-      // Check to see if the spectral type (eg VELO-F2V) matches that wanted
-      //   from duchamp.hh. Only first four characters checked.
-
-      char *blankstring;
-      strcpy(blankstring,"");
-      if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0){
-
-// 	index = -1;
-	index = localwcs->spec;
-	// If not a match, translate the spectral axis to the desired type
-	if(status = wcssptr(localwcs, &index, (char *)desiredType.c_str())){
-	  std::stringstream errmsg;
-	  errmsg<< "WCSSPTR failed! Code=" << status << ": "
-		<< wcs_errmsg[status] << std::endl
-		<< "(wanted to convert from type \"" << specType
-		<< "\" to type \"" << desiredType << "\")\n";
-	  duchampWarning("defineWCS",errmsg.str());
-	}	
-
-      }
-      else if(strcmp(localwcs->cunit[localwcs->spec],blankstring)==0){
-	if(strcmp(localwcs->ctype[localwcs->spec],"VELO")==0)
-	  strcpy(localwcs->ctype[localwcs->spec],"VELO-F2V");
-	string tempType = "FREQ-F2V";
-	std::stringstream errmsg;
-	status=0;
-	index = localwcs->spec;
-// 	if(status=wcssptr(localwcs, &index, (char *)tempType.c_str())){
-// 	  errmsg<< "First one. Code=" << status << ": "
-// 		<< wcs_errmsg[status] << std::endl
-// 		<< "(wanted to convert from type \"" 
-// 		<< localwcs->ctype[localwcs->spec]
-// 		<< "\" to type \"" << tempType << "\")\n";
-// 	  duchampWarning("defineWCS 1", errmsg.str());
-// 	}
-// 	std::cerr<<"after #1: type = " << localwcs->ctype[localwcs->spec] 
-// 		 << ", units = " << localwcs->cunit[localwcs->spec] << "\n";
-	status=0;
-	index = localwcs->spec;
-	errmsg.str("");
-	if(status=wcssptr(localwcs, &index, (char *)desiredType.c_str())){
-	  errmsg<< "Second one. Code=" << status << ": "
-		<< wcs_errmsg[status] << std::endl
-		<< "(wanted to convert from type \"" 
-		<< localwcs->ctype[localwcs->spec]
-		<< "\" to type \"" << desiredType << "\")\n";
-	  duchampWarning("defineWCS 2", errmsg.str());
-	}
-// 	std::cerr<<"after #2: type = " << localwcs->ctype[localwcs->spec] 
-// 		 << ", units = " << localwcs->cunit[localwcs->spec] << "\n";
-      }
-
-      */
-
     
     } // end of if(numAxes>2)
     
