@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
                The Duchamp Source Finder
 -----------------------------------------------------------------------
-Duchamp 1.0.7 -- an object finder for spectral-line data cubes
+Duchamp -- an object finder for spectral-line data cubes
 Copyright (C) 2006, Matthew Whiting, ATNF
 
 Duchamp is free software; you can redistribute it and/or modify it
@@ -41,6 +41,22 @@ of text- and graphics-based output.
 Duchamp works on any FITS image using the CFITSIO package, and uses
 Mark Calabretta's WCSLIB library to provide accurate position and
 velocity information for all detected sources.
+
+
+The "Beta" Version
+------------------
+
+This distribution of Duchamp, dated 24/01/2007, is known as the beta
+version. (The version number when "Duchamp -v" is run is given as
+1.0.8b.). It is more recent than the most recent release (v1.0.7), as
+it has several new functions and features. The user should be aware
+that these are likely to be undocumented and, while they have been
+tested on a limited number of cases, their stability is not assured to
+the same level as a proper numbered release.
+
+The beta version is provided more for testing purposes -- if users
+want a reliable version of the code that matches the documentation,
+please use the latest release available from the webpage given below.
 
 
 Obtaining and Building Duchamp
@@ -137,6 +153,6 @@ http://sourcecode.atnf.csiro.au/cgi-bin/trac_duchamp.cgi/newticket
 and submit a "ticket", or view previously submitted reports.
 
 Author: 
-  Matthew Whiting, Australia Telescope National Facility, November 2006
+  Matthew Whiting, Australia Telescope National Facility, January 2007
   Matthew.Whiting@csiro.au
 
