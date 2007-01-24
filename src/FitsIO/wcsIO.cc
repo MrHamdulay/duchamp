@@ -152,9 +152,8 @@ int FitsHeader::defineWCS(string fname, Param &par)
       if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0) 
 	needToTranslate = true;
 
-      char *blankstring;
-      strcpy(blankstring,"");
-      if(strcmp(localwcs->cunit[localwcs->spec],blankstring)==0)
+      string blankstring = "";
+      if(strcmp(localwcs->cunit[localwcs->spec],blankstring.c_str())==0)
 	needToTranslate = true;
 
       if(needToTranslate){
