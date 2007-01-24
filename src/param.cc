@@ -206,7 +206,7 @@ void FitsHeader::fixUnits(Param &par)
 
   double sc=1.;
   double of=0.;
-  double po=1.;;
+  double po=1.;
   if(this->wcsIsGood){
     int status = wcsunits( this->wcs->cunit[this->wcs->spec], 
 			   this->spectralUnits.c_str(), 
@@ -215,13 +215,16 @@ void FitsHeader::fixUnits(Param &par)
       std::stringstream errmsg;
       errmsg << "WCSUNITS Error, Code = " << status
 	     << ": " << wcsunits_errmsg[status];
-      if(status == 10) errmsg << "\nTried to get conversion from '" 
-			      << this->wcs->cunit[this->wcs->spec] << "' to '" 
-			      << this->spectralUnits.c_str() << "'\n";
+      if(status == 10) errmsg << "\nTried to get conversion from \"" 
+			      << this->wcs->cunit[this->wcs->spec] << "\" to \"" 
+			      << this->spectralUnits.c_str() << "\".\n";
       this->spectralUnits = this->wcs->cunit[this->wcs->spec];
       if(this->spectralUnits==""){
-	errmsg << 
-	  "Spectral units not specified. Setting them to 'SPC' for clarity.\n";
+	errmsg << "Spectral units not specified. "
+	       << "For data presentation, we will use dummy units of \"SPC\".\n"
+	       << "Please report this occurence -- it should not happen now!"
+	       << "In the meantime, you may want to set the CUNIT"
+	       << this->wcs->spec + 1 <<" keyword to make this work.\n";
 	this->spectralUnits = "SPC";
       }
       duchampError("fixUnits", errmsg.str());

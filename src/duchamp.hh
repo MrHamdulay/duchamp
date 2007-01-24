@@ -41,7 +41,7 @@ void duchampError(std::string subroutine, std::string error);
 /** The spectral type that we want the wcsprm structs to be in. */
 const char duchampVelocityType[9] = "VELO-F2V";
 /** The spectral type that we want the wcsprm structs to be in when no velocity info is present. */
-const char duchampFrequencyType[9] = "FREQ";
+const char duchampFrequencyType[9] = "FREQ    ";
 
 /** Descriptions of the various spectral axis types */
 enum TYPEDESC {FREQUENCY=0,VELOCITY,WAVELENGTH};

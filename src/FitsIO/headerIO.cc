@@ -92,7 +92,8 @@ int FitsHeader::readBLANKinfo(string fname, Param &par)
    *         <li> The bzero (offset) is 0.
    *    </ul>
    * \param fname The name of the FITS file.
-   * \param par The Param set: to know the flagBlankPix value and to store the keywords.
+   * \param par The Param set: to know the flagBlankPix value and to
+   * store the keywords.
    */
   int returnStatus = 0, status = 0;
   if(par.getFlagBlankPix()){  // Only do this if we want the blank pix value
@@ -114,10 +115,10 @@ int FitsHeader::readBLANKinfo(string fname, Param &par)
     //  If it is, read the other two necessary keywords, and then set
     //     the values accordingly.
     if(fits_read_key(fptr, TINT, "BLANK", &blank, comment, &returnStatus)){
-      duchampWarning("readBLANKinfo","Error reading BLANK keyword: ");
-      fits_report_error(stderr, returnStatus);
       std::stringstream errmsg;
-      errmsg << "Using default BLANK value (" 
+      duchampWarning("readBLANKinfo", "Error reading BLANK keyword: ");
+      fits_report_error(stderr, returnStatus);
+      errmsg << "Using the BLANK value given as input parameter (" 
 	     << par.getBlankPixVal() << ").\n";
       duchampWarning("readBLANKinfo", errmsg.str());
       this->blankKeyword  = 1;

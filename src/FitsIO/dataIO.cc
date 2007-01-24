@@ -77,6 +77,23 @@ int Cube::getFITSdata(string fname)
   lpixel[lng] = dimAxes[lng];
   lpixel[lat] = dimAxes[lat];
   lpixel[spc] = dimAxes[spc];
+
+  /*
+////////////
+// MAY NOT NEED THIS -- SHOULD BE ABLE TO SET IT WITH THE BLANKPIXVALUE
+// INPUT PARAMETER. 
+////////////
+  // set the BLANK pixel scaling if there is no BLANK keyword present
+  if(this->par.getFlagUsingBlank()){
+    long nullval = long((this->par.getBlankPixVal()-this->par.getBzeroKeyword())
+			/ this->getBscaleKeyword());
+    status=0;
+    if(fits_set_imgnull(fptr, nullval, &status)){
+      duchampWarning("getFITSdata","There was an error setting the null pixel value:");
+      fits_report_error(stderr,status);
+    }
+  }
+*/
     
   int colnum = 0;  // want the first dataset in the FITS file
 
