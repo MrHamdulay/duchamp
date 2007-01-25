@@ -20,26 +20,65 @@ the FITS header by \textsc{wcslib} functions \citep{greisen02,
 calabretta02}, and this information, in the form of a \texttt{wcsprm}
 structure, is also stored in the same class.
 
-A sub-section of an image can be requested via the \texttt{subsection}
-parameter -- this can be a good idea if the cube has very noisy edges,
-which may produce many spurious detections. The generalised form of
-the subsection that is used by \textsc{cfitsio} is
-\texttt{[x1:x2:dx,y1:y2:dy,z1:z2:dz,...]}, such that the x-coordinates run
-from \texttt{x1} to \texttt{x2} (inclusive), with steps of
-\texttt{dx}. The step value can be omitted (so a subsection of the
-form \texttt{[2:50,2:50,10:1000]} is still valid). \duchamp\ does not
-make use of any step value present in the subsection string, and any
-that are present are removed before the file is opened.
+A sub-section of a cube can be requested by defining the subsection
+with the \texttt{subsection} parameter and setting
+\texttt{flagSubsection=true} -- this can be a good idea if the cube
+has very noisy edges, which may produce many spurious detections.
 
-If one wants the full range of a coordinate then replace the range
-with an asterisk, \eg \texttt{[2:50,2:50,*]}. If one wants to use a
-subsection, one must set \texttt{flagSubsection = 1}. A complete
-description of the section syntax can be found at the \textsc{fitsio}
-web site%
+There are two ways of specifying the \texttt{subsection} string. The
+first is the generalised form
+\texttt{[x1:x2:dx,y1:y2:dy,z1:z2:dz,...]}, as used by the
+\textsc{cfitsio} library. This has one set of colon-separated numbers
+for each axis in the FITS file. In this manner, the x-coordinates run
+from \texttt{x1} to \texttt{x2} (inclusive), with steps of
+\texttt{dx}. The step value can be omitted, so a subsection of the
+form \texttt{[2:50,2:50,10:1000]} is still valid. In fact, \duchamp\
+does not make use of any step value present in the subsection string,
+and any that are present are removed before the file is opened.
+
+If the entire range of a coordinate is required, one can replace the
+range with a single asterisk, \eg \texttt{[2:50,2:50,*]}. Thus, the
+subsection string \texttt{[*,*,*]} is simply the entire cube. A
+complete description of this section syntax can be found at the
+\textsc{fitsio} web site%
 \footnote{%
 \href%
 {http://heasarc.gsfc.nasa.gov/docs/software/fitsio/c/c\_user/node91.html}%
 {http://heasarc.gsfc.nasa.gov/docs/software/fitsio/c/c\_user/node91.html}}.
+
+
+Making full use of the subsection requires knowledge of the size of
+each of the dimensions. If one wants to, for instance, trim a certain
+number of pixels off the edges of the cube, without examining the cube
+to obtain the actual size, one can use the second form of the
+subsection string. This just gives a number for each axis, \eg
+\texttt{[5,5,5]} (which would trim 5 pixels from the start \emph{and}
+end of each axis).
+
+All types of subsections can be combined \eg \texttt{[5,2:98,*]}.
+
+
+%A sub-section of an image can be requested via the \texttt{subsection}
+%parameter -- this can be a good idea if the cube has very noisy edges,
+%which may produce many spurious detections. The generalised form of
+%the subsection that is used by \textsc{cfitsio} is
+%\texttt{[x1:x2:dx,y1:y2:dy,z1:z2:dz,...]}, such that the x-coordinates run
+%from \texttt{x1} to \texttt{x2} (inclusive), with steps of
+%\texttt{dx}. The step value can be omitted (so a subsection of the
+%form \texttt{[2:50,2:50,10:1000]} is still valid). \duchamp\ does not
+%make use of any step value present in the subsection string, and any
+%that are present are removed before the file is opened.
+%
+%If one wants the full range of a coordinate then replace the range
+%with an asterisk, \eg \texttt{[2:50,2:50,*]}. If one wants to use a
+%subsection, one must set \texttt{flagSubsection = 1}. A complete
+%description of the section syntax can be found at the \textsc{fitsio}
+%web site%
+%\footnote{%
+%\href%
+%{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/c/c\_user/node91.html}%
+%{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/c/c\_user/node91.html}}.
+%
 
 \secB{Image modification}
 \label{sec-modify}
@@ -191,7 +230,7 @@ the median absolute deviation from the median (MADFM) is calculated
 and corrected assuming Gaussianity to estimate the underlying standard
 deviation $\sigma$. The Gaussianity (or Normality) assumption is
 critical, as the MADFM does not give the same value as the usual rms
-or standard deviation value -- for a normal distribution
+or standard deviation value -- for a Normal distribution
 $N(\mu,\sigma)$ we find MADFM$=0.6744888\sigma$. Since this ratio is
 corrected for, the user need only think in the usual multiples of
 $\sigma$ when setting \texttt{snrRecon}. See Appendix~\ref{app-madfm}
@@ -270,11 +309,12 @@ same as above, with \texttt{RESID} replacing \texttt{RECON}.
 
 If a reconstructed image has been saved, it can be read in and used
 instead of redoing the reconstruction. To do so, the user should set
-\texttt{flagReconExists = true}. The user can indicate the name of the
-reconstructed FITS file using the \texttt{reconFile} parameter, or, if
-this is not specified, \duchamp\ searches for the file with the name
-as defined above. If the file is not found, the reconstruction is
-performed as normal. Note that to do this, the user needs to set
+the parameter \texttt{flagReconExists = true}. The user can indicate
+the name of the reconstructed FITS file using the \texttt{reconFile}
+parameter, or, if this is not specified, \duchamp\ searches for the
+file with the name as defined above. If the file is not found, the
+reconstruction is performed as normal. Note that to do this, the user
+needs to set
 \texttt{flagAtrous = true} (obviously, if this is \texttt{false}, the
 reconstruction is not needed).
 
@@ -290,8 +330,8 @@ the data. It is also substantially faster than the wavelet
 reconstruction.
 
 The cube is smoothed only in the spectral domain. That is, each
-spectrum is independently smoothed, and then put together to form the
-smoothed cube. This is then treated in the same way as the
+spectrum is independently smoothed, and then put back together to form
+the smoothed cube. This is then treated in the same way as the
 reconstructed cube, and is used for the searching algorithm (see
 below). Note that in the case of both the reconstruction and the
 smoothing options being requested, the reconstruction will take
@@ -299,13 +339,17 @@ precedence and the smoothing will \emph{not} be done.
 
 There is only one parameter necessary to define the degree of
 smoothing -- the Hanning width $a$ (given by the user parameter
-\texttt{hanningWidth}). The coefficients of the Hanning filter are
-defined by
+\texttt{hanningWidth}). The coefficients $c(x)$ of the Hanning filter
+are defined by
 \[
-\frac{1+\cos(\pi x/a)}{2},\ \frac{-(a+1)}{2}\leq x \leq \frac{a+1}{2},
+c(x) = 
+  \begin{cases}
+   \frac{1}{2}\left(1+\cos(\frac{\pi x}{a})\right) &|x| \leq (a+1)/2\\
+   0                                               &|x| > (a+1)/2.
+  \end{cases}
 \]
-and zero elsewhere. Note that the width specified must be an odd
-integer (if the parameter provided is even, it is incremented by one).
+Note that the width specified must be an odd integer (if the parameter
+provided is even, it is incremented by one).
 
 The user is able to save the smoothed array in exactly the same manner
 as for the reconstructed array -- set \texttt{flagOutputSmooth =
@@ -400,7 +444,7 @@ noise parameters of the cube. Otherwise they are estimated directly
 from the cube itself. In both cases, robust estimators are used.
 
 Detections must have a minimum number of pixels to be counted. This
-minimum number is given by the input parameters \texttt{minPix} (for
+number is given by the input parameters \texttt{minPix} (for
 2-dimensional searches) and \texttt{minChannels} (for 1-dimensional
 searches).
 

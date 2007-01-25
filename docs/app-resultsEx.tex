@@ -1,9 +1,10 @@
+\begin{landscape}
 \secA{Example results file}
 \label{app-output}
 This the typical content of an output file, after running \duchamp\
 with the parameters illustrated on the previous page. 
 
-{\scriptsize 
+{\tiny 
   \begin{verbatim}
 Results of the Duchamp source finder: Tue May 23 14:51:38 2006
 ---- Parameters ----
@@ -41,8 +42,10 @@ Total number of detections = 22
    22 J055213-291656 116.9  30.5 726.8  05:52:13.81 -29:16:57.00 8300.595    11.59    20.25  290.209    35.296     0.479  38.56 116 118  28  32 716 738   110     
   \end{verbatim}
 }
-Note that the
-width of the table can make it hard to read. A good trick for those
-using UNIX/Linux is to make use of the \texttt{a2ps} command. The
-following works well, producing a postscript file \texttt{results.ps}:
+
+Note that the width of the table can make it hard to read. A good
+trick for those using UNIX/Linux is to make use of the \texttt{a2ps}
+command. The following works well, producing a postscript file
+\texttt{duchamp-Results.ps}:
 \\\verb|a2ps -1 -r -f7 -o duchamp-Results.ps duchamp-Results.txt|
+\end{landscape}

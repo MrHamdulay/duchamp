@@ -57,9 +57,16 @@ int Param::verifySubsection()
     fits_report_error(stderr, status);
     return FAILURE;
   }
-  // Read the size information -- number of axes.
+  // Read the size information -- number of axes and their sizes
   status = 0;
   if(fits_get_img_dim(fptr, &numAxes, &status)){
+    fits_report_error(stderr, status);
+    return FAILURE;
+  }
+  long *dimAxes = new long[numAxes];
+  for(int i=0;i<numAxes;i++) dimAxes[i]=1;
+  status = 0;
+  if(fits_get_img_size(fptr, numAxes, dimAxes, &status)){
     fits_report_error(stderr, status);
     return FAILURE;
   }
@@ -114,6 +121,7 @@ int Param::verifySubsection()
   std::stringstream ss;
   ss.str(this->subsection);
   bool removeStep = false;
+  bool doingBorders = false;
   string temp;
 
   bool atEnd = false;
@@ -130,32 +138,50 @@ int Param::verifySubsection()
     else{
       // if it is a genuine subsection and not everything.
       int a = sections[str].find(':');     // first occurence of ':' in section
-      int b = sections[str].find(':',a+1); // location of second ':' - will be 
-                                           //  -1 if there is no second ':'
-      this->offsets[str] = atoi( sections[str].substr(0,a).c_str() ) - 1;
-      // store the minimum pixel value in offsets array
-      if(b>0){  
-	// if there is a step component, rewrite section string without 
-	//  the step part.
-	sections[str] = sections[str].substr(0,b); 
-	removeStep = true;
+
+      if(a>0){
+	int b = sections[str].find(':',a+1); 
+	// location of second ':' - will be -1 if there is no second ':'
+	this->offsets[str] = atoi( sections[str].substr(0,a).c_str() ) - 1;
+	// store the minimum pixel value in offsets array
+	if(b>0){  
+	  // if there is a step component, rewrite section string without 
+	  //  the step part.
+	  sections[str] = sections[str].substr(0,b); 
+	  removeStep = true;
+	}
+      }
+      else{
+	// if there is no ':' in the subsection -- just deal with borders.
+	doingBorders=true;
+	this->offsets[str] = atoi( sections[str].c_str() ) - 1;
+	std::stringstream temp;
+	temp << sections[str] << ":" 
+	     << dimAxes[str]-atoi(sections[str].c_str());
+	sections[str] = temp.str();
       }
     }
   }
 
+  std::stringstream errmsg;
   if(removeStep){  // if there was a step present
-    std::stringstream errmsg;
     errmsg << "The subsection given is " << this->subsection <<".\n"
 	   << "Duchamp is currently unable to deal with pixel steps"
 	   << " in the subsection.\n"
-	   << "These have been ignored, and so the subection used is "; 
-    // rewrite subsection without any step sizes. 
+	   << "These have been ignored, and so the subection used is ";
+  }
+
+  if(removeStep || doingBorders){
+    // rewrite subsection without any step sizes and with correct borders.
    this->subsection = "[" + sections[0];
    for(int str=1;str<numSections;str++) 
      this->subsection += ',' + sections[str];
    this->subsection += "]";
-   errmsg << this->subsection << std::endl;
-   duchampWarning("verifySubsection", errmsg.str());
+  }
+
+  if(removeStep){
+    errmsg << this->subsection << std::endl;
+    duchampWarning("verifySubsection", errmsg.str());
   }
 
 }

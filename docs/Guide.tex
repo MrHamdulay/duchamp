@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper]{article}
+\documentclass[11pt,a4paper]{article}
 %\documentclass[12pt,a4paper]{report}
 
 %%%%%% LINE SPACING %%%%%%%%%%%%
@@ -15,14 +15,14 @@
      \fi 
 \fi
 
-\textwidth=165 mm
-\textheight=245 mm
-\topmargin=0 mm
-\oddsidemargin=0 mm
-\parindent=6 mm
+%\textwidth=165 mm
+%\textheight=245 mm
+%\topmargin=0 mm
+%\oddsidemargin=0 mm
+%\parindent=6 mm
 
+\usepackage{amsmath}
 \usepackage[sort]{natbib}
-\usepackage{lscape}
 \bibpunct[,]{(}{)}{;}{a}{}{,}
 
 %\newcommand{\secA}{\chapter}
@@ -86,6 +86,10 @@
   \usepackage[dvips]{hyperref} 
 \fi
 
+\usepackage{lscape}
+\usepackage[dvips]{rotating}
+%\rotdriver{dvips}
+
 \pagestyle{headings}
 \begin{document}
 
@@ -100,11 +104,13 @@
 \noindent\hspace*{\centreoff}%
 \makebox[0pt][l]{\begin{minipage}{\textwidth}
 \flushright
-{\Huge\bfseries Source Detection with \duchamp\\%
-A User's Guide
+{\Huge\bfseries Source Detection with \duchamp\\[2ex]}
+{\huge\bfseries A User's Guide
 
 }
 \noindent\rule[-1ex]{\textwidth}{3pt}
+%\noindent\rule[-1ex]{\textwidth}{3pt}
+%{\huge\bfseries A User's Guide}
 \end{minipage}}
 
 \vspace{\stretch{1}}
@@ -165,15 +171,15 @@ December 6, 2006
 \input{app-param} %Available parameters
 \newpage
 \input{app-paramEx} %Example parameter files
-
+\newpage
 \input{app-resultsEx} %Example results files
-
+\newpage
 \input{app-VOTable} %Example VOTable output
-
+\newpage
 \input{app-Karma} %Example Karma annotation file output
 \newpage
 \input{app-stats} %Robust statistics for a Normal distribution
-
+\newpage
 \input{app-waveletNoise} %How Gaussian noise changes with wavelet scale
 
 

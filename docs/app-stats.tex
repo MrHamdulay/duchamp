@@ -19,7 +19,7 @@ deviation from the median ($s$) to estimate $\mu$ and $\sigma$. The
 median is the middle of the distribution, defined for a continuous
 distribution by
 \[
-\int_{-\infty}^{m} f(x) \diff x = \int_{m}^{\infty} f(x) \diff x.
+\int_{-\infty}^{m} f(x) dx = \int_{m}^{\infty} f(x) dx.
 \]
 From symmetry, we quickly see that for the continuous Normal
 distribution, $m=\mu$. We consider the case henceforth of $\mu=0$,
@@ -29,24 +29,28 @@ To find $s$, we find the distribution of the absolute deviation from
 the median, and then find the median of that distribution. This
 distribution is given by
 \begin{eqnarray*}
-g(x) &= &{\mbox{\rm distribution of }} |x|\\
+g(x) &= &{\text{distribution of }} |x|\\
      &= &f(x) + f(-x),\ x\ge0\\
      &= &\sqrt{\frac{2}{\pi\sigma^2}}\, e^{-x^2/2\sigma^2},\ x\ge0.
 \end{eqnarray*}
 So, the median absolute deviation from the median, $s$, is given by
 \[
-\int_{0}^{s} g(x) \diff x = \int_{s}^{\infty} g(x) \diff x.
+\int_{0}^{s} g(x) dx = \int_{s}^{\infty} g(x) dx.
 \]
-Now, 
-$\int_{0}^{\infty}e^{-x^2/2\sigma^2} \diff x = \sqrt{\pi\sigma^2/2}$, 
-and so 
-$\int_{s}^{\infty} e^{-x^2/2\sigma^2} \diff x =
-\sqrt{\pi\sigma^2/2}-\int_{0}^{s} e^{-\frac{x^2}{2\sigma^2}}\diff x$.
+If we use the identity
+\[
+\int_{0}^{\infty}e^{-x^2/2\sigma^2} dx = \sqrt{\pi\sigma^2/2}
+\] 
+we find that 
+\[
+\int_{s}^{\infty} e^{-x^2/2\sigma^2} dx =
+\sqrt{\pi\sigma^2/2}-\int_{0}^{s} e^{-x^2/2\sigma^2}dx.
+\]
 Hence, to find $s$ we simply solve the following equation (setting
 $\sigma=1$ for simplicity -- equivalent to stating $x$ and $s$ in
 units of $\sigma$):
 \[
-\int_{0}^{s}e^{-x^2/2} \diff x - \sqrt{\pi/8} = 0.
+\int_{0}^{s}e^{-x^2/2} dx - \sqrt{\pi/8} = 0.
 \]
 This is hard to solve analytically (no nice analytic solution exists
 for the finite integral that I'm aware of), but straightforward to

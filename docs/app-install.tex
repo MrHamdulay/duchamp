@@ -17,23 +17,25 @@ locations:
 \begin{itemize}
 \item \textsc{pgplot}:
 \href{http://www.astro.caltech.edu/~tjp/pgplot/}%
-{http://www.astro.caltech.edu/~tjp/pgplot/}
+{\footnotesize http://www.astro.caltech.edu/~tjp/pgplot/}
 \item \textsc{cfitsio}:
 \href{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html}%
-{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html}
+{\footnotesize http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html}
 \item \textsc{wcslib}:
 \href{http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html}%
-{http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html}
+{\footnotesize http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html}
 \end{itemize}
 
 \duchamp\ can be built on Unix/Linux systems by typing (assuming that
 the prompt your terminal provides is a \texttt{> } -- don't type this
 character!):
 \begin{quote}
+{\footnotesize
 \texttt{%
 > ./configure\\
 > make\\
 > make clean (optional -- to remove the object files)}
+}
 \end{quote}
 
 Run in this manner, \texttt{configure} should find all the necessary
@@ -43,28 +45,34 @@ directories to look in by giving extra command-line arguments. There
 are separate options for library files (eg. libcpgplot.a) and header
 files (eg. cpgplot.h).
 
-For example, suppose \textsc{wcslib} had been locally installed in
-\texttt{/home/mduchamp/wcslib}. There will then be two libraries
-created that are likely to be in the following subdirectories:
-\texttt{C/} and \texttt{pgsbox/}. Each subdirectory needs to be
-searched for library and header files, so one could build Duchamp by
-typing:
+For example, suppose \textsc{wcslib} had been locally installed in the
+directory \texttt{/home/mduchamp/wcslib}. There will then be two
+libraries created that are likely to be in the following
+subdirectories: \texttt{C/} and \texttt{pgsbox/}. Each subdirectory
+needs to be searched for library and header files, so one could build
+Duchamp by typing:
 \begin{quote}
+{\footnotesize
 \texttt{%
 >  ./configure $\backslash$ \\ 
 LIBDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox" 
 $\backslash$\\
 INCDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox"}
+}
 \end{quote}
 And then just run make in the usual fashion:
 \begin{quote}
+{\footnotesize
 \texttt{> make}
+}
 \end{quote}
 
 This will produce the executable \texttt{Duchamp}. You can verify that
 it is running correctly by running the verification shell script:
 \begin{quote}
+{\footnotesize
 \texttt{> VerifyDuchamp.sh}
+}
 \end{quote}
 This will use a dummy FITS image in the \texttt{verification/}
 directory -- this image has some Gaussian random noise, with five
@@ -77,7 +85,9 @@ any. There should be none reported if everything is working correctly.
 You can then run \duchamp\ on your own data. This can be done in one
 of two ways. The first is:
 \begin{quote}
+{\footnotesize
 \texttt{> Duchamp -f [FITS file]}
+}
 \end{quote}
 where \texttt{[FITS file]} is the file you wish to search. This method
 simply uses the default values of all parameters.
@@ -85,7 +95,9 @@ simply uses the default values of all parameters.
 The second method allows some determination of the parameter values by
 the user. Type:
 \begin{quote}
+{\footnotesize
 \texttt{> Duchamp -p [parameter file]}
+}
 \end{quote}
 where \texttt{[parameterFile]} is a file with the input parameters,
 including the name of the cube you want to search. There are two
@@ -93,10 +105,12 @@ example input files included with the distribution. The smaller one,
 \texttt{InputExample}, shows the typical parameters one might want to
 set. The large one, \texttt{InputComplete}, lists all possible
 parameters that can be entered, and a brief description of them. To
-get going quickly, just replace the "your-file-here" in
-\texttt{InputExample} with your image name, and type
+get going quickly, just replace the \texttt{"your-file-here"} in the
+\texttt{InputExample} file with your image name, and type
 \begin{quote}
+{\footnotesize
 \texttt{> Duchamp -p InputExample}
+}
 \end{quote}
 
 The following appendices provide details on the individual parameters,
@@ -107,9 +121,10 @@ It may happen that you discover bugs or problems with \duchamp, or you
 have suggestions for improvements or additional features to be
 included in future releases. You can submit a ``ticket'' (a trackable
 bug report) at the \duchamp\ Trac wiki at the following location:\\
-\href{http://sourcecode.atnf.csiro.au/cgi-bin/trac\_duchamp.cgi/simpleticket}%
-{http://sourcecode.atnf.csiro.au/cgi-bin/trac\_duchamp.cgi/simpleticket}
-(there is a link to this page from the Duchamp website).
+\href{http://sourcecode.atnf.csiro.au/cgi-bin/trac\_duchamp.cgi/newticket}%
+{\footnotesize 
+http://sourcecode.atnf.csiro.au/cgi-bin/trac\_duchamp.cgi/newticket}
+\\(there is a link to this page from the Duchamp website).
 
 There is also an email exploder, duchamp-user\textbf{[at]}atnf.csiro.au,
 that users can subscribe to keep up to date with changes, updates, and

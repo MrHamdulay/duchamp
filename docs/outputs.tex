@@ -110,15 +110,16 @@ Galactic Longitude [arcmin].
 \item[Flag] Whether the detection has any warning flags (see below).
 \end{entry}
 
-The Name is derived from the WCS position. For instance, a source
-centred on the RA,Dec position 12$^h$53$^m$45$^s$,
--36$^\circ$24$'$12$''$ will be called J125345$-$362412 (if the epoch
-is J2000) or B125345$-$362412 (if B1950). An alternative form is used
-for Galactic coordinates: a source centred on the position ($l$,$b$) =
-(323.1245, 5.4567) will be called G323.124$+$05.457. If the WCS is not
-valid (\ie is not present or does not have all the necessary
-information), the Name, RA, DEC, VEL and related columns are not
-printed, but the pixel coordinates are still provided.
+The Name is derived from the WCS position. For instance, a source that
+is centred on the RA,Dec position 12$^h$53$^m$45$^s$,
+-36$^\circ$24$'$12$''$ will be given the name J125345$-$362412, if the
+epoch is J2000, or the name B125345$-$362412 if it is B1950. An
+alternative form is used for Galactic coordinates: a source centred on
+the position ($l$,$b$) = (323.1245, 5.4567) will be called
+G323.124$+$05.457. If the WCS is not valid (\ie is not present or does
+not have all the necessary information), the Name, RA, DEC, VEL and
+related columns are not printed, but the pixel coordinates are still
+provided.
 
 The velocity units can be specified by the user, using the parameter
 \texttt{spectralUnits} (enter it as a single string). The default
@@ -240,11 +241,11 @@ spectral extent of the detection is indicated with blue lines, and a
 zoom is shown in a separate window.
 
 The cutout image can optionally include a border around the spatial
-pixels that are in the detection (turned on and off by the parameter
-\texttt{drawBorders} -- the default is \texttt{true}). It includes a
-scale bar in the bottom left corner to indicate size -- its length is
-indicated next to it (the choice of length depends on the size of the
-image).
+pixels that are in the detection (turned on and off by the
+\texttt{drawBorders} parameter -- the default is \texttt{true}). It
+includes a scale bar in the bottom left corner to indicate size -- its
+length is indicated next to it (the choice of length depends on the
+size of the image).
 
 There may also be one or two extra lines on the image. A yellow line
 shows the limits of the cube's spatial region: when this is shown, the

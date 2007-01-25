@@ -53,12 +53,14 @@ log files. On each line, there is a description on the parameter, the
 relevant parameter name that is used in the input file (if there is
 one that the user can enter), and the value of the parameter being
 used.
-\newpage
-\begin{landscape}
-Typical presentation of parameters in output and log files:  
+
+%\begin{sideways}
+%Typical presentation of parameters in output and log files:  
+%\begin{minipage}{170mm}
+{\scriptsize
 \begin{verbatim}
 ---- Parameters ----
-Image to be analysed.........................[imageFile]  =  /home/mduchamp/fountain.fits
+Image to be analysed.........................[imageFile]  =  /path/fountain.fits
 Intermediate Logfile...........................[logFile]  =  duchamp-Logfile.txt
 Final Results file.............................[outFile]  =  duchamp-Results.txt
 Spectrum file..............................[spectraFile]  =  duchamp-Spectra.ps	  
@@ -88,3 +90,6 @@ Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
 Max. velocity separation for merging....[threshVelocity]  =  7
 Method of spectral plotting.............[spectralMethod]  =  peak
 \end{verbatim}
+}
+%\end{minipage}
+%\end{sideways}

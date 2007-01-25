@@ -12,28 +12,30 @@ not matter, they are grouped here in logical sections.
   data cube to be analysed.
 \item[flagSubsection \texttt{[false]}] A flag to indicate whether one
   wants a subsection of the requested image.
-\item[Subsection \texttt{[ [*,*,*] ]}] The requested subsection, which
-  should be specified in the format \texttt{[x1:x2,y1:y2,z1:z2]},
-  where the limits are inclusive. If the full range of a dimension is
-  required, use a \texttt{*}, \eg if you want the full spectral range
-  of a subsection of the image, use \texttt{[30:140,30:140,*]} (thus
-  the default is the full cube).
+\item[Subsection \texttt{[ [*,*,*] ]}] The requested subsection
+%, which should be specified in the format \texttt{[x1:x2,y1:y2,z1:z2]},
+%  where the limits are inclusive
+ -- see \S\ref{sec-input} for details on the subsection format. 
+ If the full range of a dimension is required, use a \texttt{*}
+%, \eg if you want the full spectral range of a subsection of the
+%  image, use \texttt{[30:140,30:140,*]} 
+  (thus  the default is the full cube).
 \item[flagReconExists \texttt{[false]}] A flag to indicate whether the
   reconstructed array has been saved by a previous run of \duchamp. If
   set true, the reconstructed array will be read from the file given
   by \texttt{reconFile}, rather than calculated directly.
 \item[reconFile (no default assumed)] The FITS file that contains the
   reconstructed array. If \texttt{flagReconExists} is true and this
-  parameter is not defined, the default file searched will be
-  determined by the \atrous\ parameters (see \S\ref{sec-recon}).
+  parameter is not defined, the default file that is looked for will
+  be determined by the \atrous\ parameters (see \S\ref{sec-recon}).
 \item[flagSmoothExists \texttt{[false]}] A flag to indicate whether the
   Hanning-smoothed array has been saved by a previous run of \duchamp. If
   set true, the smoothed array will be read from the file given
   by \texttt{smoothFile}, rather than calculated directly.
 \item[smoothFile (no default assumed)] The FITS file that contains the
   Hanning-smoothed array. If \texttt{flagSmoothExists} is true and
-  this parameter is not defined, the default file searched will be
-  determined by the Hanning width parameter (see
+  this parameter is not defined, the default file that is looked for
+  will be determined by the Hanning width parameter (see
   \S\ref{sec-smoothing}).
 \end{entry}
 
@@ -45,8 +47,8 @@ not matter, they are grouped here in logical sections.
 \item[SpectraFile \texttt{[duchamp-Spectra.ps]}] The postscript file
   containing the resulting integrated spectra and images of the
   detections. 
-\item[flagLog \texttt{[true]}] A flag to indicate whether intermediate
-  detections should be logged.
+\item[flagLog \texttt{[true]}] A flag to indicate whether the
+  details of intermediate detections should be logged.
 \item[LogFile \texttt{[duchamp-Logfile.txt]}] The file in which
   intermediate detections are logged. These are detections that have
   not been merged. This is primarily for use in debugging and
@@ -106,9 +108,9 @@ not matter, they are grouped here in logical sections.
 \item[flagMW \texttt{[false]}] A flag to say whether to ignore
   channels contaminated by Milky Way (or other) emission -- the
   searching algorithms will not look at these channels.
-\item[maxMW \texttt{[112]}] The maximum channel number containing
+\item[maxMW \texttt{[112]}] The maximum channel number that contains
   ``Milky Way'' emission.
-\item[minMW \texttt{[75]}] The minimum channel number containing
+\item[minMW \texttt{[75]}] The minimum channel number that contains
   ``Milky Way'' emission. Note that the range specified by
   \texttt{maxMW} and \texttt{minMW} is inclusive.
 \item[flagBaseline \texttt{[false]}] A flag to say whether to remove
@@ -120,7 +122,7 @@ not matter, they are grouped here in logical sections.
 
 \secC*{General detection}
 \begin{entry}
-\item[flagNegative \texttt{[false]}] A flag to indicate that the
+\item[flagNegative \texttt{[false]}] A flag indicating that the
   features being searched for are negative. The cube will be inverted
   prior to searching.
 \item[snrCut \texttt{[3.]}] The cut-off value for thresholding, in
@@ -221,7 +223,7 @@ total number, will be less than $\alpha$ (see \S\ref{sec-detection}).
  draw the dividing line between BLANK and non-BLANK pixels on the
  2-dimensional images (see for example Fig.~\ref{fig-moment}).
 \item[verbose \texttt{[true]}] A flag indicating whether to print the
-  progress of computationally-intensive algorithms (such as the
-  searching and merging) to screen.
+  progress of any computationally-intensive algorithms (\eg
+  reconstruction, searching or merging algorithms) to the screen.
 \end{entry}
 
