@@ -7,6 +7,8 @@
 #include <Utils/utils.hh>
 #include <Utils/feedback.hh>
 
+using std::vector;
+
 void Cube::ObjectMerger()
 {
   /**

@@ -16,10 +16,10 @@ bool areClose(Detection &obj1, Detection &obj2, Param &par)
   bool close = false;   // this will be the value returned
 
   /*
-   * First, check to see if the objects are nearby.
-   * We will only do the pixel-by-pixel comparison if their pixel ranges overlap.
-   * This saves a bit of time if the objects are big and are nowhere near
-   * one another.
+   * First, check to see if the objects are nearby.  We will only do
+   * the pixel-by-pixel comparison if their pixel ranges overlap.
+   * This saves a bit of time if the objects are big and are nowhere
+   * near one another.
    */
 
   bool flagAdj = par.getFlagAdjacent();
@@ -64,9 +64,10 @@ bool areClose(Detection &obj1, Detection &obj2, Param &par)
 
   if(areNear){
     /*
-     * If we get to here, the pixel ranges overlap -- so we do a pixel-by-pixel 
-     * comparison to make sure they are actually "close" according to the thresholds.
-     * Otherwise, close=false, and so don't need to do anything else before returning.
+     * If we get to here, the pixel ranges overlap -- so we do a
+     * pixel-by-pixel comparison to make sure they are actually
+     * "close" according to the thresholds.  Otherwise, close=false,
+     * and so don't need to do anything else before returning.
      */
 
     float *first = new float[3];  //just store x,y,z positions of objects.
@@ -86,14 +87,15 @@ bool areClose(Detection &obj1, Detection &obj2, Param &par)
       second[2] = obj2.getZ(counter%size2);
 
       if(flagAdj){
-	//This step just tests to see if there is a pair of *adjacent* pixels spatially,
-	//   and if the velocity pixels are within the threshold.
-	// For an overall match between the objects, we only require one 
-	// matching pair of pixels, hence the || in the "close" definition.
+	//This step just tests to see if there is a pair of *adjacent*
+	//pixels spatially, and if the velocity pixels are within the
+	//threshold.  For an overall match between the objects, we
+	//only require one matching pair of pixels, hence the || in
+	//the "close" definition.
 	close = close || 
-	  ( (fabs(first[0]-second[0]) <= 1.)                     //X vals adjacent?
-	    && (fabs(first[1]-second[1]) <= 1.)                  //Y vals adjacent?
-	    && (fabs(first[2]-second[2]) <= threshV)             //Z vals close?
+	  ( (fabs(first[0]-second[0]) <= 1.)         //X vals adjacent?
+	    && (fabs(first[1]-second[1]) <= 1.)      //Y vals adjacent?
+	    && (fabs(first[2]-second[2]) <= threshV) //Z vals close?
 	    );
       }
       else{

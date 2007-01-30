@@ -8,9 +8,7 @@
 #include <wcs.h>
 #include <wcshdr.h>
 #include <Utils/utils.hh>
-
-using std::string;
-using std::vector;
+#include <ATrous/filter.hh>
 
 class FitsHeader; // foreshadow this so that Param knows it exists
 
@@ -34,19 +32,19 @@ public:
   // Functions in param.cc
   //
   /** Read in parameters from a disk file. */
-  int    readParams(string paramfile);
+  int    readParams(std::string paramfile);
 
   /** Copy certain necessary FITS header parameters from a FitsHeader object */
   void   copyHeaderInfo(FitsHeader &head);
 
   /** Determine filename in which to save the Hanning-smoothed array. */
-  string outputSmoothFile();
+  std::string outputSmoothFile();
 
   /** Determine filename in which to save the reconstructed array. */
-  string outputReconFile(); 
+  std::string outputReconFile(); 
 
   /** Determine filename in which to save the residual array from the atrous reconstruction. */
-  string outputResidFile(); 
+  std::string outputResidFile(); 
 
   /** Print the parameter set in a readable fashion. */
   friend std::ostream& operator<< ( std::ostream& theStream, Param& par);
@@ -78,33 +76,33 @@ public:
   //--------------------
   // Basic inline accessor functions
   //
-  string getImageFile(){return imageFile;};
-  void   setImageFile(string fname){imageFile = fname;};
-  string getFullImageFile(){
+  std::string getImageFile(){return imageFile;};
+  void   setImageFile(std::string fname){imageFile = fname;};
+  std::string getFullImageFile(){
     if(flagSubsection) return imageFile+subsection;
     else return imageFile;
   };
   bool   getFlagSubsection(){return flagSubsection;};
   void   setFlagSubsection(bool flag){flagSubsection=flag;};
-  string getSubsection(){return subsection;};
-  void   setSubsection(string range){subsection = range;};
+  std::string getSubsection(){return subsection;};
+  void   setSubsection(std::string range){subsection = range;};
   bool   getFlagReconExists(){return flagReconExists;};
   void   setFlagReconExists(bool flag){flagReconExists=flag;};
-  string getReconFile(){return reconFile;};
-  void   setReconFile(string file){reconFile = file;};
+  std::string getReconFile(){return reconFile;};
+  void   setReconFile(std::string file){reconFile = file;};
   bool   getFlagSmoothExists(){return flagSmoothExists;};
   void   setFlagSmoothExists(bool flag){flagSmoothExists=flag;};
-  string getSmoothFile(){return smoothFile;};
-  void   setSmoothFile(string file){smoothFile = file;};
+  std::string getSmoothFile(){return smoothFile;};
+  void   setSmoothFile(std::string file){smoothFile = file;};
   //
   bool   getFlagLog(){return flagLog;};
   void   setFlagLog(bool flag){flagLog=flag;};
-  string getLogFile(){return logFile;};
-  void   setLogFile(string fname){logFile = fname;};
-  string getOutFile(){return outFile;};
-  void   setOutFile(string fname){outFile = fname;};
-  string getSpectraFile(){return spectraFile;};
-  void   setSpectraFile(string fname){spectraFile = fname;};
+  std::string getLogFile(){return logFile;};
+  void   setLogFile(std::string fname){logFile = fname;};
+  std::string getOutFile(){return outFile;};
+  void   setOutFile(std::string fname){outFile = fname;};
+  std::string getSpectraFile(){return spectraFile;};
+  void   setSpectraFile(std::string fname){spectraFile = fname;};
   bool   getFlagOutputSmooth(){return flagOutputSmooth;};
   void   setFlagOutputSmooth(bool flag){flagOutputSmooth=flag;};
   bool   getFlagOutputRecon(){return flagOutputRecon;};
@@ -113,18 +111,18 @@ public:
   void   setFlagOutputResid(bool flag){flagOutputResid=flag;};
   bool   getFlagVOT(){return flagVOT;};
   void   setFlagVOT(bool flag){flagVOT=flag;};
-  string getVOTFile(){return votFile;};
-  void   setVOTFile(string fname){votFile = fname;};
+  std::string getVOTFile(){return votFile;};
+  void   setVOTFile(std::string fname){votFile = fname;};
   bool   getFlagKarma(){return flagKarma;};
   void   setFlagKarma(bool flag){flagKarma=flag;};
-  string getKarmaFile(){return karmaFile;};
-  void   setKarmaFile(string fname){karmaFile = fname;};
+  std::string getKarmaFile(){return karmaFile;};
+  void   setKarmaFile(std::string fname){karmaFile = fname;};
   bool   getFlagMaps(){return flagMaps;};
   void   setFlagMaps(bool flag){flagMaps=flag;};
-  string getDetectionMap(){return detectionMap;};
-  void   setDetectionMap(string fname){detectionMap = fname;};
-  string getMomentMap(){return momentMap;};
-  void   setMomentMap(string fname){momentMap = fname;};
+  std::string getDetectionMap(){return detectionMap;};
+  void   setDetectionMap(std::string fname){detectionMap = fname;};
+  std::string getMomentMap(){return momentMap;};
+  void   setMomentMap(std::string fname){momentMap = fname;};
   bool   getFlagXOutput(){return flagXOutput;};
   void   setFlagXOutput(bool b){flagXOutput=b;};
   //
@@ -209,8 +207,8 @@ public:
   void   setAtrousCut(float c){snrRecon=c;};
   int    getFilterCode(){return filterCode;};
   void   setFilterCode(int c){filterCode=c;};
-  string getFilterName(){return filterName;};
-  void   setFilterName(string s){filterName=s;};
+  std::string getFilterName(){return reconFilter.getName();};
+  Filter& filter(){ Filter &rfilter = reconFilter; return rfilter; }; 
   //	 
   bool   getFlagAdjacent(){return flagAdjacent;};
   void   setFlagAdjacent(bool flag){flagAdjacent=flag;};
@@ -221,10 +219,10 @@ public:
   int    getMinChannels(){return minChannels;};
   void   setMinChannels(int n){minChannels=n;};
   //
-  string getSpectralMethod(){return spectralMethod;};
-  void   setSpectralMethod(string s){spectralMethod=s;};
-  string getSpectralUnits(){return spectralUnits;};
-  void   setSpectralUnits(string s){spectralUnits=s;};
+  std::string getSpectralMethod(){return spectralMethod;};
+  void   setSpectralMethod(std::string s){spectralMethod=s;};
+  std::string getSpectralUnits(){return spectralUnits;};
+  void   setSpectralUnits(std::string s){spectralUnits=s;};
   bool   drawBorders(){return borders;};
   void   setDrawBorders(bool f){borders=f;};
   bool   drawBlankEdge(){return blankEdge;};
@@ -236,29 +234,29 @@ public:
   
 private:
   // Input files
-  string imageFile;       ///< The image to be analysed.
+  std::string imageFile;       ///< The image to be analysed.
   bool   flagSubsection;  ///< Whether we just want a subsection of the image
-  string subsection;      ///< The subsection requested, taking the form [x1:x2,y1:y2,z1:z2]. If you want the full range of one index, use *
+  std::string subsection;      ///< The subsection requested, taking the form [x1:x2,y1:y2,z1:z2]. If you want the full range of one index, use *
   bool   flagReconExists; ///< The reconstructed array is in a FITS file on disk.
-  string reconFile;       ///< The FITS file containing the reconstructed array.
+  std::string reconFile;       ///< The FITS file containing the reconstructed array.
   bool   flagSmoothExists;///< The Hanning-smoothed array is in a FITS file.
-  string smoothFile;      ///< The FITS file containing the smoothed array.
+  std::string smoothFile;      ///< The FITS file containing the smoothed array.
 
   // Output files
   bool   flagLog;         ///< Should we do the intermediate logging?
-  string logFile;         ///< Where the intermediate logging goes.
-  string outFile;         ///< Where the final results get put.
-  string spectraFile;     ///< Where the spectra are displayed
+  std::string logFile;         ///< Where the intermediate logging goes.
+  std::string outFile;         ///< Where the final results get put.
+  std::string spectraFile;     ///< Where the spectra are displayed
   bool   flagOutputSmooth;///< Should the Hanning-smoothed cube be written?
   bool   flagOutputRecon; ///< Should the reconstructed cube be written?
   bool   flagOutputResid; ///< Should the reconstructed cube be written?
   bool   flagVOT;         ///< Should we save results in VOTable format?
-  string votFile;         ///< Where the VOTable goes.
+  std::string votFile;         ///< Where the VOTable goes.
   bool   flagKarma;       ///< Should we save results in Karma annotation format?
-  string karmaFile;       ///< Where the Karma annotation file goes.
+  std::string karmaFile;       ///< Where the Karma annotation file goes.
   bool   flagMaps;        ///< Should we produce detection and moment maps in postscript form?
-  string detectionMap;    ///< The name of the detection map (ps file).
-  string momentMap;       ///< The name of the 0th moment map (ps file).
+  std::string detectionMap;    ///< The name of the detection map (ps file).
+  std::string momentMap;       ///< The name of the 0th moment map (ps file).
   bool   flagXOutput;     ///< Should there be an xwindows output of the detection map?
 
   // Cube related parameters 
@@ -310,8 +308,9 @@ private:
   int    reconDim;        ///< How many dimensions to use for the reconstruction?
   int    scaleMin;        ///< Min scale used in a trous reconstruction
   float  snrRecon;        ///< SNR cutoff used in a trous reconstruction (only wavelet coefficients that survive this threshold are kept)
+  Filter reconFilter;     ///< The filter used for reconstructions.
   int    filterCode;      ///< The code number for the filter to be used (saves having to parse names)
-  string filterName;      ///< The code number converted into a name, for outputting purposes.
+  std::string filterName;      ///< The code number converted into a name, for outputting purposes.
 
   // Volume-merging parameters
   bool   flagAdjacent;    ///< Whether to use the adjacent criterion for judging if objects are to be merged.
@@ -319,8 +318,8 @@ private:
   float  threshVelocity;  ///< Maximum channels separation between objects
   int    minChannels;     ///< Minimum no. of channels to make an object 
   // Input-Output related
-  string spectralMethod;  ///< A string indicating choice of spectral plotting method: choices are "peak" (default) or "sum" 
-  string spectralUnits;   ///< A string indicating what units the spectral axis should be quoted in.
+  std::string spectralMethod;  ///< A string indicating choice of spectral plotting method: choices are "peak" (default) or "sum" 
+  std::string spectralUnits;   ///< A string indicating what units the spectral axis should be quoted in.
   bool   borders;         ///< Whether to draw a border around the individual pixels of a detection in the spectral display
   bool   blankEdge;       ///< Whether to draw a border around the BLANK pixel region in the moment maps and cutout images
   bool   verbose;         ///< Whether to use maximum verbosity -- use progress indicators in the reconstruction & merging steps.
@@ -379,7 +378,7 @@ public:
   double  velToSpec(const float &vel);
 
   /** Get an IAU-style name for an equatorial or galactic coordinates. */
-  string  getIAUName(double ra, double dec);
+  std::string  getIAUName(double ra, double dec);
 
   /** Correct the units for the spectral axis */
   void    fixUnits(Param &par);
@@ -388,22 +387,22 @@ public:
   // Functions in FitsIO/headerIO.cc
   //
   /** Read all header info. */
-  int     readHeaderInfo(string fname, Param &par);
+  int     readHeaderInfo(std::string fname, Param &par);
 
   /** Read BUNIT keyword */
-  int     readBUNIT(string fname);
+  int     readBUNIT(std::string fname);
 
   /** Read BLANK & related keywords */
-  int     readBLANKinfo(string fname, Param &par);
+  int     readBLANKinfo(std::string fname, Param &par);
 
   /** Read beam-related keywords */
-  int     readBeamInfo(string fname, Param &par);
+  int     readBeamInfo(std::string fname, Param &par);
  
   //--------------------
   // Function in FitsIO/wcsIO.cc
   //
   /** Read the WCS information from a file. */
-  int     defineWCS(string fname, Param &par);
+  int     defineWCS(std::string fname, Param &par);
 
   //--------------------
   // Basic inline accessor functions
@@ -411,14 +410,14 @@ public:
   bool    isWCS(){return wcsIsGood;};
   int     getNWCS(){return nwcs;};
   void    setNWCS(int i){nwcs=i;};
-  string  getSpectralUnits(){return spectralUnits;};
-  void    setSpectralUnits(string s){spectralUnits=s;};
-  string  getSpectralDescription(){return spectralDescription;};
-  void    setSpectralDescription(string s){spectralDescription=s;};
-  string  getFluxUnits(){return fluxUnits;};
-  void    setFluxUnits(string s){fluxUnits=s;};
-  string  getIntFluxUnits(){return intFluxUnits;};
-  void    setIntFluxUnits(string s){intFluxUnits=s;};
+  std::string  getSpectralUnits(){return spectralUnits;};
+  void    setSpectralUnits(std::string s){spectralUnits=s;};
+  std::string  getSpectralDescription(){return spectralDescription;};
+  void    setSpectralDescription(std::string s){spectralDescription=s;};
+  std::string  getFluxUnits(){return fluxUnits;};
+  void    setFluxUnits(std::string s){fluxUnits=s;};
+  std::string  getIntFluxUnits(){return intFluxUnits;};
+  void    setIntFluxUnits(std::string s){intFluxUnits=s;};
   float   getBeamSize(){return beamSize;};
   void    setBeamSize(float f){beamSize=f;};
   float   getBmajKeyword(){return bmajKeyword;};
@@ -441,10 +440,10 @@ private:
   struct wcsprm *wcs;           ///< The WCS parameters for the cube in a struct from the wcslib library.
   int     nwcs;                 ///< The number of WCS parameters
   bool    wcsIsGood;            ///< A flag indicating whether there is a valid WCS present.
-  string  spectralUnits;        ///< The units of the spectral dimension
-  string  spectralDescription;  ///< The description of the spectral dimension (Frequency, Velocity, ...)
-  string  fluxUnits;            ///< The units of pixel flux (from header)
-  string  intFluxUnits;         ///< The units of pixel flux (from header)
+  std::string  spectralUnits;        ///< The units of the spectral dimension
+  std::string  spectralDescription;  ///< The description of the spectral dimension (Frequency, Velocity, ...)
+  std::string  fluxUnits;            ///< The units of pixel flux (from header)
+  std::string  intFluxUnits;         ///< The units of pixel flux (from header)
   float   beamSize;             ///< The calculated beam size in pixels.
   float   bmajKeyword;          ///< The FITS header keyword BMAJ.
   float   bminKeyword;          ///< The FITS header keyword BMIN.
@@ -456,6 +455,6 @@ private:
   double  power;                ///< power param for converting spectral coords
 };
 
-string makelower( string s );
+std::string makelower( std::string s );
 
 #endif

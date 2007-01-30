@@ -5,6 +5,7 @@
 #include <Utils/utils.hh>
 #include <Utils/feedback.hh>
 #include <ATrous/atrous.hh>
+#include <ATrous/filter.hh>
 #include <Utils/Statistics.hh>
 using Statistics::madfmToSigma;
 
@@ -14,8 +15,7 @@ void atrous1DReconstruct(long &xdim, float *&input, float *&output, Param &par)
    *  A routine that uses the a trous wavelet method to reconstruct a 
    *   1-dimensional spectrum. 
    *  The Param object "par" contains all necessary info about the filter and 
-   *   reconstruction parameters, although a Filter object has to be declared
-   *   elsewhere previously.
+   *   reconstruction parameters.
    *
    *  If all pixels are BLANK (and we are testing for BLANKs), the
    *  reconstruction will simply give BLANKs back, so we return the
@@ -28,17 +28,15 @@ void atrous1DReconstruct(long &xdim, float *&input, float *&output, Param &par)
    *  \param par The Param set.
    */
 
-
-  extern Filter reconFilter;
   const float SNR_THRESH=par.getAtrousCut();
   const int MIN_SCALE=par.getMinScale();
 
   float blankPixValue = par.getBlankPixVal();
-  int numScales = reconFilter.getNumScales(xdim);
+  int numScales = par.filter().getNumScales(xdim);
   double *sigmaFactors = new double[numScales+1];
   for(int i=0;i<=numScales;i++){
-    if(i<=reconFilter.maxFactor(1)) 
-      sigmaFactors[i] = reconFilter.sigmaFactor(1,i);
+    if(i<=par.filter().maxFactor(1)) 
+      sigmaFactors[i] = par.filter().sigmaFactor(1,i);
     else sigmaFactors[i] = sigmaFactors[i-1] / sqrt(2.);
   }
 
@@ -66,9 +64,9 @@ void atrous1DReconstruct(long &xdim, float *&input, float *&output, Param &par)
 
     for(int pos=0;pos<xdim;pos++) output[pos]=0.;
 
-    int filterHW = reconFilter.width()/2;
-    double *filter = new double[reconFilter.width()];
-    for(int i=0;i<reconFilter.width();i++) filter[i] = reconFilter.coeff(i);
+    int filterHW = par.filter().width()/2;
+    double *filter = new double[par.filter().width()];
+    for(int i=0;i<par.filter().width();i++) filter[i] = par.filter().coeff(i);
 
 
     // No trimming done in 1D case.

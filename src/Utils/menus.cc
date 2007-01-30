@@ -3,11 +3,10 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-using std::string;
 using std::stringstream;
 
-// void menu(string &fname)
-string menu()
+// void menu(std::string &fname)
+std::string menu()
 {
   std::cout << "Files to choose from:\n";
   std::cout << "1: precut_p26cube22_poly.fits\n";
@@ -25,7 +24,7 @@ string menu()
     std::cin >> file;
   }
 
-  string fname;
+  std::string fname;
   stringstream ss;
   int cube=0;
   switch(file){
@@ -65,8 +64,8 @@ string menu()
   return fname;
 }
 
-// void specMenu(string fname)
-string specMenu()
+// void specMenu(std::string fname)
+std::string specMenu()
 {
   std::cout << "Spectra to choose from:\n";
   std::cout << "1: b1133m172\n";
@@ -82,7 +81,7 @@ string specMenu()
     std::cin >> file;
   }
 
-  string fname;
+  std::string fname;
   switch(file){
   case 1:
     fname = "/DATA/SITAR_1/whi550/cubes/phfs_spectra/b1133m172";
@@ -106,8 +105,8 @@ string specMenu()
   return fname;
 }
 
-//void orionMenu(string fname)
-string orionMenu()
+//void orionMenu(std::string fname)
+std::string orionMenu()
 {
   std::cout << "Chandra time series to choose from:\n";
   std::cout << "1: Flaring/Constant \n";
@@ -121,7 +120,7 @@ string orionMenu()
     std::cin >> file;
   }
 
-  string fname;
+  std::string fname;
   switch(file){
   case 1:
     fname = "/DATA/SITAR_1/whi550/Stats/summerschool/orion/COUP263.dat";
@@ -136,8 +135,8 @@ string orionMenu()
   return fname;
 }
 
-//void imageMenu(string fname)
-string imageMenu()
+//void imageMenu(std::string fname)
+std::string imageMenu()
 {
   std::cout << "2D optical/NIR images to choose from:\n";
   std::cout << "1: 2126-158 Kband (IRIS)\n";
@@ -153,7 +152,7 @@ string imageMenu()
     std::cin >> file;
   }
 
-  string fname;
+  std::string fname;
   switch(file){
   case 1:
     fname = "/DATA/SITAR_1/whi550/iraf/search_test/temp2.fits";
@@ -178,11 +177,11 @@ string imageMenu()
   return fname;
 }
 
-string twoblMenu()
+std::string twoblMenu()
 {
   std::cout << "2BL spectra to choose from: \n";
   system("ls /u/whi550/RESEARCH/2BL/data");
-  string fname;
+  std::string fname;
   std::ifstream fin;
   do{
     std::cout << "Select a file: ";

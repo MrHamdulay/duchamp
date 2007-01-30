@@ -8,8 +8,6 @@
 #include <cpgplot.h>
 #include <Utils/mycpgplot.hh>
 
-using std::string;
-using std::stringstream;
 using namespace mycpgplot;
 
 /**
@@ -61,16 +59,16 @@ namespace Plot
     SpectralPlot();    ///< Constructor
     virtual ~SpectralPlot(); ///< Destructor
 
-    int setUpPlot(string pgDestination);   ///< Set up PGPLOT output.
+    int setUpPlot(std::string pgDestination);   ///< Set up PGPLOT output.
     void calcCoords();                     ///< Calculate boundaries for boxes.
-    void gotoHeader(string xlabel);        ///< Set up the header & write the X-label.
-    void firstHeaderLine(string line);   
+    void gotoHeader(std::string xlabel);        ///< Set up the header & write the X-label.
+    void firstHeaderLine(std::string line);   
     ///< Write first line of header information (position/velocity info) in correct place.
-    void secondHeaderLine(string line);  
+    void secondHeaderLine(std::string line);  
     ///< Write second line of header information (widths and fluxes) in correct place.
-    void thirdHeaderLine(string line);   
+    void thirdHeaderLine(std::string line);   
     ///< Write third line of header information (pixel coordinates) in correct place.
-    void gotoMainSpectrum(float x1, float x2, float y1, float y2,string ylabel);
+    void gotoMainSpectrum(float x1, float x2, float y1, float y2,std::string ylabel);
     ///< Set up main spectral plotting region.
     void gotoZoomSpectrum(float x1, float x2, float y1, float y2);    
     ///< Set up zoomed-in spectral plotting region.
@@ -103,11 +101,11 @@ namespace Plot
   //----------------------------------------------------------
   // Inline SpectralPlot functions...
   //----------------------------------------------------------
-  inline void  SpectralPlot::firstHeaderLine(string line){
+  inline void  SpectralPlot::firstHeaderLine(std::string line){
     cpgmtxt("t",Plot::spTitleOffset1,0.5,0.5,line.c_str());}
-  inline void  SpectralPlot::secondHeaderLine(string line){
+  inline void  SpectralPlot::secondHeaderLine(std::string line){
     cpgmtxt("t",Plot::spTitleOffset2,0.5,0.5,line.c_str());}
-  inline void  SpectralPlot::thirdHeaderLine(string line){
+  inline void  SpectralPlot::thirdHeaderLine(std::string line){
     cpgmtxt("t",Plot::spTitleOffset3,0.5,0.5,line.c_str());}
   inline int   SpectralPlot::getNumOnPage(){return numOnPage;}
   inline void  SpectralPlot::setNumOnPage(int i){numOnPage=i;}
@@ -136,10 +134,10 @@ namespace Plot
     ImagePlot();  ///< Constructor
     virtual ~ImagePlot(); ///< Destructor
   
-    int   setUpPlot(string pgDestination, float x, float y); ///< Set up PGPLOT output.
+    int   setUpPlot(std::string pgDestination, float x, float y); ///< Set up PGPLOT output.
     void  drawMapBox(float x1, float x2, float y1, float y2, 
-		     string xlabel, string ylabel);          ///< Defines and draws box.
-    void  makeTitle(string title);                           ///< Write plot title.
+		     std::string xlabel, std::string ylabel);          ///< Defines and draws box.
+    void  makeTitle(std::string title);                           ///< Write plot title.
 
     float cmToCoord(float cm);///< Converts distance in cm to coordinate distance on the plot.
     float getMargin();        ///< Returns width of margin.

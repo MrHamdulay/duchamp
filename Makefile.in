@@ -35,6 +35,7 @@ TESTDIR = ./verification
 HEADS = $(BASE)/duchamp.hh\
 	$(BASE)/param.hh\
 	$(ATROUSDIR)/atrous.hh\
+	$(ATROUSDIR)/filter.hh\
 	$(DETECTIONDIR)/detection.hh\
 	$(DETECTIONDIR)/columns.hh\
 	$(CUBESDIR)/cubes.hh\
@@ -45,7 +46,7 @@ HEADS = $(BASE)/duchamp.hh\
 OBJECTS = $(BASE)/mainDuchamp.o \
 	$(BASE)/duchamp.o\
 	$(BASE)/param.o\
-	$(ATROUSDIR)/atrous.o\
+	$(ATROUSDIR)/filter.o\
 	$(ATROUSDIR)/atrous_1d_reconstruct.o\
 	$(ATROUSDIR)/atrous_2d_reconstruct.o\
 	$(ATROUSDIR)/atrous_3d_reconstruct.o\

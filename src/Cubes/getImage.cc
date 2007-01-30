@@ -13,9 +13,9 @@
 #include <duchamp.hh>
 #include <Cubes/cubes.hh>
 
-string imageType[4] = {"point", "spectrum", "image", "cube"};
+std::string imageType[4] = {"point", "spectrum", "image", "cube"};
 
-int Cube::getCube(string fname)
+int Cube::getCube(std::string fname)
 {
   /**
    * Read in a cube from the file fname (assumed to be in FITS format).
@@ -23,7 +23,7 @@ int Cube::getCube(string fname)
    *  This function will check that the file exists, report the dimensions
    *   and then get other functions to read the data, WCS, and necessary 
    *   header keywords.
-   *  \param fname A string with name of FITS file.
+   *  \param fname A std::string with name of FITS file.
    *  \return SUCCESS or FAILURE.
    */
 

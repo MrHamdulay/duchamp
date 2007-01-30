@@ -1,5 +1,4 @@
 #include <Cubes/cubes.hh>
-#include <ATrous/atrous.hh>
 #include <Utils/feedback.hh>
 #include <Utils/Hanning.hh>
 

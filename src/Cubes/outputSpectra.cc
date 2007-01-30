@@ -32,7 +32,7 @@ void Cube::outputSpectra()
   if(this->fullCols.size()==0) this->setupColumns(); 
   // in case cols haven't been set -- need the precisions for printing values.
 
-  string spectrafile = this->par.getSpectraFile() + "/vcps";
+  std::string spectrafile = this->par.getSpectraFile() + "/vcps";
   Plot::SpectralPlot newplot;
   if(newplot.setUpPlot(spectrafile.c_str())>0) {
 
@@ -96,7 +96,7 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   else 
     for(zval=0;zval<zdim;zval++) specx[int(zval)] = zval;
 
-  string fluxLabel = "Flux";
+  std::string fluxLabel = "Flux";
 
   if(this->par.getSpectralMethod()=="sum"){
     fluxLabel = "Integrated " + fluxLabel;
@@ -162,7 +162,7 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   vmin -= width * 0.01;
 
   // now plot the resulting spectrum
-  string label;
+  std::string label;
   if(this->head.isWCS()){
     label = this->head.getSpectralDescription() + " [" + 
       this->head.getSpectralUnits() + "]";

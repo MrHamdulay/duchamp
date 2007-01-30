@@ -13,15 +13,10 @@
 #include <Utils/utils.hh>
 #include <ATrous/atrous.hh>
 
-using std::ifstream;
-using std::string;
-
-Filter reconFilter;
-
 int main(int argc, char * argv[])
 {
 
-  string paramFile,fitsfile,temp;
+  std::string paramFile,fitsfile,temp;
   Cube *cube = new Cube;
 
   if(cube->getopts(argc,argv)==FAILURE) return FAILURE;
@@ -61,7 +56,7 @@ int main(int argc, char * argv[])
   cube->readSavedArrays();
 
 
-  ifstream logfile(cube->pars().getLogFile().c_str());
+  std::ifstream logfile(cube->pars().getLogFile().c_str());
   
   if(!logfile.is_open()){
     std::cerr << "\aUnable to open file " 

@@ -1,15 +1,13 @@
-// ATROUS.CC
-//  Functions necessary for the reconstruction routines.
 #include <iostream>
 #include <sstream>
 #include <duchamp.hh>
-#include <ATrous/atrous.hh>
+#include <ATrous/filter.hh>
 #include <math.h>
 
 Filter::Filter()
 {
   this->sigmaFactors.resize(3);
-  for(int i=0;i<3;i++) this->sigmaFactors[i] = new vector<double>(20);
+  for(int i=0;i<3;i++) this->sigmaFactors[i] = new std::vector<double>(20);
   this->loadSpline();
 }
 //-----------------------------------------------------------------------

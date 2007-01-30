@@ -56,7 +56,7 @@ int Cube::readReconCube()
   
     if(!reconGood){ // if bad, need to look at parameters
 
-      string reconFile = this->par.outputReconFile();
+      std::string reconFile = this->par.outputReconFile();
       errmsg << "Trying file " << reconFile << std::endl;
       duchampWarning("readReconCube", errmsg.str() );
       reconGood = true;

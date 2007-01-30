@@ -181,7 +181,7 @@ void DataArray::addObject(Detection object){
 }
 //--------------------------------------------------------------------
 
-void DataArray::addObjectList(vector <Detection> newlist) {
+void DataArray::addObjectList(std::vector <Detection> newlist) {
   /**
    * \param newlist The list of objects to be added to the object list.
    */
@@ -425,7 +425,7 @@ int Cube::getCube(){
      *  subsection checks.
      * Assumes the Param is set up properly.
      */
-    string fname = par.getImageFile();
+    std::string fname = par.getImageFile();
     if(par.getFlagSubsection()) fname+=par.getSubsection();
     return getCube(fname);
   };
@@ -449,7 +449,7 @@ int Cube::getopts(int argc, char ** argv)
     returnValue = FAILURE;
   }
   else {
-    string file;
+    std::string file;
     Param *par = new Param;
     char c;
     while( ( c = getopt(argc,argv,"p:f:hv") )!=-1){
@@ -457,7 +457,7 @@ int Cube::getopts(int argc, char ** argv)
       case 'p':
 	file = optarg;
 	if(this->readParam(file)==FAILURE){
-	  stringstream errmsg;
+	  std::stringstream errmsg;
 	  errmsg << "Could not open parameter file " << file << ".\n";
 	  duchampError("Duchamp",errmsg.str());
 	  returnValue = FAILURE;
@@ -489,7 +489,7 @@ int Cube::getopts(int argc, char ** argv)
 
 void Cube::saveArray(float *input, long size){
   if(size != this->numPixels){
-    stringstream errmsg;
+    std::stringstream errmsg;
     errmsg << "Input array different size to existing array ("
 	   << size << " cf. " << this->numPixels << "). Cannot save.\n";
     duchampError("Cube::saveArray",errmsg.str());
@@ -515,7 +515,7 @@ void Cube::saveRecon(float *input, long size){
    * \param size The size of input.
    */
   if(size != this->numPixels){
-    stringstream errmsg;
+    std::stringstream errmsg;
     errmsg << "Input array different size to existing array ("
 	   << size << " cf. " << this->numPixels << "). Cannot save.\n";
     duchampError("Cube::saveRecon",errmsg.str());
@@ -909,7 +909,7 @@ void Cube::calcObjectWCSparams()
   if(!this->head.isWCS()){ 
     // if the WCS is bad, set the object names to Obj01 etc
     int numspaces = int(log10(this->objectList.size())) + 1;
-    stringstream ss;
+    std::stringstream ss;
     for(int i=0;i<this->objectList.size();i++){
       ss.str("");
       ss << "Obj" << std::setfill('0') << std::setw(numspaces) << i+1;
@@ -965,7 +965,7 @@ float Cube::enclosedFlux(Detection obj)
   int xsize = obj.getXmax()-obj.getXmin()+1;
   int ysize = obj.getYmax()-obj.getYmin()+1;
   int zsize = obj.getZmax()-obj.getZmin()+1; 
-  vector <float> fluxArray(xsize*ysize*zsize,0.);
+  std::vector <float> fluxArray(xsize*ysize*zsize,0.);
   for(int x=0;x<xsize;x++){
     for(int y=0;y<ysize;y++){
       for(int z=0;z<zsize;z++){

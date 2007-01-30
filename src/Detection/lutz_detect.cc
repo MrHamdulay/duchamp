@@ -42,8 +42,8 @@ void Image::lutz_detect()
   Detection *store = new Detection[this->axisDim[0]+1];
   char *marker     = new char[this->axisDim[0]+1];
   for(int i=0; i<(this->axisDim[0]+1); i++) marker[i] = NULLMARKER;
-  vector <Object>  *oS    = new vector <Object>;
-  vector <STATUS> *psS    = new vector <STATUS>;
+  std::vector<Object>  *oS    = new std::vector<Object>;
+  std::vector<STATUS> *psS    = new std::vector<STATUS>;
 
   Pixel *pix = new Pixel;
 

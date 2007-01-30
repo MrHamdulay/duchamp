@@ -7,7 +7,7 @@
 #include <duchamp.hh>
 #include <Cubes/cubes.hh>
 
-int Cube::getFITSdata(string fname)
+int Cube::getFITSdata(std::string fname)
 {
   /**
    * This function retrieves the data array from the FITS file at the 

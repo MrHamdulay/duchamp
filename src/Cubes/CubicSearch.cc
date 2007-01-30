@@ -8,6 +8,8 @@
 #include <Utils/feedback.hh>
 #include <Utils/Statistics.hh>
 
+using std::vector;
+
 void Cube::CubicSearch()
 {
   /**
@@ -42,7 +44,8 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
    *  calculated (using robust methods) from the data array itself.
    * \param dim Array of dimension sizes for the data array.
    * \param Array Array of data.
-   * \param par Param set defining how to do detection, and what a BLANK pixel is etc.
+   * \param par Param set defining how to do detection, and what a
+   * BLANK pixel is etc.
    * \param stats The statistics that define what a detection is.
    * \return Vector of detected objects.
    */

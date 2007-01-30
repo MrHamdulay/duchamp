@@ -21,8 +21,6 @@
 #include <Utils/Statistics.hh>
 #endif
 
-using std::string;
-using std::vector;
 using namespace Column;
 using namespace Statistics;
 
@@ -55,14 +53,14 @@ public:
   virtual float              getPixValue(long pos){ return array[pos]; };
   virtual void               setPixValue(long pos, float f){array[pos] = f;};;
   Detection          getObject(long number){ return objectList[number]; };
-  vector <Detection> getObjectList(){ return objectList; };
+  std::vector <Detection> getObjectList(){ return objectList; };
   long               getNumObj(){ return objectList.size(); };
 
   /** Delete all objects from the list of detections. */
   void               clearDetectionList(){ this->objectList.clear(); };
 
   /** Read a parameter set from file. */
-  int                readParam(string paramfile){
+  int                readParam(std::string paramfile){
     /** 
      *  Uses Param::readParams() to read parameters from a file.
      *  \param paramfile The file to be read.
@@ -90,7 +88,7 @@ public:
   void               addObject(Detection object);
 
   /** Adds all objects in a detection list to the object list. */
-  void               addObjectList(vector <Detection> newlist);   
+  void               addObjectList(std::vector <Detection> newlist);   
   /** Add pixel offsets to object coordinates. */
   void               addObjectOffsets(); 
 
@@ -135,7 +133,7 @@ protected:
   long                   *axisDim;    ///< Array of dimensions of cube (ie. how large in each direction).
   long                    numPixels;  ///< Total number of pixels in cube.
   float                  *array;      ///< Array of data.
-  vector <Detection>      objectList; ///< The list of detected objects.
+  std::vector <Detection>      objectList; ///< The list of detected objects.
   Param                   par;        ///< A parameter list.
   StatsContainer<float>   Stats;      ///< The statistics for the DataArray.
 };
@@ -189,10 +187,10 @@ public:
     recon[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x] = f; };
   void        setReconFlag(bool f){reconExists = f;};
 
-  vector<Col> getLogCols(){return logCols;};
-  void        setLogCols(vector<Col> C){logCols=C;};
-  vector<Col> getFullCols(){return fullCols;};
-  void        setFullCols(vector<Col> C){fullCols=C;};
+  std::vector<Col> getLogCols(){return logCols;};
+  void        setLogCols(std::vector<Col> C){logCols=C;};
+  std::vector<Col> getFullCols(){return fullCols;};
+  void        setFullCols(std::vector<Col> C){fullCols=C;};
 
   // additional functions -- in Cubes/cubes.cc
   /** Allocate memory correctly, with WCS defining the correct axes. */
@@ -289,10 +287,10 @@ public:
   // FITS-I/O related functions -- not in cubes.cc
   //
   /** Function to read in FITS file.*/
-  int         getCube(string fname);  // in Cubes/getImage.cc
+  int         getCube(std::string fname);  // in Cubes/getImage.cc
 
   /** Function to retrieve FITS data array */
-  int         getFITSdata(string fname);   // in FitsIO/dataIO.cc
+  int         getFITSdata(std::string fname);   // in FitsIO/dataIO.cc
 
   /** Save Hanning-smoothed array to disk.*/
   void        saveSmoothedCube();       // in Cubes/saveImage.cc
@@ -385,13 +383,13 @@ public:
 
   //  in Cubes/plotting.cc
   /** Plot a spatial map of detections based on number of detected channels. */
-  void        plotDetectionMap(string pgDestination);
+  void        plotDetectionMap(std::string pgDestination);
 
   /** Plot a spatial map of detections based on 0th moment map of each object. */
-  void        plotMomentMap(string pgDestination);
+  void        plotMomentMap(std::string pgDestination);
 
   /** Plot a spatial map of detections based on 0th moment map of each object to a number of PGPLOT devices. */
-  void        plotMomentMap(vector<string> pgDestination);
+  void        plotMomentMap(std::vector<std::string> pgDestination);
 
   /** Draw WCS axes over a PGPLOT map. */
   void        plotWCSaxes();
@@ -423,8 +421,8 @@ private:
   bool        baselineAllocated;///< have we allocated memory for the baseline array?
 			     
   FitsHeader  head;             ///< the WCS and other header information.
-  vector<Col> fullCols;         ///< the list of all columns as printed in the results file
-  vector<Col> logCols;          ///< the list of columns as printed in the log file
+  std::vector<Col> fullCols;         ///< the list of all columns as printed in the results file
+  std::vector<Col> logCols;          ///< the list of columns as printed in the log file
 
 };
 
@@ -557,13 +555,13 @@ private:
 //////////////////////////////////////////////////////
 
 /** Search a reconstructed array for significant detections. */
-vector <Detection> searchReconArray(long *dim, float *originalArray,
-				    float *reconArray, Param &par,
-				    StatsContainer<float> &stats);
+std::vector <Detection> searchReconArray(long *dim, float *originalArray,
+					 float *reconArray, Param &par,
+					 StatsContainer<float> &stats);
 
 /** Search a 3-dimensional array for significant detections. */
-vector <Detection> search3DArray(long *dim, float *Array, Param &par,
-				 StatsContainer<float> &stats);
+std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
+				      StatsContainer<float> &stats);
 
 /** Grow an object to a lower threshold */
 void growObject(Detection &object, Cube &cube);

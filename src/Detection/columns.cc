@@ -13,74 +13,81 @@ using std::string;
 using std::vector;
 using namespace Column;
 
-Col::Col(){
-  width=1; 
-  precision=0; 
-  name=" "; 
-  units=" ";
-};
-
-Col::~Col(){}
-
-Col::Col(int num)
+namespace Column
 {
-  /**
-   * A specialised constructor that defines one of the default 
-   *  columns, as defined in the Column namespace
-   * \param num The number of the column to be constructed. 
-   *            Corresponds to the order of the columns in the const 
-   *            arrays in the Column namespace.
-   */ 
-  if((num>=0)&&(num<numColumns)){
-    this->width =     defaultWidth[num];
-    this->precision = defaultPrec[num];
-    this->name =      defaultName[num];
-    this->units =     defaultUnits[num];
-  }
-  else{
-    std::stringstream errmsg;
-    errmsg << "Incorrect value for Col(num) --> num="<<num
-	   << ", should be between 0 and " << numColumns-1 << ".\n";
-    duchampError("Col constructor", errmsg.str());
-    this->width = 1;
-    this->precision = 0;
-    this->name = " ";
-    this->units = " ";
-  }
-}
 
-template <class T> void Col::printEntry(std::ostream &stream, T value)
-{
-  stream << std::setprecision(this->precision)
-	 << std::setw(this->width) 
-	 << std::setfill(' ')
-	 << value;
-}
-template void Col::printEntry<int>(std::ostream &stream, int value);
-template void Col::printEntry<long>(std::ostream &stream, long value);
-template void Col::printEntry<unsigned>(std::ostream &stream, unsigned value);
-template void Col::printEntry<float>(std::ostream &stream, float value);
-template void Col::printEntry<double>(std::ostream &stream, double value);
-template void Col::printEntry<string>(std::ostream &stream, string value);
+  Col::Col(){
+    width=1; 
+    precision=0; 
+    name=" "; 
+    units=" ";
+  };
 
+  Col::~Col(){}
+
+  Col::Col(int num)
+  {
+    /**
+     * A specialised constructor that defines one of the default 
+     *  columns, as defined in the Column namespace
+     * \param num The number of the column to be constructed. 
+     *            Corresponds to the order of the columns in the const 
+     *            arrays in the Column namespace.
+     */ 
+    if((num>=0)&&(num<numColumns)){
+      this->width =     defaultWidth[num];
+      this->precision = defaultPrec[num];
+      this->name =      defaultName[num];
+      this->units =     defaultUnits[num];
+    }
+    else{
+      std::stringstream errmsg;
+      errmsg << "Incorrect value for Col(num) --> num="<<num
+	     << ", should be between 0 and " << numColumns-1 << ".\n";
+      duchampError("Col constructor", errmsg.str());
+      this->width = 1;
+      this->precision = 0;
+      this->name = " ";
+      this->units = " ";
+    }
+  }
+
+//   template <class T> void Col::printEntry(std::ostream &stream, T value)
+//   {
+//     stream << std::setprecision(this->precision)
+// 	   << std::setw(this->width) 
+// 	   << std::setfill(' ')
+// 	   << value;
+//   }
+//   template void Col::printEntry<int>(std::ostream &stream, int value);
+//   template void Col::printEntry<long>(std::ostream &stream, long value);
+//   template void Col::printEntry<unsigned>(std::ostream &stream, unsigned value);
+//   template void Col::printEntry<float>(std::ostream &stream, float value);
+//   template void Col::printEntry<double>(std::ostream &stream, double value);
+//   template void Col::printEntry<std::string>(std::ostream &stream, std::string value);
+
+}
 
 vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
 {
   /**
    *  A function that returns a vector of Col objects containing
-   *    information on the columns necessary for output to the results file:
+   *  information on the columns necessary for output to the results
+   *  file:
    *    Obj#,NAME,X,Y,Z,RA,DEC,VEL,w_RA,w_DEC,w_VEL,F_tot,F_int,F_peak,
    *                X1,X2,Y1,Y2,Z1,Z2,Npix,Flag
    *
-   *   Each object in the provided objectList is checked to see if 
-   *    it requires any column to be widened, or for that column to
-   *    have its precision increased.
+   *   Each object in the provided objectList is checked to see if it
+   *   requires any column to be widened, or for that column to have
+   *   its precision increased.
    *
-   *   Both Ftot and Fint are provided -- it is up to the calling function to
-   *    determine which to use.
+   *   Both Ftot and Fint are provided -- it is up to the calling
+   *   function to determine which to use.
    *
-   * \param objectList A vector list of Detection objects that the columns need to fit.
-   * \param head The FitsHeader object defining the World Coordinate System.
+   * \param objectList A vector list of Detection objects that the
+   * columns need to fit.
+   * \param head The FitsHeader object defining the World Coordinate
+   * System.
    * \return A vector list of Col definitions.
    */
 
@@ -112,9 +119,9 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
   newset.push_back( Col(NPIX) );
   newset.push_back( Col(FLAG) );
 
-   // Now test each object against each new column
+  // Now test each object against each new column
   for( int obj = 0; obj < objectList.size(); obj++){
-    string tempstr;
+    std::string tempstr;
     int tempwidth;
     float val,minval;
 

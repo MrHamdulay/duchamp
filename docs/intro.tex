@@ -6,6 +6,8 @@ is to read in a FITS data cube, find sources in the cube, and produce
 a text file of positions, velocities and fluxes of the detections, as
 well as a postscript file of the spectra of each detection.
 
+\secB{What to do}
+
 So, you have a FITS cube, and you want to find the sources in it. What
 do you do? First, you need to get \duchamp: there are instructions in
 Appendix~\ref{app-install} for obtaining and installing it. Once you
@@ -37,39 +39,6 @@ below, and detailed in \S\ref{sec-flow}. Information on inputs is in
 \S\ref{sec-param} and Appendix~\ref{app-param}, and descriptions of
 the output is in \S\ref{sec-output}.
 
-\secB{A summary of the execution steps}
-
-The basic flow of the program is summarised here -- all steps are
-discussed in more detail in the following sections.
-\begin{enumerate}
-\item If the \texttt{-p} option is used, the parameter file given on
-  the command line is read in, and the parameters absorbed.
-\item The FITS image is located and read in to memory.
-\item If requested, a FITS image with a previously reconstructed array
-  is read in.
-\item If requested, BLANK pixels are trimmed from the edges, and
-  the baseline of each spectrum is removed.
-\item If the reconstruction method is requested, and the reconstructed
-  array has not been read in at Step 3 above, the cube is
-  reconstructed using the \atrous\ wavelet method.
-\item Alternatively (and if requested), the each spectral channel is
-  Hanning-smoothed by a desired amount.
-\item A threshold for the cube is then calculated, based on the pixel
-  statistics (unless a threshold is manually specified by the user).
-\item Searching for objects then takes place, using the requested
-  thresholding method.
-\item The list of objects is condensed by merging neighbouring objects
-  and removing those deemed unacceptable.
-\item The baselines and trimmed pixels are replaced prior to output.
-\item The details of the detections are written to screen and to the
-  requested output file.
-\item Maps showing the spatial location of the detections are written.
-\item The integrated spectra of each detection are written to a
-  postscript file. 
-\item If requested, the reconstructed array can be written to a new
-  FITS file.
-\end{enumerate}
-
 \secB{Guide to terminology and conventions}
 
 First, a brief note on the use of terminology in this guide. \duchamp\
@@ -80,28 +49,30 @@ websites such as
 for details.} image arrays with three dimensions -- they are assumed
 to have the following form: the first two dimensions (referred to as
 $x$ and $y$) are spatial directions (that is, relating to the position
-on the sky), while the third dimension, $z$, is the spectral
-direction, which can correspond to frequency, wavelength, or
+on the sky -- often, but not necessarily, corresponding to Equatorial
+or Galactic coordinates), while the third dimension, $z$, is the
+spectral direction, which can correspond to frequency, wavelength, or
 velocity. The three dimensional analogue of pixels are ``voxels'', or
 volume cells -- a voxel is defined by a unique $(x,y,z)$ location and
-has a unique flux or intensity value associated with it.
+has a unique value of flux or intensity or brightness (or something
+equivalent) associated with it.
 
 Note that it is possible for the FITS file to have more than three
-dimensions (for instance, a fourth dimension representing Stokes
-parameters). Only the two spatial dimensions and the spectral
-dimension are read into the array of pixel values that is searched for
-objects. All other dimensions are ignored\footnote{This actually means
-that the first pixel only of that axis is used, and the array is read
-by the \texttt{fits\_read\_subsetnull} command from the
+dimensions (for instance, there could be a fourth dimension
+representing a Stokes parameter). Only the two spatial dimensions and
+the spectral dimension are read into the array of pixel values that is
+searched for objects. All other dimensions are ignored\footnote{This
+actually means that the first pixel only of that axis is used, and the
+array is read by the \texttt{fits\_read\_subsetnull} command from the
 \textsc{cfitsio} library.}. Herein, we discuss the data in terms of
 the three basic dimensions, but you should be aware it is possible for
 the FITS file to have more than three. Note that the order of the
 dimensions in the FITS file does not matter.
 
-Each spatial pixel (a given $(x,y)$ coordinate) can be said to be a
-single spectrum, while a slice through the cube perpendicular to the
-spectral direction at a given $z$-value is a single channel (the 2-D
-image is a channel map).
+With this setup, each spatial pixel (a given $(x,y)$ coordinate) can
+be said to be a single spectrum, while a slice through the cube
+perpendicular to the spectral direction at a given $z$-value is a
+single channel (the 2-D image is a channel map).
 
 Detection involves locating a contiguous group of voxels with fluxes
 above a certain threshold. \duchamp\ makes no assumptions as to the
@@ -115,5 +86,139 @@ Finally, note that it is possible to run \duchamp\ on a
 two-dimensional image (\ie one with no frequency or velocity
 information), or indeed a one-dimensional array, and many of the
 features of the program will work fine. The focus, however, is on
-object detection in three dimensions.
+object detection in three dimensions, one of which is a spectral
+dimension.
+
+\secB{A summary of the execution steps}
+
+The basic flow of the program is summarised here -- all steps are
+discussed in more detail in the following sections.
+\begin{enumerate}
+\item The necessary parameters are recorded.
+
+  How this is done depends on the way the program is run from the
+  command line. If the \texttt{-p} option is used, the parameter file
+  given on the command line is read in, and the parameters therein are
+  read. All other parameters are given their default values (listed in
+  Appendix~\ref{app-param}).
+
+  If the \texttt{-f} option is used, all parameters are assigned their
+  default values.
+
+\item The FITS image is located and read in to memory.
+
+  The file given is assumed to be a valid FITS file. As discussed
+  above, it can have any number of dimensions, but \duchamp\ only
+  reads in the two spatial and the one spectral dimensions. A subset
+  of the FITS array can be given (see \S\ref{sec-input} for details).
+
+\item If requested, a FITS file containing a previously reconstructed
+  or smoothed array is read in.
+
+  When a cube is either Hanning-smoothed or reconstructed with the
+  \atrous\ wavelet method, the result can be saved to a FITS file, so
+  that subsequent runs of \duchamp\ can read it in to save having to
+  re-do the reconstruction (as it can be relatively time-intensive).
+
+\item \label{step-blank} If requested, BLANK pixels are trimmed from
+  the edges, and the baseline of each spectrum is removed.
+
+  When BLANK pixels are present, they can adversely affect the
+  reconstruction algorithms, as well as increasing the size in memory
+  of the array. This step trims them from the spatial edges, recording
+  the amount trimmed so that they can be added back in later.
+
+  A spectral baseline can be removed at this point as well. This may
+  be necessary if there is a ripple or other large-scale feature
+  present that will hinder detection of faint sources.
+
+\item If the reconstruction method is requested, and the reconstructed
+  array has not been read in at Step 3 above, the cube is
+  reconstructed using the \atrous\ wavelet method.
+
+  This step uses the \atrous\ method to determine the amount of
+  structure present at various scales. A simple thresholding technique
+  then removes random noise from the cube, leaving the significant
+  signal. This process can greatly reduce the noise level in the cube,
+  enhancing the detectability of sources.
+
+\item Alternatively (and if requested), the each spectral channel is
+  Hanning-smoothed by a desired amount.
+
+  This step considers each spectrum individually, and convolves it
+  with a Hanning filter (with width chosen by the user). This can help
+  to reduce the amount of noise visible in the cube.
+
+\item A threshold for the cube is then calculated, based on the pixel
+  statistics (unless a threshold is manually specified by the user).
+
+  The threshold can either be chosen as a simple $n\sigma$ threshold
+  (\ie so many standard deviations above the mean), or calculated via
+  the ``False Discovery Rate'' method. Alternatively, the threshold
+  can be specified as a simple flux value, without care as to the
+  statistical significance (\eg ``I want every source brighter than
+  10mJy'').
+
+\item Searching for objects then takes place, using the requested
+  thresholding method.
+
+  The cube is searched in the following manner: each 1-D spectrum is
+  searched, followed by each 2-D image. Any objects detected in each
+  search are added to a master list, or combined with objects already
+  in that list.
+
+\item The list of objects is condensed by merging neighbouring objects
+  and removing those deemed unacceptable.
+
+  There are certain criteria the user can specify that objects must
+  meet: minimum numbers of spatial pixels and spectral channels, and
+  minimum separations between neighbouring objects. Those that do not
+  meet these criteria are either deleted from the list, or merged with
+  their nearby neighbours.
+
+\item The baselines and trimmed pixels are replaced prior to output.
+
+  This is just the inverse of step~\#\ref{step-blank}.
+
+\item The details of the detections are written to screen and to the
+  requested output file.
+
+  Crucial properties of each detection are provided, showing its
+  location, extent, and flux. These are presented in both pixel
+  coordinates and world coordinates (\eg sky position and
+  velocity). Any warning flags are also printed, showing detections to
+  be wary of.
+
+\item Maps showing the spatial location of the detections are written.
+
+  These are 2-dimensional maps, showing where each detection lies on
+  the spatial coverage of the cube. This is provided as an aid to the
+  user so that a quick idea of the distribution of object positions
+  can be gained \eg are all the detections on the edge?
+
+  Two maps are provided: one is a 0th moment map, showing the 0th
+  moment of each detection in its appropriate position, while the
+  second is a ``detection map'', showing the number of times each
+  spatial pixel was detected in the searching routines.
+
+  These maps are written to postscript files, and the 0th moment map
+  can also be displayed in a PGPLOT X-window.
+
+\item The integrated or peak spectra of each detection are written to a
+  postscript file. 
+
+  The spectral equivalent of the maps -- what is the spectral profile
+  of each detection? Also provided here are basic information for each
+  object (a summary of the information in the results file), as well
+  as a 0th moment map of the detection.
+
+\item If requested, the reconstructed or smoothed array can be written
+  to a new FITS file.
+
+  If either of these procedures were done, the resulting array can be
+  saved as a FITS file for later use. The FITS header will be the same
+  as the input file, with a few additional keywords to identify the
+  file. 
+
+\end{enumerate}
 

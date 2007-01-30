@@ -63,7 +63,8 @@ void Cube::drawMomentCutout(Detection &object)
 	for(int y=ymin; y<=ymax; y++){
 
 	  imPos = (y-ymin) * size + (x-xmin);
-	  cubePos = z*this->axisDim[0]*this->axisDim[1] + y*this->axisDim[0] + x;
+	  cubePos = z*this->axisDim[0]*this->axisDim[1] + 
+	    y*this->axisDim[0] + x;
 
 	  if(isGood[imPos]) image[imPos] += this->array[cubePos];
 
@@ -150,10 +151,11 @@ void Cube::drawScale(float xstart, float ystart, float channel)
    *    (xstart,ystart) along the positive x-direction so that the length is
    *    within 1% of the scaleLength (length in degrees), calculated 
    *    according to the pixel scale of the cube.
-   *  \param xstart X-coordinate of the start position (left-hand edge of tick mark typically).
+   *  \param xstart X-coordinate of the start position (left-hand edge
+   *  of tick mark typically).
    *  \param ystart Y-coordinate of the start position
-   *  \param channel Which channel to base WCS calculations on: needed as the 
-   *    positions could theoretically change with channel.
+   *  \param channel Which channel to base WCS calculations on: needed
+   *  as the positions could theoretically change with channel.
    */
 
   if(!cpgtest())
@@ -163,7 +165,7 @@ void Cube::drawScale(float xstart, float ystart, float channel)
     if(this->head.isWCS()){  // can only do this if the WCS is good!
 
       enum ANGLE {ARCSEC, ARCMIN, DEGREE};
-      const string symbol[3] = {"\"", "'", mycpgplot::degrees };
+      const std::string symbol[3] = {"\"", "'", mycpgplot::degrees };
       const float angleScale[3] = {3600., 60., 1.};
       //  degree, arcmin, arcsec symbols
     
@@ -314,9 +316,9 @@ void Detection::drawBorders(int xoffset, int yoffset)
 void Cube::drawFieldEdge()
 {
   /**
-   * Draw a border around the spatial edge of the data. Lines are drawn in yellow
-   * at 0 and the values of xdim & ydim.
-   * Must be a PGPLOT window open, else error message returned.
+   * Draw a border around the spatial edge of the data. Lines are
+   * drawn in yellow at 0 and the values of xdim & ydim.  There must
+   * be a PGPLOT window open, else an error message is returned.
    */
   if(!cpgtest())
     duchampError("drawFieldEdge","There is no PGPlot device open!\n");

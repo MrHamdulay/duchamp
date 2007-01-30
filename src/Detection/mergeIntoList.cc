@@ -2,7 +2,7 @@
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
 
-void mergeIntoList(Detection &object, vector <Detection> &objList, Param &par)
+void mergeIntoList(Detection &object, std::vector <Detection> &objList, Param &par)
 {
   /**
    * A function to add a detection to a list of detections, checking
@@ -41,7 +41,7 @@ void mergeIntoList(Detection &object, vector <Detection> &objList, Param &par)
       }
       else ctr++;
       delete obj2;
-      
+
     } while( !(haveMerged) && (ctr<objList.size()) );
   }
 

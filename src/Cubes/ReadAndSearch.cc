@@ -17,7 +17,7 @@
 #include <ATrous/atrous.hh>
 #include <Utils/utils.hh>
 
-string imageType[4] = {"point", "spectrum", "image", "cube"};
+std::string imageType[4] = {"point", "spectrum", "image", "cube"};
 
 vector<Detection> readAndSearch(Param &par)
 {
@@ -31,7 +31,7 @@ vector<Detection> readAndSearch(Param &par)
   int status = 0,  nkeys;  /* MUST initialize status */
   fitsfile *fptr;         
 
-  string fname = par.getImageFile();
+  std::string fname = par.getImageFile();
   if(par.getFlagSubsection()){
     par.parseSubsection();
     fname+=par.getSubsection();

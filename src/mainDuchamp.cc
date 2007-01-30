@@ -13,15 +13,10 @@
 #include <Utils/utils.hh>
 #include <ATrous/atrous.hh>
 
-using std::ofstream;
-using std::string;
-
-Filter reconFilter;
-
 int main(int argc, char * argv[])
 {
 
-  string paramFile,fitsfile;
+  std::string paramFile,fitsfile;
   Cube *cube = new Cube;
 
   if(cube->getopts(argc,argv)==FAILURE) return FAILURE;
@@ -61,10 +56,10 @@ int main(int argc, char * argv[])
   cube->readSavedArrays();
 
   // Filter needed for baseline removal and a trous reconstruction
-  if(cube->pars().getFlagATrous() || cube->pars().getFlagBaseline()){
-    reconFilter.define(cube->pars().getFilterCode());
-    cube->pars().setFilterName(reconFilter.getName());
-  }
+//   if(cube->pars().getFlagATrous() || cube->pars().getFlagBaseline()){
+//     reconFilter.define(cube->pars().getFilterCode());
+//     cube->pars().setFilterName(reconFilter.getName());
+//   }
 
   // special case for 2D images -- ignore the minChannels requirement
   if(cube->getDimZ()==1) cube->pars().setMinChannels(0);  
@@ -74,7 +69,7 @@ int main(int argc, char * argv[])
 
   if(cube->pars().getFlagLog()){
     // Open the logfile and write the time on the first line
-    ofstream logfile(cube->pars().getLogFile().c_str());
+    std::ofstream logfile(cube->pars().getLogFile().c_str());
     logfile << "New run of the Duchamp sourcefinder: ";
     time_t now = time(NULL);
     logfile << asctime( localtime(&now) );
@@ -165,7 +160,7 @@ int main(int argc, char * argv[])
 //     cube->plotMomentMap(cube->pars().getMomentMap()+"/vcps");
 //     cube->plotDetectionMap(cube->pars().getDetectionMap()+"/vcps");
 //   }
-  vector<string> devices;
+  std::vector<std::string> devices;
   if(cube->pars().getFlagXOutput()) devices.push_back("/xs");
   if(cube->pars().getFlagMaps()) 
     devices.push_back(cube->pars().getMomentMap()+"/vcps");
@@ -200,20 +195,20 @@ int main(int argc, char * argv[])
   }
 
   if(cube->pars().getFlagLog() && (cube->getNumObj()>0)){
-    ofstream logfile(cube->pars().getLogFile().c_str(),std::ios::app);
+    std::ofstream logfile(cube->pars().getLogFile().c_str(),std::ios::app);
     logfile << "=-=-=-=-=-=-=-\nCube summary\n=-=-=-=-=-=-=-\n";
     logfile << *cube;
     logfile.close();
   }
 
   if(cube->pars().getFlagVOT()){
-    ofstream votfile(cube->pars().getVOTFile().c_str());
+    std::ofstream votfile(cube->pars().getVOTFile().c_str());
     cube->outputDetectionsVOTable(votfile);
     votfile.close();
   }
 
   if(cube->pars().getFlagKarma()){
-    ofstream karmafile(cube->pars().getKarmaFile().c_str());
+    std::ofstream karmafile(cube->pars().getKarmaFile().c_str());
     cube->outputDetectionsKarma(karmafile);
     karmafile.close();
   }

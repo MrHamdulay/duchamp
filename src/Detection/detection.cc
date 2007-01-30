@@ -11,6 +11,7 @@
 using std::setw;
 using std::setprecision;
 using std::endl;
+using std::vector;
 
 std::ostream& operator<< ( std::ostream& theStream, Voxel& vox)
 {
@@ -327,7 +328,7 @@ float Detection::getIntegFlux(FitsHeader &head)
 
   // correct for the beam size if the flux units string ends in "/beam"
   int size = this->fluxUnits.size();
-  string tailOfFluxUnits = this->fluxUnits.substr(size-5,size);
+  std::string tailOfFluxUnits = this->fluxUnits.substr(size-5,size);
   if(tailOfFluxUnits == "/beam") this->intFlux /= head.getBeamSize();
 
   delete [] world;

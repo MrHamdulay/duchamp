@@ -12,7 +12,7 @@
 #include <Cubes/cubes.hh>
 
 /** Write FITS headers in correct format for reconstructed array output */
-void writeReconHeaderInfo(fitsfile *fptr, Param &par, string nature);
+void writeReconHeaderInfo(fitsfile *fptr, Param &par, std::string nature);
 
 /** Write FITS headers in correct format for smoothed array output */
 void writeSmoothHeaderInfo(fitsfile *fptr, Param &par);
@@ -39,7 +39,7 @@ void Cube::saveSmoothedCube()
   if (status) fits_report_error(stderr, status);
   
   if(this->par.getFlagOutputSmooth()){
-    string fileout = "!" + this->par.outputSmoothFile(); 
+    std::string fileout = "!" + this->par.outputSmoothFile(); 
     // the ! is there so that it writes over an existing file.
 
     status = 0;
@@ -121,7 +121,7 @@ void Cube::saveReconstructedCube()
   if (status) fits_report_error(stderr, status);
   
   if(this->par.getFlagOutputRecon()){
-    string fileout = "!" + this->par.outputReconFile(); 
+    std::string fileout = "!" + this->par.outputReconFile(); 
     // the ! is there so that it writes over an existing file.
 
     status = 0;
@@ -178,7 +178,7 @@ void Cube::saveReconstructedCube()
 
 
   if(this->par.getFlagOutputResid()){
-    string fileout = "!" + this->par.outputResidFile(); 
+    std::string fileout = "!" + this->par.outputResidFile(); 
     // the ! is there so that it writes over an existing file.
     status = 0;
     fits_create_file(&fptrNew,fileout.c_str(),&status);
@@ -238,7 +238,7 @@ void Cube::saveReconstructedCube()
 }
 
 
-void writeReconHeaderInfo(fitsfile *fptr, Param &par, string nature)
+void writeReconHeaderInfo(fitsfile *fptr, Param &par, std::string nature)
 {
   /**
    *   A simple function that writes all the necessary keywords and comments
@@ -251,7 +251,7 @@ void writeReconHeaderInfo(fitsfile *fptr, Param &par, string nature)
 
   int status = 0;
   char *comment, *keyword;
-  string explanation = "",ReconResid="";
+  std::string explanation = "",ReconResid="";
 
   fits_write_history(fptr, (char *)header_reconHistory1.c_str(), &status);
 				   

@@ -10,7 +10,7 @@
 #include <duchamp.hh>
 #include <Cubes/cubes.hh>
 
-int FitsHeader::readHeaderInfo(string fname, Param &par)
+int FitsHeader::readHeaderInfo(std::string fname, Param &par)
 {
   /** 
    *  A simple front-end function to the three header access
@@ -32,7 +32,7 @@ int FitsHeader::readHeaderInfo(string fname, Param &par)
 
 //////////////////////////////////////////////////
 
-int FitsHeader::readBUNIT(string fname)
+int FitsHeader::readBUNIT(std::string fname)
 {
   /**
    *   Read the BUNIT header keyword, to store the units of brightness (flux).
@@ -77,7 +77,7 @@ int FitsHeader::readBUNIT(string fname)
 
 //////////////////////////////////////////////////
 
-int FitsHeader::readBLANKinfo(string fname, Param &par)
+int FitsHeader::readBLANKinfo(std::string fname, Param &par)
 {
   /**
    *    Reading in the Blank pixel value keywords, which is only done
@@ -160,7 +160,7 @@ int FitsHeader::readBLANKinfo(string fname, Param &par)
 
 //////////////////////////////////////////////////
 
-int FitsHeader::readBeamInfo(string fname, Param &par)
+int FitsHeader::readBeamInfo(std::string fname, Param &par)
 {
   /**
    *   Reading in the beam parameters from the header.
@@ -172,7 +172,7 @@ int FitsHeader::readBeamInfo(string fname, Param &par)
    * \param par The Param set.
    */
   char *comment = new char[80];
-  string keyword[4]={"BMAJ","BMIN","CDELT1","CDELT2"};
+  std::string keyword[4]={"BMAJ","BMIN","CDELT1","CDELT2"};
   float bmaj,bmin,cdelt1,cdelt2;
   int status[6];
   fitsfile *fptr;         
@@ -198,7 +198,7 @@ int FitsHeader::readBeamInfo(string fname, Param &par)
 		comment, &status[4]);
 
   if(status[1]||status[2]||status[3]||status[4]){ // error
-    stringstream errmsg;
+    std::stringstream errmsg;
     errmsg << "Header keywords not present: ";
     for(int i=0;i<4;i++) if(status[i+1]) errmsg<<keyword[i]<<" ";
     errmsg << "\nUsing parameter beamSize to determine size of beam.\n";

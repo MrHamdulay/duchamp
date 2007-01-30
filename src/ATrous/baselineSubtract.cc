@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <math.h>
 #include <param.hh>
+#include <ATrous/filter.hh>
 #include <ATrous/atrous.hh>
 #include <Utils/utils.hh>
 #include <Utils/feedback.hh>
@@ -19,11 +20,11 @@ void baselineSubtract(long numSpec, long specLength, float *originalCube,
    * \param baselineValues The cube of baseline values -- the same size as the original
    * \param par The Param set: information on BLANK values and on how the subtraction is done.
    */
-  extern Filter reconFilter;
+
   float *spec     = new float[specLength];
   float *thisBaseline = new float[specLength];
   int minscale = par.getMinScale();
-  par.setMinScale(reconFilter.getNumScales(specLength));
+  par.setMinScale(par.filter().getNumScales(specLength));
   float atrouscut = par.getAtrousCut();
   par.setAtrousCut(1);
   bool flagVerb = par.isVerbose();
@@ -75,9 +76,8 @@ void getBaseline(long size, float *input, float *baseline, Param &par)
    *  \param par The Param set, needed for the atrous reconstruction.
    */
 
-  extern Filter reconFilter;
   int minscale = par.getMinScale();
-  par.setMinScale(reconFilter.getNumScales(size));
+  par.setMinScale(par.filter().getNumScales(size));
   float atrouscut = par.getAtrousCut();
   par.setAtrousCut(1);
   bool flagVerb = par.isVerbose();
@@ -124,9 +124,8 @@ void getBaseline(long size, float *input, float *baseline)
    *   before the function is called.
    */
 
-  extern Filter reconFilter;
   Param par;
-  par.setMinScale(reconFilter.getNumScales(size));
+  par.setMinScale(par.filter().getNumScales(size));
   par.setAtrousCut(1);
   par.setVerbosity(false);
 

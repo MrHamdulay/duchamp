@@ -8,8 +8,6 @@
 #include <Detection/columns.hh>
 #include <Utils/utils.hh>
 
-using std::string;
-using std::vector;
 using namespace Column;
 
 //==========================================================================
@@ -100,7 +98,7 @@ public:
     xmin=xmax=ymin=ymax=zmin=zmax=0;
   };
   Detection(long numPix){
-    vector <Voxel> pix(numPix); flagWCS = false; negativeSource = false;
+    std::vector <Voxel> pix(numPix); flagWCS = false; negativeSource = false;
   };
   Detection(const Detection& d);
   Detection& operator= (const Detection& d);
@@ -120,22 +118,22 @@ public:
   // Text Output -- all in Detection/outputDetection.cc
   //
   /** The spectral output label that contains info on the WCS position & velocity.*/
-  string outputLabelWCS();  
+  std::string outputLabelWCS();  
 
   /** The spectral output label that contains info on the pixel location. */
-  string outputLabelPix(); 
+  std::string outputLabelPix(); 
 
   /** The spectral output label that contains info on widths & fluxes of the Detection. */
-  string outputLabelInfo(); 
+  std::string outputLabelInfo(); 
 
   /** Prints the column headers. */
-  void   outputDetectionTextHeader(std::ostream &stream, vector<Col> columns); 
+  void   outputDetectionTextHeader(std::ostream &stream, std::vector<Col> columns); 
 
   /** Prints the full set of columns, including the WCS information. */
-  void   outputDetectionTextWCS(std::ostream &stream, vector<Col> columns); 
+  void   outputDetectionTextWCS(std::ostream &stream, std::vector<Col> columns); 
 
   /** Prints a limited set of columns, excluding any WCS information. */
-  void   outputDetectionText(std::ostream &stream, vector<Col> columns, int idNumber); 
+  void   outputDetectionText(std::ostream &stream, std::vector<Col> columns, int idNumber); 
   //---------------------------------- 
   // For plotting routines... in Cubes/drawMomentCutout.cc
   //
@@ -206,9 +204,9 @@ public:
   void   setPeakSNR(float f){peakSNR=f;};
   bool   isNegative(){return negativeSource;};
   void   setNegative(bool f){negativeSource = f;};
-  string getFlagText(){return flagText;};
-  void   setFlagText(string s){flagText = s;};
-  void   addToFlagText(string s){flagText += s;};
+  std::string getFlagText(){return flagText;};
+  void   setFlagText(std::string s){flagText = s;};
+  void   addToFlagText(std::string s){flagText += s;};
   //
   long   getXmin(){return xmin;};
   long   getYmin(){return ymin;};
@@ -219,12 +217,12 @@ public:
   //
   /** Is the WCS good enough to be used? \return Detection::flagWCS True/False */
   bool   isWCS(){return flagWCS;};
-  string getName(){return name;};
-  void   setName(string s){name = s;};
-  string getRAs(){return raS;};
-  void   setRAs(string s){raS = s;};
-  string getDecs(){return decS;};
-  void   setDecs(string s){decS = s;};
+  std::string getName(){return name;};
+  void   setName(std::string s){name = s;};
+  std::string getRAs(){return raS;};
+  void   setRAs(std::string s){raS = s;};
+  std::string getDecs(){return decS;};
+  void   setDecs(std::string s){decS = s;};
   float  getRA(){return ra;};
   void   setRA(float f){ra = f;};
   float  getDec(){return dec;};
@@ -258,7 +256,7 @@ public:
   void   setSNRPrec(int i){snrPrec=i;};
   //
 private:
-  vector <Voxel> pix;            ///< array of pixels
+  std::vector <Voxel> pix;            ///< array of pixels
   float          xcentre;        ///< x-value of centre pixel of object
   float          ycentre;        ///< y-value of centre pixel of object
   float          zcentre;        ///< z-value of centre pixel of object
@@ -279,22 +277,22 @@ private:
   long           zpeak;          ///< z-pixel location of peak flux
   float          peakSNR;        ///< signal-to-noise ratio at peak
   bool           negativeSource; ///< is the source a negative feature?
-  string         flagText;       ///< any warning flags about the quality of the detection.
+  std::string         flagText;       ///< any warning flags about the quality of the detection.
   // WCS related
   int            id;             ///< ID -- generally number in list
-  string         name;	         ///< IAU-style name (based on position)
+  std::string         name;	         ///< IAU-style name (based on position)
   bool           flagWCS;        ///< A flag indicating whether the WCS parameters have been set.
-  string         raS;	         ///< Central Right Ascension (or Longitude) in form 12:34:23
-  string         decS;	         ///< Central Declination(or Latitude), in form -12:23:34
+  std::string         raS;	         ///< Central Right Ascension (or Longitude) in form 12:34:23
+  std::string         decS;	         ///< Central Declination(or Latitude), in form -12:23:34
   float          ra;	         ///< Central Right Ascension in degrees
   float          dec;	         ///< Central Declination in degrees
   float          raWidth;        ///< Width of detection in RA direction in arcmin
   float          decWidth;       ///< Width of detection in Dec direction in arcmin
-  string         specUnits;      ///< Units of the spectral dimension
-  string         fluxUnits;      ///< Units of flux
-  string         intFluxUnits;   ///< Units of integrated flux
-  string         lngtype;        ///< Type of longitude axis (RA/GLON)
-  string         lattype;        ///< Type of latitude axis (DEC/GLAT)
+  std::string         specUnits;      ///< Units of the spectral dimension
+  std::string         fluxUnits;      ///< Units of flux
+  std::string         intFluxUnits;   ///< Units of integrated flux
+  std::string         lngtype;        ///< Type of longitude axis (RA/GLON)
+  std::string         lattype;        ///< Type of latitude axis (DEC/GLAT)
   float          vel;	         ///< Central velocity (from zCentre)
   float          velWidth;       ///< Full velocity width
   float          velMin;         ///< Minimum velocity
@@ -322,17 +320,17 @@ private:
 Detection combineObjects(Detection &first, Detection &second);
 
 /** Combine two lists Detections to form a new one. */
-vector <Detection> combineLists(vector <Detection> &first, 
-				vector <Detection> &second);
+std::vector <Detection> combineLists(std::vector <Detection> &first, 
+				     std::vector <Detection> &second);
 
 //----------------
 // These are in sorting.cc
 //
 /** Sort a list of Detections by Z-pixel value. */
-void SortByZ(vector <Detection> &inputList);
+void SortByZ(std::vector <Detection> &inputList);
 
 /** Sort a list of Detections by Velocity.*/
-void SortByVel(vector <Detection> &inputList);
+void SortByVel(std::vector <Detection> &inputList);
 
 //----------------
 // This is in areClose.cc
@@ -344,17 +342,18 @@ bool areClose(Detection &object1, Detection &object2, Param &par);
 // This is in mergeIntoList.cc
 //
 /** Add an object into a list, combining with adjacent objects if need be. */
-void mergeIntoList(Detection &object, vector <Detection> &objList, Param &par);
+void mergeIntoList(Detection &object, std::vector <Detection> &objList, 
+		   Param &par);
 
 //----------------
 // These are in Cubes/Merger.cc
 //
 /** Merge a list of Detections so that all adjacent voxels are in the same Detection. */
-void mergeList(vector<Detection> &objList, Param &par);   
+void mergeList(std::vector<Detection> &objList, Param &par);   
 /** Culls a list of Detections that do not meet minimum requirements. */
-void finaliseList(vector<Detection> &objList, Param &par);
+void finaliseList(std::vector<Detection> &objList, Param &par);
 /** Manage both the merging and the cleaning up of the list. */
-void ObjectMerger(vector<Detection> &objList, Param &par);
+void ObjectMerger(std::vector<Detection> &objList, Param &par);
 
 
 #endif

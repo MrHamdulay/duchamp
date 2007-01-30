@@ -3,6 +3,7 @@
 #include <math.h>
 #include <duchamp.hh>
 #include <ATrous/atrous.hh>
+#include <ATrous/filter.hh>
 #include <Utils/utils.hh>
 #include <Utils/feedback.hh>
 #include <Utils/Statistics.hh>
@@ -18,8 +19,7 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
    *  A routine that uses the a trous wavelet method to reconstruct a 
    *   3-dimensional image cube.
    *  The Param object "par" contains all necessary info about the filter and 
-   *   reconstruction parameters, although a Filter object has to be declared
-   *   elsewhere previously.
+   *   reconstruction parameters.
    *
    *  If there are no non-BLANK pixels (and we are testing for
    *  BLANKs), the reconstruction cannot be done, so we return the
@@ -33,18 +33,17 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
    *  \param par The Param set.
    */
 
-  extern Filter reconFilter;
   long size = xdim * ydim * zdim;
   long spatialSize = xdim * ydim;
   long mindim = xdim;
   if (ydim<mindim) mindim = ydim;
   if (zdim<mindim) mindim = zdim;
-  int numScales = reconFilter.getNumScales(mindim);
+  int numScales = par.filter().getNumScales(mindim);
 
   double *sigmaFactors = new double[numScales+1];
   for(int i=0;i<=numScales;i++){
-    if(i<=reconFilter.maxFactor(3)) 
-      sigmaFactors[i] = reconFilter.sigmaFactor(3,i);
+    if(i<=par.filter().maxFactor(3)) 
+      sigmaFactors[i] = par.filter().sigmaFactor(3,i);
     else sigmaFactors[i] = sigmaFactors[i-1] / sqrt(8.);
   }
 
@@ -82,8 +81,8 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
 
     for(int pos=0;pos<size;pos++) output[pos]=0.;
 
-    // Define the 3-D (separable) filter, using info from reconFilter
-    int filterwidth = reconFilter.width();
+    // Define the 3-D (separable) filter, using info from par.filter()
+    int filterwidth = par.filter().width();
     int filterHW = filterwidth/2;
     int fsize = filterwidth*filterwidth*filterwidth;
     double *filter = new double[fsize];
@@ -91,7 +90,7 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
       for(int j=0;j<filterwidth;j++){
 	for(int k=0;k<filterwidth;k++){
 	  filter[i +j*filterwidth + k*filterwidth*filterwidth] = 
-	    reconFilter.coeff(i) * reconFilter.coeff(j) * reconFilter.coeff(k);
+	    par.filter().coeff(i) * par.filter().coeff(j) * par.filter().coeff(k);
 	}
       }
     }
@@ -135,7 +134,7 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
  
       mindim = int(avGapX);
       if(avGapY < avGapX) mindim = int(avGapY);
-      numScales = reconFilter.getNumScales(mindim);
+      numScales = par.filter().getNumScales(mindim);
     }
 
     float threshold;

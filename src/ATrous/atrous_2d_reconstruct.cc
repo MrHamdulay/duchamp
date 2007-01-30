@@ -3,6 +3,7 @@
 #include <math.h>
 #include <duchamp.hh>
 #include <ATrous/atrous.hh>
+#include <ATrous/filter.hh>
 #include <Utils/utils.hh>
 #include <Utils/feedback.hh>
 #include <Utils/Statistics.hh>
@@ -17,8 +18,7 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
    *  A routine that uses the a trous wavelet method to reconstruct a 
    *   2-dimensional image.
    *  The Param object "par" contains all necessary info about the filter and 
-   *   reconstruction parameters, although a Filter object has to be declared
-   *   elsewhere previously.
+   *   reconstruction parameters.
    *
    *  If there are no non-BLANK pixels (and we are testing for
    *  BLANKs), the reconstruction cannot be done, so we return the
@@ -31,17 +31,16 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
    *  \param par The Param set.
    */
 
-  extern Filter reconFilter;
   bool flagBlank=par.getFlagBlankPix();
   float blankPixValue = par.getBlankPixVal();
   long size = xdim * ydim;
   long mindim = xdim;
   if (ydim<mindim) mindim = ydim;
-  int numScales = reconFilter.getNumScales(mindim);
+  int numScales = par.filter().getNumScales(mindim);
   double *sigmaFactors = new double[numScales+1];
   for(int i=0;i<=numScales;i++){
-    if(i<=reconFilter.maxFactor(2)) 
-      sigmaFactors[i] = reconFilter.sigmaFactor(2,i);
+    if(i<=par.filter().maxFactor(2)) 
+      sigmaFactors[i] = par.filter().sigmaFactor(2,i);
     else sigmaFactors[i] = sigmaFactors[i-1] / 2.;
   }
 
@@ -77,12 +76,12 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
 
     for(int pos=0;pos<size;pos++) output[pos]=0.;
 
-    int filterwidth = reconFilter.width();
+    int filterwidth = par.filter().width();
     int filterHW = filterwidth/2;
     double *filter = new double[filterwidth*filterwidth];
     for(int i=0;i<filterwidth;i++){
       for(int j=0;j<filterwidth;j++){
-	filter[i*filterwidth+j] = reconFilter.coeff(i) * reconFilter.coeff(j);
+	filter[i*filterwidth+j] = par.filter().coeff(i) * par.filter().coeff(j);
       }
     }
 
@@ -121,7 +120,7 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
     
       mindim = int(avGapX);
       if(avGapY < avGapX) mindim = int(avGapY);
-      numScales = reconFilter.getNumScales(mindim);
+      numScales = par.filter().getNumScales(mindim);
     }
 
     float threshold;

@@ -186,9 +186,9 @@ void Cube::ReconCube3D()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-vector <Detection> searchReconArray(long *dim, float *originalArray, 
-				    float *reconArray, Param &par,
-				    StatsContainer<float> &stats)
+std::vector <Detection> searchReconArray(long *dim, float *originalArray, 
+					 float *reconArray, Param &par,
+					 StatsContainer<float> &stats)
 {
   /**
    *  This searches for objects in a cube that has been reconstructed.
@@ -207,7 +207,7 @@ vector <Detection> searchReconArray(long *dim, float *originalArray,
    *
    *  \return A vector of Detections resulting from the search.
    */
-  vector <Detection> outputList;
+  std::vector <Detection> outputList;
   long zdim = dim[2];
   long xySize = dim[0] * dim[1];
   int num=0;

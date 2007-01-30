@@ -115,14 +115,14 @@ int Param::verifySubsection()
   this->offsets = new long[numAxes];
   this->sizeOffsets = numAxes;
 
-  vector<string> sections(numSections); // this will hold the individual 
-                                        //   section strings
+  std::vector<std::string> sections(numSections); 
+  // this will hold the section strings for each dimension
 
   std::stringstream ss;
   ss.str(this->subsection);
   bool removeStep = false;
   bool doingBorders = false;
-  string temp;
+  std::string temp;
 
   bool atEnd = false;
   getline(ss,temp,'[');

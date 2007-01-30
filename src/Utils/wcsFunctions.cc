@@ -222,11 +222,11 @@ int wcsToPixMulti(struct wcsprm *wcs, const double *world, double *pix, const in
 }
 
 double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z, 
-		       string velUnits)
+		       std::string velUnits)
 {
   /** 
    *  pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z, 
-   *                  string velUnits)
+   *                  std::string velUnits)
    *   Uses wcs to convert the three-dimensional pixel position (x,y,z)
    *   to world coordinates.
    *   Returns the velocity in the units given by velUnits.
@@ -264,10 +264,10 @@ double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z,
   return vel;
 }
  
-double coordToVel(struct wcsprm *wcs, const double coord, string outputUnits)
+double coordToVel(struct wcsprm *wcs, const double coord, std::string outputUnits)
 {
   /** 
-   *  coordToVel(struct wcsprm *wcs, const double coord, string outputUnits)
+   *  coordToVel(struct wcsprm *wcs, const double coord, std::string outputUnits)
    *   Convert the wcs coordinate given by coord to a velocity in km/s.
    *   Does this by checking the ztype parameter in wcs to see if it is 
    *    FREQ or otherwise, and converts accordingly.
@@ -297,7 +297,7 @@ double coordToVel(struct wcsprm *wcs, const double coord, string outputUnits)
 
 }
 
-double velToCoord(struct wcsprm *wcs, const float velocity, string outputUnits)
+double velToCoord(struct wcsprm *wcs, const float velocity, std::string outputUnits)
 {
   /** 
    *  velToCoord(struct wcsprm *wcs, const double coord)

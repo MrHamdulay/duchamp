@@ -7,7 +7,6 @@
 #include <Utils/mycpgplot.hh>
 #include <Cubes/plots.hh>
 
-using std::string;
 using std::stringstream;
 using namespace mycpgplot;
 
@@ -28,13 +27,13 @@ namespace Plot
 
   SpectralPlot::~SpectralPlot(){};
   //----------------------------------------------------------
-  int SpectralPlot::setUpPlot(string pgDestination){
+  int SpectralPlot::setUpPlot(std::string pgDestination){
     /** 
      * Opens the designated pgplot device.  Scales the paper so that
      * it fits on an A4 sheet (using known values of the default
      * pgplot offsets).  
      *
-     * \param pgDestination The string indicating the PGPLOT device to
+     * \param pgDestination The std::string indicating the PGPLOT device to
      * be written to.
      *
      * \return The value returned by cpgopen. If <= 0, then an error
@@ -72,7 +71,7 @@ namespace Plot
     mapCoords[1]  = mapCoords[0] + (mapCoords[3]-mapCoords[2]);
   }
   //----------------------------------------------------------
-  void SpectralPlot::gotoHeader(string xlabel){
+  void SpectralPlot::gotoHeader(std::string xlabel){
     /** 
      * Calls calcCoords, to calculate correct coordinates for this spectrum.
      * Defines the region for the header information, making it centred
@@ -88,7 +87,7 @@ namespace Plot
     cpgmtxt("b",Plot::spXlabelOffset,0.5,0.5,xlabel.c_str());
   }
   //----------------------------------------------------------
-  void SpectralPlot::gotoMainSpectrum(float x1, float x2, float y1, float y2, string ylabel){
+  void SpectralPlot::gotoMainSpectrum(float x1, float x2, float y1, float y2, std::string ylabel){
     /**
      *  Defines the region for the main spectrum.
      *  Draws the box, with tick marks, and 
@@ -221,7 +220,7 @@ namespace Plot
   ImagePlot::~ImagePlot(){};
   //----------------------------------------------------------
 
-  int ImagePlot::setUpPlot(string pgDestination, float x, float y){
+  int ImagePlot::setUpPlot(std::string pgDestination, float x, float y){
     /**
      *  Opens a pgplot device and scales it to the correct shape.
      *  In doing so, the dimensions for the image are set, and the required 
@@ -253,7 +252,7 @@ namespace Plot
   }
   //----------------------------------------------------------
   void ImagePlot::drawMapBox(float x1, float x2, float y1, float y2, 
-			     string xlabel, string ylabel){
+			     std::string xlabel, std::string ylabel){
     /**
      *  Defines the region that the box containing the map is to go in,
      *  and draws the box with limits given by the arguments. 
@@ -275,7 +274,7 @@ namespace Plot
     cpglab(xlabel.c_str(), ylabel.c_str(), "");
   }
   //----------------------------------------------------------
-  void ImagePlot::makeTitle(string title){
+  void ImagePlot::makeTitle(std::string title){
     /**
      *    Writes the title for the plot, making it centred for the entire 
      *     plot and not just the map.

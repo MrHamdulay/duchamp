@@ -12,6 +12,7 @@
 #include <Detection/columns.hh>
 
 using namespace Column;
+using std::vector;
 
 void Detection::outputDetectionTextHeader(std::ostream &stream, 
 					  vector<Col> columns)
@@ -140,10 +141,10 @@ void Detection::outputDetectionText(std::ostream &stream,
 }
 //--------------------------------------------------------------------
 
-string Detection::outputLabelWCS()
+std::string Detection::outputLabelWCS()
 {
   /**
-   *  Prints to a string the WCS position and velocity information of the 
+   *  Prints to a std::string the WCS position and velocity information of the 
    *   Detection, as well as the ID number and any flags.
    *  Assumes the WCS parameters of the object have been calculated.
    *  If they have not (given by the isWCS() function), then the WCS-related 
@@ -168,10 +169,10 @@ string Detection::outputLabelWCS()
 }
 //--------------------------------------------------------------------
 
-string Detection::outputLabelInfo()
+std::string Detection::outputLabelInfo()
 {
   /**
-   *  Prints to a string the widths of the object (in position and velocity), 
+   *  Prints to a std::string the widths of the object (in position and velocity), 
    *  as well as the flux information.
    *  Assumes the WCS parameters of the object have been calculated.
    *  If they have not (given by the isWCS() function), then the WCS-related 
@@ -203,17 +204,17 @@ string Detection::outputLabelInfo()
     ss << std::setprecision(this->snrPrec);
     ss << ", S/N\\dmax\\u=" << this->peakSNR;
   }
-  string output = ss.str();
+  std::string output = ss.str();
 
   return output;
 }
 //--------------------------------------------------------------------
 
-string Detection::outputLabelPix()
+std::string Detection::outputLabelPix()
 {
   /**
-   *  Prints to a string the pixel centres and extents of a detected object.
-   *  Returns the string.
+   *  Prints to a std::string the pixel centres and extents of a
+   *  detected object.  Returns the string.
    */
 
   std::stringstream ss;

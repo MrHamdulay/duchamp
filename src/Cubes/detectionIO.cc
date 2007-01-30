@@ -23,7 +23,7 @@ void Cube::outputDetectionsKarma(std::ostream &stream)
    *   ID number of the detection to the right of the box.
    */
 
-  string fname = this->par.getImageFile();
+  std::string fname = this->par.getImageFile();
   if(this->par.getFlagSubsection()) fname+=this->par.getSubsection();
   stream << "# Duchamp Source Finder results for FITS file: " << fname << endl;
   if(this->par.getFlagFDR())
@@ -86,8 +86,8 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
    */
 
   // Set up Column definitions here
-  vector<Col> localCol;
-  string posUCD[4];
+  std::vector<Col> localCol;
+  std::string posUCD[4];
   localCol.push_back(this->fullCols[NUM]);  // objID
   localCol.push_back(this->fullCols[NAME]);  // name
   localCol.push_back(this->fullCols[RA]);  // ra
@@ -126,7 +126,7 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
   stream<<"      <DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>"<<endl;
 
   // PARAM section -- parts that are not entry-specific ie. apply to whole dataset
-  string fname = this->par.getImageFile();
+  std::string fname = this->par.getImageFile();
   if(this->par.getFlagSubsection()) fname+=this->par.getSubsection();
   stream<<"      <PARAM name=\"FITS file\" datatype=\"char\" ucd=\"meta.file;meta.fits\" value=\"" << fname << "\"/>"<<endl;
   if(this->par.getFlagFDR())

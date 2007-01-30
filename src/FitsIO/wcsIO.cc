@@ -13,7 +13,7 @@
 #include <duchamp.hh>
 #include <Cubes/cubes.hh>
 
-int FitsHeader::defineWCS(string fname, Param &par)
+int FitsHeader::defineWCS(std::string fname, Param &par)
 {
   /**
    *   A function that reads the WCS header information from the 
@@ -53,7 +53,7 @@ int FitsHeader::defineWCS(string fname, Param &par)
     return FAILURE;
   }
 
-  // Read in the entire PHU of the FITS file to a string.
+  // Read in the entire PHU of the FITS file to a std::string.
   // This will be read by the wcslib functions to extract the WCS.
   status = 0;
   fits_hdr2str(fptr, noComments, NULL, nExc, &hdr, &nkeys, &status);
@@ -122,7 +122,7 @@ int FitsHeader::defineWCS(string fname, Param &par)
     if(localwcs->naxis>2){  // if there is a spectral axis
 
       int index = localwcs->spec;
-      string desiredType,specType = localwcs->ctype[index];
+      std::string desiredType,specType = localwcs->ctype[index];
 // 	      << "  " << localwcs->ctype[localwcs->spec] << "\n";
       if(localwcs->restfrq != 0){
 	// Set the spectral axis to a standard specification: VELO-F2V
@@ -156,7 +156,7 @@ int FitsHeader::defineWCS(string fname, Param &par)
       if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0) 
 	needToTranslate = true;
 
-      string blankstring = "";
+      std::string blankstring = "";
       if(strcmp(localwcs->cunit[localwcs->spec],blankstring.c_str())==0)
 	needToTranslate = true;
 

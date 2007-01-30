@@ -15,7 +15,7 @@
 
 using namespace mycpgplot;
 
-void Cube::plotDetectionMap(string pgDestination)
+void Cube::plotDetectionMap(std::string pgDestination)
 {
   /** 
    *  Creates a map of the spatial locations of the detections, which is 
@@ -116,7 +116,7 @@ void Cube::plotDetectionMap(string pgDestination)
 
 /*********************************************************/
 
-void Cube::plotMomentMap(string pgDestination)
+void Cube::plotMomentMap(std::string pgDestination)
 {
   /** 
    *  Creates a 0th moment map of the detections, which is written to the 
@@ -264,7 +264,7 @@ void Cube::plotMomentMap(string pgDestination)
       cpggray(momentMap,xdim,ydim,1,xdim,1,ydim,z2,z1,tr);
       cpgbox("bcnst",0.,0,"bcnst",0.,0);
       cpgsch(1.5);
-      string wedgeLabel = "Integrated Flux ";
+      std::string wedgeLabel = "Integrated Flux ";
       if(this->par.getFlagNegative()) 
 	wedgeLabel = "-1. " + times + " " + wedgeLabel;
       if(this->head.isWCS())
@@ -314,7 +314,7 @@ void Cube::plotMomentMap(string pgDestination)
 
 /*********************************************************/
 
-void Cube::plotMomentMap(vector<string> pgDestination)
+void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 {
   /** 
    *  Creates a 0th moment map of the detections, which is written to each
@@ -339,9 +339,9 @@ void Cube::plotMomentMap(vector<string> pgDestination)
   long zdim=this->axisDim[2];
 
   int numPlots = pgDestination.size();
-  vector<Plot::ImagePlot> plotList(numPlots);
-  vector<int> plotFlag(numPlots,0);
-  vector<bool> doPlot(numPlots,false);
+  std::vector<Plot::ImagePlot> plotList(numPlots);
+  std::vector<int> plotFlag(numPlots,0);
+  std::vector<bool> doPlot(numPlots,false);
   bool plotNeeded = false;
 
   for(int i=0;i<numPlots;i++){
@@ -491,7 +491,7 @@ void Cube::plotMomentMap(vector<string> pgDestination)
 	cpggray(momentMap,xdim,ydim,1,xdim,1,ydim,z2,z1,tr);
 	cpgbox("bcnst",0.,0,"bcnst",0.,0);
 	cpgsch(1.5);
-	string wedgeLabel = "Integrated Flux ";
+	std::string wedgeLabel = "Integrated Flux ";
 	if(this->par.getFlagNegative()) 
 	  wedgeLabel = "-1. " + times + " " + wedgeLabel;
 	if(this->head.isWCS())

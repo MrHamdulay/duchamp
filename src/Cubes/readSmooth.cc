@@ -56,7 +56,7 @@ int Cube::readSmoothCube()
   
     if(!smoothGood){ // if bad, need to look at parameters
 
-      string smoothFile = this->par.outputSmoothFile();
+      std::string smoothFile = this->par.outputSmoothFile();
       errmsg << "Trying file " << smoothFile << std::endl;
       duchampWarning("readSmoothCube", errmsg.str() );
       smoothGood = true;

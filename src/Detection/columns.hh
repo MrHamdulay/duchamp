@@ -6,9 +6,6 @@
 #include <string>
 #include <vector>
 
-using std::string;
-using std::vector;
-
 class Detection;
 class FitsHeader;
 
@@ -52,13 +49,13 @@ namespace Column
      prec[prWPOS], prec[prWPOS], prec[prVEL],
      prec[prFLUX], prec[prFLUX], prec[prFLUX], 
      prec[prSNR], 0, 0, 0, 0, 0, 0, 0, 0}; ///< Default precisions for all columns.
-  const string defaultName[numColumns]=
+  const std::string defaultName[numColumns]=
     {"Obj#","Name","X","Y","Z",
      "RA","DEC","VEL",
      "w_RA","w_DEC","w_VEL",
      "F_int","F_tot","F_peak", "S/Nmax",
      "X1","X2","Y1","Y2","Z1","Z2","Npix","Flag"}; ///< Default Titles of all columns
-  const string defaultUnits[numColumns]=
+  const std::string defaultUnits[numColumns]=
     {"","","","","",
      "","","",
      "[arcmin]","[arcmin]","",
@@ -83,10 +80,10 @@ namespace Column
     void   setWidth(int i){width=i;};    
     int    getPrecision(){return precision;};     
     void   setPrecision(int i){precision=i;};
-    string getName(){return name;};          
-    void   setName(string s){name=s;};  
-    string getUnits(){return units;};         
-    void   setUnits(string s){units=s;}; 
+    std::string getName(){return name;};          
+    void   setName(std::string s){name=s;};  
+    std::string getUnits(){return units;};         
+    void   setUnits(std::string s){units=s;}; 
 
     //--------------
     // other functions
@@ -122,24 +119,37 @@ namespace Column
     };
 
     /** Print a given value in a column with correct width & precision. */
-    template <class T> void printEntry(std::ostream &stream, T value);
+    template <class T> void printEntry(std::ostream &stream, T value)//;
+    {
+      stream << std::setprecision(this->precision)
+	     << std::setw(this->width) 
+	     << std::setfill(' ')
+	     << value;
+    };
+//     template void Col::printEntry<int>(std::ostream &stream, int value);
+//     template void Col::printEntry<long>(std::ostream &stream, long value);
+//     template void Col::printEntry<unsigned>(std::ostream &stream, unsigned value);
+//     template void Col::printEntry<float>(std::ostream &stream, float value);
+//     template void Col::printEntry<double>(std::ostream &stream, double value);
+//     template void Col::printEntry<std::string>(std::ostream &stream, std::string value);
 
   private:
     int width;          ///< How wide is the column (in ascii spaces)
     int precision;      ///< What precision should be used to print the values? (If 0, the setprecision command is not used.)
-    string name;        ///< The title of the column
-    string units;       ///< The units that the values in the column are expressed in.
+    std::string name;        ///< The title of the column
+    std::string units;       ///< The units that the values in the column are expressed in.
   };
 
   
 }
+
 /** Returns a vector of Col for results file output.*/
-vector<Column::Col> getFullColSet(vector<Detection> &objectList, 
-				  FitsHeader &head);
+std::vector<Column::Col> getFullColSet(std::vector<Detection> &objectList, 
+				       FitsHeader &head);
 
 /** Returns a vector of Col for logfile output.*/
-vector<Column::Col> getLogColSet(vector<Detection> &objectList, 
-				 FitsHeader &head);
+std::vector<Column::Col> getLogColSet(std::vector<Detection> &objectList, 
+				      FitsHeader &head);
 
 
 #endif

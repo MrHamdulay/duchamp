@@ -9,10 +9,10 @@ using std::setw;
 using std::setfill;
 using std::setprecision;
 
-string getIAUNameEQ(double ra, double dec, float equinox)
+std::string getIAUNameEQ(double ra, double dec, float equinox)
 {
   /**
-   * string getIAUNameEQ(double, double, float)
+   * std::string getIAUNameEQ(double, double, float)
    *  both ra and dec are assumed to be in degrees.
    *  returns name of the form J1234-4321 for equinox = 2000, 
    *   and B1234-4321 otherwise
@@ -43,10 +43,10 @@ string getIAUNameEQ(double ra, double dec, float equinox)
   return ss.str();
 }
 
-string getIAUNameGAL(double lon, double lat)
+std::string getIAUNameGAL(double lon, double lat)
 {
   /**
-   * string getIAUNameGAL(double, double)
+   * std::string getIAUNameGAL(double, double)
    *  both ra and dec are assumed to be in degrees.
    *  returns name of the form G321.123+01.234
    */
@@ -66,10 +66,10 @@ string getIAUNameGAL(double lon, double lat)
   return ss.str();
 }
 
-string decToDMS(const double dec, const string type)
+std::string decToDMS(const double dec, const std::string type)
 {
   /** 
-   *  string decToDMS(double, string)
+   *  std::string decToDMS(double, string)
    *   converts a decimal angle (in degrees) to a format reflecting the axis type:
    *       RA   (right ascension)    --> hh:mm:ss.ss, with dec made modulo 360. (or 24hrs)
    *       DEC  (declination)        --> sdd:mm:ss.ss  (with sign, either + or -)
@@ -82,7 +82,7 @@ string decToDMS(const double dec, const string type)
   int deg,min;
   const double onemin=1./60.;
   double thisDec = dec;
-  string sign="";
+  std::string sign="";
   int degSize = 2; // number of figures in the degrees part of the output.
 
   if((type=="RA")||(type=="GLON")){
@@ -125,11 +125,11 @@ string decToDMS(const double dec, const string type)
 }
 
 
-double dmsToDec(string dms)
+double dmsToDec(std::string dms)
 {
   /** 
    *  double dmsToDec(string)
-   *   Converts a string in the format +12:23:34.45 to a decimal angle in degrees.
+   *   Converts a std::string in the format +12:23:34.45 to a decimal angle in degrees.
    *   Assumes the angle given is in degrees, so if passing RA as the argument,
    *   need to multiply by 15 to get the result in degrees rather than hours.
    *   The sign of the angle is preserved, if present.
@@ -141,7 +141,7 @@ double dmsToDec(string dms)
 
   std::stringstream ss;
   ss.str(dms);
-  string deg,min,sec;
+  std::string deg,min,sec;
   getline(ss,deg,':');
   getline(ss,min,':');
   getline(ss,sec);
