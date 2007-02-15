@@ -74,32 +74,36 @@ std::string specMenu()
   std::cout << "4: b2126m158\n";
   std::cout << "5: b2126m158-Galaxy#09\n";
   std::cout << "6: b0823p033\n";
+  std::cout << "7: b1404p044 (SDSS)\n";
 
   int file=0;
-  while((file<1)||(file>6)){
-    std::cout<<"Enter choice (1-6): ";
+  while((file<1)||(file>7)){
+    std::cout<<"Enter choice (1-7): ";
     std::cin >> file;
   }
 
   std::string fname;
   switch(file){
   case 1:
-    fname = "/DATA/SITAR_1/whi550/cubes/phfs_spectra/b1133m172";
+    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b1133m172";
     break;
   case 2:
-    fname = "/DATA/SITAR_1/whi550/cubes/phfs_spectra/b1136m135";
+    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b1136m135";
     break;
   case 3:
-    fname = "/DATA/SITAR_1/whi550/cubes/phfs_spectra/b1226p023";
+    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b1226p023";
     break;
   case 4:
-    fname = "/DATA/SITAR_1/whi550/cubes/phfs_spectra/b2126m158";
+    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b2126m158";
     break;
   case 5:
-    fname = "/DATA/SITAR_1/whi550/cubes/phfs_spectra/b2126_obj09";
+    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b2126_obj09";
+    break;
+  case 6:
+    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b0823p033";
     break;
   default:
-    fname = "/DATA/SITAR_1/whi550/cubes/phfs_spectra/b0823p033";
+    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b1404_sdss.dat";
     break;
   }
   return fname;

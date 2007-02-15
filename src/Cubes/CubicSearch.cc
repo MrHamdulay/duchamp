@@ -105,6 +105,7 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 	  }
 	  object->setOffsets(par);
 	  object->calcParams();
+// 	  outputList.push_back(*object);
 	  mergeIntoList(*object,outputList,par);
 	  delete object;
 	}
@@ -151,6 +152,7 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 	for(int pix=0;pix<object->getSize();pix++) object->setZ(pix, z);
 	object->setOffsets(par);
 	object->calcParams();
+// 	outputList.push_back(*object);
 	mergeIntoList(*object,outputList,par);
 	delete object;
       }

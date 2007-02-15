@@ -172,8 +172,8 @@ std::string Detection::outputLabelWCS()
 std::string Detection::outputLabelInfo()
 {
   /**
-   *  Prints to a std::string the widths of the object (in position and velocity), 
-   *  as well as the flux information.
+   *  Prints to a std::string the widths of the object (in position
+   *  and velocity), as well as the flux information.
    *  Assumes the WCS parameters of the object have been calculated.
    *  If they have not (given by the isWCS() function), then the WCS-related 
    *   outputs are left blank.

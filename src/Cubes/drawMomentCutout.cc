@@ -279,7 +279,8 @@ void Detection::drawBorders(int xoffset, int yoffset)
     bool *isObj = new bool[xsize*ysize];
     for(int i=0;i<xsize*ysize;i++) isObj[i]=false;
     for(int i=0;i<this->pix.size();i++)
-      isObj[ (this->pix[i].getY()-yoffset)*xsize + (this->pix[i].getX()-xoffset) ] = true;
+      isObj[ (this->pix[i].getY()-yoffset)*xsize + 
+	     (this->pix[i].getX()-xoffset)         ] = true;
   
 
     cpgswin(0,xsize-1,0,ysize-1);
@@ -288,7 +289,8 @@ void Detection::drawBorders(int xoffset, int yoffset)
       for(int y=1;y<ysize;y++){
 	int current = y*xsize + (x-xoffset);
 	int previous = (y-1)*xsize + (x-xoffset);
-	if((isObj[current]&&!isObj[previous])||(!isObj[current]&&isObj[previous])){
+	if((isObj[current]&&!isObj[previous])   ||
+	   (!isObj[current]&&isObj[previous])){
 	  cpgmove(x-xoffset+0, y+0);
 	  cpgdraw(x-xoffset+1, y+0);
 	}
@@ -299,7 +301,8 @@ void Detection::drawBorders(int xoffset, int yoffset)
       for(int x=1;x<xsize;x++){
 	int current = (y-yoffset)*xsize + x;
 	int previous = (y-yoffset)*xsize + x - 1;
-	if((isObj[current]&&!isObj[previous])||(!isObj[current]&&isObj[previous])){
+	if((isObj[current]&&!isObj[previous])   ||
+	   (!isObj[current]&&isObj[previous])){
 	  cpgmove(x+0, y-yoffset+0);
 	  cpgdraw(x+0, y-yoffset+1);
 	}
