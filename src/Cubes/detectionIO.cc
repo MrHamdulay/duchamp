@@ -75,6 +75,31 @@ void Cube::outputDetectionsKarma(std::ostream &stream)
 
 }
 
+std::string fixUnitsVOT(std::string oldstring)
+{
+  /** Fix a string containing units to make it acceptable for a VOTable.
+   *
+   * This function makes the provided units string acceptable
+   * according to the standard found at
+   * http://vizier.u-strasbg.fr/doc/catstd-3.2.htx 
+   * This should then be able to convert the units used in the text
+   * table to units suitable for putting in a VOTable.
+   *
+   * Specifically, it removes any square brackets [] from the
+   * start/end of the string, and replaces blank spaces (representing
+   * multiplication) with a '.' (full stop).
+   */
+
+  std::string newstring;
+  for(int i=0;i<oldstring.size();i++){
+    if((oldstring[i]!='[')&&(oldstring[i]!=']')){
+      if(oldstring[i]==' ') newstring += '.';
+      else newstring += oldstring[i];
+    }
+  }
+  return newstring;  
+}
+
 void Cube::outputDetectionsVOTable(std::ostream &stream)
 {
   /**
@@ -116,51 +141,80 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
   localCol.push_back(this->fullCols[FPEAK]); // f_peak
   localCol.push_back(this->fullCols[FLAG]); // flag
 
-  stream<<"<?xml version=\"1.0\"?>"<<endl;
-  stream<<"<VOTABLE version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""<<endl;
-  stream<<" xsi:noNamespaceSchemaLocation=\"http://www.ivoa.net/xml/VOTable/VOTable/v1.1\">"<<endl;
+  stream<<"<?xml version=\"1.0\"?>\n";
+  stream<<"<VOTABLE version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n";
+  stream<<" xsi:noNamespaceSchemaLocation=\"http://www.ivoa.net/xml/VOTable/VOTable/v1.1\">\n";
 
-  stream<<"  <COOSYS ID=\"J2000\" equinox=\"J2000.\" epoch=\"J2000.\" system=\"eq_FK5\"/>"<<endl;
-  stream<<"  <RESOURCE name=\"Duchamp Output\">"<<endl;
-  stream<<"    <TABLE name=\"Detections\">"<<endl;
-  stream<<"      <DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>"<<endl;
+  stream<<"  <COOSYS ID=\"J2000\" equinox=\"J2000.\" epoch=\"J2000.\" system=\"eq_FK5\"/>\n";
+  stream<<"  <RESOURCE name=\"Duchamp Output\">\n";
+  stream<<"    <TABLE name=\"Detections\">\n";
+  stream<<"      <DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>\n";
 
   // PARAM section -- parts that are not entry-specific ie. apply to whole dataset
   std::string fname = this->par.getImageFile();
   if(this->par.getFlagSubsection()) fname+=this->par.getSubsection();
-  stream<<"      <PARAM name=\"FITS file\" datatype=\"char\" ucd=\"meta.file;meta.fits\" value=\"" << fname << "\"/>"<<endl;
+  stream<<"      <PARAM name=\"FITS file\" datatype=\"char\" ucd=\"meta.file;meta.fits\" value=\"" 
+	<< fname << "\" arraysize=\""<<fname.size()<<"\"/>\n";
   if(this->par.getFlagFDR())
-    stream<<"      <PARAM name=\"FDR Significance\" datatype=\"float\" ucd=\"stat.param\" value=\"" << this->par.getAlpha() << "\">" << endl;
+    stream<<"      <PARAM name=\"FDR Significance\" datatype=\"float\" ucd=\"stat.param\" value=\"" 
+	  << this->par.getAlpha() << "\"/>\n";
   else
-    stream<<"      <PARAM name=\"Threshold\" datatype=\"float\" ucd=\"stat.snr\" value=\"" << this->par.getCut() << "\">" << endl;
+    stream<<"      <PARAM name=\"Threshold\" datatype=\"float\" ucd=\"stat.snr\" value=\"" 
+	  << this->par.getCut() << "\"/>\n";
   if(this->par.getFlagATrous()){
-    stream<<"      <PARAM name=\"ATrous note\" datatype=\"char\" ucd=\"meta.note\" value=\"The a trous reconstruction method was used, with the following parameters.\">" << endl;
-    stream<<"      <PARAM name=\"ATrous Dimension\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" << this->par.getReconDim() << "\">" << endl;
-    stream<<"      <PARAM name=\"ATrous Threshold\" datatype=\"float\" ucd=\"stat.snr\" value=\"" << this->par.getAtrousCut() << "\">" << endl;
-    stream<<"      <PARAM name=\"ATrous Minimum Scale\" datatype=\"int\" ucd=\"stat.param\" value=\"" << this->par.getMinScale() << "\">" << endl;
-    stream<<"      <PARAM name=\"ATrous Filter\" datatype=\"char\" ucd=\"meta.code;stat\" value=\"" << this->par.getFilterName() << "\">" << endl;
+    std::string note = "The a trous reconstruction method was used, with the following parameters.";
+    stream<<"      <PARAM name=\"ATrous note\" datatype=\"char\" ucd=\"meta.note\" value=\""
+	  <<note << "\" arraysize=\"" << note.size() << "\"/>\n";
+    stream<<"      <PARAM name=\"ATrous Dimension\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" 
+	  << this->par.getReconDim() << "\"/>\n";
+    stream<<"      <PARAM name=\"ATrous Threshold\" datatype=\"float\" ucd=\"stat.snr\" value=\"" 
+	  << this->par.getAtrousCut() << "\"/>\n";
+    stream<<"      <PARAM name=\"ATrous Minimum Scale\" datatype=\"int\" ucd=\"stat.param\" value=\"" 
+	  << this->par.getMinScale() << "\"/>\n";
+    stream<<"      <PARAM name=\"ATrous Filter\" datatype=\"char\" ucd=\"meta.code;stat\" value=\""
+	  << this->par.getFilterName() << "\" arraysize=\"" << this->par.getFilterName().size() << "\"/>\n";
   }
   // FIELD section -- names, titles and info for each column.
-  stream<<"      <FIELD name=\"ID\" ID=\"col01\" ucd=\"meta.id\" datatype=\"int\" width=\""<<localCol[0].getWidth()<<"\"/>"<<endl;
-  stream<<"      <FIELD name=\"Name\" ID=\"col02\" ucd=\"meta.id;meta.main\" datatype=\"char\" arraysize=\""<<localCol[1].getWidth()<<"\"/>"<<endl;
-  stream<<"      <FIELD name=\""<<localCol[2].getName()<<"\" ID=\"col03\" ucd=\""<<posUCD[0]<<"\" ref=\"J2000\" datatype=\"float\" width=\""<<localCol[2].getWidth()<<"\" precision=\""<<prec[prPOS]<<"\" unit=\"[deg]\"/>"<<endl;
-  stream<<"      <FIELD name=\""<<localCol[3].getName()<<"\" ID=\"col04\" ucd=\""<<posUCD[1]<<"\" ref=\"J2000\" datatype=\"float\" width=\""<<localCol[3].getWidth()<<"\" precision=\""<<prec[prPOS]<<"\" unit=\"[deg]\"/>"<<endl;
-  stream<<"      <FIELD name=\""<<localCol[4].getName()<<"\" ID=\"col05\" ucd=\""<<posUCD[2]<<"\" ref=\"J2000\" datatype=\"float\" width=\""<<localCol[4].getWidth()<<"\" precision=\""<<prec[prWPOS]<<"\" unit=\""<<localCol[4].getUnits()<<"\"/>"<<endl;
-  stream<<"      <FIELD name=\""<<localCol[5].getName()<<"\" ID=\"col06\" ucd=\""<<posUCD[2]<<"\" ref=\"J2000\" datatype=\"float\" width=\""<<localCol[5].getWidth()<<"\" precision=\""<<prec[prWPOS]<<"\" unit=\""<<localCol[5].getUnits()<<"\"/>"<<endl;
-  stream<<"      <FIELD name=\"Vel\" ID=\"col07\" ucd=\"phys.veloc;src.dopplerVeloc\" datatype=\"float\" width=\""<<localCol[6].getWidth()<<"\" precision=\""<<prec[prVEL]<<"\" unit=\""<<localCol[6].getUnits()<<"\"/>"<<endl;
-  stream<<"      <FIELD name=\"w_Vel\" ID=\"col08\" ucd=\"phys.veloc;src.dopplerVeloc;spect.line.width\" datatype=\"float\" width=\""<<localCol[7].getWidth()<<"\" precision=\""<<prec[prVEL]<<"\" unit=\""<<localCol[7].getUnits()<<"\"/>"<<endl;
-  stream<<"      <FIELD name=\"Integrated_Flux\" ID=\"col09\" ucd=\"phot.flux;spect.line.intensity\" datatype=\"float\" width=\""<<localCol[8].getWidth()<<"\" precision=\""<<prec[prFLUX]<<"\" unit=\""<<localCol[8].getUnits()<<"\"/>"<<endl;
-  stream<<"      <FIELD name=\"Peak_Flux\" ID=\"col10\" ucd=\"phot.flux;spect.line.intensity\" datatype=\"float\" width=\""<<localCol[9].getWidth()<<"\" precision=\""<<prec[prFLUX]<<"\" unit=\""<<localCol[9].getUnits()<<"\"/>"<<endl;
-  stream<<"      <FIELD name=\"Flag\" ID=\"col11\" ucd=\"meta.code.qual\" datatype=\"char\" arraysize=\"3\"/>"<<endl;
+  stream<<"      <FIELD name=\"ID\" ID=\"col01\" ucd=\"meta.id\" datatype=\"int\" width=\""
+	<<localCol[0].getWidth()<<"\" unit=\"--\"/>\n";
+  stream<<"      <FIELD name=\"Name\" ID=\"col02\" ucd=\"meta.id;meta.main\" datatype=\"char\" arraysize=\""
+	<<localCol[1].getWidth()<<"\" unit=\"--\"/>\n";
+  stream<<"      <FIELD name=\""<<localCol[2].getName()<<"\" ID=\"col03\" ucd=\""
+	<<posUCD[0]<<"\" ref=\"J2000\" datatype=\"float\" width=\""
+	<<localCol[2].getWidth()<<"\" precision=\""<<prec[prPOS]<<"\" unit=\"deg\"/>\n";
+  stream<<"      <FIELD name=\""<<localCol[3].getName()<<"\" ID=\"col04\" ucd=\""
+	<<posUCD[1]<<"\" ref=\"J2000\" datatype=\"float\" width=\""
+	<<localCol[3].getWidth()<<"\" precision=\""<<prec[prPOS]<<"\" unit=\"deg\"/>\n";
+  stream<<"      <FIELD name=\""<<localCol[4].getName()<<"\" ID=\"col05\" ucd=\""
+	<<posUCD[2]<<"\" ref=\"J2000\" datatype=\"float\" width=\""
+	<<localCol[4].getWidth()<<"\" precision=\""<<prec[prWPOS]<<"\" unit=\""
+	<<fixUnitsVOT(localCol[4].getUnits())<<"\"/>\n";
+  stream<<"      <FIELD name=\""<<localCol[5].getName()<<"\" ID=\"col06\" ucd=\""
+	<<posUCD[2]<<"\" ref=\"J2000\" datatype=\"float\" width=\""
+	<<localCol[5].getWidth()<<"\" precision=\""<<prec[prWPOS]<<"\" unit=\""
+	<<fixUnitsVOT(localCol[5].getUnits())<<"\"/>\n";
+  stream<<"      <FIELD name=\"Vel\" ID=\"col07\" ucd=\"phys.veloc;src.dopplerVeloc\" datatype=\"float\" width=\""
+	<<localCol[6].getWidth()<<"\" precision=\""<<prec[prVEL]<<"\" unit=\""
+	<<fixUnitsVOT(localCol[6].getUnits())<<"\"/>\n";
+  stream<<"      <FIELD name=\"w_Vel\" ID=\"col08\" ucd=\"phys.veloc;src.dopplerVeloc;spect.line.width\""
+	<<" datatype=\"float\" width=\""<<localCol[7].getWidth()<<"\" precision=\""
+	<<prec[prVEL]<<"\" unit=\""<<fixUnitsVOT(localCol[7].getUnits())<<"\"/>\n";
+  stream<<"      <FIELD name=\"Integrated_Flux\" ID=\"col09\" ucd=\"phot.flux;spect.line.intensity\""
+	<<" datatype=\"float\" width=\""<<localCol[8].getWidth()<<"\" precision=\""
+	<<prec[prFLUX]<<"\" unit=\""<<fixUnitsVOT(localCol[8].getUnits())<<"\"/>\n";
+  stream<<"      <FIELD name=\"Peak_Flux\" ID=\"col10\" ucd=\"phot.flux;spect.line.intensity\""
+	<<" datatype=\"float\" width=\""<<localCol[9].getWidth()<<"\" precision=\""
+	<<prec[prFLUX]<<"\" unit=\""<<fixUnitsVOT(localCol[9].getUnits())<<"\"/>\n";
+  stream<<"      <FIELD name=\"Flag\" ID=\"col11\" ucd=\"meta.code.qual\" datatype=\"char\" arraysize=\"3\" unit=\"--\"/>\n";
 
 
-  stream<<"      <DATA>"<<endl
-	<<"        <TABLEDATA>"<<endl;
+  stream<<"      <DATA>\n"
+	<<"        <TABLEDATA>\n";
 
   stream.setf(std::ios::fixed);  
   for(int i=0;i<this->objectList.size();i++){
     if(this->objectList[i].isWCS()){
-      stream<<"        <TR>"<<endl;
+      stream<<"        <TR>\n";
       stream<<"          <TD>"<<setw(localCol[0].getWidth())<<i+1<<"</TD>";
       stream<<"<TD>" << setw(localCol[1].getWidth()) << this->objectList[i].getName()       <<"</TD>";
       stream<<setprecision(prec[prPOS]);
@@ -178,14 +232,14 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
       stream<<"<TD>" << setw(localCol[10].getWidth())<< this->objectList[i].getFlagText()   <<"</TD>";
       
       stream<<endl;
-      stream<<"        </TR>"<<endl;
+      stream<<"        </TR>\n";
     }
   }
-  stream<<"        </TABLEDATA>"<<endl;
-  stream<<"      </DATA>"<<endl;
-  stream<<"    </TABLE>"<<endl;
-  stream<<"  </RESOURCE>"<<endl;
-  stream<<"</VOTABLE>"<<endl;
+  stream<<"        </TABLEDATA>\n";
+  stream<<"      </DATA>\n";
+  stream<<"    </TABLE>\n";
+  stream<<"  </RESOURCE>\n";
+  stream<<"</VOTABLE>\n";
   resetiosflags(std::ios::fixed);
   
 }
@@ -208,7 +262,7 @@ void Cube::outputDetectionList()
   time_t now = time(NULL);
   output << asctime( localtime(&now) );
   this->showParam(output);
-  output<<"--------------------"<<endl;
+  output<<"--------------------\n";
   output<<"Detection threshold = " << this->Stats.getThreshold()
 	<<" " << this->head.getFluxUnits();
   if(this->par.getFlagFDR())
@@ -217,7 +271,7 @@ void Cube::outputDetectionList()
   output<<"  Noise level = " << this->Stats.getMiddle()
 	<<", Noise spread = " << this->Stats.getSpread() << endl;
   output<<"Total number of detections = "<<this->objectList.size()<<endl;
-  output<<"--------------------"<<endl;
+  output<<"--------------------\n";
   this->setupColumns();
   this->objectList[0].outputDetectionTextHeader(output,this->fullCols);
   this->objectList[0].outputDetectionTextHeader(std::cout,this->fullCols);
