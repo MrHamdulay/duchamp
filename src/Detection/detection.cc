@@ -6,6 +6,7 @@
 #include <math.h>
 #include <param.hh>
 #include <Utils/utils.hh>
+#include <Detection/voxel.hh>
 #include <Detection/detection.hh>
 
 using std::setw;

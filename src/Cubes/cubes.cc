@@ -11,6 +11,7 @@
 #include <duchamp.hh>
 #include <param.hh>
 #include <Cubes/cubes.hh>
+#include <Detection/voxel.hh>
 #include <Detection/detection.hh>
 #include <Detection/columns.hh>
 #include <Utils/utils.hh>

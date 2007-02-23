@@ -36,6 +36,7 @@ HEADS = $(BASE)/duchamp.hh\
 	$(BASE)/param.hh\
 	$(ATROUSDIR)/atrous.hh\
 	$(ATROUSDIR)/filter.hh\
+	$(DETECTIONDIR)/voxel.hh\
 	$(DETECTIONDIR)/detection.hh\
 	$(DETECTIONDIR)/columns.hh\
 	$(CUBESDIR)/cubes.hh\
@@ -52,6 +53,7 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(ATROUSDIR)/atrous_3d_reconstruct.o\
 	$(ATROUSDIR)/baselineSubtract.o\
 	$(ATROUSDIR)/ReconSearch.o\
+	$(DETECTIONDIR)/voxel.o\
 	$(DETECTIONDIR)/detection.o\
 	$(DETECTIONDIR)/columns.o\
 	$(DETECTIONDIR)/areClose.o\

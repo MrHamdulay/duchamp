@@ -1,5 +1,6 @@
 #include <vector>
 #include <algorithm>
+#include <Detection/voxel.hh>
 #include <Detection/detection.hh>
 
 using std::vector;

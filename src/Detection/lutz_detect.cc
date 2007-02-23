@@ -1,4 +1,5 @@
 #include <Cubes/cubes.hh>
+#include <Detection/voxel.hh>
 #include <Detection/detection.hh>
 #include <vector>
 

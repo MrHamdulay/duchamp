@@ -4,6 +4,8 @@
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
 #include <Utils/Statistics.hh>
+#include <Detection/voxel.hh>
+#include <Detection/detection.hh>
 
 using std::vector;
 using std::setw;
