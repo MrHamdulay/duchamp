@@ -4,10 +4,10 @@
 
 namespace Statistics
 {
-  template StatsContainer<int>;
-  template StatsContainer<long>;
-  template StatsContainer<float>;
-  template StatsContainer<double>;
+//    template StatsContainer<int>;
+//    template StatsContainer<long>;
+//    template StatsContainer<float>;
+//    template StatsContainer<double>;
   //--------------------------------------------------------------------
   //--------------------------------------------------------------------
 

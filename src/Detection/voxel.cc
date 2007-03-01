@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <Detection/voxel.hh>
 
 
@@ -10,10 +11,10 @@ std::ostream& operator<< ( std::ostream& theStream, Voxel& vox)
    * flux to precision of 4.
    */  
 
-  theStream << setw(4) << vox.itsX ;
-  theStream << " " << setw(4) << vox.itsY;
-  theStream << " " << setw(4) << vox.itsZ;
-  theStream << setprecision(4);
+  theStream << std::setw(4) << vox.itsX ;
+  theStream << " " << std::setw(4) << vox.itsY;
+  theStream << " " << std::setw(4) << vox.itsZ;
+  theStream << std::setprecision(4);
   theStream << "  " << vox.itsF;
 
 }
