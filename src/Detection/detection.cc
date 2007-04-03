@@ -372,7 +372,12 @@ void Detection::addAnObject(Detection &toAdd)
 	else if(y > this->ymax) this->ymax = y;
 	if     (z < this->zmin) this->zmin = z;
 	else if(z > this->zmax) this->zmax = z;
-	if(f > this->peakFlux) this->peakFlux = f;
+	if(f > this->peakFlux){
+	  this->peakFlux = f;
+	  this->xpeak    = x;
+	  this->ypeak    = y;
+	  this->zpeak    = z;
+	}
       }
     }
     size = this->pix.size();

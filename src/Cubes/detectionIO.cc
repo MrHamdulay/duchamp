@@ -8,6 +8,7 @@
 #include <Detection/detection.hh>
 #include <Detection/columns.hh>
 #include <Utils/utils.hh>
+#include <vector>
  
 using std::endl;
 using std::setw;
@@ -284,7 +285,6 @@ void Cube::outputDetectionList()
 void Cube::logDetectionList()
 {
   /**
-   * logDetectionList
    *  A front-end to writing a list of detected objects to the log file.
    *  Does not assume WCS, so uses outputDetectionText.
    *  Designed to be used by searching routines before returning their final list.
@@ -298,7 +298,7 @@ void Cube::logDetectionList()
   for(int objCtr=0;objCtr<this->objectList.size();objCtr++){
     Detection *obj = new Detection;
     *obj = objectList[objCtr];
-    if(this->par.getFlagCubeTrimmed()){
+    if(this->par.getFlagCubeTrimmed() || baselineFlag){
       for(int pix=0;pix<obj->getSize();pix++){
 	// Need to correct the pixels first, as this hasn't been done yet.
 	// Corrections needed for positions (to account for trimmed region)
@@ -306,9 +306,12 @@ void Cube::logDetectionList()
 	// Don't want to keep these changes, so just do it on a dummy variable.
 	pos = obj->getX(pix) + obj->getY(pix)*this->axisDim[0]
 	  + obj->getZ(pix)*this->axisDim[0]*this->axisDim[1];
-	obj->setX(pix, obj->getX(pix) + this->par.getBorderLeft() );
-	obj->setY(pix, obj->getY(pix) + this->par.getBorderBottom() );
-	if(baselineFlag) obj->setF(pix, obj->getF(pix) + this->baseline[pos]);   // add in baseline
+	if(this->par.getFlagCubeTrimmed()){
+	  obj->setX(pix, obj->getX(pix) + this->par.getBorderLeft() );
+	  obj->setY(pix, obj->getY(pix) + this->par.getBorderBottom() );
+	}
+	if(baselineFlag)// add in baseline
+	  obj->setF(pix, obj->getF(pix) + this->baseline[pos]);
       }
       obj->calcParams();
     }

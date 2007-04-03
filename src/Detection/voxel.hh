@@ -44,6 +44,7 @@ public:
   //
   /** Operator to print information of voxel. */
   friend std::ostream& operator<< ( std::ostream& theStream, Voxel& vox);
+  friend bool operator< (Voxel lhs, Voxel rhs);
 
   friend class Detection;
   //

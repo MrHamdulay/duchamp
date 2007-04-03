@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <algorithm>
 #include <vector>
 #include <param.hh>
 #include <Detection/voxel.hh>
@@ -76,6 +77,9 @@ public:
   //
   /** Sort the pixels by central z-value. */
   void   SortByZ();
+
+  /** Order the pixels by z, then by y, and last by x */
+  void order(){std::stable_sort(pix.begin(),pix.end());}
   //
   //----------------------------------
   // Basic functions
@@ -98,14 +102,14 @@ public:
   //-----------------------------------
   // Basic accessor functions for private members follow...
   //
-  long   getX(long pixCount){return pix[pixCount].getX();};
-  void   setX(long pixCount, long x){pix[pixCount].setX(x);};
-  long   getY(long pixCount){return pix[pixCount].getY();};
-  void   setY(long pixCount, long y){pix[pixCount].setY(y);};
-  long   getZ(long pixCount){return pix[pixCount].getZ();};
-  void   setZ(long pixCount, long z){pix[pixCount].setZ(z);};
-  float  getF(long pixCount){return pix[pixCount].getF();};
-  void   setF(long pixCount, float f){pix[pixCount].setF(f);};
+  long   getX(long pixCount){return pix[pixCount].itsX;};
+  void   setX(long pixCount, long x){pix[pixCount].itsX=x;};
+  long   getY(long pixCount){return pix[pixCount].itsY;};
+  void   setY(long pixCount, long y){pix[pixCount].itsY=y;};
+  long   getZ(long pixCount){return pix[pixCount].itsZ;};
+  void   setZ(long pixCount, long z){pix[pixCount].itsZ=z;};
+  float  getF(long pixCount){return pix[pixCount].itsF;};
+  void   setF(long pixCount, float f){pix[pixCount].itsF=f;};
   //
   long   getXOffset(){return xSubOffset;};
   void   setXOffset(long o){xSubOffset = o;};

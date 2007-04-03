@@ -85,6 +85,22 @@ void Cube::trimCube()
       delete [] this->array;
       this->array = newarray;
 
+      // Trim the array of baseline values
+      if(this->par.getFlagBaseline()){
+	float *newarray  = new float[this->numPixels];
+	for(int x = 0; x < axisDim[0]; x++){
+	  for(int y = 0; y < axisDim[1]; y++){
+	    for(int z = 0; z < axisDim[2]; z++){ 
+	      oldpos = (x+this->par.getBorderLeft()) + (y+this->par.getBorderBottom())*xdim + z*xdim*ydim;
+	      newpos = x + y*axisDim[0] + z*axisDim[0]*axisDim[1];
+	      newarray[newpos]  = this->baseline[oldpos];
+	    }
+	  }
+	}
+	delete [] this->baseline;
+	this->baseline = newarray;
+      }
+
       // Trim the 2-D detection map
       short *newdetect = new short[this->axisDim[0]*this->axisDim[1]];
       for(int x = 0; x < axisDim[0]; x++){

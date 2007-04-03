@@ -1,3 +1,5 @@
+#include <iostream>
+#include <fstream>
 #include <vector>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
@@ -26,7 +28,7 @@ void mergeIntoList(Detection &object, std::vector <Detection> &objList, Param &p
   bool flagAdjacent = par.getFlagAdjacent();
   par.setFlagAdjacent(true);
   float threshold = par.getThreshV();
-  par.setThreshV(1.);
+  par.setThreshV(1.5);
 
   long ctr = 0;
   if(objList.size()>0){
