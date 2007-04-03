@@ -1,6 +1,9 @@
 #include <iostream>
 #include <param.hh>
 #include <Cubes/cubes.hh>
+#include <PixelMap/Object3D.hh>
+
+using namespace PixelInfo;
 
 void Cube::trimCube()
 {
@@ -21,62 +24,68 @@ void Cube::trimCube()
     long zdim = this->axisDim[2];
     const long ZCHAN = 0;
 
+    int left,right,top,bottom;
+
     for(int z = 0; z < zdim; z++){
 
       for(int row=0;row<ydim;row++){
-	int borderLeft=0;
-	int borderRight=0;
-	while((borderLeft<xdim)&&
-	      (this->par.isBlank(this->array[row*xdim+borderLeft+ZCHAN*xdim*ydim])) ) {
-	  borderLeft++;
+	left=0;
+	right=0;
+	while((left<xdim)&&
+	      (this->par.isBlank(this->array[row*xdim+left+ZCHAN*xdim*ydim])) ) {
+	  left++;
 	}
-	while((borderRight<xdim)&&
-	      (this->par.isBlank(this->array[row*xdim+(xdim-1-borderRight)+ZCHAN*xdim*ydim]))){
-	  borderRight++;
+	while((right<xdim)&&
+	      (this->par.isBlank(this->array[row*xdim+(xdim-1-right)+ZCHAN*xdim*ydim]))){
+	  right++;
 	}
 
-	if( ((z==0)&&(row==0)) || (borderLeft < this->par.getBorderLeft()) ) 
-	  this->par.setBorderLeft(borderLeft);
-	if( ((z==0)&&(row==0)) || (borderRight < this->par.getBorderRight()) ) 
-	  this->par.setBorderRight(borderRight);
+	if( ((z==0)&&(row==0)) || (left < this->par.getBorderLeft()) ) 
+	  this->par.setBorderLeft(left);
+	if( ((z==0)&&(row==0)) || (right < this->par.getBorderRight()) ) 
+	  this->par.setBorderRight(right);
 
       }
     
       for(int col=0;col<xdim;col++){
-	int borderBottom=0;
-	int borderTop=0;
-	while((borderBottom<ydim)&&
-	      (this->par.isBlank(this->array[col+borderBottom*xdim+ZCHAN*xdim*ydim])) ) borderBottom++;
+	bottom=0;
+	top=0;
+	while((bottom<ydim)&&
+	      (this->par.isBlank(this->array[col+bottom*xdim+ZCHAN*xdim*ydim])) ) bottom++;
 
-	while((borderTop<ydim)&&
-	      (this->par.isBlank(this->array[col+(ydim-1-borderTop)*xdim+ZCHAN*xdim*ydim])) ) borderTop++;
+	while((top<ydim)&&
+	      (this->par.isBlank(this->array[col+(ydim-1-top)*xdim+ZCHAN*xdim*ydim])) ) top++;
 
-	if( ((z==0)&&(col==0)) || (borderBottom < this->par.getBorderBottom()) ) 
-	  this->par.setBorderBottom(borderBottom);
-	if( ((z==0)&&(col==0)) || (borderTop < this->par.getBorderTop()) ) 
-	  this->par.setBorderTop(borderTop);
+	if( ((z==0)&&(col==0)) || (bottom < this->par.getBorderBottom()) ) 
+	  this->par.setBorderBottom(bottom);
+	if( ((z==0)&&(col==0)) || (top < this->par.getBorderTop()) ) 
+	  this->par.setBorderTop(top);
 
       }
 
     }
     
-    this->axisDim[0] = xdim - this->par.getBorderLeft() - this->par.getBorderRight(); 
-    this->axisDim[1] = ydim - this->par.getBorderBottom() - this->par.getBorderTop(); 
+    left = this->par.getBorderLeft();
+    right = this->par.getBorderRight();
+    top = this->par.getBorderTop();
+    bottom = this->par.getBorderBottom();
+
+    this->axisDim[0] = xdim - left - right; 
+    this->axisDim[1] = ydim - bottom - top; 
     this->axisDim[2] = zdim;
     this->numPixels = this->axisDim[0]*this->axisDim[1]*this->axisDim[2];
 
     long oldpos,newpos;
     
     // Do the trimming, but only if we need to -- is there a border of Blanks?
-    if((this->par.getBorderLeft()>0)||(this->par.getBorderRight()>0)||
-       (this->par.getBorderBottom()>0)||(this->par.getBorderTop()>0)) {
+    if((left>0)||(right>0)||(bottom>0)||(top>0)) {
 
       // Trim the array of pixel values
       float *newarray  = new float[this->numPixels];
       for(int x = 0; x < axisDim[0]; x++){
 	for(int y = 0; y < axisDim[1]; y++){
 	  for(int z = 0; z < axisDim[2]; z++){ 
-	    oldpos = (x+this->par.getBorderLeft()) + (y+this->par.getBorderBottom())*xdim + z*xdim*ydim;
+	    oldpos = (x+left) + (y+bottom)*xdim + z*xdim*ydim;
 	    newpos = x + y*axisDim[0] + z*axisDim[0]*axisDim[1];
 	    newarray[newpos]  = this->array[oldpos];
 	  }
@@ -105,7 +114,7 @@ void Cube::trimCube()
       short *newdetect = new short[this->axisDim[0]*this->axisDim[1]];
       for(int x = 0; x < axisDim[0]; x++){
 	for(int y = 0; y < axisDim[1]; y++){
-	  oldpos = (x+this->par.getBorderLeft()) + (y+this->par.getBorderBottom())*xdim;
+	  oldpos = (x+left) + (y+bottom)*xdim;
 	  newpos = x + y*axisDim[0];
 	  newdetect[newpos] = this->detectMap[oldpos];
 	}
@@ -114,12 +123,13 @@ void Cube::trimCube()
       this->detectMap = newdetect;
 
       if(this->par.getFlagATrous()){
-	// Trim the reconstructed array if we are going to do the reconstruction
+	// Trim the reconstructed array if we are going to do the
+	// reconstruction
 	float *newrecon  = new float[this->numPixels];
 	for(int x = 0; x < axisDim[0]; x++){
 	  for(int y = 0; y < axisDim[1]; y++){
 	    for(int z = 0; z < axisDim[2]; z++){ 
-	      oldpos = (x+this->par.getBorderLeft()) + (y+this->par.getBorderBottom())*xdim + z*xdim*ydim;
+	      oldpos = (x+left) + (y+bottom)*xdim + z*xdim*ydim;
 	      newpos = x + y*axisDim[0] + z*axisDim[0]*axisDim[1];
 	      newrecon[newpos] = this->recon[oldpos];	  
 	    }
@@ -149,13 +159,18 @@ void Cube::unTrimCube()
 
   if(this->par.getFlagCubeTrimmed()){
 
+    long left = this->par.getBorderLeft();
+    long right = this->par.getBorderRight();
+    long top = this->par.getBorderTop();
+    long bottom = this->par.getBorderBottom();
+
     long smallXDim = this->axisDim[0];
     long smallYDim = this->axisDim[1];
     long smallZDim = this->axisDim[2];
 
     // first correct the dimension sizes 
-    this->axisDim[0] = smallXDim + this->par.getBorderLeft() + this->par.getBorderRight(); 
-    this->axisDim[1] = smallYDim + this->par.getBorderBottom() + this->par.getBorderTop(); 
+    this->axisDim[0] = smallXDim + left + right; 
+    this->axisDim[1] = smallYDim + bottom + top; 
     this->axisDim[2] = smallZDim;
     this->numPixels = this->axisDim[0]*this->axisDim[1]*this->axisDim[2];
 
@@ -166,13 +181,12 @@ void Cube::unTrimCube()
     float *newarray  = new float[this->numPixels];
     for(int x = 0; x < this->axisDim[0]; x++){
       for(int y = 0; y < this->axisDim[1]; y++){
-	isDud = (x<this->par.getBorderLeft()) || (x>=smallXDim+this->par.getBorderLeft()) || 
-	  (y<this->par.getBorderBottom()) || (y>=smallYDim+this->par.getBorderBottom());
+	isDud = (x<left) || (x>=smallXDim+left) || 
+	  (y<bottom) || (y>=smallYDim+bottom);
 	
 	for(int z = 0; z < this->axisDim[2]; z++){ 
 	  pos = x + y*this->axisDim[0] + z*this->axisDim[0]*this->axisDim[1];
-	  smlpos = (x-this->par.getBorderLeft()) + (y-this->par.getBorderBottom())*smallXDim
-	    + z * smallXDim * smallYDim;
+	  smlpos = (x-left) + (y-bottom)*smallXDim + z * smallXDim * smallYDim;
 	  if(isDud) newarray[pos] = this->par.getBlankPixVal();
 	  else      newarray[pos] = this->array[smlpos];
 	}
@@ -186,12 +200,12 @@ void Cube::unTrimCube()
       float *newrecon   = new float[this->numPixels];
       for(int x = 0; x < this->axisDim[0]; x++){
 	for(int y = 0; y < this->axisDim[1]; y++){
-	  isDud = (x<this->par.getBorderLeft()) || (x>=smallXDim+this->par.getBorderLeft()) || 
-	    (y<this->par.getBorderBottom()) || (y>=smallYDim+this->par.getBorderBottom());
+	  isDud = (x<left) || (x>=smallXDim+left) || 
+	    (y<bottom) || (y>=smallYDim+bottom);
 	  
 	  for(int z = 0; z < this->axisDim[2]; z++){ 
 	    pos = x + y*this->axisDim[0] + z*this->axisDim[0]*this->axisDim[1];
-	    smlpos = (x-this->par.getBorderLeft()) + (y-this->par.getBorderBottom())*smallXDim
+	    smlpos = (x-left) + (y-bottom)*smallXDim
 	      + z * smallXDim * smallYDim;
 	    if(isDud) newrecon[pos] = this->par.getBlankPixVal();
 	    else      newrecon[pos] = this->recon[smlpos];
@@ -207,9 +221,9 @@ void Cube::unTrimCube()
     for(int x = 0; x < this->axisDim[0]; x++){
       for(int y = 0; y < this->axisDim[1]; y++){
 	pos = x + y*this->axisDim[0];
-	smlpos = (x-this->par.getBorderLeft()) + (y-this->par.getBorderBottom())*smallXDim;
-	isDud = (x<this->par.getBorderLeft()) || (x>=smallXDim+this->par.getBorderLeft()) || 
-	  (y<this->par.getBorderBottom()) || (y>=smallYDim+this->par.getBorderBottom());
+	smlpos = (x-left) + (y-bottom)*smallXDim;
+	isDud = (x<left) || (x>=smallXDim+left) || 
+	  (y<bottom) || (y>=smallYDim+bottom);
 	if(isDud) newdetect[pos]=0;
 	else newdetect[pos] = this->detectMap[smlpos];
       }
@@ -221,13 +235,8 @@ void Cube::unTrimCube()
     // Now update the positions for all the detections
   
     for(int i=0;i<this->objectList.size();i++){
-      for(int pix=0;pix<objectList[i].getSize();pix++){
-	long x = objectList[i].getX(pix);
-	long y = objectList[i].getY(pix);
-	objectList[i].setX(pix,x+this->par.getBorderLeft());
-	objectList[i].setY(pix,y+this->par.getBorderBottom());
-      }
-      objectList[i].calcParams();
+      this->objectList[i].pixels().addOffsets(left,bottom,0);
+      //      objectList[i].calcParams(this->array,this->axisDim);
     }
 
   }

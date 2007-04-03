@@ -5,24 +5,17 @@
 #include <string>
 #include <vector>
 
-#ifndef PARAM_H
 #include <param.hh>
-#endif
-#ifndef DETECTION_H
 #include <Detection/detection.hh>
-#endif
-#ifndef COLUMNS_H
 #include <Detection/columns.hh>
-#endif
-#ifndef PLOTS_H
 #include <Cubes/plots.hh>
-#endif
-#ifndef STATS_H
 #include <Utils/Statistics.hh>
-#endif
+#include <PixelMap/Scan.hh>
+#include <PixelMap/Object2D.hh>
 
 using namespace Column;
 using namespace Statistics;
+using namespace PixelInfo;
 
 /****************************************************************/
 /** 
@@ -50,8 +43,8 @@ public:
   long               getDimZ(){if(numDim>2) return this->axisDim[2];else return 1;};
   long               getSize(){ return this->numPixels; };
   short int          getNumDim(){ return this->numDim; };
-  virtual float              getPixValue(long pos){ return array[pos]; };
-  virtual void               setPixValue(long pos, float f){array[pos] = f;};;
+  virtual float      getPixValue(long pos){ return array[pos]; };
+  virtual void       setPixValue(long pos, float f){array[pos] = f;};;
   Detection          getObject(long number){ return objectList[number]; };
   std::vector <Detection> getObjectList(){ return objectList; };
   long               getNumObj(){ return objectList.size(); };
@@ -65,7 +58,8 @@ public:
      *  Uses Param::readParams() to read parameters from a file.
      *  \param paramfile The file to be read.
      */
-  return par.readParams(paramfile); };
+    return par.readParams(paramfile); 
+  };
 
   //-----------------------------------------
   // Related to the various arrays
@@ -74,9 +68,11 @@ public:
   void               getDim(long &x, long &y, long &z);
   /** Return array of dimensional sizes.*/
   void               getDimArray(long *output);
+  long *             getDimArray(){return axisDim;};
 
   /** Return pixel value array. */
   void               getArray(float *output);
+  float *            getArray(){return array;};
 
   /** Save pixel value array. */
   virtual void       saveArray(float *input, long size);
@@ -89,6 +85,7 @@ public:
 
   /** Adds all objects in a detection list to the object list. */
   void               addObjectList(std::vector <Detection> newlist);   
+
   /** Add pixel offsets to object coordinates. */
   void               addObjectOffsets(); 
 
@@ -113,7 +110,10 @@ public:
   StatsContainer<float> getStats(){ return this->Stats; };
 
   /** Provides a reference to the StatsContainer. */
-  StatsContainer<float>& stats(){ StatsContainer<float> &rstats = this->Stats;  return rstats;}; 
+  StatsContainer<float>& stats(){ 
+    StatsContainer<float> &rstats = this->Stats;  return rstats;
+  };
+ 
   /** Save a StatsContainer to the Cube. */
   void saveStats(StatsContainer<float> newStats){ this->Stats = newStats;};
 
@@ -130,17 +130,19 @@ public:
 
 protected:
   short int               numDim;     ///< Number of dimensions.
-  long                   *axisDim;    ///< Array of dimensions of cube (ie. how large in each direction).
+  long                   *axisDim;    ///< Array of dimensions of cube
+				      ///   (ie. how large in each
+				      ///        direction).
   long                    numPixels;  ///< Total number of pixels in cube.
   float                  *array;      ///< Array of data.
-  std::vector <Detection>      objectList; ///< The list of detected objects.
+  std::vector <Detection> objectList; ///< The list of detected objects.
   Param                   par;        ///< A parameter list.
   StatsContainer<float>   Stats;      ///< The statistics for the DataArray.
 };
 
 
 
-//===============================================================================
+//=========================================================================
 
 /**
  * Definition of an data-cube object (3D):
@@ -252,7 +254,8 @@ public:
   /** Find the flux enclosed by a Detection. */
   float       enclosedFlux(Detection obj);
 
-  /** Set up the output column definitions for the Cube and its Detection list. */
+  /** Set up the output column definitions for the Cube and its
+      Detection list. */
   void        setupColumns();
 
   /** Is the object at the edge of the image? */
@@ -294,6 +297,7 @@ public:
 
   /** Save Hanning-smoothed array to disk.*/
   void        saveSmoothedCube();       // in Cubes/saveImage.cc
+
   /** Save Reconstructed array to disk. */
   void        saveReconstructedCube();  // in Cubes/saveImage.cc
 
@@ -329,11 +333,10 @@ public:
   // Reconstruction, Searching and Merging functions
   //
   // in ATrous/ReconSearch.cc
-  /** Switcher to reconstruction functions */
-  void        ReconCube();
-
   /** Front-end to reconstruction & searching functions.*/
   void        ReconSearch();
+  /** Switcher to reconstruction functions */
+  void        ReconCube();
   /** Performs 1-dimensional a trous reconstruction on the Cube. */
   void        ReconCube1D();
   /** Performs 2-dimensional a trous reconstruction on the Cube. */
@@ -352,7 +355,8 @@ public:
   void        SmoothCube();
 
   // in Cubes/Merger.cc
-  /** Merge all objects in the detection list so that only distinct ones are left. */
+  /** Merge all objects in the detection list so that only distinct
+      ones are left. */
   void        ObjectMerger();
   
   //-------------------------------------
@@ -382,13 +386,16 @@ public:
   void        plotBlankEdges();  // in cubes.cc
 
   //  in Cubes/plotting.cc
-  /** Plot a spatial map of detections based on number of detected channels. */
+  /** Plot a spatial map of detections based on number of detected
+      channels. */
   void        plotDetectionMap(std::string pgDestination);
 
-  /** Plot a spatial map of detections based on 0th moment map of each object. */
+  /** Plot a spatial map of detections based on 0th moment map of each
+      object. */
   void        plotMomentMap(std::string pgDestination);
 
-  /** Plot a spatial map of detections based on 0th moment map of each object to a number of PGPLOT devices. */
+  /** Plot a spatial map of detections based on 0th moment map of each
+      object to a number of PGPLOT devices. */
   void        plotMomentMap(std::vector<std::string> pgDestination);
 
   /** Draw WCS axes over a PGPLOT map. */
@@ -408,21 +415,30 @@ public:
   /** Draw a scale bar indicating angular size of the cutout. */
   void        drawScale(float xstart,float ystart,float channel);
 
-  /** Draw a yellow line around the edge of the spatial extent of pixels. */
+  /** Draw a yellow line around the edge of the spatial extent of
+      pixels. */
   void        drawFieldEdge();
 
 private: 
-  float      *recon;            ///< reconstructed array - used when doing a trous reconstruction.
-  bool        reconExists;      ///< flag saying whether there is a reconstruction
-  short      *detectMap;        ///< "moment map" - x,y locations of detected pixels
-  float      *baseline;         ///< array of spectral baseline values.
+  float      *recon;            ///< reconstructed array - used when
+				///   doing a trous reconstruction.
+  bool        reconExists;      ///< flag saying whether there is a
+				///   reconstruction
+  short      *detectMap;        ///< "moment map" - x,y locations of
+				///   detected pixels
+  float      *baseline;         ///< array of spectral baseline
+				///   values.
 			     
-  bool        reconAllocated;   ///< have we allocated memory for the recon array?
-  bool        baselineAllocated;///< have we allocated memory for the baseline array?
-			     
-  FitsHeader  head;             ///< the WCS and other header information.
-  std::vector<Col> fullCols;         ///< the list of all columns as printed in the results file
-  std::vector<Col> logCols;          ///< the list of columns as printed in the log file
+  bool        reconAllocated;   ///< have we allocated memory for the
+				///   recon array?
+  bool        baselineAllocated;///< have we allocated memory for the
+				///   baseline array?
+  FitsHeader  head;             ///< the WCS and other header
+				///   information.
+  std::vector<Col> fullCols;    ///< the list of all columns as
+				///   printed in the results file
+  std::vector<Col> logCols;     ///< the list of columns as printed in
+				///   the log file
 
 };
 
@@ -492,7 +508,9 @@ public:
   Image(long *dimensions);
   virtual ~Image(){};
 
+  //--------------------
   // Defining the array
+  //
   /** Save an external array to the Cube's pixel array */
   void      saveArray(float *input, long size);
 
@@ -510,6 +528,7 @@ public:
 
   //--------------------
   // Accessing the data.
+  //
   float     getPixValue(long pos){ return array[pos]; };
   float     getPixValue(long x, long y){return array[y*axisDim[0] + x];};
   // the next few should have checks against array overflow...
@@ -520,15 +539,15 @@ public:
 
   //-----------------------
   // Detection-related
+  //
   /** Detect objects in a 2-D image */
-  void      lutz_detect();            // in Detection/lutz_detect.cc
+  std::vector<Object2D> lutz_detect();    // in Detection/lutz_detect.cc
 
   /** Detect objects in a 1-D spectrum */
-  void      spectrumDetect();         // in Detection/spectrumDetect.cc
+  std::vector<Scan> spectrumDetect();     // in Detection/spectrumDetect.cc
 
   int       getMinSize(){return minSize;};
   void      setMinSize(int i){minSize=i;};
-  // the rest are in Detection/thresholding_functions.cc
 
   /**  A detection test for a pixel location.  */
   bool      isDetection(long x, long y){
@@ -543,9 +562,10 @@ public:
 
   /** Blank out a set of channels marked as being Milky Way channels */
   void      removeMW();
-  
+
 private: 
-  int        minSize;    ///< the minimum number of pixels for a detection to be accepted.
+  int       minSize;    ///< the minimum number of pixels for a
+			///   detection to be accepted.
 };
 
 

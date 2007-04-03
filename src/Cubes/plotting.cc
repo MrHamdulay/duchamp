@@ -8,12 +8,14 @@
 #include <wcs.h>
 #include <duchamp.hh>
 #include <param.hh>
+#include <PixelMap/Object3D.hh>
 #include <Cubes/cubes.hh>
 #include <Cubes/plots.hh>
 #include <Utils/utils.hh>
 #include <Utils/mycpgplot.hh>
 
 using namespace mycpgplot;
+using namespace PixelInfo;
 
 void Cube::plotDetectionMap(std::string pgDestination)
 {
@@ -178,10 +180,11 @@ void Cube::plotMomentMap(std::string pgDestination)
       bool *isObj = new bool[xdim*ydim*zdim];
       for(int i=0;i<xdim*ydim*zdim;i++) isObj[i] = false;
       for(int i=0;i<this->objectList.size();i++){
-	for(int p=0;p<this->objectList[i].getSize();p++){
-	  int pixelpos = this->objectList[i].getX(p) + 
-	    xdim*this->objectList[i].getY(p) +
-	    xdim*ydim*this->objectList[i].getZ(p);
+	std::vector<Voxel> voxlist = 
+	  this->objectList[i].pixels().getPixelSet();
+	for(int p=0;p<voxlist.size();p++){
+	  int pixelpos = voxlist[p].getX() + xdim*voxlist[p].getY() + 
+	    xdim*ydim*voxlist[p].getZ();
 	  isObj[pixelpos] = true;
 	}
       }
@@ -399,10 +402,11 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
       bool *isObj = new bool[xdim*ydim*zdim];
       for(int i=0;i<xdim*ydim*zdim;i++) isObj[i] = false;
       for(int i=0;i<this->objectList.size();i++){
-	for(int p=0;p<this->objectList[i].getSize();p++){
-	  int pixelpos = this->objectList[i].getX(p) + 
-	    xdim*this->objectList[i].getY(p) +
-	    xdim*ydim*this->objectList[i].getZ(p);
+	std::vector<Voxel> voxlist = 
+	  this->objectList[i].pixels().getPixelSet();
+	for(int p=0;p<voxlist.size();p++){
+	  int pixelpos = voxlist[p].getX() + xdim*voxlist[p].getY() + 
+	    xdim*ydim*voxlist[p].getZ();
 	  isObj[pixelpos] = true;
 	}
       }

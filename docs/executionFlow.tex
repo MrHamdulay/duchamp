@@ -1,7 +1,7 @@
-\secA{What \duchamp\ is doing}
+\secA{What \duchamp is doing}
 \label{sec-flow}
 
-The execution flow of \duchamp\ is detailed here, indicating the main
+The execution flow of \duchamp is detailed here, indicating the main
 algorithmic steps that are used. The program is written in C/C++ and
 makes use of the \textsc{cfitsio}, \textsc{wcslib} and \textsc{pgplot}
 libraries.
@@ -32,7 +32,7 @@ first is the generalised form
 for each axis in the FITS file. In this manner, the x-coordinates run
 from \texttt{x1} to \texttt{x2} (inclusive), with steps of
 \texttt{dx}. The step value can be omitted, so a subsection of the
-form \texttt{[2:50,2:50,10:1000]} is still valid. In fact, \duchamp\
+form \texttt{[2:50,2:50,10:1000]} is still valid. In fact, \duchamp
 does not make use of any step value present in the subsection string,
 and any that are present are removed before the file is opened.
 
@@ -65,7 +65,7 @@ All types of subsections can be combined \eg \texttt{[5,2:98,*]}.
 %\texttt{[x1:x2:dx,y1:y2:dy,z1:z2:dz,...]}, such that the x-coordinates run
 %from \texttt{x1} to \texttt{x2} (inclusive), with steps of
 %\texttt{dx}. The step value can be omitted (so a subsection of the
-%form \texttt{[2:50,2:50,10:1000]} is still valid). \duchamp\ does not
+%form \texttt{[2:50,2:50,10:1000]} is still valid). \duchamp does not
 %make use of any step value present in the subsection string, and any
 %that are present are removed before the file is opened.
 %
@@ -84,7 +84,7 @@ All types of subsections can be combined \eg \texttt{[5,2:98,*]}.
 \label{sec-modify}
 
 Several modifications to the cube can be made that improve the
-execution and efficiency of \duchamp\ (their use is optional, governed
+execution and efficiency of \duchamp (their use is optional, governed
 by the relevant flags in the parameter file).
 
 \secC{BLANK pixel removal}
@@ -142,7 +142,7 @@ temporary measure which does not affect the source-detection.
 
 Finally, a single set of contiguous channels can be ignored -- these
 may exhibit very strong emission, such as that from the Milky Way as
-seen in extragalactic \hi\ cubes (hence the references to ``Milky
+seen in extragalactic \hi cubes (hence the references to ``Milky
 Way'' in relation to this task -- apologies to Galactic
 astronomers!). Such dominant channels will produce many detections
 that are unnecessary, uninteresting (if one is interested in
@@ -164,8 +164,8 @@ is indicated by a green hashed box.
 \secB{Image reconstruction}
 \label{sec-recon}
 
-The user can direct \duchamp\ to reconstruct the data cube using the
-\atrous\ wavelet procedure. A good description of the procedure can be
+The user can direct \duchamp to reconstruct the data cube using the
+\atrous wavelet procedure. A good description of the procedure can be
 found in \citet{starck02:book}. The reconstruction is an effective way
 of removing a lot of the noise in the image, allowing one to search
 reliably to fainter levels, and reducing the number of spurious
@@ -175,7 +175,7 @@ relatively time- and memory-intensive.
 
 \secC{Algorithm}
 
-The steps in the \atrous\ reconstruction are as follows:
+The steps in the \atrous reconstruction are as follows:
 \begin{enumerate}
 \item The reconstructed array is set to 0 everywhere.
 \item The input array is discretely convolved with a given filter
@@ -189,7 +189,7 @@ The steps in the \atrous\ reconstruction are as follows:
   $\sigma$ above the mean and adjusted to the current scale -- see
   Appendix~\ref{app-scaling}), add these to the reconstructed array.
 \item The separation of the filter coefficients is doubled. (Note that
-  this step provides the name of the procedure\footnote{\atrous\ means
+  this step provides the name of the procedure\footnote{\atrous means
   ``with holes'' in French.}, as gaps or holes are created in the
   filter coverage.)
 \item The procedure is repeated from step 2, using the convolved array
@@ -209,7 +209,7 @@ reconstruction. This step is repeated until the change in the measured
 standard deviation of the background (see note below on the evaluation
 of this quantity) is less than some fiducial amount.
 
-It is important to note that the \atrous\ decomposition is an example
+It is important to note that the \atrous decomposition is an example
 of a ``redundant'' transformation. If no thresholding is performed,
 the sum of all the wavelet coefficient arrays and the final smoothed
 array is identical to the input array. The thresholding thus removes
@@ -280,7 +280,7 @@ filter is used to construct a 2- or 3-dimensional equivalent.
 
 The reconstruction stage can be relatively time-consuming,
 particularly for large cubes and reconstructions in 3-D. To get around
-this, \duchamp\ provides a shortcut to allow users to perform multiple
+this, \duchamp provides a shortcut to allow users to perform multiple
 searches (\eg with different thresholds) on the same reconstruction
 without calculating the reconstruction each time.
 
@@ -295,7 +295,7 @@ example, suppose \texttt{image.fits} has been reconstructed using a
 3-dimensional reconstruction with filter \#2, thresholded at $4\sigma$
 using all scales. The output filename will then be
 \texttt{image.RECON-3-2-4-1.fits} (\ie it uses the four parameters
-relevant for the \atrous\ reconstruction as listed in
+relevant for the \atrous reconstruction as listed in
 Appendix~\ref{app-param}). The new FITS file will also have these
 parameters as header keywords. If a subsection of the input image has
 been used (see \S\ref{sec-input}), the format of the output filename
@@ -311,7 +311,7 @@ If a reconstructed image has been saved, it can be read in and used
 instead of redoing the reconstruction. To do so, the user should set
 the parameter \texttt{flagReconExists = true}. The user can indicate
 the name of the reconstructed FITS file using the \texttt{reconFile}
-parameter, or, if this is not specified, \duchamp\ searches for the
+parameter, or, if this is not specified, \duchamp searches for the
 file with the name as defined above. If the file is not found, the
 reconstruction is performed as normal. Note that to do this, the user
 needs to set
@@ -358,13 +358,24 @@ true}, and then the smoothed array will be saved in
 \texttt{image.SMOOTH-a.fits}, where a is replaced by the Hanning width
 used. Similarly, a saved file can be read in by setting
 \texttt{flagSmoothExists = true} and either specifying a file to be
-read with the \texttt{smoothFile} parameter or relying on \duchamp\ to
+read with the \texttt{smoothFile} parameter or relying on \duchamp to
 find the file with the name as given above. 
 
 \secB{Searching the image}
 \label{sec-detection}
 
-The image is searched for detections in two ways: spectrally (a
+The basic idea behind detection is to locate sets of contiguous voxels
+that lie above some threshold. \duchamp now calculates one threshold
+for the entire cube (previous versions calculated thresholds for each
+spectrum and image). This enables calculation of signal-to-noise
+ratios for each source (see Section~\ref{sec-output} for details). The
+user can manually specify a value (using the parameter
+\texttt{threshold}) for the threshold, which will override the
+calculated value. Note that this only applies for the first of the two
+cases discussed below -- the FDR case ignores any manually-set
+threshold value.
+
+The image is searched for detections in two ways: spectrally (\ie a
 1-dimensional search in the spectrum in each spatial pixel), and
 spatially (a 2-dimensional search in the spatial image in each
 channel). In both cases, the algorithm finds connected pixels that are
@@ -380,24 +391,49 @@ another starts, you know that you will not get back to the first one
 row. Three-dimensional data does not have this property, which is why
 we break up the searching into 1- and 2-dimensional cases.
 
-The basic idea behind detection is to locate sets of contiguous voxels
-that lie above some threshold. \duchamp\ now calculates one threshold
-for the entire cube (previous versions calculated thresholds for each
-spectrum and image). This enables calculation of signal-to-noise
-ratios for each source (see Section~\ref{sec-output} for details). The
-user can manually specify a value (using the parameter
-\texttt{threshold}) for the threshold, which will override the
-calculated value. Note that this only applies for the first of the two
-cases discussed below -- the FDR case ignores any manually-set
-threshold value.
+Detections must have a minimum number of pixels to be counted. This
+number is given by the input parameters \texttt{minPix} (for
+2-dimensional searches) and \texttt{minChannels} (for 1-dimensional
+searches).
 
-The determination of the threshold is done in one of two ways. The
-first way is a simple sigma-clipping, where a threshold is set at a
-fixed number $n$ of standard deviations above the mean, and pixels
-above this threshold are flagged as detected. The value of $n$ is set
-with the parameter \texttt{snrCut}. As before, the value of the
-standard deviation is estimated by the MADFM, and corrected by the
-ratio derived in Appendix~\ref{app-madfm}.
+Finally, the search only looks for positive features. If one is
+interested instead in negative features (such as absorption lines),
+set the parameter \texttt{flagNegative = true}. This will invert the
+cube (\ie multiply all pixels by $-1$) prior to the search, and then
+re-invert the cube (and the fluxes of any detections) after searching
+is complete. All outputs are done in the same manner as normal, so
+that fluxes of detections will be negative.
+
+\secC{Calculating statistics}
+
+A crucial part of the detection process is estimating the statistics
+that define the detection threshold. To determine a threshold, we need
+to estimate from the data two parameters: the middle of the pixel
+distribution, and its spread. For both cases, we again use robust
+methods, using the median and MADFM. If the cube has been
+reconstructed or smoothed, the residuals (defined in the sense of
+original $-$ reconstruction) are used to estimate the noise parameters
+of the cube. Otherwise they are estimated directly from the cube
+itself. In both cases, robust estimators are used.
+
+The parameters that are estimated should be representative of the
+noise in the cube. For the case of small objects embedded in many
+noise pixels (\eg the case of \hi surveys), using the full cube will
+provide good estimators. It is possible, however, to use only a
+subsection of the cube by setting the parameter \texttt{flagStatSec =
+true} and providing the desired subsection to the \texttt{StatSec}
+parameter. This subsection works in exactly the same way as the pixel
+subsection discussed in \S\ref{sec-input}.
+
+\secC{Determining the threshold}
+
+Once the statistics have been calculated, the threshold is determined
+in one of two ways. The first way is a simple sigma-clipping, where a
+threshold is set at a fixed number $n$ of standard deviations above
+the mean, and pixels above this threshold are flagged as detected. The
+value of $n$ is set with the parameter \texttt{snrCut}. As before, the
+value of the standard deviation is estimated by the MADFM, and
+corrected by the ratio derived in Appendix~\ref{app-madfm}.
 
 The second method uses the False Discovery Rate (FDR) technique
 \citep{miller01,hopkins02}, whose basis we briefly detail here. The
@@ -439,23 +475,6 @@ see discussion in \S\ref{sec-notes}. The effect is that the number of
 false detections will be less than indicated by the $\alpha$ value
 used.
 
-If the cube has been reconstructed or smoothed, the residuals (defined
-in the sense of original $-$ reconstruction) are used to estimate the
-noise parameters of the cube. Otherwise they are estimated directly
-from the cube itself. In both cases, robust estimators are used.
-
-Detections must have a minimum number of pixels to be counted. This
-number is given by the input parameters \texttt{minPix} (for
-2-dimensional searches) and \texttt{minChannels} (for 1-dimensional
-searches).
-
-Finally, the search only looks for positive features. If one is
-interested instead in negative features (such as absorption lines),
-set the parameter \texttt{flagNegative = true}. This will invert the
-cube (\ie multiply all pixels by $-1$) prior to the search, and then
-re-invert the cube (and the fluxes of any detections) after searching
-is complete. All outputs are done in the same manner as normal, so
-that fluxes of detections will be negative.
 
 \secB{Merging detected objects}
 \label{sec-merger}
@@ -477,8 +496,9 @@ and channels respectively).
 Alternatively, the spatial requirement can be changed to say that
 there must be a pair of pixels that are \emph{adjacent} -- a stricter,
 but perhaps more realistic requirement, particularly when the spatial
-pixels have a large angular size (as is the case for \hi\
-surveys). This method can be selected by setting the parameter
+pixels have a large angular size (as is the case for 
+\hi surveys). This 
+method can be selected by setting the parameter
 \texttt{flagAdjacent} to 1 (\ie \texttt{true}) in the parameter
 file. The velocity thresholding is done in the same way as the first
 option.

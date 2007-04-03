@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 #include <math.h>
 #include <wcs.h>
 #define WCSLIB_GETWCSTAB // define this so that we don't try and redefine 
@@ -8,19 +9,20 @@
 #include <fitsio.h>
 #include <param.hh>
 #include <duchamp.hh>
+#include <Utils/Section.hh>
 
 void Param::setOffsets(struct wcsprm *wcs)
 {
   /** 
-   * If there is a subsection being used, set the offset values according to the 
-   * correct dimensions given by the WCS struct.
+   * If there is a subsection being used, set the offset values
+   * according to the correct dimensions given by the WCS struct.  
    * If not, set the offsets to zero.
    * \param wcs The WCSLIB wcsprm struct that defines which axis is which.
    */
   if(this->flagSubsection){ // if so, then the offsets array is defined.
-    this->xSubOffset = this->offsets[wcs->lng];
-    this->ySubOffset = this->offsets[wcs->lat];
-    this->zSubOffset = this->offsets[wcs->spec];
+    this->xSubOffset = this->pixelSec.getStart(wcs->lng);
+    this->ySubOffset = this->pixelSec.getStart(wcs->lat);
+    this->zSubOffset = this->pixelSec.getStart(wcs->spec);
   }
   else{// else they should be 0
     this->xSubOffset = this->ySubOffset = this->zSubOffset = 0;
@@ -79,109 +81,21 @@ int Param::verifySubsection()
   }
 
   ///////////////////
-
-  // Make sure subsection has [ and ] at ends
-  if((this->subsection[0]!='[') || 
-     (this->subsection[this->subsection.size()-1]!=']')){
-    std::stringstream errmsg;
-    errmsg << "Subsection needs to be delimited by square brackets\n"
-	   << "You provided: " << this->subsection << std::endl;
-    duchampError("verifySubsection",errmsg.str());
+  // Now parse the subsection and make sure all that works.
+  
+  std::vector<long> dim(numAxes);
+  for(int i=0;i<numAxes;i++) dim[i] = dimAxes[i];
+  delete [] dimAxes;
+  if(this->pixelSec.parse(dim)==FAILURE){
+    std::cerr << "fnord\n";
+    return FAILURE;
+  }
+  if(this->statSec.parse(dim)==FAILURE){
+    std::cerr << "aarrgghh!\n";
     return FAILURE;
   }
 
-  ///////////////////
+  std::cerr << this->statSec.getSection()<<" <=====> " << this->statSec.getStart(0) << "\n";
 
-  // Make sure subsection has number of sections matching number of axes
-
-  int numSections=1;
-  for(int i=0;i<this->subsection.size();i++)
-    if(this->subsection[i]==',') numSections++;
-
-  if(numSections!=numAxes){
-    std::stringstream errmsg;
-    errmsg << "Subsection has "<<numSections
-	   <<" sections, whereas the FITS file has " << numAxes << " axes\n"
-	   << "Subsection provided was: " << this->subsection << std::endl;
-    duchampError("verifySubsection",errmsg.str());
-    return FAILURE;
-  }
-    
-  ///////////////////
-
-  // If we get to here, should have correct number of entries.
-
-  if(this->sizeOffsets>0) delete [] this->offsets;
-  this->offsets = new long[numAxes];
-  this->sizeOffsets = numAxes;
-
-  std::vector<std::string> sections(numSections); 
-  // this will hold the section strings for each dimension
-
-  std::stringstream ss;
-  ss.str(this->subsection);
-  bool removeStep = false;
-  bool doingBorders = false;
-  std::string temp;
-
-  bool atEnd = false;
-  getline(ss,temp,'[');
-  for(int i=0;i<numSections-1;i++){
-    getline(ss,temp,',');
-    sections[i]=temp;
-  }
-  getline(ss,temp,']');
-  sections[numSections-1]=temp;
-
-  for(int str=0;str<numSections;str++){
-    if(sections[str]=="*") this->offsets[str] = 0;
-    else{
-      // if it is a genuine subsection and not everything.
-      int a = sections[str].find(':');     // first occurence of ':' in section
-
-      if(a>0){
-	int b = sections[str].find(':',a+1); 
-	// location of second ':' - will be -1 if there is no second ':'
-	this->offsets[str] = atoi( sections[str].substr(0,a).c_str() ) - 1;
-	// store the minimum pixel value in offsets array
-	if(b>0){  
-	  // if there is a step component, rewrite section string without 
-	  //  the step part.
-	  sections[str] = sections[str].substr(0,b); 
-	  removeStep = true;
-	}
-      }
-      else{
-	// if there is no ':' in the subsection -- just deal with borders.
-	doingBorders=true;
-	this->offsets[str] = atoi( sections[str].c_str() ) - 1;
-	std::stringstream temp;
-	temp << sections[str] << ":" 
-	     << dimAxes[str]-atoi(sections[str].c_str());
-	sections[str] = temp.str();
-      }
-    }
-  }
-
-  std::stringstream errmsg;
-  if(removeStep){  // if there was a step present
-    errmsg << "The subsection given is " << this->subsection <<".\n"
-	   << "Duchamp is currently unable to deal with pixel steps"
-	   << " in the subsection.\n"
-	   << "These have been ignored, and so the subection used is ";
-  }
-
-  if(removeStep || doingBorders){
-    // rewrite subsection without any step sizes and with correct borders.
-   this->subsection = "[" + sections[0];
-   for(int str=1;str<numSections;str++) 
-     this->subsection += ',' + sections[str];
-   this->subsection += "]";
-  }
-
-  if(removeStep){
-    errmsg << this->subsection << std::endl;
-    duchampWarning("verifySubsection", errmsg.str());
-  }
-
+  return SUCCESS;
 }

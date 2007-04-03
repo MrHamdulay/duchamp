@@ -8,9 +8,13 @@
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
 #include <Utils/mycpgplot.hh>
+#include <PixelMap/Voxel.hh>
+#include <PixelMap/Object3D.hh>
+#include <vector>
 
 const int MIN_WIDTH=20;
 using namespace mycpgplot;
+using namespace PixelInfo;
 
 void Cube::drawMomentCutout(Detection &object)
 {
@@ -276,15 +280,25 @@ void Detection::drawBorders(int xoffset, int yoffset)
     int xsize = int(x2 - x1) + 1;
     int ysize = int(y2 - y1) + 1;
 
-    bool *isObj = new bool[xsize*ysize];
-    for(int i=0;i<xsize*ysize;i++) isObj[i]=false;
-    for(int i=0;i<this->pix.size();i++)
-      isObj[ (this->pix[i].getY()-yoffset)*xsize + 
-	     (this->pix[i].getX()-xoffset)         ] = true;
-  
+//     std::cerr << xsize << "   " << ysize << "\n";
+
+//     bool *isObj = new bool[xsize*ysize];
+//     for(int i=0;i<xsize*ysize;i++)
+//       isObj[i] = spatmap.isInObject(i%xsize + xoffset, i/xsize + yoffset);
+    std::vector<Voxel> voxlist = this->pixelArray.getPixelSet();
+    std::vector<bool> isObj(xsize*ysize,false);
+    for(int i=0;i<voxlist.size();i++){
+      int pos = (voxlist[i].getX()-xoffset) + (voxlist[i].getY()-yoffset)*xsize;
+      if(pos<xsize*ysize) isObj[pos] = true;
+//       else std::cerr << i<<"/"<<voxlist.size()<< " " <<pos << ": " << voxlist[i]<<"   " << voxlist[i].getX() << " " << voxlist[i].getY()<<"\n";
+    }
+    voxlist.clear();
+    
+//     for(int i=0;i<xsize*ysize;i++)
+//       if(isObj[i]) std::cerr << i%xsize << " " << i/xsize << "\n";
 
     cpgswin(0,xsize-1,0,ysize-1);
-    for(int x=this->xmin; x<=this->xmax; x++){
+    for(int x=this->getXmin(); x<=this->getXmax(); x++){
       // for each column...
       for(int y=1;y<ysize;y++){
 	int current = y*xsize + (x-xoffset);
@@ -296,7 +310,7 @@ void Detection::drawBorders(int xoffset, int yoffset)
 	}
       }
     }
-    for(int y=this->ymin; y<=this->ymax; y++){
+    for(int y=this->getYmin(); y<=this->getYmax(); y++){
       // now for each row...
       for(int x=1;x<xsize;x++){
 	int current = (y-yoffset)*xsize + x;
@@ -310,7 +324,7 @@ void Detection::drawBorders(int xoffset, int yoffset)
     }
     cpgswin(x1,x2,y1,y2);
   
-    delete [] isObj;
+//     delete [] isObj;
 
   }    
 

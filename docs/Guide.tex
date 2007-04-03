@@ -23,6 +23,7 @@
 
 \usepackage{amsmath}
 \usepackage{amsfonts}
+\usepackage{xspace}
 \usepackage[sort]{natbib}
 \bibpunct[,]{(}{)}{;}{a}{}{,}
 
@@ -37,11 +38,11 @@
 
 \newcommand{\eg}{e.g.\ }
 \newcommand{\ie}{i.e.\ }
-\newcommand{\hi}{H\textsc{i}}
-\newcommand{\hipass}{\textsc{hipass}}
-\newcommand{\duchamp}{\emph{Duchamp}}
-\newcommand{\atrous}{\textit{{\`a} trous}}
-\newcommand{\Atrous}{\textit{{\`A} trous}}
+\newcommand{\hi}{H\textsc{i}\xspace}
+\newcommand{\hipass}{\textsc{hipass}\xspace}
+\newcommand{\duchamp}{\emph{Duchamp}\xspace}
+\newcommand{\atrous}{\textit{{\`a} trous}\xspace}
+\newcommand{\Atrous}{\textit{{\`A} trous}\xspace}
 \newcommand{\diff}{{\rm d}}
 \newcommand{\entrylabel}[1]{\mbox{\textsf{\bf{#1:}}}\hfil}
 \newenvironment{entry}
@@ -122,8 +123,8 @@
 Matthew Whiting\\
 Australia Telescope National Facility\\
 CSIRO\\[3ex]} 
-Duchamp version~1.07\\
-December 6, 2006
+Duchamp version~1.1b\\
+April 3, 2007
 \end{minipage}}
 
 \begin{figure}[!h]
@@ -143,7 +144,7 @@ December 6, 2006
 \newpage
 \input{userInputs} %User Inputs
 \newpage
-\input{executionFlow} %What \duchamp\ is doing
+\input{executionFlow} %What \duchamp is doing
 \newpage
 \input{outputs} %Outputs
 \newpage

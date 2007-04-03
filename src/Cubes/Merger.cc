@@ -1,13 +1,16 @@
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <math.h>
 #include <vector>
+#include <PixelMap/Object3D.hh>
 #include <Cubes/cubes.hh>
 #include <Detection/detection.hh>
 #include <Utils/utils.hh>
 #include <Utils/feedback.hh>
 
 using std::vector;
+using namespace PixelInfo;
 
 void Cube::ObjectMerger()
 {
@@ -21,11 +24,13 @@ void Cube::ObjectMerger()
    *  with code to cover the option of growing objects.
    */
 
-  if(this->objectList.size() > 0){
+  int startSize = this->objectList.size();
+
+  if(startSize > 0){
 
     // make a vector "currentList", which starts as a copy of the Cube's 
     //  objectList, but is the one worked on.
-    vector <Detection> *currentList = new vector <Detection>(this->objectList.size());
+    vector <Detection> *currentList = new vector <Detection>(startSize);
     *currentList = this->objectList;
     this->objectList.clear();
 
@@ -96,7 +101,7 @@ void mergeList(vector<Detection> &objList, Param &par)
     while( counter < (objList.size()-1) ){
       if(isVerb){
 	std::cout.setf(std::ios::right);
-	std::cout << "Progress: " << std::setw(6) << counter << "/" ;
+	std::cout << "Progress: " << std::setw(6) << counter+1 << "/" ;
 	std::cout.unsetf(std::ios::right);
 	std::cout.setf(std::ios::left);
 	std::cout << std::setw(6) << objList.size();
@@ -109,18 +114,18 @@ void mergeList(vector<Detection> &objList, Param &par)
 
       do {
 
-	Detection *obj1 = new Detection;
-	*obj1 = objList[counter];
-	Detection *obj2 = new Detection;
-	*obj2 = objList[compCounter];
+	Detection obj1 = objList[counter];
+	Detection obj2 = objList[compCounter];
 
-	if(areClose(*obj1, *obj2, par)){
-	  obj1->addAnObject( *obj2 );
+	bool close = areClose(obj1, obj2, par);
+
+	if(close){
+	  obj1 = obj1 + obj2 ;
 	  iter = objList.begin() + compCounter;
 	  objList.erase(iter);
 	  iter = objList.begin() + counter;
 	  objList.erase(iter);
-	  objList.push_back( *obj1 );
+	  objList.push_back( obj1 );
 
 	  if(isVerb){
 	    std::cout.setf(std::ios::right);
@@ -138,9 +143,6 @@ void mergeList(vector<Detection> &objList, Param &par)
 
 	}
 	else compCounter++;
-
-	delete obj2;
-	delete obj1;
 
       } while( (compCounter<objList.size()) );
 
@@ -167,9 +169,8 @@ void finaliseList(vector<Detection> &objList, Param &par)
   while(listCounter < objList.size()){
 
     objList[listCounter].setOffsets(par);
-    objList[listCounter].calcParams();
 
-    if( objList[listCounter].hasEnoughChannels(par.getMinChannels())
+    if( (objList[listCounter].hasEnoughChannels(par.getMinChannels()))
 	&& (objList[listCounter].getSpatialSize() >= par.getMinPix()) ){
 
       listCounter++;

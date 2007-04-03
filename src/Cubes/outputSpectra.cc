@@ -5,11 +5,15 @@
 #include <cpgplot.h>
 #include <math.h>
 #include <wcs.h>
+#include <param.hh>
+#include <PixelMap/Object3D.hh>
 #include <Cubes/cubes.hh>
 #include <Cubes/plots.hh>
 #include <Utils/utils.hh>
 #include <Utils/mycpgplot.hh>
+
 using namespace mycpgplot;
+using namespace PixelInfo;
 
 void getSmallVelRange(Detection &obj, FitsHeader head, float *minvel, float *maxvel);
 void getSmallZRange(Detection &obj, float *minz, float *maxz);
@@ -68,7 +72,7 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   long zdim = this->axisDim[2];
   float beam = this->par.getBeamSize();
 
-  obj.calcParams();
+  obj.calcFluxes(this->array, this->axisDim);
 
   double minMWvel,maxMWvel,xval,yval,zval;
   xval = double(obj.getXcentre());
@@ -104,9 +108,9 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
       fluxLabel += " ["+this->head.getIntFluxUnits()+"]";
     bool *done = new bool[xdim*ydim]; 
     for(int i=0;i<xdim*ydim;i++) done[i]=false;
-    int thisSize = obj.getSize();
-    for(int pix=0;pix<thisSize;pix++){
-      int pos = obj.getX(pix) + xdim * obj.getY(pix);
+    std::vector<Voxel> voxlist = obj.pixels().getPixelSet();
+    for(int pix=0;pix<voxlist.size();pix++){
+      int pos = voxlist[pix].getX() + xdim * voxlist[pix].getY();
       if(!done[pos]){
 	done[pos] = true;
 	for(int z=0;z<zdim;z++){

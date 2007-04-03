@@ -3,6 +3,7 @@
 #include <duchamp.hh>
 #include <ATrous/filter.hh>
 #include <math.h>
+#include <vector>
 
 Filter::Filter()
 {

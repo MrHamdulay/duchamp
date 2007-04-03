@@ -1,6 +1,5 @@
 #include <vector>
 #include <algorithm>
-#include <Detection/voxel.hh>
 #include <Detection/detection.hh>
 
 using std::vector;
@@ -8,12 +7,13 @@ using std::vector;
 /**
  * A class to match things pair-wise (useful for sorting).
  *
- * This class is deigned to match two quantities to each other. 
- * It was devised to find a way of taking a pair of lists that are matched, 
- *  and sorting one list while keeping the second matched pair-wise.
+ * This class is deigned to match two quantities to each other.  It
+ * was devised to find a way of taking a pair of lists that are
+ * matched, and sorting one list while keeping the second matched
+ * pair-wise.
  *
- * The elements are currently just assumed to be floats. This could be extended by 
- *  templating, but at this stage we don't need to...
+ * The elements are currently just assumed to be floats. This could be
+ * extended by templating, but at this stage we don't need to...
  */
 class Pair
 {
@@ -22,8 +22,8 @@ public:
   virtual ~Pair(){};
   friend bool operator< (const Pair& lhs, const Pair& rhs){
     /**
-     *  A comparison operator for pairs.
-     *  Compare the primary elements of the two pairs, using the basic < operator.
+     *  A comparison operator for pairs.  Compare the primary elements
+     *  of the two pairs, using the basic < operator.
      */
     return (lhs.primary < rhs.primary);
   };
@@ -34,42 +34,14 @@ public:
   float get1(){return primary;};
   float get2(){return matching;};
 private:
-  float primary;  ///< The main element -- this will be the one that can be compared.
-  float matching; ///< The secondary element -- this cannot be compared with other objects, it just tracks the primary.
+  float primary;  ///< The main element -- this will be the one that
+		  ///can be compared.
+  float matching; ///< The secondary element -- this cannot be
+		  ///compared with other objects, it just tracks the
+		  ///primary.
 };
 
 //======================================================================
-
-void Detection::SortByZ()
-{
-  /**
-   * A Function that takes a Detection and sorts the pixels by z-pixel
-   * Upon return, the inputList is sorted.  
-   *
-   * We use the std::stable_sort function, so that the order of
-   * objects with the same z-value is preserved.
-   */
-
-  long size = this->pix.size();
-  Pair *info = new Pair[size];
-
-  for(int i=0;i<size;i++) info[i].define(this->pix[i].getZ(),float(i));
-
-  std::stable_sort(info,info+size);
-  
-  vector <Voxel> sorted(size);
-  for(int i=0;i<size;i++) sorted[i] = this->pix[int(info[i].get2())] ;
-
-  delete [] info;
-
-  for(int i=0;i<size;i++){
-    this->pix.erase(this->pix.begin()+i);
-    this->pix.insert(this->pix.begin()+i, sorted[i]);
-  }
-
-  sorted.clear();
-  
-}
 
 
 void SortByZ(vector <Detection> &inputList)

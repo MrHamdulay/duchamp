@@ -1,15 +1,15 @@
 #include <cpgplot.h>
 #include <duchamp.hh>
 #include <param.hh>
-#include <Utils/utils.hh>
+#include <Utils/mycpgplot.hh>
 #include <string>
 
 void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par)
 {
   /**    
-   *   A subroutine that is designed to draw the
-   *    edges of the blank region of the cube on a moment/detection map.
-   *   Uses the same procedure as used in the reconstruction subroutines.
+   *   A subroutine that is designed to draw the edges of the blank
+   *   region of the cube on a moment/detection map. Uses the same
+   *   procedure as used in the reconstruction subroutines.
    *
    *   Note that it needs a PGPLOT device open. The colour used is the current
    *    PGPLOT colour.

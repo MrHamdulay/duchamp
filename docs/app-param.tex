@@ -13,13 +13,9 @@ not matter, they are grouped here in logical sections.
 \item[flagSubsection \texttt{[false]}] A flag to indicate whether one
   wants a subsection of the requested image.
 \item[Subsection \texttt{[ [*,*,*] ]}] The requested subsection
-%, which should be specified in the format \texttt{[x1:x2,y1:y2,z1:z2]},
-%  where the limits are inclusive
- -- see \S\ref{sec-input} for details on the subsection format. 
- If the full range of a dimension is required, use a \texttt{*}
-%, \eg if you want the full spectral range of a subsection of the
-%  image, use \texttt{[30:140,30:140,*]} 
-  (thus  the default is the full cube).
+ -- see \S\ref{sec-input} for details on the subsection format.  If
+ the full range of a dimension is required, use a \texttt{*} (thus the
+ default is the full cube).
 \item[flagReconExists \texttt{[false]}] A flag to indicate whether the
   reconstructed array has been saved by a previous run of \duchamp. If
   set true, the reconstructed array will be read from the file given
@@ -27,7 +23,7 @@ not matter, they are grouped here in logical sections.
 \item[reconFile (no default assumed)] The FITS file that contains the
   reconstructed array. If \texttt{flagReconExists} is true and this
   parameter is not defined, the default file that is looked for will
-  be determined by the \atrous\ parameters (see \S\ref{sec-recon}).
+  be determined by the \atrous parameters (see \S\ref{sec-recon}).
 \item[flagSmoothExists \texttt{[false]}] A flag to indicate whether the
   Hanning-smoothed array has been saved by a previous run of \duchamp. If
   set true, the smoothed array will be read from the file given
@@ -122,6 +118,12 @@ not matter, they are grouped here in logical sections.
 
 \secC*{General detection}
 \begin{entry}
+\item[flagStatSec \texttt{[false]}] A flag indicating whether the cube
+  statistics should be calculated on a subsection of the cube, rather
+  than the full cube.
+\item[StatSec \texttt{[ [*,*,*] ]}] The subsection of the cube used
+  for calculating statistics -- see \S\ref{sec-input} for details on
+ the subsection format. Only used if \texttt{flagStatSec=true}.
 \item[flagNegative \texttt{[false]}] A flag indicating that the
   features being searched for are negative. The cube will be inverted
   prior to searching.
@@ -143,12 +145,12 @@ not matter, they are grouped here in logical sections.
   to calculate the beam size, and this parameter will be ignored. 
 \end{entry}
 
-\secC*{\Atrous\ reconstruction}
+\secC*{\Atrous reconstruction}
 \begin{entry}
 \item [flagATrous \texttt{[true]}] A flag indicating whether or not to
-  reconstruct the cube using the \atrous\ wavelet
+  reconstruct the cube using the \atrous wavelet
   reconstruction. See \S\ref{sec-recon} for details.
-\item[reconDim \texttt{[3]}] The number of dimensions to use in the
+\item[reconDim \texttt{[1]}] The number of dimensions to use in the
   reconstruction. 1 means reconstruct each spectrum separately, 2
   means each channel map is done separately, and 3 means do the whole
   cube in one go.

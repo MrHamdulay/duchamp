@@ -30,7 +30,7 @@ int main(int argc, char * argv[])
     return FAILURE;
   }
 
-  if(cube->pars().getFlagSubsection()){
+  if(cube->pars().getFlagSubsection() || cube->pars().getFlagStatSec()){
     // make sure the subsection is OK.
     if(cube->pars().verifySubsection() == FAILURE){
       duchampError("Duchamp", 
@@ -54,12 +54,6 @@ int main(int argc, char * argv[])
 
   // Read in any saved arrays that are in FITS files on disk.
   cube->readSavedArrays();
-
-  // Filter needed for baseline removal and a trous reconstruction
-//   if(cube->pars().getFlagATrous() || cube->pars().getFlagBaseline()){
-//     reconFilter.define(cube->pars().getFilterCode());
-//     cube->pars().setFilterName(reconFilter.getName());
-//   }
 
   // special case for 2D images -- ignore the minChannels requirement
   if(cube->getDimZ()==1) cube->pars().setMinChannels(0);  
@@ -117,13 +111,12 @@ int main(int argc, char * argv[])
     std::cout<<"Commencing search in cube..."<<std::endl;
     cube->CubicSearch();
   }
-  std::cout << "Done. Intermediate list has "
-	    << cube->getNumObj();
+  std::cout << "Done. Intermediate list has " << cube->getNumObj();
   if(cube->getNumObj()==1) std::cout << " object.\n";
   else std::cout << " objects.\n";
 
   if(cube->getNumObj() > 1){
-    std::cout<<"Merging lists...  "<<std::flush;
+    std::cout<<"Merging intermediate detections...  "<<std::flush;
     cube->ObjectMerger();
     std::cout<<"Done.                      "<<std::endl;
   }
@@ -135,7 +128,11 @@ int main(int argc, char * argv[])
     std::cout<<" Done."<<std::endl;
   }
 
-  cube->replaceBaseline();
+  if(cube->pars().getFlagBaseline()){
+    std::cout<<"Replacing the baselines...  "<<std::flush;
+    cube->replaceBaseline();
+    std::cout<<"Done."<<std::endl;
+  }
 
   if(cube->pars().getFlagCubeTrimmed()){
     std::cout<<"Replacing the trimmed pixels on the edges...  "<<std::flush;
@@ -155,11 +152,6 @@ int main(int argc, char * argv[])
   }
 
   std::cout<<"Creating the maps...  "<<std::flush;
-//   if(cube->pars().getFlagXOutput()) cube->plotMomentMap("/xs");
-//   if(cube->pars().getFlagMaps()){
-//     cube->plotMomentMap(cube->pars().getMomentMap()+"/vcps");
-//     cube->plotDetectionMap(cube->pars().getDetectionMap()+"/vcps");
-//   }
   std::vector<std::string> devices;
   if(cube->pars().getFlagXOutput()) devices.push_back("/xs");
   if(cube->pars().getFlagMaps()) 
@@ -167,28 +159,28 @@ int main(int argc, char * argv[])
   cube->plotMomentMap(devices);
   if(cube->pars().getFlagMaps())
     cube->plotDetectionMap(cube->pars().getDetectionMap()+"/vcps");
-  std::cout << "done.\n";
+  std::cout << "Done.\n";
 
   if((cube->getDimZ()>1) && (cube->getNumObj()>0)){
     std::cout << "Plotting the individual spectra... " << std::flush;
     cube->outputSpectra();
-    std::cout << "done.\n";
+    std::cout << "Done.\n";
   }
   else if(cube->getDimZ()<=1) 
     duchampWarning("Duchamp",
-		   "Not plotting any spectra  -- no third dimension.\n");
+		   "Not plotting any spectra : no third dimension.\n");
 
   cpgend();
 
   if(cube->pars().getFlagATrous()&&
      (cube->pars().getFlagOutputRecon()||cube->pars().getFlagOutputResid()) ){
-    std::cout << "Saving reconstructed cube"
+    std::cout << "Saving reconstructed cube to "
 	      << cube->pars().outputReconFile() << "... "<<std::flush;
     cube->saveReconstructedCube();
     std::cout << "done.\n";
   }
   if(cube->pars().getFlagSmooth()&& cube->pars().getFlagOutputSmooth()){
-    std::cout << "Saving Hanning-smoothed cube to"
+    std::cout << "Saving Hanning-smoothed cube to "
 	      << cube->pars().outputSmoothFile() << "... " <<std::flush;
     cube->saveSmoothedCube();
     std::cout << "done.\n";

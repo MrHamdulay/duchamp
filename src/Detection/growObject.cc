@@ -4,11 +4,13 @@
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
 #include <Utils/Statistics.hh>
-#include <Detection/voxel.hh>
+#include <PixelMap/Voxel.hh>
 #include <Detection/detection.hh>
 
 using std::vector;
 using std::setw;
+
+using namespace PixelInfo;
 
 void growObject(Detection &object, Cube &cube)
 {
@@ -33,8 +35,9 @@ void growObject(Detection &object, Cube &cube)
   long  chanpos;
 
   for(int i=0;i<object.getSize();i++) {
-    long pos = object.getX(i) + object.getY(i)*cube.getDimX() + 
-      object.getZ(i)*cube.getDimX()*cube.getDimY();
+    Voxel vox = object.getPixel(i);
+    long pos = vox.getX() + vox.getY()*cube.getDimX() + 
+      vox.getZ()*cube.getDimX()*cube.getDimY();
     isInObj[pos] = true;
   }
   
@@ -53,9 +56,9 @@ void growObject(Detection &object, Cube &cube)
 	    // ignore when all=0 ie. the current object pixel
 
 	    Voxel pixnew = object.getPixel(pix);
-	    long newx = object.getX(pix) + xnbr;
-	    long newy = object.getY(pix) + ynbr;
-	    long newz = object.getZ(pix) + znbr;
+	    long newx = pixnew.getX() + xnbr;
+	    long newy = pixnew.getY() + ynbr;
+	    long newz = pixnew.getZ() + znbr;
 	  
 	    if((newx<cube.getDimX())&&(newx>=0)&&
 	       (newy<cube.getDimY())&&(newy>=0)&&
@@ -88,7 +91,7 @@ void growObject(Detection &object, Cube &cube)
       
   } // end of pix loop
 
-  object.calcParams();
+  object.calcFluxes(cube.getArray(), cube.getDimArray());
 
   isInObj.clear();
 

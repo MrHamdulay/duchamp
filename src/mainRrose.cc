@@ -8,11 +8,13 @@
 
 #include <duchamp.hh>
 #include <param.hh>
-#include <Detection/voxel.hh>
+#include <PixelMap/Voxel.hh>
 #include <Detection/detection.hh>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
 #include <ATrous/atrous.hh>
+
+using namespace PixelInfo;
 
 int main(int argc, char * argv[])
 {

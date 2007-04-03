@@ -3,7 +3,7 @@
 
 \secB{During execution}
 
-\duchamp\ provides the user with feedback whilst it is running, to
+\duchamp provides the user with feedback whilst it is running, to
 keep the user informed on the progress of the analysis. Most of this
 consists of self-explanatory messages about the particular stage the
 program is up to. The relevant parameters are printed to the screen at
@@ -57,7 +57,7 @@ can be useful in determining what went wrong.
 
 \secC{Table of results}
 
-Finally, we get to the results -- the reason for running \duchamp\ in
+Finally, we get to the results -- the reason for running \duchamp in
 the first place. Once the detection list is finalised, it is sorted by
 the mean velocity of the detections (or, if there is no good WCS
 associated with the cube, by the mean $z$-pixel position). The results
@@ -125,7 +125,7 @@ The velocity units can be specified by the user, using the parameter
 \texttt{spectralUnits} (enter it as a single string). The default
 value is km/s, which should be suitable for most users. These units
 are also used to give the units of integrated flux. Note that if there
-is no rest frequency specified in the FITS header, the \duchamp\
+is no rest frequency specified in the FITS header, the \duchamp
 output will instead default to using Frequency, with units of MHz.
 
 If the WCS is absent or not sufficiently specified, then all columns
@@ -273,7 +273,7 @@ The production or otherwise of these images is governed by the
 
 The moment map is also displayed in a PGPlot XWindow. This feature can
 be turned off by setting the \texttt{flagXOutput} parameter to
-\texttt{false} -- this might be useful if running \duchamp\ on a
+\texttt{false} -- this might be useful if running \duchamp on a
 terminal with no window display capability, or if you have set up a
 script to run it in a batch mode.
 

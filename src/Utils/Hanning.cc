@@ -35,13 +35,13 @@ float *Hanning::smooth(float *array, int npts){
    * This smooths an array of float by doing a discrete convolution of
    * the input array with the filter coefficients.
    * 
-   * Currently only works for C arrays of floats, as that is all I need it for. 
-   * Could be made more general if needs be.
-
-   * \param array The input array. Needs to be defined -- no memory checks are done!
-   * \param npts The size of the input array. 
-   * \return Returns an array of the same size. If filter coefficients have not been 
-   *   allocated, the input array is returned.
+   * Currently only works for C arrays of floats, as that is all I
+   * need it for.  Could be made more general if needs be.
+   *
+   * \param array The input array. Needs to be defined -- no memory
+   * checks are done!  \param npts The size of the input array.
+   * \return Returns an array of the same size. If filter coefficients
+   * have not been allocated, the input array is returned.
    */
   if(!this->allocated) return array;
   else{

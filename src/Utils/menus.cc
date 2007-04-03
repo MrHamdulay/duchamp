@@ -29,22 +29,22 @@ std::string menu()
   int cube=0;
   switch(file){
   case 1:
-    fname = "/DATA/SITAR_1/whi550/cubes/precut_p26cube22_poly.fits";
+    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/precut_p26cube22_poly.fits";
     break;
   case 2:
-    fname = "/DATA/SITAR_1/whi550/cubes/precut_p34cube19_poly.fits";
+    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/precut_p34cube19_poly.fits";
     break;
   case 3:
-    fname = "/DATA/SITAR_1/whi550/cubes/precut_p34cube20_poly.fits";
+    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/precut_p34cube20_poly.fits";
     break;
   case 4:
-    fname = "/DATA/SITAR_1/whi550/cubes/precut_p42cube17_poly.fits";
+    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/precut_p42cube17_poly.fits";
     break;
   case 5:
-    fname = "/DATA/SITAR_1/whi550/cubes/precut_p58cube10_poly.fits";
+    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/precut_p58cube10_poly.fits";
     break;
   case 6:
-    fname = "/DATA/SITAR_1/whi550/cubes/H201_abcde_luther_chop.fits";
+    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/H201_abcde_luther_chop.fits";
     break;
   case 7:
     while((cube<1)||(cube>538)){

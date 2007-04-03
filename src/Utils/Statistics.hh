@@ -6,7 +6,8 @@
 #include <Utils/utils.hh>
 
 /**
- * A namespace to control everything to do with statistical calculations.
+ * A namespace to control everything to do with statistical
+ * calculations.
  */
 
 namespace Statistics
@@ -30,7 +31,7 @@ namespace Statistics
   template float madfmToSigma<double>(double madfm);
 
   /**
-   *  Class to hold statistics for a given set.
+   *  Class to hold statistics for a given set of values.
    *
    *  This class is designed to hold all useful statistics for a given
    *  array of numbers.  It does *not* hold the data themselves. It
@@ -87,7 +88,7 @@ namespace Statistics
     */
     void  setThresholdSNR(float snr){
       threshold=this->getMiddle() + snr*this->getSpread();};
-
+    
     /** 
      * Return the estimator of the middle value of the data.
      *
@@ -111,7 +112,8 @@ namespace Statistics
       else return stddev;
     };
 
-    /** Get the "probability", under the assumption of normality, of a value. */
+    /** Get the "probability", under the assumption of normality, of a
+	value occuring. */
     float getPValue(float value){
       float zStat = (value - this->getMiddle()) / this->getSpread();
       return 0.5 * erfc( zStat / M_SQRT2 );
@@ -139,16 +141,18 @@ namespace Statistics
   private:
     bool   defined;      // a flag indicating whether the stats are defined.
 
-    // basic statistics
-    float  mean;    
+    float  mean;         ///< The mean, or average, of the values.
     float  stddev;       ///< The standard deviation, or R.M.S., or sigma...
-    Type   median; 
+    Type   median;       ///< The median of the values.
     Type   madfm;	 ///< The median absolute deviation from the median 
 
     float  threshold;    ///< a threshold for simple sigma-clipping
-    float  pThreshold;   ///< a threshold for the FDR case -- the upper limit of P values that detected pixels can have.
+    float  pThreshold;   ///< a threshold for the FDR case -- the
+			 ///   upper limit of P values that detected
+			 ///   pixels can have.
     bool   useRobust;    ///< whether we use the two robust stats or not
-    bool   useFDR;       ///< whether the FDR method is used for determining a detection
+    bool   useFDR;       ///< whether the FDR method is used for
+			 ///   determining a detection
 
   };
 

@@ -69,9 +69,9 @@ void Detection::outputDetectionTextWCS(std::ostream &stream,
     stream.setf(std::ios::fixed);  
     columns[NUM].printEntry(stream,this->id);
     columns[NAME].printEntry(stream,this->name);
-    columns[X].printEntry(stream,this->xcentre + this->xSubOffset);
-    columns[Y].printEntry(stream,this->ycentre + this->ySubOffset);
-    columns[Z].printEntry(stream,this->zcentre + this->zSubOffset);
+    columns[X].printEntry(stream,this->getXcentre() + this->xSubOffset);
+    columns[Y].printEntry(stream,this->getYcentre() + this->ySubOffset);
+    columns[Z].printEntry(stream,this->getZcentre() + this->zSubOffset);
     if(this->flagWCS){
       columns[RA].printEntry(stream,this->raS);
       columns[DEC].printEntry(stream,this->decS);
@@ -85,13 +85,13 @@ void Detection::outputDetectionTextWCS(std::ostream &stream,
     else columns[FTOT].printEntry(stream,this->totalFlux);
     columns[FPEAK].printEntry(stream,this->peakFlux);
     columns[SNRPEAK].printEntry(stream,this->peakSNR);
-    columns[X1].printEntry(stream,this->xmin + this->xSubOffset);
-    columns[X2].printEntry(stream,this->xmax + this->xSubOffset);
-    columns[Y1].printEntry(stream,this->ymin + this->ySubOffset);
-    columns[Y2].printEntry(stream,this->ymax + this->ySubOffset);
-    columns[Z1].printEntry(stream,this->zmin + this->zSubOffset);
-    columns[Z2].printEntry(stream,this->zmax + this->zSubOffset);
-    columns[NPIX].printEntry(stream,int(this->pix.size()));
+    columns[X1].printEntry(stream,this->getXmin() + this->xSubOffset);
+    columns[X2].printEntry(stream,this->getXmax() + this->xSubOffset);
+    columns[Y1].printEntry(stream,this->getYmin() + this->ySubOffset);
+    columns[Y2].printEntry(stream,this->getYmax() + this->ySubOffset);
+    columns[Z1].printEntry(stream,this->getZmin() + this->zSubOffset);
+    columns[Z2].printEntry(stream,this->getZmax() + this->zSubOffset);
+    columns[NPIX].printEntry(stream,int(this->pixelArray.getSize()));
     columns[FLAG].printEntry(stream,this->flagText);
     stream << std::endl;
   }
@@ -107,8 +107,10 @@ void Detection::outputDetectionText(std::ostream &stream,
    *  This does not include any WCS parameters, only pixel positions & extent, 
    *    and flux info (including peak SNR).
    *  Also prints a counter, provided as an input.
+   *
    * \param stream Where to print.
-   * \param columns The set of Columns::Col objects that define the columns to be printed.
+   * \param columns The set of Columns::Col objects that define the
+   *    columns to be printed.
    * \param idNumber The number that acts as a counter in the first column.
    */
 
@@ -123,19 +125,19 @@ void Detection::outputDetectionText(std::ostream &stream,
    stream << std::setfill(' ');
    stream.setf(std::ios::fixed);  
    columns[lNUM].printEntry(stream,idNumber);
-   columns[lX].printEntry(stream,this->xcentre + this->xSubOffset);
-   columns[lY].printEntry(stream,this->ycentre + this->ySubOffset);
-   columns[lZ].printEntry(stream,this->zcentre + this->zSubOffset);
+   columns[lX].printEntry(stream,this->getXcentre() + this->xSubOffset);
+   columns[lY].printEntry(stream,this->getYcentre() + this->ySubOffset);
+   columns[lZ].printEntry(stream,this->getZcentre() + this->zSubOffset);
    columns[lFTOT].printEntry(stream,this->totalFlux);
    columns[lFPEAK].printEntry(stream,this->peakFlux);
    columns[lSNRPEAK].printEntry(stream,this->peakSNR);
-   columns[lX1].printEntry(stream,this->xmin + this->xSubOffset);
-   columns[lX2].printEntry(stream,this->xmax + this->xSubOffset);
-   columns[lY1].printEntry(stream,this->ymin + this->ySubOffset);
-   columns[lY2].printEntry(stream,this->ymax + this->ySubOffset);
-   columns[lZ1].printEntry(stream,this->zmin + this->zSubOffset);
-   columns[lZ2].printEntry(stream,this->zmax + this->zSubOffset);
-   columns[lNPIX].printEntry(stream,this->pix.size());
+   columns[lX1].printEntry(stream,this->getXmin() + this->xSubOffset);
+   columns[lX2].printEntry(stream,this->getXmax() + this->xSubOffset);
+   columns[lY1].printEntry(stream,this->getYmin() + this->ySubOffset);
+   columns[lY2].printEntry(stream,this->getYmax() + this->ySubOffset);
+   columns[lZ1].printEntry(stream,this->getZmin() + this->zSubOffset);
+   columns[lZ2].printEntry(stream,this->getZmax() + this->zSubOffset);
+   columns[lNPIX].printEntry(stream,this->pixelArray.getSize());
    stream<<std::endl;
   }
 }
@@ -144,11 +146,12 @@ void Detection::outputDetectionText(std::ostream &stream,
 std::string Detection::outputLabelWCS()
 {
   /**
-   *  Prints to a std::string the WCS position and velocity information of the 
-   *   Detection, as well as the ID number and any flags.
+   *  Prints to a std::string the WCS position and velocity
+   *  information of the Detection, as well as the ID number and any
+   *  flags.
    *  Assumes the WCS parameters of the object have been calculated.
-   *  If they have not (given by the isWCS() function), then the WCS-related 
-   *   outputs are left blank.
+   *  If they have not (given by the isWCS() function), then the
+   *  WCS-related outputs are left blank.
    *  Returns the string.
    */
   std::stringstream ss;
@@ -221,16 +224,16 @@ std::string Detection::outputLabelPix()
   ss.setf(std::ios::fixed);
   ss << "Centre: ";
   ss << std::setprecision(this->xyzPrec) << std::setfill(' ');
-  ss <<"("  << this->xcentre + this->xSubOffset;
-  ss <<", " << this->ycentre + this->ySubOffset;
-  ss <<", " << this->zcentre + this->zSubOffset << ")";
-  ss <<", Size: " << this->pix.size() << " voxels,  ";
-  ss <<"Range: ["<< this->xmin + this->xSubOffset 
-     <<":"<< this->xmax + this->xSubOffset;
-  ss <<", "      << this->ymin + this->ySubOffset 
-     <<":"<< this->ymax + this->ySubOffset;
-  ss <<", "      << this->zmin + this->zSubOffset 
-     <<":"<< this->zmax + this->zSubOffset << "]";
+  ss <<"("       << this->getXcentre() + this->xSubOffset;
+  ss <<", "      << this->getYcentre() + this->ySubOffset;
+  ss <<", "      << this->getZcentre() + this->zSubOffset << ")";
+  ss <<", Size: "<< this->pixelArray.getSize() << " voxels,  ";
+  ss <<"Range: ["<< this->getXmin() + this->xSubOffset 
+     <<":"       << this->getXmax() + this->xSubOffset;
+  ss <<", "      << this->getYmin() + this->ySubOffset 
+     <<":"       << this->getYmax() + this->ySubOffset;
+  ss <<", "      << this->getZmin() + this->zSubOffset 
+     <<":"       << this->getZmax() + this->zSubOffset << "]";
   
   return ss.str();
 }

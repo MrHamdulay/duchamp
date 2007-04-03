@@ -18,7 +18,6 @@ void Cube::reInvert()
 {
   /**
    *  A function that switches the array back to the original sign.
-   *  Any objects will have the flux of each pixel inverted as well.
    *  This is used when searching for negative features.
    */
   for(int i=0; i<this->numPixels; i++){
@@ -30,10 +29,9 @@ void Cube::reInvert()
 
   for(int i=0; i<this->objectList.size(); i++){
     this->objectList[i].setNegative(true);
-    for(int pix=0; pix<this->objectList[i].getSize(); pix++){
-      this->objectList[i].setF(pix, -1. * this->objectList[i].getF(pix) );
-    }
-    this->objectList[i].calcParams();
+    this->objectList[i].setTotalFlux(-1. * this->objectList[i].getTotalFlux() );
+    this->objectList[i].setIntegFlux(-1. * this->objectList[i].getIntegFlux() );
+    this->objectList[i].setPeakFlux(-1. * this->objectList[i].getPeakFlux() );
   }
 
 }

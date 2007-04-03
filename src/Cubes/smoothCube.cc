@@ -2,6 +2,42 @@
 #include <Utils/feedback.hh>
 #include <Utils/Hanning.hh>
 
+
+void Cube::SmoothSearch()
+{
+  /**
+   * The Cube is first smoothed, using Cube::SmoothCube().
+   * It is then searched, using searchReconArray()
+   * The resulting object list is stored in the Cube, and outputted
+   *  to the log file if the user so requests.
+   */
+  
+  this->SmoothCube();
+  if(this->par.isVerbose()) std::cout << "  ";
+
+  this->setCubeStats();
+
+  if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
+  
+  this->objectList = search3DArray(this->axisDim,this->recon,
+				   this->par,this->Stats);
+
+  if(this->par.isVerbose()) std::cout << "  Updating detection map... " 
+				      << std::flush;
+  this->updateDetectMap();
+  if(this->par.isVerbose()) std::cout << "Done.\n";
+
+  if(this->par.getFlagLog()){
+    if(this->par.isVerbose()) 
+      std::cout << "  Logging intermediate detections... " << std::flush;
+    this->logDetectionList();
+    if(this->par.isVerbose()) std::cout << "Done.\n";
+  }
+  
+
+}
+
+
 void Cube::SmoothCube()
 {
   /**
@@ -49,26 +85,3 @@ void Cube::SmoothCube()
 
 }
 
-
-void Cube::SmoothSearch()
-{
-  /**
-   * The Cube is first smoothed, using Cube::SmoothCube().
-   * It is then searched, using searchReconArray()
-   * The resulting object list is stored in the Cube, and outputted
-   *  to the log file if the user so requests.
-   */
-  
-  this->SmoothCube();
-  if(this->par.isVerbose()) std::cout << "  ";
-  this->setCubeStats();
-  if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
-  
-  this->objectList = search3DArray(this->axisDim,this->recon,
-				   this->par,this->Stats);
-
-  this->updateDetectMap();
-  if(this->par.getFlagLog()) this->logDetectionList();
-  
-
-}

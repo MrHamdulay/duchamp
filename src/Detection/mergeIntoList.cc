@@ -1,5 +1,3 @@
-#include <iostream>
-#include <fstream>
 #include <vector>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
@@ -11,13 +9,9 @@ void mergeIntoList(Detection &object, std::vector <Detection> &objList, Param &p
    * first to see if it can be combined with existing members of the
    * list.
    *
-   * The combining is only done if the object is adjacent to one of
-   * the existing members -- this is considered in all three
-   * directions.
-   *
-   *  To this end, the adjacent flag in par is set true, and the
-   *  velocity threshold is set to 1. These parameters are changed
-   *  back before returning.
+   * The areClose testing and combining is now done with the
+   * parameters as given by the Param set, not just assuming adjacency
+   * (as previously done).
    *
    * \param object The Detection to be merged into the list.
    * \param objList The vector list of Detections.
@@ -25,31 +19,27 @@ void mergeIntoList(Detection &object, std::vector <Detection> &objList, Param &p
    */
 
   bool haveMerged = false;
-  bool flagAdjacent = par.getFlagAdjacent();
-  par.setFlagAdjacent(true);
-  float threshold = par.getThreshV();
-  par.setThreshV(1.5);
+//   bool flagAdjacent = par.getFlagAdjacent();
+//   par.setFlagAdjacent(true);
+//   float threshold = par.getThreshV();
+//   par.setThreshV(1.5);
 
-  long ctr = 0;
-  if(objList.size()>0){
-    do {
-      Detection *obj2 = new Detection;
-      *obj2 = objList[ctr];
-      if(areClose(object, *obj2, par)){
-	obj2->addAnObject(object);
-	objList.erase( objList.begin() + ctr );
-	objList.push_back( *obj2 );
-	haveMerged = true;
-      }
-      else ctr++;
-      delete obj2;
-
-    } while( !(haveMerged) && (ctr<objList.size()) );
+  std::vector<Detection>::iterator iter;
+  for(int ctr=0; (!(haveMerged) && (ctr<objList.size())); ctr++){
+    
+    if(areClose(object, objList[ctr], par)){
+      Detection newobj = objList[ctr] + object;
+      iter = objList.begin() + ctr;
+      objList.erase( iter );
+      objList.push_back( newobj );
+      haveMerged = true;
+    }
+    
   }
-
+  
   if(!haveMerged) objList.push_back(object);
 
-  par.setFlagAdjacent(flagAdjacent);
-  par.setThreshV(threshold);
+//   par.setFlagAdjacent(flagAdjacent);
+//   par.setThreshV(threshold);
 
 }

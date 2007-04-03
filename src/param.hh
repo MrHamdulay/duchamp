@@ -8,6 +8,7 @@
 #include <wcs.h>
 #include <wcshdr.h>
 #include <Utils/utils.hh>
+#include <Utils/Section.hh>
 #include <ATrous/filter.hh>
 
 class FitsHeader; // foreshadow this so that Param knows it exists
@@ -34,16 +35,19 @@ public:
   /** Read in parameters from a disk file. */
   int    readParams(std::string paramfile);
 
-  /** Copy certain necessary FITS header parameters from a FitsHeader object */
+  /** Copy certain necessary FITS header parameters from a FitsHeader
+      object */
   void   copyHeaderInfo(FitsHeader &head);
 
-  /** Determine filename in which to save the Hanning-smoothed array. */
+  /** Determine filename in which to save the Hanning-smoothed
+      array. */
   std::string outputSmoothFile();
 
   /** Determine filename in which to save the reconstructed array. */
   std::string outputReconFile(); 
 
-  /** Determine filename in which to save the residual array from the atrous reconstruction. */
+  /** Determine filename in which to save the residual array from the
+      atrous reconstruction. */
   std::string outputResidFile(); 
 
   /** Print the parameter set in a readable fashion. */
@@ -52,18 +56,21 @@ public:
   //------------------
   // Functions in FitsIO/subsection.cc
   //
-  /** Make sure the subsection string is OK, and read the axis subsections. */
+  /** Make sure the subsection string is OK, and read the axis
+      subsections. */
   int    verifySubsection();
 
   /** Set the correct offset values for each axis */
   void   setOffsets(struct wcsprm *wcs);
+
   //--------------------
   // These are inline functions.
   //
   /** Is a pixel value a BLANK?
    *  Tests whether the value passed as the argument is BLANK or not.
    *   If flagBlankPix is false, return false.
-   *   Otherwise, compare to the relevant FITS keywords, using integer comparison.
+   *   Otherwise, compare to the relevant FITS keywords, using integer
+   *   comparison.
    */
   bool   isBlank(float &value){
     return this->flagBlankPix &&
@@ -73,19 +80,32 @@ public:
   /** Is a given channel flagged as being in the Milky Way?*/           
   bool   isInMW(int z){return ( flagMW && (z>=minMW) && (z<=maxMW) );};
 
+
+  /** Is a given pixel position OK for use with stats calculations? */
+  bool   isStatOK(int x, int y, int z){
+    int xval=x,yval=y,zval=z;
+    if(flagSubsection){
+      xval += pixelSec.getStart(0);
+      yval += pixelSec.getStart(1);
+      zval += pixelSec.getStart(2);
+    }
+    return !flagStatSec || statSec.isInside(xval,yval,zval);
+  };
+
+
   //--------------------
   // Basic inline accessor functions
   //
   std::string getImageFile(){return imageFile;};
   void   setImageFile(std::string fname){imageFile = fname;};
   std::string getFullImageFile(){
-    if(flagSubsection) return imageFile+subsection;
+    if(flagSubsection) return imageFile+pixelSec.getSection();
     else return imageFile;
   };
   bool   getFlagSubsection(){return flagSubsection;};
   void   setFlagSubsection(bool flag){flagSubsection=flag;};
-  std::string getSubsection(){return subsection;};
-  void   setSubsection(std::string range){subsection = range;};
+  std::string getSubsection(){return pixelSec.getSection();};
+  void   setSubsection(std::string range){pixelSec.setSection(range);};
   bool   getFlagReconExists(){return flagReconExists;};
   void   setFlagReconExists(bool flag){flagReconExists=flag;};
   std::string getReconFile(){return reconFile;};
@@ -185,6 +205,10 @@ public:
   bool   getFlagBaseline(){return flagBaseline;};
   void   setFlagBaseline(bool flag){flagBaseline = flag;};
   //
+  bool   getFlagStatSec(){return flagStatSec;};
+  void   setFlagStatSec(bool flag){flagStatSec=flag;};
+  std::string getStatSec(){return statSec.getSection();};
+  void   setStatSec(std::string range){statSec.setSection(range);};
   float  getCut(){return snrCut;};
   void   setCut(float c){snrCut=c;};
   float  getThreshold(){return threshold;};
@@ -234,95 +258,151 @@ public:
   
 private:
   // Input files
-  std::string imageFile;       ///< The image to be analysed.
-  bool   flagSubsection;  ///< Whether we just want a subsection of the image
-  std::string subsection;      ///< The subsection requested, taking the form [x1:x2,y1:y2,z1:z2]. If you want the full range of one index, use *
-  bool   flagReconExists; ///< The reconstructed array is in a FITS file on disk.
-  std::string reconFile;       ///< The FITS file containing the reconstructed array.
-  bool   flagSmoothExists;///< The Hanning-smoothed array is in a FITS file.
-  std::string smoothFile;      ///< The FITS file containing the smoothed array.
+  std::string imageFile;  ///< The image to be analysed.
+  bool   flagSubsection;  ///< Whether we just want a subsection of
+			  ///   the image
+  Section pixelSec;       ///< The Section object storing the pixel
+			  ///   subsection information.
+  bool   flagReconExists; ///< The reconstructed array is in a FITS
+			  ///   file on disk.
+  std::string reconFile;  ///< The FITS file containing the
+			  ///   reconstructed array.
+  bool   flagSmoothExists;///< The Hanning-smoothed array is in a FITS
+			  ///   file.
+  std::string smoothFile; ///< The FITS file containing the smoothed
+			  ///   array.
 
   // Output files
   bool   flagLog;         ///< Should we do the intermediate logging?
-  std::string logFile;         ///< Where the intermediate logging goes.
-  std::string outFile;         ///< Where the final results get put.
-  std::string spectraFile;     ///< Where the spectra are displayed
-  bool   flagOutputSmooth;///< Should the Hanning-smoothed cube be written?
-  bool   flagOutputRecon; ///< Should the reconstructed cube be written?
-  bool   flagOutputResid; ///< Should the reconstructed cube be written?
-  bool   flagVOT;         ///< Should we save results in VOTable format?
-  std::string votFile;         ///< Where the VOTable goes.
-  bool   flagKarma;       ///< Should we save results in Karma annotation format?
-  std::string karmaFile;       ///< Where the Karma annotation file goes.
-  bool   flagMaps;        ///< Should we produce detection and moment maps in postscript form?
-  std::string detectionMap;    ///< The name of the detection map (ps file).
-  std::string momentMap;       ///< The name of the 0th moment map (ps file).
-  bool   flagXOutput;     ///< Should there be an xwindows output of the detection map?
+  std::string logFile;    ///< Where the intermediate logging goes.
+  std::string outFile;    ///< Where the final results get put.
+  std::string spectraFile;///< Where the spectra are displayed
+  bool   flagOutputSmooth;///< Should the Hanning-smoothed cube be
+			  ///   written?
+  bool   flagOutputRecon; ///< Should the reconstructed cube be
+			  ///   written?
+  bool   flagOutputResid; ///< Should the reconstructed cube be
+			  ///   written?
+  bool   flagVOT;         ///< Should we save results in VOTable
+			  ///   format?
+  std::string votFile;    ///< Where the VOTable goes.
+  bool   flagKarma;       ///< Should we save results in Karma
+			  ///   annotation format?
+  std::string karmaFile;  ///< Where the Karma annotation file goes.
+  bool   flagMaps;        ///< Should we produce detection and moment
+			  ///   maps in postscript form?
+  std::string detectionMap;///< The name of the detection map
+			   ///   (postscript file).
+  std::string momentMap;  ///< The name of the 0th moment map (ps file).
+  bool   flagXOutput;     ///< Should there be an xwindows output of
+			  ///   the detection map?
 
-  // Cube related parameters 
-  bool   flagNegative;    ///< Are we going to search for negative features? 
-  bool   flagBlankPix;    ///< A flag that indicates whether there are pixels defined as BLANK and whether we need to remove & ignore them in processing.
+  // Cube related parameters
+  bool   flagNegative;    ///< Are we going to search for negative
+			  ///   features?
+  bool   flagBlankPix;    ///< A flag that indicates whether there are
+			  ///   pixels defined as BLANK and whether we
+			  ///   need to remove & ignore them in
+			  ///   processing.
   float  blankPixValue;   ///< Pixel value that is considered BLANK.
   int    blankKeyword;    ///< The FITS header keyword BLANK.
   float  bscaleKeyword;   ///< The FITS header keyword BSCALE.
   float  bzeroKeyword;    ///< The FITS header keyword BZERO.
-  bool   flagUsingBlank;  ///< If true, we are using the blankPixValue keyword, 
-                          ///< otherwise we use the value in the FITS header.
-  bool   flagMW;          ///< A flag that indicates whether to ignore the Milky Way channels.
-  int    maxMW;           ///< Last  Galactic velocity plane for HIPASS cubes
-  int    minMW;           ///< First Galactic velocity plane for HIPASS cubes
+  bool   flagUsingBlank;  ///< If true, we are using the blankPixValue
+                          ///   keyword, otherwise we use the value in
+                          ///   the FITS header.
+  bool   flagMW;          ///< A flag that indicates whether to ignore
+			  ///   the Milky Way channels.
+  int    maxMW;           ///< Last  Milky Way channel
+  int    minMW;           ///< First Milky Way channel
   float  numPixBeam;      ///< Size (area) of the beam in pixels.
-  bool   flagUsingBeam;   ///< If true, we are using the numPixBeam parameter, 
-                          ///< otherwise we use the value in the FITS header.
+  bool   flagUsingBeam;   ///< If true, we are using the numPixBeam
+                          ///   parameter, otherwise we use the value
+                          ///   in the FITS header.
   // Trim-related
-  bool   flagTrimmed;     ///< Has the cube been trimmed of excess BLANKs around the edge?
-  long   borderLeft;      ///< The number of BLANK pixels trimmed from the left of the cube;
-  long   borderRight;     ///< The number trimmed from the Right of the cube;
-  long   borderBottom;    ///< The number trimmed from the Bottom of the cube;
-  long   borderTop;       ///< The number trimmed from the Top of the cube;
+  bool   flagTrimmed;     ///< Has the cube been trimmed of excess
+			  ///   BLANKs around the edge?
+  long   borderLeft;      ///< The number of BLANK pixels trimmed from
+			  ///   the left of the cube;
+  long   borderRight;     ///< The number trimmed from the Right of
+			  ///   the cube;
+  long   borderBottom;    ///< The number trimmed from the Bottom of
+			  ///   the cube;
+  long   borderTop;       ///< The number trimmed from the Top of the
+			  ///   cube;
   // Subsection offsets
   long  *offsets;         ///< The array of offsets for each FITS axis.
   long   sizeOffsets;     ///< The size of the offsets array.
-  long   xSubOffset;      ///< The offset in the x-direction from the subsection
-  long   ySubOffset;      ///< The offset in the y-direction from the subsection
-  long   zSubOffset;      ///< The offset in the z-direction from the subsection
+  long   xSubOffset;      ///< The subsection's x-axis offset
+  long   ySubOffset;      ///< The subsection's y-axis offset
+  long   zSubOffset;      ///< The subsection's z-axis offset
   // Baseline related
-  bool   flagBaseline;    ///< Whether to do baseline subtraction before reconstruction and/or searching.
+  bool   flagBaseline;    ///< Whether to do baseline subtraction
+			  ///   before reconstruction and/or searching.
   // Detection-related
-  int    minPix;          ///< Minimum number of pixels for a detected object to be counted
+  int    minPix;          ///< Minimum number of pixels for a detected
+			  ///   object to be counted
   // Object growth
-  bool   flagGrowth;      ///< Are we growing objects once they are found?
-  float  growthCut;       ///< The SNR that we are growing objects down to.
+  bool   flagGrowth;      ///< Are we growing objects once they are
+			  ///   found?
+  float  growthCut;       ///< The SNR that we are growing objects
+			  ///   down to.
   // FDR analysis
   bool   flagFDR;         ///< Should the FDR method be used? 
   float  alphaFDR;        ///< Alpha value for FDR detection algorithm
   // Basic detection
-  float  snrCut;          ///< How many sigma above mean is a detection when sigma-clipping
-  float  threshold;       ///< What the threshold is (when sigma-clipping).
-  bool   flagUserThreshold;///< Whether the user has defined a threshold of their own.
+  bool   flagStatSec;     ///< Whether we just want to use a
+			  ///   subsection of the image to calculate
+			  ///   the statistics.
+  Section statSec;       ///< The Section object storing the statistics
+			  ///   subsection information.
+  float  snrCut;          ///< How many sigma above mean is a
+			  ///   detection when sigma-clipping
+  float  threshold;       ///< What the threshold is (when
+			  ///   sigma-clipping).
+  bool   flagUserThreshold;///< Whether the user has defined a
+			   ///   threshold of their own.
   // Smoothing of the cube
-  bool   flagSmooth;      ///< Should the cube be smoothed before searching?
+  bool   flagSmooth;      ///< Should the cube be smoothed before
+			  ///   searching?
   int    hanningWidth;    ///< Width for hanning smoothing.
   // A trous reconstruction parameters
   bool   flagATrous;      ///< Are we using the a trous reconstruction?
-  int    reconDim;        ///< How many dimensions to use for the reconstruction?
+  int    reconDim;        ///< How many dimensions to use for the
+			  ///   reconstruction?
   int    scaleMin;        ///< Min scale used in a trous reconstruction
-  float  snrRecon;        ///< SNR cutoff used in a trous reconstruction (only wavelet coefficients that survive this threshold are kept)
+  float  snrRecon;        ///< SNR cutoff used in a trous
+			  ///   reconstruction (only wavelet coefficients
+			  ///   that survive this threshold are kept)
   Filter reconFilter;     ///< The filter used for reconstructions.
-  int    filterCode;      ///< The code number for the filter to be used (saves having to parse names)
-  std::string filterName;      ///< The code number converted into a name, for outputting purposes.
+  int    filterCode;      ///< The code number for the filter to be
+			  ///   used (saves having to parse names)
+  std::string filterName; ///< The code number converted into a name,
+			  ///   for outputting purposes.
 
   // Volume-merging parameters
-  bool   flagAdjacent;    ///< Whether to use the adjacent criterion for judging if objects are to be merged.
-  float  threshSpatial;   ///< Maximum spatial separation between objects
-  float  threshVelocity;  ///< Maximum channels separation between objects
+  bool   flagAdjacent;    ///< Whether to use the adjacent criterion
+			  ///   for judging if objects are to be merged.
+  float  threshSpatial;   ///< Maximum spatial separation between
+			  ///   objects
+  float  threshVelocity;  ///< Maximum channels separation between
+			  ///   objects
   int    minChannels;     ///< Minimum no. of channels to make an object 
   // Input-Output related
-  std::string spectralMethod;  ///< A string indicating choice of spectral plotting method: choices are "peak" (default) or "sum" 
-  std::string spectralUnits;   ///< A string indicating what units the spectral axis should be quoted in.
-  bool   borders;         ///< Whether to draw a border around the individual pixels of a detection in the spectral display
-  bool   blankEdge;       ///< Whether to draw a border around the BLANK pixel region in the moment maps and cutout images
-  bool   verbose;         ///< Whether to use maximum verbosity -- use progress indicators in the reconstruction & merging steps.
+  std::string spectralMethod; ///< A string indicating choice of
+			      ///   spectral plotting method: choices are
+			      ///   "peak" (default) or "sum"
+  std::string spectralUnits;   ///< A string indicating what units the
+			       ///   spectral axis should be quoted in.
+  bool   borders;         ///< Whether to draw a border around the
+			  ///   individual pixels of a detection in the
+			  ///   spectral display
+  bool   blankEdge;       ///< Whether to draw a border around the
+			  ///   BLANK pixel region in the moment maps and
+			  ///   cutout images
+  bool   verbose;         ///< Whether to use maximum verbosity -- use
+			  ///   progress indicators in the reconstruction
+			  ///   & merging steps.
 
 };
 

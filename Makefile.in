@@ -34,6 +34,10 @@ TESTDIR = ./verification
 
 HEADS = $(BASE)/duchamp.hh\
 	$(BASE)/param.hh\
+	$(PIXELMAPDIR)/Voxel.hh\
+	$(PIXELMAPDIR)/Scan.hh\
+	$(PIXELMAPDIR)/Object2D.hh\
+	$(PIXELMAPDIR)/Object3D.hh\
 	$(ATROUSDIR)/atrous.hh\
 	$(ATROUSDIR)/filter.hh\
 	$(DETECTIONDIR)/voxel.hh\
@@ -41,12 +45,17 @@ HEADS = $(BASE)/duchamp.hh\
 	$(DETECTIONDIR)/columns.hh\
 	$(CUBESDIR)/cubes.hh\
 	$(CUBESDIR)/plots.hh\
+	$(UTILDIR)/Section.hh\
 	$(UTILDIR)/Statistics.hh\
 	$(UTILDIR)/utils.hh
 
 OBJECTS = $(BASE)/mainDuchamp.o \
 	$(BASE)/duchamp.o\
 	$(BASE)/param.o\
+	$(PIXELMAPDIR)/Voxel.o\
+	$(PIXELMAPDIR)/Scan.o\
+	$(PIXELMAPDIR)/Object2D.o\
+	$(PIXELMAPDIR)/Object3D.o\
 	$(ATROUSDIR)/filter.o\
 	$(ATROUSDIR)/atrous_1d_reconstruct.o\
 	$(ATROUSDIR)/atrous_2d_reconstruct.o\
@@ -85,6 +94,7 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(FITSIODIR)/headerIO.o\
 	$(FITSIODIR)/subsection.o\
 	$(FITSIODIR)/wcsIO.o\
+	$(UTILDIR)/Section.o\
 	$(UTILDIR)/Statistics.o\
 	$(UTILDIR)/feedback.o\
 	$(UTILDIR)/Hanning.o\

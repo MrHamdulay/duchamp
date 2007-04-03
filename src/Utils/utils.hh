@@ -39,27 +39,6 @@ template <class T> void findNormalStats(T *array, int size, bool *isGood,
 //--------------------
 // PLOTTING ROUTINES
 //--------------------
-// The following are in pgplot_related.c
-//
-/** Is a PGPLOT device open? */
-extern "C" int  cpgtest();
-
-/** Is a PGPLOT device a postscript (hardcopy) device? */ 
-extern "C" int  cpgIsPS(); 
-
-/** Do a logarithmic-scaled wedge, as in PGWEDG */
-extern "C" void cpgwedglog(const char* side, float disp, float width, 
-			   float fg, float bg, const char *label);
-
-/** Do CPGHIST but with the y-axis logarithmic */
-extern "C" void cpghistlog(int npts, float *data, float datamin, 
-			   float datamax, int nbin, int pgflag);
-
-/** Do a PGPLOT cumulative distribution */
-extern "C" void cpgcumul(int npts, float *data, float datamin, 
-			 float datamax, int pgflag);
-
-//--------------------
 // The following are in plottingUtilities.cc
 //
 void plotLine(const float slope, const float intercept);

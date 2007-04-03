@@ -11,7 +11,8 @@
 #include <duchamp.hh>
 #include <param.hh>
 #include <Cubes/cubes.hh>
-#include <Detection/voxel.hh>
+#include <PixelMap/Voxel.hh>
+#include <PixelMap/Object3D.hh>
 #include <Detection/detection.hh>
 #include <Detection/columns.hh>
 #include <Utils/utils.hh>
@@ -20,6 +21,7 @@
 using namespace Column;
 using namespace mycpgplot;
 using namespace Statistics;
+using namespace PixelInfo;
 
 /****************************************************************/
 ///////////////////////////////////////////////////
@@ -190,24 +192,24 @@ void DataArray::addObjectList(std::vector <Detection> newlist) {
 }
 //--------------------------------------------------------------------
 
-void DataArray::addObjectOffsets(){
-  /**
-   * Add the pixel offsets (that is, offsets from the corner of the cube to the
-   *  corner of the utilised part) that are stored in the Param set to the
-   *  coordinate values of each object in the object list.
-   */
-  for(int i=0;i<this->objectList.size();i++){
-    for(int p=0;p<this->objectList[i].getSize();p++){
-      this->objectList[i].setX(p,this->objectList[i].getX(p)+
-			       this->par.getXOffset());
-      this->objectList[i].setY(p,this->objectList[i].getY(p)+
-			       this->par.getYOffset());
-      this->objectList[i].setZ(p,this->objectList[i].getZ(p)+
-			       this->par.getZOffset());
-    }
-  }
-}
-//--------------------------------------------------------------------
+// void DataArray::addObjectOffsets(){
+//   /**
+//    * Add the pixel offsets (that is, offsets from the corner of the cube to the
+//    *  corner of the utilised part) that are stored in the Param set to the
+//    *  coordinate values of each object in the object list.
+//    */
+//   for(int i=0;i<this->objectList.size();i++){
+//     for(int p=0;p<this->objectList[i].getSize();p++){
+//       this->objectList[i].setX(p,this->objectList[i].getX(p)+
+// 			       this->par.getXOffset());
+//       this->objectList[i].setY(p,this->objectList[i].getY(p)+
+// 			       this->par.getYOffset());
+//       this->objectList[i].setZ(p,this->objectList[i].getZ(p)+
+// 			       this->par.getZOffset());
+//     }
+//   }
+// }
+// //--------------------------------------------------------------------
 
 bool DataArray::isDetection(float value){
   /** 
@@ -253,11 +255,7 @@ std::ostream& operator<< ( std::ostream& theStream, DataArray &array)
     theStream << "Detection #" << array.objectList[i].getID()<<std::endl;
     Detection *obj = new Detection;
     *obj = array.objectList[i];
-    for(int j=0;j<obj->getSize();j++){
-      obj->setX(j,obj->getX(j)+obj->getXOffset());
-      obj->setY(j,obj->getY(j)+obj->getYOffset());
-      obj->setZ(j,obj->getZ(j)+obj->getZOffset());
-    }
+    obj->addOffsets();
     theStream<<*obj;
     delete obj;
   }
@@ -679,7 +677,7 @@ void Cube::setCubeStats()
     this->Stats.setThreshold( this->par.getThreshold() );
   }
   else{
-    // only work out the mean etc if we need to.
+    // only work out the stats if we need to.
     // the only reason we don't is if the user has specified a threshold.
     
     std::cout << "Calculating the cube statistics... " << std::flush;
@@ -696,30 +694,33 @@ void Cube::setCubeStats()
     }
 
     float *tempArray = new float[goodSize];
-    
+
     goodSize=0;
-    for(int p=0;p<xysize;p++){
-      for(int z=0;z<this->axisDim[2];z++){
-	vox = z * xysize + p;
-	if(!this->isBlank(vox) && !this->par.isInMW(z)){
-	  tempArray[goodSize] = this->array[vox];
-	  goodSize++;
+    for(int x=0;x<this->axisDim[0];x++){
+      for(int y=0;y<this->axisDim[1];y++){
+	for(int z=0;z<this->axisDim[2];z++){
+	  vox = z * xysize + y*this->axisDim[0] + x;
+	  if(!this->isBlank(vox) && !this->par.isInMW(z) && 
+	     this->par.isStatOK(x,y,z)){
+	    tempArray[goodSize] = this->array[vox];
+	    goodSize++;
+	  }
 	}
       }
     }
 
     float mean,median,stddev,madfm;
-      mean = tempArray[0];
-      for(int i=1;i<goodSize;i++) mean += tempArray[i];
-      mean /= float(goodSize);
-      mean = findMean(tempArray,goodSize);
-      this->Stats.setMean(mean);
-
-      std::sort(tempArray,tempArray+goodSize);
-      if((goodSize%2)==0) 
-	median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
-      else median = tempArray[goodSize/2];
-      this->Stats.setMedian(median);
+    mean = tempArray[0];
+    for(int i=1;i<goodSize;i++) mean += tempArray[i];
+    mean /= float(goodSize);
+    mean = findMean(tempArray,goodSize);
+    this->Stats.setMean(mean);
+    
+    std::sort(tempArray,tempArray+goodSize);
+    if((goodSize%2)==0) 
+      median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
+    else median = tempArray[goodSize/2];
+    this->Stats.setMedian(median);
 
    
     if(!this->reconExists){
@@ -744,6 +745,7 @@ void Cube::setCubeStats()
     else{
       // just get mean & median from orig array, and rms & madfm from residual
       // recompute array values to be residuals & then find stddev & madfm
+
       goodSize = 0;
       for(int p=0;p<xysize;p++){
 	for(int z=0;z<this->axisDim[2];z++){
@@ -903,8 +905,14 @@ void Cube::calcObjectWCSparams()
   
   for(int i=0;i<this->objectList.size();i++){
     this->objectList[i].setID(i+1);
-    this->objectList[i].calcWCSparams(this->head);
-    this->objectList[i].setPeakSNR( (this->objectList[i].getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+    this->objectList[i].calcFluxes(this->array,this->axisDim);
+    this->objectList[i].calcWCSparams(this->array,this->axisDim,this->head);
+    
+    if(this->par.getFlagUserThreshold())
+      this->objectList[i].setPeakSNR( this->objectList[i].getPeakFlux() / this->Stats.getThreshold() );
+    else
+      this->objectList[i].setPeakSNR( (this->objectList[i].getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+
   }  
 
   if(!this->head.isWCS()){ 
@@ -928,13 +936,19 @@ void Cube::updateDetectMap()
    *   the cube's detection map by the required amount at each pixel.
    */
 
+  Scan temp;
   for(int obj=0;obj<this->objectList.size();obj++){
-    for(int pix=0;pix<this->objectList[obj].getSize();pix++) {
-      int spatialPos = this->objectList[obj].getX(pix)+
-	this->objectList[obj].getY(pix)*this->axisDim[0];
-      this->detectMap[spatialPos]++;
-    }
-  }
+    long numZ=this->objectList[obj].pixels().getNumChanMap();
+    for(int iz=0;iz<numZ;iz++){ // for each channel map
+      Object2D chanmap = this->objectList[obj].pixels().getChanMap(iz).getObject();
+      for(int iscan=0;iscan<chanmap.getNumScan();iscan++){
+	temp = chanmap.getScan(iscan);
+	for(int x=temp.getX(); x <= temp.getXmax(); x++)
+	  this->detectMap[temp.getY()*this->axisDim[0] + x]++;
+      } // end of loop over scans
+    } // end of loop over channel maps
+  } // end of loop over objects.
+
 }
 //--------------------------------------------------------------------
 
@@ -946,10 +960,18 @@ void Cube::updateDetectMap(Detection obj)
    * 
    *  \param obj A Detection object that is being incorporated into the map.
    */
-  for(int pix=0;pix<obj.getSize();pix++) {
-    int spatialPos = obj.getX(pix)+obj.getY(pix)*this->axisDim[0];
-    this->detectMap[spatialPos]++;
-  }
+
+  Scan temp;
+  long numZ=obj.pixels().getNumChanMap();
+  for(int iz=0;iz<numZ;iz++){ // for each channel map
+    Object2D chanmap = obj.pixels().getChanMap(iz).getObject();
+    for(int iscan=0;iscan<chanmap.getNumScan();iscan++){
+      temp = chanmap.getScan(iscan);
+      for(int x=temp.getX(); x <= temp.getXmax(); x++)
+	this->detectMap[temp.getY()*this->axisDim[0] + x]++;
+    } // end of loop over scans
+  } // end of loop over channel maps
+
 }
 //--------------------------------------------------------------------
 
@@ -962,7 +984,7 @@ float Cube::enclosedFlux(Detection obj)
    *
    *   \param obj The Detection under consideration.
    */
-  obj.calcParams();
+  obj.calcFluxes(this->array, this->axisDim);
   int xsize = obj.getXmax()-obj.getXmin()+1;
   int ysize = obj.getYmax()-obj.getYmin()+1;
   int zsize = obj.getZmax()-obj.getZmin()+1; 
@@ -1040,19 +1062,25 @@ bool Cube::objAtSpatialEdge(Detection obj)
   bool atEdge = false;
 
   int pix = 0;
-  while(!atEdge && pix<obj.getSize()){
+  std::vector<Voxel> voxlist = obj.pixels().getPixelSet();
+  while(!atEdge && pix<voxlist.size()){
     // loop over each pixel in the object, until we find an edge pixel.
-    Voxel vox = obj.getPixel(pix);
     for(int dx=-1;dx<=1;dx+=2){
-      if(((vox.getX()+dx)<0) || ((vox.getX()+dx)>=this->axisDim[0])) 
+      if( ((voxlist[pix].getX()+dx)<0) || 
+	  ((voxlist[pix].getX()+dx)>=this->axisDim[0]) ) 
 	atEdge = true;
-      else if(this->isBlank(vox.getX()+dx,vox.getY(),vox.getZ())) 
+      else if(this->isBlank(voxlist[pix].getX()+dx,
+			    voxlist[pix].getY(),
+			    voxlist[pix].getZ())) 
 	atEdge = true;
     }
     for(int dy=-1;dy<=1;dy+=2){
-      if(((vox.getY()+dy)<0) || ((vox.getY()+dy)>=this->axisDim[1])) 
+      if( ((voxlist[pix].getY()+dy)<0) || 
+	  ((voxlist[pix].getY()+dy)>=this->axisDim[1]) ) 
 	atEdge = true;
-      else if(this->isBlank(vox.getX(),vox.getY()+dy,vox.getZ())) 
+      else if(this->isBlank(voxlist[pix].getX(),
+			    voxlist[pix].getY()+dy,
+			    voxlist[pix].getZ())) 
 	atEdge = true;
     }
     pix++;
@@ -1075,13 +1103,16 @@ bool Cube::objAtSpectralEdge(Detection obj)
   bool atEdge = false;
 
   int pix = 0;
-  while(!atEdge && pix<obj.getSize()){
+  std::vector<Voxel> voxlist = obj.pixels().getPixelSet();
+  while(!atEdge && pix<voxlist.size()){
     // loop over each pixel in the object, until we find an edge pixel.
-    Voxel vox = obj.getPixel(pix);
     for(int dz=-1;dz<=1;dz+=2){
-      if(((vox.getZ()+dz)<0) || ((vox.getZ()+dz)>=this->axisDim[2])) 
+      if( ((voxlist[pix].getZ()+dz)<0) || 
+	  ((voxlist[pix].getZ()+dz)>=this->axisDim[2])) 
 	atEdge = true;
-      else if(this->isBlank(vox.getX(),vox.getY(),vox.getZ()+dz)) 
+      else if(this->isBlank(voxlist[pix].getX(),
+			    voxlist[pix].getY(),
+			    voxlist[pix].getZ()+dz)) 
 	atEdge = true;
     }
     pix++;
@@ -1185,14 +1216,23 @@ void Image::extractSpectrum(float *Array, long *dim, long pixel)
    *  The spectrum extracted is the one lying in the spatial pixel referenced
    *    by the third argument.
    *  The extracted spectrum is stored in the pixel array Image::array.
-   * \param Array The array containing the pixel values, from which the spectrum is extracted.
+   * \param Array The array containing the pixel values, from which
+   *               the spectrum is extracted.
    * \param dim The array of dimension values.
    * \param pixel The spatial pixel that contains the desired spectrum.
    */ 
-  float *spec = new float[dim[2]];
-  for(int z=0;z<dim[2];z++) spec[z] = Array[z*dim[0]*dim[1] + pixel];
-  this->saveArray(spec,dim[2]);
-  delete [] spec;
+  if((pixel<0)||(pixel>=dim[0]*dim[1]))
+    duchampError("Image::extractSpectrum",
+		 "Requested spatial pixel outside allowed range. Cannot save.");
+  else if(dim[2] != this->numPixels)
+    duchampError("Image::extractSpectrum",
+		 "Input array different size to existing array. Cannot save.");
+  else {
+    if(this->numPixels>0) delete [] array;
+    this->numPixels = dim[2];
+    if(this->numPixels>0) this->array = new float[dim[2]];
+    for(int z=0;z<dim[2];z++) this->array[z] = Array[z*dim[0]*dim[1] + pixel];
+  }
 }
 //--------------------------------------------------------------------
 
@@ -1208,10 +1248,19 @@ void Image::extractSpectrum(Cube &cube, long pixel)
    */ 
   long zdim = cube.getDimZ();
   long spatSize = cube.getDimX()*cube.getDimY();
-  float *spec = new float[zdim];
-  for(int z=0;z<zdim;z++) spec[z] = cube.getPixValue(z*spatSize + pixel);
-  this->saveArray(spec,zdim);
-  delete [] spec;
+  if((pixel<0)||(pixel>=spatSize))
+    duchampError("Image::extractSpectrum",
+		 "Requested spatial pixel outside allowed range. Cannot save.");
+  else if(zdim != this->numPixels)
+    duchampError("Image::extractSpectrum",
+		 "Input array different size to existing array. Cannot save.");
+  else {
+    if(this->numPixels>0) delete [] array;
+    this->numPixels = zdim;
+    if(this->numPixels>0) this->array = new float[zdim];
+    for(int z=0;z<zdim;z++) 
+      this->array[z] = cube.getPixValue(z*spatSize + pixel);
+  }
 }
 //--------------------------------------------------------------------
 
@@ -1228,12 +1277,21 @@ void Image::extractImage(float *Array, long *dim, long channel)
    * \param dim The array of dimension values.
    * \param channel The spectral channel that contains the desired image.
    */ 
-  float *image = new float[dim[0]*dim[1]];
-  for(int npix=0; npix<dim[0]*dim[1]; npix++){ 
-    image[npix] = Array[channel*dim[0]*dim[1] + npix];
+
+  long spatSize = dim[0]*dim[1];
+  if((channel<0)||(channel>=dim[2]))
+    duchampError("Image::extractImage",
+		 "Requested channel outside allowed range. Cannot save.");
+  else if(spatSize != this->numPixels)
+    duchampError("Image::extractImage",
+		 "Input array different size to existing array. Cannot save.");
+  else {
+    if(this->numPixels>0) delete [] array;
+    this->numPixels = spatSize;
+    if(this->numPixels>0) this->array = new float[spatSize];
+    for(int npix=0; npix<spatSize; npix++)
+      this->array[npix] = Array[channel*spatSize + npix];
   }
-  this->saveArray(image,dim[0]*dim[1]);
-  delete [] image;
 }
 //--------------------------------------------------------------------
 
@@ -1248,11 +1306,19 @@ void Image::extractImage(Cube &cube, long channel)
    * \param channel The spectral channel that contains the desired image.
    */ 
   long spatSize = cube.getDimX()*cube.getDimY();
-  float *image = new float[spatSize];
-  for(int npix=0; npix<spatSize; npix++) 
-    image[npix] = cube.getPixValue(channel*spatSize + npix);
-  this->saveArray(image,spatSize);
-  delete [] image;
+  if((channel<0)||(channel>=cube.getDimZ()))
+    duchampError("Image::extractImage",
+		 "Requested channel outside allowed range. Cannot save.");
+  else if(spatSize != this->numPixels)
+    duchampError("Image::extractImage",
+		 "Input array different size to existing array. Cannot save.");
+  else {
+    if(this->numPixels>0) delete [] array;
+    this->numPixels = spatSize;
+    if(this->numPixels>0) this->array = new float[spatSize];
+    for(int npix=0; npix<spatSize; npix++) 
+      this->array[npix] = cube.getPixValue(channel*spatSize + npix);
+  }
 }
 //--------------------------------------------------------------------
 

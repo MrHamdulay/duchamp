@@ -72,26 +72,12 @@ void Cube::replaceBaseline()
       }
     }
  
-    int pos;
-    float flux;
-    // Now add the baseline to the flux for all the objects.
-    for(int obj=0;obj<this->objectList.size();obj++){ // for each detection
-      for(int vox=0;vox<this->objectList[obj].getSize();vox++){ 
-	// for each of its voxels
-
-	pos = this->objectList[obj].getX(vox) + 
-	  this->axisDim[0]*this->objectList[obj].getY(vox) + 
-	  this->axisDim[0]*this->axisDim[1]*this->objectList[obj].getZ(vox);
-
-	flux = this->objectList[obj].getF(vox) + this->baseline[pos];
-
-	this->objectList[obj].setF(vox, flux);
-
-      }
-      this->objectList[obj].calcParams();  // correct the flux calculations.
-
+    for(int obj=0;obj<this->objectList.size();obj++){ 
+      // for each detection, correct the flux calculations.
+      this->objectList[obj].calcFluxes(this->array, this->axisDim);
+      
     }
-  
+    
   }
 
 }

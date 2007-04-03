@@ -3,17 +3,19 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <vector>
 #include <time.h>
 #include <Cubes/cubes.hh> 
+#include <PixelMap/Object3D.hh>
 #include <Detection/detection.hh>
 #include <Detection/columns.hh>
 #include <Utils/utils.hh>
-#include <vector>
  
 using std::endl;
 using std::setw;
 using std::setprecision;
 using namespace Column;
+using namespace PixelInfo;
 
 void Cube::outputDetectionsKarma(std::ostream &stream)
 {
@@ -269,8 +271,9 @@ void Cube::outputDetectionList()
   if(this->par.getFlagFDR())
     output<<" (or S/N=" << this->Stats.getThresholdSNR()<<")";
   output<<endl;
-  output<<"  Noise level = " << this->Stats.getMiddle()
-	<<", Noise spread = " << this->Stats.getSpread() << endl;
+  if(!this->par.getFlagUserThreshold())
+    output<<"  Noise level = " << this->Stats.getMiddle()
+	  <<", Noise spread = " << this->Stats.getSpread() << endl;
   output<<"Total number of detections = "<<this->objectList.size()<<endl;
   output<<"--------------------\n";
   this->setupColumns();
@@ -285,39 +288,86 @@ void Cube::outputDetectionList()
 void Cube::logDetectionList()
 {
   /**
+   * logDetectionList
    *  A front-end to writing a list of detected objects to the log file.
    *  Does not assume WCS, so uses outputDetectionText.
    *  Designed to be used by searching routines before returning their final list.
    */
 
+  long left = this->par.getBorderLeft();
+  long right = this->par.getBorderRight();
+  long top = this->par.getBorderTop();
+  long bottom = this->par.getBorderBottom();
+
   std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
   this->setupColumns();
   this->objectList[0].outputDetectionTextHeader(fout,this->logCols);
   long pos;
-  bool baselineFlag = this->par.getFlagBaseline();
+
+//   std::ofstream ftemp("temp2.txt");
+//   for(int objCtr=0;objCtr<this->objectList.size();objCtr++){
+//     this->objectList[objCtr].pixels().order();
+//     ftemp << "Object #" << objCtr+1 
+// 	  << ": size = " << this->objectList[objCtr].getSize()<<"\n";
+//     ftemp << this->objectList[objCtr];
+//   }
+//   ftemp.close();
+
+
+//   // Need to deal with possibility of trimmed array
+//   long *tempDim = new long[3];
+//   tempDim[0] = (this->axisDim[0] + left + right);
+//   tempDim[1] = (this->axisDim[1] + bottom + top);
+//   tempDim[2] = this->axisDim[2];
+//   long tempsize = tempDim[0] * tempDim[1] * tempDim[2];
+//   float *temparray = new float[tempsize];
+//   //  for(int i=0;i<this->numPixels;i++){ // loop over this->array
+//   for(int z=0;z<tempDim[2];z++){
+//     for(int y=0;y<tempDim[1];y++){
+//       for(int x=0;x<tempDim[0];x++){
+
+// 	bool isDud = (x<left) || (x>=this->axisDim[0]+left) || 
+// 	  (y<bottom) || (y>=this->axisDim[1]+bottom);
+	
+// 	int temppos = x + tempDim[0]*y + tempDim[1]*tempDim[0]*z;
+
+// 	int pos = (x-left) + (y-bottom)*this->axisDim[0] + 
+// 	  z*this->axisDim[0]*this->axisDim[1];
+
+// 	if(isDud) temparray[temppos] = this->par.getBlankPixVal();
+// 	else temparray[temppos] = this->array[pos];
+  
+// 	if(this->par.getFlagBaseline() && !isDud) 
+// 	  temparray[temppos] += this->baseline[pos];
+
+//       }
+//     }
+//   }
+
+  if(this->par.getFlagBaseline()){
+    for(int i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
+      this->array[i] += this->baseline[i];
+  }
+
   for(int objCtr=0;objCtr<this->objectList.size();objCtr++){
     Detection *obj = new Detection;
     *obj = objectList[objCtr];
-    if(this->par.getFlagCubeTrimmed() || baselineFlag){
-      for(int pix=0;pix<obj->getSize();pix++){
-	// Need to correct the pixels first, as this hasn't been done yet.
-	// Corrections needed for positions (to account for trimmed region)
-	//  and for the baseline removal, if it has happened.
-	// Don't want to keep these changes, so just do it on a dummy variable.
-	pos = obj->getX(pix) + obj->getY(pix)*this->axisDim[0]
-	  + obj->getZ(pix)*this->axisDim[0]*this->axisDim[1];
-	if(this->par.getFlagCubeTrimmed()){
-	  obj->setX(pix, obj->getX(pix) + this->par.getBorderLeft() );
-	  obj->setY(pix, obj->getY(pix) + this->par.getBorderBottom() );
-	}
-	if(baselineFlag)// add in baseline
-	  obj->setF(pix, obj->getF(pix) + this->baseline[pos]);
-      }
-      obj->calcParams();
+    obj->setOffsets(par);
+    obj->calcFluxes(this->array, this->axisDim);
+    if(this->par.getFlagCubeTrimmed()){
+      obj->pixels().addOffsets(left,bottom,0);
     }
     obj->outputDetectionText(fout,this->logCols,objCtr+1);
     delete obj;
   }
+
+  if(this->par.getFlagBaseline()){
+    for(int i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
+      this->array[i] -= this->baseline[i];
+  }
+
+//   delete [] temparray;
+//   delete [] tempDim;
   fout.close();
 }
 
@@ -337,21 +387,46 @@ void Cube::logDetection(Detection obj, int counter)
    */
 
   std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
-  bool baselineFlag = this->par.getFlagBaseline();
-  if(this->par.getFlagCubeTrimmed()){
-    for(int pix=0;pix<obj.getSize();pix++){
-      // Need to correct the pixels first, as this hasn't been done yet.
-      // Corrections needed for positions (to account for trimmed region)
-      //  and for the baseline removal, if it has happened.
-      // Don't want to keep these changes, so just do it on a dummy variable.
-      long pos = obj.getX(pix) + obj.getY(pix)*this->axisDim[0]
-	+ obj.getZ(pix)*this->axisDim[0]*this->axisDim[1];
-      obj.setX(pix, obj.getX(pix) + this->par.getBorderLeft() );
-      obj.setY(pix, obj.getY(pix) + this->par.getBorderBottom() );
-      if(baselineFlag) obj.setF(pix, obj.getF(pix) + this->baseline[pos]);   // add in baseline
+  // Need to deal with possibility of trimmed array
+  long left = this->par.getBorderLeft();
+  long right = this->par.getBorderRight();
+  long top = this->par.getBorderTop();
+  long bottom = this->par.getBorderBottom();
+  long *tempDim = new long[3];
+  tempDim[0] = (this->axisDim[0] + left + right);
+  tempDim[1] = (this->axisDim[1] + bottom + top);
+  tempDim[2] = this->axisDim[2];
+  long tempsize = tempDim[0] * tempDim[1] * tempDim[2];
+  float *temparray = new float[tempsize];
+  //  for(int i=0;i<this->numPixels;i++){ // loop over this->array
+  for(int z=0;z<tempDim[2];z++){
+    for(int y=0;y<tempDim[1];y++){
+      for(int x=0;x<tempDim[0];x++){
+
+	bool isDud = (x<left) || (x>=this->axisDim[0]+left) || 
+	  (y<bottom) || (y>=this->axisDim[1]+bottom);
+	
+	int temppos = x + tempDim[0]*y + tempDim[1]*tempDim[0]*z;
+
+	int pos = (x-left) + (y-bottom)*this->axisDim[0] + 
+	  z*this->axisDim[0]*this->axisDim[1];
+
+	if(isDud) temparray[temppos] = this->par.getBlankPixVal();
+	else temparray[temppos] = this->array[pos];
+  
+	if(this->par.getFlagBaseline() && !isDud) 
+	  temparray[temppos] += this->baseline[pos];
+
+      }
     }
-    obj.calcParams();
   }
+
+  if(this->par.getFlagCubeTrimmed()){
+    obj.pixels().addOffsets(left,bottom,0);
+  }
+  obj.calcFluxes(temparray, this->axisDim);
   obj.outputDetectionText(fout,this->logCols,counter);
+  delete [] temparray;
+  delete [] tempDim;
   fout.close();
 }

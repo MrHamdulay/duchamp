@@ -75,6 +75,10 @@ maxMW		112
 flagBaseline    0
 
 # GENERAL DETECTION RELATED
+# flagStatSec -- Whether to only use a subsection of the cube to calculate 
+#                the statistics.
+# StatSec -- The subsection used for statistics calculations. It has the 
+#            same format as the pixel subsection.
 # flagNegative -- Are the features being searched for negative (set to true) 
 #                 or positive (false -- the default)?
 # snrCut --  How many sigma above mean is a detection when sigma-clipping
@@ -84,6 +88,8 @@ flagBaseline    0
 # flagGrowth -- Should the detections be "grown" to a lower significance value?
 # growthCut -- The lower threshold used when growing detections
 
+flagStatSec     0
+StatSec         [*,*,*]
 flagNegative    0
 snrCut		3.
 threshold	0.
@@ -101,7 +107,7 @@ growthCut	2.
 #                                3 = Haar wavelet. Other numbers default to 2.
 
 flagATrous	1
-reconDim        3
+reconDim        1
 scaleMin	1
 snrRecon	4.
 filterCode      1

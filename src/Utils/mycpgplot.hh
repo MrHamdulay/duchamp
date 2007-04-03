@@ -1,8 +1,28 @@
 #ifndef MYCPGPLOT_H
 #define MYCPGPLOT_H
-#include <Utils/utils.hh>
 #include <string>
 
+// The following are in pgplot_related.c
+//
+/** Is a PGPLOT device open? */
+extern "C" int  cpgtest();
+
+/** Is a PGPLOT device a postscript (hardcopy) device? */ 
+extern "C" int  cpgIsPS(); 
+
+/** Do a logarithmic-scaled wedge, as in PGWEDG */
+extern "C" void cpgwedglog(const char* side, float disp, float width, 
+			   float fg, float bg, const char *label);
+
+/** Do CPGHIST but with the y-axis logarithmic */
+extern "C" void cpghistlog(int npts, float *data, float datamin, 
+			   float datamax, int nbin, int pgflag);
+
+/** Do a PGPLOT cumulative distribution */
+extern "C" void cpgcumul(int npts, float *data, float datamin, 
+			 float datamax, int pgflag);
+
+//--------------------
 /**
  * A namespace that holds definitions and basic functions to aid the
  * use of PGPLOT.
@@ -59,7 +79,9 @@ namespace mycpgplot
 		DIAMOND, STAR, SOLIDTRIANGLE, OPENPLUS, DAVID, 
 		SOLIDSQUARE, SOLIDCIRCLE, SOLIDSTAR, LARGESQUARE,
 		CIRCLE1, CIRCLE2, CIRCLE3, CIRCLE4, CIRCLE5, CIRCLE6,
-		CIRCLE7, CIRCLE8, CIRCLE9, LEFT, RIGHT, UP, DOWN};
+		CIRCLE7, CIRCLE8, LEFT, RIGHT, UP, DOWN};
+
+  enum FONTS {NORMAL=1, ROMAN, ITALIC, SCRIPT};
 
   const std::string degrees="\\(0718)";   ///< The degrees symbol: \f$^\circ\f$
   const std::string plusminus="\\(2233)"; ///< The plus-minus symbol: \f$\pm\f$

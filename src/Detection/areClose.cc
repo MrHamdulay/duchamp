@@ -1,6 +1,13 @@
 #include <math.h>
 #include <Detection/detection.hh>
+#include <PixelMap/Scan.hh>
+#include <PixelMap/Object3D.hh>
 #include <param.hh>
+
+using namespace PixelInfo;
+
+bool areAdj(Object2D &obj1, Object2D &obj2);
+bool areClose(Object2D &obj1, Object2D &obj2, float threshold);
 
 bool areClose(Detection &obj1, Detection &obj2, Param &par)
 {
@@ -15,104 +22,181 @@ bool areClose(Detection &obj1, Detection &obj2, Param &par)
   
   bool close = false;   // this will be the value returned
 
-  /*
-   * First, check to see if the objects are nearby.  We will only do
-   * the pixel-by-pixel comparison if their pixel ranges overlap.
-   * This saves a bit of time if the objects are big and are nowhere
-   * near one another.
-   */
+  // 
+  // First, check to see if the objects are nearby.  We will only do
+  // the pixel-by-pixel comparison if their pixel ranges overlap.
+  // This saves a bit of time if the objects are big and are nowhere
+  // near one another.
+  // 
 
   bool flagAdj = par.getFlagAdjacent();
   float threshS = par.getThreshS();
   float threshV = par.getThreshV();
 
-  int gap;
+  long gap;
   if(flagAdj) gap = 1;
-  else gap = int( ceil(threshS) );
-  long min1 = obj1.getXmin();
-  long min2 = obj2.getXmin();
-  long max1 = obj1.getXmax();
-  long max2 = obj2.getXmax();
+  else gap = long( ceil(threshS) );
+
+  Scan test1,test2;
+
   // Test X ranges
-  bool areNear = 
-    ((min1-min2+gap)*(min1-max2-gap) <= 0 ) ||
-    ((max1-min2+gap)*(max1-max2-gap) <= 0 ) ||
-    ((min2-min1+gap)*(min2-max1-gap) <= 0 ) ||
-    ((max2-min1+gap)*(max2-max1-gap) <= 0 ) ;
+  test1.define(0,obj1.getXmin()-gap,obj1.getXmax()-obj1.getXmin()+2*gap+1);
+  test2.define(0,obj2.getXmin(),obj2.getXmax()-obj2.getXmin()+1);
+  bool areNear = overlap(test1,test2);
 
   // Test Y ranges
-  min1 = obj1.getYmin();
-  min2 = obj2.getYmin();
-  max1 = obj1.getYmax();
-  max2 = obj2.getYmax();
-  areNear = areNear &&
-    ( ((min1-min2+gap)*(min1-max2-gap) <= 0 ) ||
-      ((max1-min2+gap)*(max1-max2-gap) <= 0 ) ||
-      ((min2-min1+gap)*(min2-max1-gap) <= 0 ) ||
-      ((max2-min1+gap)*(max2-max1-gap) <= 0 ) );
+  test1.define(0,obj1.getYmin()-gap,obj1.getYmax()-obj1.getYmin()+2*gap+1);
+  test2.define(0,obj2.getYmin(),obj2.getYmax()-obj2.getYmin()+1);
+  areNear = areNear && overlap(test1,test2);
   
   // Test Z ranges
-  min1 = obj1.getZmin();
-  min2 = obj2.getZmin();
-  max1 = obj1.getZmax();
-  max2 = obj2.getZmax();
-  areNear = areNear && 
-    ( ((min1-min2+threshV)*(min1-max2-threshV) <= 0 ) ||
-      ((max1-min2+threshV)*(max1-max2-threshV) <= 0 ) ||
-      ((min2-min1+threshV)*(min2-max1-threshV) <= 0 ) ||
-      ((max2-min1+threshV)*(max2-max1-threshV) <= 0 ) );
+  gap = long(ceil(threshV));
+  test1.define(0,obj1.getZmin()-gap,obj1.getZmax()-obj1.getZmin()+2*gap+1);
+  test2.define(0,obj2.getZmin(),obj2.getZmax()-obj2.getZmin()+1);
+  areNear = areNear && overlap(test1,test2);
+//   Scan commonZ = intersect(test1,test2);
 
   if(areNear){
-    /*
-     * If we get to here, the pixel ranges overlap -- so we do a
-     * pixel-by-pixel comparison to make sure they are actually
-     * "close" according to the thresholds.  Otherwise, close=false,
-     * and so don't need to do anything else before returning.
-     */
+    // 
+    // If we get to here, the pixel ranges overlap -- so we do a
+    // pixel-by-pixel comparison to make sure they are actually
+    // "close" according to the thresholds.  Otherwise, close=false,
+    // and so don't need to do anything else before returning.
+    // 
 
-    float *first = new float[3];  //just store x,y,z positions of objects.
-    float *second = new float[3];
-    int counter = 0;
-    int countermax = obj1.getSize()*obj2.getSize();
-    int size2 = obj2.getSize();
+    long nchan1 = obj1.getNumChannels(); 
+    long nchan2 = obj2.getNumChannels(); 
 
-    while(!close && counter<countermax ){
-      // run this until we run out of pixels or we find a close pair.
-    
-      first[0]  = obj1.getX(counter/size2);
-      first[1]  = obj1.getY(counter/size2);
-      first[2]  = obj1.getZ(counter/size2);
-      second[0] = obj2.getX(counter%size2);
-      second[1] = obj2.getY(counter%size2);
-      second[2] = obj2.getZ(counter%size2);
+    for(int chanct1=0; (!close && (chanct1<nchan1)); chanct1++){
+      ChanMap map1=obj1.pixels().getChanMap(chanct1);
+//       if(commonZ.isInScan(map1.getZ(),0)){
+	
+	for(int chanct2=0; (!close && (chanct2<nchan2)); chanct2++){
+	  ChanMap map2=obj2.pixels().getChanMap(chanct2);
+// 	  if(commonZ.isInScan(map2.getZ(),0)){
+	
+	    if(abs(map1.getZ()-map2.getZ())<=threshV){
+	      
+	      Object2D temp1 = map1.getObject();
+	      Object2D temp2 = map2.getObject();
+	      
+	      if(flagAdj) gap = 1;
+	      else gap = long( ceil(threshS) );
+	      test1.define(0, temp1.getXmin()-gap,
+			   temp1.getXmax()-temp1.getXmin()+2*gap+1);
+	      test2.define(0, temp2.getXmin(),
+			   temp2.getXmax()-temp2.getXmin()+1);
+	      areNear = overlap(test1,test2);
+	      test1.define(0, temp1.getYmin()-gap,
+			   temp1.getYmax()-temp1.getYmin()+2*gap+1);
+	      test2.define(0, temp2.getYmin(),
+			   temp2.getYmax()-temp2.getYmin()+1);
+	      areNear = areNear && overlap(test1,test2);
+	      
+	      if(areNear){
+		if(flagAdj) close = close || areAdj(temp1,temp2);
+		else close = close || areClose(temp1,temp2,threshS);
+	      }
+	    }
+// 	  }
 
-      if(flagAdj){
-	//This step just tests to see if there is a pair of *adjacent*
-	//pixels spatially, and if the velocity pixels are within the
-	//threshold.  For an overall match between the objects, we
-	//only require one matching pair of pixels, hence the || in
-	//the "close" definition.
-	close = close || 
-	  ( (fabs(first[0]-second[0]) <= 1.5)         //X vals adjacent?
-	    && (fabs(first[1]-second[1]) <= 1.5)      //Y vals adjacent?
-	    && (fabs(first[2]-second[2]) <= threshV) //Z vals close?
-	    );
-      }
-      else{
-	close = close ||
-	  ( (hypot(first[0]-second[0],first[1]-second[1])<=threshS) 
-	    && (fabs(first[2]-second[2]) <= threshV )
-	    );
-      }
-    
-      counter++;
+	}
+//       }
+
     }
-
-    delete [] first;
-    delete [] second;
 
   }
 
   return close;
 
+}
+
+
+bool areClose(Object2D &obj1, Object2D &obj2, float threshold)
+{
+  bool close = false;
+
+  long nscan1 = obj1.getNumScan();
+  long nscan2 = obj2.getNumScan();
+
+  Scan temp1(0, obj1.getYmin()-int(threshold),
+	     obj1.getYmax()-obj1.getYmin()+1+2*int(threshold));
+  Scan temp2(0, obj2.getYmin(),obj2.getYmax()-obj2.getYmin()+1);
+  Scan overlap = intersect(temp1,temp2);
+
+  if(overlap.getXlen()>0){
+    overlap.growLeft();
+    overlap.growRight();
+
+    for(int scanct1=0; (!close && (scanct1<nscan1)); scanct1++){
+      temp1 = obj1.getScan(scanct1);
+      if(overlap.isInScan(temp1.getY(),0)){
+	long y1 = temp1.getY();
+
+	for(int scanct2=0; (!close && (scanct2<nscan2)); scanct2++){
+	  temp2 = obj2.getScan(scanct2);
+	  if(overlap.isInScan(temp2.getY(),0)){
+	    long dy = abs(y1 - temp2.getY());
+
+	    if(dy<=threshold){
+
+	      int gap = int(sqrt(threshold*threshold - dy*dy));
+	      Scan temp3(temp2.getY(),temp1.getX()-gap,temp1.getXlen()+2*gap);
+	      if(touching(temp3,temp2)) close = true;
+
+	    } // end of if(dy<thresh)
+
+	  }// if overlap.isIn(temp2)
+	} // end of scanct2 loop
+
+      } // if overlap.isIn(temp1)
+
+    } // end of scanct1 loop
+
+  } //end of if(overlap.getXlen()>0)
+
+  return close;
+}
+
+bool areAdj(Object2D &obj1, Object2D &obj2)
+{
+  bool close = false;
+
+  long nscan1 = obj1.getNumScan();
+  long nscan2 = obj2.getNumScan();
+
+  Scan temp1(0, obj1.getYmin()-1,obj1.getYmax()-obj1.getYmin()+3);
+  Scan temp2(0, obj2.getYmin(),obj2.getYmax()-obj2.getYmin()+1);
+  Scan temp3;
+  Scan commonY = intersect(temp1,temp2);
+  if(commonY.getXlen()>0){
+    commonY.growLeft();
+    commonY.growRight();
+    //    std::cerr << temp1 << " " << temp2 << " " << commonY << "\n";
+
+    for(int scanct1=0;(!close && scanct1 < nscan1);scanct1++){
+      temp1 = obj1.getScan(scanct1);
+      if(commonY.isInScan(temp1.getY(),0)){
+	long y1 = temp1.getY();
+
+	for(int scanct2=0; (!close && scanct2 < nscan2); scanct2++){
+	  temp2 = obj2.getScan(scanct2);
+	  if(commonY.isInScan(temp2.getY(),0)){      
+	    long dy = abs(y1 - temp2.getY());
+
+	    if(dy<= 1){
+
+	      temp3.define(temp2.getY(),temp1.getX(),temp1.getXlen());
+	      if(touching(temp3,temp2)) close = true;
+
+	    }
+	  }
+	} // end of for loop over scanct2
+      
+      }
+     
+    } // end of for loop over scanct1
+
+  }
+  return close;
 }

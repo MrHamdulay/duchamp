@@ -12,6 +12,7 @@
 #include <duchamp.hh>
 #include <ATrous/filter.hh>
 #include <Utils/utils.hh>
+#include <Utils/Section.hh>
 
 // Define funtion to print bools as words, in case the compiler doesn't 
 //  recognise the setf(ios::boolalpha) command...
@@ -258,10 +259,11 @@ Param::Param(){
    *  Default intial values for the parameters.
    * imageFile has no default value!
    */
+  std::string baseSection = "[*,*,*]";
   // Input files
   this->imageFile         = "";
   this->flagSubsection    = false;
-  this->subsection        = "[*,*,*]";
+  this->pixelSec.setSection(baseSection);
   this->flagReconExists   = false;
   this->reconFile         = "";
   this->flagSmoothExists  = false;
@@ -316,6 +318,8 @@ Param::Param(){
   this->flagFDR           = false;
   this->alphaFDR          = 0.01;
   // Other detection      
+  this->flagStatSec       = false;
+  this->statSec.setSection(baseSection);
   this->snrCut            = 3.;
   this->threshold         = 0.;
   this->flagUserThreshold = false;
@@ -324,7 +328,7 @@ Param::Param(){
   this->hanningWidth      = 5;
   // A trous reconstruction parameters
   this->flagATrous        = true;
-  this->reconDim          = 3;
+  this->reconDim          = 1;
   this->scaleMin          = 1;
   this->snrRecon          = 4.;
   this->filterCode        = 1;
@@ -347,7 +351,7 @@ Param::Param (const Param& p)
 {
   this->imageFile         = p.imageFile;
   this->flagSubsection    = p.flagSubsection; 
-  this->subsection        = p.subsection;     
+  this->pixelSec          = p.pixelSec; 
   this->flagReconExists   = p.flagReconExists;
   this->reconFile         = p.reconFile;      
   this->flagSmoothExists  = p.flagSmoothExists;
@@ -395,6 +399,8 @@ Param::Param (const Param& p)
   this->growthCut         = p.growthCut;
   this->flagFDR           = p.flagFDR;
   this->alphaFDR          = p.alphaFDR;
+  this->flagStatSec       = p.flagStatSec; 
+  this->statSec           = p.statSec; 
   this->snrCut            = p.snrCut;
   this->threshold         = p.threshold;
   this->flagUserThreshold = p.flagUserThreshold;
@@ -421,7 +427,7 @@ Param& Param::operator= (const Param& p)
 {
   this->imageFile         = p.imageFile;
   this->flagSubsection    = p.flagSubsection; 
-  this->subsection        = p.subsection;     
+  this->pixelSec          = p.pixelSec; 
   this->flagReconExists   = p.flagReconExists;
   this->reconFile         = p.reconFile;      
   this->flagSmoothExists  = p.flagSmoothExists;
@@ -469,6 +475,8 @@ Param& Param::operator= (const Param& p)
   this->growthCut         = p.growthCut;
   this->flagFDR           = p.flagFDR;
   this->alphaFDR          = p.alphaFDR;
+  this->flagStatSec       = p.flagStatSec; 
+  this->statSec           = p.statSec; 
   this->snrCut            = p.snrCut;
   this->threshold         = p.threshold;
   this->flagUserThreshold = p.flagUserThreshold;
@@ -564,7 +572,7 @@ int Param::readParams(std::string paramfile)
       arg = makelower(arg);
       if(arg=="imagefile")       this->imageFile = readSval(ss);
       if(arg=="flagsubsection")  this->flagSubsection = readFlag(ss); 
-      if(arg=="subsection")      this->subsection = readSval(ss); 
+      if(arg=="subsection")      this->pixelSec.setSection(readSval(ss));
       if(arg=="flagreconexists") this->flagReconExists = readFlag(ss); 
       if(arg=="reconfile")       this->reconFile = readSval(ss); 
       if(arg=="flagsmoothexists")this->flagSmoothExists = readFlag(ss); 
@@ -602,6 +610,8 @@ int Param::readParams(std::string paramfile)
       if(arg=="flagfdr")         this->flagFDR = readFlag(ss); 
       if(arg=="alphafdr")        this->alphaFDR = readFval(ss); 
 
+      if(arg=="flagstatsec")     this->flagStatSec = readFlag(ss); 
+      if(arg=="statsec")         this->statSec.setSection(readSval(ss));
       if(arg=="snrcut")          this->snrCut = readFval(ss); 
       if(arg=="threshold"){
 	                         this->threshold = readFval(ss);
@@ -828,6 +838,12 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<par.getFilterCode() 
 	     << " (" << par.getFilterName()  << ")" <<std::endl;
   }	     					       
+  if(par.getFlagStatSec()){
+    theStream<<std::setw(widthText)<<"Section used by statistics calculation"
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[statSec]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<par.statSec.getSection()          <<std::endl;
+  }
   theStream  <<std::setw(widthText)<<"Using FDR analysis?"                  
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagFDR]"
 	     <<"  =  " <<resetiosflags(std::ios::right)

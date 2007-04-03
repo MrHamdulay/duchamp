@@ -1,26 +1,31 @@
 #include <Cubes/cubes.hh>
-#include <Detection/voxel.hh>
-#include <Detection/detection.hh>
+#include <PixelMap/Voxel.hh>
+#include <PixelMap/Object2D.hh>
 #include <vector>
+
+using namespace PixelInfo;
 
 enum STATUS { NONOBJECT, OBJECT, COMPLETE, INCOMPLETE };
 enum ROW { PRIOR=0, CURRENT};
-enum NULLS { NULLSTART=-1, NULLMARKER=45}; //ASCII 45 = '-' --> eases printing in case of debugging
+enum NULLS { NULLSTART=-1, NULLMARKER=45}; //ASCII 45 = '-' --> eases
+					   //printing for debugging
 
+//---------------------------
 /**
  * Local class to manage locating detections.
  * Keeps a track of a detection, as well as the start and finish
  * locations of the detection on the current row.
  */
-class Object{
+class FoundObject{
 public:
-  Object(){start=NULLSTART; end=NULLSTART;};
+  FoundObject(){start=NULLSTART; end=NULLSTART;};
   int start; ///< Pixel on the current row where the detection starts.
   int end;   ///< Pixel on the current row where the detection finishes.
-  Detection info; ///< Collection of detected pixels.
+  Object2D info; ///< Collection of detected pixels.
 };
+//---------------------------
 
-void Image::lutz_detect() 
+std::vector<Object2D> Image::lutz_detect() 
 {
 /**
  *  A detection algorithm for 2-dimensional images based on that of
@@ -39,14 +44,15 @@ void Image::lutz_detect()
  */
 
   // Allocate necessary arrays.
-  STATUS *status   = new STATUS[2];
-  Detection *store = new Detection[this->axisDim[0]+1];
-  char *marker     = new char[this->axisDim[0]+1];
+  std::vector<Object2D> outputlist;
+  STATUS *status  = new STATUS[2];
+  Object2D *store = new Object2D[this->axisDim[0]+1];
+  char *marker    = new char[this->axisDim[0]+1];
   for(int i=0; i<(this->axisDim[0]+1); i++) marker[i] = NULLMARKER;
-  std::vector<Object>  *oS    = new std::vector<Object>;
-  std::vector<STATUS> *psS    = new std::vector<STATUS>;
+  std::vector<FoundObject> oS;
+  std::vector<STATUS>      psS;
 
-  Pixel *pix = new Pixel;
+  Pixel pix;
 
   for(int posY=0;posY<(this->axisDim[1]+1);posY++){
     // Loop over each row -- consider rows one at a time
@@ -54,21 +60,18 @@ void Image::lutz_detect()
     status[PRIOR] = COMPLETE;
     status[CURRENT] = NONOBJECT;
 
-    pix->setY(posY);
-
     for(int posX=0;posX<(this->axisDim[0]+1);posX++){
       // Now the loop for a given row, looking at each column individually.
 
       char currentMarker = marker[posX];
       marker[posX] = NULLMARKER;
-      pix->setX(posX);
 
-      bool isObject = false;
+      bool isObject;
       if((posX<this->axisDim[0])&&(posY<this->axisDim[1])){ 
 	// if we are in the original image
 	isObject = this->isDetection(posX,posY);
-	pix->setF( this->array[posY*this->axisDim[0] + posX] );
       }
+      else isObject = false;
       // else we're in the padding row/col and isObject=FALSE;
 
       // 
@@ -85,17 +88,17 @@ void Image::lutz_detect()
 	status[CURRENT] = OBJECT;
 	if(status[PRIOR] == OBJECT){
 	  
-	  if(oS->back().start==NULLSTART){
+	  if(oS.back().start==NULLSTART){
 	    marker[posX] = 'S';
-	    oS->back().start = posX;
+	    oS.back().start = posX;
 	  }
 	  else  marker[posX] = 's';
 	}
 	else{
-	  psS->push_back(status[PRIOR]);  //PUSH PS onto PSSTACK;
+	  psS.push_back(status[PRIOR]);  //PUSH PS onto PSSTACK;
 	  marker[posX] = 'S';
-	  oS->resize(oS->size()+1);        //PUSH OBSTACK;
-	  oS->back().start = posX;
+	  oS.resize(oS.size()+1);        //PUSH OBSTACK;
+	  oS.back().start = posX;
 
 	  status[PRIOR] = COMPLETE;
 	}
@@ -120,13 +123,13 @@ void Image::lutz_detect()
       if(currentMarker != NULLMARKER){
 
 	if(currentMarker == 'S'){
-	  psS->push_back(status[PRIOR]);      // PUSH PS onto PSSTACK
+	  psS.push_back(status[PRIOR]);      // PUSH PS onto PSSTACK
 	  if(status[CURRENT] == NONOBJECT){
-	    psS->push_back(COMPLETE);         // PUSH COMPLETE ONTO PSSTACK;
-	    oS->resize(oS->size()+1);          // PUSH OBSTACK;
-	    oS->back().info = store[posX];
+	    psS.push_back(COMPLETE);         // PUSH COMPLETE ONTO PSSTACK;
+	    oS.resize(oS.size()+1);          // PUSH OBSTACK;
+	    oS.back().info = store[posX];
 	  }
-	  else oS->back().info.addAnObject( store[posX] );
+	  else oS.back().info = oS.back().info + store[posX];
 	  
 	  status[PRIOR] = OBJECT;
 	}
@@ -135,18 +138,20 @@ void Image::lutz_detect()
 	if(currentMarker == 's'){
 
 	  if( (status[CURRENT] == OBJECT) && (status[PRIOR] == COMPLETE) ){
-	    status[PRIOR] = psS->back();
-	    psS->pop_back();                   //POP PSSTACK ONTO PS
+	    status[PRIOR] = psS.back();
+	    psS.pop_back();                   //POP PSSTACK ONTO PS
 
-// 	    oS->at(oS->size()-2).info.addAnObject( oS->back().info );
-// 	    if(oS->at(oS->size()-2).start == NULLSTART) oS->at(oS->size()-2).start = oS->back().start;
-// 	    else marker[oS->back().start] = 's';
-	    (*oS)[oS->size()-2].info.addAnObject( oS->back().info );
-	    if((*oS)[oS->size()-2].start == NULLSTART) 
-	      (*oS)[oS->size()-2].start = oS->back().start;
-	    else marker[oS->back().start] = 's';
+// 	    oS.at(oS.size()-2).info.addAnObject( oS.back().info );
+//  	    if(oS.at(oS.size()-2).start == NULLSTART) 
+// 	      oS.at(oS.size()-2).start = oS.back().start;
+// 	    else marker[oS.back().start] = 's';
 
-	    oS->pop_back();
+	    oS[oS.size()-2].info = oS[oS.size()-2].info + oS.back().info;
+	    if(oS[oS.size()-2].start == NULLSTART) 
+	      oS[oS.size()-2].start = oS.back().start;
+	    else marker[oS.back().start] = 's';
+
+	    oS.pop_back();
 	  }
 
 	  status[PRIOR] = OBJECT;
@@ -158,34 +163,35 @@ void Image::lutz_detect()
 	/*---------*/
 	if(currentMarker == 'F') {
 
-	  status[PRIOR] = psS->back();
-	  psS->pop_back();                    //POP PSSTACK ONTO PS
+	  status[PRIOR] = psS.back();
+	  psS.pop_back();                    //POP PSSTACK ONTO PS
 
 	  if( (status[CURRENT] == NONOBJECT) && (status[PRIOR] == COMPLETE) ){
 
-	    if(oS->back().start == NULLSTART){ // object completed
-	      if(oS->back().info.getSize() >= this->minSize){ 
-		// is it big enough?
-		oS->back().info.calcParams(); // work out midpoints, fluxes etc
-		this->addObject(oS->back().info);
+	    if(oS.back().start == NULLSTART){ 
+	      // The object is completed. If it is big enough, add to
+	      // the end of the output list.	      
+	      if(oS.back().info.getSize() >= this->minSize){ 
+	//oS.back().info.calcParams(); // work out midpoints, fluxes etc
+		outputlist.push_back(oS.back().info);
 	      }
 	    }
 	    else{
-	      marker[ oS->back().end ] = 'F';
-	      store[ oS->back().start ] = oS->back().info;
+	      marker[ oS.back().end ] = 'F';
+	      store[ oS.back().start ] = oS.back().info;
 	    }
 
-	    oS->pop_back();
+	    oS.pop_back();
 
-	    status[PRIOR] = psS->back();
-	    psS->pop_back();
+	    status[PRIOR] = psS.back();
+	    psS.pop_back();
 	  }
 	}
 
       } // end of PROCESSMARKER section ( if(currentMarker!=NULLMARKER) )
 
       if (isObject){
-	oS->back().info.addPixel(*pix);
+	oS.back().info.addPixel(posX,posY);
       }
       else{
 	// 
@@ -202,14 +208,14 @@ void Image::lutz_detect()
 
 	  if(status[PRIOR] != COMPLETE){
 	    marker[posX] = 'f';
-	    oS->back().end = posX;
+	    oS.back().end = posX;
 	  }
 	  else{
-	    status[PRIOR] = psS->back();
-	    psS->pop_back();                   //POP PSSTACK onto PS;
+	    status[PRIOR] = psS.back();
+	    psS.pop_back();                   //POP PSSTACK onto PS;
 	    marker[posX] = 'F';
-	    store[ oS->back().start ] = oS->back().info;
-	    oS->pop_back();
+	    store[ oS.back().start ] = oS.back().info;
+	    oS.pop_back();
 	  }
 	}
       	
@@ -221,10 +227,9 @@ void Image::lutz_detect()
 
   // clean up and remove declared arrays
   delete [] marker;
-  delete oS;
-  delete psS;
   delete [] store;
   delete [] status;
-  delete pix; 
+
+  return outputlist;
 
 }

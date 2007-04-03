@@ -1,7 +1,7 @@
 \secA{Introduction and getting going quickly}
 
 This document provides a user's guide to \duchamp, an object-finder
-for use on spectral-line data cubes. The basic execution of \duchamp\
+for use on spectral-line data cubes. The basic execution of \duchamp
 is to read in a FITS data cube, find sources in the cube, and produce
 a text file of positions, velocities and fluxes of the detections, as
 well as a postscript file of the spectra of each detection.
@@ -17,7 +17,7 @@ Appendix~\ref{app-input}. This file provides the input file name, the
 various output files, and defines various parameters that control the
 execution.
 
-The standard way to run \duchamp\ is by the command
+The standard way to run \duchamp is by the command
 \begin{quote}
 \texttt{Duchamp -p [parameter file]}
 \end{quote}
@@ -41,21 +41,21 @@ the output is in \S\ref{sec-output}.
 
 \secB{Guide to terminology and conventions}
 
-First, a brief note on the use of terminology in this guide. \duchamp\
+First, a brief note on the use of terminology in this guide. \duchamp
 is designed to work on FITS ``cubes''. These are FITS\footnote{FITS is
 the Flexible Image Transport System -- see \citet{hanisch01} or
 websites such as
 \href{http://fits.cv.nrao.edu/FITS.html}{http://fits.cv.nrao.edu/FITS.html}
-for details.} image arrays with three dimensions -- they are assumed
-to have the following form: the first two dimensions (referred to as
-$x$ and $y$) are spatial directions (that is, relating to the position
-on the sky -- often, but not necessarily, corresponding to Equatorial
-or Galactic coordinates), while the third dimension, $z$, is the
-spectral direction, which can correspond to frequency, wavelength, or
-velocity. The three dimensional analogue of pixels are ``voxels'', or
-volume cells -- a voxel is defined by a unique $(x,y,z)$ location and
-has a unique value of flux or intensity or brightness (or something
-equivalent) associated with it.
+for details.} image arrays with (at least) three dimensions. They
+are assumed to have the following form: the first two dimensions
+(referred to as $x$ and $y$) are spatial directions (that is, relating
+to the position on the sky -- often, but not necessarily,
+corresponding to Equatorial or Galactic coordinates), while the third
+dimension, $z$, is the spectral direction, which can correspond to
+frequency, wavelength, or velocity. The three dimensional analogue of
+pixels are ``voxels'', or volume cells -- a voxel is defined by a
+unique $(x,y,z)$ location and has a unique value of flux, intensity
+or brightness (or something equivalent) associated with it.
 
 Note that it is possible for the FITS file to have more than three
 dimensions (for instance, there could be a fourth dimension
@@ -75,14 +75,14 @@ perpendicular to the spectral direction at a given $z$-value is a
 single channel (the 2-D image is a channel map).
 
 Detection involves locating a contiguous group of voxels with fluxes
-above a certain threshold. \duchamp\ makes no assumptions as to the
+above a certain threshold. \duchamp makes no assumptions as to the
 size or shape of the detected features, other than having
 user-selected minimum size criteria. Features that are detected are
 assumed to be positive. The user can choose to search for negative
 features by setting an input parameter -- this inverts the cube prior
 to the search (see \S\ref{sec-detection} for details).
 
-Finally, note that it is possible to run \duchamp\ on a
+Finally, note that it is possible to run \duchamp on a
 two-dimensional image (\ie one with no frequency or velocity
 information), or indeed a one-dimensional array, and many of the
 features of the program will work fine. The focus, however, is on
@@ -108,7 +108,7 @@ discussed in more detail in the following sections.
 \item The FITS image is located and read in to memory.
 
   The file given is assumed to be a valid FITS file. As discussed
-  above, it can have any number of dimensions, but \duchamp\ only
+  above, it can have any number of dimensions, but \duchamp only
   reads in the two spatial and the one spectral dimensions. A subset
   of the FITS array can be given (see \S\ref{sec-input} for details).
 
@@ -116,8 +116,8 @@ discussed in more detail in the following sections.
   or smoothed array is read in.
 
   When a cube is either Hanning-smoothed or reconstructed with the
-  \atrous\ wavelet method, the result can be saved to a FITS file, so
-  that subsequent runs of \duchamp\ can read it in to save having to
+  \atrous wavelet method, the result can be saved to a FITS file, so
+  that subsequent runs of \duchamp can read it in to save having to
   re-do the reconstruction (as it can be relatively time-intensive).
 
 \item \label{step-blank} If requested, BLANK pixels are trimmed from
@@ -134,9 +134,9 @@ discussed in more detail in the following sections.
 
 \item If the reconstruction method is requested, and the reconstructed
   array has not been read in at Step 3 above, the cube is
-  reconstructed using the \atrous\ wavelet method.
+  reconstructed using the \atrous wavelet method.
 
-  This step uses the \atrous\ method to determine the amount of
+  This step uses the \atrous method to determine the amount of
   structure present at various scales. A simple thresholding technique
   then removes random noise from the cube, leaving the significant
   signal. This process can greatly reduce the noise level in the cube,

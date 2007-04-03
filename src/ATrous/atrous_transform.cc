@@ -46,9 +46,9 @@
 // }
 
   
-void atrousTransform(long &length, int &numScales, float *spectrum, double *coeffs, double *wavelet)
+void atrousTransform(long &length, int &numScales, float *spectrum, double *coeffs, double *wavelet, Param &par)
 {
-  extern Filter reconFilter;
+  Filter reconFilter = par.filter();
   int filterHW = reconFilter.width()/2;
 
   for(int i=0;i<length;i++)  coeffs[i] = wavelet[i] = spectrum[i];
@@ -80,9 +80,9 @@ void atrousTransform(long &length, int &numScales, float *spectrum, double *coef
 
 }
 
-void atrousTransform(long &length, float *spectrum, float *coeffs, float *wavelet)
+void atrousTransform(long &length, float *spectrum, float *coeffs, float *wavelet, Param &par)
 {
-  extern Filter reconFilter;
+  Filter reconFilter = par.filter();
   int filterHW = reconFilter.width()/2;
   int numScales = reconFilter.getNumScales(length);
 
@@ -128,7 +128,7 @@ void atrousTransform(long &length, float *spectrum, float *coeffs, float *wavele
 
 void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet, Param &par)
 {
-  extern Filter reconFilter;
+  Filter reconFilter = par.filter();
   bool flagBlank=par.getFlagBlankPix();
   float blankPixValue = par.getBlankPixVal();
   int filterHW = reconFilter.width()/2;
@@ -259,65 +259,65 @@ void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, dou
 
 }
 
-void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet)
-{
-  extern Filter reconFilter;
-  int filterHW = reconFilter.width()/2;
+// void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet)
+// {
+//   Filter reconFilter = par.filter();
+//   int filterHW = reconFilter.width()/2;
 
-  double *filter = new double[reconFilter.width()*reconFilter.width()];
-  for(int i=0;i<reconFilter.width();i++){
-    for(int j=0;j<reconFilter.width();j++){
-      filter[i*reconFilter.width()+j] = reconFilter.coeff(i) * reconFilter.coeff(j);
-    }
-  }
+//   double *filter = new double[reconFilter.width()*reconFilter.width()];
+//   for(int i=0;i<reconFilter.width();i++){
+//     for(int j=0;j<reconFilter.width();j++){
+//       filter[i*reconFilter.width()+j] = reconFilter.coeff(i) * reconFilter.coeff(j);
+//     }
+//   }
 
-  long size = xdim * ydim;
-  float *oldcoeffs = new float[size];
+//   long size = xdim * ydim;
+//   float *oldcoeffs = new float[size];
 
-  for(int i=0;i<size;i++)  coeffs[i] = wavelet[i] = input[i];
+//   for(int i=0;i<size;i++)  coeffs[i] = wavelet[i] = input[i];
 
   
-  int spacing = 1;
-  for(int scale = 0; scale<numScales; scale++){
+//   int spacing = 1;
+//   for(int scale = 0; scale<numScales; scale++){
 
-    for(int i=0;i<size;i++) oldcoeffs[i] = coeffs[i];
+//     for(int i=0;i<size;i++) oldcoeffs[i] = coeffs[i];
 
-    std::cerr << numScales<<" "<<scale<<" "<<spacing<<std::endl;
-    for(int ypos = 0; ypos<ydim; ypos++){
-      for(int xpos = 0; xpos<xdim; xpos++){
-	// loops over each pixel in the image
-	int pos = ypos*xdim + xpos;
-	coeffs[pos] = 0;
+//     std::cerr << numScales<<" "<<scale<<" "<<spacing<<std::endl;
+//     for(int ypos = 0; ypos<ydim; ypos++){
+//       for(int xpos = 0; xpos<xdim; xpos++){
+// 	// loops over each pixel in the image
+// 	int pos = ypos*xdim + xpos;
+// 	coeffs[pos] = 0;
 
-	for(int yoffset=-filterHW; yoffset<=filterHW; yoffset++){
-	  int y = ypos + spacing*yoffset;
-	  if(y<0) y = -y;                 // boundary conditions are 
-	  if(y>=ydim) y = 2*(ydim-1) - y; //    reflection.
+// 	for(int yoffset=-filterHW; yoffset<=filterHW; yoffset++){
+// 	  int y = ypos + spacing*yoffset;
+// 	  if(y<0) y = -y;                 // boundary conditions are 
+// 	  if(y>=ydim) y = 2*(ydim-1) - y; //    reflection.
 	  
-	  for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
-	    int x = xpos + spacing*xoffset;
-	    if(x<0) x = -x;                 // boundary conditions are 
-	    if(x>=xdim) x = 2*(xdim-1) - x; //    reflection.
+// 	  for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
+// 	    int x = xpos + spacing*xoffset;
+// 	    if(x<0) x = -x;                 // boundary conditions are 
+// 	    if(x>=xdim) x = 2*(xdim-1) - x; //    reflection.
 
-	    int filterpos = (yoffset+filterHW)*reconFilter.width() + (xoffset+filterHW);
-	    int oldpos = y*xdim + x;
-	    coeffs[pos] += filter[filterpos] * oldcoeffs[oldpos];
-	  }
-	}
+// 	    int filterpos = (yoffset+filterHW)*reconFilter.width() + (xoffset+filterHW);
+// 	    int oldpos = y*xdim + x;
+// 	    coeffs[pos] += filter[filterpos] * oldcoeffs[oldpos];
+// 	  }
+// 	}
        
-	wavelet[(scale+1)*size+pos] = oldcoeffs[pos] - coeffs[pos];
+// 	wavelet[(scale+1)*size+pos] = oldcoeffs[pos] - coeffs[pos];
 
-      }
-    }
+//       }
+//     }
  
-    spacing *= 2;
+//     spacing *= 2;
 
-  }
+//   }
 
-  delete [] filter;
-  delete [] oldcoeffs;
+//   delete [] filter;
+//   delete [] oldcoeffs;
 
-}
+// }
 
 /***********************************************************************/
 /////  3-DIMENSIONAL TRANSFORM
@@ -325,7 +325,7 @@ void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, dou
 
 void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *&input, float *&coeffs, float *&wavelet, Param &par)
 {
-  extern Filter reconFilter;
+  Filter reconFilter = par.filter();
   float blankPixValue = par.getBlankPixVal();
   int filterHW = reconFilter.width()/2;
 
@@ -422,81 +422,81 @@ void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float
 }
 
 
-void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *input, float *coeffs, float *wavelet)
-{
-  extern Filter reconFilter;
-  int filterHW = reconFilter.width()/2;
+// void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *input, float *coeffs, float *wavelet)
+// {
+//   extern Filter reconFilter;
+//   int filterHW = reconFilter.width()/2;
 
-  long size = xdim * ydim * zdim;
-  float *oldcoeffs = new float[size];
+//   long size = xdim * ydim * zdim;
+//   float *oldcoeffs = new float[size];
 
-  std::cerr << "%";
-  int fsize = reconFilter.width()*reconFilter.width()*reconFilter.width();
-  std::cerr << "%";
-  double *filter = new double[fsize];
-  for(int i=0;i<reconFilter.width();i++){
-    for(int j=0;j<reconFilter.width();j++){
-      for(int k=0;k<reconFilter.width();k++){
-      filter[i +j*reconFilter.width() + k*reconFilter.width()*reconFilter.width()] = 
-	reconFilter.coeff(i) * reconFilter.coeff(j) * reconFilter.coeff(k);
-      }
-    }
-  }
+//   std::cerr << "%";
+//   int fsize = reconFilter.width()*reconFilter.width()*reconFilter.width();
+//   std::cerr << "%";
+//   double *filter = new double[fsize];
+//   for(int i=0;i<reconFilter.width();i++){
+//     for(int j=0;j<reconFilter.width();j++){
+//       for(int k=0;k<reconFilter.width();k++){
+//       filter[i +j*reconFilter.width() + k*reconFilter.width()*reconFilter.width()] = 
+// 	reconFilter.coeff(i) * reconFilter.coeff(j) * reconFilter.coeff(k);
+//       }
+//     }
+//   }
 
-  for(int i=0;i<size;i++)  coeffs[i] = wavelet[i] = input[i];
+//   for(int i=0;i<size;i++)  coeffs[i] = wavelet[i] = input[i];
 
-  int spacing = 1;
-  std::cerr<<xdim<<"x"<<ydim<<"x"<<zdim<<"x"<<numScales;
-  for(int scale = 0; scale<numScales; scale++){
-    std::cerr << ".";
-    for(int i=0;i<size;i++) oldcoeffs[i] = coeffs[i];
+//   int spacing = 1;
+//   std::cerr<<xdim<<"x"<<ydim<<"x"<<zdim<<"x"<<numScales;
+//   for(int scale = 0; scale<numScales; scale++){
+//     std::cerr << ".";
+//     for(int i=0;i<size;i++) oldcoeffs[i] = coeffs[i];
 
-    for(int zpos = 0; zpos<zdim; zpos++){
-      for(int ypos = 0; ypos<ydim; ypos++){
-	for(int xpos = 0; xpos<xdim; xpos++){
-	  // loops over each pixel in the image
-	  int pos = zpos*xdim*ydim + ypos*xdim + xpos;
-	  coeffs[pos] = 0;
+//     for(int zpos = 0; zpos<zdim; zpos++){
+//       for(int ypos = 0; ypos<ydim; ypos++){
+// 	for(int xpos = 0; xpos<xdim; xpos++){
+// 	  // loops over each pixel in the image
+// 	  int pos = zpos*xdim*ydim + ypos*xdim + xpos;
+// 	  coeffs[pos] = 0;
 
-	  for(int zoffset=-filterHW; zoffset<=filterHW; zoffset++){
-	    int z = zpos + spacing*zoffset;
-	    if(z<0) z = -z;                 // boundary conditions are 
-	    if(z>=zdim) z = 2*(zdim-1) - z; //    reflection.
+// 	  for(int zoffset=-filterHW; zoffset<=filterHW; zoffset++){
+// 	    int z = zpos + spacing*zoffset;
+// 	    if(z<0) z = -z;                 // boundary conditions are 
+// 	    if(z>=zdim) z = 2*(zdim-1) - z; //    reflection.
 	  
-	    for(int yoffset=-filterHW; yoffset<=filterHW; yoffset++){
-	      int y = ypos + spacing*yoffset;
-	      if(y<0) y = -y;                 // boundary conditions are 
-	      if(y>=ydim) y = 2*(ydim-1) - y; //    reflection.
+// 	    for(int yoffset=-filterHW; yoffset<=filterHW; yoffset++){
+// 	      int y = ypos + spacing*yoffset;
+// 	      if(y<0) y = -y;                 // boundary conditions are 
+// 	      if(y>=ydim) y = 2*(ydim-1) - y; //    reflection.
 	  
-	      for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
-		int x = xpos + spacing*xoffset;
-		if(x<0) x = -x;                 // boundary conditions are 
-		if(x>=xdim) x = 2*(xdim-1) - x; //    reflection.
+// 	      for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
+// 		int x = xpos + spacing*xoffset;
+// 		if(x<0) x = -x;                 // boundary conditions are 
+// 		if(x>=xdim) x = 2*(xdim-1) - x; //    reflection.
 
-		int filterpos = (zoffset+filterHW)*reconFilter.width()*reconFilter.width() + 
-		  (yoffset+filterHW)*reconFilter.width() + (xoffset+filterHW);
-		int oldpos = z*xdim*ydim + y*xdim + x;
+// 		int filterpos = (zoffset+filterHW)*reconFilter.width()*reconFilter.width() + 
+// 		  (yoffset+filterHW)*reconFilter.width() + (xoffset+filterHW);
+// 		int oldpos = z*xdim*ydim + y*xdim + x;
 
-		coeffs[pos] += filter[filterpos] * oldcoeffs[oldpos];
+// 		coeffs[pos] += filter[filterpos] * oldcoeffs[oldpos];
 
-	      }
-	    }
-	  }
+// 	      }
+// 	    }
+// 	  }
 		
-	  wavelet[(scale+1)*size+pos] = oldcoeffs[pos] - coeffs[pos];
+// 	  wavelet[(scale+1)*size+pos] = oldcoeffs[pos] - coeffs[pos];
 
-	}
-      }
-    }
+// 	}
+//       }
+//     }
  
-    spacing *= 2;
+//     spacing *= 2;
 
-  }
-  std::cerr << "|";
+//   }
+//   std::cerr << "|";
 
-  delete [] filter;
-  delete [] oldcoeffs;
+//   delete [] filter;
+//   delete [] oldcoeffs;
 
-}
+// }
 
 
