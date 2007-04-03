@@ -58,6 +58,9 @@ The beta version is provided more for testing purposes -- if users
 want a reliable version of the code that matches the documentation,
 please use the latest release available from the webpage given below.
 
+Having said all that, do note that I won't post a beta version on the
+website unless I know that it is functioning in typical cases, so it
+should work to a large degree (and if it doesn't -- let me know!)
 
 Obtaining and Building Duchamp
 ------------------------------
