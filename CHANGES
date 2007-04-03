@@ -1,3 +1,35 @@
+Duchamp version 1.1beta (2007/04/03)
+------------------------------------
+
+Changes made since the last numbered release:
+
+* Major change to the way detections are stored. They are now recorded
+  via run-length encoding in the x-y plane, and stored as collections
+  of channel-maps. This improves the memory usage and the speed of
+  execution (particularly for routines such as the merging routines).
+
+* Added ability to specify a statsec, so that the statistics are only
+  calculated from a given subsection of the cube, rather than the full
+  cube.
+
+* The subsections can also specify the ability to remove a border of n
+  pixels from the edges of an axis (ie. n from the start and from the
+  end) -- as requested in Trac ticket #5.
+
+* Fixed bug (Trac ticket #4) that meant the velocity units were not
+  correctly dealt with. Duchamp should be more robust for different
+  velocity axis setups now.
+
+* Fixed bug (ticket #9) with the VOTable output, where the tags were
+  not closing.
+
+* Fallback spectral units (in case the FITS header fails to record
+  them) changed to SPC.
+
+* Some slight improvements to the user feedback during execution.
+
+* Changed the default value of the reconDim parameter from 3 to 1.
+
 Duchamp version 1.0.7 (2006/11/22)
 ----------------------------------
 
