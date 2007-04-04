@@ -38,14 +38,15 @@ void Cube::ObjectMerger()
 
     // Do growth stuff
     if(this->par.getFlagGrowth()) {
-      std::cout << "Growing objects...     "<< std::flush;
       vector <Detection> *newList = new vector <Detection>;
-      printBackSpace(23);
-      std::cout << " Growing object #      "<< std::flush;
-      std::cout.setf(std::ios::left);
       for(int i=0;i<currentList->size();i++){
-	printBackSpace(6);
-	std::cout << std::setw(6) << i+1 << std::flush;
+	std::cout.setf(std::ios::right);
+	std::cout << " Growing: " << std::setw(6) << i+1 << "/";	   
+	std::cout.unsetf(std::ios::right);
+	std::cout.setf(std::ios::left);
+	std::cout << std::setw(6) << currentList->size() << std::flush;
+	printBackSpace(23);
+	std::cout << std::flush;
 	Detection *obj = new Detection;
 	*obj = (*currentList)[i];
 	growObject(*obj,*this);
@@ -55,8 +56,6 @@ void Cube::ObjectMerger()
       delete currentList;
       currentList = newList;
       std::cout.unsetf(std::ios::left);
-      printBackSpace(23);
-      std::cout << std::flush;
 
       // and do the merging again to pick up objects that have
       //  grown into each other.

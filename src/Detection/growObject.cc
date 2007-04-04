@@ -24,14 +24,16 @@ void growObject(Detection &object, Cube &cube)
    *    is added to the object.
    *
    *    \param object Object to be grown.
-   *    \param cube  Necessary to see both the Param list, containing the growth
-   *    threshold, and the actual array of pixel fluxes.  
+   *    \param cube Necessary to see both the Param list, containing
+   *    the growth threshold, and the actual array of pixel fluxes.
    */
 
 
   vector <bool> isInObj(cube.getSize(),false);
-  float thresh1;
-  float thresh2;
+  bool flagAdj = cube.pars().getFlagAdjacent();
+  int threshS = int(cube.pars().getThreshS());
+  if(flagAdj) threshS = 1;
+  int threshV = int(cube.pars().getThreshV());
   long  chanpos;
 
   for(int i=0;i<object.getSize();i++) {
@@ -48,9 +50,9 @@ void growObject(Detection &object, Cube &cube)
   
   for(int pix=0; pix<object.getSize(); pix++){ // for each pixel in the object
 
-    for(int xnbr=-1; xnbr<=1; xnbr++){
-      for(int ynbr=-1; ynbr<=1; ynbr++){
-	for(int znbr=-1; znbr<=1; znbr++){
+    for(int xnbr=-1*threshS; xnbr<=1*threshS; xnbr++){
+      for(int ynbr=-1*threshS; ynbr<=1*threshS; ynbr++){
+	for(int znbr=-1*threshV; znbr<=1*threshV; znbr++){
 
 	  if((xnbr!=0)||(ynbr!=0)||(znbr!=0)){ 
 	    // ignore when all=0 ie. the current object pixel
@@ -60,9 +62,12 @@ void growObject(Detection &object, Cube &cube)
 	    long newy = pixnew.getY() + ynbr;
 	    long newz = pixnew.getZ() + znbr;
 	  
-	    if((newx<cube.getDimX())&&(newx>=0)&&
-	       (newy<cube.getDimY())&&(newy>=0)&&
-	       (newz<cube.getDimZ())&&(newz>=0)){
+	    if((newx<cube.getDimX())&&(newx>=0)&&   // x in cube?
+	       (newy<cube.getDimY())&&(newy>=0)&&   // y in cube?
+	       (newz<cube.getDimZ())&&(newz>=0)&&   // z in cube?
+	       !cube.isBlank(newx,newy,newz)   &&   // pixel not BLANK?
+	       !cube.pars().isInMW(newz)       &&   // pixel not MW?
+	       (flagAdj || hypot(xnbr,ynbr))     ){ // pixel not too far?
 	    
 	      pixnew.setX(newx);
 	      pixnew.setY(newy);

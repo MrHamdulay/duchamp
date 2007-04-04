@@ -86,16 +86,9 @@ int Param::verifySubsection()
   std::vector<long> dim(numAxes);
   for(int i=0;i<numAxes;i++) dim[i] = dimAxes[i];
   delete [] dimAxes;
-  if(this->pixelSec.parse(dim)==FAILURE){
-    std::cerr << "fnord\n";
-    return FAILURE;
-  }
-  if(this->statSec.parse(dim)==FAILURE){
-    std::cerr << "aarrgghh!\n";
-    return FAILURE;
-  }
-
-  std::cerr << this->statSec.getSection()<<" <=====> " << this->statSec.getStart(0) << "\n";
-
+  
+  if(this->pixelSec.parse(dim)==FAILURE) return FAILURE;
+  if(this->statSec.parse(dim)==FAILURE)  return FAILURE;
+  
   return SUCCESS;
 }

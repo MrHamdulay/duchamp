@@ -578,10 +578,16 @@ private:
 std::vector <Detection> searchReconArray(long *dim, float *originalArray,
 					 float *reconArray, Param &par,
 					 StatsContainer<float> &stats);
+std::vector <Detection> searchReconArraySimple(long *dim, float *originalArray,
+					       float *reconArray, Param &par,
+					       StatsContainer<float> &stats);
 
 /** Search a 3-dimensional array for significant detections. */
 std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 				      StatsContainer<float> &stats);
+std::vector <Detection> search3DArraySimple(long *dim, float *Array, 
+					    Param &par,
+					    StatsContainer<float> &stats);
 
 /** Grow an object to a lower threshold */
 void growObject(Detection &object, Cube &cube);

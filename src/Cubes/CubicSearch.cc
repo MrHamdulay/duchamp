@@ -29,8 +29,10 @@ void Cube::CubicSearch()
     
   if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
   
-  this->objectList = search3DArray(this->axisDim,this->array,
-				   this->par,this->Stats);
+//   this->objectList = search3DArray(this->axisDim,this->array,
+// 				   this->par,this->Stats);
+  this->objectList = search3DArraySimple(this->axisDim,this->array,
+					 this->par,this->Stats);
 
   if(this->par.isVerbose()) std::cout << "  Updating detection map... " 
 				      << std::flush;
@@ -45,6 +47,7 @@ void Cube::CubicSearch()
   }
 
 }
+//---------------------------------------------------------------
 
 
 vector <Detection> search3DArray(long *dim, float *Array, Param &par,
@@ -147,7 +150,74 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
   delete [] imdim;
   channelImage->saveParam(par);
   channelImage->saveStats(stats);
-  channelImage->setMinSize(par.getMinPix());
+  //  channelImage->setMinSize(par.getMinPix());
+  channelImage->setMinSize(1);
+
+  for(int z=0; z<zdim; z++){
+
+    if( par.isVerbose() ) bar.update(z+1);
+
+    if(!par.isInMW(z)){
+
+      channelImage->extractImage(Array,dim,z);
+      std::vector<Object2D> objlist = channelImage->lutz_detect();
+      num += objlist.size();
+      for(int obj=0;obj<objlist.size();obj++){
+	Detection newObject;
+	newObject.pixels().addChannel(z,objlist[obj]);
+	newObject.setOffsets(par);
+	mergeIntoList(newObject,outputList,par);
+      }
+    }
+
+  }
+
+  delete channelImage;
+
+  if(par.isVerbose()){
+    bar.fillSpace("Found ");
+    std::cout << num << ".\n";
+  }
+
+  return outputList;
+}
+//---------------------------------------------------------------
+
+vector <Detection> search3DArraySimple(long *dim, float *Array, Param &par,
+				       StatsContainer<float> &stats)
+{
+  /**
+   *  Takes a dimension array and data array as input (and Parameter
+   *  set) and searches for detections just in the channel maps -- no
+   *  1D searches are done.  * Returns a vector list of Detections.
+   *  No reconstruction is assumed to have taken place, so statistics
+   *  are calculated (using robust methods) from the data array
+   *  itself.
+   * \param dim Array of dimension sizes for the data array.
+   * \param Array Array of data.
+   * \param par Param set defining how to do detection, and what a
+   *              BLANK pixel is etc.
+   * \param stats The statistics that define what a detection is.
+   * \return Vector of detected objects.
+   */
+
+  vector <Detection> outputList;
+  long zdim = dim[2];
+  long xySize = dim[0] * dim[1];
+  int num = 0;
+
+  ProgressBar bar;
+  if(par.isVerbose()) bar.init(zdim);
+  
+  num = 0;
+
+  long *imdim = new long[2];
+  imdim[0] = dim[0]; imdim[1] = dim[1];
+  Image *channelImage = new Image(imdim);
+  delete [] imdim;
+  channelImage->saveParam(par);
+  channelImage->saveStats(stats);
+  channelImage->setMinSize(1);
 
   for(int z=0; z<zdim; z++){
 

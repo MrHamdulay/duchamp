@@ -115,35 +115,39 @@ void Detection::calcFluxes(float *fluxArray, long *dim)
    */
 
   this->totalFlux = this->peakFlux = 0;
-
+  this->xCoM = this->yCoM = this->zCoM = 0.;
   long x,y,z,count=0;
 
-  for(int m=0; m<this->pixelArray.getNumChanMap(); m++)
-    {
-      ChanMap tempmap = this->pixelArray.getChanMap(m);
-      z = tempmap.getZ();
-      for(int s=0; s<tempmap.getNumScan(); s++)
-	{
-	  Scan tempscan = tempmap.getScan(s);
-	  y = tempscan.getY();
-	  for(long x=tempscan.getX(); x<=tempscan.getXmax(); x++)
-	    {
+  for(int m=0; m<this->pixelArray.getNumChanMap(); m++){
+    ChanMap tempmap = this->pixelArray.getChanMap(m);
+    z = tempmap.getZ();
+    for(int s=0; s<tempmap.getNumScan(); s++){
+      Scan tempscan = tempmap.getScan(s);
+      y = tempscan.getY();
+      for(long x=tempscan.getX(); x<=tempscan.getXmax(); x++){
 
-	      float f = fluxArray[x + y*dim[0] + z*dim[0]*dim[1]];
-	      this->totalFlux += f;
-	      if( (count==0) ||  //first time round
-		  (this->negSource&&(f<this->peakFlux)) || 
-		  (!this->negSource&&(f>this->peakFlux))   )
-		{
-		  this->peakFlux = f;
-		  this->xpeak =    x;
-		  this->ypeak =    y;
-		  this->zpeak =    z;
-		}
-	      count++;
-	    }
-	}
+	float f = fluxArray[x + y*dim[0] + z*dim[0]*dim[1]];
+	this->totalFlux += f;
+	this->xCoM += x*f;
+	this->yCoM += y*f;
+	this->zCoM += z*f;
+	if( (count==0) ||  //first time round
+	    (this->negSource&&(f<this->peakFlux)) || 
+	    (!this->negSource&&(f>this->peakFlux))   )
+	  {
+	    this->peakFlux = f;
+	    this->xpeak =    x;
+	    this->ypeak =    y;
+	    this->zpeak =    z;
+	  }
+	count++;
+      }
     }
+  }
+
+  this->xCoM /= this->totalFlux;
+  this->yCoM /= this->totalFlux;
+  this->zCoM /= this->totalFlux;
 }
 //--------------------------------------------------------------------
 

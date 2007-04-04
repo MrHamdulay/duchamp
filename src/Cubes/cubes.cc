@@ -8,6 +8,8 @@
 
 #include <wcs.h>
 
+#include <cpgplot.h>
+
 #include <duchamp.hh>
 #include <param.hh>
 #include <Cubes/cubes.hh>
@@ -22,6 +24,12 @@ using namespace Column;
 using namespace mycpgplot;
 using namespace Statistics;
 using namespace PixelInfo;
+
+#ifdef TEST_DEBUG
+const bool TESTING=true;
+#else
+const bool TESTING=false;
+#endif
 
 /****************************************************************/
 ///////////////////////////////////////////////////
@@ -807,74 +815,136 @@ void Cube::setCubeStats()
 int Cube::setupFDR()
 {
   /**  
-   *   Determines the critical Probability value for the False Discovery Rate
-   *    detection routine. All pixels with Prob less than this value will
-   *    be considered detections.
+   *   Determines the critical Probability value for the False
+   *   Discovery Rate detection routine. All pixels with Prob less
+   *   than this value will be considered detections.
    *
-   *   The Prob here is the probability, assuming a Normal distribution, of
-   *    obtaining a value as high or higher than the pixel value (ie. only the
-   *    positive tail of the PDF)
+   *   The Prob here is the probability, assuming a Normal
+   *   distribution, of obtaining a value as high or higher than the
+   *   pixel value (ie. only the positive tail of the PDF)
+   *
+   *   The probabilities are calculated using the Statistics class
+   *   function getPValue(), which calculates the z-statistic, and
+   *   then the probability via 0.5*erfc(z/M_SQRT2) -- giving the
+   *   positive tail probability.
    */
 
   // first calculate p-value for each pixel -- assume Gaussian for now.
 
   float *orderedP = new float[this->numPixels];
   int count = 0;
-  float zStat;
-  for(int pix=0; pix<this->numPixels; pix++){
+  for(int x=0;x<this->axisDim[0];x++){
+    for(int y=0;y<this->axisDim[1];y++){
+      for(int z=0;z<this->axisDim[2];z++){
+	int pix = z * this->axisDim[0]*this->axisDim[1] + 
+	  y*this->axisDim[0] + x;
 
-    if( !(this->par.isBlank(this->array[pix])) ){ 
-      // only look at non-blank pixels
-      zStat = (this->array[pix] - this->Stats.getMiddle()) / 
-	this->Stats.getSpread();
-      
-      orderedP[count++] = 0.5 * erfc(zStat/M_SQRT2);
-      // Need the factor of 0.5 here, as we are only considering the positive 
-      //  tail of the distribution. Don't care about negative detections.
+	if(!(this->par.isBlank(this->array[pix])) && !this->par.isInMW(z)){ 
+	  // only look at non-blank, valid pixels 
+ 	  orderedP[count++] = this->Stats.getPValue(this->array[pix]);
+	}
+      }
     }
   }
 
   // now order them 
-  std::sort(orderedP,orderedP+count);
+  std::stable_sort(orderedP,orderedP+count);
   
   // now find the maximum P value.
   int max = 0;
   float cN = 0.;
-  int psfCtr;
-  int numVox = int(this->par.getBeamSize()) * 2;
+  int numVox = int(ceil(this->par.getBeamSize())) * 2;
   // why beamSize*2? we are doing this in 3D, so spectrally assume just the
   //  neighbouring channels are correlated, but spatially all those within
   //  the beam, so total number of voxels is 2*beamSize
-  for(psfCtr=1;psfCtr<=numVox;(psfCtr)++) 
-    cN += 1./float(psfCtr);
+  for(int psfCtr=1;psfCtr<=numVox;psfCtr++) cN += 1./float(psfCtr);
 
+  double slope = this->par.getAlpha()/cN;
   for(int loopCtr=0;loopCtr<count;loopCtr++) {
-    if( orderedP[loopCtr] < 
-	(double(loopCtr+1)*this->par.getAlpha()/(cN * double(count))) ) {
+    if( orderedP[loopCtr] < (slope * double(loopCtr+1)/ double(count)) ){
       max = loopCtr;
     }
   }
 
   this->Stats.setPThreshold( orderedP[max] );
 
-  delete [] orderedP;
 
   // Find real value of the P threshold by finding the inverse of the 
   //  error function -- root finding with brute force technique 
   //  (relatively slow, but we only do it once).
-  zStat = 0;
-  float deltaZ = 0.1;
-  float tolerance = 1.e-6;
-  float zeroP = 0.5 * erfc(zStat/M_SQRT2) - this->Stats.getPThreshold();
+  double zStat     = 0.;
+  double deltaZ    = 0.1;
+  double tolerance = 1.e-6;
+  double initial   = 0.5 * erfc(zStat/M_SQRT2) - this->Stats.getPThreshold();
   do{
     zStat+=deltaZ;
-    if((zeroP * (erfc(zStat/M_SQRT2)-this->Stats.getPThreshold()))<0.){
+    double current = 0.5 * erfc(zStat/M_SQRT2) - this->Stats.getPThreshold();
+    if((initial*current)<0.){
       zStat-=deltaZ;
       deltaZ/=2.;
     }
   }while(deltaZ>tolerance);
   this->Stats.setThreshold( zStat*this->Stats.getSpread() + 
 			    this->Stats.getMiddle() );
+
+  ///////////////////////////
+  if(TESTING){
+    std::stringstream ss;
+    float *xplot = new float[2*max];
+    for(int i=0;i<2*max;i++) xplot[i]=float(i)/float(count);
+    cpgopen("latestFDR.ps/vcps");
+    cpgpap(8.,1.);
+    cpgslw(3);
+    cpgenv(0,float(2*max)/float(count),0,orderedP[2*max],0,0);
+    cpglab("i/N (index)", "p-value","");
+    cpgpt(2*max,xplot,orderedP,DOT);
+
+    ss.str("");
+    ss << "\\gm = " << this->Stats.getMiddle();
+    cpgtext(max/(4.*count),0.9*orderedP[2*max],ss.str().c_str());
+    ss.str("");
+    ss << "\\gs = " << this->Stats.getSpread();
+    cpgtext(max/(4.*count),0.85*orderedP[2*max],ss.str().c_str());
+    ss.str("");
+    ss << "Slope = " << slope;
+    cpgtext(max/(4.*count),0.8*orderedP[2*max],ss.str().c_str());
+    ss.str("");
+    ss << "Alpha = " << this->par.getAlpha();
+    cpgtext(max/(4.*count),0.75*orderedP[2*max],ss.str().c_str());
+    ss.str("");
+    ss << "c\\dN\\u = " << cN;
+    cpgtext(max/(4.*count),0.7*orderedP[2*max],ss.str().c_str());
+    ss.str("");
+    ss << "max = "<<max;
+    cpgtext(max/(4.*count),0.65*orderedP[2*max],ss.str().c_str());
+    ss.str("");
+    ss << "Threshold = "<<zStat*this->Stats.getSpread()+this->Stats.getMiddle();
+    cpgtext(max/(4.*count),0.6*orderedP[2*max],ss.str().c_str());
+  
+    cpgslw(1);
+    cpgsci(RED);
+    cpgmove(0,0);
+    cpgdraw(1,slope);
+    cpgsci(BLUE);
+    cpgsls(DOTTED);
+    cpgmove(0,orderedP[max]);
+    cpgdraw(2*max/float(count),orderedP[max]);
+    cpgmove(max/float(count),0);
+    cpgdraw(max/float(count),orderedP[2*max]);
+    cpgsci(GREEN);
+    cpgsls(SOLID);
+    for(int i=1;i<=10;i++) {
+      ss.str("");
+      ss << float(i)/2. << "\\gs";
+      float prob = 0.5*erfc((float(i)/2.)/M_SQRT2);
+      cpgtick(0, 0, 0, orderedP[2*max],
+	      prob/orderedP[2*max],
+	      0, 1, 1.5, 90., ss.str().c_str());
+    }
+    cpgend();
+    delete [] xplot;
+  }
+  delete [] orderedP;
 
 }
 //--------------------------------------------------------------------
@@ -884,7 +954,8 @@ bool Cube::isDetection(long x, long y, long z)
   /** 
    * Is a given voxel at position (x,y,z) a detection, based on the statistics
    *  in the Cube's StatsContainer? 
-   * If the pixel lies outside the valid range for the data array, return false.
+   * If the pixel lies outside the valid range for the data array,
+   * return false.
    * \param x X-value of the Cube's voxel to be tested.
    * \param y Y-value of the Cube's voxel to be tested.
    * \param z Z-value of the Cube's voxel to be tested.

@@ -222,6 +222,9 @@ private:
   long           ypeak;          ///< y-pixel location of peak flux
   long           zpeak;          ///< z-pixel location of peak flux
   float          peakSNR;        ///< signal-to-noise ratio at peak
+  float          xCoM;           ///< x-pixel location of centre-of-mass
+  float          yCoM;           ///< y-pixel location of centre-of-mass
+  float          zCoM;           ///< z-pixel location of centre-of-mass
   bool           negSource;      ///< is the source a negative feature?
   std::string    flagText;       ///< any warning flags about the
 				 ///    quality of the detection.

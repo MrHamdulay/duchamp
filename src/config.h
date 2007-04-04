@@ -21,3 +21,6 @@
 /* Define to 1 if stdbool.h conforms to C99. */
 #define HAVE_STDBOOL_H 1
 
+/* Define this to utilise the testing parts of the code -- bits that
+   won't normally be utilised */
+#define TEST_DEBUG

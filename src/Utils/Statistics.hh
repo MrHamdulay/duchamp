@@ -113,7 +113,9 @@ namespace Statistics
     };
 
     /** Get the "probability", under the assumption of normality, of a
-	value occuring. */
+	value occuring.  We need the factor of 0.5 here, as we are
+	only considering the positive tail of the distribution -- we
+	don't care about negative detections. */
     float getPValue(float value){
       float zStat = (value - this->getMiddle()) / this->getSpread();
       return 0.5 * erfc( zStat / M_SQRT2 );

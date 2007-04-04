@@ -31,8 +31,10 @@ void Cube::ReconSearch()
     
   if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
   
-  this->objectList = searchReconArray(this->axisDim,this->array,
-				      this->recon,this->par,this->Stats);
+  this->objectList = searchReconArraySimple(this->axisDim,this->array,
+					    this->recon,this->par,this->Stats);
+//   this->objectList = searchReconArray(this->axisDim,this->array,
+// 				      this->recon,this->par,this->Stats);
 
   if(this->par.isVerbose()) std::cout << "  Updating detection map... " 
 				      << std::flush;
@@ -304,6 +306,78 @@ std::vector <Detection> searchReconArray(long *dim, float *originalArray,
   channelImage->saveParam(par);
   channelImage->saveStats(stats);
   channelImage->setMinSize(par.getMinPix());
+
+  for(int z=0; z<zdim; z++){  // loop over all channels
+
+    if( par.isVerbose() ) bar.update(z+1);
+
+    if(!par.isInMW(z)){ 
+      // purpose of this is to ignore the Milky Way channels 
+      //  if we are flagging them
+
+      channelImage->extractImage(reconArray,dim,z);
+      std::vector<Object2D> objlist = channelImage->lutz_detect();
+      num += objlist.size();
+      for(int obj=0;obj<objlist.size();obj++){
+	Detection newObject;
+	newObject.pixels().addChannel(z,objlist[obj]);
+	newObject.setOffsets(par);
+	mergeIntoList(newObject,outputList,par);
+      }
+    }
+    
+  }
+
+  delete channelImage;
+
+  if(par.isVerbose()){
+    bar.fillSpace("Found ");
+    std::cout << num << ".\n";
+  }
+
+
+  return outputList;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+std::vector <Detection> 
+searchReconArraySimple(long *dim, float *originalArray,
+		       float *reconArray, Param &par,
+		       StatsContainer<float> &stats)
+{
+  /**
+   *  This searches for objects in a cube that has been reconstructed.
+   *
+   *  The search is conducted only in each channel image (zdim 2D
+   *  searches) -- no searches in 1D are done.
+   *
+   *  The searches are done on the reconstructed array, although the detected
+   *   objects have fluxes drawn from the corresponding pixels of the original
+   *   array.
+   *
+   *  \param dim Array of dimension sizes
+   *  \param originalArray Original, un-reconstructed image array.
+   *  \param reconArray Reconstructed image array
+   *  \param par The Param set.
+   *  \param stats The StatsContainer that defines what a detection is.
+   *
+   *  \return A vector of Detections resulting from the search.
+   */
+  std::vector <Detection> outputList;
+  long zdim = dim[2];
+  long xySize = dim[0] * dim[1];
+  int num=0;
+  ProgressBar bar;
+
+  if(par.isVerbose()) bar.init(zdim);
+  
+  long *imdim = new long[2];
+  imdim[0] = dim[0]; imdim[1] = dim[1];
+  Image *channelImage = new Image(imdim);
+  delete [] imdim;
+  channelImage->saveParam(par);
+  channelImage->saveStats(stats);
+  channelImage->setMinSize(1);
 
   for(int z=0; z<zdim; z++){  // loop over all channels
 
