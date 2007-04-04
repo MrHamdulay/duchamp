@@ -162,19 +162,38 @@ discussed in more detail in the following sections.
 \item Searching for objects then takes place, using the requested
   thresholding method.
 
-  The cube is searched in the following manner: each 1-D spectrum is
-  searched, followed by each 2-D image. Any objects detected in each
-  search are added to a master list, or combined with objects already
-  in that list.
+%  The cube is searched in the following manner: each 1-D spectrum is
+%  searched, followed by each 2-D image. Any objects detected in each
+%  search are added to a master list, or combined with objects already
+%  in that list.
+  The cube is searched channel-map by channel-map. Detections are
+  compared to already detected objects and either combined with a
+  neighbouring one or added to the end of the list.
 
 \item The list of objects is condensed by merging neighbouring objects
   and removing those deemed unacceptable.
 
-  There are certain criteria the user can specify that objects must
-  meet: minimum numbers of spatial pixels and spectral channels, and
-  minimum separations between neighbouring objects. Those that do not
-  meet these criteria are either deleted from the list, or merged with
-  their nearby neighbours.
+  While some merging has been done in the previous step, this process
+  is a much more rigorous comparison of each object with every other
+  one. If a pair of objects lie within requested limits, they are
+  combined. 
+
+  After the merging is done, the list is culled (although see comment
+  for the next step). There are certain criteria the user can specify
+  that objects must meet: minimum numbers of spatial pixels and
+  spectral channels, and minimum separations between neighbouring
+  objects. Those that do not meet these criteria are deleted
+  from the list.
+
+\item If requested, the objects are ``grown'' down to a lower
+  threshold, and then the merging step is done a second time.
+
+  In this case, each object has pixels in its neighbourhood examined,
+  and if they are above a secondary threshold, they are added to the
+  object. The merging process is done a second time in case two
+  objects have grown over the top of one another. Note that the
+  rejection part of the previous step is not done until the end of the
+  second merging process.
 
 \item The baselines and trimmed pixels are replaced prior to output.
 

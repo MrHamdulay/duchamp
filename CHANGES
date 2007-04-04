@@ -8,6 +8,16 @@ Changes made since the last numbered release:
   of channel-maps. This improves the memory usage and the speed of
   execution (particularly for routines such as the merging routines).
 
+* Changed the way detection is done -- now only search in 2D images,
+  keeping all detections (ie. no minimum-pixel requirement). This
+  should be the same as doing both the 1D and 2D searches with the
+  minimum pixel requirement in, but simpler. The rejection is done at
+  the end after all the merging and growing has been done.
+
+* Increased the range over which objects can be grown to match the
+  threshSpatial & threshVelocity parameters, as well as rejecting new
+  pixels based on the BLANK and MW tests.
+
 * Added ability to specify a statsec, so that the statistics are only
   calculated from a given subsection of the cube, rather than the full
   cube.
@@ -23,6 +33,12 @@ Changes made since the last numbered release:
 * Fixed bug (ticket #9) with the VOTable output, where the tags were
   not closing.
 
+* Fixed minor bug in calculating the flux threshold from the p-value
+  threshold when the FDR method is used. This did not affect the
+  actual thresholding, merely the quoted flux threshold in the results
+  file. Also, the MW channels are kept out of the p-value threshold
+  determination if they are being flagged.
+
 * Fallback spectral units (in case the FITS header fails to record
   them) changed to SPC.
 
@@ -35,21 +51,21 @@ Duchamp version 1.0.7 (2006/11/22)
 
 One new feature, and some improvements and bug-fixes.
 
-* The user can now elect to Hanning-smooth the spectral direction of the cube 
-  before the searching is done. This can be done instead of the wavelet 
-  reconstruction (although if both are selected, the reconstruction takes
-  precendence). This functionality is switched on and off by the flagSmooth
-  parameter, and the width of the Hanning kernel is governed by the 
-  hanningWidth parameter.
+* The user can now elect to Hanning-smooth the spectral direction of
+  the cube before the searching is done. This can be done instead of the
+  wavelet reconstruction (although if both are selected, the
+  reconstruction takes precendence). This functionality is switched on
+  and off by the flagSmooth parameter, and the width of the Hanning
+  kernel is governed by the hanningWidth parameter.
 
-* The smoothed array can also be written to a FITS file and read in at the 
-  start in the same manner as the reconstructed array.
+* The smoothed array can also be written to a FITS file and read in at
+  the start in the same manner as the reconstructed array.
 
-* Several improvements have been made to the memory management. Several
-  memory leaks were fixed, and the memory usage of Duchamp is considerably
-  less, which will be a help for running it on large cubes. The speed of 
-  some routines has also been improved, by removing unnecessarily repetitive 
-  loops.
+* Several improvements have been made to the memory
+  management. Several memory leaks were fixed, and the memory usage of
+  Duchamp is considerably less, which will be a help for running it on
+  large cubes. The speed of some routines has also been improved, by
+  removing unnecessarily repetitive loops.
 
 * The sorting routines have been changed, and should now be slightly quicker 
   (and a bit more robust).
