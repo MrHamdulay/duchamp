@@ -247,6 +247,8 @@ public:
   void   setSpectralMethod(std::string s){spectralMethod=s;};
   std::string getSpectralUnits(){return spectralUnits;};
   void   setSpectralUnits(std::string s){spectralUnits=s;};
+  std::string getPixelCentre(){return pixelCentre;};
+  void   setPixelCentre(std::string s){pixelCentre=s;};
   bool   drawBorders(){return borders;};
   void   setDrawBorders(bool f){borders=f;};
   bool   drawBlankEdge(){return blankEdge;};
@@ -394,6 +396,9 @@ private:
 			      ///   "peak" (default) or "sum"
   std::string spectralUnits;   ///< A string indicating what units the
 			       ///   spectral axis should be quoted in.
+  std::string pixelCentre;///< A string indicating which type of
+			  ///   centre to give the results in: "average",
+			  ///   "centroid", or "peak"(flux).
   bool   borders;         ///< Whether to draw a border around the
 			  ///   individual pixels of a detection in the
 			  ///   spectral display

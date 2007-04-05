@@ -118,6 +118,15 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
   newset.push_back( Col(Z2) );
   newset.push_back( Col(NPIX) );
   newset.push_back( Col(FLAG) );
+  newset.push_back( Col(XAV) );
+  newset.push_back( Col(YAV) );
+  newset.push_back( Col(ZAV) );
+  newset.push_back( Col(XCENT) );
+  newset.push_back( Col(YCENT) );
+  newset.push_back( Col(ZCENT) );
+  newset.push_back( Col(XPEAK) );
+  newset.push_back( Col(YPEAK) );
+  newset.push_back( Col(ZPEAK) );
 
   // Now test each object against each new column
   for( int obj = 0; obj < objectList.size(); obj++){
@@ -308,6 +317,80 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
       newset[NPIX].getPrecision() + 1;
     for(int i=newset[NPIX].getWidth();i<tempwidth;i++) newset[NPIX].widen();
     
+    // average X position
+    val = objectList[obj].getXAverage();
+    tempwidth = int( log10(val) + 1) + newset[XAV].getPrecision() + 2;
+    for(int i=newset[XAV].getWidth();i<tempwidth;i++) newset[XAV].widen();
+    if((val<1.)&&(val>0.)){
+      minval = pow(10, -1. * newset[XAV].getPrecision()+1); 
+      if(val < minval) newset[XAV].upPrec();
+    }
+    // average Y position
+    val = objectList[obj].getYAverage();
+    tempwidth = int( log10(val) + 1) + newset[YAV].getPrecision() + 2;
+    for(int i=newset[YAV].getWidth();i<tempwidth;i++) newset[YAV].widen();
+    if((val<1.)&&(val>0.)){
+      minval = pow(10, -1. * newset[YAV].getPrecision()+1); 
+      if(val < minval) newset[YAV].upPrec();
+    }
+    // average Z position
+    val = objectList[obj].getZAverage();
+    tempwidth = int( log10(val) + 1) + newset[ZAV].getPrecision() + 2;
+    for(int i=newset[ZAV].getWidth();i<tempwidth;i++) newset[ZAV].widen();
+    if((val<1.)&&(val>0.)){
+      minval = pow(10, -1. * newset[ZAV].getPrecision()+1); 
+      if((val>0.)&&(val < minval)) newset[ZAV].upPrec();
+    }
+    
+    // X position of centroid
+    val = objectList[obj].getXCentroid();
+    tempwidth = int( log10(val) + 1) + newset[XCENT].getPrecision() + 2;
+    for(int i=newset[XCENT].getWidth();i<tempwidth;i++) newset[XCENT].widen();
+    if((val<1.)&&(val>0.)){
+      minval = pow(10, -1. * newset[XCENT].getPrecision()+1); 
+      if(val < minval) newset[XCENT].upPrec();
+    }
+    // Y position of centroid
+    val = objectList[obj].getYCentroid();
+    tempwidth = int( log10(val) + 1) + newset[YCENT].getPrecision() + 2;
+    for(int i=newset[YCENT].getWidth();i<tempwidth;i++) newset[YCENT].widen();
+    if((val<1.)&&(val>0.)){
+      minval = pow(10, -1. * newset[YCENT].getPrecision()+1); 
+      if(val < minval) newset[YCENT].upPrec();
+    }
+    // Z position of centroid
+    val = objectList[obj].getZCentroid();
+    tempwidth = int( log10(val) + 1) + newset[ZCENT].getPrecision() + 2;
+    for(int i=newset[ZCENT].getWidth();i<tempwidth;i++) newset[ZCENT].widen();
+    if((val<1.)&&(val>0.)){
+      minval = pow(10, -1. * newset[ZCENT].getPrecision()+1); 
+      if((val>0.)&&(val < minval)) newset[ZCENT].upPrec();
+    }
+    
+    // X position of peak flux
+    val = objectList[obj].getXPeak();
+    tempwidth = int( log10(val) + 1) + newset[XPEAK].getPrecision() + 2;
+    for(int i=newset[XPEAK].getWidth();i<tempwidth;i++) newset[XPEAK].widen();
+    if((val<1.)&&(val>0.)){
+      minval = pow(10, -1. * newset[XPEAK].getPrecision()+1); 
+      if(val < minval) newset[XPEAK].upPrec();
+    }
+    // Y position of peak flux
+    val = objectList[obj].getYPeak();
+    tempwidth = int( log10(val) + 1) + newset[YPEAK].getPrecision() + 2;
+    for(int i=newset[YPEAK].getWidth();i<tempwidth;i++) newset[YPEAK].widen();
+    if((val<1.)&&(val>0.)){
+      minval = pow(10, -1. * newset[YPEAK].getPrecision()+1); 
+      if(val < minval) newset[YPEAK].upPrec();
+    }
+    // Z position of peak flux
+    val = objectList[obj].getZPeak();
+    tempwidth = int( log10(val) + 1) + newset[ZPEAK].getPrecision() + 2;
+    for(int i=newset[ZPEAK].getWidth();i<tempwidth;i++) newset[ZPEAK].widen();
+    if((val<1.)&&(val>0.)){
+      minval = pow(10, -1. * newset[ZPEAK].getPrecision()+1); 
+      if((val>0.)&&(val < minval)) newset[ZPEAK].upPrec();
+    }
   }
 
   return newset;

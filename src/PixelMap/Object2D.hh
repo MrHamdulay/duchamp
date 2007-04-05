@@ -16,7 +16,7 @@ namespace PixelInfo
    *
    * The object consists of a set of Scans (stored as a std::vector),
    * together with basic information on the maximum, minimum, and
-   * centroid values (actually stored as xSum, ySum) for the x and y
+   * average values (actually stored as xSum, ySum) for the x and y
    * pixel values.
    */
 

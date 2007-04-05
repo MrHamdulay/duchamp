@@ -1,9 +1,12 @@
 \secA{What \duchamp is doing}
 \label{sec-flow}
 
-The execution flow of \duchamp is detailed here, indicating the main
-algorithmic steps that are used. The program is written in C/C++ and
-makes use of the \textsc{cfitsio}, \textsc{wcslib} and \textsc{pgplot}
+Each of the steps that \duchamp goes through in the course of its
+execution are discussed here in more detail. This should provide
+enough background information to fully understand what \duchamp is
+doing and what all the output information is. For those interested in
+the programming side of things, \duchamp is written in C/C++ and makes
+use of the \textsc{cfitsio}, \textsc{wcslib} and \textsc{pgplot}
 libraries.
 
 \secB{Image input}
@@ -231,12 +234,13 @@ and corrected assuming Gaussianity to estimate the underlying standard
 deviation $\sigma$. The Gaussianity (or Normality) assumption is
 critical, as the MADFM does not give the same value as the usual rms
 or standard deviation value -- for a Normal distribution
-$N(\mu,\sigma)$ we find MADFM$=0.6744888\sigma$. Since this ratio is
-corrected for, the user need only think in the usual multiples of
-$\sigma$ when setting \texttt{snrRecon}. See Appendix~\ref{app-madfm}
-for a derivation of this value.
+$N(\mu,\sigma)$ we find MADFM$=0.6744888\sigma$, but this will change
+for different distributions. Since this ratio is corrected for, the
+user need only think in the usual multiples of the rms when setting
+\texttt{snrRecon}. See Appendix~\ref{app-madfm} for a derivation of
+this value.
 
-When thresholding the different wavelet scales, the value of $\sigma$
+When thresholding the different wavelet scales, the value of the rms
 as measured from the wavelet array needs to be scaled to account for
 the increased amount of correlation between neighbouring pixels (due
 to the convolution). See Appendix~\ref{app-scaling} for details on
@@ -365,36 +369,31 @@ find the file with the name as given above.
 \label{sec-detection}
 
 The basic idea behind detection is to locate sets of contiguous voxels
-that lie above some threshold. \duchamp now calculates one threshold
-for the entire cube (previous versions calculated thresholds for each
-spectrum and image). This enables calculation of signal-to-noise
-ratios for each source (see Section~\ref{sec-output} for details). The
-user can manually specify a value (using the parameter
+that lie above some threshold. One threshold is calculated for the
+entire cube, enabling calculation of signal-to-noise ratios for each
+source (see Section~\ref{sec-output} for details). The user can
+manually specify a value (using the parameter
 \texttt{threshold}) for the threshold, which will override the
 calculated value. Note that this only applies for the first of the two
 cases discussed below -- the FDR case ignores any manually-set
 threshold value.
 
-The image is searched for detections in two ways: spectrally (\ie a
-1-dimensional search in the spectrum in each spatial pixel), and
-spatially (a 2-dimensional search in the spatial image in each
-channel). In both cases, the algorithm finds connected pixels that are
-above the user-specified threshold. In the case of the spatial image
-search, the algorithm of \citet{lutz80} is used to raster-scan through
-the image and connect groups of pixels on neighbouring rows.
+The cube is searched one channel map at a time, using the
+2-dimensional raster-scanning algorithm of \citet{lutz80} that
+connects groups of neighbouring pixels. Such an algorithm cannot be
+applied directly to a 3-dimensional case, as it requires that objects
+are completely nested in a row (when scanning along a row, if an
+object finishes and other starts, you won't get back to the first
+until the second is completely finished for the
+row). Three-dimensional data does not have this property, hence the
+need to treat the data on a 2-dimensional basis.
 
-Note that this algorithm cannot be applied directly to a 3-dimensional
-case, as it requires that objects are completely nested in a row: that
-is, if you are scanning along a row, and one object finishes and
-another starts, you know that you will not get back to the first one
-(if at all) until the second is completely finished for that
-row. Three-dimensional data does not have this property, which is why
-we break up the searching into 1- and 2-dimensional cases.
-
-Detections must have a minimum number of pixels to be counted. This
-number is given by the input parameters \texttt{minPix} (for
-2-dimensional searches) and \texttt{minChannels} (for 1-dimensional
-searches).
+Although there are parameters that govern the minimum number of pixels
+in a spatial and spectral sense that an object must have
+(\texttt{minPix} and \texttt{minChannels} respectively), these
+criteria are not applied at this point. It is only after the merging
+and growing (see \S\ref{sec-merger}) is done that objects are rejected
+for not meeting these criteria.
 
 Finally, the search only looks for positive features. If one is
 interested instead in negative features (such as absorption lines),
@@ -423,7 +422,10 @@ provide good estimators. It is possible, however, to use only a
 subsection of the cube by setting the parameter \texttt{flagStatSec =
 true} and providing the desired subsection to the \texttt{StatSec}
 parameter. This subsection works in exactly the same way as the pixel
-subsection discussed in \S\ref{sec-input}.
+subsection discussed in \S\ref{sec-input}. Note that this subsection
+applies only to the statistics used to determine the threshold. It
+does not affect the calculation of statistics in the case of the
+wavelet reconstruction.
 
 \secC{Determining the threshold}
 
@@ -461,20 +463,33 @@ correlated nature of the pixel values. If all the pixels are
 uncorrelated, then $c_N=1$. If $N$ pixels are correlated, then their
 tests will be dependent on each other, and so $c_N = \sum_{i=1}^N
 i^{-1}$. \citet{hopkins02} consider real radio data, where the pixels
-are correlated over the beam. In this case the sum is made over the
-$N$ pixels that make up the beam. The value of $N$ is calculated from
+are correlated over the beam. For the calculations done in \duchamp,
+$N=2B$, where $B$ is the beam size in pixels, calculated from
 the FITS header (if the correct keywords -- BMAJ, BMIN -- are not
 present, the size of the beam is taken from the parameter
-\texttt{beamSize}). 
+\texttt{beamSize}). The factor of 2 comes about because we treat
+neighbouring channels as correlated.
 
 The theory behind the FDR method implies a direct connection between
 the choice of $\alpha$ and the fraction of detections that will be
-false positives. However, due to the merging process, this direct
-connection is lost when looking at the final number of detections --
-see discussion in \S\ref{sec-notes}. The effect is that the number of
-false detections will be less than indicated by the $\alpha$ value
-used.
+false positives. These detections, however, are individual pixels,
+which undergo a process of merging and rejection (\S\ref{sec-merger}),
+and so the fraction of the final list of detected objects that are
+false positives will be much smaller than $\alpha$. See the discussion
+in \S\ref{sec-notes}.
 
+%\secC{Storage of detected objects in memory}
+%
+%It is useful to understand how \duchamp stores the detected objects in
+%memory while it is running. This makes use of nested C++ classes, so
+%that an object is stored as a class that includes the set of detected
+%pixels, plus all the various calculated parameters (fluxes, WCS
+%coordinates, pixel centres and extrema, flags,...). The set of pixels
+%are stored using another class, that stores 3-dimensional objects as a
+%set of channel maps, each consisting of a $z$-value and a
+%2-dimensional object (a spatial map if you like). This 2-dimensional
+%object is recorded using ``run-length'' encoding, where each row (a
+%fixed $y$ value) is stored by the starting $x$-value and the length
 
 \secB{Merging detected objects}
 \label{sec-merger}
@@ -504,13 +519,16 @@ file. The velocity thresholding is done in the same way as the first
 option.
 
 Once the detections have been merged, they may be ``grown''. This is a
-process of increasing the size of the detection by adding adjacent
-pixels that are above some secondary threshold. This threshold is
-lower than the one used for the initial detection, but above the noise
-level, so that faint pixels are only detected when they are close to a
-bright pixel. The value of this threshold is a possible input
-parameter (\texttt{growthCut}), with a default value of
-$1.5\sigma$. The use of the growth algorithm is controlled by the
+process of increasing the size of the detection by adding nearby
+pixels (according to the \texttt{threshSpatial} and
+\texttt{threshVelocity} parameters) that are above some secondary
+threshold. This threshold is lower than the one used for the initial
+detection, but above the noise level, so that faint pixels are only
+detected when they are close to a bright pixel. The value of this
+threshold is a possible input parameter (\texttt{growthCut}), with a
+default value of $1.5\sigma$.
+
+The use of the growth algorithm is controlled by the
 \texttt{flagGrowth} parameter -- the default value of which is
 \texttt{false}. If the detections are grown, they are sent through the
 merging algorithm a second time, to pick up any detections that now

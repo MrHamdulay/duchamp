@@ -31,12 +31,13 @@ others. The output shows two numbers: the first being how far through
 the list the current object is, and the second being the length of the
 list. As the algorithm proceeds, the first number should increase and
 the second should decrease (as objects are combined). When the numbers
-meet (\ie the whole list has been compared), the second phase begins,
-in which multiply-appearing pixels in each object are removed, as are
-objects not meeting the minimum channels requirement. During this
-phase, the total number of accepted objects is shown, which should
-steadily increase until all have been accepted or rejected. Note that
-these steps can be very quick for small numbers of detections.
+meet, the whole list has been compared. If the objects are being
+grown, a similar output is shown, indicating the progress through the
+list. In the rejection stage, in which objects not meeting the minimum
+pixels/channels requirements are removed, the total number of objects
+remaining in the list is shown, which should steadily decrease with
+each rejection until all have been examined. Note that these steps can
+be very quick for small numbers of detections.
 
 Since this continual printing to screen has some overhead of time and
 CPU involved, the user can elect to not print this information by

@@ -118,9 +118,11 @@ not matter, they are grouped here in logical sections.
 
 \secC*{General detection}
 \begin{entry}
-\item[flagStatSec \texttt{[false]}] A flag indicating whether the cube
+\item[flagStatSec \texttt{[false]}] A flag indicating whether the
   statistics should be calculated on a subsection of the cube, rather
-  than the full cube.
+  than the full cube. Note that this only applies to the statistics
+  used to determine the threshold, and not for other statistical
+  calculations (such as those in the reconstruction phase).
 \item[StatSec \texttt{[ [*,*,*] ]}] The subsection of the cube used
   for calculating statistics -- see \S\ref{sec-input} for details on
  the subsection format. Only used if \texttt{flagStatSec=true}.

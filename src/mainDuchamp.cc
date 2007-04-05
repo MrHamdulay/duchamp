@@ -116,7 +116,10 @@ int main(int argc, char * argv[])
   else std::cout << " objects.\n";
 
   if(cube->getNumObj() > 1){
-    std::cout<<"Merging intermediate detections...  "<<std::flush;
+    if(cube->pars().getFlagGrowth())
+      std::cout<<"Merging, Growing and Rejecting...  "<<std::flush;
+    else
+      std::cout<<"Merging and Rejecting...  "<<std::flush;
     cube->ObjectMerger();
     std::cout<<"Done.                      "<<std::endl;
   }

@@ -20,7 +20,7 @@ using namespace PixelInfo;
 /**
  * Class to represent a contiguous set of detected voxels.
  *  This is a detected object, which features:
- *   a vector of voxels, centroid positions, total & peak fluxes,
+ *   a vector of voxels, average and centroid positions, total & peak fluxes,
  *   the possibility of WCS-calculated parameters (RA, Dec, velocity, 
  *     related widths).
  *  Also many functions with which to manipulate the Detections.
@@ -32,6 +32,7 @@ public:
   Detection(){
     flagWCS=false; negSource = false; flagText="";
     totalFlux = peakFlux = 0.;
+    centreType="centroid";
   };
   Detection(const Detection& d);
   Detection& operator= (const Detection& d);
@@ -84,16 +85,29 @@ public:
       of the Detection. */
   std::string outputLabelInfo(); 
 
-  /** Prints the column headers. */
-  void   outputDetectionTextHeader(std::ostream &stream, std::vector<Col> columns); 
+  /** Prints the column headers, except for the different pixel centres. */
+  void   outputDetectionTextHeader(std::ostream &stream, 
+				   std::vector<Col> columns); 
+
+  /** Prints all the column headers. */
+  void   outputDetectionTextHeaderFull(std::ostream &stream, 
+				       std::vector<Col> columns); 
+
+  /** Prints the full set of columns, including the WCS
+      information, but not the different pixel centres. */
+  void   outputDetectionTextWCS(std::ostream &stream, 
+				std::vector<Col> columns); 
 
   /** Prints the full set of columns, including the WCS
       information. */
-  void   outputDetectionTextWCS(std::ostream &stream, std::vector<Col> columns); 
+  void   outputDetectionTextWCSFull(std::ostream &stream, 
+				    std::vector<Col> columns); 
 
   /** Prints a limited set of columns, excluding any WCS
       information. */
-  void   outputDetectionText(std::ostream &stream, std::vector<Col> columns, int idNumber); 
+  void   outputDetectionText(std::ostream &stream, 
+			     std::vector<Col> columns, 
+			     int idNumber); 
   //---------------------------------- 
   // For plotting routines... in Cubes/drawMomentCutout.cc
   //
@@ -149,9 +163,24 @@ public:
   long        getZOffset(){return zSubOffset;};
   void        setZOffset(long o){zSubOffset = o;};
   //	      
-  float       getXcentre(){return pixelArray.getXcentre();};
-  float       getYcentre(){return pixelArray.getYcentre();};
-  float       getZcentre(){return pixelArray.getZcentre();};
+  float       getXcentre(){
+    if(centreType=="peak") return xpeak;
+    else if(centreType=="average") return pixelArray.getXcentre();
+    else return xCentroid;
+  };
+  float       getYcentre(){
+    if(centreType=="peak") return ypeak;
+    else if(centreType=="average") return pixelArray.getYcentre();
+    else return yCentroid;
+  };
+  float       getZcentre(){
+    if(centreType=="peak") return zpeak;
+    else if(centreType=="average") return pixelArray.getZcentre();
+    else return zCentroid;
+  };
+  float       getXAverage(){return pixelArray.getXcentre();};
+  float       getYAverage(){return pixelArray.getYcentre();};
+  float       getZAverage(){return pixelArray.getZcentre();};
   float       getTotalFlux(){return totalFlux;};
   void        setTotalFlux(float f){totalFlux=f;};
   float       getIntegFlux(){return intFlux;};
@@ -163,6 +192,11 @@ public:
   long        getZPeak(){return zpeak;};
   float       getPeakSNR(){return peakSNR;};
   void        setPeakSNR(float f){peakSNR = f;};
+  float       getXCentroid(){return xCentroid;};
+  float       getYCentroid(){return yCentroid;};
+  float       getZCentroid(){return zCentroid;};
+  std::string getCentreType(){return centreType;};
+  void        setCentreType(std::string s){centreType=s;};
   bool        isNegative(){return negSource;};
   void        setNegative(bool f){negSource = f;};
   std::string getFlagText(){return flagText;};
@@ -180,7 +214,7 @@ public:
       \return Detection::flagWCS =  True/False */
   bool        isWCS(){return flagWCS;};
   std::string getName(){return name;};
- void        setName(std::string s){name=s;};
+  void        setName(std::string s){name=s;};
   std::string getRAs(){return raS;};
   std::string getDecs(){return decS;};
   float       getRA(){return ra;};
@@ -222,9 +256,12 @@ private:
   long           ypeak;          ///< y-pixel location of peak flux
   long           zpeak;          ///< z-pixel location of peak flux
   float          peakSNR;        ///< signal-to-noise ratio at peak
-  float          xCoM;           ///< x-pixel location of centre-of-mass
-  float          yCoM;           ///< y-pixel location of centre-of-mass
-  float          zCoM;           ///< z-pixel location of centre-of-mass
+  float          xCentroid;      ///< x-pixel location of centroid
+  float          yCentroid;      ///< y-pixel location of centroid
+  float          zCentroid;      ///< z-pixel location of centroid
+  std::string    centreType;     ///< which type of pixel centre to
+				 ///   report: "average", "centroid", or
+				 ///   "peak" (flux)
   bool           negSource;      ///< is the source a negative feature?
   std::string    flagText;       ///< any warning flags about the
 				 ///    quality of the detection.

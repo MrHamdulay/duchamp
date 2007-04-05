@@ -99,7 +99,7 @@ Some incremental improvements and changes to the code:
   script where the continual popping-up of the PGPlot window might
   become annoying. 
 
-* There a different Flags reported for the case of an object lying on
+* There are different Flags reported for the case of an object lying on
   the spatial edge and spectral edge of the cube (E and S respectively).
 
 * A few minor bug fixes:

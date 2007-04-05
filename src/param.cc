@@ -341,10 +341,11 @@ Param::Param(){
   this->minPix            = 2;
   // Input-Output related
   this->spectralMethod    = "peak";
+  this->spectralUnits     = "km/s";
+  this->pixelCentre       = "centroid";
   this->borders           = true;
   this->blankEdge         = true;
   this->verbose           = true;
-  this->spectralUnits     = "km/s";
 };
 
 Param::Param (const Param& p)
@@ -418,9 +419,10 @@ Param::Param (const Param& p)
   this->minChannels       = p.minChannels;
   this->minPix            = p.minPix;
   this->spectralMethod    = p.spectralMethod;
+  this->spectralUnits     = p.spectralUnits;
+  this->pixelCentre       = p.pixelCentre;
   this->borders           = p.borders;
   this->verbose           = p.verbose;
-  this->spectralUnits     = p.spectralUnits;
 }
 
 Param& Param::operator= (const Param& p)
@@ -494,9 +496,10 @@ Param& Param::operator= (const Param& p)
   this->minChannels       = p.minChannels;
   this->minPix            = p.minPix;
   this->spectralMethod    = p.spectralMethod;
+  this->spectralUnits     = p.spectralUnits;
+  this->pixelCentre       = p.pixelCentre;
   this->borders           = p.borders;
   this->verbose           = p.verbose;
-  this->spectralUnits     = p.spectralUnits;
 }
 
 /****************************************************************/
@@ -635,14 +638,29 @@ int Param::readParams(std::string paramfile)
       if(arg=="threshvelocity")  this->threshVelocity = readFval(ss); 
       if(arg=="minchannels")     this->minChannels = readIval(ss); 
 
-      if(arg=="spectralmethod")  this->spectralMethod=makelower(readSval(ss));
-      if(arg=="spectralunits")   this->spectralUnits=makelower(readSval(ss));
+      if(arg=="spectralmethod")  this->spectralMethod = makelower(readSval(ss));
+      if(arg=="spectralunits")   this->spectralUnits = makelower(readSval(ss));
+      if(arg=="pixelcentre")     this->pixelCentre = makelower(readSval(ss));
       if(arg=="drawborders")     this->borders = readFlag(ss); 
       if(arg=="drawblankedges")  this->blankEdge = readFlag(ss); 
       if(arg=="verbose")         this->verbose = readFlag(ss); 
     }
   }
   if(this->flagATrous) this->flagSmooth = false;
+
+  // Make sure spectralMethod is an acceptable type -- default is "peak"
+  if((this->spectralMethod!="peak")&&(this->spectralMethod!="sum")){
+    duchampWarning("readParams","Changing spectralMethod to \"peak\".\n");
+    this->spectralMethod = "peak";
+  }
+
+  // Make sure pixelCentre is an acceptable type -- default is "peak"
+  if((this->pixelCentre!="centroid")&&
+     (this->pixelCentre!="average") &&
+     (this->pixelCentre!="peak")       ){
+    duchampWarning("readParams","Changing pixelCentre to \"centroid\".\n");
+    this->pixelCentre = "centroid";
+  }
 
   return SUCCESS;
 }
@@ -886,6 +904,10 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[spectralMethod]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<par.getSpectralMethod() <<std::endl;
+  theStream  <<std::setw(widthText)<<"Type of object centre used in results"
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[pixelCentre]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<par.getPixelCentre() <<std::endl;
   theStream  <<"--------------------\n\n";
   theStream  << std::setfill(' ');
   theStream.unsetf(std::ios::left);

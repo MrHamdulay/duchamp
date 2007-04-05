@@ -19,86 +19,94 @@ using namespace PixelInfo;
 
 Detection::Detection(const Detection& d)
 {
-  pixelArray      = d.pixelArray;
-  xSubOffset	  = d.xSubOffset;
-  ySubOffset	  = d.ySubOffset;
-  zSubOffset	  = d.zSubOffset;
-  totalFlux	  = d.totalFlux;
-  intFlux	  = d.intFlux;
-  peakFlux	  = d.peakFlux;
-  xpeak		  = d.xpeak;
-  ypeak		  = d.ypeak;
-  zpeak		  = d.zpeak;
-  peakSNR	  = d.peakSNR;
-  negSource       = d.negSource;
-  flagText	  = d.flagText;
-  id		  = d.id;
-  name		  = d.name;
-  flagWCS	  = d.flagWCS;
-  raS		  = d.raS;
-  decS		  = d.decS;
-  ra		  = d.ra;
-  dec		  = d.dec;
-  raWidth	  = d.raWidth;
-  decWidth	  = d.decWidth;
-  specUnits	  = d.specUnits;
-  fluxUnits	  = d.fluxUnits;
-  intFluxUnits	  = d.intFluxUnits;
-  lngtype	  = d.lngtype;
-  lattype	  = d.lattype;
-  vel		  = d.vel;
-  velWidth	  = d.velWidth;
-  velMin	  = d.velMin;
-  velMax	  = d.velMax;
-  posPrec	  = d.posPrec;
-  xyzPrec	  = d.xyzPrec;
-  fintPrec	  = d.fintPrec;
-  fpeakPrec	  = d.fpeakPrec;
-  velPrec	  = d.velPrec;
-  snrPrec         = d.snrPrec;
+  this->pixelArray   = d.pixelArray;
+  this->xSubOffset   = d.xSubOffset;
+  this->ySubOffset   = d.ySubOffset;
+  this->zSubOffset   = d.zSubOffset;
+  this->totalFlux    = d.totalFlux;
+  this->intFlux	     = d.intFlux;
+  this->peakFlux     = d.peakFlux;
+  this->xpeak        = d.xpeak;
+  this->ypeak        = d.ypeak;
+  this->zpeak        = d.zpeak;
+  this->peakSNR      = d.peakSNR;
+  this->xCentroid    = d.xCentroid;
+  this->yCentroid    = d.yCentroid;
+  this->zCentroid    = d.zCentroid;
+  this->centreType   = d.centreType;
+  this->negSource    = d.negSource;
+  this->flagText     = d.flagText;
+  this->id           = d.id;
+  this->name         = d.name;
+  this->flagWCS      = d.flagWCS;
+  this->raS          = d.raS;
+  this->decS         = d.decS;
+  this->ra           = d.ra;
+  this->dec	     = d.dec;
+  this->raWidth	     = d.raWidth;
+  this->decWidth     = d.decWidth;
+  this->specUnits    = d.specUnits;
+  this->fluxUnits    = d.fluxUnits;
+  this->intFluxUnits = d.intFluxUnits;
+  this->lngtype	     = d.lngtype;
+  this->lattype	     = d.lattype;
+  this->vel          = d.vel;
+  this->velWidth     = d.velWidth;
+  this->velMin       = d.velMin;
+  this->velMax       = d.velMax;
+  this->posPrec      = d.posPrec;
+  this->xyzPrec      = d.xyzPrec;
+  this->fintPrec     = d.fintPrec;
+  this->fpeakPrec    = d.fpeakPrec;
+  this->velPrec	     = d.velPrec;
+  this->snrPrec      = d.snrPrec;
 }
 
 //--------------------------------------------------------------------
 
   Detection& Detection::operator= (const Detection& d)
 {
-  pixelArray      = d.pixelArray;
-  xSubOffset	  = d.xSubOffset;
-  ySubOffset	  = d.ySubOffset;
-  zSubOffset	  = d.zSubOffset;
-  totalFlux	  = d.totalFlux;
-  intFlux	  = d.intFlux;
-  peakFlux	  = d.peakFlux;
-  xpeak		  = d.xpeak;
-  ypeak		  = d.ypeak;
-  zpeak		  = d.zpeak;
-  peakSNR	  = d.peakSNR;
-  negSource       = d.negSource;
-  flagText	  = d.flagText;
-  id		  = d.id;
-  name		  = d.name;
-  flagWCS	  = d.flagWCS;
-  raS		  = d.raS;
-  decS		  = d.decS;
-  ra		  = d.ra;
-  dec		  = d.dec;
-  raWidth	  = d.raWidth;
-  decWidth	  = d.decWidth;
-  specUnits	  = d.specUnits;
-  fluxUnits	  = d.fluxUnits;
-  intFluxUnits	  = d.intFluxUnits;
-  lngtype	  = d.lngtype;
-  lattype	  = d.lattype;
-  vel		  = d.vel;
-  velWidth	  = d.velWidth;
-  velMin	  = d.velMin;
-  velMax	  = d.velMax;
-  posPrec	  = d.posPrec;
-  xyzPrec	  = d.xyzPrec;
-  fintPrec	  = d.fintPrec;
-  fpeakPrec	  = d.fpeakPrec;
-  velPrec	  = d.velPrec;
-  snrPrec         = d.snrPrec;
+  this->pixelArray   = d.pixelArray;
+  this->xSubOffset   = d.xSubOffset;
+  this->ySubOffset   = d.ySubOffset;
+  this->zSubOffset   = d.zSubOffset;
+  this->totalFlux    = d.totalFlux;
+  this->intFlux	     = d.intFlux;
+  this->peakFlux     = d.peakFlux;
+  this->xpeak        = d.xpeak;
+  this->ypeak        = d.ypeak;
+  this->zpeak        = d.zpeak;
+  this->peakSNR      = d.peakSNR;
+  this->xCentroid    = d.xCentroid;
+  this->yCentroid    = d.yCentroid;
+  this->zCentroid    = d.zCentroid;
+  this->centreType   = d.centreType;
+  this->negSource    = d.negSource;
+  this->flagText     = d.flagText;
+  this->id           = d.id;
+  this->name         = d.name;
+  this->flagWCS      = d.flagWCS;
+  this->raS          = d.raS;
+  this->decS         = d.decS;
+  this->ra           = d.ra;
+  this->dec	     = d.dec;
+  this->raWidth	     = d.raWidth;
+  this->decWidth     = d.decWidth;
+  this->specUnits    = d.specUnits;
+  this->fluxUnits    = d.fluxUnits;
+  this->intFluxUnits = d.intFluxUnits;
+  this->lngtype	     = d.lngtype;
+  this->lattype	     = d.lattype;
+  this->vel          = d.vel;
+  this->velWidth     = d.velWidth;
+  this->velMin       = d.velMin;
+  this->velMax       = d.velMax;
+  this->posPrec      = d.posPrec;
+  this->xyzPrec      = d.xyzPrec;
+  this->fintPrec     = d.fintPrec;
+  this->fpeakPrec    = d.fpeakPrec;
+  this->velPrec	     = d.velPrec;
+  this->snrPrec      = d.snrPrec;
 }
 
 //--------------------------------------------------------------------
@@ -115,7 +123,7 @@ void Detection::calcFluxes(float *fluxArray, long *dim)
    */
 
   this->totalFlux = this->peakFlux = 0;
-  this->xCoM = this->yCoM = this->zCoM = 0.;
+  this->xCentroid = this->yCentroid = this->zCentroid = 0.;
   long x,y,z,count=0;
 
   for(int m=0; m<this->pixelArray.getNumChanMap(); m++){
@@ -128,9 +136,9 @@ void Detection::calcFluxes(float *fluxArray, long *dim)
 
 	float f = fluxArray[x + y*dim[0] + z*dim[0]*dim[1]];
 	this->totalFlux += f;
-	this->xCoM += x*f;
-	this->yCoM += y*f;
-	this->zCoM += z*f;
+	this->xCentroid += x*f;
+	this->yCentroid += y*f;
+	this->zCentroid += z*f;
 	if( (count==0) ||  //first time round
 	    (this->negSource&&(f<this->peakFlux)) || 
 	    (!this->negSource&&(f>this->peakFlux))   )
@@ -145,9 +153,9 @@ void Detection::calcFluxes(float *fluxArray, long *dim)
     }
   }
 
-  this->xCoM /= this->totalFlux;
-  this->yCoM /= this->totalFlux;
-  this->zCoM /= this->totalFlux;
+  this->xCentroid /= this->totalFlux;
+  this->yCentroid /= this->totalFlux;
+  this->zCentroid /= this->totalFlux;
 }
 //--------------------------------------------------------------------
 

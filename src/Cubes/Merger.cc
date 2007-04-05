@@ -41,11 +41,11 @@ void Cube::ObjectMerger()
       vector <Detection> *newList = new vector <Detection>;
       for(int i=0;i<currentList->size();i++){
 	std::cout.setf(std::ios::right);
-	std::cout << " Growing: " << std::setw(6) << i+1 << "/";	   
+	std::cout << "Growing: " << std::setw(6) << i+1 << "/";	   
 	std::cout.unsetf(std::ios::right);
 	std::cout.setf(std::ios::left);
 	std::cout << std::setw(6) << currentList->size() << std::flush;
-	printBackSpace(23);
+	printBackSpace(22);
 	std::cout << std::flush;
 	Detection *obj = new Detection;
 	*obj = (*currentList)[i];
@@ -100,11 +100,11 @@ void mergeList(vector<Detection> &objList, Param &par)
     while( counter < (objList.size()-1) ){
       if(isVerb){
 	std::cout.setf(std::ios::right);
-	std::cout << "Progress: " << std::setw(6) << counter+1 << "/" ;
+	std::cout << "Merging: " << std::setw(6) << counter+1 << "/" ;
 	std::cout.unsetf(std::ios::right);
 	std::cout.setf(std::ios::left);
 	std::cout << std::setw(6) << objList.size();
-	printBackSpace(23);
+	printBackSpace(22);
 	std::cout << std::flush;
 	std::cout.unsetf(std::ios::left);
       }
@@ -128,12 +128,12 @@ void mergeList(vector<Detection> &objList, Param &par)
 
 	  if(isVerb){
 	    std::cout.setf(std::ios::right);
-	    std::cout << "Progress: "
+	    std::cout << "Merging: "
 		      << std::setw(6) << counter << "/";
 	    std::cout.unsetf(std::ios::right);
 	    std::cout.setf(std::ios::left);
 	    std::cout << std::setw(6) << objList.size();
-	    printBackSpace(23);
+	    printBackSpace(22);
 	    std::cout << std::flush;
 	    std::cout.unsetf(std::ios::left);
 	  }
@@ -165,6 +165,11 @@ void finaliseList(vector<Detection> &objList, Param &par)
    */
 
   int listCounter = 0;
+  std::cout << "Rejecting:" << std::setw(6) << objList.size();
+  printSpace(6);
+  printBackSpace(22);
+  std::cout << std::flush;
+  
   while(listCounter < objList.size()){
 
     objList[listCounter].setOffsets(par);
@@ -173,15 +178,19 @@ void finaliseList(vector<Detection> &objList, Param &par)
 	&& (objList[listCounter].getSpatialSize() >= par.getMinPix()) ){
 
       listCounter++;
+
+    }      
+    else{
+
+      objList.erase(objList.begin()+listCounter);
       if(par.isVerbose()){
-	std::cout << "Final total:" << std::setw(5) << listCounter;
+	std::cout << "Rejecting:" << std::setw(6) << objList.size();
 	printSpace(6);
-	printBackSpace(23);
+	printBackSpace(22);
 	std::cout << std::flush;
       }
-    }      
-    else objList.erase(objList.begin()+listCounter);
 
+    }
   }
 }
 

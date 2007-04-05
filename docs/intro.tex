@@ -54,7 +54,7 @@ corresponding to Equatorial or Galactic coordinates), while the third
 dimension, $z$, is the spectral direction, which can correspond to
 frequency, wavelength, or velocity. The three dimensional analogue of
 pixels are ``voxels'', or volume cells -- a voxel is defined by a
-unique $(x,y,z)$ location and has a unique value of flux, intensity
+unique $(x,y,z)$ location and has a single value of flux, intensity
 or brightness (or something equivalent) associated with it.
 
 Note that it is possible for the FITS file to have more than three
@@ -72,7 +72,8 @@ dimensions in the FITS file does not matter.
 With this setup, each spatial pixel (a given $(x,y)$ coordinate) can
 be said to be a single spectrum, while a slice through the cube
 perpendicular to the spectral direction at a given $z$-value is a
-single channel (the 2-D image is a channel map).
+single channel, with the 2-D image in that channel called a channel
+map.
 
 Detection involves locating a contiguous group of voxels with fluxes
 above a certain threshold. \duchamp makes no assumptions as to the
@@ -128,9 +129,10 @@ discussed in more detail in the following sections.
   of the array. This step trims them from the spatial edges, recording
   the amount trimmed so that they can be added back in later.
 
-  A spectral baseline can be removed at this point as well. This may
-  be necessary if there is a ripple or other large-scale feature
-  present that will hinder detection of faint sources.
+  A spectral baseline (or bandpass) can be removed at this point as
+  well. This may be necessary if there is a ripple or other
+  large-scale feature present that will hinder detection of faint
+  sources.
 
 \item If the reconstruction method is requested, and the reconstructed
   array has not been read in at Step 3 above, the cube is
@@ -159,14 +161,14 @@ discussed in more detail in the following sections.
   statistical significance (\eg ``I want every source brighter than
   10mJy'').
 
+  By default, the full cube is used for the statistics calculation,
+  although the user can nominate a subsection of the cube to be used
+  instead. 
+
 \item Searching for objects then takes place, using the requested
   thresholding method.
 
-%  The cube is searched in the following manner: each 1-D spectrum is
-%  searched, followed by each 2-D image. Any objects detected in each
-%  search are added to a master list, or combined with objects already
-%  in that list.
-  The cube is searched channel-map by channel-map. Detections are
+  The cube is searched one channel-map at a time. Detections are
   compared to already detected objects and either combined with a
   neighbouring one or added to the end of the list.
 
@@ -206,7 +208,8 @@ discussed in more detail in the following sections.
   location, extent, and flux. These are presented in both pixel
   coordinates and world coordinates (\eg sky position and
   velocity). Any warning flags are also printed, showing detections to
-  be wary of.
+  be wary of. Alternative output options are available, such as a
+  VOTable or a Karma annotation file.
 
 \item Maps showing the spatial location of the detections are written.
 
@@ -216,9 +219,11 @@ discussed in more detail in the following sections.
   can be gained \eg are all the detections on the edge?
 
   Two maps are provided: one is a 0th moment map, showing the 0th
-  moment of each detection in its appropriate position, while the
-  second is a ``detection map'', showing the number of times each
-  spatial pixel was detected in the searching routines.
+  moment (\ie a map of the integrated flux) of each detection in its
+  appropriate position, while the second is a ``detection map'',
+  showing the number of times each spatial pixel was detected in the
+  searching routines (including those pixels rejected at step 9 and so
+  not in any of the final detections).
 
   These maps are written to postscript files, and the 0th moment map
   can also be displayed in a PGPLOT X-window.

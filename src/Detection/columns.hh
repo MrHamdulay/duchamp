@@ -19,48 +19,69 @@ namespace Column
   // The default values for the columns, and default values for
   //  the precision of different types of columns.
 
-  const int numColumns=23;    ///< Total number of columns being considered.
+  /** Total number of columns being considered.*/
+  const int numColumns=32;    
   /** Enumerated column titles */
   enum COLNAME {NUM=0, NAME, X, Y, Z,
 		RA, DEC, VEL, 
 		WRA, WDEC, WVEL,
 		FINT, FTOT, FPEAK, SNRPEAK,
-		X1, X2, Y1, Y2, Z1, Z2, NPIX, FLAG}; 
+		X1, X2, Y1, Y2, Z1, Z2, NPIX, FLAG,
+		XAV, YAV, ZAV, XCENT, YCENT, ZCENT, 
+		XPEAK, YPEAK, ZPEAK}; 
 
-  const int numColumnsLog=14; ///< Total number of columns used in logfile (no WCS ones).
+  /** Total number of columns used in logfile (no WCS ones). */
+  const int numColumnsLog=14; 
   /** Enumerated column titles for logfile*/
-  enum LOGNAME {lNUM, lX, lY, lZ,
+  enum LOGNAME {lNUM=0, lX, lY, lZ,
 		lFTOT, lFPEAK, lSNRPEAK,
 		lX1, lX2, lY1, lY2, lZ1, lZ2, lNPIX}; 
 
+  /** Number of types of precision. */
+  const int numPrec=6;        
+  /** Enumerated precision categories */
+  enum PrecType {prFLUX, prVEL, prXYZ, prPOS, prWPOS, prSNR}; 
 
-  const int numPrec=6;        ///< Number of types of precision
-  enum PrecType {prFLUX, prVEL, prXYZ, prPOS, prWPOS, prSNR}; ///< Enumerated precision categories
-  const int prec[numPrec]={3, 3, 1, 6, 2, 2}; ///< Precision values in same order as enum list.
+  /** Precision values in same order as enum list.*/
+  const int prec[numPrec]={3, 3, 1, 6, 2, 2}; 
 
+  /** Default widths of all columns.*/
   const int defaultWidth[numColumns]=
     {5, 8, 6, 6, 6,
      13, 13, 7, 9, 9, 7,
      10, 10, 9, 7,
-     4, 4, 4, 4, 4, 4, 6, 5};          ///< Default widths of all columns.
+     4, 4, 4, 4, 4, 4, 6, 5,
+     6, 6, 6, 7, 7, 7, 7, 7, 7};
+
+  /** Default precisions for all columns.*/
   const int defaultPrec[numColumns]=
     {0, 0, prec[prXYZ], prec[prXYZ], prec[prXYZ],
      0, 0, prec[prVEL], 
      prec[prWPOS], prec[prWPOS], prec[prVEL],
      prec[prFLUX], prec[prFLUX], prec[prFLUX], 
-     prec[prSNR], 0, 0, 0, 0, 0, 0, 0, 0}; ///< Default precisions for all columns.
+     prec[prSNR], 0, 0, 0, 0, 0, 0, 0, 0,
+     prec[prXYZ], prec[prXYZ], prec[prXYZ], 
+     prec[prXYZ], prec[prXYZ], prec[prXYZ], 
+     prec[prXYZ], prec[prXYZ], prec[prXYZ]}; 
+
+  /** Default Titles of all columns. */
   const std::string defaultName[numColumns]=
     {"Obj#","Name","X","Y","Z",
      "RA","DEC","VEL",
      "w_RA","w_DEC","w_VEL",
      "F_int","F_tot","F_peak", "S/Nmax",
-     "X1","X2","Y1","Y2","Z1","Z2","Npix","Flag"}; ///< Default Titles of all columns
+     "X1","X2","Y1","Y2","Z1","Z2","Npix","Flag",
+     "X_av", "Y_av", "Z_av", "X_cent", "Y_cent", "Z_cent",
+     "X_peak", "Y_peak", "Z_peak"};
+
+  /** Default units of all columns. */
   const std::string defaultUnits[numColumns]=
     {"","","","","",
      "","","",
      "[arcmin]","[arcmin]","",
      "","","", "",
-     "","","","","","","[pix]",""}; ///< Default units of all columns.
+     "","","","","","","[pix]","",
+     "","","","","","","","",""}; 
 
 
   /** Class to store information about a single column.

@@ -976,6 +976,7 @@ void Cube::calcObjectWCSparams()
   
   for(int i=0;i<this->objectList.size();i++){
     this->objectList[i].setID(i+1);
+    this->objectList[i].setCentreType(this->par.getPixelCentre());
     this->objectList[i].calcFluxes(this->array,this->axisDim);
     this->objectList[i].calcWCSparams(this->array,this->axisDim,this->head);
     
