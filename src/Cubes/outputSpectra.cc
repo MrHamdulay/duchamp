@@ -203,7 +203,7 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   else getSmallZRange(obj,&minvel,&maxvel);
 
   // Find new max & min flux values
-  swap(max,min);
+  std::swap(max,min);
   int ct = 0;
   for(int i=0;i<zdim;i++){
     if((!this->par.isInMW(i))&&(specx[i]>=minvel)&&(specx[i]<=maxvel)){
@@ -276,7 +276,7 @@ void getSmallVelRange(Detection &obj, FitsHeader head,
   world[2] = head.velToSpec(*maxvel);
   head.wcsToPix(world,pixcrd);
   maxpix = pixcrd[2];
-  if(maxpix<minpix) swap(maxpix,minpix);
+  if(maxpix<minpix) std::swap(maxpix,minpix);
     
   if((maxpix - minpix + 1) < 20){
     pixcrd[0] = double(obj.getXcentre());
@@ -289,7 +289,7 @@ void getSmallVelRange(Detection &obj, FitsHeader head,
     head.pixToWCS(pixcrd,world);
     //     *maxvel = setVel_kms(wcs,world[2]);
     *maxvel = head.specToVel(world[2]);
-    if(*maxvel<*minvel) swap(*maxvel,*minvel);
+    if(*maxvel<*minvel) std::swap(*maxvel,*minvel);
   }
   delete [] pixcrd;
   delete [] world;

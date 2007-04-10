@@ -184,14 +184,14 @@ if test "x$WCSINC" = x -o "x$WCSLIB" = x; then
     -------------------------------------------------------], [1])
 else
   for LIBDIR in $LIBDIRS ; do
-    AC_CHECK_FILE([$LIBDIR/libwcs.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
+    AC_CHECK_FILE([$LIBDIR/libpgsbox.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
     LIBDIR=$LIBDIR/wcs
-    AC_CHECK_FILE([$LIBDIR/libwcs.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
+    AC_CHECK_FILE([$LIBDIR/libpgsbox.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
   done
   for LIBDIR in $LIBDIRS ; do
-    AC_CHECK_FILE([$LIBDIR/libpgsbox.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
+    AC_CHECK_FILE([$LIBDIR/libwcs.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
     LIBDIR=$LIBDIR/wcs
-    AC_CHECK_FILE([$LIBDIR/libpgsbox.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
+    AC_CHECK_FILE([$LIBDIR/libwcs.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
   done
   AC_MSG_NOTICE([WCSLIB appears to be available.])
   AC_DEFINE([HAVE_WCSLIB], [1], [Define to 1 if WCSLIB is available.])

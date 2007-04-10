@@ -5186,9 +5186,9 @@ echo "$as_me: error:
    { (exit 1); exit 1; }; }
 else
   for LIBDIR in $LIBDIRS ; do
-    as_ac_File=`echo "ac_cv_file_$LIBDIR/libwcs.a" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $LIBDIR/libwcs.a" >&5
-echo $ECHO_N "checking for $LIBDIR/libwcs.a... $ECHO_C" >&6
+    as_ac_File=`echo "ac_cv_file_$LIBDIR/libpgsbox.a" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $LIBDIR/libpgsbox.a" >&5
+echo $ECHO_N "checking for $LIBDIR/libpgsbox.a... $ECHO_C" >&6
 if eval "test \"\${$as_ac_File+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5196,7 +5196,7 @@ else
   { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
 echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
    { (exit 1); exit 1; }; }
-if test -r "$LIBDIR/libwcs.a"; then
+if test -r "$LIBDIR/libpgsbox.a"; then
   eval "$as_ac_File=yes"
 else
   eval "$as_ac_File=no"
@@ -5209,9 +5209,9 @@ if test `eval echo '${'$as_ac_File'}'` = yes; then
 fi
 
     LIBDIR=$LIBDIR/wcs
-    as_ac_File=`echo "ac_cv_file_$LIBDIR/libwcs.a" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $LIBDIR/libwcs.a" >&5
-echo $ECHO_N "checking for $LIBDIR/libwcs.a... $ECHO_C" >&6
+    as_ac_File=`echo "ac_cv_file_$LIBDIR/libpgsbox.a" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $LIBDIR/libpgsbox.a" >&5
+echo $ECHO_N "checking for $LIBDIR/libpgsbox.a... $ECHO_C" >&6
 if eval "test \"\${$as_ac_File+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5219,7 +5219,7 @@ else
   { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
 echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
    { (exit 1); exit 1; }; }
-if test -r "$LIBDIR/libwcs.a"; then
+if test -r "$LIBDIR/libpgsbox.a"; then
   eval "$as_ac_File=yes"
 else
   eval "$as_ac_File=no"
@@ -5233,9 +5233,9 @@ fi
 
   done
   for LIBDIR in $LIBDIRS ; do
-    as_ac_File=`echo "ac_cv_file_$LIBDIR/libpgsbox.a" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $LIBDIR/libpgsbox.a" >&5
-echo $ECHO_N "checking for $LIBDIR/libpgsbox.a... $ECHO_C" >&6
+    as_ac_File=`echo "ac_cv_file_$LIBDIR/libwcs.a" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $LIBDIR/libwcs.a" >&5
+echo $ECHO_N "checking for $LIBDIR/libwcs.a... $ECHO_C" >&6
 if eval "test \"\${$as_ac_File+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5243,7 +5243,7 @@ else
   { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
 echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
    { (exit 1); exit 1; }; }
-if test -r "$LIBDIR/libpgsbox.a"; then
+if test -r "$LIBDIR/libwcs.a"; then
   eval "$as_ac_File=yes"
 else
   eval "$as_ac_File=no"
@@ -5256,9 +5256,9 @@ if test `eval echo '${'$as_ac_File'}'` = yes; then
 fi
 
     LIBDIR=$LIBDIR/wcs
-    as_ac_File=`echo "ac_cv_file_$LIBDIR/libpgsbox.a" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $LIBDIR/libpgsbox.a" >&5
-echo $ECHO_N "checking for $LIBDIR/libpgsbox.a... $ECHO_C" >&6
+    as_ac_File=`echo "ac_cv_file_$LIBDIR/libwcs.a" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $LIBDIR/libwcs.a" >&5
+echo $ECHO_N "checking for $LIBDIR/libwcs.a... $ECHO_C" >&6
 if eval "test \"\${$as_ac_File+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5266,7 +5266,7 @@ else
   { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
 echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
    { (exit 1); exit 1; }; }
-if test -r "$LIBDIR/libpgsbox.a"; then
+if test -r "$LIBDIR/libwcs.a"; then
   eval "$as_ac_File=yes"
 else
   eval "$as_ac_File=no"

@@ -202,7 +202,8 @@ public:
   int         getCube();
 
   /** Read in command-line options. */
-  int         getopts(int argc, char ** argv);
+//   int         getopts(int argc, char ** argv);
+  int         getopts(int argc, char ** argv){return par.getopts(argc,argv);};
 
   /** Read in reconstructed & smoothed arrays from FITS files on disk. */
   void        readSavedArrays();

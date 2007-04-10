@@ -438,62 +438,6 @@ int Cube::getCube(){
   };
 //--------------------------------------------------------------------
 
-int Cube::getopts(int argc, char ** argv)
-{
-  /**  
-   *   A function that reads in the command-line options, in a manner 
-   *    tailored for use with the main Duchamp program.
-   *   Based on the options given, the appropriate Param set will be read
-   *    in to the Cube class.
-   *
-   *   \param argc The number of command line arguments.
-   *   \param argv The array of command line arguments.
-   */
-
-  int returnValue;
-  if(argc==1){
-    std::cout << ERR_USAGE_MSG;
-    returnValue = FAILURE;
-  }
-  else {
-    std::string file;
-    Param *par = new Param;
-    char c;
-    while( ( c = getopt(argc,argv,"p:f:hv") )!=-1){
-      switch(c) {
-      case 'p':
-	file = optarg;
-	if(this->readParam(file)==FAILURE){
-	  std::stringstream errmsg;
-	  errmsg << "Could not open parameter file " << file << ".\n";
-	  duchampError("Duchamp",errmsg.str());
-	  returnValue = FAILURE;
-	}
-	else returnValue = SUCCESS;
-	break;
-      case 'f':
-	file = optarg;
-	par->setImageFile(file);
-	this->saveParam(*par);
-	returnValue = SUCCESS;
-	break;
-      case 'v':
-	std::cout << PROGNAME << " version " << VERSION << std::endl;
-	returnValue = FAILURE;
-	break;
-      case 'h':
-      default :
-	std::cout << ERR_USAGE_MSG;
-	returnValue = FAILURE;
-	break;
-      }
-    }
-    delete par;
-  }
-  return returnValue;
-}
-//--------------------------------------------------------------------
-
 void Cube::saveArray(float *input, long size){
   if(size != this->numPixels){
     std::stringstream errmsg;

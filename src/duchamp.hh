@@ -16,14 +16,16 @@ enum OUTCOME {SUCCESS=0, FAILURE};
 
 /** Usage message for command line help. */
 const std::string ERR_USAGE_MSG =
-"Usage:: Duchamp -p [parameter file]\n\
-  Other options:\n\
-    -f <file>  Use default parameters with imageFile=<file>\n\
-    -v         Version number\n\
-    -h         This help information\n";
+"Usage: Duchamp [OPTION] [FILE]\n\
+Duchamp is an object finder for spectral-line FITS cubes.\n\
+\n\
+  -p FILE      Read in parameters from FILE, including FITS image location.\n\
+  -f FILE      Use default parameters with imageFile=FILE\n\
+  -v           Return version number and exit\n\
+  -h           Display this help information and exit\n";
 
 /** Shorter Usage message for command line help. */
-const std::string ERR_USAGE_MSG_SHORT="Usage:: Duchamp -p [parameter file]\n";
+const std::string ERR_USAGE_MSG_SHORT="Usage: Duchamp -p [parameter file]\n";
 
 /** The program name. (Duchamp) */
 const std::string PROGNAME = PACKAGE_NAME;
@@ -40,7 +42,8 @@ void duchampError(std::string subroutine, std::string error);
 
 /** The spectral type that we want the wcsprm structs to be in. */
 const char duchampVelocityType[9] = "VELO-F2V";
-/** The spectral type that we want the wcsprm structs to be in when no velocity info is present. */
+/** The spectral type that we want the wcsprm structs to be in when no
+    velocity info is present. */
 const char duchampFrequencyType[9] = "FREQ    ";
 
 /** Descriptions of the various spectral axis types */
@@ -50,16 +53,19 @@ const std::string duchampSpectralDescription[3]=
   {"Frequency", "Velocity", "Wavelength"};
 
 // The following are the FITS Header Keywords corresponding to the
-//  parameters related to the atrous reconstruction.
+// parameters related to the atrous reconstruction.
 /** FITS header keyword for min atrous scale*/
 const std::string keyword_scaleMin     = "DU_MINSC"; 
 /** FITS header keyword for S/N used in atrous reconstruction*/
 const std::string keyword_snrRecon     = "DU_ATCUT";
-/** FITS header keyword for number of dimensions used in atrous reconstruction*/
+/** FITS header keyword for number of dimensions used in atrous
+    reconstruction*/
 const std::string keyword_reconDim     = "DU_ATDIM";
-/** FITS header keyword for the code number of the filter used in atrous reconstruction*/
+/** FITS header keyword for the code number of the filter used in
+    atrous reconstruction*/
 const std::string keyword_filterCode   = "DU_FILTR";
-/** FITS header keyword: does this file hold the reconstructed array or the residual?*/
+/** FITS header keyword: does this file hold the reconstructed array
+    or the residual?*/
 const std::string keyword_ReconResid   = "DU_RECON";
 /** FITS header keyword for the Hanning filter width*/
 const std::string keyword_hanningwidth = "DU_WHANN"; 

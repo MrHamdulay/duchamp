@@ -32,6 +32,9 @@ public:
   //-----------------
   // Functions in param.cc
   //
+  /** Parse the command line parameters correctly. */
+  int    getopts(int argc, char ** argv);
+
   /** Read in parameters from a disk file. */
   int    readParams(std::string paramfile);
 

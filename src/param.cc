@@ -501,6 +501,64 @@ Param& Param::operator= (const Param& p)
   this->borders           = p.borders;
   this->verbose           = p.verbose;
 }
+//--------------------------------------------------------------------
+
+int Param::getopts(int argc, char ** argv)
+{
+  /**  
+   *   A function that reads in the command-line options, in a manner 
+   *    tailored for use with the main Duchamp program.
+   *
+   *   \param argc The number of command line arguments.
+   *   \param argv The array of command line arguments.
+   */
+
+  int returnValue;
+  if(argc==1){
+    std::cout << ERR_USAGE_MSG;
+    returnValue = FAILURE;
+  }
+  else {
+    std::string file;
+    Param *newpars = new Param;
+    *this = *newpars;
+    delete newpars;
+    char c;
+    while( ( c = getopt(argc,argv,"p:f:hv") )!=-1){
+      switch(c) {
+      case 'p':
+	file = optarg;
+	if(this->readParams(file)==FAILURE){
+	  std::stringstream errmsg;
+	  errmsg << "Could not open parameter file " << file << ".\n";
+	  duchampError("Duchamp",errmsg.str());
+	  returnValue = FAILURE;
+	}
+	else returnValue = SUCCESS;
+	break;
+      case 'f':
+	file = optarg;
+	this->imageFile = file;
+	returnValue = SUCCESS;
+	break;
+      case 'v':
+	std::cout << PROGNAME << " version " << VERSION << std::endl;
+	returnValue = FAILURE;
+	break;
+      case 'h':
+      default :
+	std::cout << ERR_USAGE_MSG;
+	returnValue = FAILURE;
+	break;
+      }
+    }
+  }
+  return returnValue;
+}
+//--------------------------------------------------------------------
+
+
+
 
 /****************************************************************/
 ///////////////////////////////////////////////////
