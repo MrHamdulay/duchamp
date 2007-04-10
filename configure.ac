@@ -160,19 +160,19 @@ AC_SUBST([CFITSIOLIB])
 ##########################################################################
 # Search for WCSLIB.
 for INCDIR in $INCDIRS ; do
-  AC_CHECK_FILE([$INCDIR/wcs.h], [WCSINC="-I$INCDIR $WCSINC"; break])
+  AC_CHECK_FILE([$INCDIR/cpgsbox.h], [WCSINC="-I$INCDIR $WCSINC"; break])
   INCDIR=$INCDIR/wcslib
-  AC_CHECK_FILE([$INCDIR/wcs.h], [WCSINC="-I$INCDIR $WCSINC"; break])
+  AC_CHECK_FILE([$INCDIR/cpgsbox.h], [WCSINC="-I$INCDIR $WCSINC"; break])
 done
 for INCDIR in $INCDIRS ; do
-  AC_CHECK_FILE([$INCDIR/cpgsbox.h], [WCSINC="-I$INCDIR $WCSINC"; break])
+  AC_CHECK_FILE([$INCDIR/wcs.h], [WCSINC="-I$INCDIR $WCSINC"; break])
   INCDIR=$INCDIR/wcslib
-  AC_CHECK_FILE([$INCDIR/cpgsbox.h], [WCSINC="-I$INCDIR $WCSINC"; break])
+  AC_CHECK_FILE([$INCDIR/wcs.h], [WCSINC="-I$INCDIR $WCSINC"; break])
 done
 
-AC_CHECK_LIB([wcs], [wcss2p], [WCSLIB="-lwcs $WCSLIB"], [],
-             [$WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB])
 AC_CHECK_LIB([pgsbox], [cpgsbox], [WCSLIB="-lpgsbox $WCSLIB"], [],
+             [$WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB])
+AC_CHECK_LIB([wcs], [wcss2p], [WCSLIB="-lwcs $WCSLIB"], [],
              [$WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB])
 
 if test "x$WCSINC" = x -o "x$WCSLIB" = x; then
