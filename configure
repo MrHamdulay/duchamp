@@ -4959,9 +4959,9 @@ fi
 ##########################################################################
 # Search for WCSLIB.
 for INCDIR in $INCDIRS ; do
-  as_ac_File=`echo "ac_cv_file_$INCDIR/wcs.h" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $INCDIR/wcs.h" >&5
-echo $ECHO_N "checking for $INCDIR/wcs.h... $ECHO_C" >&6
+  as_ac_File=`echo "ac_cv_file_$INCDIR/cpgsbox.h" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $INCDIR/cpgsbox.h" >&5
+echo $ECHO_N "checking for $INCDIR/cpgsbox.h... $ECHO_C" >&6
 if eval "test \"\${$as_ac_File+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -4969,7 +4969,7 @@ else
   { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
 echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
    { (exit 1); exit 1; }; }
-if test -r "$INCDIR/wcs.h"; then
+if test -r "$INCDIR/cpgsbox.h"; then
   eval "$as_ac_File=yes"
 else
   eval "$as_ac_File=no"
@@ -4982,9 +4982,9 @@ if test `eval echo '${'$as_ac_File'}'` = yes; then
 fi
 
   INCDIR=$INCDIR/wcslib
-  as_ac_File=`echo "ac_cv_file_$INCDIR/wcs.h" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $INCDIR/wcs.h" >&5
-echo $ECHO_N "checking for $INCDIR/wcs.h... $ECHO_C" >&6
+  as_ac_File=`echo "ac_cv_file_$INCDIR/cpgsbox.h" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $INCDIR/cpgsbox.h" >&5
+echo $ECHO_N "checking for $INCDIR/cpgsbox.h... $ECHO_C" >&6
 if eval "test \"\${$as_ac_File+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -4992,7 +4992,7 @@ else
   { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
 echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
    { (exit 1); exit 1; }; }
-if test -r "$INCDIR/wcs.h"; then
+if test -r "$INCDIR/cpgsbox.h"; then
   eval "$as_ac_File=yes"
 else
   eval "$as_ac_File=no"
@@ -5006,9 +5006,9 @@ fi
 
 done
 for INCDIR in $INCDIRS ; do
-  as_ac_File=`echo "ac_cv_file_$INCDIR/cpgsbox.h" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $INCDIR/cpgsbox.h" >&5
-echo $ECHO_N "checking for $INCDIR/cpgsbox.h... $ECHO_C" >&6
+  as_ac_File=`echo "ac_cv_file_$INCDIR/wcs.h" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $INCDIR/wcs.h" >&5
+echo $ECHO_N "checking for $INCDIR/wcs.h... $ECHO_C" >&6
 if eval "test \"\${$as_ac_File+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5016,7 +5016,7 @@ else
   { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
 echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
    { (exit 1); exit 1; }; }
-if test -r "$INCDIR/cpgsbox.h"; then
+if test -r "$INCDIR/wcs.h"; then
   eval "$as_ac_File=yes"
 else
   eval "$as_ac_File=no"
@@ -5029,9 +5029,9 @@ if test `eval echo '${'$as_ac_File'}'` = yes; then
 fi
 
   INCDIR=$INCDIR/wcslib
-  as_ac_File=`echo "ac_cv_file_$INCDIR/cpgsbox.h" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $INCDIR/cpgsbox.h" >&5
-echo $ECHO_N "checking for $INCDIR/cpgsbox.h... $ECHO_C" >&6
+  as_ac_File=`echo "ac_cv_file_$INCDIR/wcs.h" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $INCDIR/wcs.h" >&5
+echo $ECHO_N "checking for $INCDIR/wcs.h... $ECHO_C" >&6
 if eval "test \"\${$as_ac_File+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5039,7 +5039,7 @@ else
   { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
 echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
    { (exit 1); exit 1; }; }
-if test -r "$INCDIR/cpgsbox.h"; then
+if test -r "$INCDIR/wcs.h"; then
   eval "$as_ac_File=yes"
 else
   eval "$as_ac_File=no"
@@ -5052,64 +5052,6 @@ if test `eval echo '${'$as_ac_File'}'` = yes; then
 fi
 
 done
-
-echo "$as_me:$LINENO: checking for wcss2p in -lwcs" >&5
-echo $ECHO_N "checking for wcss2p in -lwcs... $ECHO_C" >&6
-if test "${ac_cv_lib_wcs_wcss2p+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lwcs $WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char wcss2p ();
-int
-main ()
-{
-wcss2p ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_wcs_wcss2p=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_lib_wcs_wcss2p=no
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_wcs_wcss2p" >&5
-echo "${ECHO_T}$ac_cv_lib_wcs_wcss2p" >&6
-if test $ac_cv_lib_wcs_wcss2p = yes; then
-  WCSLIB="-lwcs $WCSLIB"
-fi
 
 echo "$as_me:$LINENO: checking for cpgsbox in -lpgsbox" >&5
 echo $ECHO_N "checking for cpgsbox in -lpgsbox... $ECHO_C" >&6
@@ -5167,6 +5109,64 @@ echo "$as_me:$LINENO: result: $ac_cv_lib_pgsbox_cpgsbox" >&5
 echo "${ECHO_T}$ac_cv_lib_pgsbox_cpgsbox" >&6
 if test $ac_cv_lib_pgsbox_cpgsbox = yes; then
   WCSLIB="-lpgsbox $WCSLIB"
+fi
+
+echo "$as_me:$LINENO: checking for wcss2p in -lwcs" >&5
+echo $ECHO_N "checking for wcss2p in -lwcs... $ECHO_C" >&6
+if test "${ac_cv_lib_wcs_wcss2p+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lwcs $WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char wcss2p ();
+int
+main ()
+{
+wcss2p ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_wcs_wcss2p=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_wcs_wcss2p=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_wcs_wcss2p" >&5
+echo "${ECHO_T}$ac_cv_lib_wcs_wcss2p" >&6
+if test $ac_cv_lib_wcs_wcss2p = yes; then
+  WCSLIB="-lwcs $WCSLIB"
 fi
 
 
