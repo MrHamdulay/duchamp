@@ -5,6 +5,7 @@
 #include <wcs.h>
 #include <math.h>
 #include <param.hh>
+#include <duchamp.hh>
 #include <Utils/utils.hh>
 #include <PixelMap/Voxel.hh>
 #include <PixelMap/Object3D.hh>
@@ -64,8 +65,9 @@ Detection::Detection(const Detection& d)
 
 //--------------------------------------------------------------------
 
-  Detection& Detection::operator= (const Detection& d)
+Detection& Detection::operator= (const Detection& d)
 {
+  if(this == &d) return *this;
   this->pixelArray   = d.pixelArray;
   this->xSubOffset   = d.xSubOffset;
   this->ySubOffset   = d.ySubOffset;
@@ -107,6 +109,7 @@ Detection::Detection(const Detection& d)
   this->fpeakPrec    = d.fpeakPrec;
   this->velPrec	     = d.velPrec;
   this->snrPrec      = d.snrPrec;
+  return *this;
 }
 
 //--------------------------------------------------------------------
@@ -124,7 +127,7 @@ void Detection::calcFluxes(float *fluxArray, long *dim)
 
   this->totalFlux = this->peakFlux = 0;
   this->xCentroid = this->yCentroid = this->zCentroid = 0.;
-  long x,y,z,count=0;
+  long y,z,count=0;
 
   for(int m=0; m<this->pixelArray.getNumChanMap(); m++){
     ChanMap tempmap = this->pixelArray.getChanMap(m);
@@ -171,7 +174,7 @@ void Detection::calcWCSparams(float *fluxArray, long *dim, FitsHeader &head)
    *      <li> coord type for all three axes, nuRest, 
    *      <li> name (IAU-style, in equatorial or Galactic) 
    *  </ul>
-   *  Uses Detection::getIntegFlux(FitsHeader &) to calculate the
+   *  Uses Detection::calcIntegFlux() to calculate the
    *  integrated flux in (say) [Jy km/s]
    *
    *  Note that the regular parameters are NOT recalculated!
@@ -203,39 +206,42 @@ void Detection::calcWCSparams(float *fluxArray, long *dim, FitsHeader &head)
     pixcrd[8] = this->getZmax();
     int flag = head.pixToWCS(pixcrd, world, 5);
     delete [] pixcrd;
+    if(flag!=0) duchampError("calcWCSparams",
+			     "Error in calculating the WCS for this object.");
+    else{
 
-    // world now has the WCS coords for the five points 
-    //    -- use this to work out WCS params
+      // world now has the WCS coords for the five points 
+      //    -- use this to work out WCS params
   
-    this->lngtype = head.getWCS()->lngtyp;
-    this->lattype = head.getWCS()->lattyp;
-    this->specUnits = head.getSpectralUnits();
-    this->fluxUnits = head.getFluxUnits();
-    // if fluxUnits are eg. Jy/beam, make intFluxUnits = Jy km/s
-    this->intFluxUnits = head.getIntFluxUnits();
-    this->ra   = world[0];
-    this->dec  = world[1];
-    this->raS  = decToDMS(this->ra, this->lngtype);
-    this->decS = decToDMS(this->dec,this->lattype);
-    this->raWidth = angularSeparation(world[9],world[1],world[12],world[1])*60.;
-    this->decWidth  = angularSeparation(world[0],world[10],world[0],world[13]) * 60.;
-    this->name = head.getIAUName(this->ra, this->dec);
-    this->vel    = head.specToVel(world[2]);
-    this->velMin = head.specToVel(world[5]);
-    this->velMax = head.specToVel(world[8]);
-    this->velWidth = fabs(this->velMax - this->velMin);
+      this->lngtype = head.getWCS()->lngtyp;
+      this->lattype = head.getWCS()->lattyp;
+      this->specUnits = head.getSpectralUnits();
+      this->fluxUnits = head.getFluxUnits();
+      // if fluxUnits are eg. Jy/beam, make intFluxUnits = Jy km/s
+      this->intFluxUnits = head.getIntFluxUnits();
+      this->ra   = world[0];
+      this->dec  = world[1];
+      this->raS  = decToDMS(this->ra, this->lngtype);
+      this->decS = decToDMS(this->dec,this->lattype);
+      this->raWidth = angularSeparation(world[9],world[1],world[12],world[1])*60.;
+      this->decWidth  = angularSeparation(world[0],world[10],world[0],world[13]) * 60.;
+      this->name = head.getIAUName(this->ra, this->dec);
+      this->vel    = head.specToVel(world[2]);
+      this->velMin = head.specToVel(world[5]);
+      this->velMax = head.specToVel(world[8]);
+      this->velWidth = fabs(this->velMax - this->velMin);
 
-    this->getIntegFlux(fluxArray,dim,head);
+      this->calcIntegFlux(fluxArray,dim,head);
     
-    this->flagWCS = true;
-
+      this->flagWCS = true;
+    }
     delete [] world;
 
   }
 }
 //--------------------------------------------------------------------
 
-float Detection::getIntegFlux(float *fluxArray, long *dim, FitsHeader &head)
+void Detection::calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head)
 {
   /**
    *  Uses the input WCS to calculate the velocity-integrated flux, 
@@ -396,6 +402,7 @@ std::ostream& operator<< ( std::ostream& theStream, Detection& obj)
    */  
 
   theStream << obj.pixelArray << "---\n";
+  return theStream;
 }
 //--------------------------------------------------------------------
 

@@ -268,6 +268,7 @@ std::ostream& operator<< ( std::ostream& theStream, DataArray &array)
     delete obj;
   }
   theStream<<"--------------\n";
+  return theStream;
 }
 
 /****************************************************************/
@@ -756,7 +757,7 @@ void Cube::setCubeStats()
 }
 //--------------------------------------------------------------------
 
-int Cube::setupFDR()
+void Cube::setupFDR()
 {
   /**  
    *   Determines the critical Probability value for the False
@@ -1041,17 +1042,17 @@ void Cube::setupColumns()
   this->logCols.clear();
   this->logCols = getLogColSet(this->objectList, this->head);
 
-  int vel,fpeak,fint,pos,xyz,temp,snr;
+  int vel,fpeak,fint,pos,xyz,snr;
   vel = fullCols[VEL].getPrecision();
   fpeak = fullCols[FPEAK].getPrecision();
   snr = fullCols[SNRPEAK].getPrecision();
   xyz = fullCols[X].getPrecision();
-  if(temp=fullCols[Y].getPrecision() > xyz) xyz = temp;
-  if(temp=fullCols[Z].getPrecision() > xyz) xyz = temp;
+  xyz = std::max(xyz, fullCols[Y].getPrecision());
+  xyz = std::max(xyz, fullCols[Z].getPrecision());
   if(this->head.isWCS()) fint = fullCols[FINT].getPrecision();
   else fint = fullCols[FTOT].getPrecision();
   pos = fullCols[WRA].getPrecision();
-  if(temp=fullCols[WDEC].getPrecision() > pos) pos = temp;
+  pos = std::max(pos, fullCols[WDEC].getPrecision());
   
   for(int obj=0;obj<this->objectList.size();obj++){
     this->objectList[obj].setVelPrec(vel);

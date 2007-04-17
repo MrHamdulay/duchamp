@@ -76,6 +76,7 @@ FitsHeader::FitsHeader(const FitsHeader& h)
 
 FitsHeader& FitsHeader::operator= (const FitsHeader& h)
 {
+  if(this == &h) return *this;
   this->wcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
   this->wcs->flag=-1;
   wcsini(true, h.wcs->naxis, this->wcs); 
@@ -95,6 +96,7 @@ FitsHeader& FitsHeader::operator= (const FitsHeader& h)
   this->scale = h.scale;
   this->offset = h.offset;
   this->power = h.power;
+  return *this;
 }
 
 void FitsHeader::setWCS(struct wcsprm *w)
@@ -428,6 +430,7 @@ Param::Param (const Param& p)
 
 Param& Param::operator= (const Param& p)
 {
+  if(this == &p) return *this;
   this->imageFile         = p.imageFile;
   this->flagSubsection    = p.flagSubsection; 
   this->pixelSec          = p.pixelSec; 
@@ -501,6 +504,7 @@ Param& Param::operator= (const Param& p)
   this->pixelCentre       = p.pixelCentre;
   this->borders           = p.borders;
   this->verbose           = p.verbose;
+  return *this;
 }
 //--------------------------------------------------------------------
 
@@ -971,6 +975,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   theStream  << std::setfill(' ');
   theStream.unsetf(std::ios::left);
   //  theStream.unsetf(std::ios::boolalpha);
+  return theStream;
 }
 
 

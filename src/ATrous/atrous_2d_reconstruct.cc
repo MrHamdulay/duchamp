@@ -31,7 +31,6 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
    *  \param par The Param set.
    */
 
-  bool flagBlank=par.getFlagBlankPix();
   float blankPixValue = par.getBlankPixVal();
   long size = xdim * ydim;
   long mindim = xdim;

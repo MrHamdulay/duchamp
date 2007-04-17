@@ -231,7 +231,7 @@ public:
   void        setCubeStats();
 
   /** Set up thresholds for the False Discovery Rate routine. */
-  int         setupFDR();
+  void        setupFDR();
 
   /** A detection test for a given voxel. */
   bool        isDetection(long x, long y, long z);

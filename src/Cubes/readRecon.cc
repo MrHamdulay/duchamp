@@ -89,7 +89,6 @@ int Cube::readReconCube()
     for(int i=0;i<maxdim;i++) fpixel[i]=1;
     long *dimAxesNew = new long[maxdim];
     for(int i=0;i<maxdim;i++) dimAxesNew[i]=1;
-    long nelements;
     int bitpix,numAxesNew,anynul;
 
     status = 0;

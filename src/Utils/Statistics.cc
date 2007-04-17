@@ -43,6 +43,7 @@ namespace Statistics
   template <class Type> 
   StatsContainer<Type>& StatsContainer<Type>::operator= (const StatsContainer<Type>& s)
   {
+    if(this == &s) return *this;
     this->defined    = s.defined;
     this->mean       = s.mean;
     this->stddev     = s.stddev;
@@ -52,6 +53,7 @@ namespace Statistics
     this->pThreshold = s.pThreshold;
     this->useRobust  = s.useRobust;
     this->useFDR     = s.useFDR;
+    return *this;
   }
   template StatsContainer<int>& StatsContainer<int>::operator= (const StatsContainer<int>& s);
   template StatsContainer<long>& StatsContainer<long>::operator= (const StatsContainer<long>& s);
@@ -112,6 +114,7 @@ namespace Statistics
 	      << "Std.Dev. = " << s.stddev << "\n"
 	      << "Median = "   << s.median << "\t"
 	      << "MADFM    = " << s.madfm  << "\n";
+    return theStream;
   }
   template std::ostream& operator<<<int> (std::ostream& theStream, StatsContainer<int> &s);
   template std::ostream& operator<<<long> (std::ostream& theStream, StatsContainer<long> &s);

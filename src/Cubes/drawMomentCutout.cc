@@ -83,7 +83,7 @@ void Cube::drawMomentCutout(Detection &object)
 
     // now work out the greyscale display limits, 
     //   excluding blank pixels where necessary.
-    float z1,z2,median,madfm;
+    float z1,z2;
     int ct=0;
     while(!isGood[ct]) ct++; // move to first non-blank pixel
     z1 = z2 = image[ct];
@@ -214,7 +214,6 @@ void Cube::drawScale(float xstart, float ystart, float channel)
       this->head.pixToWCS(pix1,world1);
 
       double angSep=0.;
-      bool keepGoing=false;
       double error;
       double step=1.; // this is in pixels
       double scaleLength = lengths[best];  // this is in degrees

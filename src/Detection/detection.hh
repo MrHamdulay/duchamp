@@ -60,7 +60,7 @@ public:
   void   calcWCSparams(float *fluxArray, long *dim, FitsHeader &head); 
 
   /** Calculate the integrated flux over the entire Detection. */
-  float  getIntegFlux(float *fluxArray, long *dim, FitsHeader &head); 
+  void   calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head); 
 
   /** Set the values of the axis offsets from the cube. */
   void   setOffsets(Param &par); 

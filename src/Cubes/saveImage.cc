@@ -250,7 +250,6 @@ void writeReconHeaderInfo(fitsfile *fptr, Param &par, std::string nature)
 
 
   int status = 0;
-  char *comment, *keyword;
   std::string explanation = "",ReconResid="";
 
   fits_write_history(fptr, (char *)header_reconHistory1.c_str(), &status);
@@ -313,7 +312,6 @@ void writeSmoothHeaderInfo(fitsfile *fptr, Param &par)
 
 
   int status = 0;
-  char *comment, *keyword;
 
   fits_write_history(fptr, (char *)header_smoothHistory.c_str(), &status);
   status = 0;

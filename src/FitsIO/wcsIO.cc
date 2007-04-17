@@ -27,7 +27,7 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
    */
 
   fitsfile *fptr;
-  int bitpix,numAxes;
+  int numAxes;
   int noComments = 1; //so that fits_hdr2str will ignore COMMENT, HISTORY etc
   int nExc = 0,nkeys;
   char *hdr;
@@ -76,7 +76,8 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
   localwcs->flag=-1;
 
   // Initialise the wcsprm structure
-  if(status = wcsini(true, numAxes, localwcs)){
+  status = wcsini(true, numAxes, localwcs);
+  if(status){
     std::stringstream errmsg;
     errmsg << "wcsini failed! Code=" << status
 	   << ": " << wcs_errmsg[status] << std::endl;
@@ -89,7 +90,8 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
                //               rejection
   int localnwcs, nreject;
   // Parse the FITS header to fill in the wcsprm structure
-  if(status=wcspih(hdr, nkeys, relax, ctrl, &nreject, &localnwcs, &localwcs)){
+  status=wcspih(hdr, nkeys, relax, ctrl, &nreject, &localnwcs, &localwcs);
+  if(status){
     // if here, something went wrong -- report what.
     std::stringstream errmsg;
     errmsg << "wcspih failed!\nWCSLIB error code=" << status
@@ -100,7 +102,8 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
     int stat[NWCSFIX];
     // Applies all necessary corrections to the wcsprm structure
     //  (missing cards, non-standard units or spectral types, ...)
-    if(status = wcsfix(1, (const int*)dimAxes, localwcs, stat)) {
+    status = wcsfix(1, (const int*)dimAxes, localwcs, stat);
+    if(status) {
       std::stringstream errmsg;
       errmsg << "wcsfix failed:\n";
       for(int i=0; i<NWCSFIX; i++)
@@ -111,7 +114,8 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
     }
 
     // Set up the wcsprm struct. Report if something goes wrong.
-    if(status = wcsset(localwcs)){
+    status = wcsset(localwcs);
+    if(status){
       std::stringstream errmsg;
       errmsg<<"wcsset failed!\n"
 	    <<"WCSLIB error code=" << status 
@@ -167,7 +171,8 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
 
 	index = localwcs->spec;
 	
-	if(status = wcssptr(localwcs, &index, (char *)desiredType.c_str())){
+	status = wcssptr(localwcs, &index, (char *)desiredType.c_str());
+	if(status){
 	  std::stringstream errmsg;
 	  errmsg<< "WCSSPTR failed! Code=" << status << ": "
 		<< wcs_errmsg[status] << std::endl

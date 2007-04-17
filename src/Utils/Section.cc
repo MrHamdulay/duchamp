@@ -16,10 +16,12 @@ Section::Section(const Section& s)
  
 Section& Section::operator= (const Section& s)
 {
+  if(this == &s) return *this;
   this->subsection  = s.subsection;
   this->numSections = s.numSections;
   this->starts 	    = s.starts;
   this->dims        = s.dims;
+  return *this;
 }
 //--------------------------------------------
 
@@ -85,7 +87,6 @@ int Section::parse(std::vector<long> dimAxes)
   bool doingBorders = false;
   std::string temp;
 
-  bool atEnd = false;
   getline(ss,temp,'[');
   for(int i=0;i<numSections-1;i++){
     getline(ss,temp,',');

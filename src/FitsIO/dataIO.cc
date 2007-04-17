@@ -19,9 +19,7 @@ int Cube::getFITSdata(std::string fname)
    *   fits_read_subsetnull_ functions
    */
 
-  long nelements;
-  int bitpix,numAxes;
-  int status = 0,  nkeys;  /* MUST initialize status */
+  int numAxes, status = 0;  /* MUST initialize status */
   fitsfile *fptr;  
 
   // Open the FITS file

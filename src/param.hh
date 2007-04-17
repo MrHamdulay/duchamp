@@ -164,7 +164,7 @@ public:
   bool   getFlagUsingBlank(){return flagUsingBlank;};
   void   setFlagUsingBlank(bool b){flagUsingBlank=b;};
   bool   getFlagMW(){return flagMW;};
-  bool   setFlagMW(bool flag){flagMW=flag;};
+  void   setFlagMW(bool flag){flagMW=flag;};
   int    getMaxMW(){return maxMW;};
   void   setMaxMW(int m){maxMW=m;};
   int    getMinMW(){return minMW;};

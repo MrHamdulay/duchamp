@@ -575,7 +575,8 @@ void Cube::plotWCSaxes()
   else opt[0] = 'D';
   opt[1] = 'E';
 
-  float  blc[2], scl, trc[2];
+  float  blc[2], trc[2];
+  //   float  scl; // --> unused here.
   blc[0] = boxXmin + 0.5;
   blc[1] = boxYmin + 0.5;
   trc[0] = boxXmin + this->axisDim[0]+0.5;

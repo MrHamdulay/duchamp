@@ -34,7 +34,6 @@ void growObject(Detection &object, Cube &cube)
   int threshS = int(cube.pars().getThreshS());
   if(flagAdj) threshS = 1;
   int threshV = int(cube.pars().getThreshV());
-  long  chanpos;
 
   for(int i=0;i<object.getSize();i++) {
     Voxel vox = object.getPixel(i);
@@ -78,7 +77,6 @@ void growObject(Detection &object, Cube &cube)
 	      else               flux = cube.getPixValue(newx,newy,newz);
 	      pixnew.setF(flux);
 
-	      long chanpos = newx + newy * cube.getDimX();
 	      long pos = newx + newy * cube.getDimX() + 
 		newz * cube.getDimX() * cube.getDimY();
 	      if( (!isInObj[pos]) && growthStats.isDetection(flux) ){

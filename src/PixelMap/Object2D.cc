@@ -22,6 +22,7 @@ namespace PixelInfo
 
   Object2D& Object2D::operator= (const Object2D& o)
   {
+    if(this == &o) return *this;
     this->scanlist = o.scanlist;
     this->numPix   = o.numPix;
     this->xSum     = o.xSum;
@@ -30,6 +31,7 @@ namespace PixelInfo
     this->ymin     = o.ymin;
     this->xmax     = o.xmax;
     this->ymax     = o.ymax;
+    return *this;
   }  
   //------------------------------------------------------
 
@@ -274,6 +276,7 @@ namespace PixelInfo
     for(int i=0;i<obj.scanlist.size();i++)
       theStream << obj.scanlist[i] << "\n";
     theStream<<"---\n";
+    return theStream;
 
   }
   //------------------------------------------------------

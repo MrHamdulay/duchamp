@@ -27,9 +27,7 @@ int Cube::getCube(std::string fname)
    *  \return SUCCESS or FAILURE.
    */
 
-  long nelements;
-  int bitpix,numAxes;
-  int status = 0,  nkeys;  /* MUST initialize status */
+  int numAxes, status = 0;  /* MUST initialize status */
   fitsfile *fptr;         
 
   int exists;

@@ -129,7 +129,6 @@ void atrousTransform(long &length, float *spectrum, float *coeffs, float *wavele
 void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet, Param &par)
 {
   Filter reconFilter = par.filter();
-  bool flagBlank=par.getFlagBlankPix();
   float blankPixValue = par.getBlankPixVal();
   int filterHW = reconFilter.width()/2;
 

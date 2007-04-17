@@ -32,8 +32,8 @@ int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
   double *tempworld = new double[naxis*npts];
   double *phi       = new double[npts];
   double *theta     = new double[npts];
-  if(status=wcsp2s(wcs, npts, naxis, newpix, imgcrd, phi, 
-		   theta, tempworld, stat)>0){
+  status=wcsp2s(wcs, npts, naxis, newpix, imgcrd, phi, theta, tempworld, stat);
+  if(status>0){
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " << status <<": " << wcs_errmsg[status] 
 	   << "\nstat value is " << stat[0] << std::endl;
@@ -131,9 +131,8 @@ int pixToWCSMulti(struct wcsprm *wcs, const double *pix, double *world, const in
   double *tempworld = new double[naxis*npts];
   double *phi       = new double[npts];
   double *theta     = new double[npts];
-
-  if(status=wcsp2s(wcs, npts, naxis, newpix, imgcrd, 
-		 phi, theta, tempworld, stat)     >0){
+  status=wcsp2s(wcs, npts, naxis, newpix, imgcrd, phi, theta, tempworld, stat);
+  if(status>0){
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " <<status<<": " << wcs_errmsg[status] 
 	   << "\nstat value is " << stat[0] << std::endl;
@@ -190,8 +189,8 @@ int wcsToPixMulti(struct wcsprm *wcs, const double *world, double *pix, const in
   double *imgcrd = new double[naxis*npts];
   double *phi    = new double[npts];
   double *theta  = new double[npts];
-  if(status=wcss2p(wcs, npts, naxis, tempworld, 
-		 phi, theta, imgcrd, temppix, stat)>0){
+  status=wcss2p(wcs,npts,naxis,tempworld,phi,theta,imgcrd,temppix,stat);
+  if(status>0){
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " <<status<<": " <<wcs_errmsg[status] 
 	   << "\nstat value is " << stat[0] << std::endl;
@@ -238,8 +237,8 @@ double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z,
   pixcrd[wcs->lng] += x;
   pixcrd[wcs->lat] += y;
   pixcrd[wcs->spec]+= z;
-
-  if(status=wcsp2s(wcs, 1, naxis, pixcrd, imgcrd, phi, theta, world, stat)>0){
+  status=wcsp2s(wcs, 1, naxis, pixcrd, imgcrd, phi, theta, world, stat);
+  if(status>0){
     std::stringstream errmsg;
     errmsg <<"WCS Error Code = "<<status<<": "<<wcs_errmsg[status] 
 	   << "\nstat value is "<<stat[0]<<std::endl;

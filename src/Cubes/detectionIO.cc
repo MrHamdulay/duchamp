@@ -258,8 +258,6 @@ void Cube::outputDetectionList()
    *   have been calculated to outputDetectionTextWCS.
    */
 
-  int count=0;
-  int flag;
   std::ofstream output(this->par.getOutFile().c_str());
   output<<"Results of the Duchamp source finder: ";
   time_t now = time(NULL);
@@ -295,14 +293,11 @@ void Cube::logDetectionList()
    */
 
   long left = this->par.getBorderLeft();
-  long right = this->par.getBorderRight();
-  long top = this->par.getBorderTop();
   long bottom = this->par.getBorderBottom();
 
   std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
   this->setupColumns();
   this->objectList[0].outputDetectionTextHeader(fout,this->logCols);
-  long pos;
 
   if(this->par.getFlagBaseline()){
     for(int i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)

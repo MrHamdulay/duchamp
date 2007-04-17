@@ -18,12 +18,11 @@ namespace PixelInfo
     /** Default constructor. */
     Voxel(){};
     /** Specific constructor, defining an (x,y,z) location and flux f. */
-    Voxel(long x, long y, long z, float f){ itsX=x; itsY=y; itsZ=z; itsF=f;};
+    Voxel(long x, long y, long z, float f);
     /** Copy constructor. */
-    Voxel(const Voxel& v){itsX=v.itsX; itsY=v.itsY; itsZ=v.itsZ; itsF=v.itsF;};
-    /** Copy constructor. */
-    Voxel& operator= (const Voxel& v){
-      itsX=v.itsX; itsY=v.itsY; itsZ=v.itsZ; itsF=v.itsF;};
+    Voxel(const Voxel& v);
+    /** Assignment operator. */
+    Voxel& operator= (const Voxel& v);
     virtual ~Voxel(){};
 
     // accessor functions
@@ -66,7 +65,9 @@ namespace PixelInfo
   {
   public:
     Pixel(){itsZ=0;};
-    Pixel(long x, long y, float f){ itsX=x; itsY=y; itsF=f; itsZ=0;};
+    Pixel(long x, long y, float f);
+    Pixel(const Pixel& p);
+    Pixel& operator= (const Pixel& p);
     virtual ~Pixel(){};
     // accessor functions
     void  setXY(long x, long y){itsX = x; itsY = y;};

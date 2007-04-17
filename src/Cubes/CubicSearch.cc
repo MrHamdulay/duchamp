@@ -81,7 +81,6 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
     }
 
     bool *doPixel = new bool[xySize];
-    int goodSize=0;
     for(int npix=0; npix<xySize; npix++){
       doPixel[npix] = false;
       for(int z=0;z<zdim;z++){
@@ -203,7 +202,6 @@ vector <Detection> search3DArraySimple(long *dim, float *Array, Param &par,
 
   vector <Detection> outputList;
   long zdim = dim[2];
-  long xySize = dim[0] * dim[1];
   int num = 0;
 
   ProgressBar bar;

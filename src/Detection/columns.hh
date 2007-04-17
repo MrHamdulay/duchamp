@@ -110,10 +110,10 @@ namespace Column
     // other functions
     //
     /** Make the column one space wider. */
-    int    widen(){width++;};
+    void   widen(){width++;};
 
     /** Increase the precision by one, widening the column if necessary. */
-    int    upPrec(){precision++; if(width<precision+3) width++;};
+    void   upPrec(){precision++; if(width<precision+3) width++;};
 
     //--------------
     // Outputting functions -- all in columns.cc

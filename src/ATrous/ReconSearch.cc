@@ -365,7 +365,6 @@ searchReconArraySimple(long *dim, float *originalArray,
    */
   std::vector <Detection> outputList;
   long zdim = dim[2];
-  long xySize = dim[0] * dim[1];
   int num=0;
   ProgressBar bar;
 

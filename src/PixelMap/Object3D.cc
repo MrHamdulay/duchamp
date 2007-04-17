@@ -14,15 +14,19 @@ namespace PixelInfo
   }
   //--------------------------------------------
 
-  ChanMap& ChanMap::operator= (const ChanMap& m){
+  ChanMap& ChanMap::operator= (const ChanMap& m)
+  {
+    if(this == &m) return *this;
     this->itsZ=m.itsZ; 
     this->itsObject=m.itsObject;
+    return *this;
   }
   //--------------------------------------------
   //============================================
   //--------------------------------------------
 
-  Object3D::Object3D(const Object3D& o){
+  Object3D::Object3D(const Object3D& o)
+  {
     this->maplist = o.maplist;
     this->numVox  = o.numVox;
     this->xSum    = o.xSum;
@@ -37,7 +41,9 @@ namespace PixelInfo
   }
   //--------------------------------------------
 
-  Object3D& Object3D::operator= (const Object3D& o){
+  Object3D& Object3D::operator= (const Object3D& o)
+  {
+    if(this == &o) return *this;
     this->maplist = o.maplist;
     this->numVox  = o.numVox;
     this->xSum    = o.xSum;
@@ -49,6 +55,7 @@ namespace PixelInfo
     this->xmax    = o.xmax;
     this->ymax    = o.ymax;
     this->zmax    = o.zmax;
+    return *this;
   }
   //--------------------------------------------
   
@@ -311,6 +318,7 @@ namespace PixelInfo
       }
     }  
     theStream << "\n";
+    return theStream;
   }
   //--------------------------------------------
 
@@ -339,6 +347,7 @@ namespace PixelInfo
 	  }
 	count1+=this->maplist[m].itsObject.getSize();      
       }
+    return returnVox;
   }
   //--------------------------------------------------------------------
 

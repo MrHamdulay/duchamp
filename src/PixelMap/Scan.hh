@@ -25,8 +25,8 @@ namespace PixelInfo
   public:
     Scan(){itsY=-1;itsX=-1;itsXLen=0;};
     Scan(long y, long x, long xl){itsY=y; itsX=x; itsXLen=xl;};
-    Scan(const Scan& s){itsY=s.itsY; itsX=s.itsX; itsXLen=s.itsXLen;};
-    Scan& operator= (const Scan& s){itsY=s.itsY; itsX=s.itsX; itsXLen=s.itsXLen;};
+    Scan(const Scan& s);
+    Scan& operator= (const Scan& s);
     virtual ~Scan(){};
 
     /** Define a Scan by providing the three key parameters. */ 

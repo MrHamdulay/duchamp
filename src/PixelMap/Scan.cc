@@ -4,6 +4,24 @@
 namespace PixelInfo
 {
 
+  Scan::Scan(const Scan& s)
+  {
+    this->itsY=s.itsY; 
+    this->itsX=s.itsX; 
+    this->itsXLen=s.itsXLen;
+  }
+  //------------------------------------------------------
+  
+  Scan& Scan::operator= (const Scan& s)
+  {    
+    if(this == &s) return *this;
+    this->itsY=s.itsY; 
+    this->itsX=s.itsX; 
+    this->itsXLen=s.itsXLen;
+    return *this;
+  }
+  //------------------------------------------------------
+
   Scan nullScan()
   {
     /** 
@@ -138,6 +156,7 @@ namespace PixelInfo
     theStream << scan.itsY;
     theStream << " " << scan.itsX;
     theStream << " " << scan.itsXLen;
+    return theStream;
   }
   //------------------------------------------------------
 

@@ -8,29 +8,29 @@
 #define WDGPIX 100  /* used by cpgwedglog 
 		       --> number of increments in the wedge. */
 
-//
-// This file contains the following programs, all in C code:
-//
-//  int cpgtest() --> a front-end to cpgqinf, to test whether a pgplot
-//                    device is currently open. 
-//  int cpgIsPS() --> a front-end to cpgqinf, to test whether a postscript
-//                    device is currently open.
-//  void cpgwedglog(const char* side, float disp, float width, 
-//                  float fg, float bg, const char *label)
-//                --> a C-code version of pgwedg, plotting the wedge 
-//                    scale in logarithmic units.
-//  void cpgcumul(int npts, float *data, float datamin, float datamax, 
-//                       int pgflag)
-//                --> a new pgplot routine that draws a cumulative 
-//                    distribution. Uses _swap and _sort.
-//  void cpghistlog(npts, data, datamin, datamax, nbin, pgflag)
-//                --> as for cpghist, with the y-axis on a logarithmic scale.
-//
-//
+/*
+ This file contains the following programs, all in C code:
+
+  int cpgtest() --> a front-end to cpgqinf, to test whether a pgplot
+                    device is currently open. 
+  int cpgIsPS() --> a front-end to cpgqinf, to test whether a postscript
+                    device is currently open.
+  void cpgwedglog(const char* side, float disp, float width, 
+                  float fg, float bg, const char *label)
+                --> a C-code version of pgwedg, plotting the wedge 
+                    scale in logarithmic units.
+  void cpgcumul(int npts, float *data, float datamin, float datamax, 
+                       int pgflag)
+                --> a new pgplot routine that draws a cumulative 
+                    distribution. Uses _swap and _sort.
+  void cpghistlog(npts, data, datamin, datamax, nbin, pgflag)
+                --> as for cpghist, with the y-axis on a logarithmic scale.
+
+*/
 
 
 /********************************************************************/
-/*   CPGTEST
+/*   CPGTEST                                                        */
 /********************************************************************/
 
 int cpgtest()
@@ -46,7 +46,7 @@ int cpgtest()
 }
 
 /********************************************************************/
-/*   CPGISPS
+/*   CPGISPS                                                        */
 /********************************************************************/
 
 int cpgIsPS()
@@ -62,7 +62,7 @@ int cpgIsPS()
 }
 
 /********************************************************************/
-/*   CPGWEDGLOG
+/*   CPGWEDGLOG                                                     */
 /********************************************************************/
 
 void cpgwedglog(const char* side, float disp, float width, float fg, float bg, 
@@ -114,13 +114,13 @@ void cpgwedglog(const char* side, float disp, float width, float fg, float bg,
     horiz = 0;
   }
   /*   else gwarn("Invalid \"SIDE\" argument in PGWEDG.");  */
-  else fprintf(stdout,"%PGPLOT, Invalid \"SIDE\" argument in CPGWEDGLOG.");
+  else fprintf(stdout,"%%PGPLOT, Invalid \"SIDE\" argument in CPGWEDGLOG.");
 
   /* Determine which routine to use. */
   if(strlen(side)<2) image = 0;
   else if(tolower(side[1])=='i') image = 1;
   else if(tolower(side[1])=='g') image = 0;
-  else fprintf(stdout,"%PGPLOT, Invalid \"SIDE\" argument in CPGWEDGLOG.");
+  else fprintf(stdout,"%%PGPLOT, Invalid \"SIDE\" argument in CPGWEDGLOG.");
 
   cpgbbuf();
 
@@ -227,7 +227,7 @@ void cpgwedglog(const char* side, float disp, float width, float fg, float bg,
 
 
 /********************************************************************/
-/*   CPGCUMUL
+/*   CPGCUMUL                                                       */
 /********************************************************************/
 
 void _swap(float *a, float *b)
@@ -302,7 +302,7 @@ void cpgcumul(int npts, float *data, float datamin, float datamax, int pgflag)
 }
 
 /********************************************************************/
-/*   CPGHISTLOG
+/*   CPGHISTLOG                                                     */
 /********************************************************************/
 
 void cpghistlog(int npts, float *data, float datamin, float datamax, int nbin, 
