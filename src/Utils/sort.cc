@@ -20,10 +20,10 @@ template <class T> void sort(T *array, int begin, int end)
       array[k] = t; }
     else {
       j--;
-      swap(array[i], array[j]);
+      std::swap(array[i], array[j]);
     }  }
   i--;
-  swap(array[begin], array[i]);        
+  std::swap(array[begin], array[i]);        
   if (i - begin > 1)
     sort(array, begin, i);
   if (end - k   > 1)
@@ -58,13 +58,13 @@ void sort(T1 *array, T2 *matchingArray, int begin, int end)
     }
     else {
       j--;
-      swap(array[i], array[j]);
-      swap(matchingArray[i], matchingArray[j]);
+      std::swap(array[i], array[j]);
+      std::swap(matchingArray[i], matchingArray[j]);
     }  
   }
   i--;
-  swap(array[begin], array[i]);        
-  swap(matchingArray[begin], matchingArray[i]);
+  std::swap(array[begin], array[i]);        
+  std::swap(matchingArray[begin], matchingArray[i]);
   if (i - begin > 1)
     sort(array, matchingArray, begin, i);
   if (end - k   > 1)

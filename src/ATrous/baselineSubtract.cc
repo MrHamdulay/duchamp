@@ -66,7 +66,7 @@ void getBaseline(long size, float *input, float *baseline, Param &par)
    *   Uses the a trous reconstruction, keeping only the highest two scales, 
    *     to reconstruct the baseline.
    *    To avoid contamination by very strong signals, the input spectrum is 
-   *     trimmed at 8*MADFM above the median before reconstruction. 
+   *     trimmed at 5*MADFM above the median before reconstruction. 
    *     This reduces the strong dips created by the presence of very strong 
    *     signals.
    *  \param size Length of the spectrum.
@@ -86,7 +86,7 @@ void getBaseline(long size, float *input, float *baseline, Param &par)
   float *spec = new float[size];
   float med,sig;
   findMedianStats(input,size,med,sig);
-  float threshold = 8. * sig;
+  float threshold = 5. * sig;
   for(int i=0;i<size;i++) {
     if(fabs(input[i]-med)>threshold){
       if(input[i]>med) spec[i] = med + threshold;

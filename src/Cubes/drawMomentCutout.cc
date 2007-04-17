@@ -280,23 +280,15 @@ void Detection::drawBorders(int xoffset, int yoffset)
     int xsize = int(x2 - x1) + 1;
     int ysize = int(y2 - y1) + 1;
 
-//     std::cerr << xsize << "   " << ysize << "\n";
-
-//     bool *isObj = new bool[xsize*ysize];
-//     for(int i=0;i<xsize*ysize;i++)
-//       isObj[i] = spatmap.isInObject(i%xsize + xoffset, i/xsize + yoffset);
     std::vector<Voxel> voxlist = this->pixelArray.getPixelSet();
     std::vector<bool> isObj(xsize*ysize,false);
     for(int i=0;i<voxlist.size();i++){
-      int pos = (voxlist[i].getX()-xoffset) + (voxlist[i].getY()-yoffset)*xsize;
+      int pos = (voxlist[i].getX()-xoffset) + 
+	(voxlist[i].getY()-yoffset)*xsize;
       if(pos<xsize*ysize) isObj[pos] = true;
-//       else std::cerr << i<<"/"<<voxlist.size()<< " " <<pos << ": " << voxlist[i]<<"   " << voxlist[i].getX() << " " << voxlist[i].getY()<<"\n";
     }
     voxlist.clear();
     
-//     for(int i=0;i<xsize*ysize;i++)
-//       if(isObj[i]) std::cerr << i%xsize << " " << i/xsize << "\n";
-
     cpgswin(0,xsize-1,0,ysize-1);
     for(int x=this->getXmin(); x<=this->getXmax(); x++){
       // for each column...
@@ -324,8 +316,6 @@ void Detection::drawBorders(int xoffset, int yoffset)
     }
     cpgswin(x1,x2,y1,y2);
   
-//     delete [] isObj;
-
   }    
 
 }

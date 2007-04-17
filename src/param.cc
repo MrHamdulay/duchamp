@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <stdlib.h>
+#include <ctype.h>
 #include <math.h>
 #include <wcs.h>
 #include <wcsunits.h>

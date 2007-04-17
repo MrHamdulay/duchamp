@@ -216,6 +216,26 @@ void Cube::unTrimCube()
       this->recon = newrecon;
     }
 
+    // Correct the array of baseline values
+    if(this->par.getFlagBaseline()){
+      float *newbase  = new float[this->numPixels];
+      for(int x = 0; x < this->axisDim[0]; x++){
+	for(int y = 0; y < this->axisDim[1]; y++){
+	  isDud = (x<left) || (x>=smallXDim+left) || 
+	    (y<bottom) || (y>=smallYDim+bottom);
+	
+	  for(int z = 0; z < this->axisDim[2]; z++){ 
+	    pos = x + y*this->axisDim[0] + z*this->axisDim[0]*this->axisDim[1];
+	    smlpos = (x-left) + (y-bottom)*smallXDim + z*smallXDim*smallYDim;
+	    if(isDud) newbase[pos] = this->par.getBlankPixVal();
+	    else      newbase[pos] = this->baseline[smlpos];
+	  }
+	}
+      }
+      delete [] this->baseline;
+      this->baseline = newbase;
+    }
+
     // Correct the 2-D detection map
     short *newdetect = new short[this->axisDim[0]*this->axisDim[1]];
     for(int x = 0; x < this->axisDim[0]; x++){

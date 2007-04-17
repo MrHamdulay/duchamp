@@ -56,13 +56,18 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
    * The way to print out the spectrum of a Detection.
    * Makes use of the SpectralPlot class in plots.hh, which sizes 
    *  everything correctly.
-   * Main choice is whether to use the peak pixel, in which case the 
-   *  spectrum is just that of the peak pixel, or the sum, where the 
-   *  spectrum is summed over all spatial pixels that are in the object.
-   * If a reconstruction has been done, that spectrum is plotted in red.
-   * The limits of the detection are marked in blue.
-   * A 0th moment map of the detection is also plotted, with a scale bar 
-   *  indicating the spatial size.
+   *
+   * The main choice for the user is whether to use the peak pixel, in
+   * which case the spectrum is just that of the peak pixel, or the
+   * sum, where the spectrum is summed over all spatial pixels that
+   * are in the object.
+   *
+   * If a reconstruction has been done, that spectrum is plotted in
+   * red, and if a baseline has been calculated that is also shown, in
+   * yellow.  The spectral limits of the detection are marked in blue.
+   * A 0th moment map of the detection is also plotted, with a scale
+   * bar indicating the spatial size.
+   *
    * \param obj The Detection to be plotted.
    * \param plot The PGPLOT device to plot the spectrum on.
    */
@@ -89,6 +94,8 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   for(int i=0;i<zdim;i++) specy[i] = 0.;
   float *specy2 = new float[zdim];
   for(int i=0;i<zdim;i++) specy2[i] = 0.;
+  float *base   = new float[zdim];
+  for(int i=0;i<zdim;i++) base[i] = 0.;
 
   for(int i=0;i<zdim;i++) specy[i] = 0.;
   if(this->par.getFlagATrous())  
@@ -116,23 +123,26 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
 	for(int z=0;z<zdim;z++){
 	  if(!(this->isBlank(pos+z*xdim*ydim))){
 	    specy[z] += this->array[pos + z*xdim*ydim] / beam;
-// 	    if(this->par.getFlagATrous())
 	    if(this->reconExists)
 	      specy2[z] += this->recon[pos + z*xdim*ydim] / beam;
-	  }
+	    if(this->par.getFlagBaseline())
+	      base[z] += this->baseline[pos + z*xdim*ydim] / beam;
+	  }	    
 	}
       }
     }
     delete [] done;
   }
   else {// if(par.getSpectralMethod()=="peak"){
-    if(this->head.isWCS()) 
-      fluxLabel += " [" + this->head.getFluxUnits() + "]";
+    fluxLabel = "Peak " + fluxLabel;
+    if(this->head.isWCS()) fluxLabel += " ["+this->head.getFluxUnits()+"]";
+    int pos = obj.getXPeak() + xdim*obj.getYPeak();
     for(int z=0;z<zdim;z++){
-      int pos = obj.getXPeak() + xdim*obj.getYPeak();
       specy[z] = this->array[pos + z*xdim*ydim];
-//if(this->par.getFlagATrous()) specy2[z] = this->recon[pos + z*xdim*ydim];
-      if(this->reconExists) specy2[z] = this->recon[pos + z*xdim*ydim];
+      if(this->reconExists) 
+	specy2[z] = this->recon[pos + z*xdim*ydim];
+      if(this->par.getFlagBaseline()) 
+	base[z] = this->baseline[pos + z*xdim*ydim];
     }
   }
     
@@ -185,7 +195,11 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
     
   plot.gotoMainSpectrum(vmin,vmax,min,max,fluxLabel);
   cpgline(zdim,specx,specy);
-//   if(this->par.getFlagATrous()){
+  if(this->par.getFlagBaseline()){
+    cpgsci(YELLOW);
+    cpgline(zdim,specx,base);
+    cpgsci(FOREGND);
+  }
   if(this->reconExists){
     cpgsci(RED);
     cpgline(zdim,specx,specy2);    
@@ -212,14 +226,19 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
       if(specy[i]<min) min=specy[i];
     }
   }
-  // widen the flux range slightly so that the top & bottom don't lie on the axes.
+  // widen the flux range slightly so that the top & bottom don't lie
+  // on the axes.
   width = max - min;
   max += width * 0.05;
   min -= width * 0.05;
 
   plot.gotoZoomSpectrum(minvel,maxvel,min,max);
   cpgline(zdim,specx,specy);
-//   if(this->par.getFlagATrous()){
+  if(this->par.getFlagBaseline()){
+    cpgsci(YELLOW);
+    cpgline(zdim,specx,base);
+    cpgsci(FOREGND);
+  }
   if(this->reconExists){
     cpgsci(RED);
     cpgline(zdim,specx,specy2);    
@@ -238,6 +257,7 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   delete [] specx;
   delete [] specy;
   delete [] specy2;
+  delete [] base;
   
 }
 

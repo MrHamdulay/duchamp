@@ -268,8 +268,11 @@ void cpgcumul(int npts, float *data, float datamin, float datamax, int pgflag)
   /** 
    *  A new pgplot routine that draws a cumulative distribution.
    *   The use of pgflag is similar to cpghist & cpghist_log:
-   *   <ul><li> 0 --> draw a new graph using cpgenv, going from 0 to 1 on the y-axis.
-   *       <li> 2 --> draw the plot on the current graph, without re-drawing any axes.
+
+   *   <ul><li> 0 --> draw a new graph using cpgenv, going from 0 to 1
+   *                  on the y-axis.
+   *       <li> 2 --> draw the plot on the current graph, without
+   *                  re-drawing any axes.  
    *   </ul>
    */
 

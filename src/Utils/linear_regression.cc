@@ -3,16 +3,29 @@
 int linear_regression(int num, float *x, float *y, int ilow, int ihigh, float &slope, float &errSlope, float &intercept, float &errIntercept, float &r)
 {
   /**
-   *  int linear_regression()
-   *
-   * Computes the linear best fit to data - y = a*x + b, where x and y are 
-   * arrays of size num, a is the slope and b the y-intercept.
-   * The values used in the arrays are those from ilow to ihigh. 
-   * (ie. if the full arrays are being used, then ilow=0 and ihigh=num-1.
-   * Returns the values of slope & intercept (with errors) 
-   * as well as r, the regression coefficient. 
-   * If everything works, returns 0.
-   * If slope is infinite (eg, all points have same x value), returns 1.
+   * Computes the linear best fit to data: $y=a x + b$, where $x$ and
+   * $y$ are arrays of size num, $a$ is the slope and $b$ the
+   * y-intercept.  The values used in the arrays are those from ilow
+   * to ihigh.  (ie. if the full arrays are being used, then ilow=0
+   * and ihigh=num-1.  Returns the values of slope & intercept (with
+   * errors) as well as r, the regression coefficient.
+   * \param num Size of the x & y arrays.
+   * \param x   Array of abscissae.
+   * \param y   Array of ordinates.
+   * \param ilow Minimum index of the arrays to be used (ilow=0 means
+   *             start at the beginning).
+   * \param ihigh Maximum index of the arrays to be used (ihigh=num-1
+   *              means finish at the end).
+   * \param slope Returns value of the slope of the best fit line.
+   * \param errSlope Returns value of the estimated error in the slope
+   *                  value.
+   * \param intercept Returns value of the y-intercept of the best fit
+   *                  line.
+   * \param errIntercept Returns value of the estimated error in the
+   *                     value of the y-intercept.
+   * \param r Returns the value of the regression coefficient.
+   * \return If everything works, returns 0. If slope is infinite (eg,
+   * all points have same x value), returns 1.
    */
 
   if (ilow>ihigh) {
