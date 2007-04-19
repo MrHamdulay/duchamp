@@ -85,6 +85,8 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
     return FAILURE;
   }
 
+  this->naxis = numAxes;
+
   int relax=1; // for wcspih -- admit all recognised informal WCS extensions
   int ctrl=2;  // for wcspih -- report each rejected card and its reason for
                //               rejection
@@ -199,7 +201,7 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
   //  integrated flux when we go to fixUnits.
   this->readBUNIT(fname);
 
-  this->fixUnits(par);
+  if(numAxes>2) this->fixUnits(par);
 
   return SUCCESS;
 

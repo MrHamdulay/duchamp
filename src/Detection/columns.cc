@@ -182,19 +182,21 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
       for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
 
       // Vel -- check width, title and units.
-      if(head.getWCS()->restfrq == 0) // using frequency, not velocity
-	newset[VEL].setName("FREQ");
-      newset[VEL].setUnits("[" + head.getSpectralUnits() + "]");
-      tempwidth = newset[VEL].getUnits().size() + 1;
-      for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
-
-      val = objectList[obj].getVel();
-      tempwidth = int( log10(fabs(val)) + 1) + newset[VEL].getPrecision() + 2;
-      if(val<0) tempwidth++;
-      for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
-      if((fabs(val) < 1.)&&(val>0.)){
-	minval = pow(10, -1. * newset[VEL].getPrecision()+1); 
-	if(val < minval) newset[VEL].upPrec();
+      if(head.getNumAxes() > 2){
+	if(head.getWCS()->restfrq == 0) // using frequency, not velocity
+	  newset[VEL].setName("FREQ");
+	newset[VEL].setUnits("[" + head.getSpectralUnits() + "]");
+	tempwidth = newset[VEL].getUnits().size() + 1;
+	for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
+	
+	val = objectList[obj].getVel();
+	tempwidth = int( log10(fabs(val)) + 1) + newset[VEL].getPrecision() + 2;
+	if(val<0) tempwidth++;
+	for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
+	if((fabs(val) < 1.)&&(val>0.)){
+	  minval = pow(10, -1. * newset[VEL].getPrecision()+1); 
+	  if(val < minval) newset[VEL].upPrec();
+	}
       }
 
       // w_RA -- check width & title. leave units for the moment.
@@ -222,31 +224,33 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
       }
 
       // w_Vel -- check width, title and units.
-      if(head.getWCS()->restfrq == 0) // using frequency, not velocity
-	newset[WVEL].setName("w_FREQ");
-      newset[WVEL].setUnits("[" + head.getSpectralUnits() + "]");
-      tempwidth = newset[WVEL].getUnits().size() + 1;
-      for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
-      val = objectList[obj].getVel();
-      tempwidth = int( log10(fabs(val)) + 1) + newset[WVEL].getPrecision() + 2;
-      if(val<0) tempwidth++;
-      for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
-      if((fabs(val) < 1.)&&(val>0.)){
-	minval = pow(10, -1. * newset[WVEL].getPrecision()+1); 
-	if(val < minval) newset[WVEL].upPrec();
-      }
+      if(head.getNumAxes() > 2){
+	if(head.getWCS()->restfrq == 0) // using frequency, not velocity
+	  newset[WVEL].setName("w_FREQ");
+	newset[WVEL].setUnits("[" + head.getSpectralUnits() + "]");
+	tempwidth = newset[WVEL].getUnits().size() + 1;
+	for(int i=newset[WVEL].getWidth();i<tempwidth;i++)newset[WVEL].widen();
+	val = objectList[obj].getVel();
+	tempwidth = int( log10(fabs(val)) + 1) + newset[WVEL].getPrecision() + 2;
+	if(val<0) tempwidth++;
+	for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
+	if((fabs(val) < 1.)&&(val>0.)){
+	  minval = pow(10, -1. * newset[WVEL].getPrecision()+1); 
+	  if(val < minval) newset[WVEL].upPrec();
+	}
 
-      // F_int -- check width & units
-      newset[FINT].setUnits("[" + head.getIntFluxUnits() + "]");
-      tempwidth = newset[FINT].getUnits().size() + 1;
-      for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
-      val = objectList[obj].getIntegFlux();
-      tempwidth = int( log10(fabs(val)) + 1) + newset[FINT].getPrecision() + 2;
-      if(val<0) tempwidth++;
-      for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
-      if((fabs(val) < 1.)&&(val>0.)){
-	minval = pow(10, -1. * newset[FINT].getPrecision()+1); 
-	if(val < minval) newset[FINT].upPrec();
+	// F_int -- check width & units
+	newset[FINT].setUnits("[" + head.getIntFluxUnits() + "]");
+	tempwidth = newset[FINT].getUnits().size() + 1;
+	for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
+	val = objectList[obj].getIntegFlux();
+	tempwidth = int( log10(fabs(val)) + 1) + newset[FINT].getPrecision() + 2;
+	if(val<0) tempwidth++;
+	for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
+	if((fabs(val) < 1.)&&(val>0.)){
+	  minval = pow(10, -1. * newset[FINT].getPrecision()+1); 
+	  if(val < minval) newset[FINT].upPrec();
+	}
       }
     }
 

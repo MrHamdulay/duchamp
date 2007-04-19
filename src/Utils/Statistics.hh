@@ -66,61 +66,26 @@ namespace Statistics
     bool  setUseFDR(){return useFDR;};
     void  setUseFDR(bool b){useFDR=b;};
 
-    /** 
-     * Return the threshold as a signal-to-noise ratio.
-     *
-     * The SNR is defined in terms of excess over the middle estimator
-     * in units of the spread estimator.
-    */
-    float getThresholdSNR(){
-      return (threshold - this->getMiddle())/this->getSpread();};
+    /** Return the threshold as a signal-to-noise ratio. */
+    float getThresholdSNR();
 
-    /** 
-     * Set the threshold in units of a signal-to-noise ratio.
-     *
-     * The SNR is defined in terms of excess over the middle estimator
-     * in units of the spread estimator.
-    */
-    void  setThresholdSNR(float snr){
-      threshold=this->getMiddle() + snr*this->getSpread();};
+    /** Set the threshold in units of a signal-to-noise ratio. */
+    void  setThresholdSNR(float snr);
+
+    /** Convert a value to a signal-to-noise ratio. */
+    float getSNR(float value);
     
-    /** 
-     * Return the estimator of the middle value of the data.
-     *
-     * The middle value is determined by the StatsContainer::useRobust
-     * flag -- it will be either the median (if true), or the mean (if
-     * false).
-     */
-    float getMiddle(){if(useRobust) return float(median); else return mean;};
+    /** Return the estimator of the middle value of the data. */
+    float getMiddle();
+    
+    /** Return the estimator of the amount of spread of the data.*/
+    float getSpread();
 
-    /** 
-     * Return the estimator of the amount of spread of the data.
-     *
-     * The spread value returned is determined by the
-     * StatsContainer::useRobust flag -- it will be either the madfm
-     * (if true), or the rms (if false). If robust, the madfm will be
-     * converted to an equivalent rms under the assumption of
-     * Gaussianity, using the Statistics::madfmToSigma function.
-     */
-    float getSpread(){
-      if(useRobust) return madfmToSigma(madfm); 
-      else return stddev;
-    };
-
-    /** Get the "probability", under the assumption of normality, of a
-	value occuring.  We need the factor of 0.5 here, as we are
-	only considering the positive tail of the distribution -- we
-	don't care about negative detections. */
-    float getPValue(float value){
-      float zStat = (value - this->getMiddle()) / this->getSpread();
-      return 0.5 * erfc( zStat / M_SQRT2 );
-    };
+    /** Return the Gaussian probability of a value given the stats. */
+    float getPValue(float value);
 
     /** Is a value above the threshold? */
-    bool isDetection(float value){
-      if(useFDR) return (this->getPValue(value) < this->pThreshold);
-      else       return (value > this->threshold);
-    };
+    bool isDetection(float value);
 
     // Functions to calculate the stats for a given array.
     // The idea here is that there are two options to do the calculations:

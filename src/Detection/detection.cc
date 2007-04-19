@@ -256,62 +256,66 @@ void Detection::calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head)
    *  \param head FitsHeader object that contains the WCS information.
    */
 
-  // include one pixel either side in each direction
-  long xsize = (this->getXmax()-this->getXmin()+3);
-  long ysize = (this->getYmax()-this->getYmin()+3);
-  long zsize = (this->getZmax()-this->getZmin()+3); 
-  vector <bool> isObj(xsize*ysize*zsize,false);
-  vector <float> localFlux(xsize*ysize*zsize,0.);
-  // work out which pixels are object pixels
-  for(int m=0; m<this->pixelArray.getNumChanMap(); m++){
-    ChanMap tempmap = this->pixelArray.getChanMap(m);
-    long z = this->pixelArray.getChanMap(m).getZ();
-    for(int s=0; s<this->pixelArray.getChanMap(m).getNumScan(); s++){
-      long y = this->pixelArray.getChanMap(m).getScan(s).getY();
-      for(long x=this->pixelArray.getChanMap(m).getScan(s).getX(); 
-	  x<=this->pixelArray.getChanMap(m).getScan(s).getXmax(); 
-	  x++){
-	long pos = (x-this->getXmin()+1) + (y-this->getYmin()+1)*xsize
-	  + (z-this->getZmin()+1)*xsize*ysize;
-	localFlux[pos] = fluxArray[x + y*dim[0] + z*dim[0]*dim[1]];
-	isObj[pos] = true;
+  if(head.getNumAxes() > 2) {
+
+    // include one pixel either side in each direction
+    long xsize = (this->getXmax()-this->getXmin()+3);
+    long ysize = (this->getYmax()-this->getYmin()+3);
+    long zsize = (this->getZmax()-this->getZmin()+3); 
+    vector <bool> isObj(xsize*ysize*zsize,false);
+    vector <float> localFlux(xsize*ysize*zsize,0.);
+    // work out which pixels are object pixels
+    for(int m=0; m<this->pixelArray.getNumChanMap(); m++){
+      ChanMap tempmap = this->pixelArray.getChanMap(m);
+      long z = this->pixelArray.getChanMap(m).getZ();
+      for(int s=0; s<this->pixelArray.getChanMap(m).getNumScan(); s++){
+	long y = this->pixelArray.getChanMap(m).getScan(s).getY();
+	for(long x=this->pixelArray.getChanMap(m).getScan(s).getX(); 
+	    x<=this->pixelArray.getChanMap(m).getScan(s).getXmax(); 
+	    x++){
+	  long pos = (x-this->getXmin()+1) + (y-this->getYmin()+1)*xsize
+	    + (z-this->getZmin()+1)*xsize*ysize;
+	  localFlux[pos] = fluxArray[x + y*dim[0] + z*dim[0]*dim[1]];
+	  isObj[pos] = true;
+	}
       }
     }
-  }
   
-  // work out the WCS coords for each pixel
-  double *world  = new double[xsize*ysize*zsize];
-  double xpt,ypt,zpt;
-  for(int i=0;i<xsize*ysize*zsize;i++){
-    xpt = double( this->getXmin() -1 + i%xsize );
-    ypt = double( this->getYmin() -1 + (i/xsize)%ysize );
-    zpt = double( this->getZmin() -1 + i/(xsize*ysize) );
-    world[i] = head.pixToVel(xpt,ypt,zpt);
-  }
+    // work out the WCS coords for each pixel
+    double *world  = new double[xsize*ysize*zsize];
+    double xpt,ypt,zpt;
+    for(int i=0;i<xsize*ysize*zsize;i++){
+      xpt = double( this->getXmin() -1 + i%xsize );
+      ypt = double( this->getYmin() -1 + (i/xsize)%ysize );
+      zpt = double( this->getZmin() -1 + i/(xsize*ysize) );
+      world[i] = head.pixToVel(xpt,ypt,zpt);
+    }
 
-  this->intFlux = 0.;
-  for(int pix=0; pix<xsize*ysize; pix++){ // loop over each spatial pixel.
-    for(int z=0; z<zsize; z++){
-      int pos =  z*xsize*ysize + pix;
-      if(isObj[pos]){ // if it's an object pixel...
-	float deltaVel;
-	if(z==0) 
-	  deltaVel = (world[pos+xsize*ysize] - world[pos]);
-	else if(z==(zsize-1)) 
-	  deltaVel = (world[pos] - world[pos-xsize*ysize]);
-	else 
-	  deltaVel = (world[pos+xsize*ysize] - world[pos-xsize*ysize]) / 2.;
-	this->intFlux += localFlux[pos] * fabs(deltaVel);
+    this->intFlux = 0.;
+    for(int pix=0; pix<xsize*ysize; pix++){ // loop over each spatial pixel.
+      for(int z=0; z<zsize; z++){
+	int pos =  z*xsize*ysize + pix;
+	if(isObj[pos]){ // if it's an object pixel...
+	  float deltaVel;
+	  if(z==0) 
+	    deltaVel = (world[pos+xsize*ysize] - world[pos]);
+	  else if(z==(zsize-1)) 
+	    deltaVel = (world[pos] - world[pos-xsize*ysize]);
+	  else 
+	    deltaVel = (world[pos+xsize*ysize] - world[pos-xsize*ysize]) / 2.;
+	  this->intFlux += localFlux[pos] * fabs(deltaVel);
+	}
       }
     }
+
+    // correct for the beam size if the flux units string ends in "/beam"
+    int size = this->fluxUnits.size();
+    std::string tailOfFluxUnits = this->fluxUnits.substr(size-5,size);
+    if(tailOfFluxUnits == "/beam") this->intFlux /= head.getBeamSize();
+
+    delete [] world;
+
   }
-
-  // correct for the beam size if the flux units string ends in "/beam"
-  int size = this->fluxUnits.size();
-  std::string tailOfFluxUnits = this->fluxUnits.substr(size-5,size);
-  if(tailOfFluxUnits == "/beam") this->intFlux /= head.getBeamSize();
-
-  delete [] world;
 }
 //--------------------------------------------------------------------
 
@@ -377,6 +381,7 @@ bool Detection::hasEnoughChannels(int minNumber)
   bool result = false;
   int size = this->pixelArray.getNumChanMap();
   if(size>0) numChannels++;
+  if( numChannels >= minNumber) result = true;
   for(int i=1;(i<size && !result);i++) {
     if( (this->pixelArray.getZ(i) - this->pixelArray.getZ(i-1)) == 1) 
       numChannels++;

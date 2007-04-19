@@ -498,6 +498,8 @@ public:
   bool    isWCS(){return wcsIsGood;};
   int     getNWCS(){return nwcs;};
   void    setNWCS(int i){nwcs=i;};
+  int     getNumAxes(){return naxis;};
+  void    setNumAxes(int i){naxis=i;};
   std::string  getSpectralUnits(){return spectralUnits;};
   void    setSpectralUnits(std::string s){spectralUnits=s;};
   std::string  getSpectralDescription(){return spectralDescription;};
@@ -528,6 +530,7 @@ private:
   struct wcsprm *wcs;           ///< The WCS parameters for the cube in a struct from the wcslib library.
   int     nwcs;                 ///< The number of WCS parameters
   bool    wcsIsGood;            ///< A flag indicating whether there is a valid WCS present.
+  int     naxis;                ///< How many axes are in the header?
   std::string  spectralUnits;        ///< The units of the spectral dimension
   std::string  spectralDescription;  ///< The description of the spectral dimension (Frequency, Velocity, ...)
   std::string  fluxUnits;            ///< The units of pixel flux (from header)

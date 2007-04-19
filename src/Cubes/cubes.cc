@@ -381,7 +381,7 @@ void Cube::initialiseCube(long *dimensions)
 
   int lng,lat,spc,size,imsize;
 
-  if(this->head.isWCS() && (this->head.getWCS()->naxis>=3)){
+  if(this->head.isWCS() && (this->head.getNumAxes()>=3)){
     // if there is a WCS and there is at least 3 axes
     lng = this->head.getWCS()->lng;
     lat = this->head.getWCS()->lat;
@@ -393,8 +393,12 @@ void Cube::initialiseCube(long *dimensions)
     lat = 1;
     spc = 2;
   }
-  size   = dimensions[lng] * dimensions[lat] * dimensions[spc];
-  imsize = dimensions[lng] * dimensions[lat];
+
+  size   = dimensions[lng];
+  if(this->head.getNumAxes()>1) size *= dimensions[lat];
+  if(this->head.getNumAxes()>2) size *= dimensions[spc];
+  imsize = dimensions[lng];
+  if(this->head.getNumAxes()>1) imsize *= dimensions[lat];
 
   this->reconAllocated = false;
   this->baselineAllocated = false;
@@ -417,10 +421,12 @@ void Cube::initialiseCube(long *dimensions)
       }
     }
     this->numDim  = 3;
-    this->axisDim = new long[3];
+    this->axisDim = new long[this->numDim];
     this->axisDim[0] = dimensions[lng];
-    this->axisDim[1] = dimensions[lat];
-    this->axisDim[2] = dimensions[spc];
+    if(this->head.getNumAxes()>1) this->axisDim[1] = dimensions[lat];
+    else this->axisDim[1] = 1;
+    if(this->head.getNumAxes()>2) this->axisDim[2] = dimensions[spc];
+    else this->axisDim[2] = 1;
     for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
     this->reconExists = false;
   }
@@ -633,7 +639,8 @@ void Cube::setCubeStats()
     // only work out the stats if we need to.
     // the only reason we don't is if the user has specified a threshold.
     
-    std::cout << "Calculating the cube statistics... " << std::flush;
+    if(this->par.isVerbose())
+      std::cout << "Calculating the cube statistics... " << std::flush;
     
     long xysize = this->axisDim[0]*this->axisDim[1];
 
@@ -747,12 +754,14 @@ void Cube::setCubeStats()
     
   }
 
-  std::cout << "Using ";
-  if(this->par.getFlagFDR()) std::cout << "effective ";
-  std::cout << "flux threshold of: ";
-  float thresh = this->Stats.getThreshold();
-  if(this->par.getFlagNegative()) thresh *= -1.;
-  std::cout << thresh << std::endl;
+  if(this->par.isVerbose()){
+    std::cout << "Using ";
+    if(this->par.getFlagFDR()) std::cout << "effective ";
+    std::cout << "flux threshold of: ";
+    float thresh = this->Stats.getThreshold();
+    if(this->par.getFlagNegative()) thresh *= -1.;
+    std::cout << thresh << std::endl;
+  }
 
 }
 //--------------------------------------------------------------------
@@ -860,7 +869,7 @@ void Cube::setupFDR()
     ss << "c\\dN\\u = " << cN;
     cpgtext(max/(4.*count),0.7*orderedP[2*max],ss.str().c_str());
     ss.str("");
-    ss << "max = "<<max;
+    ss << "max = "<<max << " (out of " << count << ")";
     cpgtext(max/(4.*count),0.65*orderedP[2*max],ss.str().c_str());
     ss.str("");
     ss << "Threshold = "<<zStat*this->Stats.getSpread()+this->Stats.getMiddle();
@@ -1159,7 +1168,8 @@ void Cube::setObjectFlags()
     if( this->objAtSpatialEdge(this->objectList[i]) ) 
       this->objectList[i].addToFlagText("E");
 
-    if( this->objAtSpectralEdge(this->objectList[i]) ) 
+    if( this->objAtSpectralEdge(this->objectList[i]) &&
+	(this->axisDim[2] > 2)) 
       this->objectList[i].addToFlagText("S");
 
   }

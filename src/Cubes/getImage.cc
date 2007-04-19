@@ -76,11 +76,13 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
   }
 
   // Report the size of the FITS file
-  std::cout << "Dimensions of FITS file: ";
-  int dim = 0;
-  std::cout << dimAxes[dim];
-  while(dim+1<numAxes) std::cout << "x" << dimAxes[++dim];
-  std::cout << std::endl;
+  if(this->par.isVerbose()){
+    std::cout << "Dimensions of FITS file: ";
+    int dim = 0;
+    std::cout << dimAxes[dim];
+    while(dim+1<numAxes) std::cout << "x" << dimAxes[++dim];
+    std::cout << std::endl;
+  }
 
   delete [] dimAxes;
 
@@ -93,12 +95,19 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
   // Get the data array from the FITS file.
   // Report the dimensions of the data array that was read (this can be
   //   different to the full FITS array).
-  std::cerr << "Reading data ... ";
+  if(this->par.isVerbose()) std::cout << "Reading data ... ";
   this->getFITSdata(fname);
-  std::cerr << "Done. Data array has dimensions: ";
-  std::cerr << this->axisDim[0] <<"x" 
-	    << this->axisDim[1] <<"x" 
-	    << this->axisDim[2] << std::endl;
+  if(this->par.isVerbose()){
+    std::cout << "Done. Data array has dimensions: ";
+    std::cout << this->axisDim[0];
+    if(this->axisDim[1]>1) std::cout  <<"x"<< this->axisDim[1];
+    if(this->axisDim[2]>1) std::cout  <<"x"<< this->axisDim[2];
+    std::cout << "\n";
+  }   
+
+  if(this->axisDim[2] == 1){
+    this->par.setMinChannels(0);
+  }
 
   // Read the necessary header information, and copy some of it into the Param.
   this->head.readHeaderInfo(fname, this->par);

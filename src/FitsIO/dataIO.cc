@@ -35,6 +35,7 @@ int Cube::getFITSdata(std::string fname)
     fits_report_error(stderr, status);
     return FAILURE;
   }
+
   long *dimAxes = new long[numAxes];
   for(int i=0;i<numAxes;i++) dimAxes[i]=1;
   status = 0;
@@ -58,7 +59,9 @@ int Cube::getFITSdata(std::string fname)
     
 
   int anynul;
-  int npix = dimAxes[lng]*dimAxes[lat]*dimAxes[spc];
+  int npix = dimAxes[lng];
+  if(numAxes>1) npix *= dimAxes[lat];
+  if(numAxes>2) npix *= dimAxes[spc];
 
   float *pixarray = new float[npix];// the array of pixel values
   char *nullarray = new char[npix]; // the array of null pixels
@@ -73,8 +76,8 @@ int Cube::getFITSdata(std::string fname)
     inc[i] = fpixel[i] = lpixel[i] = 1;
   }
   lpixel[lng] = dimAxes[lng];
-  lpixel[lat] = dimAxes[lat];
-  lpixel[spc] = dimAxes[spc];
+  if(numAxes>1) lpixel[lat] = dimAxes[lat];
+  if(numAxes>2) lpixel[spc] = dimAxes[spc];
 
   /*
 ////////////

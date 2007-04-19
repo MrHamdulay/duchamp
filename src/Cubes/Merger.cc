@@ -165,6 +165,7 @@ void finaliseList(vector<Detection> &objList, Param &par)
    */
 
   int listCounter = 0;
+
   std::cout << "Rejecting:" << std::setw(6) << objList.size();
   printSpace(6);
   printBackSpace(22);
@@ -181,7 +182,7 @@ void finaliseList(vector<Detection> &objList, Param &par)
 
     }      
     else{
-
+      
       objList.erase(objList.begin()+listCounter);
       if(par.isVerbose()){
 	std::cout << "Rejecting:" << std::setw(6) << objList.size();

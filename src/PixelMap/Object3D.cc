@@ -368,10 +368,6 @@ namespace PixelInfo
 	}
       }
     }
-    if(count != this->numVox) {
-      std::cerr << "****** " << count << " -- " << this->numVox <<"\n";
-      std::cerr << *this << "\n";
-    }
     return voxList;
 
   }

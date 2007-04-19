@@ -5,7 +5,8 @@
 namespace Statistics
 {
 
-  template <class T> float madfmToSigma(T madfm){
+  template <class T> 
+  float madfmToSigma(T madfm){
     return float(madfm)/correctionFactor;
   };
   template float madfmToSigma<int>(int madfm);
@@ -13,17 +14,16 @@ namespace Statistics
   template float madfmToSigma<float>(float madfm);
   template float madfmToSigma<double>(double madfm);
 
-
-//    template StatsContainer<int>;
-//    template StatsContainer<long>;
-//    template StatsContainer<float>;
-//    template StatsContainer<double>;
   //--------------------------------------------------------------------
   //--------------------------------------------------------------------
 
   template <class Type> 
   StatsContainer<Type>::StatsContainer(const StatsContainer<Type>& s)
   {
+    /** 
+     *  The copy constructor for the StatsContainer class.
+     */
+
     this->defined    = s.defined;
     this->mean       = s.mean;
     this->stddev     = s.stddev;
@@ -41,8 +41,13 @@ namespace Statistics
   //--------------------------------------------------------------------
 
   template <class Type> 
-  StatsContainer<Type>& StatsContainer<Type>::operator= (const StatsContainer<Type>& s)
+  StatsContainer<Type>& 
+  StatsContainer<Type>::operator= (const StatsContainer<Type>& s)
   {
+    /** 
+     *  The assignment operator for the StatsContainer class.
+     */
+
     if(this == &s) return *this;
     this->defined    = s.defined;
     this->mean       = s.mean;
@@ -59,6 +64,123 @@ namespace Statistics
   template StatsContainer<long>& StatsContainer<long>::operator= (const StatsContainer<long>& s);
   template StatsContainer<float>& StatsContainer<float>::operator= (const StatsContainer<float>& s);
   template StatsContainer<double>& StatsContainer<double>::operator= (const StatsContainer<double>& s);
+  //--------------------------------------------------------------------
+
+  template <class Type> 
+  float StatsContainer<Type>::getThresholdSNR()
+  {
+    /** 
+     * The SNR is defined in terms of excess over the middle estimator
+     * in units of the spread estimator.
+    */
+    return (threshold - this->getMiddle())/this->getSpread();
+  }
+  template float StatsContainer<int>::getThresholdSNR();
+  template float StatsContainer<long>::getThresholdSNR();
+  template float StatsContainer<float>::getThresholdSNR();
+  template float StatsContainer<double>::getThresholdSNR();
+  //--------------------------------------------------------------------
+
+  template <class Type> 
+  void  StatsContainer<Type>::setThresholdSNR(float snr)
+  {
+    /** 
+     * The SNR is defined in terms of excess over the middle estimator
+     * in units of the spread estimator.
+     */
+    threshold=this->getMiddle() + snr*this->getSpread();
+  }
+  template void StatsContainer<int>::setThresholdSNR(float snr);
+  template void StatsContainer<long>::setThresholdSNR(float snr);
+  template void StatsContainer<float>::setThresholdSNR(float snr);
+  template void StatsContainer<double>::setThresholdSNR(float snr);
+  //--------------------------------------------------------------------
+  
+  template <class Type> 
+  float StatsContainer<Type>::getSNR(float value)
+  {
+    /** 
+     * The SNR is defined in terms of excess over the middle estimator
+     * in units of the spread estimator.
+     */
+    return (value - this->getMiddle())/this->getSpread();
+  }
+  template float StatsContainer<int>::getSNR(float value);
+  template float StatsContainer<long>::getSNR(float value);
+  template float StatsContainer<float>::getSNR(float value);
+  template float StatsContainer<double>::getSNR(float value);
+  //--------------------------------------------------------------------
+    
+  template <class Type> 
+  float StatsContainer<Type>::getMiddle()
+  {
+    /** 
+     * The middle value is determined by the StatsContainer::useRobust
+     * flag -- it will be either the median (if true), or the mean (if
+     * false).
+     */
+    if(useRobust) return float(median); 
+    else return mean;
+  }
+  template float StatsContainer<int>::getMiddle();
+  template float StatsContainer<long>::getMiddle();
+  template float StatsContainer<float>::getMiddle();
+  template float StatsContainer<double>::getMiddle();
+  //--------------------------------------------------------------------
+    
+  template <class Type> 
+  float StatsContainer<Type>::getSpread(){
+    /** 
+     * The spread value returned is determined by the
+     * StatsContainer::useRobust flag -- it will be either the madfm
+     * (if true), or the rms (if false). If robust, the madfm will be
+     * converted to an equivalent rms under the assumption of
+     * Gaussianity, using the Statistics::madfmToSigma function.
+     */
+    if(useRobust) return madfmToSigma(madfm); 
+    else return stddev;
+  }
+  template float StatsContainer<int>::getSpread();
+  template float StatsContainer<long>::getSpread();
+  template float StatsContainer<float>::getSpread();
+  template float StatsContainer<double>::getSpread();
+  //--------------------------------------------------------------------
+    
+  template <class Type> 
+  float StatsContainer<Type>::getPValue(float value)
+  {
+    /** 
+     * Get the "probability", under the assumption of normality, of a
+     * value occuring.  
+     *
+     * It is defined by \f$0.5 \operatorname{erfc}(z/\sqrt{2})\f$, where
+     * \f$z=(x-\mu)/\sigma\f$. We need the factor of 0.5 here, as we are
+     * only considering the positive tail of the distribution -- we
+     * don't care about negative detections.
+     */
+    
+    float zStat = (value - this->getMiddle()) / this->getSpread();
+    return 0.5 * erfc( zStat / M_SQRT2 );
+  }
+  template float StatsContainer<int>::getPValue(float value);
+  template float StatsContainer<long>::getPValue(float value);
+  template float StatsContainer<float>::getPValue(float value);
+  template float StatsContainer<double>::getPValue(float value);
+  //--------------------------------------------------------------------
+    
+  template <class Type> 
+  bool StatsContainer<Type>::isDetection(float value){
+    /** 
+     * Compares the value given to the correct threshold, depending on
+     * the value of the StatsContainer::useFDR flag. 
+     */
+    if(useFDR) return (this->getPValue(value) < this->pThreshold);
+    else       return (value > this->threshold);
+  }
+  template bool StatsContainer<int>::isDetection(float value);
+  template bool StatsContainer<long>::isDetection(float value);
+  template bool StatsContainer<float>::isDetection(float value);
+  template bool StatsContainer<double>::isDetection(float value);
   //--------------------------------------------------------------------
 
   template <class Type> 
