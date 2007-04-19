@@ -54,21 +54,21 @@ namespace Column
     }
   }
   //------------------------------------------------------------
-  void   printTitle(std::ostream &stream)
+  void Col::printTitle(std::ostream &stream)
   {
     stream << std::setw(this->width) 
 	   << std::setfill(' ') 
 	   << this->name;
   }
 
-  void   printUnits(std::ostream &stream)
+  void Col::printUnits(std::ostream &stream)
   {
     stream << std::setw(this->width) 
 	   << std::setfill(' ') 
 	   << this->units;
   }
   
-  void   printDash (std::ostream &stream)
+  void Col::printDash (std::ostream &stream)
   {
     stream << std::setw(this->width) 
 	   << std::setfill('-')
@@ -76,7 +76,7 @@ namespace Column
 	   << std::setfill(' ');
   }
 
-  void   printBlank(std::ostream &stream)
+  void Col::printBlank(std::ostream &stream)
   {
     stream << std::setw(this->width) 
 	   << std::setfill(' ') 
