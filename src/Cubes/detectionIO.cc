@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <time.h>
+#include <param.hh>
+#include <fitsHeader.hh>
 #include <Cubes/cubes.hh> 
 #include <PixelMap/Object3D.hh>
 #include <Detection/detection.hh>

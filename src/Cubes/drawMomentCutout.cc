@@ -5,6 +5,7 @@
 #include <wcs.h>
 #include <duchamp.hh>
 #include <param.hh>
+#include <fitsHeader.hh>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
 #include <Utils/mycpgplot.hh>

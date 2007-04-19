@@ -4,8 +4,9 @@
 #include <string>
 #include <wcs.h>
 #include <math.h>
-#include <param.hh>
 #include <duchamp.hh>
+#include <param.hh>
+#include <fitsHeader.hh>
 #include <Utils/utils.hh>
 #include <PixelMap/Voxel.hh>
 #include <PixelMap/Object3D.hh>

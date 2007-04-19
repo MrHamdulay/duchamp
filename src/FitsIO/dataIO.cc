@@ -5,6 +5,8 @@
 #include <fitsio.h>
 #include <math.h>
 #include <duchamp.hh>
+#include <param.hh>
+#include <fitsHeader.hh>
 #include <Cubes/cubes.hh>
 
 int Cube::getFITSdata(std::string fname)

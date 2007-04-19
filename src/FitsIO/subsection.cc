@@ -32,13 +32,17 @@ void Param::setOffsets(struct wcsprm *wcs)
 int Param::verifySubsection()
 {
   /**
-   *   Checks that the subsection string is in the appropriate format, with
-   *    the correct number of entries (one for each axis).
-   *   This involves reading the individual substrings and converting to
-   *    integers, and storing in the offsets array.
-   *   Steps in the subsection string are not dealt with -- a warning message
-   *    is written to the screen, and the step values are removed from the 
-   *    subsection string.
+   * Checks that the subsection strings (the pixel and stats
+   * subsections) are in the appropriate format, with the correct
+   * number of entries (one for each axis).
+   *
+   * This reads the dimensional information from the FITS file, and
+   * uses this with the Section::parse() function to make sure each
+   * section is OK.
+   *
+   * \return SUCCESS/FAILURE depending on outcome of the
+   * Section::parse() calls. Also FAILURE if something goes wrong with
+   * the FITS access.
    */
 
   // First open the requested FITS file and check its existence and 

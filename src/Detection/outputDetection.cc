@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <duchamp.hh>
-#include <param.hh>
 #include <Detection/detection.hh>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>

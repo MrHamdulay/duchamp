@@ -3,7 +3,7 @@
 
 #include <math.h>
 #include <duchamp.hh>
-#include <param.hh>
+#include <fitsHeader.hh>
 #include <vector> 
 #include <string>
 #include <Detection/detection.hh>
@@ -16,7 +16,9 @@ using namespace Column;
 namespace Column
 {
 
-  Col::Col(){
+  Col::Col()
+  {
+    /** Set the default values for the parameters. */
     width=1; 
     precision=0; 
     name=" "; 
@@ -35,10 +37,10 @@ namespace Column
      *            arrays in the Column namespace.
      */ 
     if((num>=0)&&(num<numColumns)){
-      this->width =     defaultWidth[num];
+      this->width     = defaultWidth[num];
       this->precision = defaultPrec[num];
-      this->name =      defaultName[num];
-      this->units =     defaultUnits[num];
+      this->name      = defaultName[num];
+      this->units     = defaultUnits[num];
     }
     else{
       std::stringstream errmsg;
@@ -51,20 +53,50 @@ namespace Column
       this->units = " ";
     }
   }
+  //------------------------------------------------------------
+  void   printTitle(std::ostream &stream)
+  {
+    stream << std::setw(this->width) 
+	   << std::setfill(' ') 
+	   << this->name;
+  }
 
-//   template <class T> void Col::printEntry(std::ostream &stream, T value)
-//   {
-//     stream << std::setprecision(this->precision)
-// 	   << std::setw(this->width) 
-// 	   << std::setfill(' ')
-// 	   << value;
-//   }
-//   template void Col::printEntry<int>(std::ostream &stream, int value);
-//   template void Col::printEntry<long>(std::ostream &stream, long value);
-//   template void Col::printEntry<unsigned>(std::ostream &stream, unsigned value);
-//   template void Col::printEntry<float>(std::ostream &stream, float value);
-//   template void Col::printEntry<double>(std::ostream &stream, double value);
-//   template void Col::printEntry<std::string>(std::ostream &stream, std::string value);
+  void   printUnits(std::ostream &stream)
+  {
+    stream << std::setw(this->width) 
+	   << std::setfill(' ') 
+	   << this->units;
+  }
+  
+  void   printDash (std::ostream &stream)
+  {
+    stream << std::setw(this->width) 
+	   << std::setfill('-')
+	   << "" 
+	   << std::setfill(' ');
+  }
+
+  void   printBlank(std::ostream &stream)
+  {
+    stream << std::setw(this->width) 
+	   << std::setfill(' ') 
+	   << "";
+  }
+  
+  template <class T> 
+  void Col::printEntry(std::ostream &stream, T value)
+  {
+    stream << std::setprecision(this->precision)
+	   << std::setw(this->width) 
+	   << std::setfill(' ')
+	   << value;
+  }
+  template void Col::printEntry<int>(std::ostream &stream, int value);
+  template void Col::printEntry<long>(std::ostream &stream, long value);
+  template void Col::printEntry<unsigned>(std::ostream &stream, unsigned value);
+  template void Col::printEntry<float>(std::ostream &stream, float value);
+  template void Col::printEntry<double>(std::ostream &stream, double value);
+  template void Col::printEntry<std::string>(std::ostream &stream, std::string value);
 
 }
 

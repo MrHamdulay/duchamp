@@ -6,9 +6,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <math.h>
-#include <wcs.h>
-#include <wcsunits.h>
 #include <param.hh>
+#include <fitsHeader.hh>
 #include <config.h>
 #include <duchamp.hh>
 #include <ATrous/filter.hh>
@@ -33,224 +32,6 @@ std::string stringize(bool b){
 }
 #endif
 
-/****************************************************************/
-///////////////////////////////////////////////////
-//// Functions for FitsHeader class:
-///////////////////////////////////////////////////
-
-FitsHeader::FitsHeader()
-{
-  this->wcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
-  this->wcs->flag=-1;
-  wcsini(true, 3, this->wcs); 
-  this->wcsIsGood = false;
-  this->nwcs = 0;
-  this->scale=1.;
-  this->offset=0.;
-  this->power=1.;
-  this->fluxUnits="counts";
-}
-
-FitsHeader::FitsHeader(const FitsHeader& h)
-{
-  this->wcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
-  this->wcs->flag=-1;
-  wcsini(true, h.wcs->naxis, this->wcs); 
-  wcscopy(true, h.wcs, this->wcs); 
-  wcsset(this->wcs);
-  this->nwcs = h.nwcs;
-  this->wcsIsGood = h.wcsIsGood;
-  this->spectralUnits = h.spectralUnits;
-  this->fluxUnits = h.fluxUnits;
-  this->intFluxUnits = h.intFluxUnits;
-  this->beamSize = h.beamSize;
-  this->bmajKeyword = h.bmajKeyword;
-  this->bminKeyword = h.bminKeyword;
-  this->blankKeyword = h.blankKeyword;
-  this->bzeroKeyword = h.bzeroKeyword;
-  this->bscaleKeyword = h.bscaleKeyword;
-  this->scale = h.scale;
-  this->offset = h.offset;
-  this->power = h.power;
-}
-
-FitsHeader& FitsHeader::operator= (const FitsHeader& h)
-{
-  if(this == &h) return *this;
-  this->wcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
-  this->wcs->flag=-1;
-  wcsini(true, h.wcs->naxis, this->wcs); 
-  wcscopy(true, h.wcs, this->wcs); 
-  wcsset(this->wcs);
-  this->nwcs = h.nwcs;
-  this->wcsIsGood = h.wcsIsGood;
-  this->spectralUnits = h.spectralUnits;
-  this->fluxUnits = h.fluxUnits;
-  this->intFluxUnits = h.intFluxUnits;
-  this->beamSize = h.beamSize;
-  this->bmajKeyword = h.bmajKeyword;
-  this->bminKeyword = h.bminKeyword;
-  this->blankKeyword = h.blankKeyword;
-  this->bzeroKeyword = h.bzeroKeyword;
-  this->bscaleKeyword = h.bscaleKeyword;
-  this->scale = h.scale;
-  this->offset = h.offset;
-  this->power = h.power;
-  return *this;
-}
-
-void FitsHeader::setWCS(struct wcsprm *w)
-{
-  /** 
-   *  A function that assigns the wcs parameters, and runs
-   *   wcsset to set it up correctly.
-   *  Performs a check to see if the WCS is good (by looking at 
-   *   the lng and lat wcsprm parameters), and sets the wcsIsGood 
-   *   flag accordingly.
-   * \param w A WCSLIB wcsprm struct with the correct parameters.
-   */
-  wcscopy(true, w, this->wcs);
-  wcsset(this->wcs);
-  if( (w->lng!=-1) && (w->lat!=-1) ) this->wcsIsGood = true;
-}
-
-struct wcsprm *FitsHeader::getWCS()
-{
-  /** 
-   *  A function that returns a properly initilized wcsprm object
-   *  corresponding to the WCS.
-   */
-  struct wcsprm *wNew = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
-  wNew->flag=-1;
-  wcsini(true, this->wcs->naxis, wNew); 
-  wcscopy(true, this->wcs, wNew); 
-  wcsset(wNew);
-  return wNew;
-}
-
-int FitsHeader::wcsToPix(const double *world, double *pix){      
-  return wcsToPixSingle(this->wcs, world, pix);  
-};
-int FitsHeader::wcsToPix(const double *world, double *pix, const int npts){ 
-  return wcsToPixMulti(this->wcs, world, pix, npts);  
-};
-int FitsHeader::pixToWCS(const double *pix, double *world){    
-  return pixToWCSSingle(this->wcs, pix, world);  
-};
-int FitsHeader::pixToWCS(const double *pix, double *world, const int npts){
-  return pixToWCSMulti(this->wcs, pix,world, npts);  
-};
-
-
-double FitsHeader::pixToVel(double &x, double &y, double &z)
-{
-  double vel;
-  if(this->wcsIsGood){
-    double *pix   = new double[3]; 
-    double *world = new double[3];
-    pix[0] = x; pix[1] = y; pix[2] = z;
-    pixToWCSSingle(this->wcs,pix,world);
-    vel = this->specToVel(world[2]);
-    delete [] pix;
-    delete [] world;
-  }
-  else vel = z;
-  return vel;
-}
-
-double* FitsHeader::pixToVel(double &x, double &y, double *zarray, int size)
-{
-  double *newzarray = new double[size];
-  if(this->wcsIsGood){
-    double *pix   = new double[size*3];
-    for(int i=0;i<size;i++){
-      pix[3*i]   = x; 
-      pix[3*i+1] = y; 
-      pix[3*i+2] = zarray[i];
-    }
-    double *world = new double[size*3];
-    pixToWCSMulti(this->wcs,pix,world,size);
-    delete [] pix;
-    for(int i=0;i<size;i++) newzarray[i] = this->specToVel(world[3*i+2]);
-    delete [] world;
-  }
-  else{
-    for(int i=0;i<size;i++) newzarray[i] = zarray[i];
-  }
-  return newzarray;
-}
-
-double  FitsHeader::specToVel(const double &coord)
-{
-  double vel;
-  if(power==1.0) vel =  coord*this->scale + this->offset;
-  else vel = pow( (coord*this->scale + this->offset), this->power);
-  return vel;
-}
-
-double  FitsHeader::velToSpec(const float &velocity)
-{
-//   return velToCoord(this->wcs,velocity,this->spectralUnits);};
-  return (pow(velocity, 1./this->power) - this->offset) / this->scale;}
-
-std::string  FitsHeader::getIAUName(double ra, double dec)
-{
-  if(strcmp(this->wcs->lngtyp,"RA")==0) 
-    return getIAUNameEQ(ra, dec, this->wcs->equinox);
-  else 
-    return getIAUNameGAL(ra, dec);
-}
-
-void FitsHeader::fixUnits(Param &par)
-{
-  // define spectral units from the param set
-  this->spectralUnits = par.getSpectralUnits();
-
-  double sc=1.;
-  double of=0.;
-  double po=1.;
-  if(this->wcsIsGood){
-    int status = wcsunits( this->wcs->cunit[this->wcs->spec], 
-			   this->spectralUnits.c_str(), 
-			   &sc, &of, &po);
-    if(status > 0){
-      std::stringstream errmsg;
-      errmsg << "WCSUNITS Error, Code = " << status
-	     << ": " << wcsunits_errmsg[status];
-      if(status == 10) errmsg << "\nTried to get conversion from \"" 
-			      << this->wcs->cunit[this->wcs->spec] << "\" to \"" 
-			      << this->spectralUnits.c_str() << "\".\n";
-      this->spectralUnits = this->wcs->cunit[this->wcs->spec];
-      if(this->spectralUnits==""){
-	errmsg << "Spectral units not specified. "
-	       << "For data presentation, we will use dummy units of \"SPC\".\n"
-	       << "Please report this occurence -- it should not happen now!"
-	       << "In the meantime, you may want to set the CUNIT"
-	       << this->wcs->spec + 1 <<" keyword to make this work.\n";
-	this->spectralUnits = "SPC";
-      }
-      duchampError("fixUnits", errmsg.str());
-      
-    }
-  }
-  this->scale = sc;
-  this->offset= of;
-  this->power = po;
-
-  // Work out the integrated flux units, based on the spectral units.
-  // If flux is per beam, trim the /beam from the flux units and multiply 
-  //  by the spectral units.
-  // Otherwise, just muliply by the spectral units.
-  if(this->fluxUnits.size()>0){
-    if(this->fluxUnits.substr(this->fluxUnits.size()-5,
-			      this->fluxUnits.size()   ) == "/beam"){
-      this->intFluxUnits = this->fluxUnits.substr(0,this->fluxUnits.size()-5)
-	+" " +this->spectralUnits;
-    }
-    else this->intFluxUnits = this->fluxUnits + " " + this->spectralUnits;
-  }
-
-}
 
 /****************************************************************/
 ///////////////////////////////////////////////////
@@ -258,8 +39,7 @@ void FitsHeader::fixUnits(Param &par)
 ///////////////////////////////////////////////////
 Param::Param(){
   /** 
-   * Param()
-   *  Default intial values for the parameters.
+   * Provides default intial values for the parameters. Note that
    * imageFile has no default value!
    */
   std::string baseSection = "[*,*,*]";
@@ -562,8 +342,52 @@ int Param::getopts(int argc, char ** argv)
 }
 //--------------------------------------------------------------------
 
+bool Param::isBlank(float &value)
+{
+  /** 
+   *  Tests whether the value passed as the argument is BLANK or not.
+   *  \param value Pixel value to be tested.
+   *  \return False if flagBlankPix is false. Else, compare to the
+   *  relevant FITS keywords, using integer comparison.
+   */
+  return this->flagBlankPix &&
+    (this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword));
+};
 
+bool Param::isInMW(int z)
+{
+  /** 
+   *  Tests whether we are flagging Milky Way channels, and if so
+   * whether the given channel number is in the Milky Way range. The
+   * channels are assumed to start at number 0.  
+   * \param z The channel number 
+   * \return True if we are flagging Milky Way channels and z is in
+   *  the range.
+  */
+  return ( flagMW && (z>=minMW) && (z<=maxMW) );
+}
 
+bool Param::isStatOK(int x, int y, int z)
+{
+  /** 
+   * Test whether a given pixel position lies within the subsection
+   * given by the statSec parameter. Only tested if the flagSubsection
+   * parameter is true -- if it isn't, we just return true since all
+   * pixels are therefore available for statstical calculations.
+   * \param x X-value of pixel being tested.
+   * \param y Y-value of pixel being tested.
+   * \param z Z-value of pixel being tested.
+   * \return True if pixel is able to be used for statistical
+   * calculations. False otherwise.
+   */
+    int xval=x,yval=y,zval=z;
+    if(flagSubsection){
+      xval += pixelSec.getStart(0);
+      yval += pixelSec.getStart(1);
+      zval += pixelSec.getStart(2);
+    }
+    return !flagStatSec || statSec.isInside(xval,yval,zval);
+  };
 
 /****************************************************************/
 ///////////////////////////////////////////////////
@@ -583,10 +407,10 @@ inline std::string makelower( std::string s )
 inline bool boolify( std::string s )
 {
   /**
-   * bool boolify(string)
-   *  Convert a std::string to a bool variable
-   *  "1" and "true" get converted to true
-   *  "0" and "false" (and anything else) get converted to false
+   *  Convert a std::string to a bool variable: 
+   *  "1" and "true" get converted to true;
+   *  "0" and "false" (and anything else) get converted to false.
+   * \return The bool equivalent of the string.
    */
   if((s=="1") || (makelower(s)=="true")) return true;
   else if((s=="0") || (makelower(s)=="false")) return false;
@@ -624,6 +448,9 @@ int Param::readParams(std::string paramfile)
    * tabs). 
    *
    * \param paramfile A std::string containing the parameter filename.
+   *
+   * \return FAILURE if the parameter file does not exist. SUCCESS if
+   * it is able to read it.
    */
   std::ifstream fin(paramfile.c_str());
   if(!fin.is_open()) return FAILURE;
@@ -701,7 +528,7 @@ int Param::readParams(std::string paramfile)
       if(arg=="threshvelocity")  this->threshVelocity = readFval(ss); 
       if(arg=="minchannels")     this->minChannels = readIval(ss); 
 
-      if(arg=="spectralmethod")  this->spectralMethod = makelower(readSval(ss));
+      if(arg=="spectralmethod")  this->spectralMethod=makelower(readSval(ss));
       if(arg=="spectralunits")   this->spectralUnits = makelower(readSval(ss));
       if(arg=="pixelcentre")     this->pixelCentre = makelower(readSval(ss));
       if(arg=="drawborders")     this->borders = readFlag(ss); 
@@ -709,11 +536,19 @@ int Param::readParams(std::string paramfile)
       if(arg=="verbose")         this->verbose = readFlag(ss); 
     }
   }
+
+  // The wavelet reconstruction takes precendence over the Hanning
+  // smoothing.
   if(this->flagATrous) this->flagSmooth = false;
 
   // Make sure spectralMethod is an acceptable type -- default is "peak"
-  if((this->spectralMethod!="peak")&&(this->spectralMethod!="sum")){
-    duchampWarning("readParams","Changing spectralMethod to \"peak\".\n");
+  if((this->spectralMethod!="peak")&&
+     (this->spectralMethod!="sum")){
+    std::stringstream errmsg;
+    errmsg << "The requested value of the parameter spectralMethod, \""
+	   << this->spectralMethod << "\" is invalid.\n"
+	   << "Changing to \"peak\".\n";
+    duchampWarning("readParams",errmsg.str());
     this->spectralMethod = "peak";
   }
 
@@ -721,7 +556,11 @@ int Param::readParams(std::string paramfile)
   if((this->pixelCentre!="centroid")&&
      (this->pixelCentre!="average") &&
      (this->pixelCentre!="peak")       ){
-    duchampWarning("readParams","Changing pixelCentre to \"centroid\".\n");
+    std::stringstream errmsg;
+    errmsg << "The requested value of the parameter pixelCentre, \""
+	   << this->pixelCentre << "\" is invalid.\n"
+	   << "Changing to \"centroid\".\n";
+    duchampWarning("readParams",errmsg.str());
     this->pixelCentre = "centroid";
   }
 
@@ -1010,8 +849,7 @@ std::string Param::outputSmoothFile()
   ss << inputName.substr(0,inputName.size()-5);  
                           // remove the ".fits" on the end.
   if(this->flagSubsection) ss<<".sub";
-  ss << ".SMOOTH-" << this->hanningWidth
-     << ".fits";
+  ss << ".SMOOTH-" << this->hanningWidth << ".fits";
   return ss.str();
 }
 
@@ -1025,7 +863,8 @@ std::string Param::outputReconFile()
    */
   std::string inputName = this->imageFile;
   std::stringstream ss;
-  ss << inputName.substr(0,inputName.size()-5);  // remove the ".fits" on the end.
+  // First we remove the ".fits" from the end of the filename.
+  ss << inputName.substr(0,inputName.size()-5);  
   if(this->flagSubsection) ss<<".sub";
   ss << ".RECON-" << this->reconDim 
      << "-"       << this->filterCode
@@ -1045,7 +884,8 @@ std::string Param::outputResidFile()
    */
   std::string inputName = this->imageFile;
   std::stringstream ss;
-  ss << inputName.substr(0,inputName.size()-5);  // remove the ".fits" on the end.
+  // First we remove the ".fits" from the end of the filename.
+  ss << inputName.substr(0,inputName.size()-5);
   if(this->flagSubsection) ss<<".sub";
   ss << ".RESID-" << this->reconDim 
      << "-"       << this->filterCode

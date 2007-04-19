@@ -43,7 +43,7 @@ void Cube::SmoothCube()
   /**
    *   A function that smooths each spectrum in the cube using the 
    *    Hanning smoothing function. The degree of smoothing is given
-   *    by the parameter hannWidth.
+   *    by the parameter Param::hanningWidth.
    */
 
   Hanning::Hanning hann(this->par.getHanningWidth());

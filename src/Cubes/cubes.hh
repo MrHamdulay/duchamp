@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <param.hh>
+#include <fitsHeader.hh>
 #include <Detection/detection.hh>
 #include <Detection/columns.hh>
 #include <Cubes/plots.hh>

@@ -11,6 +11,7 @@
 #include <fitsio.h>
 #include <math.h>
 #include <duchamp.hh>
+#include <fitsHeader.hh>
 #include <Cubes/cubes.hh>
 
 int FitsHeader::defineWCS(std::string fname, Param &par)

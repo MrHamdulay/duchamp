@@ -8,6 +8,7 @@
 #include <wcs.h>
 #include <duchamp.hh>
 #include <param.hh>
+#include <fitsHeader.hh>
 #include <PixelMap/Object3D.hh>
 #include <Cubes/cubes.hh>
 #include <Cubes/plots.hh>

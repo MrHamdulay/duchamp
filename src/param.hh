@@ -7,7 +7,7 @@
 #include <math.h>
 #include <wcs.h>
 #include <wcshdr.h>
-#include <Utils/utils.hh>
+//#include <Utils/utils.hh>
 #include <Utils/Section.hh>
 #include <ATrous/filter.hh>
 
@@ -25,10 +25,18 @@ class FitsHeader; // foreshadow this so that Param knows it exists
 class Param
 {
 public:
+  /** Default constructor. */
   Param();
-  virtual ~Param(){if(sizeOffsets>0) delete [] offsets;};
+
+  /** Copy constructor for Param. */
   Param(const Param& p);
+
+  /** Assignment operator for Param.*/
   Param& operator= (const Param& p);
+
+  /** Destructor function. Deletes the offsets array if the
+      sizeOffsets parameter is positive. */
+  virtual ~Param(){if(sizeOffsets>0) delete [] offsets;};
   //-----------------
   // Functions in param.cc
   //
@@ -56,45 +64,26 @@ public:
   /** Print the parameter set in a readable fashion. */
   friend std::ostream& operator<< ( std::ostream& theStream, Param& par);
   friend class Image;
+
   //------------------
   // Functions in FitsIO/subsection.cc
   //
-  /** Make sure the subsection string is OK, and read the axis
-      subsections. */
+  /** Make sure the subsection strings are OK. */
   int    verifySubsection();
 
   /** Set the correct offset values for each axis */
   void   setOffsets(struct wcsprm *wcs);
 
-  //--------------------
-  // These are inline functions.
-  //
-  /** Is a pixel value a BLANK?
-   *  Tests whether the value passed as the argument is BLANK or not.
-   *   If flagBlankPix is false, return false.
-   *   Otherwise, compare to the relevant FITS keywords, using integer
-   *   comparison.
-   */
-  bool   isBlank(float &value){
-    return this->flagBlankPix &&
-      (this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword));
-  };
+  //------------------
+  // These are in param.cc
+  /** Is a pixel value a BLANK? */
+  bool   isBlank(float &value);
 
   /** Is a given channel flagged as being in the Milky Way?*/           
-  bool   isInMW(int z){return ( flagMW && (z>=minMW) && (z<=maxMW) );};
-
+  bool   isInMW(int z);
 
   /** Is a given pixel position OK for use with stats calculations? */
-  bool   isStatOK(int x, int y, int z){
-    int xval=x,yval=y,zval=z;
-    if(flagSubsection){
-      xval += pixelSec.getStart(0);
-      yval += pixelSec.getStart(1);
-      zval += pixelSec.getStart(2);
-    }
-    return !flagStatSec || statSec.isInside(xval,yval,zval);
-  };
-
+  bool   isStatOK(int x, int y, int z);
 
   //--------------------
   // Basic inline accessor functions
@@ -416,135 +405,6 @@ private:
 
 //===========================================================================
 
-/**
- *  Class to store FITS header information.
- *
- *   Stores information from a FITS header, including WCS information
- *    in the form of a wcsprm struct, as well as various keywords.
- */
-class FitsHeader
-{
-
-public:
-  FitsHeader();
-  virtual ~FitsHeader(){wcsvfree(&nwcs,&wcs);};
-  FitsHeader(const FitsHeader& h);
-  FitsHeader& operator= (const FitsHeader& h);
-
-  //--------------------
-  // Functions in param.cc
-  //
-  /** Assign correct WCS parameters.  */
-  void    setWCS(struct wcsprm *w);
-
-  /** Return the WCS parameters in a WCSLIB wcsprm struct. */
-  struct wcsprm *getWCS();
-
-  // front ends to WCS functions
-  /** Convert pixel coords to world coords for a single point. */
-  int     wcsToPix(const double *world, double *pix);
-
-  /** Convert pixel coords to world coords for many points. */
-  int     wcsToPix(const double *world, double *pix, const int npts);
-
-  /** Convert world coords to pixel coords for a single point. */
-  int     pixToWCS(const double *pix, double *world);
-
-  /** Convert world coords to pixel coords for many points. */
-  int     pixToWCS(const double *pix, double *world, const int npts);
-
-  /** Convert a (x,y,z) position to a velocity. */
-  double  pixToVel(double &x, double &y, double &z);
-
-  /** Convert a set of  (x,y,z) positions to a set of velocities. */
-  double *pixToVel(double &x, double &y, double *zarray, int size);
-
-  /** Convert a spectral coordinate to a velocity coordinate.*/
-  double  specToVel(const double &z);
-
-  /** Convert a velocity coordinate to a spectral coordinate.*/
-  double  velToSpec(const float &vel);
-
-  /** Get an IAU-style name for an equatorial or galactic coordinates. */
-  std::string  getIAUName(double ra, double dec);
-
-  /** Correct the units for the spectral axis */
-  void    fixUnits(Param &par);
- 
-  //--------------------
-  // Functions in FitsIO/headerIO.cc
-  //
-  /** Read all header info. */
-  int     readHeaderInfo(std::string fname, Param &par);
-
-  /** Read BUNIT keyword */
-  int     readBUNIT(std::string fname);
-
-  /** Read BLANK & related keywords */
-  int     readBLANKinfo(std::string fname, Param &par);
-
-  /** Read beam-related keywords */
-  int     readBeamInfo(std::string fname, Param &par);
- 
-  //--------------------
-  // Function in FitsIO/wcsIO.cc
-  //
-  /** Read the WCS information from a file. */
-  int     defineWCS(std::string fname, Param &par);
-
-  //--------------------
-  // Basic inline accessor functions
-  //
-  bool    isWCS(){return wcsIsGood;};
-  int     getNWCS(){return nwcs;};
-  void    setNWCS(int i){nwcs=i;};
-  int     getNumAxes(){return naxis;};
-  void    setNumAxes(int i){naxis=i;};
-  std::string  getSpectralUnits(){return spectralUnits;};
-  void    setSpectralUnits(std::string s){spectralUnits=s;};
-  std::string  getSpectralDescription(){return spectralDescription;};
-  void    setSpectralDescription(std::string s){spectralDescription=s;};
-  std::string  getFluxUnits(){return fluxUnits;};
-  void    setFluxUnits(std::string s){fluxUnits=s;};
-  std::string  getIntFluxUnits(){return intFluxUnits;};
-  void    setIntFluxUnits(std::string s){intFluxUnits=s;};
-  float   getBeamSize(){return beamSize;};
-  void    setBeamSize(float f){beamSize=f;};
-  float   getBmajKeyword(){return bmajKeyword;};
-  void    setBmajKeyword(float f){bmajKeyword=f;};
-  float   getBminKeyword(){return bminKeyword;};
-  void    setBminKeyword(float f){bminKeyword=f;};
-  int     getBlankKeyword(){return blankKeyword;};
-  void    setBlankKeyword(int f){blankKeyword=f;};
-  float   getBzeroKeyword(){return bzeroKeyword;};
-  void    setBzeroKeyword(float f){bzeroKeyword=f;};
-  float   getBscaleKeyword(){return bscaleKeyword;};
-  void    setBscaleKeyword(float f){bscaleKeyword=f;};
-  float   getAvPixScale(){
-    return sqrt( fabs ( (wcs->pc[0]*wcs->cdelt[0])*
-			(wcs->pc[wcs->naxis+1]*wcs->cdelt[1])));
-  };
-
-
-private:
-  struct wcsprm *wcs;           ///< The WCS parameters for the cube in a struct from the wcslib library.
-  int     nwcs;                 ///< The number of WCS parameters
-  bool    wcsIsGood;            ///< A flag indicating whether there is a valid WCS present.
-  int     naxis;                ///< How many axes are in the header?
-  std::string  spectralUnits;        ///< The units of the spectral dimension
-  std::string  spectralDescription;  ///< The description of the spectral dimension (Frequency, Velocity, ...)
-  std::string  fluxUnits;            ///< The units of pixel flux (from header)
-  std::string  intFluxUnits;         ///< The units of pixel flux (from header)
-  float   beamSize;             ///< The calculated beam size in pixels.
-  float   bmajKeyword;          ///< The FITS header keyword BMAJ.
-  float   bminKeyword;          ///< The FITS header keyword BMIN.
-  int     blankKeyword;         ///< The FITS header keyword BLANK.
-  float   bzeroKeyword;         ///< The FITS header keyword BZERO.
-  float   bscaleKeyword;        ///< The FITS header keyword BSCALE.
-  double  scale;                ///< scale param for converting spectral coords
-  double  offset;               ///< offset param for converting spectral coords
-  double  power;                ///< power param for converting spectral coords
-};
 
 std::string makelower( std::string s );
 

@@ -12,6 +12,7 @@
 
 #include <duchamp.hh>
 #include <param.hh>
+#include <fitsHeader.hh>
 #include <Cubes/cubes.hh>
 #include <PixelMap/Voxel.hh>
 #include <PixelMap/Object3D.hh>
@@ -775,12 +776,13 @@ void Cube::setupFDR()
    *
    *   The Prob here is the probability, assuming a Normal
    *   distribution, of obtaining a value as high or higher than the
-   *   pixel value (ie. only the positive tail of the PDF)
+   *   pixel value (ie. only the positive tail of the PDF).
    *
-   *   The probabilities are calculated using the Statistics class
-   *   function getPValue(), which calculates the z-statistic, and
-   *   then the probability via 0.5*erfc(z/M_SQRT2) -- giving the
-   *   positive tail probability.
+   *   The probabilities are calculated using the
+   *   StatsContainer::getPValue(), which calculates the z-statistic,
+   *   and then the probability via
+   *   \f$0.5\operatorname{erfc}(z/\sqrt{2})\f$ -- giving the positive
+   *   tail probability.
    */
 
   // first calculate p-value for each pixel -- assume Gaussian for now.

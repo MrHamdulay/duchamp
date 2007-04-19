@@ -11,6 +11,8 @@
 #include <fitsio.h>
 #include <math.h>
 #include <duchamp.hh>
+#include <param.hh>
+#include <fitsHeader.hh>
 #include <Cubes/cubes.hh>
 
 std::string imageType[4] = {"point", "spectrum", "image", "cube"};

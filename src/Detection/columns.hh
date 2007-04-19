@@ -119,40 +119,19 @@ namespace Column
     // Outputting functions -- all in columns.cc
     //
     /** write the title of the column to the stream */
-    void   printTitle(std::ostream &stream){
-      stream << std::setw(this->width) << std::setfill(' ') << this->name;
-    };
+    void   printTitle(std::ostream &stream);
 
     /** write the units of the column to the stream */
-    void   printUnits(std::ostream &stream){
-      stream << std::setw(this->width) << std::setfill(' ') << this->units;
-    };
+    void   printUnits(std::ostream &stream);
 
     /** write dashes the full width of the column to the stream */
-    void   printDash (std::ostream &stream){
-      stream << std::setw(this->width) << std::setfill('-')
-	     << "" << std::setfill(' ');
-    };
+    void   printDash (std::ostream &stream);
 
     /** write blanks the full width of the column to the stream */
-    void   printBlank(std::ostream &stream){
-      stream << std::setw(this->width) << std::setfill(' ') << "";
-    };
+    void   printBlank(std::ostream &stream);
 
     /** Print a given value in a column with correct width & precision. */
-    template <class T> void printEntry(std::ostream &stream, T value)//;
-    {
-      stream << std::setprecision(this->precision)
-	     << std::setw(this->width) 
-	     << std::setfill(' ')
-	     << value;
-    };
-//     template void Col::printEntry<int>(std::ostream &stream, int value);
-//     template void Col::printEntry<long>(std::ostream &stream, long value);
-//     template void Col::printEntry<unsigned>(std::ostream &stream, unsigned value);
-//     template void Col::printEntry<float>(std::ostream &stream, float value);
-//     template void Col::printEntry<double>(std::ostream &stream, double value);
-//     template void Col::printEntry<std::string>(std::ostream &stream, std::string value);
+    template <class T> void printEntry(std::ostream &stream, T value);
 
   private:
     int width;          ///< How wide is the column (in ascii spaces)
