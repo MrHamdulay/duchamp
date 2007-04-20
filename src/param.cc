@@ -8,29 +8,10 @@
 #include <math.h>
 #include <param.hh>
 #include <fitsHeader.hh>
-#include <config.h>
 #include <duchamp.hh>
 #include <ATrous/filter.hh>
 #include <Utils/utils.hh>
 #include <Utils/Section.hh>
-
-// Define funtion to print bools as words, in case the compiler doesn't 
-//  recognise the setf(ios::boolalpha) command...
-#ifdef HAVE_STDBOOL_H
-std::string stringize(bool b){
-  std::stringstream ss;
-  ss.setf(std::ios::boolalpha);
-  ss << b;
-  return ss.str();
-}
-#else
-std::string stringize(bool b){
-  std::string output;
-  if(b) output="true";
-  else output="false";
-  return output;
-}
-#endif
 
 
 /****************************************************************/
@@ -402,6 +383,18 @@ inline std::string makelower( std::string s )
     out += tolower(s[i]);
   }
   return out;
+}
+
+inline std::string stringize(bool b)
+{
+  /** 
+   * Convert a bool variable to the textual equivalent. 
+   * \return A std::string with the english equivalent of the bool.
+   */
+  std::string output;
+  if(b) output="true";
+  else output="false";
+  return output;
 }
 
 inline bool boolify( std::string s )

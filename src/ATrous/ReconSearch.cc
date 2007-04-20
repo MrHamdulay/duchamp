@@ -12,6 +12,7 @@
 #include <Utils/Statistics.hh>
 
 using namespace PixelInfo;
+using namespace Statistics;
 
 void Cube::ReconSearch()
 {

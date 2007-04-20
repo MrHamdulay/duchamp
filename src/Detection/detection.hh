@@ -6,16 +6,8 @@
 #include <vector>
 #include <param.hh>
 #include <PixelMap/Voxel.hh>
-#include <PixelMap/Scan.hh>
-#include <PixelMap/Object2D.hh>
 #include <PixelMap/Object3D.hh>
 #include <Detection/columns.hh>
-#include <Utils/utils.hh>
-
-using namespace Column;
-using namespace PixelInfo;
-
-//==========================================================================
 
 /**
  * Class to represent a contiguous set of detected voxels.
@@ -48,7 +40,10 @@ public:
   }
 
   /** Provides a reference to the StatsContainer. */
-  Object3D& pixels(){ Object3D &rpix = this->pixelArray; return rpix;}; 
+  PixelInfo::Object3D& pixels(){ 
+    PixelInfo::Object3D &rpix = this->pixelArray; 
+    return rpix;
+  }; 
 
   /** Calculate basic parameters of the Detection. */
   void   calcParams(){pixelArray.calcParams();}; 
@@ -66,7 +61,9 @@ public:
   void   setOffsets(Param &par); 
 
   /** Add the offset values to the pixel locations */
-  void   addOffsets(){pixelArray.addOffsets(xSubOffset,ySubOffset,zSubOffset);};
+  void   addOffsets(){
+    pixelArray.addOffsets(xSubOffset,ySubOffset,zSubOffset);
+  };
 
   //
   friend std::ostream& operator<< ( std::ostream& theStream, Detection& obj);
@@ -87,26 +84,26 @@ public:
 
   /** Prints the column headers, except for the different pixel centres. */
   void   outputDetectionTextHeader(std::ostream &stream, 
-				   std::vector<Col> columns); 
+				   std::vector<Column::Col> columns); 
 
   /** Prints all the column headers. */
   void   outputDetectionTextHeaderFull(std::ostream &stream, 
-				       std::vector<Col> columns); 
+				       std::vector<Column::Col> columns); 
 
   /** Prints the full set of columns, including the WCS
       information, but not the different pixel centres. */
   void   outputDetectionTextWCS(std::ostream &stream, 
-				std::vector<Col> columns); 
+				std::vector<Column::Col> columns); 
 
   /** Prints the full set of columns, including the WCS
       information. */
   void   outputDetectionTextWCSFull(std::ostream &stream, 
-				    std::vector<Col> columns); 
+				    std::vector<Column::Col> columns); 
 
   /** Prints a limited set of columns, excluding any WCS
       information. */
   void   outputDetectionText(std::ostream &stream, 
-			     std::vector<Col> columns, 
+			     std::vector<Column::Col> columns, 
 			     int idNumber); 
   //---------------------------------- 
   // For plotting routines... in Cubes/drawMomentCutout.cc
@@ -126,7 +123,7 @@ public:
 
   /** Add a single voxel to the pixel list.*/
   void   addPixel(long x, long y, long z){pixelArray.addPixel(x,y,z);};
-  void   addPixel(Voxel point){
+  void   addPixel(PixelInfo::Voxel point){
     /** This one adds the pixel to the pixelArray, and updates the
 	fluxes according to the Voxel's flux information */
     pixelArray.addPixel(point);
@@ -138,7 +135,7 @@ public:
   };
 
   /** Return a single voxel. */
-  Voxel  getPixel(int i){return pixelArray.getPixel(i);};
+  PixelInfo::Voxel getPixel(int i){return pixelArray.getPixel(i);};
 
   /** How many voxels are in the Detection? */
   int    getSize(){return pixelArray.getSize();};
@@ -242,7 +239,7 @@ public:
   void        setSNRPrec(int i){snrPrec=i;};
   //
 private:
-  Object3D       pixelArray;     ///< The pixel locations
+  PixelInfo::Object3D pixelArray;     ///< The pixel locations
   // Subsection offsets
   long           xSubOffset;     ///< The x-offset, from subsectioned cube
   long           ySubOffset;     ///< The y-offset, from subsectioned cube

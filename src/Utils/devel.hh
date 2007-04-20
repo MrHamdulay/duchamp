@@ -1,6 +1,9 @@
 #ifndef TESTS_HH
 #define TESTS_HH
 #include <vector>
+#include <string>
+
+class Param;
 
 // MENU ROUTINES FOR DIGANOSTIC/TEST PROGRAMS
 std::string menu();

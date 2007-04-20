@@ -11,6 +11,7 @@
 
 using std::vector;
 using namespace PixelInfo;
+using namespace Statistics;
 
 void Cube::CubicSearch()
 {

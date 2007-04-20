@@ -7,7 +7,6 @@
 #include <math.h>
 #include <wcs.h>
 #include <wcshdr.h>
-//#include <Utils/utils.hh>
 #include <Utils/Section.hh>
 #include <ATrous/filter.hh>
 

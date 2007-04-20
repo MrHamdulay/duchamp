@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <math.h>
-#include <Utils/utils.hh>
 
 /**
  * A namespace to control everything to do with statistical

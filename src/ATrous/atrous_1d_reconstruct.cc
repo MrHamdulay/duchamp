@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <math.h>
 #include <duchamp.hh>
+#include <param.hh>
 #include <Utils/utils.hh>
 #include <Utils/feedback.hh>
 #include <ATrous/atrous.hh>

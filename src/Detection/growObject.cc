@@ -11,6 +11,7 @@ using std::vector;
 using std::setw;
 
 using namespace PixelInfo;
+using namespace Statistics;
 
 void growObject(Detection &object, Cube &cube)
 {

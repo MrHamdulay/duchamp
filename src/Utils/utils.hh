@@ -3,7 +3,8 @@
 
 #include <wcs.h>
 #include <string>
-#include <param.hh>
+
+struct wcsprm; // just foreshadow this.
 
 // define the speed of light for WCS-related accessor functions 
 const float C_kms = 299792.458;

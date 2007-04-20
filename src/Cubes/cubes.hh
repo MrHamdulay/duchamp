@@ -14,11 +14,7 @@
 #include <PixelMap/Scan.hh>
 #include <PixelMap/Object2D.hh>
 
-using namespace Column;
-using namespace Statistics;
-using namespace PixelInfo;
 
-/****************************************************************/
 /** 
  * Base class for the image container.
  *
@@ -108,15 +104,15 @@ public:
   // Statistics
   //
   /**  Returns the StatsContainer. */
-  StatsContainer<float> getStats(){ return this->Stats; };
+ Statistics::StatsContainer<float> getStats(){ return this->Stats; };
 
   /** Provides a reference to the StatsContainer. */
-  StatsContainer<float>& stats(){ 
-    StatsContainer<float> &rstats = this->Stats;  return rstats;
+  Statistics::StatsContainer<float>& stats(){ 
+    Statistics::StatsContainer<float> &rstats = this->Stats;  return rstats;
   };
  
   /** Save a StatsContainer to the Cube. */
-  void saveStats(StatsContainer<float> newStats){ this->Stats = newStats;};
+  void saveStats(Statistics::StatsContainer<float> newStats){ this->Stats = newStats;};
 
   /** A detection test for value. */
   bool isDetection(float value);
@@ -138,7 +134,7 @@ protected:
   float                  *array;      ///< Array of data.
   std::vector <Detection> objectList; ///< The list of detected objects.
   Param                   par;        ///< A parameter list.
-  StatsContainer<float>   Stats;      ///< The statistics for the DataArray.
+  Statistics::StatsContainer<float> Stats; ///< The statistics for the DataArray.
 };
 
 
@@ -190,10 +186,10 @@ public:
     recon[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x] = f; };
   void        setReconFlag(bool f){reconExists = f;};
 
-  std::vector<Col> getLogCols(){return logCols;};
-  void        setLogCols(std::vector<Col> C){logCols=C;};
-  std::vector<Col> getFullCols(){return fullCols;};
-  void        setFullCols(std::vector<Col> C){fullCols=C;};
+  std::vector<Column::Col> getLogCols(){return logCols;};
+  void        setLogCols(std::vector<Column::Col> C){logCols=C;};
+  std::vector<Column::Col> getFullCols(){return fullCols;};
+  void        setFullCols(std::vector<Column::Col> C){fullCols=C;};
 
   // additional functions -- in Cubes/cubes.cc
   /** Allocate memory correctly, with WCS defining the correct axes. */
@@ -437,9 +433,9 @@ private:
 				///   baseline array?
   FitsHeader  head;             ///< the WCS and other header
 				///   information.
-  std::vector<Col> fullCols;    ///< the list of all columns as
+  std::vector<Column::Col> fullCols;    ///< the list of all columns as
 				///   printed in the results file
-  std::vector<Col> logCols;     ///< the list of columns as printed in
+  std::vector<Column::Col> logCols;     ///< the list of columns as printed in
 				///   the log file
 
 };
@@ -542,11 +538,13 @@ public:
   //-----------------------
   // Detection-related
   //
+  // in Detection/lutz_detect.cc:
   /** Detect objects in a 2-D image */
-  std::vector<Object2D> lutz_detect();    // in Detection/lutz_detect.cc
+  std::vector<PixelInfo::Object2D> lutz_detect();
 
+  // in Detection/spectrumDetect.cc:
   /** Detect objects in a 1-D spectrum */
-  std::vector<Scan> spectrumDetect();     // in Detection/spectrumDetect.cc
+  std::vector<PixelInfo::Scan> spectrumDetect();
 
   int       getMinSize(){return minSize;};
   void      setMinSize(int i){minSize=i;};
@@ -577,19 +575,20 @@ private:
 //////////////////////////////////////////////////////
 
 /** Search a reconstructed array for significant detections. */
-std::vector <Detection> searchReconArray(long *dim, float *originalArray,
-					 float *reconArray, Param &par,
-					 StatsContainer<float> &stats);
-std::vector <Detection> searchReconArraySimple(long *dim, float *originalArray,
-					       float *reconArray, Param &par,
-					       StatsContainer<float> &stats);
+std::vector <Detection> 
+searchReconArray(long *dim, float *originalArray, float *reconArray, 
+		 Param &par, Statistics::StatsContainer<float> &stats);
+std::vector <Detection> 
+searchReconArraySimple(long *dim, float *originalArray, float *reconArray, 
+		       Param &par, Statistics::StatsContainer<float> &stats);
 
 /** Search a 3-dimensional array for significant detections. */
-std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
-				      StatsContainer<float> &stats);
-std::vector <Detection> search3DArraySimple(long *dim, float *Array, 
-					    Param &par,
-					    StatsContainer<float> &stats);
+std::vector <Detection> 
+search3DArray(long *dim, float *Array, Param &par,
+	      Statistics::StatsContainer<float> &stats);
+std::vector <Detection> 
+search3DArraySimple(long *dim, float *Array, Param &par,
+		    Statistics::StatsContainer<float> &stats);
 
 /** Grow an object to a lower threshold */
 void growObject(Detection &object, Cube &cube);
