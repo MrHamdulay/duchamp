@@ -44,6 +44,7 @@ FitsHeader::FitsHeader(const FitsHeader& h)
   this->beamSize = h.beamSize;
   this->bmajKeyword = h.bmajKeyword;
   this->bminKeyword = h.bminKeyword;
+  this->bpaKeyword = h.bpaKeyword;
   this->blankKeyword = h.blankKeyword;
   this->bzeroKeyword = h.bzeroKeyword;
   this->bscaleKeyword = h.bscaleKeyword;
@@ -68,6 +69,7 @@ FitsHeader& FitsHeader::operator= (const FitsHeader& h)
   this->beamSize = h.beamSize;
   this->bmajKeyword = h.bmajKeyword;
   this->bminKeyword = h.bminKeyword;
+  this->bpaKeyword = h.bpaKeyword;
   this->blankKeyword = h.blankKeyword;
   this->bzeroKeyword = h.bzeroKeyword;
   this->bscaleKeyword = h.bscaleKeyword;
