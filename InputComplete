@@ -112,12 +112,22 @@ scaleMin	1
 snrRecon	4.
 filterCode      1
 
-# HANNING SMOOTHING
-# flagSmooth -- whether to Hanning-smooth the spectral dimension of the cube.
-# hanningWidth -- the width parameter of the Hanning smoothing function
+# SMOOTHING
+# flagSmooth -- whether to smooth the cube.
+# smoothType -- either "spectral" or "spatial"
+# hanningWidth -- the width parameter of the Hanning (spectral smoothing) 
+#                 function
+# kernMaj -- the FWHM of the major axis of the 2D spatial smoothing gaussian
+# kernMin -- the FWHM of the minor axis of the 2D spatial smoothing gaussian
+# kernPA  -- the position angle of the major axis of the 2D spatial 
+#            smoothing gaussian
 
 flagSmooth      false
+smoothType      spectral
 hanningWidth    5
+kernMaj         3.
+kernMin         3.
+kernPA          0.
 
 # FALSE DISCOVERY RATE METHOD
 # flagFDR -- Whether or not to use the false discovery rate method instead of 

@@ -46,9 +46,13 @@ HEADS = $(BASE)/duchamp.hh\
 	$(DETECTIONDIR)/columns.hh\
 	$(CUBESDIR)/cubes.hh\
 	$(CUBESDIR)/plots.hh\
+	$(UTILDIR)/Hanning.hh\
+	$(UTILDIR)/GaussSmooth.hh\
 	$(UTILDIR)/Section.hh\
 	$(UTILDIR)/Statistics.hh\
-	$(UTILDIR)/utils.hh
+	$(UTILDIR)/utils.hh\
+	$(UTILDIR)/feedback.hh\
+	$(UTILDIR)/mycpgplot.hh
 
 OBJECTS = $(BASE)/mainDuchamp.o \
 	$(BASE)/duchamp.o\
@@ -98,6 +102,7 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(UTILDIR)/Section.o\
 	$(UTILDIR)/Statistics.o\
 	$(UTILDIR)/feedback.o\
+	$(UTILDIR)/GaussSmooth.o\
 	$(UTILDIR)/Hanning.o\
 	$(UTILDIR)/getStats.o\
 	$(UTILDIR)/get_random_spectrum.o\

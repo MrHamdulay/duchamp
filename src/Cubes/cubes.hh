@@ -229,6 +229,7 @@ public:
 
   /** Set up thresholds for the False Discovery Rate routine. */
   void        setupFDR();
+  void        setupFDR(float *input);
 
   /** A detection test for a given voxel. */
   bool        isDetection(long x, long y, long z);
@@ -349,8 +350,12 @@ public:
   // in Cubes/smoothCube.cc 
   /** Front-end to the smoothing and searching functions. */
   void        SmoothSearch();
+  /** A function to spatially smooth the cube and search the result. */
+  void        SpatialSmoothNSearch();
   /** A function to Hanning-smooth the cube. */
-  void        SmoothCube();
+  void        SpectralSmooth();
+  /** A function to spatially-smooth the cube. */
+  void        SpatialSmooth();
 
   // in Cubes/Merger.cc
   /** Merge all objects in the detection list so that only distinct
@@ -361,11 +366,11 @@ public:
   // Text outputting of detected objects.
   //   in Cubes/detectionIO.cc
   //
-  /** Output detections to a Karma annotation file. */
-  void        outputDetectionsKarma(std::ostream &stream);
+  /** Set up the output file with parameters and stats. */
+  void        prepareOutputFile();
 
-  /** Output detections to a VOTable. */
-  void        outputDetectionsVOTable(std::ostream &stream);
+  /** Write the statistical information to the output file. */
+  void        outputStats();
 
   /** Output detections to the output file and standard output. */
   void        outputDetectionList();
@@ -376,6 +381,11 @@ public:
   /** Output a single detection to the log file. */
   void        logDetection(Detection obj, int counter);
 
+  /** Output detections to a Karma annotation file. */
+  void        outputDetectionsKarma(std::ostream &stream);
+
+  /** Output detections to a VOTable. */
+  void        outputDetectionsVOTable(std::ostream &stream);
 
   // ----------------------------------
   // Graphical plotting of the cube and the detections.
@@ -488,7 +498,7 @@ inline int Cube::pixToWCS(const double *pix, double *world, const int npts)
 }
 
 
-//===============================================================================
+//============================================================================
 
 /**
  *  A DataArray object limited to two dimensions, and with some additional

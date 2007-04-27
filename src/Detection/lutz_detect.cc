@@ -171,10 +171,10 @@ std::vector<Object2D> Image::lutz_detect()
 	    if(oS.back().start == NULLSTART){ 
 	      // The object is completed. If it is big enough, add to
 	      // the end of the output list.	      
-	      if(oS.back().info.getSize() >= this->minSize){ 
+// 	      if(oS.back().info.getSize() >= this->minSize){ 
 	//oS.back().info.calcParams(); // work out midpoints, fluxes etc
 		outputlist.push_back(oS.back().info);
-	      }
+// 	      }
 	    }
 	    else{
 	      marker[ oS.back().end ] = 'F';

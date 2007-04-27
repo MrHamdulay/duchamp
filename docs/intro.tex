@@ -144,12 +144,15 @@ discussed in more detail in the following sections.
   signal. This process can greatly reduce the noise level in the cube,
   enhancing the detectability of sources.
 
-\item Alternatively (and if requested), the each spectral channel is
-  Hanning-smoothed by a desired amount.
+\item Alternatively (and if requested), the cube is smoothed, either
+  spectrally or spatially.
 
-  This step considers each spectrum individually, and convolves it
-  with a Hanning filter (with width chosen by the user). This can help
-  to reduce the amount of noise visible in the cube.
+  This step presents two options. The first considers each spectrum
+  individually, and convolves it with a Hanning filter (with width
+  chosen by the user). The second considers each channel map
+  separately, and smoothes it with a Gaussian kernel of size chosen by
+  the user. This step can help to reduce the amount of noise visible
+  in the cube and enhance fainter sources.
 
 \item A threshold for the cube is then calculated, based on the pixel
   statistics (unless a threshold is manually specified by the user).

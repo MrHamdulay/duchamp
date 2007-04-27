@@ -104,6 +104,8 @@ public:
   void    setBmajKeyword(float f){bmajKeyword=f;};
   float   getBminKeyword(){return bminKeyword;};
   void    setBminKeyword(float f){bminKeyword=f;};
+  float   getBpaKeyword(){return bpaKeyword;};
+  void    setBpaKeyword(float f){bpaKeyword=f;};
   int     getBlankKeyword(){return blankKeyword;};
   void    setBlankKeyword(int f){blankKeyword=f;};
   float   getBzeroKeyword(){return bzeroKeyword;};
@@ -122,12 +124,15 @@ private:
   bool    wcsIsGood;            ///< A flag indicating whether there is a valid WCS present.
   int     naxis;                ///< How many axes are in the header?
   std::string  spectralUnits;        ///< The units of the spectral dimension
-  std::string  spectralDescription;  ///< The description of the spectral dimension (Frequency, Velocity, ...)
-  std::string  fluxUnits;            ///< The units of pixel flux (from header)
-  std::string  intFluxUnits;         ///< The units of pixel flux (from header)
+  std::string  spectralDescription;  ///< The description of the
+				     ///   spectral dimension (Frequency,
+				     ///   Velocity, ...)
+  std::string  fluxUnits;       ///< The units of pixel flux (from header)
+  std::string  intFluxUnits;    ///< The units of integrated flux (from header)
   float   beamSize;             ///< The calculated beam size in pixels.
   float   bmajKeyword;          ///< The FITS header keyword BMAJ.
   float   bminKeyword;          ///< The FITS header keyword BMIN.
+  float   bpaKeyword;           ///< The FITS header keyword BPA.
   int     blankKeyword;         ///< The FITS header keyword BLANK.
   float   bzeroKeyword;         ///< The FITS header keyword BZERO.
   float   bscaleKeyword;        ///< The FITS header keyword BSCALE.

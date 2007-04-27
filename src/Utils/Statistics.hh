@@ -22,6 +22,8 @@ namespace Statistics
 
   /** A templated function to do the MADFM-to-rms conversion. */
   template <class T> float madfmToSigma(T madfm);
+  /** A templated function to do the rms-to-MADFM conversion. */
+  template <class T> float sigmaToMADFM(T sigma);
 
 
   /**
@@ -79,6 +81,9 @@ namespace Statistics
     
     /** Return the estimator of the amount of spread of the data.*/
     float getSpread();
+
+    /** Scale the noise by a given factor .*/
+    void  scaleNoise(float scale);
 
     /** Return the Gaussian probability of a value given the stats. */
     float getPValue(float value);

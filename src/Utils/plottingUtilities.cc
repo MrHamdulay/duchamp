@@ -113,21 +113,21 @@ void drawContours(const int size, const float *x, const float *y)
   float x1, x2, y1, y2;
   cpgqwin(&x1,&x2,&y1,&y2);
   const int nbin = 30;
-  // widths of bins in x and y directions
-  float xbin = (x2 - x1) / float(nbin-2); // have one bin either side of extrema
-  float ybin = (y2 - y1) / float(nbin-2);
+  // widths of bins in x and y directions: have one bin either side of
+  // extrema
+  float binWidthX = (x2 - x1) / float(nbin-2); 
+  float binWidthY = (y2 - y1) / float(nbin-2);
   float *binnedarray = new float[nbin*nbin];
   for(int i=0;i<nbin*nbin;i++) binnedarray[i] = 0.;
   for(int i=0;i<size;i++){
-    int xpos = int( (x[i] - (x1-xbin)) / xbin );
-    int ypos = int( (y[i] - (y1-ybin)) / ybin );
-    if((ypos*nbin+xpos) >= (nbin*nbin))
-      std::cerr <<"\aERROR <drawContours> : pixel position out of range.\n";
-    binnedarray[ypos*nbin+xpos] += 1.;
+    int xbin = int( (x[i] - (x1-binWidthX)) / binWidthX );
+    int ybin = int( (y[i] - (y1-binWidthY)) / binWidthY );
+    int binNum = ybin*nbin + xbin;
+    if((binNum>=0)&&(binNum<nbin*nbin)) binnedarray[binNum] += 1.;
   }  
   float maxct = binnedarray[0];
   for(int i=1;i<nbin*nbin;i++) if(binnedarray[i]>maxct) maxct=binnedarray[i];
-  float tr[6]={x1-3*xbin/2,xbin,0.,y1-3*ybin/2,0.,ybin};
+  float tr[6]={x1-3*binWidthX/2,binWidthX,0.,y1-3*binWidthY/2,0.,binWidthY};
   const int ncont = 10;
   float *cont = new float[ncont];
   for(int i=0;i<ncont;i++) cont[i] = maxct / pow(2,float(i)/2.);

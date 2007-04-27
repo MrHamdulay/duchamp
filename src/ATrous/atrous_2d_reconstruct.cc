@@ -10,16 +10,11 @@
 #include <Utils/Statistics.hh>
 using Statistics::madfmToSigma;
 
-using std::endl;
-using std::setw;
-
 void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, Param &par)
 {
   /**
    *  A routine that uses the a trous wavelet method to reconstruct a 
    *   2-dimensional image.
-   *  The Param object "par" contains all necessary info about the filter and 
-   *   reconstruction parameters.
    *
    *  If there are no non-BLANK pixels (and we are testing for
    *  BLANKs), the reconstruction cannot be done, so we return the
@@ -28,8 +23,10 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
    *  \param xdim The length of the x-axis of the image.
    *  \param ydim The length of the y-axis of the image.
    *  \param input The input spectrum.
-   *  \param output The returned reconstructed spectrum. This array needs to be declared beforehand.
-   *  \param par The Param set.
+   *  \param output The returned reconstructed spectrum. This array
+   *  needs to be declared beforehand.
+   *  \param par The Param set:contains all necessary info about the
+   *  filter and reconstruction parameters.
    */
 
   float blankPixValue = par.getBlankPixVal();
@@ -58,8 +55,10 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
 
     for(int pos=0;pos<size; pos++) output[pos] = input[pos];
 
-    duchampWarning("atrous2DReconstruct",
-		   "There are no good pixels to be reconstructed -- all are BLANK.\nPerhaps you need to try this with flagBlankPix=false.\nReturning input array.\n");
+    duchampWarning("atrous2DReconstruct","\
+There are no good pixels to be reconstructed -- all are BLANK.\n\
+Perhaps you need to try this with flagBlankPix=false.\n\
+Returning input array.\n");
   }
   else{
     // Otherwise, all is good, and we continue.
@@ -129,7 +128,7 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
     for(int i=0;i<size;i++) output[i] = 0;
     do{
       if(par.isVerbose()) {
-	std::cout << "Iteration #"<<setw(2)<<++iteration<<":";
+	std::cout << "Iteration #"<<std::setw(2)<<++iteration<<":";
 	printBackSpace(13);
       }
 
@@ -144,7 +143,7 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
 
 	if(par.isVerbose()){
 	  std::cout << "Scale ";
-	  std::cout << setw(2)<<scale<<" / "<<setw(2)<<numScales;
+	  std::cout << std::setw(2)<<scale<<" / "<<std::setw(2)<<numScales;
 	  printBackSpace(13);
 	  std::cout <<std::flush;
 	}

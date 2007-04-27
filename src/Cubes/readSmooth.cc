@@ -73,7 +73,7 @@ int Cube::readSmoothCube()
 	this->par.setSmoothFile(smoothFile);
       }
       else { // if STILL bad, give error message and exit.
-	duchampError("readSmoothCube","Cannot find Hanning-smoothed file.\n");
+	duchampError("readSmoothCube","Cannot find Smoothed file.\n");
 	return FAILURE;
       }
 
@@ -92,7 +92,7 @@ int Cube::readSmoothCube()
     int bitpix,numAxesNew,anynul;
 
     status = 0;
-    fits_get_img_param(fptr, maxdim, &bitpix, &numAxesNew, dimAxesNew, &status);
+    fits_get_img_param(fptr,maxdim,&bitpix,&numAxesNew,dimAxesNew,&status);
     if(status){
       fits_report_error(stderr, status);
       return FAILURE;

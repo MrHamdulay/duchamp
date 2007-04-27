@@ -104,7 +104,7 @@ int main(int argc, char * argv[])
     cube->ReconSearch();
   }  
   else if(cube->pars().getFlagSmooth()){
-    std::cout<<"Commencing search in hanning smoothed cube..."<<std::endl;
+    std::cout<<"Commencing search in smoothed cube..."<<std::endl;
     cube->SmoothSearch();
   }
   else{
@@ -142,6 +142,8 @@ int main(int argc, char * argv[])
     cube->unTrimCube();
     std::cout<<"Done."<<std::endl;
   }
+
+  cube->prepareOutputFile();
 
   if(cube->getNumObj()>0){
 

@@ -630,6 +630,15 @@ void Cube::setCubeStats()
    *    getStats functions but has own versions of them hardcoded to 
    *    ignore BLANKs and MW channels. This saves on memory usage -- necessary
    *    for dealing with very big files.
+   *
+   *   Three cases exist:
+   *  <ul><li>Simple case, with no reconstruction/smoothing: all stats 
+   *          calculated from the original array.
+   *      <li>Wavelet reconstruction: mean & median calculated from the 
+   *          original array, and stddev & madfm from the residual.
+   *      <li>Smoothing: all four stats calculated from the recon array 
+   *          (which holds the smoothed data).
+   *  </ul>
    */
 
   if(!this->par.getFlagFDR() && this->par.getFlagUserThreshold() ){
@@ -646,109 +655,121 @@ void Cube::setCubeStats()
     long xysize = this->axisDim[0]*this->axisDim[1];
 
     // get number of good pixels;
+    bool *mask = new bool[this->numPixels];
     int vox,goodSize = 0;
-    for(int p=0;p<xysize;p++){
-      for(int z=0;z<this->axisDim[2];z++){
-	vox = z*xysize+p;
-	if(!this->isBlank(vox) && !this->par.isInMW(z)) goodSize++;
-      }
-    }
-
-    float *tempArray = new float[goodSize];
-
-    goodSize=0;
     for(int x=0;x<this->axisDim[0];x++){
       for(int y=0;y<this->axisDim[1];y++){
 	for(int z=0;z<this->axisDim[2];z++){
 	  vox = z * xysize + y*this->axisDim[0] + x;
-	  if(!this->isBlank(vox) && !this->par.isInMW(z) && 
-	     this->par.isStatOK(x,y,z)){
-	    tempArray[goodSize] = this->array[vox];
-	    goodSize++;
-	  }
+	  mask[vox] = (!this->isBlank(vox) && 
+		       !this->par.isInMW(z) && 
+		       this->par.isStatOK(x,y,z) );
+	  if(mask[vox]) goodSize++;
 	}
       }
     }
 
     float mean,median,stddev,madfm;
-    mean = tempArray[0];
-    for(int i=1;i<goodSize;i++) mean += tempArray[i];
-    mean /= float(goodSize);
-    mean = findMean(tempArray,goodSize);
-    this->Stats.setMean(mean);
-    
-    std::sort(tempArray,tempArray+goodSize);
-    if((goodSize%2)==0) 
-      median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
-    else median = tempArray[goodSize/2];
-    this->Stats.setMedian(median);
+    if( this->par.getFlagATrous() ){
+      // Case #2 -- wavelet reconstruction
+      // just get mean & median from orig array, and rms & madfm from
+      // residual recompute array values to be residuals & then find
+      // stddev & madfm
+      if(!this->reconExists)
+	duchampError("setCubeStats","Reconstruction not yet done!\nCannot calculate stats!\n");
+      else{
+	float *tempArray = new float[goodSize];
 
-   
-    if(!this->reconExists){
-      // if there's no recon array, calculate everything from orig array
-      stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
-      for(int i=1;i<goodSize;i++) 
-	stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
-      stddev = sqrt(stddev/float(goodSize-1));
-      this->Stats.setStddev(stddev);
-
-      for(int i=0;i<goodSize;i++)// tempArray[i] = absval(tempArray[i]-median);
-	{
-	  if(tempArray[i]>median) tempArray[i] -= median;
-	  else tempArray[i] = median - tempArray[i];
-	}
-      std::sort(tempArray,tempArray+goodSize);
-      if((goodSize%2)==0) 
-	madfm = (tempArray[goodSize/2-1]+tempArray[goodSize/2])/2;
-      else madfm = tempArray[goodSize/2];
-      this->Stats.setMadfm(madfm);
-    }
-    else{
-      // just get mean & median from orig array, and rms & madfm from residual
-      // recompute array values to be residuals & then find stddev & madfm
-
-      goodSize = 0;
-      for(int p=0;p<xysize;p++){
-	for(int z=0;z<this->axisDim[2];z++){
-	  vox = z * xysize + p;
-	  if(!this->isBlank(vox) && !this->par.isInMW(z)){
-	    tempArray[goodSize] = this->array[vox] - this->recon[vox];
-	    goodSize++;
+	goodSize=0;
+	for(int x=0;x<this->axisDim[0];x++){
+	  for(int y=0;y<this->axisDim[1];y++){
+	    for(int z=0;z<this->axisDim[2];z++){
+	      vox = z * xysize + y*this->axisDim[0] + x;
+	      if(mask[vox]) tempArray[goodSize++] = this->array[vox];
+	    }
 	  }
 	}
-      }
-      mean = tempArray[0];
-      for(int i=1;i<goodSize;i++) mean += tempArray[i];
-      mean /= float(goodSize);
-      stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
-      for(int i=1;i<goodSize;i++) 
-	stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
-      stddev = sqrt(stddev/float(goodSize-1));
-      this->Stats.setStddev(stddev);
 
-      std::sort(tempArray,tempArray+goodSize);
-      if((goodSize%2)==0) 
-	median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
-      else median = tempArray[goodSize/2];
-      for(int i=0;i<goodSize;i++){
-	if(tempArray[i]>median) tempArray[i] = tempArray[i]-median;
-	else tempArray[i] = median - tempArray[i];
+	// First, find the mean of the original array. Store it.
+	mean = tempArray[0];
+	for(int i=1;i<goodSize;i++) mean += tempArray[i];
+	mean /= float(goodSize);
+	mean = findMean(tempArray,goodSize);
+	this->Stats.setMean(mean);
+	
+	// Now sort it and find the median. Store it.
+	std::sort(tempArray,tempArray+goodSize);
+	if((goodSize%2)==0) 
+	  median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
+	else median = tempArray[goodSize/2];
+	this->Stats.setMedian(median);
+
+	// Now calculate the residuals and find the mean & median of
+	// them. We don't store these, but they are necessary to find
+	// the sttdev & madfm.
+	goodSize = 0;
+	for(int p=0;p<xysize;p++){
+	  for(int z=0;z<this->axisDim[2];z++){
+	    vox = z * xysize + p;
+	    if(mask[vox])
+	      tempArray[goodSize++] = this->array[vox] - this->recon[vox];
+	  }
+	}
+	mean = tempArray[0];
+	for(int i=1;i<goodSize;i++) mean += tempArray[i];
+	mean /= float(goodSize);
+	std::sort(tempArray,tempArray+goodSize);
+	if((goodSize%2)==0) 
+	  median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
+	else median = tempArray[goodSize/2];
+
+	// Now find the standard deviation of the residuals. Store it.
+	stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
+	for(int i=1;i<goodSize;i++) 
+	  stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
+	stddev = sqrt(stddev/float(goodSize-1));
+	this->Stats.setStddev(stddev);
+
+	// Now find the madfm of the residuals. Store it.
+	for(int i=0;i<goodSize;i++){
+	  if(tempArray[i]>median) tempArray[i] = tempArray[i]-median;
+	  else tempArray[i] = median - tempArray[i];
+	}
+	std::sort(tempArray,tempArray+goodSize);
+	if((goodSize%2)==0) 
+	  madfm = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
+	else madfm = tempArray[goodSize/2];
+	this->Stats.setMadfm(madfm);
+
+	delete [] tempArray;
       }
-      std::sort(tempArray,tempArray+goodSize);
-      if((goodSize%2)==0) 
-	madfm = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
-      else madfm = tempArray[goodSize/2];
-      this->Stats.setMadfm(madfm);
+    }
+    else if(this->par.getFlagSmooth()) {
+      // Case #3 -- smoothing
+      // get all four stats from the recon array, which holds the
+      // smoothed data. This can just be done with the
+      // StatsContainer::calculate function, using the mask generated
+      // earlier.
+      if(!this->reconExists)
+	duchampError("setCubeStats","Smoothing not yet done!\nCannot calculate stats!\n");
+      else this->Stats.calculate(this->recon,this->numPixels,mask);
+    }
+    else{
+      // Case #1 -- default case, with no smoothing or reconstruction.
+      // get all four stats from the original array. This can just be
+      // done with the StatsContainer::calculate function, using the
+      // mask generated earlier.
+      this->Stats.calculate(this->array,this->numPixels,mask);
+
     }
 
-    delete [] tempArray;
-
     this->Stats.setUseFDR( this->par.getFlagFDR() );
-    // If the FDR method has been requested
+    // If the FDR method has been requested, define the P-value
+    // threshold
     if(this->par.getFlagFDR())  this->setupFDR();
     else{
-      // otherwise, calculate threshold based on the requested SNR cut level,
-      //  and then set the threshold parameter in the Par set.
+      // otherwise, calculate threshold based on the requested SNR cut
+      // level, and then set the threshold parameter in the Par set.
       this->Stats.setThresholdSNR( this->par.getCut() );
       this->par.setThreshold( this->Stats.getThreshold() );
     }
@@ -769,10 +790,38 @@ void Cube::setCubeStats()
 
 void Cube::setupFDR()
 {
+  /**
+   *  Call the setupFDR(float *) function on the pixel array of the
+   *  cube. This is the usual way of running it.
+   *
+   *  However, if we are in smoothing mode, we calculate the FDR
+   *  parameters using the recon array, which holds the smoothed
+   *  data. Gives an error message if the reconExists flag is not set.
+   *
+   */
+  if(this->par.getFlagSmooth()) 
+    if(this->reconExists) this->setupFDR(this->recon);
+    else{
+      duchampError("setupFDR","Smoothing not done properly! Using original array for defining threshold.\n");
+      this->setupFDR(this->array);
+    }
+  else if( this->par.getFlagATrous() ){
+    this->setupFDR(this->recon);
+  }
+  else{
+    this->setupFDR(this->array);
+  }
+}
+//--------------------------------------------------------------------
+
+void Cube::setupFDR(float *input)
+{
   /**  
    *   Determines the critical Probability value for the False
-   *   Discovery Rate detection routine. All pixels with Prob less
-   *   than this value will be considered detections.
+   *   Discovery Rate detection routine. All pixels in the given arry
+   *   with Prob less than this value will be considered detections.
+   *
+   *   Note that the Stats of the cube need to be calculated first.
    *
    *   The Prob here is the probability, assuming a Normal
    *   distribution, of obtaining a value as high or higher than the
@@ -797,7 +846,8 @@ void Cube::setupFDR()
 
 	if(!(this->par.isBlank(this->array[pix])) && !this->par.isInMW(z)){ 
 	  // only look at non-blank, valid pixels 
- 	  orderedP[count++] = this->Stats.getPValue(this->array[pix]);
+//  	  orderedP[count++] = this->Stats.getPValue(this->array[pix]);
+ 	  orderedP[count++] = this->Stats.getPValue(input[pix]);
 	}
       }
     }

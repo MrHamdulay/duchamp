@@ -176,9 +176,18 @@ not matter, they are grouped here in logical sections.
 \secC*{Smoothing the cube}
 \begin{entry}
 \item [flagSmooth \texttt{[false]}] A flag indicating whether to
-  Hanning-smooth the cube. See \S\ref{sec-smoothing} for details.
+  smooth the cube. See \S\ref{sec-smoothing} for details. 
+\item [smoothType \texttt{[spectral]}] The type of smoothing to be
+done: either ``spectral'' (one-dimensional Hanning smoothing) or
+``spatial'' (two-dimensional Gaussian smoothing). 
 \item [hanningWidth \texttt{[5]}] The width of the Hanning smoothing
 kernel. 
+\item [kernMaj \texttt{[3]}] The full-width-half-maximum (FWHM) of the
+major axis of the 2D Gaussian smoothing kernel.
+\item [kernMin \texttt{[3]}] The FWHM of the minor axis of the 2D
+Gaussian smoothing kernel.
+\item [kernPA \texttt{[0]}] The position angle, in degrees,
+anticlockwise from vertical (\ie usually East of North). 
 \end{entry}
 
 \secC*{FDR method}

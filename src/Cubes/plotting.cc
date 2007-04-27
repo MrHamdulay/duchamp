@@ -101,13 +101,13 @@ void Cube::plotDetectionMap(std::string pgDestination)
       std::stringstream label;
       cpgslw(1);
       for(int i=0;i<this->objectList.size();i++){
-	cpgpt1(this->par.getXOffset()+this->objectList[i].getXcentre(), 
-	       this->par.getYOffset()+this->objectList[i].getYcentre(), 
+	cpgpt1(this->par.getXOffset()+this->objectList[i].getXPeak(), 
+	       this->par.getYOffset()+this->objectList[i].getYPeak(), 
 	       CROSS);
 	label.str("");
 	label << this->objectList[i].getID();
-	cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoff, 
-		this->par.getYOffset()+this->objectList[i].getYcentre()-yoff, 
+	cpgptxt(this->par.getXOffset()+this->objectList[i].getXPeak()-xoff, 
+		this->par.getYOffset()+this->objectList[i].getYPeak()-yoff, 
 		0, 0.5, label.str().c_str());
       }
 
@@ -298,13 +298,13 @@ void Cube::plotMomentMap(std::string pgDestination)
       std::stringstream label;
       cpgslw(1);
       for(int i=0;i<this->objectList.size();i++){
-	cpgpt1(this->par.getXOffset()+this->objectList[i].getXcentre(), 
-	       this->par.getYOffset()+this->objectList[i].getYcentre(),
+	cpgpt1(this->par.getXOffset()+this->objectList[i].getXPeak(), 
+	       this->par.getYOffset()+this->objectList[i].getYPeak(),
 	       CROSS);
 	label.str("");
 	label << this->objectList[i].getID();
-	cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoff, 
-		this->par.getYOffset()+this->objectList[i].getYcentre()-yoff, 
+	cpgptxt(this->par.getXOffset()+this->objectList[i].getXPeak()-xoff, 
+		this->par.getYOffset()+this->objectList[i].getYPeak()-yoff, 
 		0, 0.5, label.str().c_str());
       }
 
@@ -523,13 +523,13 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 	std::stringstream label;
 	cpgslw(1);
 	for(int i=0;i<this->objectList.size();i++){
-	  cpgpt1(this->par.getXOffset()+this->objectList[i].getXcentre(), 
-		 this->par.getYOffset()+this->objectList[i].getYcentre(),
+	  cpgpt1(this->par.getXOffset()+this->objectList[i].getXPeak(), 
+		 this->par.getYOffset()+this->objectList[i].getYPeak(),
 		 CROSS);
 	  label.str("");
 	  label << this->objectList[i].getID();
-	  cpgptxt(this->par.getXOffset()+this->objectList[i].getXcentre()-xoff,
-		  this->par.getYOffset()+this->objectList[i].getYcentre()-yoff,
+	  cpgptxt(this->par.getXOffset()+this->objectList[i].getXPeak()-xoff,
+		  this->par.getYOffset()+this->objectList[i].getYPeak()-yoff,
 		  0, 0.5, label.str().c_str());
 	}
 

@@ -9,8 +9,6 @@
 #include <Detection/detection.hh>
 #include <Detection/columns.hh>
 
-using std::string;
-using std::vector;
 using namespace Column;
 
 namespace Column
@@ -100,10 +98,11 @@ namespace Column
 
 }
 
-vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
+std::vector<Col> getFullColSet(std::vector<Detection> &objectList, 
+			       FitsHeader &head)
 {
   /**
-   *  A function that returns a vector of Col objects containing
+   *  A function that returns a std::vector of Col objects containing
    *  information on the columns necessary for output to the results
    *  file:
    *    Obj#,NAME,X,Y,Z,RA,DEC,VEL,w_RA,w_DEC,w_VEL,F_tot,F_int,F_peak,
@@ -116,14 +115,14 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
    *   Both Ftot and Fint are provided -- it is up to the calling
    *   function to determine which to use.
    *
-   * \param objectList A vector list of Detection objects that the
+   * \param objectList A std::vector list of Detection objects that the
    * columns need to fit.
    * \param head The FitsHeader object defining the World Coordinate
    * System.
-   * \return A vector list of Col definitions.
+   * \return A std::vector list of Col definitions.
    */
 
-  vector<Col> newset;
+  std::vector<Col> newset;
 
   // set up the default columns 
 
@@ -433,10 +432,11 @@ vector<Col> getFullColSet(vector<Detection> &objectList, FitsHeader &head)
 
 }
 
-vector<Col> getLogColSet(vector<Detection> &objectList, FitsHeader &head)
+std::vector<Col> getLogColSet(std::vector<Detection> &objectList, 
+			      FitsHeader &head)
 {
   /**
-   *  A function that returns a vector of Col objects containing
+   *  A function that returns a std::vector of Col objects containing
    *    information on the columns necessary for logfile output:
    *    Obj#,X,Y,Z,F_tot,F_peak,X1,X2,Y1,Y2,Z1,Z2,Npix
    *
@@ -444,12 +444,12 @@ vector<Col> getLogColSet(vector<Detection> &objectList, FitsHeader &head)
    *    it requires any column to be widened, or for that column to
    *    have its precision increased.
    *
-   * \param objectList A vector list of Detection objects that the columns need to fit.
+   * \param objectList A std::vector list of Detection objects that the columns need to fit.
    * \param head The FitsHeader object defining the World Coordinate System.
-   * \return A vector list of Col definitions.
+   * \return A std::vector list of Col definitions.
    */
 
-  vector<Col> newset,tempset;
+  std::vector<Col> newset,tempset;
   
   // set up the default columns:
   //  get from FullColSet, and select only the ones we want.

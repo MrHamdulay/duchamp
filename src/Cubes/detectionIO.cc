@@ -249,6 +249,71 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
   
 }
 
+void Cube::prepareOutputFile()
+{
+  /** 
+   *  A function to write the paramters, time of execution, and
+   *  statistical information to the output file.
+   */
+
+  std::ofstream output(this->par.getOutFile().c_str());
+  output<<"Results of the Duchamp source finder: ";
+  time_t now = time(NULL);
+  output << asctime( localtime(&now) );
+  this->showParam(output);
+  output<<"--------------------\n";
+  output.close();
+  this->outputStats();
+  output<<"--------------------\n";
+  
+}
+
+void Cube::outputStats()
+{
+  /** 
+   *  A function to write the statistical information to the output
+   *  file. This writes the threshold, its equivalent S/N ratio, and
+   *  the noise level and spread.
+   *
+   *  If smoothing has been done, the noise level & spread for the
+   *  original array are calculated and printed as well.
+   */
+
+  std::ofstream output(this->par.getOutFile().c_str(),std::ios::app);
+  output<<"Summary of statistics:\n";
+  output<<"  Detection threshold = " << this->Stats.getThreshold()
+	<<" " << this->head.getFluxUnits();
+  if(this->par.getFlagFDR())
+    output<<" (or S/N=" << this->Stats.getThresholdSNR()<<")";
+  if(this->par.getFlagSmooth()){
+    output << " in smoothed cube.\n";
+    if(!this->par.getFlagUserThreshold())
+      output<<"  Noise level = " << this->Stats.getMiddle()
+	    <<", Noise spread = " << this->Stats.getSpread()
+	    <<" in smoothed cube.\n";
+    
+    // calculate the stats for the original array, so that we can
+    // quote S/N values correctly.
+    this->par.setFlagSmooth(false);
+    bool verb=this->par.isVerbose();
+    bool fdrflag=this->par.getFlagFDR();
+    this->par.setVerbosity(false);
+    this->par.setFlagFDR(false);
+    this->setCubeStats();
+    this->par.setVerbosity(verb);
+    this->par.setFlagFDR(fdrflag);
+    this->par.setFlagSmooth(true);
+      
+    output << "  Noise properties for the original cube are:\n";
+  }
+     
+  if(!this->par.getFlagUserThreshold())
+    output<<"  Noise level = " << this->Stats.getMiddle()
+	  <<", Noise spread = " << this->Stats.getSpread()
+	  <<"\n";
+
+  output.close();
+}
 
 void Cube::outputDetectionList()
 {
@@ -260,20 +325,7 @@ void Cube::outputDetectionList()
    *   have been calculated to outputDetectionTextWCS.
    */
 
-  std::ofstream output(this->par.getOutFile().c_str());
-  output<<"Results of the Duchamp source finder: ";
-  time_t now = time(NULL);
-  output << asctime( localtime(&now) );
-  this->showParam(output);
-  output<<"--------------------\n";
-  output<<"Detection threshold = " << this->Stats.getThreshold()
-	<<" " << this->head.getFluxUnits();
-  if(this->par.getFlagFDR())
-    output<<" (or S/N=" << this->Stats.getThresholdSNR()<<")";
-  output<<endl;
-  if(!this->par.getFlagUserThreshold())
-    output<<"  Noise level = " << this->Stats.getMiddle()
-	  <<", Noise spread = " << this->Stats.getSpread() << endl;
+  std::ofstream output(this->par.getOutFile().c_str(),std::ios::app);
   output<<"Total number of detections = "<<this->objectList.size()<<endl;
   output<<"--------------------\n";
   this->setupColumns();
@@ -283,6 +335,8 @@ void Cube::outputDetectionList()
     this->objectList[i].outputDetectionTextWCSFull(output,this->fullCols);
     this->objectList[i].outputDetectionTextWCS(std::cout,this->fullCols);
   }
+
+  output.close();
 }
 
 void Cube::logDetectionList()

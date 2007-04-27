@@ -84,6 +84,11 @@ public:
   /** Is a given pixel position OK for use with stats calculations? */
   bool   isStatOK(int x, int y, int z);
 
+  /** Make a mask array -- an array saying whether each pixel is BLANK
+      or not*/
+  bool  *makeBlankMask(float *array, int size);
+
+
   //--------------------
   // Basic inline accessor functions
   //
@@ -209,8 +214,16 @@ public:
   //	 
   bool   getFlagSmooth(){return flagSmooth;};
   void   setFlagSmooth(bool b){flagSmooth=b;};
+  std::string getSmoothType(){return smoothType;};
+  void   setSmoothType(std::string s){smoothType=s;};
   int    getHanningWidth(){return hanningWidth;};
   void   setHanningWidth(int f){hanningWidth=f;};
+  void   setKernMaj(float f){kernMaj=f;};
+  float  getKernMaj(){return kernMaj;};
+  void   setKernMin(float f){kernMin=f;};
+  float  getKernMin(){return kernMin;};
+  void   setKernPA(float f){kernPA=f;};
+  float  getKernPA(){return kernPA;};
   //	 
   bool   getFlagATrous(){return flagATrous;};
   void   setFlagATrous(bool flag){flagATrous=flag;};
@@ -358,7 +371,13 @@ private:
   // Smoothing of the cube
   bool   flagSmooth;      ///< Should the cube be smoothed before
 			  ///   searching?
+  std::string smoothType; ///< The type of smoothing to be done.
   int    hanningWidth;    ///< Width for hanning smoothing.
+  float  kernMaj;         ///< Semi-Major axis of gaussian smoothing kernel
+  float  kernMin;         ///< Semi-Minor axis of gaussian smoothing kernel
+  float  kernPA;          ///< Position angle of gaussian smoothing
+			  ///   kernel, in degrees east of north
+			  ///   (i.e. anticlockwise).
   // A trous reconstruction parameters
   bool   flagATrous;      ///< Are we using the a trous reconstruction?
   int    reconDim;        ///< How many dimensions to use for the

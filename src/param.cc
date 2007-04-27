@@ -87,9 +87,13 @@ Param::Param(){
   this->snrCut            = 3.;
   this->threshold         = 0.;
   this->flagUserThreshold = false;
-  // Hanning Smoothing 
+  // Smoothing 
   this->flagSmooth        = false;
+  this->smoothType        = "spectral";
   this->hanningWidth      = 5;
+  this->kernMaj           = 3.;
+  this->kernMin           = 3.;
+  this->kernPA            = 0.;
   // A trous reconstruction parameters
   this->flagATrous        = true;
   this->reconDim          = 1;
@@ -170,7 +174,11 @@ Param::Param (const Param& p)
   this->threshold         = p.threshold;
   this->flagUserThreshold = p.flagUserThreshold;
   this->flagSmooth        = p.flagSmooth;
+  this->smoothType        = p.smoothType;
   this->hanningWidth      = p.hanningWidth;
+  this->kernMaj           = p.kernMaj;
+  this->kernMin           = p.kernMin;
+  this->kernPA            = p.kernPA;
   this->flagATrous        = p.flagATrous;
   this->reconDim          = p.reconDim;
   this->scaleMin          = p.scaleMin;
@@ -248,7 +256,11 @@ Param& Param::operator= (const Param& p)
   this->threshold         = p.threshold;
   this->flagUserThreshold = p.flagUserThreshold;
   this->flagSmooth        = p.flagSmooth;
+  this->smoothType        = p.smoothType;
   this->hanningWidth      = p.hanningWidth;
+  this->kernMaj           = p.kernMaj;
+  this->kernMin           = p.kernMin;
+  this->kernPA            = p.kernPA;
   this->flagATrous        = p.flagATrous;
   this->reconDim          = p.reconDim;
   this->scaleMin          = p.scaleMin;
@@ -334,6 +346,19 @@ bool Param::isBlank(float &value)
   return this->flagBlankPix &&
     (this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword));
 };
+
+bool *Param::makeBlankMask(float *array, int size)
+{
+  /**
+   *  This returns an array of bools, saying whether each pixel in the
+   *  given array is BLANK or not. If the pixel is BLANK, set mask to
+   *  false, else set to true. The array is allocated by the function.
+   */ 
+  bool *mask = new bool[size];
+  for(int i=0;i<size;i++) mask[i] = !this->isBlank(array[i]);
+  return mask;
+}
+
 
 bool Param::isInMW(int z)
 {
@@ -505,7 +530,11 @@ int Param::readParams(std::string paramfile)
       }
       
       if(arg=="flagsmooth")      this->flagSmooth = readFlag(ss);
+      if(arg=="smoothtype")      this->smoothType = readSval(ss);
       if(arg=="hanningwidth")    this->hanningWidth = readIval(ss);
+      if(arg=="kernmaj")         this->kernMaj = readFval(ss);
+      if(arg=="kernmin")         this->kernMin = readFval(ss);
+      if(arg=="kernpa")          this->kernPA = readFval(ss);
 
       if(arg=="flagatrous")      this->flagATrous = readFlag(ss); 
       if(arg=="recondim")        this->reconDim = readIval(ss); 
@@ -530,9 +559,19 @@ int Param::readParams(std::string paramfile)
     }
   }
 
-  // The wavelet reconstruction takes precendence over the Hanning
-  // smoothing.
+  // The wavelet reconstruction takes precendence over the smoothing.
   if(this->flagATrous) this->flagSmooth = false;
+
+  // Make sure smoothType is an acceptable type -- default is "spectral"
+  if((this->smoothType!="spectral")&&
+     (this->smoothType!="spatial")){
+    std::stringstream errmsg;
+    errmsg << "The requested value of the parameter smoothType, \""
+	   << this->smoothType << "\" is invalid.\n"
+	   << "Changing to \"spectral\".\n";
+    duchampWarning("readParams",errmsg.str());
+    this->smoothType = "spectral";
+  }
 
   // Make sure spectralMethod is an acceptable type -- default is "peak"
   if((this->spectralMethod!="peak")&&
@@ -719,15 +758,35 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<par.getGrowthCut()      <<std::endl;
   }
-  theStream  <<std::setw(widthText)<<"Hanning-smoothing each spectrum first?"        
+  theStream  <<std::setw(widthText)<<"Smoothing each spectrum first?"        
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagSmooth]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<stringize(par.getFlagSmooth())     <<std::endl;
-  if(par.getFlagSmooth())			       
-    theStream<<std::setw(widthText)<<"Width of hanning filter"      
-	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[hanningWidth]"
+  if(par.getFlagSmooth()){	       
+    theStream<<std::setw(widthText)<<"Type of smoothing"      
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[smoothType]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
-	     <<par.getHanningWidth()       <<std::endl;
+	     <<par.getSmoothType()       <<std::endl;
+    if(par.getSmoothType()=="spectral")
+      theStream<<std::setw(widthText)<<"Width of hanning filter"      
+	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[hanningWidth]"
+	       <<"  =  " <<resetiosflags(std::ios::right)
+	       <<par.getHanningWidth()       <<std::endl;
+    else{
+      theStream<<std::setw(widthText)<<"Gaussian kernel semi-major axis [pix]"
+	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[kernMaj]"
+	       <<"  =  " <<resetiosflags(std::ios::right)
+	       <<par.getKernMaj() << std::endl;
+      theStream<<std::setw(widthText)<<"Gaussian kernel semi-minor axis [pix]"
+	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[kernMin]"
+	       <<"  =  " <<resetiosflags(std::ios::right)
+	       <<par.getKernMin() << std::endl;
+      theStream<<std::setw(widthText)<<"Gaussian kernel position angle [deg]"
+	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[kernPA]"
+	       <<"  =  " <<resetiosflags(std::ios::right)
+	       <<par.getKernPA() << std::endl;
+    }
+  }
   theStream  <<std::setw(widthText)<<"Using A Trous reconstruction?"        
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagATrous]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
@@ -842,7 +901,13 @@ std::string Param::outputSmoothFile()
   ss << inputName.substr(0,inputName.size()-5);  
                           // remove the ".fits" on the end.
   if(this->flagSubsection) ss<<".sub";
-  ss << ".SMOOTH-" << this->hanningWidth << ".fits";
+  if(this->smoothType=="spectral")
+    ss << ".SMOOTH-1D-" << this->hanningWidth << ".fits";
+  else if(this->smoothType=="spatial")
+    ss << ".SMOOTH-2D-" 
+       << this->kernMaj << "-"
+       << this->kernMin << "-"
+       << this->kernPA  << ".fits";
   return ss.str();
 }
 

@@ -15,6 +15,16 @@ namespace Statistics
   template float madfmToSigma<double>(double madfm);
 
   //--------------------------------------------------------------------
+  template <class T> 
+  float sigmaToMADFM(T sigma){
+    return float(sigma)*correctionFactor;
+  };
+  template float sigmaToMADFM<int>(int sigma);
+  template float sigmaToMADFM<long>(long sigma);
+  template float sigmaToMADFM<float>(float sigma);
+  template float sigmaToMADFM<double>(double sigma);
+
+  //--------------------------------------------------------------------
   //--------------------------------------------------------------------
 
   template <class Type> 
@@ -147,6 +157,24 @@ namespace Statistics
   //--------------------------------------------------------------------
     
   template <class Type> 
+  void  StatsContainer<Type>::scaleNoise(float scale)
+  {
+    /**
+     *  Multiply the noise parameters (stddev & madfm) by a given
+     *  factor, and adjust the threshold.
+     */
+    float snr = (threshold - this->getMiddle())/this->getSpread();    
+    this->madfm  = Type(this->madfm*scale);
+    this->stddev *= scale;
+    this->threshold = this->getMiddle() + snr*this->getSpread();
+  }
+  template void StatsContainer<int>::scaleNoise(float scale);
+  template void StatsContainer<long>::scaleNoise(float scale);
+  template void StatsContainer<float>::scaleNoise(float scale);
+  template void StatsContainer<double>::scaleNoise(float scale);
+ //--------------------------------------------------------------------
+
+  template <class Type> 
   float StatsContainer<Type>::getPValue(float value)
   {
     /** 
@@ -193,8 +221,9 @@ namespace Statistics
      * \param array The input data array.
      * \param size The length of the input array
      */
-    findNormalStats(array, size, this->mean, this->stddev);
-    findMedianStats(array, size, this->median, this->madfm);
+//     findNormalStats(array, size, this->mean, this->stddev);
+//     findMedianStats(array, size, this->median, this->madfm);
+    findAllStats(array,size,this->mean,this->stddev,this->median,this->madfm);
     this->defined = true;
   }
   template void StatsContainer<int>::calculate(int *array, long size);
@@ -204,7 +233,7 @@ namespace Statistics
   //--------------------------------------------------------------------
 
   template <class Type> 
-  void StatsContainer<Type>::calculate(Type *array, long size, bool *isGood)
+  void StatsContainer<Type>::calculate(Type *array, long size, bool *mask)
   {
     /**
      * Calculate all four statistics for a subset of a given
@@ -213,17 +242,20 @@ namespace Statistics
      *
      * \param array The input data array.
      * \param size The length of the input array
-     * \param isGood An array of the same length that says whether to
-     * include each member of the array in the calculations.
+     * \param mask An array of the same length that says whether to
+     * include each member of the array in the calculations. Use a
+     * value if mask=true.
      */
-    findNormalStats(array, size, isGood, this->mean, this->stddev);
-    findMedianStats(array, size, isGood, this->median, this->madfm);
+//     findNormalStats(array, size, mask, this->mean, this->stddev);
+//     findMedianStats(array, size, mask, this->median, this->madfm);
+    findAllStats(array, size, mask, 
+		 this->mean, this->stddev, this->median, this->madfm);
     this->defined = true;
   }
-  template void StatsContainer<int>::calculate(int *array, long size, bool *isGood);
-  template void StatsContainer<long>::calculate(long *array, long size, bool *isGood);
-  template void StatsContainer<float>::calculate(float *array, long size, bool *isGood);
-  template void StatsContainer<double>::calculate(double *array, long size, bool *isGood);
+  template void StatsContainer<int>::calculate(int *array, long size, bool *mask);
+  template void StatsContainer<long>::calculate(long *array, long size, bool *mask);
+  template void StatsContainer<float>::calculate(float *array, long size, bool *mask);
+  template void StatsContainer<double>::calculate(double *array, long size, bool *mask);
   //--------------------------------------------------------------------
 
   template <class Type> 

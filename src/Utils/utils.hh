@@ -33,7 +33,13 @@ template <class T> void findMedianStats(T *array, int size, bool *isGood,
 template <class T> void findNormalStats(T *array, int size, 
 					float &mean, float &stddev);
 template <class T> void findNormalStats(T *array, int size, bool *isGood, 
-		     float &mean, float &stddev);
+					float &mean, float &stddev);
+template <class T> void findAllStats(T *array, int size, 
+				     float &mean, float &stddev,
+				     T &median, T &madfm);
+template <class T> void findAllStats(T *array, int size, bool *mask, 
+				     float &mean, float &stddev,
+				     T &median, T &madfm);
 
 
 //--------------------

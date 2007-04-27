@@ -4,14 +4,29 @@
 
 Hanning::Hanning(){
   allocated=false;
-};
+}
+
 Hanning::~Hanning(){
   if(allocated) delete [] coeffs;
-};
+}
 
 Hanning::Hanning(int size){
   /**
-   * Constructor that sets the Hanning width and calculates the coefficients.
+   * Constructor that sets the Hanning width and calculates the
+   * coefficients. Does this by simply calling the
+   * Hanning::define(int) function.
+   * \param size The full width of the filter. The parameter \f$a\f$
+   * is defined as (size+1)/2.
+   */ 
+
+  this->allocated=false;
+  this->define(size);
+};
+
+void Hanning::define(int size)
+{
+  /**
+   * Function that sets the Hanning width and calculates the coefficients.
    * \param size The full width of the filter. The parameter \f$a\f$ is 
    *  defined as (size+1)/2.
    */ 
@@ -19,15 +34,17 @@ Hanning::Hanning(int size){
     std::cerr << "Hanning: need an odd number for the size. "
 	      << "Changing "<< size << " to " << ++size<<".\n";
   }
-  hanningSize = size;
-  coeffs = new float[size];
-  allocated = true;
+  this->hanningSize = size;
+  if(this->allocated) delete [] this->coeffs;
+  this->coeffs = new float[size];
+  this->allocated = true;
   float a = (size+1.)/2.;
   for(int i=0;i<size;i++){
     float x = i-(size-1)/2.;
-    coeffs[i] = 0.5 + 0.5*cos(x * M_PI / a);
+    this->coeffs[i] = 0.5 + 0.5*cos(x * M_PI / a);
   }
-};
+}
+
 
 
 float *Hanning::smooth(float *array, int npts){
@@ -39,7 +56,8 @@ float *Hanning::smooth(float *array, int npts){
    * need it for.  Could be made more general if needs be.
    *
    * \param array The input array. Needs to be defined -- no memory
-   * checks are done!  \param npts The size of the input array.
+   * checks are done!  
+   * \param npts The size of the input array.
    * \return Returns an array of the same size. If filter coefficients
    * have not been allocated, the input array is returned.
    */
@@ -57,4 +75,4 @@ float *Hanning::smooth(float *array, int npts){
     }
     return newarray;
   }
-};
+}

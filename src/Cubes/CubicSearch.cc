@@ -51,8 +51,8 @@ void Cube::CubicSearch()
 //---------------------------------------------------------------
 
 
-vector <Detection> search3DArray(long *dim, float *Array, Param &par,
-				 StatsContainer<float> &stats)
+std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
+				      StatsContainer<float> &stats)
 {
   /**
    *  Takes a dimension array and data array as input (and Parameter set)
@@ -68,7 +68,7 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
    * \return Vector of detected objects.
    */
 
-  vector <Detection> outputList;
+  std::vector <Detection> outputList;
   long zdim = dim[2];
   long xySize = dim[0] * dim[1];
   int num = 0;
@@ -183,8 +183,9 @@ vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 }
 //---------------------------------------------------------------
 
-vector <Detection> search3DArraySimple(long *dim, float *Array, Param &par,
-				       StatsContainer<float> &stats)
+std::vector <Detection> search3DArraySimple(long *dim, float *Array, 
+					    Param &par,
+					    StatsContainer<float> &stats)
 {
   /**
    *  Takes a dimension array and data array as input (and Parameter
@@ -201,7 +202,7 @@ vector <Detection> search3DArraySimple(long *dim, float *Array, Param &par,
    * \return Vector of detected objects.
    */
 
-  vector <Detection> outputList;
+  std::vector <Detection> outputList;
   long zdim = dim[2];
   int num = 0;
 

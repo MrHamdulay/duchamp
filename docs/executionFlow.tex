@@ -325,21 +325,38 @@ reconstruction is not needed).
 \secB{Smoothing the cube}
 \label{sec-smoothing}
 
-An alternative to doing the wavelet reconstruction is to Hanning
-smooth the cube. This technique can be useful in reducing the noise
-level slightly (at the cost of making neighbouring pixels correlated
-and blurring any signal present), and is particularly well suited to
-the case where a particular signal width is believed to be present in
-the data. It is also substantially faster than the wavelet
-reconstruction.
+An alternative to doing the wavelet reconstruction is to smooth the
+cube.  This technique can be useful in reducing the noise level
+slightly (at the cost of making neighbouring pixels correlated and
+blurring any signal present), and is particularly well suited to the
+case where a particular signal size (\ie a certain channel width or
+spatial size) is believed to be present in the data.
 
-The cube is smoothed only in the spectral domain. That is, each
-spectrum is independently smoothed, and then put back together to form
-the smoothed cube. This is then treated in the same way as the
-reconstructed cube, and is used for the searching algorithm (see
-below). Note that in the case of both the reconstruction and the
-smoothing options being requested, the reconstruction will take
-precedence and the smoothing will \emph{not} be done.
+There are two alternative methods that can be used: spectral
+smoothing, using the Hanning filter; or spatial smoothing, using a 2D
+Gaussian kernel. These alternatives are outlined below. To utilise the
+smoothing option, set the parameter \texttt{flagSmooth=true} and set
+\texttt{smoothType} to either \texttt{spectral} or \texttt{spatial}.
+
+The user is able to save the smoothed array in exactly the same manner
+as for the reconstructed array -- set \texttt{flagOutputSmooth =
+true}, and then the smoothed array will be saved in either
+\texttt{image.SMOOTH-1D-a.fits}, where a is replaced by the Hanning width
+used, or \texttt{image.SMOOTH-2D-a-b-c.fits}, where the Gaussian
+kernel parameters are a,b,c. Similarly, a saved file can be read in by
+setting \texttt{flagSmoothExists = true} and either specifying a file
+to be read with the \texttt{smoothFile} parameter or relying on
+\duchamp to find the file with the name as given above.
+
+\secC{Spectral smoothing}
+
+When \texttt{smoothType=spectral} is selected, the cube is smoothed
+only in the spectral domain. Each spectrum is independently smoothed
+by a Hanning filter, and then put back together to form the smoothed
+cube, which is then used by the searching algorithm (see below). Note
+that in the case of both the reconstruction and the smoothing options
+being requested, the reconstruction will take precedence and the
+smoothing will \emph{not} be done.
 
 There is only one parameter necessary to define the degree of
 smoothing -- the Hanning width $a$ (given by the user parameter
@@ -356,14 +373,34 @@ where $a,x \in \mathbb{Z}$. Note that the width specified must be an
 odd integer (if the parameter provided is even, it is incremented by
 one).
 
-The user is able to save the smoothed array in exactly the same manner
-as for the reconstructed array -- set \texttt{flagOutputSmooth =
-true}, and then the smoothed array will be saved in
-\texttt{image.SMOOTH-a.fits}, where a is replaced by the Hanning width
-used. Similarly, a saved file can be read in by setting
-\texttt{flagSmoothExists = true} and either specifying a file to be
-read with the \texttt{smoothFile} parameter or relying on \duchamp to
-find the file with the name as given above. 
+\secC{Spatial smoothing}
+
+When \texttt{smoothType=spatial} is selected, the cube is smoothed
+only in the spatial domain. Each channel map is independently smoothed
+by a two-dimensional Gaussian kernel, and then put back together to
+form the smoothed cube, and used in the searching algorithm (see
+below). Again, reconstruction is always done by preference if both
+techniques are requested.
+
+The two-dimensional Gaussian has three parameters to define it,
+governed by the elliptical cross-sectional shape of the gaussian
+function: the FWHM (full-width at half-maximum) of the major and minor
+axes, and the position angle of the major axis. These are given by the
+user parameters \texttt{kernMaj, kernMin \& kernPA}. If we define
+these parameters as $a,b,\theta$ respectively, we can define the
+kernel by the function
+\[ 
+k(x,y) = \exp\left(-0.5 \left(X^2/\sigma_X^2 + Y^2/\sigma_Y^2\right) \right) 
+\]
+where $(x,y)$ are the offsets from the central pixel of the gaussian
+function, and 
+\begin{eqnarray}
+X           &= &x\sin\theta - y\cos\theta\\
+Y           &= &x\cos\theta + y\sin\theta\\
+\sigma_X^2  &= &\frac{(a/2)^2}{2\ln2}\\
+\sigma_Y^2  &= &\frac{(b/2)^2}{2\ln2}\\
+\end{eqnarray}
+
 
 \secB{Searching the image}
 \label{sec-detection}
