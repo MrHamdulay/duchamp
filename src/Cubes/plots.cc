@@ -21,8 +21,6 @@ namespace Plot
     paperWidth=a4width/inchToCm - 2*psHoffset; 
     spectraCount=0;
     numOnPage = 5;
-    indexSize = 0.6;
-    labelSize = 0.7;
   };
 
   SpectralPlot::~SpectralPlot(){};
@@ -83,7 +81,7 @@ namespace Plot
     spectraCount++;
     calcCoords();
     cpgvsiz(0., paperWidth, mainCoords[2], mainCoords[3]);  
-    cpgsch(labelSize);
+    cpgsch(spLabelSize);
     cpgmtxt("b",Plot::spXlabelOffset,0.5,0.5,xlabel.c_str());
   }
   //----------------------------------------------------------
@@ -99,10 +97,10 @@ namespace Plot
      * \param ylabel Label for the flux (Y) axis.
      */
     cpgvsiz(mainCoords[0],mainCoords[1],mainCoords[2],mainCoords[3]);
-    cpgsch(indexSize);
+    cpgsch(spIndexSize);
     cpgswin(x1,x2,y1,y2);
     cpgbox("1bcnst",0.,0,"bcnst1v",0.,0);
-    cpgsch(labelSize);
+    cpgsch(spLabelSize);
     cpgmtxt("l",Plot::spYlabelOffset,0.5,0.5,ylabel.c_str());
   }
   //----------------------------------------------------------
@@ -116,7 +114,7 @@ namespace Plot
      * \param y2 Maximum Y-coordinate of box.
      */
     cpgvsiz(zoomCoords[0],zoomCoords[1],zoomCoords[2],zoomCoords[3]);
-    cpgsch(indexSize);
+    cpgsch(spIndexSize);
     cpgswin(x1,x2,y1,y2);
     cpgbox("bc",0.,0,"bcstn1v",0.,0);
     float lengthL,lengthR,disp,tickpt,step;
@@ -157,7 +155,7 @@ namespace Plot
   //----------------------------------------------------------
   void SpectralPlot::gotoMap(){
     cpgvsiz(mapCoords[0],mapCoords[1],mapCoords[2],mapCoords[3]);
-    cpgsch(indexSize);
+    cpgsch(spIndexSize);
   }
   //----------------------------------------------------------
   void SpectralPlot::drawVelRange(float v1, float v2){

@@ -40,6 +40,13 @@ namespace Plot
   const float spTitleOffset3 = 2.1; ///< Offset for third title line.
   const float spTitleOffset4 = 0.6; ///< Offset for fourth title line.
 
+  const float spIndexSize = 0.6;    ///< PGPlot character height for
+				    ///   tick mark labels
+  const float spLabelSize = 0.7;    ///< PGPlot character height for
+				    ///   axis labels
+  const float spTitleSize = 0.8;    ///< PGPlot character height for
+				    ///   plot title line
+
   // These are the constants used for spacing out elements in ImagePlot.
   const float imTitleOffset = 2.7;  ///< Offset for title of map.
 
@@ -123,8 +130,6 @@ namespace Plot
     float mapCoords[4];  ///< Boundaries for the map box [inches]
     float paperWidth;    ///< Width of plottable region of the paper [inches]
     float paperHeight;   ///< Height of plottable region of the paper [inches]
-    float indexSize;     ///< PGPlot character height for tick mark labels
-    float labelSize;     ///< PGPlot character height for axis labels.
     int   identifier;    ///< The identifier code used by cpgslct.
     
   };
@@ -132,14 +137,27 @@ namespace Plot
   //----------------------------------------------------------
   // Inline SpectralPlot functions...
   //----------------------------------------------------------
-  inline void  SpectralPlot::firstHeaderLine(std::string line){
-    cpgmtxt("t",Plot::spTitleOffset1,0.5,0.5,line.c_str());}
-  inline void  SpectralPlot::secondHeaderLine(std::string line){
-    cpgmtxt("t",Plot::spTitleOffset2,0.5,0.5,line.c_str());}
-  inline void  SpectralPlot::thirdHeaderLine(std::string line){
-    cpgmtxt("t",Plot::spTitleOffset3,0.5,0.5,line.c_str());}
-  inline void  SpectralPlot::fourthHeaderLine(std::string line){
-    cpgmtxt("t",Plot::spTitleOffset4,0.5,0.5,line.c_str());}
+  inline void  SpectralPlot::firstHeaderLine(std::string line)
+  {
+    cpgsch(spTitleSize); 
+    cpgmtxt("t",Plot::spTitleOffset1*spLabelSize/spTitleSize,
+	    0.5,0.5,line.c_str());
+  }
+  inline void  SpectralPlot::secondHeaderLine(std::string line)
+  {
+    cpgsch(spLabelSize); 
+    cpgmtxt("t",Plot::spTitleOffset2,0.5,0.5,line.c_str());
+  }
+  inline void  SpectralPlot::thirdHeaderLine(std::string line)
+  {
+    cpgsch(spLabelSize);
+    cpgmtxt("t",Plot::spTitleOffset3,0.5,0.5,line.c_str());
+  }
+  inline void  SpectralPlot::fourthHeaderLine(std::string line)
+  {
+    cpgsch(spLabelSize); 
+    cpgmtxt("t",Plot::spTitleOffset4,0.5,0.5,line.c_str());
+  }
   inline int   SpectralPlot::getNumOnPage(){return numOnPage;}
   inline void  SpectralPlot::setNumOnPage(int i){numOnPage=i;}
   inline float SpectralPlot::getPaperWidth(){return paperWidth;}
