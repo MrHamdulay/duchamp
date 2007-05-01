@@ -33,8 +33,10 @@ void Detection::outputDetectionTextHeader(std::ostream &stream,
   vector<Col> local = columns;
   if(local.size()==Column::numColumns){
     vector <Col>::iterator iter;
-    if(this->flagWCS) iter = local.begin() + FTOT;
-    else iter = local.begin() + FINT;
+    if((this->flagWCS)&&(this->numAxes>2))
+      iter = local.begin() + FTOT;
+    else 
+      iter = local.begin() + FINT;
     local.erase(iter);
   }
   
@@ -72,8 +74,10 @@ void Detection::outputDetectionTextHeaderFull(std::ostream &stream,
   vector<Col> local = columns;
   if(local.size()==Column::numColumns){
     vector <Col>::iterator iter;
-    if(this->flagWCS) iter = local.begin() + FTOT;
-    else iter = local.begin() + FINT;
+    if((this->flagWCS)&&(this->numAxes>2))
+      iter = local.begin() + FTOT;
+    else
+      iter = local.begin() + FINT;
     local.erase(iter);
   }
 
@@ -126,8 +130,10 @@ void Detection::outputDetectionTextWCS(std::ostream &stream,
       columns[WVEL].printEntry(stream,this->velWidth);
     }
     else for(int i=RA;i<=WVEL;i++) columns[i].printBlank(stream);
-    if(this->flagWCS) columns[FINT].printEntry(stream,this->intFlux);
-    else columns[FTOT].printEntry(stream,this->totalFlux);
+    if((this->flagWCS)&&(this->numAxes>2))
+      columns[FINT].printEntry(stream,this->intFlux);
+    else 
+      columns[FTOT].printEntry(stream,this->totalFlux);
     columns[FPEAK].printEntry(stream,this->peakFlux);
     columns[SNRPEAK].printEntry(stream,this->peakSNR);
     columns[X1].printEntry(stream,this->getXmin() + this->xSubOffset);
@@ -181,8 +187,10 @@ void Detection::outputDetectionTextWCSFull(std::ostream &stream,
       columns[WVEL].printEntry(stream,this->velWidth);
     }
     else for(int i=RA;i<=WVEL;i++) columns[i].printBlank(stream);
-    if(this->flagWCS) columns[FINT].printEntry(stream,this->intFlux);
-    else columns[FTOT].printEntry(stream,this->totalFlux);
+    if((this->flagWCS)&&(this->numAxes>2))
+      columns[FINT].printEntry(stream,this->intFlux);
+    else 
+      columns[FTOT].printEntry(stream,this->totalFlux);
     columns[FPEAK].printEntry(stream,this->peakFlux);
     columns[SNRPEAK].printEntry(stream,this->peakSNR);
     columns[X1].printEntry(stream,this->getXmin() + this->xSubOffset);
@@ -298,10 +306,16 @@ std::string Detection::outputLabelInfo()
     ss << std::setprecision(this->posPrec);
     ss << "w_"          << this->lngtype  <<"="    << this->raWidth;
     ss << ", w_"        << this->lattype  <<"="    << this->decWidth;
-    ss << std::setprecision(this->velPrec);
-    ss << ", w_Vel="    << this->velWidth << " " << this->specUnits;
-    ss << std::setprecision(this->fintPrec);
-    ss << ", F\\dint\\u=" << this->intFlux << " " << this->intFluxUnits;
+    if(this->numAxes>2){
+      ss << std::setprecision(this->velPrec);
+      ss << ", w_Vel="    << this->velWidth << " " << this->specUnits;
+      ss << std::setprecision(this->fintPrec);
+      ss << ", F\\dint\\u=" << this->intFlux << " " << this->intFluxUnits;
+    }
+    else{
+      ss << std::setprecision(this->fintPrec);
+      ss << "F\\dtot\\u=" << this->totalFlux << this->fluxUnits;
+    }
     ss << std::setprecision(this->fpeakPrec);
     ss << ", F\\dpeak\\u=" << this->peakFlux << " " << this->fluxUnits;
     ss << std::setprecision(this->snrPrec);

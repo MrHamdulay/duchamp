@@ -67,6 +67,14 @@ const std::string keyword_filterCode   = "DU_FILTR";
 /** FITS header keyword: does this file hold the reconstructed array
     or the residual?*/
 const std::string keyword_ReconResid   = "DU_RECON";
+/** FITS header keyword: type of smoothing done. */
+const std::string keyword_smoothtype   = "DU_SMTYP"; 
+/** FITS header keyword for the gaussian kernel major axis FWHM*/
+const std::string keyword_kernmaj      = "DU_KMAJ"; 
+/** FITS header keyword for the gaussian kernel minor axis FWHM*/
+const std::string keyword_kernmin      = "DU_KMIN"; 
+/** FITS header keyword for the gaussian kernel position angle*/
+const std::string keyword_kernpa       = "DU_KPA"; 
 /** FITS header keyword for the Hanning filter width*/
 const std::string keyword_hanningwidth = "DU_WHANN"; 
 /** FITS header keyword for the image subsection used*/
@@ -83,6 +91,14 @@ const std::string comment_reconDim     = "Duchamp parameter reconDim";
 const std::string comment_filterCode   = "Duchamp parameter filterCode";
 /** FITS header comment for DU_RECON keyword*/
 const std::string comment_ReconResid   = "Is this the reconstruction or residual?";
+/** FITS header comment for DU_SMTYP keyword*/
+const std::string comment_smoothtype   = "Type of smoothing done";
+/** FITS header comment for DU_KMAJ  keyword*/
+const std::string comment_kernmaj      = "Duchamp parameter kernMaj";
+/** FITS header comment for DU_KMIN  keyword*/
+const std::string comment_kernmin      = "Duchamp parameter kernMin";
+/** FITS header comment for DU_KPA   keyword*/
+const std::string comment_kernpa       = "Duchamp parameter kernPA";
 /** FITS header comment for DU_WHANN keyword*/
 const std::string comment_hanningwidth = "Duchamp parameter hanningWidth";
 /** FITS header comment for DU_IMSUB keyword*/
@@ -100,13 +116,14 @@ const std::string header_reconSubsection_comment  =
 const std::string header_atrous_comment  = 
 "The following are the Duchamp parameters used in reconstruction";
 
-// Descriptive Headers: for the Hanning-smoothing case
+// Descriptive Headers: for the Smoothing case
 const std::string header_smoothHistory = 
-"Hanning smoothed by Duchamp v." + VERSION;
+"Smoothed by Duchamp v." + VERSION;
 const std::string header_smoothHistory_input = 
 "Original (input) image used by Duchamp follows";
 const std::string header_smoothSubsection_comment  = 
 "A subsection of the original was smoothed by Duchamp";
-
+const std::string header_smoothSpatial = "Spatial, gaussian kernel";
+const std::string header_smoothSpectral= "Spectral, hanning filter";
 #endif
 

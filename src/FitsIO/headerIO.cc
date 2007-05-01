@@ -20,7 +20,7 @@ int FitsHeader::readHeaderInfo(std::string fname, Param &par)
 
   int returnValue = SUCCESS;
 
-  if(this->readBUNIT(fname)==FAILURE) returnValue=FAILURE;
+//   if(this->readBUNIT(fname)==FAILURE) returnValue=FAILURE;
   
   if(this->readBLANKinfo(fname, par)==FAILURE) returnValue=FAILURE;
   

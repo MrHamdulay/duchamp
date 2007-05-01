@@ -32,50 +32,50 @@ FitsHeader::~FitsHeader()
 FitsHeader::FitsHeader(const FitsHeader& h)
 {
   this->wcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
-  this->wcs->flag=-1;
+  this->wcs->flag     = -1;
   wcsini(true, h.wcs->naxis, this->wcs); 
   wcscopy(true, h.wcs, this->wcs); 
   wcsset(this->wcs);
-  this->nwcs = h.nwcs;
-  this->wcsIsGood = h.wcsIsGood;
+  this->nwcs          = h.nwcs;
+  this->wcsIsGood     = h.wcsIsGood;
   this->spectralUnits = h.spectralUnits;
-  this->fluxUnits = h.fluxUnits;
-  this->intFluxUnits = h.intFluxUnits;
-  this->beamSize = h.beamSize;
-  this->bmajKeyword = h.bmajKeyword;
-  this->bminKeyword = h.bminKeyword;
-  this->bpaKeyword = h.bpaKeyword;
-  this->blankKeyword = h.blankKeyword;
-  this->bzeroKeyword = h.bzeroKeyword;
+  this->fluxUnits     = h.fluxUnits;
+  this->intFluxUnits  = h.intFluxUnits;
+  this->beamSize      = h.beamSize;
+  this->bmajKeyword   = h.bmajKeyword;
+  this->bminKeyword   = h.bminKeyword;
+  this->bpaKeyword    = h.bpaKeyword;
+  this->blankKeyword  = h.blankKeyword;
+  this->bzeroKeyword  = h.bzeroKeyword;
   this->bscaleKeyword = h.bscaleKeyword;
-  this->scale = h.scale;
-  this->offset = h.offset;
-  this->power = h.power;
+  this->scale         = h.scale;
+  this->offset        = h.offset;
+  this->power         = h.power;
 }
 
 FitsHeader& FitsHeader::operator= (const FitsHeader& h)
 {
   if(this == &h) return *this;
   this->wcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
-  this->wcs->flag=-1;
+  this->wcs->flag     = -1;
   wcsini(true, h.wcs->naxis, this->wcs); 
   wcscopy(true, h.wcs, this->wcs); 
   wcsset(this->wcs);
-  this->nwcs = h.nwcs;
-  this->wcsIsGood = h.wcsIsGood;
+  this->nwcs          = h.nwcs;
+  this->wcsIsGood     = h.wcsIsGood;
   this->spectralUnits = h.spectralUnits;
-  this->fluxUnits = h.fluxUnits;
-  this->intFluxUnits = h.intFluxUnits;
-  this->beamSize = h.beamSize;
-  this->bmajKeyword = h.bmajKeyword;
-  this->bminKeyword = h.bminKeyword;
-  this->bpaKeyword = h.bpaKeyword;
-  this->blankKeyword = h.blankKeyword;
-  this->bzeroKeyword = h.bzeroKeyword;
+  this->fluxUnits     = h.fluxUnits;
+  this->intFluxUnits  = h.intFluxUnits;
+  this->beamSize      = h.beamSize;
+  this->bmajKeyword   = h.bmajKeyword;
+  this->bminKeyword   = h.bminKeyword;
+  this->bpaKeyword    = h.bpaKeyword;
+  this->blankKeyword  = h.blankKeyword;
+  this->bzeroKeyword  = h.bzeroKeyword;
   this->bscaleKeyword = h.bscaleKeyword;
-  this->scale = h.scale;
-  this->offset = h.offset;
-  this->power = h.power;
+  this->scale         = h.scale;
+  this->offset        = h.offset;
+  this->power         = h.power;
   return *this;
 }
 
@@ -108,16 +108,20 @@ struct wcsprm *FitsHeader::getWCS()
   return wNew;
 }
 
-int FitsHeader::wcsToPix(const double *world, double *pix){      
+int FitsHeader::wcsToPix(const double *world, double *pix)
+{      
   return wcsToPixSingle(this->wcs, world, pix);  
 };
-int FitsHeader::wcsToPix(const double *world, double *pix, const int npts){ 
+int FitsHeader::wcsToPix(const double *world, double *pix, const int npts)
+{ 
   return wcsToPixMulti(this->wcs, world, pix, npts);  
 };
-int FitsHeader::pixToWCS(const double *pix, double *world){    
+int FitsHeader::pixToWCS(const double *pix, double *world)
+{    
   return pixToWCSSingle(this->wcs, pix, world);  
 };
-int FitsHeader::pixToWCS(const double *pix, double *world, const int npts){
+int FitsHeader::pixToWCS(const double *pix, double *world, const int npts)
+{
   return pixToWCSMulti(this->wcs, pix,world, npts);  
 };
 
@@ -198,9 +202,10 @@ void FitsHeader::fixUnits(Param &par)
       std::stringstream errmsg;
       errmsg << "WCSUNITS Error, Code = " << status
 	     << ": " << wcsunits_errmsg[status];
-      if(status == 10) errmsg << "\nTried to get conversion from \"" 
-			      << this->wcs->cunit[this->wcs->spec] << "\" to \"" 
-			      << this->spectralUnits.c_str() << "\".\n";
+      if(status == 10) 
+	errmsg << "\nTried to get conversion from \"" 
+	       << this->wcs->cunit[this->wcs->spec] << "\" to \"" 
+	       << this->spectralUnits.c_str() << "\".\n";
       this->spectralUnits = this->wcs->cunit[this->wcs->spec];
       if(this->spectralUnits==""){
 	errmsg << "Spectral units not specified. "

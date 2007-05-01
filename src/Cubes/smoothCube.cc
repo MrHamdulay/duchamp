@@ -80,41 +80,48 @@ void Cube::SpectralSmooth()
   long zdim = this->axisDim[2];
   ProgressBar bar;
 
-  if(this->par.getSmoothType()=="spectral"){
 
-    Hanning hann(this->par.getHanningWidth());
+
+  if(!this->reconExists && this->par.getSmoothType()=="spectral"){
+    if(this->head.getNumAxes() <= 2)
+      duchampWarning("SpectralSmooth",
+		     "There is no spectral axis, so cannot do the spectal smoothing.\n");
+    else{
+
+      Hanning hann(this->par.getHanningWidth());
   
-    float *spectrum = new float[this->axisDim[2]];
+      float *spectrum = new float[this->axisDim[2]];
 
-    if(this->par.isVerbose()) {
-      std::cout<<"  Smoothing spectrally... ";
-      bar.init(xySize);
-    }
+      if(this->par.isVerbose()) {
+	std::cout<<"  Smoothing spectrally... ";
+	bar.init(xySize);
+      }
 
-    for(int pix=0;pix<xySize;pix++){
+      for(int pix=0;pix<xySize;pix++){
 
-      if( this->par.isVerbose() ) bar.update(pix+1);
+	if( this->par.isVerbose() ) bar.update(pix+1);
     
-      for(int z=0;z<zdim;z++){
-	if(this->isBlank(z*xySize+pix)) spectrum[z]=0.;
-	else spectrum[z] = this->array[z*xySize+pix];
-      }
+	for(int z=0;z<zdim;z++){
+	  if(this->isBlank(z*xySize+pix)) spectrum[z]=0.;
+	  else spectrum[z] = this->array[z*xySize+pix];
+	}
 
-      float *smoothed = hann.smooth(spectrum,zdim);
+	float *smoothed = hann.smooth(spectrum,zdim);
 
-      for(int z=0;z<zdim;z++){
-	if(this->isBlank(z*xySize+pix)) 
-	  this->recon[z*xySize+pix]=this->array[z*xySize+pix];
-	else 
-	  this->recon[z*xySize+pix] = smoothed[z];
+	for(int z=0;z<zdim;z++){
+	  if(this->isBlank(z*xySize+pix)) 
+	    this->recon[z*xySize+pix]=this->array[z*xySize+pix];
+	  else 
+	    this->recon[z*xySize+pix] = smoothed[z];
+	}
+	delete [] smoothed;
       }
-      delete [] smoothed;
+      this->reconExists = true;
+      if(this->par.isVerbose()) bar.fillSpace("All Done.\n");
+
+      delete [] spectrum;
+
     }
-    this->reconExists = true;
-    if(this->par.isVerbose()) bar.fillSpace("All Done.\n");
-
-    delete [] spectrum;
-
   }
 }
 //-----------------------------------------------------------
@@ -122,52 +129,60 @@ void Cube::SpectralSmooth()
 void Cube::SpatialSmooth()
 {
 
-  long xySize = this->axisDim[0]*this->axisDim[1];
-  long xdim = this->axisDim[0];
-  long ydim = this->axisDim[1];
-  long zdim = this->axisDim[2];
+  if(!this->reconExists && this->par.getSmoothType()=="spatial"){
 
-  ProgressBar bar;
+    if( this->head.getNumAxes() < 2 )
+      duchampWarning("SpatialSmooth",
+		     "There are not enough axes to do the spatial smoothing.\n");
+    else{
 
-  GaussSmooth gauss(this->par.getKernMaj(),
-		    this->par.getKernMin(),
-		    this->par.getKernPA());
+      long xySize = this->axisDim[0]*this->axisDim[1];
+      long xdim = this->axisDim[0];
+      long ydim = this->axisDim[1];
+      long zdim = this->axisDim[2];
 
-  this->Stats.scaleNoise(1./gauss.getStddevScale());
+      ProgressBar bar;
 
-  if(this->par.isVerbose()) {
-    std::cout<<"  Smoothing spatially... " << std::flush;
-    bar.init(zdim);
-  }
+      GaussSmooth gauss(this->par.getKernMaj(),
+			this->par.getKernMin(),
+			this->par.getKernPA());
 
-  float *image = new float[xySize];
-  float *smoothed;
-  bool *mask;
-  for(int z=0;z<zdim;z++){
+      this->Stats.scaleNoise(1./gauss.getStddevScale());
 
-    if( this->par.isVerbose() ) bar.update(z+1);
+      if(this->par.isVerbose()) {
+	std::cout<<"  Smoothing spatially... " << std::flush;
+	bar.init(zdim);
+      }
+
+      float *image = new float[xySize];
+      float *smoothed;
+      bool *mask;
+      for(int z=0;z<zdim;z++){
+
+	if( this->par.isVerbose() ) bar.update(z+1);
       
-    //    if(!this->par.isInMW(z)){
+	//    if(!this->par.isInMW(z)){
 
-    for(int pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];
+	for(int pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];
     
-    mask  = this->par.makeBlankMask(image,xySize);
+	mask  = this->par.makeBlankMask(image,xySize);
     
-    smoothed = gauss.smooth(image,xdim,ydim,mask);
+	smoothed = gauss.smooth(image,xdim,ydim,mask);
     
-    for(int pix=0;pix<xySize;pix++)
-      this->recon[z*xySize+pix] = smoothed[pix];
+	for(int pix=0;pix<xySize;pix++)
+	  this->recon[z*xySize+pix] = smoothed[pix];
 
-  }
+      }
 
-  delete [] smoothed;
-  delete [] mask;
-  delete [] image;
+      delete [] smoothed;
+      delete [] mask;
+      delete [] image;
  
-  this->reconExists = true;
+      this->reconExists = true;
   
-  if(par.isVerbose()) bar.fillSpace("All Done.\n");
-  
+      if(par.isVerbose()) bar.fillSpace("All Done.\n");
+    } 
+  }
 }
 //-----------------------------------------------------------
 
@@ -222,15 +237,15 @@ void Cube::SpatialSmoothNSearch()
       //       this->recon[z*xySize+pix] = smoothed[pix];
 
       findMedianStats(smoothed,xySize,mask,median,madfm);
-//       threshold = median+this->par.getCut()*Statistics::madfmToSigma(madfm);
-//       for(int i=0;i<xySize;i++)
-// 	if(smoothed[i]<threshold) image[i] = this->Stats.getMiddle();
-//       channelImage->saveArray(image,xySize);
+      //       threshold = median+this->par.getCut()*Statistics::madfmToSigma(madfm);
+      //       for(int i=0;i<xySize;i++)
+      // 	if(smoothed[i]<threshold) image[i] = this->Stats.getMiddle();
+      //       channelImage->saveArray(image,xySize);
 
 
-//       channelImage->stats().setMadfm(madfm);
-//       channelImage->stats().setMedian(median);
-//       channelImage->stats().setThresholdSNR(this->par.getCut());
+      //       channelImage->stats().setMadfm(madfm);
+      //       channelImage->stats().setMedian(median);
+      //       channelImage->stats().setThresholdSNR(this->par.getCut());
       channelImage->saveArray(smoothed,xySize);
 
       std::vector<PixelInfo::Object2D> objlist = channelImage->lutz_detect();
@@ -251,7 +266,7 @@ void Cube::SpatialSmoothNSearch()
   delete [] image;
   delete channelImage;
     
-//   this->reconExists = true;
+  //   this->reconExists = true;
   if(par.isVerbose()){
     bar.fillSpace("Found ");
     std::cout << numFound << ".\n";

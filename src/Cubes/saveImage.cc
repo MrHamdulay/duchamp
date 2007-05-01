@@ -329,8 +329,26 @@ void writeSmoothHeaderInfo(fitsfile *fptr, Param &par)
 		   (char *)comment_subsection.c_str(), &status);
   }
     
-  int val = par.getHanningWidth();
-  fits_write_key(fptr, TINT, (char *)keyword_hanningwidth.c_str(), &val, 
-		 (char *)comment_hanningwidth.c_str(), &status);
-
+  if(par.getSmoothType()=="spatial"){
+    fits_write_key(fptr, TSTRING, (char *)keyword_smoothtype.c_str(),
+		   (char *)header_smoothSpatial.c_str(),
+		   (char *)comment_smoothtype.c_str(), &status);
+    float valf = par.getKernMaj();
+    fits_write_key(fptr, TFLOAT, (char *)keyword_kernmaj.c_str(), &valf,
+		   (char *)comment_kernmaj.c_str(), &status);
+    valf = par.getKernMin();
+    fits_write_key(fptr, TFLOAT, (char *)keyword_kernmin.c_str(), &valf,
+		   (char *)comment_kernmin.c_str(), &status);
+    valf = par.getKernPA();
+    fits_write_key(fptr, TFLOAT, (char *)keyword_kernpa.c_str(), &valf,
+		   (char *)comment_kernpa.c_str(), &status);
+  }
+  else if(par.getSmoothType()=="spectral"){
+    fits_write_key(fptr, TSTRING, (char *)keyword_smoothtype.c_str(),
+		   (char *)header_smoothSpectral.c_str(),
+		   (char *)comment_smoothtype.c_str(), &status);
+    int vali = par.getHanningWidth();
+    fits_write_key(fptr, TINT, (char *)keyword_hanningwidth.c_str(), &vali,
+		   (char *)comment_hanningwidth.c_str(), &status);
+  }
 }

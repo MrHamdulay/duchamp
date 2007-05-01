@@ -142,22 +142,64 @@ int Cube::readSmoothCube()
       delete subsection;
     }
 
-    int hannWidth;
-    status = 0;
-    fits_read_key(fptr, TINT, (char *)keyword_hanningwidth.c_str(), 
-		  &hannWidth, comment, &status);
-    if(hannWidth != this->par.getHanningWidth()){
-      std::stringstream errmsg;
-      errmsg << "hanningWidth keyword in smoothFile (" << hannWidth
-	     << ") does not match that requested (" 
-	     << this->par.getHanningWidth() << ").\n";
-      duchampError("readSmoothCube", errmsg.str());
-      return FAILURE;
+    if(this->par.getSmoothType()=="spectral"){
+
+      int hannWidth;
+      status = 0;
+      fits_read_key(fptr, TINT, (char *)keyword_hanningwidth.c_str(), 
+		    &hannWidth, comment, &status);
+      if(hannWidth != this->par.getHanningWidth()){
+	std::stringstream errmsg;
+	errmsg << keyword_hanningwidth << " keyword in smoothFile (" 
+	       << hannWidth << ") does not match the hanningWidth parameter (" 
+	       << this->par.getHanningWidth() << ").\n";
+	duchampError("readSmoothCube", errmsg.str());
+	return FAILURE;
+      }
+
+    }
+    else if(this->par.getSmoothType()=="spatial"){
+
+      float maj,min,pa;
+      status = 0;
+      fits_read_key(fptr, TFLOAT, (char *)keyword_kernmaj.c_str(), 
+		    &maj, comment, &status);
+      if(maj != this->par.getKernMaj()){
+	std::stringstream errmsg;
+	errmsg << keyword_kernmaj << " keyword in smoothFile (" 
+	       << maj << ") does not match the kernMaj parameter (" 
+	       << this->par.getKernMaj() << ").\n";
+	duchampError("readSmoothCube", errmsg.str());
+	return FAILURE;
+      }
+      status = 0;
+      fits_read_key(fptr, TFLOAT, (char *)keyword_kernmin.c_str(), 
+		    &min, comment, &status);
+      if(min != this->par.getKernMin()){
+	std::stringstream errmsg;
+	errmsg << keyword_kernmin << " keyword in smoothFile (" 
+	       << maj << ") does not match the kernMin parameter (" 
+	       << this->par.getKernMin() << ").\n";
+	duchampError("readSmoothCube", errmsg.str());
+	return FAILURE;
+      }
+      status = 0;
+      fits_read_key(fptr, TFLOAT, (char *)keyword_kernpa.c_str(), 
+		    &pa, comment, &status);
+      if(pa != this->par.getKernPA()){
+	std::stringstream errmsg;
+	errmsg << keyword_kernpa << " keyword in smoothFile (" 
+	       << maj << ") does not match the kernPA parameter (" 
+	       << this->par.getKernPA() << ").\n";
+	duchampError("readSmoothCube", errmsg.str());
+	return FAILURE;
+      }
+
     }
 
     //
-    // If we get to here, the smoothFile exists and the hanningWidth
-    //  parameter matches that requested.
+    // If we get to here, the smoothFile exists and the smoothing
+    // parameters match those requested.
 
     status = 0;
     fits_read_pix(fptr, TFLOAT, fpixel, this->numPixels, NULL, 

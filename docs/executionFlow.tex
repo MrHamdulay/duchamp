@@ -279,19 +279,92 @@ give a better reconstruction, but take longer and use more memory when
 executing. When multi-dimensional reconstruction is selected, this
 filter is used to construct a 2- or 3-dimensional equivalent.
 
+\secB{Smoothing the cube}
+\label{sec-smoothing}
+
+An alternative to doing the wavelet reconstruction is to smooth the
+cube.  This technique can be useful in reducing the noise level
+slightly (at the cost of making neighbouring pixels correlated and
+blurring any signal present), and is particularly well suited to the
+case where a particular signal size (\ie a certain channel width or
+spatial size) is believed to be present in the data.
+
+There are two alternative methods that can be used: spectral
+smoothing, using the Hanning filter; or spatial smoothing, using a 2D
+Gaussian kernel. These alternatives are outlined below. To utilise the
+smoothing option, set the parameter \texttt{flagSmooth=true} and set
+\texttt{smoothType} to either \texttt{spectral} or \texttt{spatial}.
+
+\secC{Spectral smoothing}
+
+When \texttt{smoothType=spectral} is selected, the cube is smoothed
+only in the spectral domain. Each spectrum is independently smoothed
+by a Hanning filter, and then put back together to form the smoothed
+cube, which is then used by the searching algorithm (see below). Note
+that in the case of both the reconstruction and the smoothing options
+being requested, the reconstruction will take precedence and the
+smoothing will \emph{not} be done.
+
+There is only one parameter necessary to define the degree of
+smoothing -- the Hanning width $a$ (given by the user parameter
+\texttt{hanningWidth}). The coefficients $c(x)$ of the Hanning filter
+are defined by
+\[
+c(x) = 
+  \begin{cases}
+   \frac{1}{2}\left(1+\cos(\frac{\pi x}{a})\right) &|x| \leq (a+1)/2\\
+   0                                               &|x| > (a+1)/2.
+  \end{cases}
+,\ a,x \in \mathbb{Z}
+\]
+Note that the width specified must be an
+odd integer (if the parameter provided is even, it is incremented by
+one).
+
+\secC{Spatial smoothing}
+
+When \texttt{smoothType=spatial} is selected, the cube is smoothed
+only in the spatial domain. Each channel map is independently smoothed
+by a two-dimensional Gaussian kernel, and then put back together to
+form the smoothed cube, and used in the searching algorithm (see
+below). Again, reconstruction is always done by preference if both
+techniques are requested.
+
+The two-dimensional Gaussian has three parameters to define it,
+governed by the elliptical cross-sectional shape of the gaussian
+function: the FWHM (full-width at half-maximum) of the major and minor
+axes, and the position angle of the major axis. These are given by the
+user parameters \texttt{kernMaj, kernMin \& kernPA}. If we define
+these parameters as $a,b,\theta$ respectively, we can define the
+kernel by the function
+\[ 
+k(x,y) = \exp\left[-0.5 \left(\frac{X^2}{\sigma_X^2} + 
+                              \frac{Y^2}{\sigma_Y^2}   \right) \right] 
+\]
+where $(x,y)$ are the offsets from the central pixel of the gaussian
+function, and 
+\begin{align*}
+X& = x\sin\theta - y\cos\theta&
+  Y&= x\cos\theta + y\sin\theta\\
+\sigma_X^2& = \frac{(a/2)^2}{2\ln2}&
+  \sigma_Y^2& = \frac{(b/2)^2}{2\ln2}\\
+\end{align*}
+
+
 \secB{Input/Output of reconstructed arrays}
 \label{sec-reconIO}
 
-The reconstruction stage can be relatively time-consuming,
-particularly for large cubes and reconstructions in 3-D. To get around
-this, \duchamp provides a shortcut to allow users to perform multiple
-searches (\eg with different thresholds) on the same reconstruction
-without calculating the reconstruction each time.
+The smoothing and reconstruction stages can be relatively
+time-consuming, particularly for large cubes and reconstructions in
+3-D (or even spatial smoothing). To get around this, \duchamp provides
+a shortcut to allow users to perform multiple searches (\eg with
+different thresholds) on the same reconstruction/smoothing setup
+without re-doing the calculations each time.
 
-The first step is to choose to save the reconstructed array as a FITS
-file by setting \texttt{flagOutputRecon = true}. The file will be
-saved in the same directory as the input image, so the user needs to
-have write permissions for that directory.
+To save the reconstructed array as a FITS file, set
+\texttt{flagOutputRecon = true}. The file will be saved in the same
+directory as the input image, so the user needs to have write
+permissions for that directory.
 
 The filename will be derived from the input filename, with extra
 information detailing the reconstruction that has been done. For
@@ -318,92 +391,24 @@ the name of the reconstructed FITS file using the \texttt{reconFile}
 parameter, or, if this is not specified, \duchamp searches for the
 file with the name as defined above. If the file is not found, the
 reconstruction is performed as normal. Note that to do this, the user
-needs to set
-\texttt{flagAtrous = true} (obviously, if this is \texttt{false}, the
-reconstruction is not needed).
+needs to set \texttt{flagAtrous = true} (obviously, if this is
+\texttt{false}, the reconstruction is not needed).
 
-\secB{Smoothing the cube}
-\label{sec-smoothing}
-
-An alternative to doing the wavelet reconstruction is to smooth the
-cube.  This technique can be useful in reducing the noise level
-slightly (at the cost of making neighbouring pixels correlated and
-blurring any signal present), and is particularly well suited to the
-case where a particular signal size (\ie a certain channel width or
-spatial size) is believed to be present in the data.
-
-There are two alternative methods that can be used: spectral
-smoothing, using the Hanning filter; or spatial smoothing, using a 2D
-Gaussian kernel. These alternatives are outlined below. To utilise the
-smoothing option, set the parameter \texttt{flagSmooth=true} and set
-\texttt{smoothType} to either \texttt{spectral} or \texttt{spatial}.
-
-The user is able to save the smoothed array in exactly the same manner
-as for the reconstructed array -- set \texttt{flagOutputSmooth =
-true}, and then the smoothed array will be saved in either
-\texttt{image.SMOOTH-1D-a.fits}, where a is replaced by the Hanning width
-used, or \texttt{image.SMOOTH-2D-a-b-c.fits}, where the Gaussian
-kernel parameters are a,b,c. Similarly, a saved file can be read in by
-setting \texttt{flagSmoothExists = true} and either specifying a file
-to be read with the \texttt{smoothFile} parameter or relying on
-\duchamp to find the file with the name as given above.
-
-\secC{Spectral smoothing}
-
-When \texttt{smoothType=spectral} is selected, the cube is smoothed
-only in the spectral domain. Each spectrum is independently smoothed
-by a Hanning filter, and then put back together to form the smoothed
-cube, which is then used by the searching algorithm (see below). Note
-that in the case of both the reconstruction and the smoothing options
-being requested, the reconstruction will take precedence and the
-smoothing will \emph{not} be done.
-
-There is only one parameter necessary to define the degree of
-smoothing -- the Hanning width $a$ (given by the user parameter
-\texttt{hanningWidth}). The coefficients $c(x)$ of the Hanning filter
-are defined by
-\[
-c(x) = 
-  \begin{cases}
-   \frac{1}{2}\left(1+\cos(\frac{\pi x}{a})\right) &|x| \leq (a+1)/2\\
-   0                                               &|x| > (a+1)/2.
-  \end{cases}
-\]
-where $a,x \in \mathbb{Z}$. Note that the width specified must be an
-odd integer (if the parameter provided is even, it is incremented by
-one).
-
-\secC{Spatial smoothing}
-
-When \texttt{smoothType=spatial} is selected, the cube is smoothed
-only in the spatial domain. Each channel map is independently smoothed
-by a two-dimensional Gaussian kernel, and then put back together to
-form the smoothed cube, and used in the searching algorithm (see
-below). Again, reconstruction is always done by preference if both
-techniques are requested.
-
-The two-dimensional Gaussian has three parameters to define it,
-governed by the elliptical cross-sectional shape of the gaussian
-function: the FWHM (full-width at half-maximum) of the major and minor
-axes, and the position angle of the major axis. These are given by the
-user parameters \texttt{kernMaj, kernMin \& kernPA}. If we define
-these parameters as $a,b,\theta$ respectively, we can define the
-kernel by the function
-\[ 
-k(x,y) = \exp\left(-0.5 \left(X^2/\sigma_X^2 + Y^2/\sigma_Y^2\right) \right) 
-\]
-where $(x,y)$ are the offsets from the central pixel of the gaussian
-function, and 
-\begin{eqnarray}
-X           &= &x\sin\theta - y\cos\theta\\
-Y           &= &x\cos\theta + y\sin\theta\\
-\sigma_X^2  &= &\frac{(a/2)^2}{2\ln2}\\
-\sigma_Y^2  &= &\frac{(b/2)^2}{2\ln2}\\
-\end{eqnarray}
+To save the smoothed array, set \texttt{flagOutputSmooth = true}. The
+name of the saved file will depend on the method of smoothing used. It
+will be either \texttt{image.SMOOTH-1D-a.fits}, where a is replaced by
+the Hanning width used, or \texttt{image.SMOOTH-2D-a-b-c.fits}, where
+the Gaussian kernel parameters are a,b,c. Similarly to the
+reconstruction case, a saved file can be read in by setting
+\texttt{flagSmoothExists = true} and either specifying a file to be
+read with the \texttt{smoothFile} parameter or relying on \duchamp to
+find the file with the name as given above.
 
 
 \secB{Searching the image}
 \label{sec-detection}
+
+\secC{Technique}
 
 The basic idea behind detection is to locate sets of contiguous voxels
 that lie above some threshold. One threshold is calculated for the
@@ -444,13 +449,27 @@ that fluxes of detections will be negative.
 
 A crucial part of the detection process is estimating the statistics
 that define the detection threshold. To determine a threshold, we need
-to estimate from the data two parameters: the middle of the pixel
-distribution, and its spread. For both cases, we again use robust
-methods, using the median and MADFM. If the cube has been
-reconstructed or smoothed, the residuals (defined in the sense of
-original $-$ reconstruction) are used to estimate the noise parameters
-of the cube. Otherwise they are estimated directly from the cube
-itself. In both cases, robust estimators are used.
+to estimate from the data two parameters: the middle of the noise
+distribution (the ``noise level''), and the width of the distribution
+(the ``noise spread''). For both cases, we again use robust methods,
+using the median and MADFM.
+
+The choice of pixels to be used depend on the analysis method. If the
+wavelet reconstruction has been done, the residuals (defined
+in the sense of original $-$ reconstruction) are used to estimate the
+noise spread of the cube, since the reconstruction should pick out
+all significant structure. The noise level (the middle of the
+distribution) is taken from the original array.
+
+If smoothing of the cube has been done instead, all noise parameters
+are measured from the smoothed array, and detections are made with
+these parameters. When the signal-to-noise level is quoted for each
+detection (see \S\ref{sec-output}), the noise parameters of the
+original array are used, since the smoothing process correlates
+neighbouring pixels, reducing the noise level.
+
+If neither reconstruction nor smoothing has been done, then the
+statistics are calculated from the original, input array. 
 
 The parameters that are estimated should be representative of the
 noise in the cube. For the case of small objects embedded in many
@@ -495,17 +514,17 @@ j\alpha/c_N N$.) Note that ``reject hypothesis'' here means ``accept
 the pixel as an object pixel'' (\ie we are rejecting the null
 hypothesis that the pixel belongs to the background).
 
-The $c_N$ values here are normalisation constants that depend on the
+The $c_N$ value here is a normalisation constant that depends on the
 correlated nature of the pixel values. If all the pixels are
 uncorrelated, then $c_N=1$. If $N$ pixels are correlated, then their
 tests will be dependent on each other, and so $c_N = \sum_{i=1}^N
 i^{-1}$. \citet{hopkins02} consider real radio data, where the pixels
 are correlated over the beam. For the calculations done in \duchamp,
-$N=2B$, where $B$ is the beam size in pixels, calculated from
-the FITS header (if the correct keywords -- BMAJ, BMIN -- are not
-present, the size of the beam is taken from the parameter
-\texttt{beamSize}). The factor of 2 comes about because we treat
-neighbouring channels as correlated.
+$N=2B$, where $B$ is the beam size in pixels, calculated from the FITS
+header (if the correct keywords -- BMAJ, BMIN -- are not present, the
+size of the beam is taken from the parameter \texttt{beamSize}). The
+factor of 2 comes about because we treat neighbouring channels as
+correlated.
 
 The theory behind the FDR method implies a direct connection between
 the choice of $\alpha$ and the fraction of detections that will be

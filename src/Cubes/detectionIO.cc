@@ -142,7 +142,10 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
   localCol.push_back(this->fullCols[WDEC]);  // w_dec
   localCol.push_back(this->fullCols[VEL]);  // vel
   localCol.push_back(this->fullCols[WVEL]); // w_vel
-  localCol.push_back(this->fullCols[FINT]); // f_int
+  if(this->head.getNumAxes()>2)
+    localCol.push_back(this->fullCols[FINT]); // f_int
+  else
+    localCol.push_back(this->fullCols[FTOT]); // f_tot
   localCol.push_back(this->fullCols[FPEAK]); // f_peak
   localCol.push_back(this->fullCols[FLAG]); // flag
 
@@ -179,6 +182,26 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
     stream<<"      <PARAM name=\"ATrous Filter\" datatype=\"char\" ucd=\"meta.code;stat\" value=\""
 	  << this->par.getFilterName() << "\" arraysize=\"" << this->par.getFilterName().size() << "\"/>\n";
   }
+  if(this->par.getFlagSmooth()){
+    if(this->par.getSmoothType()=="spectral"){
+      std::string note = "The cube was smoothed spectrally with a Hanning filter, with the following parameters.";
+      stream<<"      <PARAM name=\"Smoothing note\" datatype=\"char\" ucd=\"meta.note\" value=\""
+	    <<note << "\" arraysize=\"" << note.size() << "\"/>\n";
+      stream<<"      <PARAM name=\"Hanning filter width\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" 
+	    << this->par.getHanningWidth() << "\"/>\n";
+    }
+    else if(this->par.getSmoothType()=="spatial"){
+      std::string note = "The cube was smoothed spatially with a Gaussian kernel, with the following parameters.";
+      stream<<"      <PARAM name=\"Smoothing note\" datatype=\"char\" ucd=\"meta.note\" value=\""
+	    <<note << "\" arraysize=\"" << note.size() << "\"/>\n";
+      stream<<"      <PARAM name=\"Gaussian kernel major-axis FWHM\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" 
+	    << this->par.getKernMaj() << "\"/>\n";
+      stream<<"      <PARAM name=\"Gaussian kernel minor-axis FWHM\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" 
+	    << this->par.getKernMin() << "\"/>\n";
+      stream<<"      <PARAM name=\"Gaussian kernel position angle\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" 
+	    << this->par.getKernPA() << "\"/>\n";
+    }    
+  }
   // FIELD section -- names, titles and info for each column.
   stream<<"      <FIELD name=\"ID\" ID=\"col01\" ucd=\"meta.id\" datatype=\"int\" width=\""
 	<<localCol[0].getWidth()<<"\" unit=\"--\"/>\n";
@@ -204,9 +227,14 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
   stream<<"      <FIELD name=\"w_Vel\" ID=\"col08\" ucd=\"phys.veloc;src.dopplerVeloc;spect.line.width\""
 	<<" datatype=\"float\" width=\""<<localCol[7].getWidth()<<"\" precision=\""
 	<<prec[prVEL]<<"\" unit=\""<<fixUnitsVOT(localCol[7].getUnits())<<"\"/>\n";
-  stream<<"      <FIELD name=\"Integrated_Flux\" ID=\"col09\" ucd=\"phot.flux;spect.line.intensity\""
-	<<" datatype=\"float\" width=\""<<localCol[8].getWidth()<<"\" precision=\""
-	<<prec[prFLUX]<<"\" unit=\""<<fixUnitsVOT(localCol[8].getUnits())<<"\"/>\n";
+  if(this->head.getNumAxes()>2)
+    stream<<"      <FIELD name=\"Integrated_Flux\" ID=\"col09\" ucd=\"phot.flux;spect.line.intensity\""
+	  <<" datatype=\"float\" width=\""<<localCol[8].getWidth()<<"\" precision=\""
+	  <<prec[prFLUX]<<"\" unit=\""<<fixUnitsVOT(localCol[8].getUnits())<<"\"/>\n";
+  else
+    stream<<"      <FIELD name=\"Total_Flux\" ID=\"col09\" ucd=\"phot.flux;spect.line.intensity\""
+	  <<" datatype=\"float\" width=\""<<localCol[8].getWidth()<<"\" precision=\""
+	  <<prec[prFLUX]<<"\" unit=\""<<fixUnitsVOT(localCol[8].getUnits())<<"\"/>\n";
   stream<<"      <FIELD name=\"Peak_Flux\" ID=\"col10\" ucd=\"phot.flux;spect.line.intensity\""
 	<<" datatype=\"float\" width=\""<<localCol[9].getWidth()<<"\" precision=\""
 	<<prec[prFLUX]<<"\" unit=\""<<fixUnitsVOT(localCol[9].getUnits())<<"\"/>\n";
@@ -232,7 +260,10 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
       stream<<"<TD>" << setw(localCol[6].getWidth()) << this->objectList[i].getVel()        <<"</TD>";
       stream<<"<TD>" << setw(localCol[7].getWidth()) << this->objectList[i].getVelWidth()   <<"</TD>";
       stream<<setprecision(prec[prFLUX]);
-      stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList[i].getIntegFlux()  <<"</TD>";
+      if(this->head.getNumAxes()>2)
+	stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList[i].getIntegFlux()  <<"</TD>";
+      else
+	stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList[i].getTotalFlux()  <<"</TD>";
       stream<<"<TD>" << setw(localCol[9].getWidth()) << this->objectList[i].getPeakFlux()   <<"</TD>";
       stream<<"<TD>" << setw(localCol[10].getWidth())<< this->objectList[i].getFlagText()   <<"</TD>";
       

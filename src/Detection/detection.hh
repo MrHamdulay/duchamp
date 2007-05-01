@@ -210,6 +210,8 @@ public:
   /** Is the WCS good enough to be used? 
       \return Detection::flagWCS =  True/False */
   bool        isWCS(){return flagWCS;};
+  int         getNumAxes(){return numAxes;};
+  void        setNumAxes(int i){numAxes=i;};
   std::string getName(){return name;};
   void        setName(std::string s){name=s;};
   std::string getRAs(){return raS;};
@@ -267,6 +269,7 @@ private:
   std::string    name;	         ///< IAU-style name (based on position)
   bool           flagWCS;        ///< A flag indicating whether the
 				 ///    WCS parameters have been set.
+  int            numAxes;        ///< The number of axes in the WCS
   std::string    raS;	         ///< Central Right Ascension (or
 				 ///    Longitude) in form 12:34:23
   std::string    decS;	         ///< Central Declination(or
