@@ -78,9 +78,13 @@ public:
       location. */
   std::string outputLabelPix(); 
 
-  /** The spectral output label that contains info on widths & fluxes
-      of the Detection. */
-  std::string outputLabelInfo(); 
+  /** The spectral output label that contains info on fluxes of the
+      Detection. */
+  std::string outputLabelFluxes(); 
+
+  /** The spectral output label that contains info on widths of the
+      Detection. */
+  std::string outputLabelWidths(); 
 
   /** Prints the column headers, except for the different pixel centres. */
   void   outputDetectionTextHeader(std::ostream &stream, 

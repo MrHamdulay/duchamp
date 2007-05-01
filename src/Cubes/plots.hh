@@ -29,15 +29,16 @@ namespace Plot
   const float spZoomX1 = 15.0;      ///< min X-value of zoom box [cm]
   const float spZoomX2 = 16.8;      ///< max X-value of zoom box [cm]
   const float spMapX1  = 17.0;      ///< min X-value of map box [cm]
-  const float spMainY1 =  1.8;      ///< min Y-value of box wrt base
+  const float spMainY1 =  1.5;      ///< min Y-value of box wrt base
 				    ///   of current spectrum [cm]
-  const float spMainY2 =  3.8;      ///< max Y-value of box wrt base
+  const float spMainY2 =  3.4;      ///< max Y-value of box wrt base
 				    ///   of current spectrum [cm]
   const float spXlabelOffset = 3.0; ///< Offset for X-axis label.
   const float spYlabelOffset = 4.0; ///< Offset for Y-axis label.
-  const float spTitleOffset1 = 3.8; ///< Offset for first title line.
-  const float spTitleOffset2 = 2.3; ///< Offset for second title line.
-  const float spTitleOffset3 = 0.8; ///< Offset for third title line.
+  const float spTitleOffset1 = 5.1; ///< Offset for first title line.
+  const float spTitleOffset2 = 3.6; ///< Offset for second title line.
+  const float spTitleOffset3 = 2.1; ///< Offset for third title line.
+  const float spTitleOffset4 = 0.6; ///< Offset for fourth title line.
 
   // These are the constants used for spacing out elements in ImagePlot.
   const float imTitleOffset = 2.7;  ///< Offset for title of map.
@@ -74,13 +75,17 @@ namespace Plot
 	info) in correct place.*/
     void firstHeaderLine(std::string line);   
     
-    /** Write second line of header information (widths and fluxes) in
+    /** Write second line of header information (fluxes) in
 	correct place.*/
     void secondHeaderLine(std::string line);  
 
-    /** Write third line of header information (pixel coordinates) in
+    /** Write third line of header information (WCS widths) in
 	correct place. */
     void thirdHeaderLine(std::string line);   
+
+    /** Write fourth line of header information (pixel coordinates) in
+	correct place. */
+    void fourthHeaderLine(std::string line);   
 
     /** Set up main spectral plotting region.*/
     void gotoMainSpectrum(float x1, float x2, float y1, float y2,
@@ -133,6 +138,8 @@ namespace Plot
     cpgmtxt("t",Plot::spTitleOffset2,0.5,0.5,line.c_str());}
   inline void  SpectralPlot::thirdHeaderLine(std::string line){
     cpgmtxt("t",Plot::spTitleOffset3,0.5,0.5,line.c_str());}
+  inline void  SpectralPlot::fourthHeaderLine(std::string line){
+    cpgmtxt("t",Plot::spTitleOffset4,0.5,0.5,line.c_str());}
   inline int   SpectralPlot::getNumOnPage(){return numOnPage;}
   inline void  SpectralPlot::setNumOnPage(int i){numOnPage=i;}
   inline float SpectralPlot::getPaperWidth(){return paperWidth;}

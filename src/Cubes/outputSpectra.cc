@@ -188,11 +188,13 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   if(this->head.isWCS()){
     label = obj.outputLabelWCS();
     plot.firstHeaderLine(label);
+    label = obj.outputLabelFluxes();
+    plot.secondHeaderLine(label);
   }
-  label = obj.outputLabelInfo();
-  plot.secondHeaderLine(label);
-  label = obj.outputLabelPix();
+  label = obj.outputLabelWidths();
   plot.thirdHeaderLine(label);
+  label = obj.outputLabelPix();
+  plot.fourthHeaderLine(label);
     
   plot.gotoMainSpectrum(vmin,vmax,min,max,fluxLabel);
   cpgline(zdim,specx,specy);

@@ -8,7 +8,7 @@ namespace Statistics
   template <class T> 
   float madfmToSigma(T madfm){
     return float(madfm)/correctionFactor;
-  };
+  }
   template float madfmToSigma<int>(int madfm);
   template float madfmToSigma<long>(long madfm);
   template float madfmToSigma<float>(float madfm);
@@ -16,14 +16,9 @@ namespace Statistics
 
   //--------------------------------------------------------------------
   template <class T> 
-  float sigmaToMADFM(T sigma){
+  float sigmaToMADFM(float sigma){
     return float(sigma)*correctionFactor;
-  };
-  template float sigmaToMADFM<int>(int sigma);
-  template float sigmaToMADFM<long>(long sigma);
-  template float sigmaToMADFM<float>(float sigma);
-  template float sigmaToMADFM<double>(double sigma);
-
+  }
   //--------------------------------------------------------------------
   //--------------------------------------------------------------------
 

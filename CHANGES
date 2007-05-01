@@ -31,7 +31,9 @@ Changes made since the last numbered release:
 * The output now includes three different estimates of the "centre" of
   the detection: peak location, centroid (flux-weighted), or average. 
 
-* Spectral output now includes the baseline, if one was fitted.
+* Spectral output now includes the baseline, if one was fitted. The
+  format of the plot headers is slightly changed, to stop information
+  falling off the edge of the page.
 
 * The subsections can also specify the ability to remove a border of n
   pixels from the edges of an axis (ie. n from the start and from the
@@ -55,7 +57,8 @@ Changes made since the last numbered release:
 
 * Some slight improvements to the user feedback during execution.
 
-* Changed the default value of the reconDim parameter from 3 to 1.
+* Changed the default value of the reconDim parameter from 3 to 1, and
+  the default value of the flagATrous parameter to false.
 
 
 Duchamp version 1.0.7 (2006/11/22)

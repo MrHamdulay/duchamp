@@ -202,7 +202,7 @@ int FitsHeader::readBeamInfo(std::string fname, Param &par)
   if(status[1]||status[2]||status[3]||status[4]||status[5]){ // error
     std::stringstream errmsg;
     errmsg << "Header keywords not present: ";
-    for(int i=0;i<4;i++) if(status[i+1]) errmsg<<keyword[i]<<" ";
+    for(int i=0;i<5;i++) if(status[i+1]) errmsg<<keyword[i]<<" ";
     errmsg << "\nUsing parameter beamSize to determine size of beam.\n";
     duchampWarning("readBeamInfo",errmsg.str());
     this->setBeamSize(par.getBeamSize());

@@ -418,21 +418,15 @@ template <class T> void findAllStats(T *array, int size, bool *mask,
   if((goodSize%2)==0) madfm = (newarray[goodSize/2-1]+newarray[goodSize/2])/2;
   else madfm = newarray[goodSize/2];
 
-  delete [] newarray;
-
-  int start=0;
-  while(!mask[start]){start++;}
-  mean = array[start];
-  for(int i=start+1;i<size;i++){
-    if(mask[i]) mean += array[i];
-  }
+  mean = 0.;
+  for(int i=0;i<goodSize;i++) mean += newarray[i];
   mean /= float(goodSize);
 
-  stddev = (array[start]-mean) * (array[start]-mean);
-  for(int i=1;i<size;i++){
-    if(mask[i]) stddev += (array[i]-mean)*(array[i]-mean);
-  }
+  stddev = 0.;
+  for(int i=0;i<goodSize;i++) stddev += (newarray[i]-mean)*(newarray[i]-mean);
   stddev = sqrt(stddev/float(goodSize-1));
+
+  delete [] newarray;
 
 }
 template void findAllStats<int>(int *array, int size, bool *mask,

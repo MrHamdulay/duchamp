@@ -30,43 +30,42 @@ void Cube::ObjectMerger()
 
     // make a vector "currentList", which starts as a copy of the Cube's 
     //  objectList, but is the one worked on.
-    vector <Detection> *currentList = new vector <Detection>(startSize);
-    *currentList = this->objectList;
+    vector <Detection> currentList;
+    currentList = this->objectList;
     this->objectList.clear();
 
-    mergeList(*currentList, this->par);
+    mergeList(currentList, this->par);
 
     // Do growth stuff
     if(this->par.getFlagGrowth()) {
-      vector <Detection> *newList = new vector <Detection>;
-      for(int i=0;i<currentList->size();i++){
+      vector <Detection> newList;
+      for(int i=0;i<currentList.size();i++){
 	std::cout.setf(std::ios::right);
 	std::cout << "Growing: " << std::setw(6) << i+1 << "/";	   
 	std::cout.unsetf(std::ios::right);
 	std::cout.setf(std::ios::left);
-	std::cout << std::setw(6) << currentList->size() << std::flush;
+	std::cout << std::setw(6) << currentList.size() << std::flush;
 	printBackSpace(22);
 	std::cout << std::flush;
 	Detection *obj = new Detection;
-	*obj = (*currentList)[i];
+	*obj = currentList[i];
 	growObject(*obj,*this);
-	newList->push_back(*obj);
+	newList.push_back(*obj);
 	delete obj;
       }
-      delete currentList;
+      currentList.clear();
       currentList = newList;
       std::cout.unsetf(std::ios::left);
 
       // and do the merging again to pick up objects that have
       //  grown into each other.
-      mergeList(*currentList, this->par);
+      mergeList(currentList, this->par);
     }
 
-    finaliseList(*currentList, this->par);
+    finaliseList(currentList, this->par);
 
-    this->objectList = *currentList;
-    currentList->clear();
-    delete currentList;
+    this->objectList = currentList;
+    currentList.clear();
 
   }
 }

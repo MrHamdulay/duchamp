@@ -701,7 +701,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<stringize(par.getFlagOutputResid())<<std::endl;
   }						       
   if(par.getFlagSmooth()){			       
-    theStream<<std::setw(widthText)<<"Saving Hanning-smoothed cube?"           
+    theStream<<std::setw(widthText)<<"Saving smoothed cube?"           
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagoutputsmooth]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<stringize(par.getFlagOutputSmooth())<<std::endl;

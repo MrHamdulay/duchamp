@@ -22,8 +22,8 @@ namespace Statistics
 
   /** A templated function to do the MADFM-to-rms conversion. */
   template <class T> float madfmToSigma(T madfm);
-  /** A templated function to do the rms-to-MADFM conversion. */
-  template <class T> float sigmaToMADFM(T sigma);
+  /** A non-templated function to do the rms-to-MADFM conversion. */
+  float sigmaToMADFM(float sigma);
 
 
   /**
@@ -48,7 +48,8 @@ namespace Statistics
 
     /** A way of printing the statistics. */
     template <class T> 
-    friend std::ostream& operator<< ( std::ostream& theStream, StatsContainer<T> &s);
+    friend std::ostream& operator<< ( std::ostream& theStream, 
+				      StatsContainer<T> &s);
 
     float getMean(){return mean;};
     void  setMean(float f){mean=f;};
@@ -82,7 +83,7 @@ namespace Statistics
     /** Return the estimator of the amount of spread of the data.*/
     float getSpread();
 
-    /** Scale the noise by a given factor .*/
+    /** Scale the noise by a given factor. */
     void  scaleNoise(float scale);
 
     /** Return the Gaussian probability of a value given the stats. */
@@ -95,14 +96,14 @@ namespace Statistics
     // The idea here is that there are two options to do the calculations:
     //   *The first just uses all the points in the array. If you need to 
     //     remove BLANK points (or something similar), do this beforehand.
-    //   *Alternatively, construct a bool array of the same size, showing which
-    //     points are good, and use the second option.
+    //   *Alternatively, construct a mask array of the same size,
+    //     showing which points are good, and use the second option.
 
     /** Calculate statistics for all elements of a data array */
     void calculate(Type *array, long size);
 
     /** Calculate statistics for a subset of a data array */
-    void calculate(Type *array, long size, bool *isGood);
+    void calculate(Type *array, long size, bool *mask);
 
   private:
     bool   defined;      // a flag indicating whether the stats are defined.

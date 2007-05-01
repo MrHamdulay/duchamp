@@ -289,28 +289,23 @@ std::string Detection::outputLabelWCS()
 }
 //--------------------------------------------------------------------
 
-std::string Detection::outputLabelInfo()
+std::string Detection::outputLabelFluxes()
 {
   /**
-   *  Prints to a std::string the widths of the object (in position
-   *  and velocity), as well as the flux information.
+   *  Prints to a std::string the fluxes of the object, both
+   *  integrated/total and peak, as well as the peak S/N value.
    *  Assumes the WCS parameters of the object have been calculated.
-   *  If they have not (given by the isWCS() function), then the WCS-related 
-   *   outputs are left blank.
-   *  Returns the string.
+   *  If they have not (given by the isWCS() function), then the ID
+   *  number and the total/peak/SNR values are returned.
+   *  /return The string.
    */
 
   std::stringstream ss;
   ss.setf(std::ios::fixed);
   if(this->flagWCS){
-    ss << std::setprecision(this->posPrec);
-    ss << "w_"          << this->lngtype  <<"="    << this->raWidth;
-    ss << ", w_"        << this->lattype  <<"="    << this->decWidth;
     if(this->numAxes>2){
-      ss << std::setprecision(this->velPrec);
-      ss << ", w_Vel="    << this->velWidth << " " << this->specUnits;
       ss << std::setprecision(this->fintPrec);
-      ss << ", F\\dint\\u=" << this->intFlux << " " << this->intFluxUnits;
+      ss << "F\\dint\\u=" << this->intFlux << " " << this->intFluxUnits;
     }
     else{
       ss << std::setprecision(this->fintPrec);
@@ -331,6 +326,36 @@ std::string Detection::outputLabelInfo()
     ss << ", S/N\\dmax\\u=" << this->peakSNR;
   }
   std::string output = ss.str();
+
+  return output;
+}
+//--------------------------------------------------------------------
+
+std::string Detection::outputLabelWidths()
+{
+  /**
+   *  Prints to a std::string the widths of the object in position
+   *  and velocity.
+   *  Assumes the WCS parameters of the object have been calculated.
+   *  If they have not (given by the isWCS() function), then a string of 
+   *   length 0 is returned.
+   *  \returns The string.
+   */
+
+  std::string output;
+  if(this->flagWCS){
+    std::stringstream ss;
+    ss.setf(std::ios::fixed);
+    ss << std::setprecision(this->posPrec);
+    ss << "w_"          << this->lngtype  <<"="    << this->raWidth;
+    ss << ", w_"        << this->lattype  <<"="    << this->decWidth;
+    if(this->numAxes>2){
+      ss << std::setprecision(this->velPrec);
+      ss << ", w_Vel="    << this->velWidth << " " << this->specUnits;
+    }
+    output = ss.str();
+  }
+  else output = this->outputLabelFluxes();
 
   return output;
 }
