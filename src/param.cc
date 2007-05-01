@@ -95,7 +95,7 @@ Param::Param(){
   this->kernMin           = 3.;
   this->kernPA            = 0.;
   // A trous reconstruction parameters
-  this->flagATrous        = true;
+  this->flagATrous        = false;
   this->reconDim          = 1;
   this->scaleMin          = 1;
   this->snrRecon          = 4.;

@@ -106,7 +106,7 @@ growthCut	2.
 #               reconstruction:  1 = B3-spline filter, 2 = Triangle function, 
 #                                3 = Haar wavelet. Other numbers default to 2.
 
-flagATrous	1
+flagATrous	false
 reconDim        1
 scaleMin	1
 snrRecon	4.

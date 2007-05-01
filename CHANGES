@@ -8,6 +8,12 @@ Changes made since the last numbered release:
   of channel-maps. This improves the memory usage and the speed of
   execution (particularly for routines such as the merging routines).
 
+* Addition of ability to spatially smooth the cube before
+  searching. This is done with a Gaussian kernel, the size and shape
+  of which can be specified by the user. There is a new parameter
+  smoothType that distinguishes this method from the spectral (Hanning)
+  smoothing already in use.
+
 * Changed the way detection is done -- now only search in 2D images,
   keeping all detections (ie. no minimum-pixel requirement). This
   should be the same as doing both the 1D and 2D searches with the
@@ -21,6 +27,11 @@ Changes made since the last numbered release:
 * Added ability to specify a statsec, so that the statistics are only
   calculated from a given subsection of the cube, rather than the full
   cube.
+
+* The output now includes three different estimates of the "centre" of
+  the detection: peak location, centroid (flux-weighted), or average. 
+
+* Spectral output now includes the baseline, if one was fitted.
 
 * The subsections can also specify the ability to remove a border of n
   pixels from the edges of an axis (ie. n from the start and from the
@@ -45,6 +56,7 @@ Changes made since the last numbered release:
 * Some slight improvements to the user feedback during execution.
 
 * Changed the default value of the reconDim parameter from 3 to 1.
+
 
 Duchamp version 1.0.7 (2006/11/22)
 ----------------------------------
