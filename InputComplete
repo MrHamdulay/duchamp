@@ -43,7 +43,7 @@ reconFile	your-smoothed-file-here
 # detectionMap, momentMap -- the postscript files produced.
 # flagXOutput -- display the moment map in a pgplot window
 
-flagLog         1
+flagLog         0
 logFile		duchamp-Logfile.txt
 outFile		duchamp-Results.txt
 spectraFile	duchamp-Spectra.ps

@@ -33,7 +33,7 @@ Param::Param(){
   this->flagSmoothExists  = false;
   this->smoothFile        = "";
   // Output files
-  this->flagLog           = true;
+  this->flagLog           = false;
   this->logFile           = "duchamp-Logfile.txt";
   this->outFile           = "duchamp-Results.txt";
   this->spectraFile       = "duchamp-Spectra.ps";
