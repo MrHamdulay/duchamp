@@ -24,8 +24,20 @@ diff -I"New run of the Duchamp sourcefinder" verification/log2.txt verification/
 
 echo " "
 echo "Running the third Duchamp test:"
+echo "  [This spatially smoothes the cube, then searches with simple sigma-clipping]"
+rm -f /tmp/duchamptest
+./Duchamp -p verification/input4 > /tmp/duchamptest
+rm -f /tmp/duchamptest
+echo "Done. Comparison to standard result:"
+echo "Differences with Results:"
+diff -I"Results of the Duchamp source finder:" verification/results4.txt verification/stdResults4.txt
+echo "Differences with Log:"
+diff -I"New run of the Duchamp sourcefinder" verification/log4.txt verification/stdLog4.txt
+
+echo " "
+echo "Running the fourth Duchamp test:"
 echo "  [This reconstructs the cube, then searches with simple sigma-clipping]"
-echo "  [It should take a bit longer than the first two.]"
+echo "  [It should take a bit longer than the others.]"
 rm -f /tmp/duchamptest
 ./Duchamp -p verification/input3 > /tmp/duchamptest
 rm -f /tmp/duchamptest
@@ -35,4 +47,5 @@ diff -I"Results of the Duchamp source finder:" verification/results3.txt verific
 echo "Differences with Log:"
 diff -I"New run of the Duchamp sourcefinder" verification/log3.txt verification/stdLog3.txt
 
+echo " "
 echo "No differences? Then everything worked as expected\!"

@@ -2,7 +2,7 @@ imageFile	verification/verificationCube.fits
 flagMW		false
 flagBlankPix	false
 flagAtrous	false
-snrCut		3
+snrCut		4
 minChannels     2
 flagMaps        false
 flagLog         true

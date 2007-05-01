@@ -46,7 +46,7 @@ void GaussSmooth::define(float maj, float min, float pa)
   const float precision = 1.e-4;
   int kernelHW = int(ceil(sqrt(-1.*log(precision)*sigmaX2)));
   this->kernWidth = 2*kernelHW + 1;
-  std::cerr << "Making a kernel of width " << this->kernWidth << "\n";
+//   std::cerr << "Making a kernel of width " << this->kernWidth << "\n";
 
   if(this->allocated) delete [] this->kernel;
   this->kernel = new float[this->kernWidth*this->kernWidth];
@@ -67,7 +67,7 @@ void GaussSmooth::define(float maj, float min, float pa)
     }
   }
   this->stddevScale = sqrt(this->stddevScale);
-  std::cerr << "Stddev scaling factor = " << this->stddevScale << "\n";
+//   std::cerr << "Stddev scaling factor = " << this->stddevScale << "\n";
 }
 
 float *GaussSmooth::smooth(float *input, int xdim, int ydim)

@@ -4,7 +4,7 @@ flagBlankPix	false
 flagFDR		false
 flagAtrous	true
 snrRecon        3
-snrCut		2
+snrCut		3
 minChannels     2
 flagMaps        false
 flagLog         true
