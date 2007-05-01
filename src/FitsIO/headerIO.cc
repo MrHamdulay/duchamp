@@ -218,7 +218,7 @@ int FitsHeader::readBeamInfo(std::string fname, Param &par)
    
   // Close the FITS file.
   fits_close_file(fptr, &status[6]);
-  if (status[5]){
+  if (status[6]){
     duchampWarning("readBeamInfo","Error closing file: ");
     fits_report_error(stderr, status[6]);
   }
