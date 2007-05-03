@@ -10,7 +10,10 @@ Changes made since the last numbered release:
 
 * Addition of ability to spatially smooth the cube before
   searching. This is done with a Gaussian kernel, the size and shape
-  of which can be specified by the user. There is a new parameter
+  of which can be specified by the user, using the parameters kernMaj
+  & kernMin (which are the FWHM for the major & minor axes -- if
+  kernMin is not given it is assumed to match kernMaj) and kernPA (the
+  position angle of the major axis).  There is a new parameter
   smoothType that distinguishes this method from the spectral (Hanning)
   smoothing already in use.
 
@@ -27,6 +30,11 @@ Changes made since the last numbered release:
 * Added ability to specify a statsec, so that the statistics are only
   calculated from a given subsection of the cube, rather than the full
   cube.
+
+* There has been a subtle change in the way BLANK pixels are dealt
+  with. To enable trimming of BLANK pixels, users should use the new 
+  parameter flagTrim. The parameters flagBlankPix and blankPixVal are
+  no longer accessible via the parameter file.
 
 * The output now includes three different estimates of the "centre" of
   the detection: peak location, centroid (flux-weighted), or average. 
@@ -60,7 +68,6 @@ Changes made since the last numbered release:
 * Changed the default value of the reconDim parameter from 3 to 1, and
   the default value of the flagATrous parameter to false.
 
-
 Duchamp version 1.0.7 (2006/11/22)
 ----------------------------------
 
@@ -82,12 +89,12 @@ One new feature, and some improvements and bug-fixes.
   large cubes. The speed of some routines has also been improved, by
   removing unnecessarily repetitive loops.
 
-* The sorting routines have been changed, and should now be slightly quicker 
+* The sorting routines have been changed, and should now be slightly quicker
   (and a bit more robust).
 
-* Enabled the scale bar (plotted on the 0th moment map in the spectral output 
-  file) to be able to deal with much finer spatial scales (as may be expected
-  from VLBI data).
+* Enabled the scale bar (plotted on the 0th moment map in the spectral
+  output file) to be able to deal with much finer spatial scales (as
+  may be expected from VLBI data).
 
 * Other minor changes to code and presentation.
 

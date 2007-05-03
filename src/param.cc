@@ -510,7 +510,6 @@ int Param::readParams(std::string paramfile)
 
       if(arg=="flagnegative")    this->flagNegative = readFlag(ss);
       if(arg=="flagtrim")        this->flagTrim = readFlag(ss); 
-      //      if(arg=="blankpixvalue")   this->blankPixValue = readFval(ss); 
       if(arg=="flagmw")          this->flagMW = readFlag(ss); 
       if(arg=="maxmw")           this->maxMW = readIval(ss); 
       if(arg=="minmw")           this->minMW = readIval(ss); 
