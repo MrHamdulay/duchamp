@@ -23,10 +23,10 @@ public:
   void   define(float maj, float min, float pa); 
 
   /** Smooth an array with the Gaussian kernel*/
-  float *smooth(float *array, int xdim, int ydim);  
+  float *smooth(float *input, int xdim, int ydim);  
   /** Smooth an array with the Gaussian kernel, using a mask to define
       blank pixels*/
-  float *smooth(float *array, int xdim, int ydim, bool *mask);  
+  float *smooth(float *input, int xdim, int ydim, bool *mask);  
   
   void   setKernMaj(float f){kernMaj=f;};
   void   setKernMin(float f){kernMin=f;};

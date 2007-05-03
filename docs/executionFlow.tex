@@ -61,28 +61,6 @@ end of each axis).
 All types of subsections can be combined \eg \texttt{[5,2:98,*]}.
 
 
-%A sub-section of an image can be requested via the \texttt{subsection}
-%parameter -- this can be a good idea if the cube has very noisy edges,
-%which may produce many spurious detections. The generalised form of
-%the subsection that is used by \textsc{cfitsio} is
-%\texttt{[x1:x2:dx,y1:y2:dy,z1:z2:dz,...]}, such that the x-coordinates run
-%from \texttt{x1} to \texttt{x2} (inclusive), with steps of
-%\texttt{dx}. The step value can be omitted (so a subsection of the
-%form \texttt{[2:50,2:50,10:1000]} is still valid). \duchamp does not
-%make use of any step value present in the subsection string, and any
-%that are present are removed before the file is opened.
-%
-%If one wants the full range of a coordinate then replace the range
-%with an asterisk, \eg \texttt{[2:50,2:50,*]}. If one wants to use a
-%subsection, one must set \texttt{flagSubsection = 1}. A complete
-%description of the section syntax can be found at the \textsc{fitsio}
-%web site%
-%\footnote{%
-%\href%
-%{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/c/c\_user/node91.html}%
-%{http://heasarc.gsfc.nasa.gov/docs/software/fitsio/c/c\_user/node91.html}}.
-%
-
 \secB{Image modification}
 \label{sec-modify}
 
@@ -91,31 +69,28 @@ execution and efficiency of \duchamp (their use is optional, governed
 by the relevant flags in the parameter file).
 
 \secC{BLANK pixel removal}
+\label{sec-blank}
 
 If the imaged area of a cube is non-rectangular (see the example in
-Fig.~\ref{fig-moment}, a cube from the HIPASS survey), BLANK pixels are
-used to pad it out to a rectangular shape. The value of these pixels
-is given by the FITS header keywords BLANK, BSCALE and BZERO. While
-these pixels make the image a nice shape, they will unnecessarily
-interfere with the processing (as well as taking up needless
-memory). The first step, then, is to trim them from the edge. This is
-done when the parameter \texttt{flagBlankPix=true}. If the above
-keywords are not present, the user can specify the BLANK value by the
-parameter \texttt{blankPixValue}.
+Fig.~\ref{fig-moment}, a cube from the HIPASS survey), BLANK pixels
+are used to pad it out to a rectangular shape. The value of these
+pixels is given by the FITS header keywords BLANK, BSCALE and
+BZERO. While these pixels make the image a nice shape, they will take
+up unnecessary space in memory, and so to potentially speed up the
+processing we can trim them from the edge. This is done when the
+parameter \texttt{flagTrim=true}. If the above keywords are not
+present, the trimming will not be done (in this case, a similar effect
+can be accomplished, if one knows where the ``blank'' pixels are, by
+using the subsection option).
 
-Removing BLANK pixels is particularly important for the reconstruction
-step, as lots of BLANK pixels on the edges will smooth out features in
-the wavelet calculation stage. The trimming will also reduce the size
-of the cube's array, speeding up the execution. The amount of trimming
-is recorded, and these pixels are added back in once the
-source-detection is completed (so that quoted pixel positions are
-applicable to the original cube).
-
-Rows and columns are trimmed one at a time until the first non-BLANK
-pixel is reached, so that the image remains rectangular. In practice,
-this means that there will be some BLANK pixels left in the trimmed
-image (if the non-BLANK region is non-rectangular). However, these are
-ignored in all further calculations done on the cube.
+The amount of trimming is recorded, and these pixels are added back in
+once the source-detection is completed (so that quoted pixel positions
+are applicable to the original cube). Rows and columns are trimmed one
+at a time until the first non-BLANK pixel is reached, so that the
+image remains rectangular. In practice, this means that there will be
+some BLANK pixels left in the trimmed image (if the non-BLANK region
+is non-rectangular). However, these are ignored in all further
+calculations done on the cube.
 
 \secC{Baseline removal}
 
@@ -191,10 +166,10 @@ The steps in the \atrous reconstruction are as follows:
   requested threshold (given by \texttt{snrRecon} as the number of
   $\sigma$ above the mean and adjusted to the current scale -- see
   Appendix~\ref{app-scaling}), add these to the reconstructed array.
-\item The separation of the filter coefficients is doubled. (Note that
-  this step provides the name of the procedure\footnote{\atrous means
-  ``with holes'' in French.}, as gaps or holes are created in the
-  filter coverage.)
+\item The separation between the filter coefficients is doubled. (Note
+  that this step provides the name of the procedure\footnote{\atrous
+  means ``with holes'' in French.}, as gaps or holes are created in
+  the filter coverage.)
 \item The procedure is repeated from step 2, using the convolved array
   as the input array.
 \item Continue until the required maximum number of scales is reached.
@@ -314,8 +289,7 @@ c(x) =
   \begin{cases}
    \frac{1}{2}\left(1+\cos(\frac{\pi x}{a})\right) &|x| \leq (a+1)/2\\
    0                                               &|x| > (a+1)/2.
-  \end{cases}
-,\ a,x \in \mathbb{Z}
+  \end{cases},\ a,x \in \mathbb{Z}
 \]
 Note that the width specified must be an
 odd integer (if the parameter provided is even, it is incremented by
@@ -325,18 +299,20 @@ one).
 
 When \texttt{smoothType=spatial} is selected, the cube is smoothed
 only in the spatial domain. Each channel map is independently smoothed
-by a two-dimensional Gaussian kernel, and then put back together to
-form the smoothed cube, and used in the searching algorithm (see
-below). Again, reconstruction is always done by preference if both
-techniques are requested.
+by a two-dimensional Gaussian kernel, put back together to form the
+smoothed cube, and used in the searching algorithm (see below). Again,
+reconstruction is always done by preference if both techniques are
+requested.
 
 The two-dimensional Gaussian has three parameters to define it,
-governed by the elliptical cross-sectional shape of the gaussian
+governed by the elliptical cross-sectional shape of the Gaussian
 function: the FWHM (full-width at half-maximum) of the major and minor
 axes, and the position angle of the major axis. These are given by the
-user parameters \texttt{kernMaj, kernMin \& kernPA}. If we define
-these parameters as $a,b,\theta$ respectively, we can define the
-kernel by the function
+user parameters \texttt{kernMaj, kernMin \& kernPA}. If a circular
+Gaussian is required, the user need only provide the \texttt{kernMaj}
+parameter. The \texttt{kernMin} parameter will then be set to the same
+value, and \texttt{kernPA} to zero.  If we define these parameters as
+$a,b,\theta$ respectively, we can define the kernel by the function
 \[ 
 k(x,y) = \exp\left[-0.5 \left(\frac{X^2}{\sigma_X^2} + 
                               \frac{Y^2}{\sigma_Y^2}   \right) \right] 
@@ -350,8 +326,7 @@ X& = x\sin\theta - y\cos\theta&
   \sigma_Y^2& = \frac{(b/2)^2}{2\ln2}\\
 \end{align*}
 
-
-\secB{Input/Output of reconstructed arrays}
+\secB{Input/Output of reconstructed/smoothed arrays}
 \label{sec-reconIO}
 
 The smoothing and reconstruction stages can be relatively
@@ -524,7 +499,8 @@ $N=2B$, where $B$ is the beam size in pixels, calculated from the FITS
 header (if the correct keywords -- BMAJ, BMIN -- are not present, the
 size of the beam is taken from the parameter \texttt{beamSize}). The
 factor of 2 comes about because we treat neighbouring channels as
-correlated.
+correlated. In the case of a two-dimensional image, we just have
+$N=B$. 
 
 The theory behind the FDR method implies a direct connection between
 the choice of $\alpha$ and the fraction of detections that will be
@@ -582,7 +558,7 @@ threshold. This threshold is lower than the one used for the initial
 detection, but above the noise level, so that faint pixels are only
 detected when they are close to a bright pixel. The value of this
 threshold is a possible input parameter (\texttt{growthCut}), with a
-default value of $1.5\sigma$.
+default value of $2\sigma$.
 
 The use of the growth algorithm is controlled by the
 \texttt{flagGrowth} parameter -- the default value of which is
@@ -591,10 +567,10 @@ merging algorithm a second time, to pick up any detections that now
 overlap or have grown over each other.
 
 Finally, to be accepted, the detections must span \emph{both} a
-minimum number of channels (to remove any spurious single-channel
-spikes that may be present), and a minimum number of spatial
-pixels. These numbers, as for the original detection step, are set
-with the \texttt{minChannels} and \texttt{minPix} parameters. The
+minimum number of channels (enabling the removal of any spurious
+single-channel spikes that may be present), and a minimum number of
+spatial pixels. These numbers, as for the original detection step, are
+set with the \texttt{minChannels} and \texttt{minPix} parameters. The
 channel requirement means there must be at least one set of
 \texttt{minChannels} consecutive channels in the source for it to be
 accepted.

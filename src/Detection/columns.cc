@@ -84,6 +84,10 @@ namespace Column
   template <class T> 
   void Col::printEntry(std::ostream &stream, T value)
   {
+    /**
+     *  \param stream Where the printing is done.
+     *  \param value  The value to be printed.
+     */
     stream << std::setprecision(this->precision)
 	   << std::setw(this->width) 
 	   << std::setfill(' ')
@@ -221,7 +225,7 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
 	for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
 	
 	val = objectList[obj].getVel();
-	tempwidth = int( log10(fabs(val)) + 1) + newset[VEL].getPrecision() + 2;
+	tempwidth = int(log10(fabs(val)) + 1) + newset[VEL].getPrecision() + 2;
 	if(val<0) tempwidth++;
 	for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
 	if((fabs(val) < 1.)&&(val>0.)){

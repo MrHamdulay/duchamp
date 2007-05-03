@@ -35,6 +35,10 @@ int Cube::readSmoothCube()
   }
   else {
 
+    // if kernMin is negative (not defined), make it equal to kernMaj
+    if(this->par.getKernMin() < 0) 
+      this->par.setKernMin(this->par.getKernMaj());
+
     // Check to see whether the parameter smoothFile is defined
     bool smoothGood = false;
     int exists;

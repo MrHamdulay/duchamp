@@ -167,8 +167,10 @@ public:
   bool   getFlagUsingBeam(){return flagUsingBeam;};
   void   setFlagUsingBeam(bool b){flagUsingBeam=b;};
   //
-  bool   getFlagCubeTrimmed(){return flagTrimmed;};
-  void   setFlagCubeTrimmed(bool flag){flagTrimmed = flag;};
+  bool   getFlagTrim(){return flagTrim;};
+  void   setFlagTrim(bool b){flagTrim=b;};
+  bool   getFlagCubeTrimmed(){return hasBeenTrimmed;};
+  void   setFlagCubeTrimmed(bool flag){hasBeenTrimmed = flag;};
   long   getBorderLeft(){return borderLeft;};
   void   setBorderLeft(long b){borderLeft = b;};
   long   getBorderRight(){return borderRight;};
@@ -326,7 +328,8 @@ private:
                           ///   parameter, otherwise we use the value
                           ///   in the FITS header.
   // Trim-related
-  bool   flagTrimmed;     ///< Has the cube been trimmed of excess
+  bool   flagTrim;        ///< Does the user want the cube trimmed?
+  bool   hasBeenTrimmed;  ///< Has the cube been trimmed of excess
 			  ///   BLANKs around the edge?
   long   borderLeft;      ///< The number of BLANK pixels trimmed from
 			  ///   the left of the cube;

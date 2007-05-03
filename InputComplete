@@ -60,14 +60,14 @@ momentMap       duchamp-MomentMap.ps
 flagXOutput     1
 
 # FIXING UP THE CUBE
-# flagBlankPix -- whether to replace & ignore blank pixels. 
+# flagTrim -- whether to trim blank pixels from the edges of the cube.
 # blankPixValue -- what value they should take. This is overridden by 
 #                  FITS header information.
 # flagBaseline -- whether to subtract spectral baselines before searching
 # flagMW -- ignore a range of channels (to remove Milky Way emission)?
 # minMW, maxMW -- the first and last channels to be ignored
 
-flagBlankPix    1
+flagTrim        0
 blankPixValue	-8.00061
 flagMW		0
 minMW		75
@@ -168,9 +168,12 @@ minPix		2
 #                    all spatial pixels present ("sum")
 # spectralUnits -- what units you want the spectral axis to be plotted in and 
 #                   values quoted in (including the units of integrated flux)
+# pixelCentre -- which option to use for quoting the centre of the detection. 
+#                 Options are: centroid, average, peak.
 
 verbose         1
 drawBorders	1
 drawBlankEdges  1
 spectralMethod  peak
 spectralUnits   km/s
+pixelCentre     centroid

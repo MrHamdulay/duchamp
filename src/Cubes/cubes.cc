@@ -654,7 +654,6 @@ void Cube::setCubeStats()
     
     long xysize = this->axisDim[0]*this->axisDim[1];
 
-    // get number of good pixels;
     bool *mask = new bool[this->numPixels];
     int vox,goodSize = 0;
     for(int x=0;x<this->axisDim[0];x++){
@@ -676,7 +675,8 @@ void Cube::setCubeStats()
       // residual recompute array values to be residuals & then find
       // stddev & madfm
       if(!this->reconExists)
-	duchampError("setCubeStats","Reconstruction not yet done!\nCannot calculate stats!\n");
+	duchampError("setCubeStats",
+		     "Reconstruction not yet done!\nCannot calculate stats!\n");
       else{
 	float *tempArray = new float[goodSize];
 
@@ -802,7 +802,8 @@ void Cube::setupFDR()
   if(this->par.getFlagSmooth()) 
     if(this->reconExists) this->setupFDR(this->recon);
     else{
-      duchampError("setupFDR","Smoothing not done properly! Using original array for defining threshold.\n");
+      duchampError("setupFDR",
+"Smoothing not done properly! Using original array for defining threshold.\n");
       this->setupFDR(this->array);
     }
   else if( this->par.getFlagATrous() ){
@@ -859,7 +860,8 @@ void Cube::setupFDR(float *input)
   // now find the maximum P value.
   int max = 0;
   float cN = 0.;
-  int numVox = int(ceil(this->par.getBeamSize())) * 2;
+  int numVox = int(ceil(this->par.getBeamSize()));
+  if(this->head.getNumAxes()>2) numVox *= 2;
   // why beamSize*2? we are doing this in 3D, so spectrally assume just the
   //  neighbouring channels are correlated, but spatially all those within
   //  the beam, so total number of voxels is 2*beamSize

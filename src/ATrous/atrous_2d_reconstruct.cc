@@ -29,7 +29,6 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
    *  filter and reconstruction parameters.
    */
 
-  float blankPixValue = par.getBlankPixVal();
   long size = xdim * ydim;
   long mindim = xdim;
   if (ydim<mindim) mindim = ydim;
@@ -57,7 +56,6 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
 
     duchampWarning("atrous2DReconstruct","\
 There are no good pixels to be reconstructed -- all are BLANK.\n\
-Perhaps you need to try this with flagBlankPix=false.\n\
 Returning input array.\n");
   }
   else{
@@ -220,7 +218,7 @@ Returning input array.\n");
 	  threshold = mean + 
 	    par.getAtrousCut() * originalSigma * sigmaFactors[scale];
 	  for(int pos=0;pos<size;pos++){
-	    if(!isGood[pos]) output[pos] = blankPixValue; 
+	    if(!isGood[pos]) output[pos] = input[pos];
 	    // preserve the Blank pixel values in the output.
 	    else if( fabs(wavelet[pos]) > threshold ) 
 	      output[pos] += wavelet[pos];

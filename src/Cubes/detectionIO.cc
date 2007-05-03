@@ -118,9 +118,9 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
   // Set up Column definitions here
   std::vector<Col> localCol;
   std::string posUCD[4];
-  localCol.push_back(this->fullCols[NUM]);  // objID
-  localCol.push_back(this->fullCols[NAME]);  // name
-  localCol.push_back(this->fullCols[RA]);  // ra
+  localCol.push_back(this->fullCols[NUM]);  // 0 = objID
+  localCol.push_back(this->fullCols[NAME]);  // 1 = name
+  localCol.push_back(this->fullCols[RA]);  // 2 = ra
   if(makelower(localCol[2].getName())=="ra"){
     posUCD[0] = "pos.eq.ra;meta.main";
     posUCD[2] = "phys.angSize;pos.eq.ra";
@@ -129,7 +129,7 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
     posUCD[0] = "pos.galactic.lat;meta.main";
     posUCD[2] = "phys.angSize;pos.galactic.lat";
   }
-  localCol.push_back(this->fullCols[DEC]);  // dec
+  localCol.push_back(this->fullCols[DEC]);  // 3 = dec
   if(makelower(localCol[2].getName())=="dec"){
     posUCD[1] = "pos.eq.dec;meta.main";
     posUCD[3] = "phys.angSize;pos.eq.dec";
@@ -138,16 +138,25 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
     posUCD[1] = "pos.galactic.lon;meta.main";
     posUCD[3] = "phys.angSize;pos.galactic.lon";
   }
-  localCol.push_back(this->fullCols[WRA]);  // w_ra
-  localCol.push_back(this->fullCols[WDEC]);  // w_dec
-  localCol.push_back(this->fullCols[VEL]);  // vel
-  localCol.push_back(this->fullCols[WVEL]); // w_vel
+  localCol.push_back(this->fullCols[WRA]);  // 4 = w_ra
+  localCol.push_back(this->fullCols[WDEC]);  // 5 = w_dec
+  localCol.push_back(this->fullCols[VEL]);  // 6 = vel
+  localCol.push_back(this->fullCols[WVEL]); // 7 = w_vel
   if(this->head.getNumAxes()>2)
-    localCol.push_back(this->fullCols[FINT]); // f_int
+    localCol.push_back(this->fullCols[FINT]); // 8 = f_int
   else
-    localCol.push_back(this->fullCols[FTOT]); // f_tot
-  localCol.push_back(this->fullCols[FPEAK]); // f_peak
-  localCol.push_back(this->fullCols[FLAG]); // flag
+    localCol.push_back(this->fullCols[FTOT]); // 8 = f_tot
+  localCol.push_back(this->fullCols[FPEAK]); // 9 = f_peak
+  localCol.push_back(this->fullCols[FLAG]); // 10 = flag
+  localCol.push_back(this->fullCols[XCENT]); // 11 = x_cent
+  localCol.push_back(this->fullCols[YCENT]); // 12 = y_cent
+  localCol.push_back(this->fullCols[ZCENT]); // 13 = z_cent
+  localCol.push_back(this->fullCols[XAV]); // 14 = x_av
+  localCol.push_back(this->fullCols[YAV]); // 15 = y_av
+  localCol.push_back(this->fullCols[ZAV]); // 16 = z_av
+  localCol.push_back(this->fullCols[XPEAK]); // 17 = x_peak
+  localCol.push_back(this->fullCols[YPEAK]); // 18 = y_peak
+  localCol.push_back(this->fullCols[ZPEAK]); // 19 = z_peak
 
   stream<<"<?xml version=\"1.0\"?>\n";
   stream<<"<VOTABLE version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n";
@@ -239,6 +248,24 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
 	<<" datatype=\"float\" width=\""<<localCol[9].getWidth()<<"\" precision=\""
 	<<prec[prFLUX]<<"\" unit=\""<<fixUnitsVOT(localCol[9].getUnits())<<"\"/>\n";
   stream<<"      <FIELD name=\"Flag\" ID=\"col11\" ucd=\"meta.code.qual\" datatype=\"char\" arraysize=\"3\" unit=\"--\"/>\n";
+  stream<<"      <FIELD name=\"X_Centroid\" ID=\"col12\" ucd=\"\""
+	<<" datatype=\"float\" width=\""<<localCol[11].getWidth()<<"\" precision=\""<<localCol[11].getPrecision()<<"\" unit=\"\"/>\n";
+  stream<<"      <FIELD name=\"Y_Centroid\" ID=\"col13\" ucd=\"\""
+	<<" datatype=\"float\" width=\""<<localCol[12].getWidth()<<"\" precision=\""<<localCol[12].getPrecision()<<"\" unit=\"\"/>\n";
+  stream<<"      <FIELD name=\"Z_Centroid\" ID=\"col14\" ucd=\"\""
+	<<" datatype=\"float\" width=\""<<localCol[13].getWidth()<<"\" precision=\""<<localCol[13].getPrecision()<<"\" unit=\"\"/>\n";
+  stream<<"      <FIELD name=\"X_Av\" ID=\"col15\" ucd=\"\""
+	<<" datatype=\"float\" width=\""<<localCol[14].getWidth()<<"\" precision=\""<<localCol[14].getPrecision()<<"\" unit=\"\"/>\n";
+  stream<<"      <FIELD name=\"Y_Av\" ID=\"col16\" ucd=\"\""
+	<<" datatype=\"float\" width=\""<<localCol[15].getWidth()<<"\" precision=\""<<localCol[15].getPrecision()<<"\" unit=\"\"/>\n";
+  stream<<"      <FIELD name=\"Z_Av\" ID=\"col17\" ucd=\"\""
+	<<" datatype=\"float\" width=\""<<localCol[16].getWidth()<<"\" precision=\""<<localCol[16].getPrecision()<<"\" unit=\"\"/>\n";
+  stream<<"      <FIELD name=\"X_Peak\" ID=\"col18\" ucd=\"\""
+	<<" datatype=\"int\" width=\""<<localCol[17].getWidth()<<"\" precision=\""<<localCol[17].getPrecision()<<"\" unit=\"\"/>\n";
+  stream<<"      <FIELD name=\"Y_Peak\" ID=\"col19\" ucd=\"\""
+	<<" datatype=\"int\" width=\""<<localCol[18].getWidth()<<"\" precision=\""<<localCol[18].getPrecision()<<"\" unit=\"\"/>\n";
+  stream<<"      <FIELD name=\"Z_Peak\" ID=\"col20\" ucd=\"\""
+	<<" datatype=\"int\" width=\""<<localCol[19].getWidth()<<"\" precision=\""<<localCol[19].getPrecision()<<"\" unit=\"\"/>\n";
 
 
   stream<<"      <DATA>\n"
@@ -261,11 +288,20 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
       stream<<"<TD>" << setw(localCol[7].getWidth()) << this->objectList[i].getVelWidth()   <<"</TD>";
       stream<<setprecision(prec[prFLUX]);
       if(this->head.getNumAxes()>2)
-	stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList[i].getIntegFlux()  <<"</TD>";
+	stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList[i].getIntegFlux() <<"</TD>";
       else
-	stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList[i].getTotalFlux()  <<"</TD>";
+	stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList[i].getTotalFlux() <<"</TD>";
       stream<<"<TD>" << setw(localCol[9].getWidth()) << this->objectList[i].getPeakFlux()   <<"</TD>";
       stream<<"<TD>" << setw(localCol[10].getWidth())<< this->objectList[i].getFlagText()   <<"</TD>";
+      stream<<"<TD>" << setw(localCol[11].getWidth())<< this->objectList[i].getXCentroid()  <<"</TD>";
+      stream<<"<TD>" << setw(localCol[12].getWidth())<< this->objectList[i].getYCentroid()  <<"</TD>";
+      stream<<"<TD>" << setw(localCol[13].getWidth())<< this->objectList[i].getZCentroid()  <<"</TD>";
+      stream<<"<TD>" << setw(localCol[14].getWidth())<< this->objectList[i].getXAverage()   <<"</TD>";
+      stream<<"<TD>" << setw(localCol[15].getWidth())<< this->objectList[i].getYAverage()   <<"</TD>";
+      stream<<"<TD>" << setw(localCol[16].getWidth())<< this->objectList[i].getZAverage()   <<"</TD>";
+      stream<<"<TD>" << setw(localCol[17].getWidth())<< this->objectList[i].getXPeak()      <<"</TD>";
+      stream<<"<TD>" << setw(localCol[18].getWidth())<< this->objectList[i].getYPeak()      <<"</TD>";
+      stream<<"<TD>" << setw(localCol[19].getWidth())<< this->objectList[i].getZPeak()      <<"</TD>";
       
       stream<<endl;
       stream<<"        </TR>\n";
@@ -317,11 +353,11 @@ void Cube::outputStats()
   if(this->par.getFlagFDR())
     output<<" (or S/N=" << this->Stats.getThresholdSNR()<<")";
   if(this->par.getFlagSmooth()){
-    output << " in smoothed cube.\n";
+    output << " in smoothed cube.";
     if(!this->par.getFlagUserThreshold())
-      output<<"  Noise level = " << this->Stats.getMiddle()
+      output<<"\n  Noise level = " << this->Stats.getMiddle()
 	    <<", Noise spread = " << this->Stats.getSpread()
-	    <<" in smoothed cube.\n";
+	    <<" in smoothed cube.";
     
     // calculate the stats for the original array, so that we can
     // quote S/N values correctly.
@@ -335,11 +371,11 @@ void Cube::outputStats()
     this->par.setFlagFDR(fdrflag);
     this->par.setFlagSmooth(true);
       
-    output << "  Noise properties for the original cube are:\n";
+    output << "\n  Noise properties for the original cube are:";
   }
      
   if(!this->par.getFlagUserThreshold())
-    output<<"  Noise level = " << this->Stats.getMiddle()
+    output<<"\n  Noise level = " << this->Stats.getMiddle()
 	  <<", Noise spread = " << this->Stats.getSpread()
 	  <<"\n";
 

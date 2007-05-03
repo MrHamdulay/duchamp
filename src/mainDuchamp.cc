@@ -75,9 +75,10 @@ int main(int argc, char * argv[])
     logfile.close();
   }
 
-  if(cube->pars().getFlagBlankPix()){
-    // Trim any blank pixels from the edges, 
-    //  and report the new size of the cube
+  //if(cube->pars().getFlagBlankPix()){
+  if(cube->pars().getFlagTrim()){
+    // Trim any blank pixels from the edges, and report the new size
+    // of the cube
     std::cout<<"Trimming the Blank Pixels from the edges...  "<<std::flush;
     cube->trimCube();
     std::cout<<"Done."<<std::endl;

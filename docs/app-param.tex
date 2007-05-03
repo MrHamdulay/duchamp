@@ -94,13 +94,10 @@ not matter, they are grouped here in logical sections.
 
 \secB*{Modifying the cube}
 \begin{entry}
-\item[flagBlankPix \texttt{[true]}] A flag to say whether to remove
-  BLANK pixels from the analysis -- these are pixels set to some
-  particular value because they fall outside the imaged area.
-\item[blankPixValue \texttt{[-8.00061]}] The value of the BLANK
-  pixels, if this information is not contained in the FITS header (the
-  usual procedure is to obtain this value from the header information
-  -- in which case the value set by this parameter is ignored).
+\item[flagTrim \texttt{[false]}] A flag to say whether to trim
+  BLANK pixels from the edges of the cube -- these are typically
+  pixels set to some particular value because they fall outside the
+  imaged area, and trimming them can help speed up the execution.
 \item[flagMW \texttt{[false]}] A flag to say whether to ignore
   channels contaminated by Milky Way (or other) emission -- the
   searching algorithms will not look at these channels.
@@ -229,6 +226,11 @@ total number, will be less than $\alpha$ (see \S\ref{sec-detection}).
   spectral axis is transformed into velocity, and put into these units
   for all output and for calculations such as the integrated flux of a
   detection.
+\item[pixelCentre \texttt{[centroid]}] Which of the three ways of
+  expressing the ``centre'' of a detection (see \S\ref{sec-results}
+  for a description of the options) to use for the X, Y, \& Z
+  columns in the output list. Alternatives are: \texttt{centroid, peak,
+  average}. 
 \item[drawBorders \texttt{[true]}] A flag indicating whether borders
   are to be drawn around the detected objects in the moment maps
   included in the output (see for example Fig.~\ref{fig-spect}).

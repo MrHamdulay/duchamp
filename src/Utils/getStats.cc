@@ -334,33 +334,32 @@ template <class T> void findAllStats(T *array, int size,
    * of the array, returned as the same type as the array.
    */
   if(size==0){
-    std::cerr << "Error in findALlStats: zero sized array!\n";
+    std::cerr << "Error in findAllStats: zero sized array!\n";
     return;
   }
 
   T *newarray = new T[size];
 
   for(int i=0;i<size;i++) newarray[i] = array[i];
-  std::sort(newarray,newarray+size);
-  if((size%2)==0) median = (newarray[size/2-1]+newarray[size/2])/2;
-  else median = newarray[size/2];
-
-  for(int i=0;i<size;i++) newarray[i] = absval(array[i]-median);
-  std::sort(newarray,newarray+size);
-  if((size%2)==0) madfm = (newarray[size/2-1]+newarray[size/2])/2;
-  else madfm = newarray[size/2];
-
-  delete [] newarray;
 
   mean = array[0];
-  for(int i=1;i<size;i++){
-    mean += array[i];
-  }
+  for(int i=1;i<size;i++) mean += array[i];
   mean /= float(size);
 
   stddev = (array[0]-mean) * (array[0]-mean);
   for(int i=1;i<size;i++) stddev += (array[i]-mean)*(array[i]-mean);
   stddev = sqrt(stddev/float(size-1));
+
+  std::sort(newarray,newarray+size);
+  if((size%2)==0) median = (newarray[size/2-1]+newarray[size/2])/2;
+  else median = newarray[size/2];
+
+  for(int i=0;i<size;i++) newarray[i] = absval(newarray[i]-median);
+  std::sort(newarray,newarray+size);
+  if((size%2)==0) madfm = (newarray[size/2-1]+newarray[size/2])/2;
+  else madfm = newarray[size/2];
+
+  delete [] newarray;
 
 }
 template void findAllStats<int>(int *array, int size, 
@@ -409,14 +408,6 @@ template <class T> void findAllStats(T *array, int size, bool *mask,
   T *newarray = new T[goodSize];
   goodSize=0;
   for(int i=0;i<size;i++) if(mask[i]) newarray[goodSize++] = array[i];
-  std::sort(newarray,newarray+goodSize);
-  if((goodSize%2)==0) median = (newarray[goodSize/2-1]+newarray[goodSize/2])/2;
-  else median = newarray[goodSize/2];
-
-  for(int i=0;i<goodSize;i++) newarray[i] = absval(array[i]-median);
-  std::sort(newarray,newarray+goodSize);
-  if((goodSize%2)==0) madfm = (newarray[goodSize/2-1]+newarray[goodSize/2])/2;
-  else madfm = newarray[goodSize/2];
 
   mean = 0.;
   for(int i=0;i<goodSize;i++) mean += newarray[i];
@@ -425,6 +416,15 @@ template <class T> void findAllStats(T *array, int size, bool *mask,
   stddev = 0.;
   for(int i=0;i<goodSize;i++) stddev += (newarray[i]-mean)*(newarray[i]-mean);
   stddev = sqrt(stddev/float(goodSize-1));
+
+  std::sort(newarray,newarray+goodSize);
+  if((goodSize%2)==0) median = (newarray[goodSize/2-1]+newarray[goodSize/2])/2;
+  else median = newarray[goodSize/2];
+
+  for(int i=0;i<goodSize;i++) newarray[i] = absval(newarray[i]-median);
+  std::sort(newarray,newarray+goodSize);
+  if((goodSize%2)==0) madfm = (newarray[goodSize/2-1]+newarray[goodSize/2])/2;
+  else madfm = newarray[goodSize/2];
 
   delete [] newarray;
 

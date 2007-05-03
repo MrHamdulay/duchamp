@@ -32,7 +32,6 @@ void atrous1DReconstruct(long &xdim, float *&input, float *&output, Param &par)
   const float SNR_THRESH=par.getAtrousCut();
   const int MIN_SCALE=par.getMinScale();
 
-  float blankPixValue = par.getBlankPixVal();
   int numScales = par.filter().getNumScales(xdim);
   double *sigmaFactors = new double[numScales+1];
   for(int i=0;i<=numScales;i++){
@@ -144,7 +143,7 @@ void atrous1DReconstruct(long &xdim, float *&input, float *&output, Param &par)
 	
 	  for(int pos=0;pos<xdim;pos++){
 	    // preserve the Blank pixel values in the output.
-	    if(!isGood[pos]) output[pos] = blankPixValue;
+	    if(!isGood[pos]) output[pos] = input[pos];
 	    else if( fabs(wavelet[pos]) > 
 		     (mean+SNR_THRESH*originalSigma*sigmaFactors[scale]) )
 	      output[pos] += wavelet[pos];

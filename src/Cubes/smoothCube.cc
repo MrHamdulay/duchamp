@@ -80,8 +80,6 @@ void Cube::SpectralSmooth()
   long zdim = this->axisDim[2];
   ProgressBar bar;
 
-
-
   if(!this->reconExists && this->par.getSmoothType()=="spectral"){
     if(this->head.getNumAxes() <= 2)
       duchampWarning("SpectralSmooth",
@@ -110,7 +108,7 @@ void Cube::SpectralSmooth()
 
 	for(int z=0;z<zdim;z++){
 	  if(this->isBlank(z*xySize+pix)) 
-	    this->recon[z*xySize+pix]=this->array[z*xySize+pix];
+	    this->recon[z*xySize+pix] = this->array[z*xySize+pix];
 	  else 
 	    this->recon[z*xySize+pix] = smoothed[z];
 	}
@@ -143,6 +141,10 @@ void Cube::SpatialSmooth()
 
       ProgressBar bar;
 
+      // if kernMin is negative (not defined), make it equal to kernMaj
+      if(this->par.getKernMin() < 0) 
+	this->par.setKernMin(this->par.getKernMaj());
+
       GaussSmooth gauss(this->par.getKernMaj(),
 			this->par.getKernMin(),
 			this->par.getKernPA());
@@ -161,16 +163,18 @@ void Cube::SpatialSmooth()
 
 	if( this->par.isVerbose() ) bar.update(z+1);
       
-	//    if(!this->par.isInMW(z)){
-
 	for(int pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];
     
 	mask  = this->par.makeBlankMask(image,xySize);
     
 	smoothed = gauss.smooth(image,xdim,ydim,mask);
     
-	for(int pix=0;pix<xySize;pix++)
-	  this->recon[z*xySize+pix] = smoothed[pix];
+	for(int pix=0;pix<xySize;pix++){
+	  if(mask[pix])
+	    this->recon[z*xySize+pix] = this->array[z*xySize+pix];
+	  else
+	    this->recon[z*xySize+pix] = smoothed[pix];
+	}
 
       }
 

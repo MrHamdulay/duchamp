@@ -61,7 +61,8 @@ Param::Param(){
   this->numPixBeam        = 10.;
   this->flagUsingBeam     = false;
   // Trim-related         
-  this->flagTrimmed       = false;
+  this->flagTrim          = false;
+  this->hasBeenTrimmed    = false;
   this->borderLeft        = 0;
   this->borderRight       = 0;
   this->borderBottom      = 0;
@@ -92,7 +93,7 @@ Param::Param(){
   this->smoothType        = "spectral";
   this->hanningWidth      = 5;
   this->kernMaj           = 3.;
-  this->kernMin           = 3.;
+  this->kernMin           = -1.;
   this->kernPA            = 0.;
   // A trous reconstruction parameters
   this->flagATrous        = false;
@@ -150,7 +151,8 @@ Param::Param (const Param& p)
   this->maxMW             = p.maxMW;          
   this->minMW             = p.minMW;         
   this->numPixBeam        = p.numPixBeam;     
-  this->flagTrimmed       = p.flagTrimmed;    
+  this->flagTrim          = p.flagTrim;    
+  this->hasBeenTrimmed    = p.hasBeenTrimmed;    
   this->borderLeft        = p.borderLeft;     
   this->borderRight       = p.borderRight;    
   this->borderBottom      = p.borderBottom;   
@@ -232,7 +234,8 @@ Param& Param::operator= (const Param& p)
   this->maxMW             = p.maxMW;          
   this->minMW             = p.minMW;         
   this->numPixBeam        = p.numPixBeam;     
-  this->flagTrimmed       = p.flagTrimmed;    
+  this->flagTrim          = p.flagTrim;    
+  this->hasBeenTrimmed    = p.hasBeenTrimmed;    
   this->borderLeft        = p.borderLeft;     
   this->borderRight       = p.borderRight;    
   this->borderBottom      = p.borderBottom;   
@@ -506,8 +509,8 @@ int Param::readParams(std::string paramfile)
       if(arg=="flagxoutput")     this->flagXOutput = readFlag(ss); 
 
       if(arg=="flagnegative")    this->flagNegative = readFlag(ss);
-      if(arg=="flagblankpix")    this->flagBlankPix = readFlag(ss); 
-      if(arg=="blankpixvalue")   this->blankPixValue = readFval(ss); 
+      if(arg=="flagtrim")        this->flagTrim = readFlag(ss); 
+      //      if(arg=="blankpixvalue")   this->blankPixValue = readFval(ss); 
       if(arg=="flagmw")          this->flagMW = readFlag(ss); 
       if(arg=="maxmw")           this->maxMW = readIval(ss); 
       if(arg=="minmw")           this->minMW = readIval(ss); 
@@ -572,6 +575,8 @@ int Param::readParams(std::string paramfile)
     duchampWarning("readParams",errmsg.str());
     this->smoothType = "spectral";
   }
+  // If kernMin has not been given, or is negative, make it equal to kernMaj
+  if(this->kernMin < 0) this->kernMin = this->kernMaj;
 
   // Make sure spectralMethod is an acceptable type -- default is "peak"
   if((this->spectralMethod!="peak")&&
@@ -707,20 +712,20 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<stringize(par.getFlagOutputSmooth())<<std::endl;
   }						       
   theStream  <<"------"<<std::endl;
-  theStream  <<std::setw(widthText)<<"Searching for Negative features?"     
-	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagNegative]"
-	     <<"  =  " <<resetiosflags(std::ios::right)
-	     <<stringize(par.getFlagNegative())   <<std::endl;
-  theStream  <<std::setw(widthText)<<"Fixing Blank Pixels?"                 
-	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagBlankPix]"
-	     <<"  =  " <<resetiosflags(std::ios::right)
-	     <<stringize(par.getFlagBlankPix())   <<std::endl;
   if(par.getFlagBlankPix()){
     theStream<<std::setw(widthText)<<"Blank Pixel Value"                    
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<< blankParam
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<par.getBlankPixVal()    <<std::endl;
   }
+  theStream  <<std::setw(widthText)<<"Trimming Blank Pixels?"                 
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagTrim]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<stringize(par.getFlagTrim())   <<std::endl;
+  theStream  <<std::setw(widthText)<<"Searching for Negative features?"     
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagNegative]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<stringize(par.getFlagNegative())   <<std::endl;
   theStream  <<std::setw(widthText)<<"Removing Milky Way channels?"         
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagMW]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
@@ -740,24 +745,6 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagBaseline]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<stringize(par.getFlagBaseline())   <<std::endl;
-  theStream  <<std::setw(widthText)<<"Minimum # Pixels in a detection"      
-	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[minPix]"
-	     <<"  =  " <<resetiosflags(std::ios::right)
-	     <<par.getMinPix()         <<std::endl;
-  theStream  <<std::setw(widthText)<<"Minimum # Channels in a detection"    
-	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[minChannels]"
-	     <<"  =  " <<resetiosflags(std::ios::right)
-	     <<par.getMinChannels()    <<std::endl;
-  theStream  <<std::setw(widthText)<<"Growing objects after detection?"     
-	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagGrowth]"
-	     <<"  =  " <<resetiosflags(std::ios::right)
-	     <<stringize(par.getFlagGrowth())     <<std::endl;
-  if(par.getFlagGrowth()) {			       
-    theStream<<std::setw(widthText)<<"SNR Threshold for growth"             
-	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[growthCut]"
-	     <<"  =  " <<resetiosflags(std::ios::right)
-	     <<par.getGrowthCut()      <<std::endl;
-  }
   theStream  <<std::setw(widthText)<<"Smoothing each spectrum first?"        
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagSmooth]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
@@ -839,6 +826,24 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	       <<"  =  " <<resetiosflags(std::ios::right)
 	       <<par.getCut()            <<std::endl;
     }
+  }
+  theStream  <<std::setw(widthText)<<"Minimum # Pixels in a detection"      
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[minPix]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<par.getMinPix()         <<std::endl;
+  theStream  <<std::setw(widthText)<<"Minimum # Channels in a detection"    
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[minChannels]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<par.getMinChannels()    <<std::endl;
+  theStream  <<std::setw(widthText)<<"Growing objects after detection?"     
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagGrowth]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<stringize(par.getFlagGrowth())     <<std::endl;
+  if(par.getFlagGrowth()) {			       
+    theStream<<std::setw(widthText)<<"SNR Threshold for growth"             
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[growthCut]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<par.getGrowthCut()      <<std::endl;
   }
   theStream  <<std::setw(widthText)<<"Using Adjacent-pixel criterion?"      
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagAdjacent]"

@@ -17,7 +17,8 @@ void Cube::trimCube()
    *    recorded.
    */
 
-  if(this->par.getFlagBlankPix()) {
+//   if(this->par.getFlagBlankPix()) {
+  if(this->par.getFlagTrim()) {
 
     long xdim = this->axisDim[0];
     long ydim = this->axisDim[1];
@@ -86,7 +87,8 @@ void Cube::trimCube()
 	for(int y = 0; y < axisDim[1]; y++){
 	  for(int z = 0; z < axisDim[2]; z++){ 
 	    oldpos = (x+left) + (y+bottom)*xdim + z*xdim*ydim;
-	    newpos = x + y*axisDim[0] + z*axisDim[0]*axisDim[1];
+	    newpos = x + y*this->axisDim[0] + 
+	      z*this->axisDim[0]*this->axisDim[1];
 	    newarray[newpos]  = this->array[oldpos];
 	  }
 	}
@@ -100,8 +102,9 @@ void Cube::trimCube()
 	for(int x = 0; x < axisDim[0]; x++){
 	  for(int y = 0; y < axisDim[1]; y++){
 	    for(int z = 0; z < axisDim[2]; z++){ 
-	      oldpos = (x+this->par.getBorderLeft()) + (y+this->par.getBorderBottom())*xdim + z*xdim*ydim;
-	      newpos = x + y*axisDim[0] + z*axisDim[0]*axisDim[1];
+	      oldpos = (x+left) + (y+bottom)*xdim + z*xdim*ydim;
+	      newpos = x + y*this->axisDim[0] + 
+		z*this->axisDim[0]*this->axisDim[1];
 	      newarray[newpos]  = this->baseline[oldpos];
 	    }
 	  }
@@ -115,22 +118,23 @@ void Cube::trimCube()
       for(int x = 0; x < axisDim[0]; x++){
 	for(int y = 0; y < axisDim[1]; y++){
 	  oldpos = (x+left) + (y+bottom)*xdim;
-	  newpos = x + y*axisDim[0];
+	  newpos = x + y*this->axisDim[0];
 	  newdetect[newpos] = this->detectMap[oldpos];
 	}
       }
       delete [] this->detectMap;
       this->detectMap = newdetect;
 
-      if(this->par.getFlagATrous()){
+      if(this->par.getFlagATrous() || this->par.getFlagSmooth()){
 	// Trim the reconstructed array if we are going to do the
-	// reconstruction
+	// reconstruction or smooth the array
 	float *newrecon  = new float[this->numPixels];
 	for(int x = 0; x < axisDim[0]; x++){
 	  for(int y = 0; y < axisDim[1]; y++){
 	    for(int z = 0; z < axisDim[2]; z++){ 
 	      oldpos = (x+left) + (y+bottom)*xdim + z*xdim*ydim;
-	      newpos = x + y*axisDim[0] + z*axisDim[0]*axisDim[1];
+	      newpos = x + y*this->axisDim[0] + 
+		z*this->axisDim[0]*this->axisDim[1];
 	      newrecon[newpos] = this->recon[oldpos];	  
 	    }
 	  }
@@ -196,7 +200,7 @@ void Cube::unTrimCube()
     this->array = newarray;
 
     if(this->reconExists){
-      // Correct the reconstructed array
+      // Correct the reconstructed/smoothed array
       float *newrecon   = new float[this->numPixels];
       for(int x = 0; x < this->axisDim[0]; x++){
 	for(int y = 0; y < this->axisDim[1]; y++){

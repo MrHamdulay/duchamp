@@ -54,9 +54,10 @@ complete its task. The message will also indicate which function or
 subroutine generated it -- this is primarily a tool for debugging, but
 can be useful in determining what went wrong.
 
-\secB{Results}
+\secB{Text-based output files}
 
 \secC{Table of results}
+\label{sec-results}
 
 Finally, we get to the results -- the reason for running \duchamp in
 the first place. Once the detection list is finalised, it is sorted by
@@ -67,8 +68,8 @@ are then printed to the screen and to the output file, given by the
 
 The output consists of three parts. First, a list of the parameters
 are printed to the output file, for future reference. Next, the
-detection level that was used is given, so comparison can be made with
-other searches. The noise level and its spread are also reported.
+detection threshold that was used is given, so comparison can be made
+with other searches. The noise level and its spread are also reported.
 
 The most interesting part, however, is the list of detected
 objects. This list, an example of which can be seen in
@@ -83,18 +84,16 @@ Equatorial and Galactic projection cases).
   channel number, if the WCS is not good enough to find the velocity).
 \item[Name] The ``IAU''-format name of the detection (derived from the
   WCS position -- see below for a description of the format).
-\item[X] The average X-pixel position (averaged over all detected
-voxels).
-\item[Y] The average Y-pixel position.
-\item[Z] The average Z-pixel position.
+\item[X,Y,Z] The ``centre'' pixel position, determined by the input
+  parameter \texttt{pixelCentre}.
 \item[RA/GLON] The Right Ascension or Galactic Longitude of the centre
-of the object.
+  of the object.
 \item[DEC/GLAT] The Declination or Galactic Latitude of the centre of
-the object.
+  the object.
 \item[VEL] The mean velocity of the object [units given by the
   \texttt{spectralUnits} parameter].
 \item[w\_RA/w\_GLON] The width of the object in Right Ascension or
-Galactic Longitude [arcmin].
+  Galactic Longitude (depending on FITS coordinates) [arcmin].
 \item[w\_DEC/w\_GLAT] The width of the object in Declination Galactic
   Latitude [arcmin].
 \item[w\_VEL] The full velocity width of the detection (max channel
@@ -109,6 +108,20 @@ Galactic Longitude [arcmin].
 \item[Npix] The number of voxels (\ie distinct $(x,y,z)$ coordinates)
   in the detection.
 \item[Flag] Whether the detection has any warning flags (see below).
+\end{entry}
+
+Note that the X, Y, Z columns depend on the \texttt{pixelCentre}
+parameter. This is because there are three alternative ways of
+expressing the centre of a detection, which are all listed in the list
+of detections written to the output file. These alternatives are:
+\begin{entry}
+\item[X\_av, Y\_av, Z\_av] The average pixel value in each axis
+  direction \ie X\_av is the average of the $x$-values of all pixels
+  in the detection.
+\item[X\_cent, Y\_cent, Z\_cent] The centroid position, being the
+  flux-weighted average of the pixels.
+\item[X\_peak, Y\_peak, Z\_peak] The location of the pixel containing
+  the peak flux value.
 \end{entry}
 
 The Name is derived from the WCS position. For instance, a source that
@@ -134,20 +147,7 @@ from RA/GLON to w\_VEL will be left blank. Also, F\_int will be
 replaced with the more simple F\_tot -- the total flux in the
 detection, being the sum of all detected voxels.
 
-%The last column contains any warning flags about the detection. There
-%are currently three options here. An `E' is printed if the detection is
-%next to the edge of the image, meaning either the limit of the pixels,
-%or the limit of the non-BLANK pixel region. An `S' is printed if the
-%detection lies at the edge of the spectral region. An `N' is printed
-%if the total flux, summed over all the (non-BLANK) pixels in the
-%smallest box that completely encloses the detection, is negative. Note
-%that this sum is likely to include non-detected pixels. It is of use
-%in pointing out detections that lie next to strongly negative pixels,
-%such as might arise due to interference -- the detected pixels might
-%then also be due to the interference, so caution is advised.
-
-The last column contains any warning flags about the detection, such
-as: 
+The last column contains any warning flags, such as:
 \begin{itemize}
 \item \textbf{E} -- The detection is next to the spatial edge of the image,
 meaning either the limit of the pixels, or the limit of the non-BLANK
@@ -170,14 +170,17 @@ corresponding widths of the detections, as well as the fluxes. The
 user should set \texttt{flagVOT = 1}, and put the desired filename in
 the parameter \texttt{votFile} -- note that the default is for it not
 to be produced. This file should be compatible with all Virtual
-Observatory tools (such as Aladin\footnote{ Aladin can be found on the
-web at
-\href{http://aladin.u-strasbg.fr/}{http://aladin.u-strasbg.fr/}}). The
-second option is an annotation file for use with the Karma toolkit of
-visualisation tools (in particular, with \texttt{kvis}). This will
-draw a circle at the position of each detection, scaled by the spatial
-size of the detection, and number it according to the Obj\# given
-above. To make use of this option, the user should set
+Observatory tools (such as Aladin%
+\footnote{%Aladin can be found on the web at
+\href{http://aladin.u-strasbg.fr/}{http://aladin.u-strasbg.fr/}}
+or TOPCAT\footnote{%Tool for OPerations on Catalogues And Tables:
+\href{http://www.star.bristol.ac.uk/~mbt/topcat/}%
+{http://www.star.bristol.ac.uk/~mbt/topcat/}}). The second option is
+an annotation file for use with the Karma toolkit of visualisation
+tools (in particular, with \texttt{kvis}). This will draw a circle at
+the position of each detection, scaled by the spatial size of the
+detection, and number it according to the Obj\# given above. To make
+use of this option, the user should set
 \texttt{flagKarma = 1}, and put the desired filename in the parameter
 \texttt{karmaFile} -- again, the default is for it not to be produced.
 
@@ -195,33 +198,8 @@ as the command-line statement used to run \duchamp. The creation of
 this log file can be prevented by setting \texttt{flagLog = false}
 (which is the default).
 
-\secC{Graphical output -- spectra}
-
-\begin{figure}[t]
-\begin{center}
-\includegraphics[width=\textwidth]{example_spectrum}
-\end{center}
-\caption{\footnotesize An example of the spectrum output. Note several
-  of the features discussed in the text: the red lines indicating the
-  reconstructed spectrum; the blue dashed lines indicating the
-  spectral extent of the detection; the green hashed area indicating
-  the Milky Way channels that are ignored by the searching algorithm;
-  the blue border showing its spatial extent on the 0th moment map;
-  and the 15~arcmin-long scale bar.}
-\label{fig-spect}
-\end{figure}
-
-\begin{figure}[!t]
-\begin{center}
-\includegraphics[width=\textwidth]{example_moment_map}
-\end{center}
-\caption{\footnotesize An example of the moment map created by
-  \duchamp. The full extent of the cube is covered, and the 0th moment
-  of each object is shown (integrated individually over all the
-  detected channels). The purple line indicates the limit of the
-  non-BLANK pixels.}
-\label{fig-moment}
-\end{figure}
+\secB{Graphical output}
+\secC{Spectral plots}
 
 As well as the output data file, a postscript file is created that
 shows the spectrum for each detection, together with a small cutout
@@ -233,6 +211,20 @@ spectrum. The spectral extent of the detected object is indicated by
 two dashed blue lines, and the region covered by the ``Milky Way''
 channels is shown by a green hashed box. An example detection can be
 seen below in Fig.~\ref{fig-spect}.
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=\textwidth]{example_spectrum}
+\end{center}
+\caption{\footnotesize An example of the spectral output. Note several
+  of the features discussed in the text: the red lines indicating the
+  reconstructed spectrum; the blue dashed lines indicating the
+  spectral extent of the detection; the green hashed area indicating
+  the Milky Way channels that are ignored by the searching algorithm;
+  the blue border showing its spatial extent on the 0th moment map;
+  and the 15~arcmin-long scale bar.}
+\label{fig-spect}
+\end{figure}
 
 The spectrum that is plotted is governed by the
 \texttt{spectralMethod} parameter. It can be either \texttt{peak} (the
@@ -259,7 +251,19 @@ drawn, while the second is governed by the parameter
 \texttt{drawBlankEdges} (whose default is \texttt{true}), and
 obviously whether there are any BLANK pixel present.
 
-\secC{Graphical output -- maps}
+\secC{Spatial maps}
+
+\begin{figure}[!t]
+\begin{center}
+\includegraphics[width=\textwidth]{example_moment_map}
+\end{center}
+\caption{\footnotesize An example of the moment map created by
+  \duchamp. The full extent of the cube is covered, and the 0th moment
+  of each object is shown (integrated individually over all the
+  detected channels). The purple line indicates the limit of the
+  non-BLANK pixels.}
+\label{fig-moment}
+\end{figure}
 
 Finally, a couple of images are optionally produced: a 0th moment map
 of the cube, combining just the detected channels in each object,
@@ -273,11 +277,12 @@ is drawn. An example moment map is shown in Fig.~\ref{fig-moment}.
 The production or otherwise of these images is governed by the
 \texttt{flagMaps} parameter.
 
-The moment map is also displayed in a PGPlot XWindow. This feature can
-be turned off by setting the \texttt{flagXOutput} parameter to
-\texttt{false} -- this might be useful if running \duchamp on a
-terminal with no window display capability, or if you have set up a
-script to run it in a batch mode.
+The moment map is also displayed in a PGPlot XWindow (with the
+\texttt{/xs} display option). This feature can be turned off by
+setting the \texttt{flagXOutput} parameter to \texttt{false} -- this
+might be useful if running \duchamp on a terminal with no window
+display capability, or if you have set up a script to run it in a
+batch mode.
 
 The purpose of these images are to provide a visual guide to where the
 detections have been made, and, particularly in the case of the moment

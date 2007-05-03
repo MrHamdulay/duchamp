@@ -51,7 +51,6 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
   float mean,sigma,originalSigma,originalMean,oldsigma,newsigma;
   bool *isGood = new bool[size];
   int goodSize=0;
-  float blankPixValue = par.getBlankPixVal();
   for(int pos=0;pos<size;pos++){
     isGood[pos] = !par.isBlank(input[pos]);
     if(isGood[pos]) goodSize++;
@@ -238,7 +237,7 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
 	    par.getAtrousCut()*originalSigma*sigmaFactors[scale];
 	  for(int pos=0;pos<size;pos++){
 	    if(!isGood[pos]){
-	      output[pos] = blankPixValue; 
+	      output[pos] = input[pos]; 
 	      // this preserves the Blank pixel values in the output.
 	    }
 	    else if( fabs(wavelet[pos]) > threshold ){

@@ -122,12 +122,13 @@ int Cube::getFITSdata(std::string fname)
 
   if(anynul==0){    
     // no blank pixels, so don't bother with any trimming or checking...
-    if(this->par.getFlagBlankPix()) {  
+    if(this->par.getFlagTrim()) {  
       // if user requested fixing, inform them of change.
       duchampWarning("getFITSdata",
-		     "No blank pixels, so setting flagBlankPix to false.\n");
+		     "No blank pixels, so setting flagTrim to false.\n");
     }
     this->par.setFlagBlankPix(false); 
+    this->par.setFlagTrim(false);
   }
 
   this->initialiseCube(dimAxes);

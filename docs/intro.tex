@@ -57,6 +57,13 @@ pixels are ``voxels'', or volume cells -- a voxel is defined by a
 unique $(x,y,z)$ location and has a single value of flux, intensity
 or brightness (or something equivalent) associated with it.
 
+Sometimes, some pixels in a FITS file are labelled as BLANK -- that
+is, they are given a nominal value, defined by FITS header keywords
+\textsc{blank, bscale, \& bzero}, that marks them as not having a flux
+value. These are often used to pad a cube out so that it has a
+rectangular spatial shape. \duchamp has the ability to avoid these:
+see \S\ref{sec-blank}.
+
 Note that it is possible for the FITS file to have more than three
 dimensions (for instance, there could be a fourth dimension
 representing a Stokes parameter). Only the two spatial dimensions and
@@ -116,21 +123,22 @@ discussed in more detail in the following sections.
 \item If requested, a FITS file containing a previously reconstructed
   or smoothed array is read in.
 
-  When a cube is either Hanning-smoothed or reconstructed with the
-  \atrous wavelet method, the result can be saved to a FITS file, so
-  that subsequent runs of \duchamp can read it in to save having to
-  re-do the reconstruction (as it can be relatively time-intensive).
+  When a cube is either smoothed or reconstructed with the \atrous
+  wavelet method, the result can be saved to a FITS file, so that
+  subsequent runs of \duchamp can read it in to save having to re-do
+  the calculations (as they can be relatively time-intensive).
 
 \item \label{step-blank} If requested, BLANK pixels are trimmed from
   the edges, and the baseline of each spectrum is removed.
 
-  When BLANK pixels are present, they can adversely affect the
-  reconstruction algorithms, as well as increasing the size in memory
-  of the array. This step trims them from the spatial edges, recording
-  the amount trimmed so that they can be added back in later.
+  BLANK pixels, while they are ignored by all calculations in
+  \duchamp, do increase the size in memory of the array above that
+  absolutely needed. This step trims them from the spatial edges,
+  recording the amount trimmed so that they can be added back in
+  later.
 
-  A spectral baseline (or bandpass) can be removed at this point as
-  well. This may be necessary if there is a ripple or other
+  A spectral baseline (or bandpass) can also be removed at this point
+  as well. This may be necessary if there is a ripple or other
   large-scale feature present that will hinder detection of faint
   sources.
 
@@ -150,19 +158,19 @@ discussed in more detail in the following sections.
   This step presents two options. The first considers each spectrum
   individually, and convolves it with a Hanning filter (with width
   chosen by the user). The second considers each channel map
-  separately, and smoothes it with a Gaussian kernel of size chosen by
-  the user. This step can help to reduce the amount of noise visible
-  in the cube and enhance fainter sources.
+  separately, and smoothes it with a Gaussian kernel of size and shape
+  chosen by the user. This step can help to reduce the amount of noise
+  visible in the cube and enhance fainter sources.
 
 \item A threshold for the cube is then calculated, based on the pixel
   statistics (unless a threshold is manually specified by the user).
 
   The threshold can either be chosen as a simple $n\sigma$ threshold
-  (\ie so many standard deviations above the mean), or calculated via
-  the ``False Discovery Rate'' method. Alternatively, the threshold
-  can be specified as a simple flux value, without care as to the
-  statistical significance (\eg ``I want every source brighter than
-  10mJy'').
+  (\ie a certain number of standard deviations above the mean), or
+  calculated via the ``False Discovery Rate'' method. Alternatively,
+  the threshold can be specified as a simple flux value, without care
+  as to the statistical significance (\eg ``I want every source
+  brighter than 10mJy'').
 
   By default, the full cube is used for the statistics calculation,
   although the user can nominate a subsection of the cube to be used

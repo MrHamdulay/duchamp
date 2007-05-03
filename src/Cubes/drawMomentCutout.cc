@@ -46,9 +46,6 @@ void Cube::drawMomentCutout(Detection &object)
     long zmin = object.getZmin();
     long zmax = object.getZmax();
 
-    float *image = new float[size*size];
-    for(int i=0;i<size*size;i++) image[i]=0.;
-
     bool *isGood = new bool[size*size];
     for(int i=0;i<size*size;i++) isGood[i]=true;
     for(int z=zmin; z<=zmax; z++){
@@ -61,6 +58,9 @@ void Cube::drawMomentCutout(Detection &object)
 	}
       }
     }
+
+    float *image = new float[size*size];
+    for(int i=0;i<size*size;i++) image[i]=0.;
 
     int imPos,cubePos;
     for(int z=zmin; z<=zmax; z++){
@@ -96,14 +96,9 @@ void Cube::drawMomentCutout(Detection &object)
     }
 
     // adjust the values of the blank and extra-image pixels
-    for(int i=0;i<size*size;i++){
-      if(!isGood[i]){
-	if(this->par.getFlagBlankPix()) //blank pixels --> BLANK
-	  image[i] = this->par.getBlankPixVal();
-	else        // lies outside image boundary --> black
-	  image[i] = z1 - 1.;
-      }
-    }
+    for(int i=0;i<size*size;i++)
+      if(!isGood[i]) image[i] = z1 - 1.;
+
 
     float tr[6] = {xmin-1,1.,0.,ymin-1,0.,1.};
 

@@ -330,6 +330,9 @@ void writeSmoothHeaderInfo(fitsfile *fptr, Param &par)
   }
     
   if(par.getSmoothType()=="spatial"){
+    // if kernMin is negative (not defined), make it equal to kernMaj
+    if(par.getKernMin() < 0) par.setKernMin(par.getKernMaj());
+
     fits_write_key(fptr, TSTRING, (char *)keyword_smoothtype.c_str(),
 		   (char *)header_smoothSpatial.c_str(),
 		   (char *)comment_smoothtype.c_str(), &status);

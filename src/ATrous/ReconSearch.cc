@@ -23,32 +23,40 @@ void Cube::ReconSearch()
    * The resulting object list is stored in the Cube, and outputted
    *  to the log file if the user so requests.
    */
-  
-  this->ReconCube();
 
-  if(this->par.isVerbose()) std::cout << "  ";
-
-  this->setCubeStats();
-    
-  if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
-  
-  this->objectList = searchReconArraySimple(this->axisDim,this->array,
-					    this->recon,this->par,this->Stats);
-//   this->objectList = searchReconArray(this->axisDim,this->array,
-// 				      this->recon,this->par,this->Stats);
-
-  if(this->par.isVerbose()) std::cout << "  Updating detection map... " 
-				      << std::flush;
-  this->updateDetectMap();
-  if(this->par.isVerbose()) std::cout << "Done.\n";
-
-  if(this->par.getFlagLog()){
-    if(this->par.isVerbose()) 
-      std::cout << "  Logging intermediate detections... " << std::flush;
-    this->logDetectionList();
-    if(this->par.isVerbose()) std::cout << "Done.\n";
+  if(!this->par.getFlagATrous()){
+    duchampWarning("ReconSearch",
+		   "You've requested a reconSearch, but not allocated space for the reconstructed array.\nDoing the basic CubicSearch.\n");
+    this->CubicSearch();
   }
+  else {
+  
+    this->ReconCube();
 
+    if(this->par.isVerbose()) std::cout << "  ";
+
+    this->setCubeStats();
+    
+    if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
+  
+    this->objectList = searchReconArraySimple(this->axisDim,this->array,
+					      this->recon,this->par,this->Stats);
+    //   this->objectList = searchReconArray(this->axisDim,this->array,
+    // 				      this->recon,this->par,this->Stats);
+
+    if(this->par.isVerbose()) std::cout << "  Updating detection map... " 
+					<< std::flush;
+    this->updateDetectMap();
+    if(this->par.isVerbose()) std::cout << "Done.\n";
+
+    if(this->par.getFlagLog()){
+      if(this->par.isVerbose()) 
+	std::cout << "  Logging intermediate detections... " << std::flush;
+      this->logDetectionList();
+      if(this->par.isVerbose()) std::cout << "Done.\n";
+    }
+
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -64,10 +72,16 @@ void Cube::ReconCube()
   //  reconstruction.
   // If dimension of data array is less than dimRecon, change dimRecon 
   //  to the dimension of the array.
-  int numGoodDim = 0;
-  for(int i=0;i<this->numDim;i++) if(this->axisDim[i]>1) numGoodDim++;
-  if(numGoodDim<dimRecon) dimRecon = numGoodDim;
-  this->par.setReconDim(dimRecon);
+  int numGoodDim = this->head.getNumAxes();
+  if(numGoodDim<dimRecon){
+    dimRecon = numGoodDim;
+    this->par.setReconDim(dimRecon);
+    std::stringstream errmsg;
+    errmsg << "You requested a " << dimRecon << "-dimensional reconstruction,"
+	   << " but the FITS file is only " << numGoodDim << "-dimensional.\n"
+	   << "Changing reconDim to " << numGoodDim << ".\n";
+    duchampWarning("ReconCube",errmsg.str());
+  }
 
   switch(dimRecon)
     {
