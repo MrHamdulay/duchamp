@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Tue May  1 12:08:34 2007
+New run of the Duchamp sourcefinder: Thu May  3 17:46:26 2007
 Executing statement : ./Duchamp -p verification/input1 
 
 ---- Parameters ----
@@ -8,18 +8,18 @@ Final Results file.............................[outFile]  =  verification/result
 Spectrum file..............................[spectraFile]  =  verification/spectra1.ps
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 ------
+Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false
-Fixing Blank Pixels?......................[flagBlankPix]  =  false
 Removing Milky Way channels?....................[flagMW]  =  false
 Beam Size (pixels)......................................  =  10.1788
 Removing baselines before search?.........[flagBaseline]  =  false
-Minimum # Pixels in a detection.................[minPix]  =  2
-Minimum # Channels in a detection..........[minChannels]  =  2
-Growing objects after detection?............[flagGrowth]  =  false
 Smoothing each spectrum first?..............[flagSmooth]  =  false
 Using A Trous reconstruction?...............[flagATrous]  =  false
 Using FDR analysis?............................[flagFDR]  =  false
 SNR Threshold (in sigma)........................[snrCut]  =  4
+Minimum # Pixels in a detection.................[minPix]  =  2
+Minimum # Channels in a detection..........[minChannels]  =  2
+Growing objects after detection?............[flagGrowth]  =  false
 Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
 Max. velocity separation for merging....[threshVelocity]  =  7
 Method of spectral plotting.............[spectralMethod]  =  peak
