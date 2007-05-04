@@ -45,54 +45,67 @@ int Param::verifySubsection()
    * the FITS access.
    */
 
-  // First open the requested FITS file and check its existence and 
-  //  number of axes.
-  int numAxes,status = 0;  /* MUST initialize status */
-  fitsfile *fptr;         
+  if(!this->flagSubsection && !this->flagStatSec){
+    // if we get here, we are using neither subsection
+    return SUCCESS;
+  }
+  else{
+    // otherwise, at least one of the subsections is being used, and
+    // so we need to check them
 
-  // Make sure the FITS file exists
-  int exists;
-  fits_file_exists(this->imageFile.c_str(),&exists,&status);
-  if(exists<=0){
-    fits_report_error(stderr, status);
-    duchampWarning("verifySubsection", "Requested image does not exist!\n");
-    return FAILURE;
-  }
-  // Open the FITS file
-  if( fits_open_file(&fptr,this->imageFile.c_str(),READONLY,&status) ){
-    fits_report_error(stderr, status);
-    return FAILURE;
-  }
-  // Read the size information -- number of axes and their sizes
-  status = 0;
-  if(fits_get_img_dim(fptr, &numAxes, &status)){
-    fits_report_error(stderr, status);
-    return FAILURE;
-  }
-  long *dimAxes = new long[numAxes];
-  for(int i=0;i<numAxes;i++) dimAxes[i]=1;
-  status = 0;
-  if(fits_get_img_size(fptr, numAxes, dimAxes, &status)){
-    fits_report_error(stderr, status);
-    return FAILURE;
-  }
-  // Close the FITS file.
-  status = 0;
-  fits_close_file(fptr, &status);
-  if (status){
-    duchampWarning("verifySubsection","Error closing file: ");
-    fits_report_error(stderr, status);
+    // First open the requested FITS file and check its existence and 
+    //  number of axes.
+    int numAxes,status = 0;  /* MUST initialize status */
+    fitsfile *fptr;         
+
+    // Make sure the FITS file exists
+    int exists;
+    fits_file_exists(this->imageFile.c_str(),&exists,&status);
+    if(exists<=0){
+      fits_report_error(stderr, status);
+      duchampWarning("verifySubsection", "Requested image does not exist!\n");
+      return FAILURE;
+    }
+    // Open the FITS file
+    if( fits_open_file(&fptr,this->imageFile.c_str(),READONLY,&status) ){
+      fits_report_error(stderr, status);
+      return FAILURE;
+    }
+    // Read the size information -- number of axes and their sizes
+    status = 0;
+    if(fits_get_img_dim(fptr, &numAxes, &status)){
+      fits_report_error(stderr, status);
+      return FAILURE;
+    }
+    long *dimAxes = new long[numAxes];
+    for(int i=0;i<numAxes;i++) dimAxes[i]=1;
+    status = 0;
+    if(fits_get_img_size(fptr, numAxes, dimAxes, &status)){
+      fits_report_error(stderr, status);
+      return FAILURE;
+    }
+    // Close the FITS file.
+    status = 0;
+    fits_close_file(fptr, &status);
+    if (status){
+      duchampWarning("verifySubsection","Error closing file: ");
+      fits_report_error(stderr, status);
+    }
+
+    ///////////////////
+    // Now parse the subsection and make sure all that works.
+  
+    std::vector<long> dim(numAxes);
+    for(int i=0;i<numAxes;i++) dim[i] = dimAxes[i];
+    delete [] dimAxes;
+  
+    if(this->flagSubsection)
+      if(this->pixelSec.parse(dim)==FAILURE) return FAILURE;
+
+    if(this->flagStatSec)
+      if(this->statSec.parse(dim)==FAILURE)  return FAILURE;
+  
+    return SUCCESS;
   }
 
-  ///////////////////
-  // Now parse the subsection and make sure all that works.
-  
-  std::vector<long> dim(numAxes);
-  for(int i=0;i<numAxes;i++) dim[i] = dimAxes[i];
-  delete [] dimAxes;
-  
-  if(this->pixelSec.parse(dim)==FAILURE) return FAILURE;
-  if(this->statSec.parse(dim)==FAILURE)  return FAILURE;
-  
-  return SUCCESS;
 }

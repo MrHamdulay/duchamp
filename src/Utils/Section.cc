@@ -52,7 +52,7 @@ int Section::parse(std::vector<long> dimAxes)
   // First Make sure subsection has [ and ] at ends
   if((this->subsection[0]!='[') || 
      (this->subsection[this->subsection.size()-1]!=']')){
-    errmsg.str();
+    errmsg.str("");
     errmsg << "Subsection needs to be delimited by square brackets\n"
 	   << "You provided: " << this->subsection << std::endl;
     duchampError("Section::parse",errmsg.str());
@@ -67,7 +67,7 @@ int Section::parse(std::vector<long> dimAxes)
     if(this->subsection[i]==',') this->numSections++;
 
   if(numSections!=dimAxes.size()){
-    errmsg.str();
+    errmsg.str("");
     errmsg << "Subsection has "<<numSections
 	   <<" sections, compared to a cube with "
 	   << dimAxes.size() << " axes\n"
@@ -109,31 +109,39 @@ int Section::parse(std::vector<long> dimAxes)
 	}
       }
       int a,b,c;
-      std::stringstream temp;
-      temp.str(sections[str]);
+      std::stringstream readString,fixedString;
+      readString.str(sections[str]);
       switch(numColon){
       case 1: // usual case
-	temp >> a >> b;
+	readString >> a >> b;
 	this->starts[str] = a-1;
 	this->dims[str] = b-a+1;
 	break;
       case 0: // borders case -- so many off each border
-	temp >> a;
-	this->starts[str] = a-1;
+	readString >> a;
+	if(a>=dimAxes[str]/2){
+	  errmsg.str("");
+	  errmsg<< "You requested the subsection " << this->subsection
+		<< " but axis #" << str+1 
+		<<" has zero size, since its dimension is " << dimAxes[str]
+		<<".\nI'm not going to parse this! Go and fix it.\n";
+	  duchampError("Section::parse", errmsg.str());
+	  return FAILURE;
+	}
+	this->starts[str] = a;
 	this->dims[str] = dimAxes[str]-2*a;
-	temp.str();
-	temp << a << ":" << dimAxes[str]-a;
-	sections[str] = temp.str();
+       	fixedString << this->starts[str]+1 << ":" 
+		    << this->getEnd(str)+1;
+	sections[str] = fixedString.str();
 	doingBorders=true;
 	break;
-      case 2:
+      case 2: // subsection involves a step
       default:
-	temp >> a >> b >> c;
+	readString>> a >> b >> c;
 	this->starts[str] = a-1;
 	this->dims[str] = b-a+1;
-	temp.str();
-	temp << a << ":" << b;
-	sections[str] = temp.str();
+	fixedString << a << ":" << b;
+	sections[str] = fixedString.str();
 	removeStep=true;
 	break;
       }
@@ -142,7 +150,7 @@ int Section::parse(std::vector<long> dimAxes)
   }
 
   if(removeStep){  // if there was a step present
-    errmsg.str();
+    errmsg.str("");
     errmsg << "The subsection given is " << this->subsection <<".\n"
 	   << "Duchamp is currently unable to deal with pixel steps"
 	   << " in the subsection.\n"

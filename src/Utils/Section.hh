@@ -39,6 +39,8 @@ public:
   int getStart(int i){return starts[i];};
   /** Return a particular dimension length */
   int getDim(int i){return dims[i];};
+  /** Return a particular ending value */
+  int getEnd(int i){return starts[i]+dims[i]-1;};
 
   /** Return the full list of start values */
   std::vector<int> getStartList(){return starts;};
