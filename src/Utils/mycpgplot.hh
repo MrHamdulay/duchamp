@@ -1,6 +1,7 @@
 #ifndef MYCPGPLOT_H
 #define MYCPGPLOT_H
 #include <string>
+#include <cpgplot.h>
 
 // The following are in pgplot_related.c
 //

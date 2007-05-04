@@ -105,7 +105,6 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(UTILDIR)/GaussSmooth.o\
 	$(UTILDIR)/Hanning.o\
 	$(UTILDIR)/getStats.o\
-	$(UTILDIR)/get_random_spectrum.o\
 	$(UTILDIR)/linear_regression.o\
 	$(UTILDIR)/pgplot_related.o\
 	$(UTILDIR)/position_related.o\

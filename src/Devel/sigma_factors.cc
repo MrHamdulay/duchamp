@@ -1,18 +1,21 @@
 #include <iostream>
 #include <iomanip>
 #include <ATrous/atrous.hh>
+#include <ATrous/filter.hh>
 #define DEBUG true
 
 void getSigmaFactors1DNew(int &numScales)
 {
 //   extern Filter reconFilter;
 //   std::cerr<<"-->"<<reconFilter.getName()<<"<--"<<std::endl;  
-  std::cerr << "-->"<<Filter::getName()<<"<--"<<std::endl;
-  std::cerr << "-->"<<getNumScales(125)<<"<--"<<std::endl;
+//  std::cerr << "-->"<<Filter::getName()<<"<--"<<std::endl;
+//  std::cerr << "-->"<<getNumScales(125)<<"<--"<<std::endl;
   
 //   int filterHW = reconFilter.width()/2;
-  int filterwidth = Filter::width();
-  int filterHW = Filter::width()/2;
+//  int filterwidth = Filter::width();
+//  int filterHW = Filter::width()/2;
+  int filterwidth=1;
+  int filterHW=filterwidth/2;
 
   // starting values:
   long xdim = 1;
@@ -23,7 +26,7 @@ void getSigmaFactors1DNew(int &numScales)
 
   double *filter = new double[filterwidth];
 //   for(int i=0;i<filterwidth;i++) filter[i] = reconFilter.coeff(i);
-  for(int i=0;i<filterwidth;i++) filter[i] = Filter::coeff(i);
+//  for(int i=0;i<filterwidth;i++) filter[i] = Filter::coeff(i);
   
   int spacing = 1;
 //   const float FACTOR = 16.;
