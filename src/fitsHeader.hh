@@ -85,6 +85,7 @@ public:
   //--------------------
   // Basic inline accessor functions
   //
+  /** Is the WCS good enough to be used? */
   bool    isWCS(){return wcsIsGood;};
   int     getNWCS(){return nwcs;};
   void    setNWCS(int i){nwcs=i;};
@@ -112,6 +113,9 @@ public:
   void    setBzeroKeyword(float f){bzeroKeyword=f;};
   float   getBscaleKeyword(){return bscaleKeyword;};
   void    setBscaleKeyword(float f){bscaleKeyword=f;};
+
+  /** Average the pixel scale (eg arcmin/pix) between the two
+      spatial axes, and return. */
   float   getAvPixScale(){
     return sqrt( fabs ( (wcs->pc[0]*wcs->cdelt[0])*
 			(wcs->pc[wcs->naxis+1]*wcs->cdelt[1])));
@@ -119,9 +123,12 @@ public:
 
 
 private:
-  struct wcsprm *wcs;           ///< The WCS parameters for the cube in a struct from the wcslib library.
+  struct wcsprm *wcs;           ///< The WCS parameters for the cube
+				///   in a struct from the wcslib
+				///   library.
   int     nwcs;                 ///< The number of WCS parameters
-  bool    wcsIsGood;            ///< A flag indicating whether there is a valid WCS present.
+  bool    wcsIsGood;            ///< A flag indicating whether there
+				///   is a valid WCS present.
   int     naxis;                ///< How many axes are in the header?
   std::string  spectralUnits;        ///< The units of the spectral dimension
   std::string  spectralDescription;  ///< The description of the
@@ -136,9 +143,12 @@ private:
   int     blankKeyword;         ///< The FITS header keyword BLANK.
   float   bzeroKeyword;         ///< The FITS header keyword BZERO.
   float   bscaleKeyword;        ///< The FITS header keyword BSCALE.
-  double  scale;                ///< scale param for converting spectral coords
-  double  offset;               ///< offset param for converting spectral coords
-  double  power;                ///< power param for converting spectral coords
+  double  scale;                ///< scale parameter for converting
+				///   spectral coords
+  double  offset;               ///< offset parameter for converting
+				///   spectral coords
+  double  power;                ///< power parameter for converting
+				///   spectral coords
 };
 
 #endif // FITSHEADER_H

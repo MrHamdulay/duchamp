@@ -186,7 +186,7 @@ int main(int argc, char * argv[])
     std::cout << "done.\n";
   }
   if(cube->pars().getFlagSmooth()&& cube->pars().getFlagOutputSmooth()){
-    std::cout << "Saving Hanning-smoothed cube to "
+    std::cout << "Saving smoothed cube to "
 	      << cube->pars().outputSmoothFile() << "... " <<std::flush;
     cube->saveSmoothedCube();
     std::cout << "done.\n";

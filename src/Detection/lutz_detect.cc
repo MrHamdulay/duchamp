@@ -5,19 +5,36 @@
 
 using namespace PixelInfo;
 
-enum STATUS { NONOBJECT, OBJECT, COMPLETE, INCOMPLETE };
+/** Enumeration to describe status of a pixel or a detected object */
+enum STATUS { NONOBJECT, ///< Pixel not above the threshold.
+	      OBJECT,    ///< Pixel above the threshold.
+	      COMPLETE,  ///< Object is complete
+	      INCOMPLETE ///< Object not yet complete
+};
+
+/** Simple enumeration to enable obvious reference to current or prior
+    row. */
 enum ROW { PRIOR=0, CURRENT};
-enum NULLS { NULLSTART=-1, NULLMARKER=45}; //ASCII 45 = '-' --> eases
-					   //printing for debugging
+
+/** A couple of null values: the default starting value for markers,
+    and one used for debugging. */
+enum NULLS { NULLSTART=-1, ///< Default start/end value, obviously
+			   ///   outside valid range.
+	     NULLMARKER=45 ///< ASCII 45 = '-', which eases printing
+			   ///   for debugging purposes
+}; 
 
 //---------------------------
 /**
- * Local class to manage locating detections.
+ * A simple class local to lutz_detect.cc to help manage detected
+ * objects.
+ *
  * Keeps a track of a detection, as well as the start and finish
  * locations of the detection on the current row.
  */
 class FoundObject{
 public:
+  /** Basic constructor, setting the start & end to NULL values. */
   FoundObject(){start=NULLSTART; end=NULLSTART;};
   int start; ///< Pixel on the current row where the detection starts.
   int end;   ///< Pixel on the current row where the detection finishes.

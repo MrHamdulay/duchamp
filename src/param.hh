@@ -49,8 +49,7 @@ public:
       object */
   void   copyHeaderInfo(FitsHeader &head);
 
-  /** Determine filename in which to save the Hanning-smoothed
-      array. */
+  /** Determine filename in which to save the smoothed array. */
   std::string outputSmoothFile();
 
   /** Determine filename in which to save the reconstructed array. */
@@ -275,8 +274,7 @@ private:
 			  ///   file on disk.
   std::string reconFile;  ///< The FITS file containing the
 			  ///   reconstructed array.
-  bool   flagSmoothExists;///< The Hanning-smoothed array is in a FITS
-			  ///   file.
+  bool   flagSmoothExists;///< The smoothed array is in a FITS file.
   std::string smoothFile; ///< The FITS file containing the smoothed
 			  ///   array.
 
@@ -285,8 +283,7 @@ private:
   std::string logFile;    ///< Where the intermediate logging goes.
   std::string outFile;    ///< Where the final results get put.
   std::string spectraFile;///< Where the spectra are displayed
-  bool   flagOutputSmooth;///< Should the Hanning-smoothed cube be
-			  ///   written?
+  bool   flagOutputSmooth;///< Should the smoothed cube be written?
   bool   flagOutputRecon; ///< Should the reconstructed cube be
 			  ///   written?
   bool   flagOutputResid; ///< Should the reconstructed cube be

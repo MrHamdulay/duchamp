@@ -61,7 +61,7 @@ void Cube::readSavedArrays()
   }
 
   if( this->par.getFlagSmoothExists() && this->par.getFlagSmooth() ){
-    std::cout << "Reading Hanning-smoothed array: "<<std::endl;
+    std::cout << "Reading smoothed array: "<<std::endl;
     if( this->readSmoothCube() == FAILURE){
       std::stringstream errmsg;
       errmsg <<"Could not read in existing smoothed array.\n"

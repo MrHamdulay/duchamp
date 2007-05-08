@@ -127,6 +127,7 @@ public:
 
   /** Add a single voxel to the pixel list.*/
   void   addPixel(long x, long y, long z){pixelArray.addPixel(x,y,z);};
+  /** Add a single voxel to the pixel list.*/
   void   addPixel(PixelInfo::Voxel point){
     /** This one adds the pixel to the pixelArray, and updates the
 	fluxes according to the Voxel's flux information */

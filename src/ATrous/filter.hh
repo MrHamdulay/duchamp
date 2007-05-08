@@ -25,22 +25,40 @@ public:
   /** Define the parameters for a given filter. */
   void   define(int code);
 
-  /** Calculate the number of scales possible with a given filter and data size. */
+  /** Calculate the number of scales possible with a given filter and
+      data size. */
   int    getNumScales(long length);
 
-  /** Calculate the maximum number of pixels able to be analysed with a filter at a given scale. */
+  /** Calculate the maximum number of pixels able to be analysed with
+      a filter at a given scale. */
   int    getMaxSize(int scale);
 
   /** Return the width of the filter */
   int    width(){return filter1D.size();};
 
   // these are inline functions.
+  /** Return the text name of the filter */
   std::string getName(){return name;};
+
+  /** Return the i-th value of the coefficient array. */
   double coeff(int i){return filter1D[i];};
+
+  /** Set the i-th value of the coefficient array. */
   void   setCoeff(int i, double val){filter1D[i] = val;};
+
+  /** Return the maximum number of scales in the sigmaFactor array for
+      the given dimension */
   int    maxFactor(int dim){return maxNumScales[dim-1];};
+
+  /** Set the maximum number of scales in the sigmaFactor array for
+      the given dimension */
   void   setMaxFactor(int dim, int val){maxNumScales[dim-1] = val;};
+
+  /** Return the sigma scaling factor for the given dimension and
+      scale of the wavelet transform. */
   double sigmaFactor(int dim, int scale){return (*sigmaFactors[dim-1])[scale];};
+  /** Set the sigma scaling factor for the given dimension and
+      scale of the wavelet transform. */
   void   setSigmaFactor(int dim, int scale, double val){(*sigmaFactors[dim])[scale] = val;};
 
 private:
@@ -50,9 +68,12 @@ private:
   std::vector < std::vector <double>* > sigmaFactors; ///< arrays of sigmaFactors, one for each dim.
 
   // these are all in atrous.cc
-  void   loadSpline();        ///< set up parameters for using the B3 Spline filter.
-  void   loadTriangle();      ///< set up parameters for using the Triangle function.
-  void   loadHaar();          ///< set up parameters for using the Haar wavelet.
+  void   loadSpline();        ///< set up parameters for using the
+			      ///   B3-Spline filter.
+  void   loadTriangle();      ///< set up parameters for using the
+			      ///   Triangle function.
+  void   loadHaar();          ///< set up parameters for using the
+			      ///   Haar wavelet.
 
 };
 

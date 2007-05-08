@@ -12,7 +12,7 @@
 int Cube::readSmoothCube()
 {
   /** 
-   *   A way to read in a previously Hanning-smoothed array, corresponding 
+   *   A way to read in a previously smoothed array, corresponding 
    *    to the requested parameters, or in the filename given by smoothFile.
    *   Performs various tests to make sure there are no clashes between 
    *    the requested parameters and those stored in the header of the 

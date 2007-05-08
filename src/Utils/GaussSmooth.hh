@@ -36,11 +36,16 @@ public:
   float  getStddevScale(){return stddevScale;};
 
 private:
-  float  kernMaj;
-  float  kernMin;
-  float  kernPA;
-  int    kernWidth;
-  float  stddevScale;
+  float  kernMaj;      ///< The FWHM of the major axis of the
+		       ///   elliptical Gaussian.
+  float  kernMin;      ///< The FWHM of the minor axis of the
+		       ///   elliptical Gaussian.
+  float  kernPA;       ///< The position angle of the elliptical
+		       ///   Gaussian.
+  int    kernWidth;    ///< The width of the kernel (in pixels).
+  float  stddevScale;  ///< The factor by which the rms of the input
+		       ///   array gets scaled by (assuming iid
+		       ///   normally)
   float *kernel;       ///< The coefficients of the smoothing kernel
   bool   allocated;    ///< Have the coefficients been allocated in memory?
 

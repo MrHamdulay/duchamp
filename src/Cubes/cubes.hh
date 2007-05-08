@@ -15,6 +15,22 @@
 #include <PixelMap/Object2D.hh>
 
 
+/** Search a reconstructed array for significant detections. */
+std::vector <Detection> 
+searchReconArray(long *dim, float *originalArray, float *reconArray, 
+		 Param &par, Statistics::StatsContainer<float> &stats);
+std::vector <Detection> 
+searchReconArraySimple(long *dim, float *originalArray, float *reconArray, 
+		       Param &par, Statistics::StatsContainer<float> &stats);
+
+/** Search a 3-dimensional array for significant detections. */
+std::vector <Detection> 
+search3DArray(long *dim, float *Array, Param &par,
+	      Statistics::StatsContainer<float> &stats);
+std::vector <Detection> 
+search3DArraySimple(long *dim, float *Array, Param &par,
+		    Statistics::StatsContainer<float> &stats);
+
 /** 
  * Base class for the image container.
  *
@@ -229,6 +245,8 @@ public:
 
   /** Set up thresholds for the False Discovery Rate routine. */
   void        setupFDR();
+  /** Set up thresholds for the False Discovery Rate routine using a
+      particular array. */
   void        setupFDR(float *input);
 
   /** A detection test for a given voxel. */
@@ -250,6 +268,11 @@ public:
   /** Update the map of detected pixels for a given Detection. */
   void        updateDetectMap(Detection obj);
 
+  /** Clear the map of detected pixels. */
+  void        clearDetectMap(){
+    for(int i=0;i<axisDim[0]*axisDim[1];i++) detectMap[i]=0;
+  };
+
   /** Find the flux enclosed by a Detection. */
   float       enclosedFlux(Detection obj);
 
@@ -269,8 +292,11 @@ public:
   // ----------------------------
   // Dealing with the WCS
   //
+  /** Return the FitsHeader object. */
   FitsHeader  getHead(){ return head; }; 
+  /** Define the FitsHeader object. */
   void        setHead(FitsHeader F){head = F;};
+  /** Provide a reference to the FitsHeader object.*/
   FitsHeader& header(){ FitsHeader &h = head; return h; };
 
   /** Convert a point from WCS to Pixel coords. */
@@ -348,6 +374,8 @@ public:
   void        CubicSearch();
 
   // in Cubes/smoothCube.cc 
+  /** Smooth the cube with the requested method.*/
+  void        SmoothCube();
   /** Front-end to the smoothing and searching functions. */
   void        SmoothSearch();
   /** A function to spatially smooth the cube and search the result. */
@@ -356,6 +384,51 @@ public:
   void        SpectralSmooth();
   /** A function to spatially-smooth the cube. */
   void        SpatialSmooth();
+
+  void        Simple3DSearch(){
+    /** 
+     * Basic front-end to the simple 3d searching function -- does
+     * nothing more. 
+     *
+     * This function just runs the search3DArraySimple function,
+     * storing the results in the Cube::objectList vector. No stats
+     * are calculated beforehand, and no logging or detection map
+     * updating is done.
+     */
+    this->objectList = search3DArraySimple(this->axisDim,this->array,
+					   this->par,this->Stats);
+  };
+
+  void        Simple3DSearchRecon(){
+    /** 
+     * Basic front-end to the 3d searching function used in the
+     * reconstruction case -- does nothing more.
+     *
+     * This function just runs the searchReconArraySimple function,
+     * storing the results in the Cube::objectList vector. No stats
+     * are calculated beforehand, and no logging or detection map
+     * updating is done. The recon array is assumed to have been
+     * defined already.
+     */
+    this->objectList = searchReconArraySimple(this->axisDim,this->array,
+					      this->recon,
+					      this->par,this->Stats);
+  };
+
+  void        Simple3DSearchSmooth(){
+    /** 
+     * Basic front-end to the simple 3d searching function run on the
+     * smoothed array -- does nothing more.
+     *
+     * This function just runs the search3DArraySimple function on the
+     * recon array (which contains the smoothed array), storing the
+     * results in the Cube::objectList vector. No stats are calculated
+     * beforehand, and no logging or detection map updating is
+     * done. The recon array is assumed to have been defined already.
+     */
+    this->objectList = search3DArraySimple(this->axisDim,this->recon,
+					   this->par,this->Stats);
+  };
 
   // in Cubes/Merger.cc
   /** Merge all objects in the detection list so that only distinct
@@ -583,22 +656,6 @@ private:
 //////////////////////////////////////////////////////
 // Prototypes for functions that use above classes
 //////////////////////////////////////////////////////
-
-/** Search a reconstructed array for significant detections. */
-std::vector <Detection> 
-searchReconArray(long *dim, float *originalArray, float *reconArray, 
-		 Param &par, Statistics::StatsContainer<float> &stats);
-std::vector <Detection> 
-searchReconArraySimple(long *dim, float *originalArray, float *reconArray, 
-		       Param &par, Statistics::StatsContainer<float> &stats);
-
-/** Search a 3-dimensional array for significant detections. */
-std::vector <Detection> 
-search3DArray(long *dim, float *Array, Param &par,
-	      Statistics::StatsContainer<float> &stats);
-std::vector <Detection> 
-search3DArraySimple(long *dim, float *Array, Param &par,
-		    Statistics::StatsContainer<float> &stats);
 
 /** Grow an object to a lower threshold */
 void growObject(Detection &object, Cube &cube);

@@ -646,7 +646,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<par.getReconFile()      <<std::endl;
   }
   if(par.getFlagSmoothExists() && par.getFlagSmooth()){
-    theStream<<std::setw(widthText)<<"Hanning-smoothed array exists?"          
+    theStream<<std::setw(widthText)<<"Smoothed array exists?"          
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[smoothExists]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<stringize(par.getFlagSmoothExists())<<std::endl;
@@ -896,9 +896,13 @@ std::string Param::outputSmoothFile()
 {
   /** 
    * This function produces the required filename in which to save
-   *  the Hanning-smoothed array. If the input image is image.fits, then
-   *  the output will be eg. image.SMOOTH-3.fits, where the width of the 
-   *  Hanning filter was 3 pixels.
+   *  the smoothed array. If the input image is image.fits, then
+   *  the output will be:
+   *   <ul><li> Spectral smoothing: image.SMOOTH-1D-3.fits, where the
+   *            width of the Hanning filter was 3 pixels.
+   *       <li> Spatial smoothing : image.SMOOTH-2D-3-2-20.fits, where
+   *            kernMaj=3, kernMin=2 and kernPA=20 degrees.
+   *   </ul>
    */
   std::string inputName = this->imageFile;
   std::stringstream ss;

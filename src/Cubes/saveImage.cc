@@ -20,9 +20,10 @@ void writeSmoothHeaderInfo(fitsfile *fptr, Param &par);
 void Cube::saveSmoothedCube()
 {
   /**
-   *   A function to save the Hanning-smoothed arrays to a FITS file.
-   *   Additional header keywords are written as well, indicating the 
-   *    width of the Hanning filter.
+   *   A function to save the smoothed arrays to a FITS file.
+   *   Additional header keywords are written as well, indicating the
+   *   width of the Hanning filter or the dimensions of the Gaussian
+   *   kernel.
    *   The file is always written -- if the filename (as calculated 
    *    based on the parameters) exists, then it is overwritten.
    */

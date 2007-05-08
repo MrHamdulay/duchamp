@@ -24,24 +24,9 @@ void Cube::SmoothSearch()
     this->CubicSearch();
   }
   else{    
+
+    this->SmoothCube();
   
-    if(this->par.getSmoothType()=="spectral"){
-
-      this->SpectralSmooth();
-
-      //if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
-  
-      // this->objectList = search3DArraySimple(this->axisDim,this->recon,
-      //				   this->par,this->Stats);
-
-    }
-    else if(this->par.getSmoothType()=="spatial"){
-
-      //     this->SpatialSmoothNSearch();
-      this->SpatialSmooth();
-
-    }
-
     if(this->par.isVerbose()) std::cout << "  ";
 
     this->setCubeStats();
@@ -65,6 +50,27 @@ void Cube::SmoothSearch()
   
   }
 
+}
+//-----------------------------------------------------------
+
+void Cube::SmoothCube()
+{
+  /**
+   *  Switching function that chooses the appropriate function with
+   *  which to smooth the cube, based on the Param::smoothType
+   *  parameter.
+   *
+   */
+  if(this->par.getSmoothType()=="spectral"){
+    
+    this->SpectralSmooth();
+
+    }
+    else if(this->par.getSmoothType()=="spatial"){
+      
+      this->SpatialSmooth();
+      
+    }
 }
 //-----------------------------------------------------------
 
