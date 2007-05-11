@@ -30,6 +30,9 @@ public:
   /** Return the WCS parameters in a WCSLIB wcsprm struct. */
   struct wcsprm *getWCS();
 
+  /** Provides a reference to the WCS parameters*/
+  struct wcsprm& WCS(){ struct wcsprm &rwcs = *wcs; return rwcs; }; 
+
   // front ends to WCS functions
   /** Convert pixel coords to world coords for a single point. */
   int     wcsToPix(const double *world, double *pix);

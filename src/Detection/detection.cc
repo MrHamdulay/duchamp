@@ -133,12 +133,14 @@ void Detection::calcFluxes(float *fluxArray, long *dim)
   long y,z,count=0;
 
   for(int m=0; m<this->pixelArray.getNumChanMap(); m++){
-    ChanMap tempmap = this->pixelArray.getChanMap(m);
-    z = tempmap.getZ();
-    for(int s=0; s<tempmap.getNumScan(); s++){
-      Scan tempscan = tempmap.getScan(s);
-      y = tempscan.getY();
-      for(long x=tempscan.getX(); x<=tempscan.getXmax(); x++){
+    ChanMap *tempmap = new ChanMap;
+    *tempmap = this->pixelArray.getChanMap(m);
+    z = tempmap->getZ();
+    for(int s=0; s<tempmap->getNumScan(); s++){
+      Scan *tempscan = new Scan;
+      *tempscan = tempmap->getScan(s);
+      y = tempscan->getY();
+      for(long x=tempscan->getX(); x<=tempscan->getXmax(); x++){
 
 	float f = fluxArray[x + y*dim[0] + z*dim[0]*dim[1]];
 	this->totalFlux += f;
@@ -156,7 +158,9 @@ void Detection::calcFluxes(float *fluxArray, long *dim)
 	  }
 	count++;
       }
+      delete tempscan;
     }
+    delete tempmap;
   }
 
   this->xCentroid /= this->totalFlux;
@@ -217,8 +221,8 @@ void Detection::calcWCSparams(float *fluxArray, long *dim, FitsHeader &head)
       //    -- use this to work out WCS params
   
       this->numAxes = head.getNumAxes();
-      this->lngtype = head.getWCS()->lngtyp;
-      this->lattype = head.getWCS()->lattyp;
+      this->lngtype = head.WCS().lngtyp;
+      this->lattype = head.WCS().lattyp;
       this->specUnits = head.getSpectralUnits();
       this->fluxUnits = head.getFluxUnits();
       // if fluxUnits are eg. Jy/beam, make intFluxUnits = Jy km/s

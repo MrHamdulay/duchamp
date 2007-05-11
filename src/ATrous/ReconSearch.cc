@@ -39,9 +39,9 @@ void Cube::ReconSearch()
     
     if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
   
-    this->objectList = searchReconArraySimple(this->axisDim,this->array,
-					      this->recon,
-					      this->par,this->Stats);
+    *this->objectList = searchReconArraySimple(this->axisDim,this->array,
+					       this->recon,
+					       this->par,this->Stats);
     //   this->objectList = searchReconArray(this->axisDim,this->array,
     // 				      this->recon,this->par,this->Stats);
 

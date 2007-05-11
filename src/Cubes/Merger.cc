@@ -24,21 +24,21 @@ void Cube::ObjectMerger()
    *  with code to cover the option of growing objects.
    */
 
-  int startSize = this->objectList.size();
+  int startSize = this->objectList->size();
 
   if(startSize > 0){
 
     // make a vector "currentList", which starts as a copy of the Cube's 
     //  objectList, but is the one worked on.
-    vector <Detection> currentList;
-    currentList = this->objectList;
-    this->objectList.clear();
+    vector <Detection> currentList(startSize);
+    for(int i=0;i<startSize;i++) currentList[i] = this->objectList->at(i);
+    this->objectList->clear();
 
     mergeList(currentList, this->par);
 
     // Do growth stuff
     if(this->par.getFlagGrowth()) {
-      vector <Detection> newList;
+      vector <Detection> newList(currentList.size());
       for(int i=0;i<currentList.size();i++){
 	std::cout.setf(std::ios::right);
 	std::cout << "Growing: " << std::setw(6) << i+1 << "/";	   
@@ -64,7 +64,11 @@ void Cube::ObjectMerger()
 
     finaliseList(currentList, this->par);
 
-    this->objectList = currentList;
+//     *this->objectList = currentList;
+    this->objectList->resize(currentList.size());
+    for(int i=0;i<currentList.size();i++)
+      this->objectList->at(i) = currentList[i];
+    
     currentList.clear();
 
   }

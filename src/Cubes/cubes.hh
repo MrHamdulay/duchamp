@@ -51,19 +51,23 @@ public:
   //-----------------------------------------
   // Obvious inline accessor functions.
   //
-  long               getDimX(){if(numDim>0) return this->axisDim[0];else return 0;}; 
-  long               getDimY(){if(numDim>1) return this->axisDim[1];else return 1;};
-  long               getDimZ(){if(numDim>2) return this->axisDim[2];else return 1;};
-  long               getSize(){ return this->numPixels; };
-  short int          getNumDim(){ return this->numDim; };
+  long               getDimX(){if(numDim>0) return axisDim[0];else return 0;}; 
+  long               getDimY(){if(numDim>1) return axisDim[1];else return 1;};
+  long               getDimZ(){if(numDim>2) return axisDim[2];else return 1;};
+  long               getSize(){ return numPixels; };
+  short int          getNumDim(){ return numDim; };
   virtual float      getPixValue(long pos){ return array[pos]; };
-  virtual void       setPixValue(long pos, float f){array[pos] = f;};;
-  Detection          getObject(long number){ return objectList[number]; };
-  std::vector <Detection> getObjectList(){ return objectList; };
-  long               getNumObj(){ return objectList.size(); };
+  virtual void       setPixValue(long pos, float f){array[pos] = f;};
+  Detection          getObject(long number){ return objectList->at(number); };
+  std::vector <Detection> getObjectList(){ return *objectList; };
+  long               getNumObj(){ return objectList->size(); };
 
   /** Delete all objects from the list of detections. */
-  void               clearDetectionList(){ this->objectList.clear(); };
+  void               clearDetectionList(){ 
+    //objectList->clear(); 
+    delete objectList;
+    objectList = new std::vector<Detection>;
+  };
 
   /** Read a parameter set from file. */
   int                readParam(std::string paramfile){
@@ -106,13 +110,13 @@ public:
   // Parameter list related.
   //
   /** Output the Param set.*/
-  void               showParam(std::ostream &stream){ stream << this->par; }; 
+  void               showParam(std::ostream &stream){ stream << par; }; 
   /** Return the Param set.*/
-  Param              getParam(){ return this->par; }; 
+  Param              getParam(){ return par; }; 
   /** Save a Param set to the Cube.*/
-  void               saveParam(Param newpar){this->par = newpar;};
+  void               saveParam(Param newpar){par = newpar;};
   /** Provides a reference to the Param set.*/
-  Param&             pars(){ Param &rpar = this->par; return rpar; }; 
+  Param&             pars(){ Param &rpar = par; return rpar; }; 
   /** Is the voxel number given by vox a BLANK value?*/
   bool               isBlank(int vox); 
 
@@ -120,15 +124,15 @@ public:
   // Statistics
   //
   /**  Returns the StatsContainer. */
- Statistics::StatsContainer<float> getStats(){ return this->Stats; };
+ Statistics::StatsContainer<float> getStats(){ return Stats; };
 
   /** Provides a reference to the StatsContainer. */
   Statistics::StatsContainer<float>& stats(){ 
-    Statistics::StatsContainer<float> &rstats = this->Stats;  return rstats;
+    Statistics::StatsContainer<float> &rstats = Stats;  return rstats;
   };
  
   /** Save a StatsContainer to the Cube. */
-  void saveStats(Statistics::StatsContainer<float> newStats){ this->Stats = newStats;};
+  void saveStats(Statistics::StatsContainer<float> newStats){ Stats = newStats;};
 
   /** A detection test for value. */
   bool isDetection(float value);
@@ -148,7 +152,7 @@ protected:
 				      ///        direction).
   long                    numPixels;  ///< Total number of pixels in cube.
   float                  *array;      ///< Array of data.
-  std::vector <Detection> objectList; ///< The list of detected objects.
+  std::vector <Detection> *objectList; ///< The list of detected objects.
   Param                   par;        ///< A parameter list.
   Statistics::StatsContainer<float> Stats; ///< The statistics for the DataArray.
 };
@@ -395,8 +399,7 @@ public:
      * are calculated beforehand, and no logging or detection map
      * updating is done.
      */
-    this->objectList = search3DArraySimple(this->axisDim,this->array,
-					   this->par,this->Stats);
+    *objectList = search3DArraySimple(axisDim,array,par,Stats);
   };
 
   void        Simple3DSearchRecon(){
@@ -410,9 +413,7 @@ public:
      * updating is done. The recon array is assumed to have been
      * defined already.
      */
-    this->objectList = searchReconArraySimple(this->axisDim,this->array,
-					      this->recon,
-					      this->par,this->Stats);
+    *objectList = searchReconArraySimple(axisDim,array,recon,par,Stats);
   };
 
   void        Simple3DSearchSmooth(){
@@ -426,8 +427,7 @@ public:
      * beforehand, and no logging or detection map updating is
      * done. The recon array is assumed to have been defined already.
      */
-    this->objectList = search3DArraySimple(this->axisDim,this->recon,
-					   this->par,this->Stats);
+    *objectList = search3DArraySimple(axisDim,recon,par,Stats);
   };
 
   // in Cubes/Merger.cc

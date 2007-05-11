@@ -46,35 +46,35 @@ void Cube::outputDetectionsKarma(std::ostream &stream)
   stream << "#\n";
   stream << "COLOR RED" << endl;
   stream << "COORD W" << endl;
-  for(int i=0;i<this->objectList.size();i++){
+  for(int i=0;i<this->objectList->size();i++){
     if(this->head.isWCS()){
-      float radius = this->objectList[i].getRAWidth()/120.;
-      if(this->objectList[i].getDecWidth()/120.>radius)
-	radius = this->objectList[i].getDecWidth()/120.;
+      float radius = this->objectList->at(i).getRAWidth()/120.;
+      if(this->objectList->at(i).getDecWidth()/120.>radius)
+	radius = this->objectList->at(i).getDecWidth()/120.;
       stream << "CIRCLE " 
-	     << this->objectList[i].getRA() << " " 
-	     << this->objectList[i].getDec() << " " 
+	     << this->objectList->at(i).getRA() << " " 
+	     << this->objectList->at(i).getDec() << " " 
 	     << radius << endl;
       stream << "TEXT " 
-	     << this->objectList[i].getRA() << " " 
-	     << this->objectList[i].getDec() << " " 
-	     << this->objectList[i].getID() << endl;
+	     << this->objectList->at(i).getRA() << " " 
+	     << this->objectList->at(i).getDec() << " " 
+	     << this->objectList->at(i).getID() << endl;
     }
     else{
-      float radius = this->objectList[i].getXmax() - 
-	this->objectList[i].getXmin() + 1;
-      if(this->objectList[i].getYmax()-this->objectList[i].getYmin() + 1 
+      float radius = this->objectList->at(i).getXmax() - 
+	this->objectList->at(i).getXmin() + 1;
+      if(this->objectList->at(i).getYmax()-this->objectList->at(i).getYmin() + 1 
 	 > radius)
-	radius = this->objectList[i].getYmax() - 
-	  this->objectList[i].getYmin() + 1;
+	radius = this->objectList->at(i).getYmax() - 
+	  this->objectList->at(i).getYmin() + 1;
       stream << "CIRCLE " 
-	     << this->objectList[i].getXcentre() << " " 
-	     << this->objectList[i].getYcentre() << " " 
+	     << this->objectList->at(i).getXcentre() << " " 
+	     << this->objectList->at(i).getYcentre() << " " 
 	     << radius << endl;
       stream << "TEXT " 
-	     << this->objectList[i].getXcentre() << " " 
-	     << this->objectList[i].getYcentre() << " " 
-	     << this->objectList[i].getID() << endl;
+	     << this->objectList->at(i).getXcentre() << " " 
+	     << this->objectList->at(i).getYcentre() << " " 
+	     << this->objectList->at(i).getID() << endl;
     }
   }      
 
@@ -248,23 +248,23 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
 	<<" datatype=\"float\" width=\""<<localCol[9].getWidth()<<"\" precision=\""
 	<<prec[prFLUX]<<"\" unit=\""<<fixUnitsVOT(localCol[9].getUnits())<<"\"/>\n";
   stream<<"      <FIELD name=\"Flag\" ID=\"col11\" ucd=\"meta.code.qual\" datatype=\"char\" arraysize=\"3\" unit=\"--\"/>\n";
-  stream<<"      <FIELD name=\"X_Centroid\" ID=\"col12\" ucd=\"\""
+  stream<<"      <FIELD name=\"X_Centroid\" ID=\"col12\" ucd=\"pos.cartesian.x\""
 	<<" datatype=\"float\" width=\""<<localCol[11].getWidth()<<"\" precision=\""<<localCol[11].getPrecision()<<"\" unit=\"\"/>\n";
-  stream<<"      <FIELD name=\"Y_Centroid\" ID=\"col13\" ucd=\"\""
+  stream<<"      <FIELD name=\"Y_Centroid\" ID=\"col13\" ucd=\"pos.cartesian.y\""
 	<<" datatype=\"float\" width=\""<<localCol[12].getWidth()<<"\" precision=\""<<localCol[12].getPrecision()<<"\" unit=\"\"/>\n";
-  stream<<"      <FIELD name=\"Z_Centroid\" ID=\"col14\" ucd=\"\""
+  stream<<"      <FIELD name=\"Z_Centroid\" ID=\"col14\" ucd=\"pos.cartesian.z\""
 	<<" datatype=\"float\" width=\""<<localCol[13].getWidth()<<"\" precision=\""<<localCol[13].getPrecision()<<"\" unit=\"\"/>\n";
-  stream<<"      <FIELD name=\"X_Av\" ID=\"col15\" ucd=\"\""
+  stream<<"      <FIELD name=\"X_Av\" ID=\"col15\" ucd=\"pos.cartesian.x\""
 	<<" datatype=\"float\" width=\""<<localCol[14].getWidth()<<"\" precision=\""<<localCol[14].getPrecision()<<"\" unit=\"\"/>\n";
-  stream<<"      <FIELD name=\"Y_Av\" ID=\"col16\" ucd=\"\""
+  stream<<"      <FIELD name=\"Y_Av\" ID=\"col16\" ucd=\"pos.cartesian.y\""
 	<<" datatype=\"float\" width=\""<<localCol[15].getWidth()<<"\" precision=\""<<localCol[15].getPrecision()<<"\" unit=\"\"/>\n";
-  stream<<"      <FIELD name=\"Z_Av\" ID=\"col17\" ucd=\"\""
+  stream<<"      <FIELD name=\"Z_Av\" ID=\"col17\" ucd=\"pos.cartesian.z\""
 	<<" datatype=\"float\" width=\""<<localCol[16].getWidth()<<"\" precision=\""<<localCol[16].getPrecision()<<"\" unit=\"\"/>\n";
-  stream<<"      <FIELD name=\"X_Peak\" ID=\"col18\" ucd=\"\""
+  stream<<"      <FIELD name=\"X_Peak\" ID=\"col18\" ucd=\"pos.cartesian.x\""
 	<<" datatype=\"int\" width=\""<<localCol[17].getWidth()<<"\" precision=\""<<localCol[17].getPrecision()<<"\" unit=\"\"/>\n";
-  stream<<"      <FIELD name=\"Y_Peak\" ID=\"col19\" ucd=\"\""
+  stream<<"      <FIELD name=\"Y_Peak\" ID=\"col19\" ucd=\"pos.cartesian.y\""
 	<<" datatype=\"int\" width=\""<<localCol[18].getWidth()<<"\" precision=\""<<localCol[18].getPrecision()<<"\" unit=\"\"/>\n";
-  stream<<"      <FIELD name=\"Z_Peak\" ID=\"col20\" ucd=\"\""
+  stream<<"      <FIELD name=\"Z_Peak\" ID=\"col20\" ucd=\"pos.cartesian.z\""
 	<<" datatype=\"int\" width=\""<<localCol[19].getWidth()<<"\" precision=\""<<localCol[19].getPrecision()<<"\" unit=\"\"/>\n";
 
 
@@ -272,36 +272,36 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
 	<<"        <TABLEDATA>\n";
 
   stream.setf(std::ios::fixed);  
-  for(int i=0;i<this->objectList.size();i++){
-    if(this->objectList[i].isWCS()){
+  for(int i=0;i<this->objectList->size();i++){
+    if(this->objectList->at(i).isWCS()){
       stream<<"        <TR>\n";
       stream<<"          <TD>"<<setw(localCol[0].getWidth())<<i+1<<"</TD>";
-      stream<<"<TD>" << setw(localCol[1].getWidth()) << this->objectList[i].getName()       <<"</TD>";
+      stream<<"<TD>" << setw(localCol[1].getWidth()) << this->objectList->at(i).getName()       <<"</TD>";
       stream<<setprecision(prec[prPOS]);
-      stream<<"<TD>" << setw(localCol[2].getWidth()) << this->objectList[i].getRA()         <<"</TD>";
-      stream<<"<TD>" << setw(localCol[3].getWidth()) << this->objectList[i].getDec()        <<"</TD>";
+      stream<<"<TD>" << setw(localCol[2].getWidth()) << this->objectList->at(i).getRA()         <<"</TD>";
+      stream<<"<TD>" << setw(localCol[3].getWidth()) << this->objectList->at(i).getDec()        <<"</TD>";
       stream<<setprecision(prec[prWPOS]);
-      stream<<"<TD>" << setw(localCol[4].getWidth()) << this->objectList[i].getRAWidth()    <<"</TD>";
-      stream<<"<TD>" << setw(localCol[5].getWidth()) << this->objectList[i].getDecWidth()   <<"</TD>";
+      stream<<"<TD>" << setw(localCol[4].getWidth()) << this->objectList->at(i).getRAWidth()    <<"</TD>";
+      stream<<"<TD>" << setw(localCol[5].getWidth()) << this->objectList->at(i).getDecWidth()   <<"</TD>";
       stream<<setprecision(prec[prVEL]);
-      stream<<"<TD>" << setw(localCol[6].getWidth()) << this->objectList[i].getVel()        <<"</TD>";
-      stream<<"<TD>" << setw(localCol[7].getWidth()) << this->objectList[i].getVelWidth()   <<"</TD>";
+      stream<<"<TD>" << setw(localCol[6].getWidth()) << this->objectList->at(i).getVel()        <<"</TD>";
+      stream<<"<TD>" << setw(localCol[7].getWidth()) << this->objectList->at(i).getVelWidth()   <<"</TD>";
       stream<<setprecision(prec[prFLUX]);
       if(this->head.getNumAxes()>2)
-	stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList[i].getIntegFlux() <<"</TD>";
+	stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList->at(i).getIntegFlux() <<"</TD>";
       else
-	stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList[i].getTotalFlux() <<"</TD>";
-      stream<<"<TD>" << setw(localCol[9].getWidth()) << this->objectList[i].getPeakFlux()   <<"</TD>";
-      stream<<"<TD>" << setw(localCol[10].getWidth())<< this->objectList[i].getFlagText()   <<"</TD>";
-      stream<<"<TD>" << setw(localCol[11].getWidth())<< this->objectList[i].getXCentroid()  <<"</TD>";
-      stream<<"<TD>" << setw(localCol[12].getWidth())<< this->objectList[i].getYCentroid()  <<"</TD>";
-      stream<<"<TD>" << setw(localCol[13].getWidth())<< this->objectList[i].getZCentroid()  <<"</TD>";
-      stream<<"<TD>" << setw(localCol[14].getWidth())<< this->objectList[i].getXAverage()   <<"</TD>";
-      stream<<"<TD>" << setw(localCol[15].getWidth())<< this->objectList[i].getYAverage()   <<"</TD>";
-      stream<<"<TD>" << setw(localCol[16].getWidth())<< this->objectList[i].getZAverage()   <<"</TD>";
-      stream<<"<TD>" << setw(localCol[17].getWidth())<< this->objectList[i].getXPeak()      <<"</TD>";
-      stream<<"<TD>" << setw(localCol[18].getWidth())<< this->objectList[i].getYPeak()      <<"</TD>";
-      stream<<"<TD>" << setw(localCol[19].getWidth())<< this->objectList[i].getZPeak()      <<"</TD>";
+	stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList->at(i).getTotalFlux() <<"</TD>";
+      stream<<"<TD>" << setw(localCol[9].getWidth()) << this->objectList->at(i).getPeakFlux()   <<"</TD>";
+      stream<<"<TD>" << setw(localCol[10].getWidth())<< this->objectList->at(i).getFlagText()   <<"</TD>";
+      stream<<"<TD>" << setw(localCol[11].getWidth())<< this->objectList->at(i).getXCentroid()  <<"</TD>";
+      stream<<"<TD>" << setw(localCol[12].getWidth())<< this->objectList->at(i).getYCentroid()  <<"</TD>";
+      stream<<"<TD>" << setw(localCol[13].getWidth())<< this->objectList->at(i).getZCentroid()  <<"</TD>";
+      stream<<"<TD>" << setw(localCol[14].getWidth())<< this->objectList->at(i).getXAverage()   <<"</TD>";
+      stream<<"<TD>" << setw(localCol[15].getWidth())<< this->objectList->at(i).getYAverage()   <<"</TD>";
+      stream<<"<TD>" << setw(localCol[16].getWidth())<< this->objectList->at(i).getZAverage()   <<"</TD>";
+      stream<<"<TD>" << setw(localCol[17].getWidth())<< this->objectList->at(i).getXPeak()      <<"</TD>";
+      stream<<"<TD>" << setw(localCol[18].getWidth())<< this->objectList->at(i).getYPeak()      <<"</TD>";
+      stream<<"<TD>" << setw(localCol[19].getWidth())<< this->objectList->at(i).getZPeak()      <<"</TD>";
       
       stream<<endl;
       stream<<"        </TR>\n";
@@ -393,14 +393,14 @@ void Cube::outputDetectionList()
    */
 
   std::ofstream output(this->par.getOutFile().c_str(),std::ios::app);
-  output<<"Total number of detections = "<<this->objectList.size()<<endl;
+  output<<"Total number of detections = "<<this->objectList->size()<<endl;
   output<<"--------------------\n";
   this->setupColumns();
-  this->objectList[0].outputDetectionTextHeaderFull(output,this->fullCols);
-  this->objectList[0].outputDetectionTextHeader(std::cout,this->fullCols);
-  for(int i=0;i<this->objectList.size();i++){
-    this->objectList[i].outputDetectionTextWCSFull(output,this->fullCols);
-    this->objectList[i].outputDetectionTextWCS(std::cout,this->fullCols);
+  this->objectList->at(0).outputDetectionTextHeaderFull(output,this->fullCols);
+  this->objectList->at(0).outputDetectionTextHeader(std::cout,this->fullCols);
+  for(int i=0;i<this->objectList->size();i++){
+    this->objectList->at(i).outputDetectionTextWCSFull(output,this->fullCols);
+    this->objectList->at(i).outputDetectionTextWCS(std::cout,this->fullCols);
   }
 
   output.close();
@@ -420,21 +420,21 @@ void Cube::logDetectionList()
 
   std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
   this->setupColumns();
-  this->objectList[0].outputDetectionTextHeader(fout,this->logCols);
+  this->objectList->at(0).outputDetectionTextHeader(fout,this->logCols);
 
   if(this->par.getFlagBaseline()){
     for(int i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
       this->array[i] += this->baseline[i];
   }
 
-  for(int objCtr=0;objCtr<this->objectList.size();objCtr++){
+  for(int objCtr=0;objCtr<this->objectList->size();objCtr++){
     Detection *obj = new Detection;
-    *obj = objectList[objCtr];
+    *obj = objectList->at(objCtr);
     obj->setOffsets(par);
-    obj->calcFluxes(this->array, this->axisDim);
     if(this->par.getFlagCubeTrimmed()){
       obj->pixels().addOffsets(left,bottom,0);
     }
+    obj->calcFluxes(this->array, this->axisDim);
     obj->outputDetectionText(fout,this->logCols,objCtr+1);
     delete obj;
   }

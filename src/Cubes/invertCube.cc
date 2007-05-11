@@ -27,11 +27,11 @@ void Cube::reInvert()
     }
   }
 
-  for(int i=0; i<this->objectList.size(); i++){
-    this->objectList[i].setNegative(true);
-    this->objectList[i].setTotalFlux(-1. * this->objectList[i].getTotalFlux() );
-    this->objectList[i].setIntegFlux(-1. * this->objectList[i].getIntegFlux() );
-    this->objectList[i].setPeakFlux(-1. * this->objectList[i].getPeakFlux() );
+  for(int i=0; i<this->objectList->size(); i++){
+    this->objectList->at(i).setNegative(true);
+    this->objectList->at(i).setTotalFlux(-1. * this->objectList->at(i).getTotalFlux() );
+    this->objectList->at(i).setIntegFlux(-1. * this->objectList->at(i).getIntegFlux() );
+    this->objectList->at(i).setPeakFlux(-1. * this->objectList->at(i).getPeakFlux() );
   }
 
 }

@@ -32,7 +32,7 @@ void Cube::CubicSearch()
   
 //   this->objectList = search3DArray(this->axisDim,this->array,
 // 				   this->par,this->Stats);
-  this->objectList = search3DArraySimple(this->axisDim,this->array,
+  *this->objectList = search3DArraySimple(this->axisDim,this->array,
 					 this->par,this->Stats);
 
   if(this->par.isVerbose()) std::cout << "  Updating detection map... " 

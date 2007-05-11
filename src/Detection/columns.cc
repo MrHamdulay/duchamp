@@ -205,20 +205,20 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
 
     if(head.isWCS()){  
       // RA -- assign correct title. Check width but should be ok by definition
-      tempstr = head.getWCS()->lngtyp;
+      tempstr = head.WCS().lngtyp;
       newset[RA].setName(tempstr);
       tempwidth = objectList[obj].getRAs().size() + 1;
       for(int i=newset[RA].getWidth();i<tempwidth;i++) newset[RA].widen();
       
       // Dec -- assign correct title. Check width, should be ok by definition
-      tempstr = head.getWCS()->lattyp;
+      tempstr = head.WCS().lattyp;
       newset[DEC].setName(tempstr);
       tempwidth = objectList[obj].getDecs().size() + 1;
       for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
 
       // Vel -- check width, title and units.
       if(head.getNumAxes() > 2){
-	if(head.getWCS()->restfrq == 0) // using frequency, not velocity
+	if(head.WCS().restfrq == 0) // using frequency, not velocity
 	  newset[VEL].setName("FREQ");
 	newset[VEL].setUnits("[" + head.getSpectralUnits() + "]");
 	tempwidth = newset[VEL].getUnits().size() + 1;
@@ -260,7 +260,7 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
 
       // w_Vel -- check width, title and units.
       if(head.getNumAxes() > 2){
-	if(head.getWCS()->restfrq == 0) // using frequency, not velocity
+	if(head.WCS().restfrq == 0) // using frequency, not velocity
 	  newset[WVEL].setName("w_FREQ");
 	newset[WVEL].setUnits("[" + head.getSpectralUnits() + "]");
 	tempwidth = newset[WVEL].getUnits().size() + 1;

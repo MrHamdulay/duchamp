@@ -85,7 +85,7 @@ void Cube::plotDetectionMap(std::string pgDestination)
       
     if(this->head.isWCS()) this->plotWCSaxes();
   
-    if(this->objectList.size()>0){ 
+    if(this->objectList->size()>0){ 
       // now show and label each detection, drawing over the WCS lines.
 
       cpgsch(1.0);
@@ -94,20 +94,20 @@ void Cube::plotDetectionMap(std::string pgDestination)
       float yoff=newplot.cmToCoord(0.5);
       if(this->par.drawBorders()){
 	cpgsci(BLUE);
-	for(int i=0;i<this->objectList.size();i++) 
-	  this->objectList[i].drawBorders(0,0);
+	for(int i=0;i<this->objectList->size();i++) 
+	  this->objectList->at(i).drawBorders(0,0);
       }
       cpgsci(RED);
       std::stringstream label;
       cpgslw(1);
-      for(int i=0;i<this->objectList.size();i++){
-	cpgpt1(this->par.getXOffset()+this->objectList[i].getXPeak(), 
-	       this->par.getYOffset()+this->objectList[i].getYPeak(), 
+      for(int i=0;i<this->objectList->size();i++){
+	cpgpt1(this->par.getXOffset()+this->objectList->at(i).getXPeak(), 
+	       this->par.getYOffset()+this->objectList->at(i).getYPeak(), 
 	       CROSS);
 	label.str("");
-	label << this->objectList[i].getID();
-	cpgptxt(this->par.getXOffset()+this->objectList[i].getXPeak()-xoff, 
-		this->par.getYOffset()+this->objectList[i].getYPeak()-yoff, 
+	label << this->objectList->at(i).getID();
+	cpgptxt(this->par.getXOffset()+this->objectList->at(i).getXPeak()-xoff, 
+		this->par.getYOffset()+this->objectList->at(i).getYPeak()-yoff, 
 		0, 0.5, label.str().c_str());
       }
 
@@ -181,7 +181,7 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 
   if(plotNeeded){
 
-    if(this->objectList.size()==0){ 
+    if(this->objectList->size()==0){ 
       // if there are no detections, we plot an empty field.
 
       for(int iplot=0; iplot<numPlots; iplot++){
@@ -219,9 +219,9 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 
       bool *isObj = new bool[xdim*ydim*zdim];
       for(int i=0;i<xdim*ydim*zdim;i++) isObj[i] = false;
-      for(int i=0;i<this->objectList.size();i++){
+      for(int i=0;i<this->objectList->size();i++){
 	std::vector<Voxel> voxlist = 
-	  this->objectList[i].pixels().getPixelSet();
+	  this->objectList->at(i).pixels().getPixelSet();
 	for(int p=0;p<voxlist.size();p++){
 	  int pixelpos = voxlist[p].getX() + xdim*voxlist[p].getY() + 
 	    xdim*ydim*voxlist[p].getZ();
@@ -333,20 +333,20 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 	float yoff=plotList[iplot].cmToCoord(0.5);
 	if(this->par.drawBorders()){
 	  cpgsci(BLUE);
-	  for(int i=0;i<this->objectList.size();i++) 
-	    this->objectList[i].drawBorders(0,0);
+	  for(int i=0;i<this->objectList->size();i++) 
+	    this->objectList->at(i).drawBorders(0,0);
 	}
 	cpgsci(RED);
 	std::stringstream label;
 	cpgslw(1);
-	for(int i=0;i<this->objectList.size();i++){
-	  cpgpt1(this->par.getXOffset()+this->objectList[i].getXPeak(), 
-		 this->par.getYOffset()+this->objectList[i].getYPeak(),
+	for(int i=0;i<this->objectList->size();i++){
+	  cpgpt1(this->par.getXOffset()+this->objectList->at(i).getXPeak(), 
+		 this->par.getYOffset()+this->objectList->at(i).getYPeak(),
 		 CROSS);
 	  label.str("");
-	  label << this->objectList[i].getID();
-	  cpgptxt(this->par.getXOffset()+this->objectList[i].getXPeak()-xoff,
-		  this->par.getYOffset()+this->objectList[i].getYPeak()-yoff,
+	  label << this->objectList->at(i).getID();
+	  cpgptxt(this->par.getXOffset()+this->objectList->at(i).getXPeak()-xoff,
+		  this->par.getYOffset()+this->objectList->at(i).getYPeak()-yoff,
 		  0, 0.5, label.str().c_str());
 	}
 

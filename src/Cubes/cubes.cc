@@ -44,6 +44,7 @@ DataArray::DataArray(){
    */
   this->numDim=0; 
   this->numPixels=0;
+  this->objectList = new std::vector<Detection>;
 }; 
 //--------------------------------------------------------------------
 
@@ -57,6 +58,7 @@ DataArray::DataArray(short int nDim){
   if(nDim>0) this->axisDim = new long[nDim];
   this->numDim=nDim; 
   this->numPixels=0;
+  this->objectList = new std::vector<Detection>;
 }; 
 //--------------------------------------------------------------------
 
@@ -83,6 +85,7 @@ DataArray::DataArray(short int nDim, long size){
     if(nDim>0) this->axisDim = new long[nDim];
     this->numDim = nDim;
   }
+  this->objectList = new std::vector<Detection>;
 }
 //--------------------------------------------------------------------
 
@@ -123,7 +126,7 @@ DataArray::~DataArray()
    */
   if(this->numPixels>0) delete [] this->array;
   if(this->numDim>0)    delete [] this->axisDim;
-  this->objectList.clear();
+  this->objectList->clear();
 }
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
@@ -189,7 +192,7 @@ void DataArray::addObject(Detection object){
    * \param object The object to be added to the object list.
    */
   // objectList is a vector, so just use push_back()
-  this->objectList.push_back(object);
+  this->objectList->push_back(object);
 }
 //--------------------------------------------------------------------
 
@@ -197,7 +200,7 @@ void DataArray::addObjectList(std::vector <Detection> newlist) {
   /**
    * \param newlist The list of objects to be added to the object list.
    */
-  for(int i=0;i<newlist.size();i++) this->objectList.push_back(newlist[i]);
+  for(int i=0;i<newlist.size();i++) this->objectList->push_back(newlist[i]);
 }
 //--------------------------------------------------------------------
 
@@ -207,13 +210,13 @@ void DataArray::addObjectList(std::vector <Detection> newlist) {
 //    *  corner of the utilised part) that are stored in the Param set to the
 //    *  coordinate values of each object in the object list.
 //    */
-//   for(int i=0;i<this->objectList.size();i++){
-//     for(int p=0;p<this->objectList[i].getSize();p++){
-//       this->objectList[i].setX(p,this->objectList[i].getX(p)+
+//   for(int i=0;i<this->objectList->size();i++){
+//     for(int p=0;p<this->objectList->at(i).getSize();p++){
+//       this->objectList->at(i).setX(p,this->objectList->at(i).getX(p)+
 // 			       this->par.getXOffset());
-//       this->objectList[i].setY(p,this->objectList[i].getY(p)+
+//       this->objectList->at(i).setY(p,this->objectList->at(i).getY(p)+
 // 			       this->par.getYOffset());
-//       this->objectList[i].setZ(p,this->objectList[i].getZ(p)+
+//       this->objectList->at(i).setZ(p,this->objectList->at(i).getZ(p)+
 // 			       this->par.getZOffset());
 //     }
 //   }
@@ -259,11 +262,11 @@ std::ostream& operator<< ( std::ostream& theStream, DataArray &array)
     theStream<<array.axisDim[i];
   }
   theStream<<std::endl;
-  theStream<<array.objectList.size()<<" detections:\n--------------\n";
-  for(int i=0;i<array.objectList.size();i++){
-    theStream << "Detection #" << array.objectList[i].getID()<<std::endl;
+  theStream<<array.objectList->size()<<" detections:\n--------------\n";
+  for(int i=0;i<array.objectList->size();i++){
+    theStream << "Detection #" << array.objectList->at(i).getID()<<std::endl;
     Detection *obj = new Detection;
-    *obj = array.objectList[i];
+    *obj = array.objectList->at(i);
     obj->addOffsets();
     theStream<<*obj;
     delete obj;
@@ -384,9 +387,9 @@ void Cube::initialiseCube(long *dimensions)
 
   if(this->head.isWCS() && (this->head.getNumAxes()>=3)){
     // if there is a WCS and there is at least 3 axes
-    lng = this->head.getWCS()->lng;
-    lat = this->head.getWCS()->lat;
-    spc = this->head.getWCS()->spec;
+    lng = this->head.WCS().lng;
+    lat = this->head.WCS().lat;
+    spc = this->head.WCS().spec;
   }
   else{
     // just take dimensions[] at face value
@@ -982,27 +985,27 @@ void Cube::calcObjectWCSparams()
    *   in the list), and if the WCS is good, the WCS paramters are calculated.
    */
   
-  for(int i=0;i<this->objectList.size();i++){
-    this->objectList[i].setID(i+1);
-    this->objectList[i].setCentreType(this->par.getPixelCentre());
-    this->objectList[i].calcFluxes(this->array,this->axisDim);
-    this->objectList[i].calcWCSparams(this->array,this->axisDim,this->head);
+  for(int i=0;i<this->objectList->size();i++){
+    this->objectList->at(i).setID(i+1);
+    this->objectList->at(i).setCentreType(this->par.getPixelCentre());
+    this->objectList->at(i).calcFluxes(this->array,this->axisDim);
+    this->objectList->at(i).calcWCSparams(this->array,this->axisDim,this->head);
     
     if(this->par.getFlagUserThreshold())
-      this->objectList[i].setPeakSNR( this->objectList[i].getPeakFlux() / this->Stats.getThreshold() );
+      this->objectList->at(i).setPeakSNR( this->objectList->at(i).getPeakFlux() / this->Stats.getThreshold() );
     else
-      this->objectList[i].setPeakSNR( (this->objectList[i].getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+      this->objectList->at(i).setPeakSNR( (this->objectList->at(i).getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
 
   }  
 
   if(!this->head.isWCS()){ 
     // if the WCS is bad, set the object names to Obj01 etc
-    int numspaces = int(log10(this->objectList.size())) + 1;
+    int numspaces = int(log10(this->objectList->size())) + 1;
     std::stringstream ss;
-    for(int i=0;i<this->objectList.size();i++){
+    for(int i=0;i<this->objectList->size();i++){
       ss.str("");
       ss << "Obj" << std::setfill('0') << std::setw(numspaces) << i+1;
-      this->objectList[i].setName(ss.str());
+      this->objectList->at(i).setName(ss.str());
     }
   }
   
@@ -1017,15 +1020,17 @@ void Cube::updateDetectMap()
    */
 
   Scan temp;
-  for(int obj=0;obj<this->objectList.size();obj++){
-    long numZ=this->objectList[obj].pixels().getNumChanMap();
+  for(int obj=0;obj<this->objectList->size();obj++){
+    long numZ=this->objectList->at(obj).pixels().getNumChanMap();
     for(int iz=0;iz<numZ;iz++){ // for each channel map
-      Object2D chanmap = this->objectList[obj].pixels().getChanMap(iz).getObject();
-      for(int iscan=0;iscan<chanmap.getNumScan();iscan++){
-	temp = chanmap.getScan(iscan);
+      Object2D *chanmap = new Object2D;
+      *chanmap = this->objectList->at(obj).pixels().getChanMap(iz).getObject();
+      for(int iscan=0;iscan<chanmap->getNumScan();iscan++){
+	temp = chanmap->getScan(iscan);
 	for(int x=temp.getX(); x <= temp.getXmax(); x++)
 	  this->detectMap[temp.getY()*this->axisDim[0] + x]++;
       } // end of loop over scans
+      delete chanmap;
     } // end of loop over channel maps
   } // end of loop over objects.
 
@@ -1100,10 +1105,10 @@ void Cube::setupColumns()
   // need this as the colSet functions use vel, RA, Dec, etc...
   
   this->fullCols.clear();
-  this->fullCols = getFullColSet(this->objectList, this->head);
+  this->fullCols = getFullColSet(*(this->objectList), this->head);
 
   this->logCols.clear();
-  this->logCols = getLogColSet(this->objectList, this->head);
+  this->logCols = getLogColSet(*(this->objectList), this->head);
 
   int vel,fpeak,fint,pos,xyz,snr;
   vel = fullCols[VEL].getPrecision();
@@ -1117,13 +1122,13 @@ void Cube::setupColumns()
   pos = fullCols[WRA].getPrecision();
   pos = std::max(pos, fullCols[WDEC].getPrecision());
   
-  for(int obj=0;obj<this->objectList.size();obj++){
-    this->objectList[obj].setVelPrec(vel);
-    this->objectList[obj].setFpeakPrec(fpeak);
-    this->objectList[obj].setXYZPrec(xyz);
-    this->objectList[obj].setPosPrec(pos);
-    this->objectList[obj].setFintPrec(fint);
-    this->objectList[obj].setSNRPrec(snr);
+  for(int obj=0;obj<this->objectList->size();obj++){
+    this->objectList->at(obj).setVelPrec(vel);
+    this->objectList->at(obj).setFpeakPrec(fpeak);
+    this->objectList->at(obj).setXYZPrec(xyz);
+    this->objectList->at(obj).setPosPrec(pos);
+    this->objectList->at(obj).setFintPrec(fint);
+    this->objectList->at(obj).setSNRPrec(snr);
   }
 
 }
@@ -1136,7 +1141,7 @@ bool Cube::objAtSpatialEdge(Detection obj)
    *    lies at the edge of the cube's spatial field --
    *    either at the boundary, or next to BLANKs.
    *
-   *   /param obj The Detection under consideration.
+   *   \param obj The Detection under consideration.
    */
 
   bool atEdge = false;
@@ -1214,17 +1219,17 @@ void Cube::setObjectFlags()
    *    </ul>
    */
 
-  for(int i=0;i<this->objectList.size();i++){
+  for(int i=0;i<this->objectList->size();i++){
 
-    if( this->enclosedFlux(this->objectList[i]) < 0. )  
-      this->objectList[i].addToFlagText("N");
+    if( this->enclosedFlux(this->objectList->at(i)) < 0. )  
+      this->objectList->at(i).addToFlagText("N");
 
-    if( this->objAtSpatialEdge(this->objectList[i]) ) 
-      this->objectList[i].addToFlagText("E");
+    if( this->objAtSpatialEdge(this->objectList->at(i)) ) 
+      this->objectList->at(i).addToFlagText("E");
 
-    if( this->objAtSpectralEdge(this->objectList[i]) &&
+    if( this->objAtSpectralEdge(this->objectList->at(i)) &&
 	(this->axisDim[2] > 2)) 
-      this->objectList[i].addToFlagText("S");
+      this->objectList->at(i).addToFlagText("S");
 
   }
 

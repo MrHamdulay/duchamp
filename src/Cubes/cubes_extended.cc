@@ -30,9 +30,10 @@ void Cube::sortDetections()
    *  The ID numbers are then re-calculated.
    */
   
-  if(this->head.isWCS()) SortByVel(this->objectList);
-  else SortByZ(this->objectList);
-  for(int i=0; i<this->objectList.size();i++) this->objectList[i].setID(i+1);
+  if(this->head.isWCS()) SortByVel(*this->objectList);
+  else SortByZ(*this->objectList);
+  for(int i=0; i<this->objectList->size();i++) 
+    this->objectList->at(i).setID(i+1);
 
 }
 //--------------------------------------------------------------------

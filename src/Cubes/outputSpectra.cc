@@ -41,9 +41,9 @@ void Cube::outputSpectra()
   Plot::SpectralPlot newplot;
   if(newplot.setUpPlot(spectrafile.c_str())>0) {
 
-    for(int nobj=0;nobj<this->objectList.size();nobj++){
+    for(int nobj=0;nobj<this->objectList->size();nobj++){
       // for each object in the cube:
-      this->plotSpectrum(this->objectList[nobj],newplot);
+      this->plotSpectrum(this->objectList->at(nobj),newplot);
       
     }// end of loop over objects.
 

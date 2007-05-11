@@ -31,10 +31,12 @@ void Cube::SmoothSearch()
 
     this->setCubeStats();
 
+//       this->Stats.scaleNoise(1./gauss.getStddevScale());
+
     if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
   
-    this->objectList = search3DArraySimple(this->axisDim,this->recon,
-					   this->par,this->Stats); 
+    *this->objectList = search3DArraySimple(this->axisDim,this->recon,
+					    this->par,this->Stats); 
  
     if(this->par.isVerbose()) std::cout << "  Updating detection map... " 
 					<< std::flush;
@@ -155,25 +157,22 @@ void Cube::SpatialSmooth()
 			this->par.getKernMin(),
 			this->par.getKernPA());
 
-      this->Stats.scaleNoise(1./gauss.getStddevScale());
-
       if(this->par.isVerbose()) {
 	std::cout<<"  Smoothing spatially... " << std::flush;
 	bar.init(zdim);
       }
 
       float *image = new float[xySize];
-      float *smoothed;
-      bool *mask;
+
       for(int z=0;z<zdim;z++){
 
 	if( this->par.isVerbose() ) bar.update(z+1);
       
 	for(int pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];
     
-	mask  = this->par.makeBlankMask(image,xySize);
+	bool *mask      = this->par.makeBlankMask(image,xySize);
     
-	smoothed = gauss.smooth(image,xdim,ydim,mask);
+	float *smoothed = gauss.smooth(image,xdim,ydim,mask);
     
 	for(int pix=0;pix<xySize;pix++){
 	  if(mask[pix])
@@ -182,10 +181,10 @@ void Cube::SpatialSmooth()
 	    this->recon[z*xySize+pix] = smoothed[pix];
 	}
 
+	delete [] smoothed;
+	delete [] mask;
       }
 
-      delete [] smoothed;
-      delete [] mask;
       delete [] image;
  
       this->reconExists = true;
@@ -282,6 +281,6 @@ void Cube::SpatialSmoothNSearch()
     std::cout << numFound << ".\n";
   }
     
-  this->objectList = outputList;
+  *this->objectList = outputList;
 
 }

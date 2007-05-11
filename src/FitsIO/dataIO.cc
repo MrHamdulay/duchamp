@@ -49,9 +49,9 @@ int Cube::getFITSdata(std::string fname)
   // Identify which axes are the "interesting" ones 
   int lng,lat,spc;
   if(this->head.isWCS()){
-    lng = this->head.getWCS()->lng;
-    lat = this->head.getWCS()->lat;
-    spc = this->head.getWCS()->spec;
+    lng = this->head.WCS().lng;
+    lat = this->head.WCS().lat;
+    spc = this->head.WCS().spec;
   }
   else{
     lng = 0;
