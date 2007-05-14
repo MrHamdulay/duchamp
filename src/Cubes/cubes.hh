@@ -146,14 +146,14 @@ public:
  
 
 protected:
-  short int               numDim;     ///< Number of dimensions.
-  long                   *axisDim;    ///< Array of dimensions of cube
-				      ///   (ie. how large in each
-				      ///        direction).
-  long                    numPixels;  ///< Total number of pixels in cube.
-  float                  *array;      ///< Array of data.
+  short int                numDim;     ///< Number of dimensions.
+  long                    *axisDim;    ///< Array of dimensions of cube
+   				       ///   (ie. how large in each
+				       ///   direction).
+  long                     numPixels;  ///< Total number of pixels in cube.
+  float                   *array;      ///< Array of data.
   std::vector <Detection> *objectList; ///< The list of detected objects.
-  Param                   par;        ///< A parameter list.
+  Param                    par;        ///< A parameter list.
   Statistics::StatsContainer<float> Stats; ///< The statistics for the DataArray.
 };
 

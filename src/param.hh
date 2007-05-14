@@ -153,8 +153,6 @@ public:
   void   setBscaleKeyword(float v){bscaleKeyword=v;};
   float  getBzeroKeyword(){return bzeroKeyword;};
   void   setBzeroKeyword(float v){bzeroKeyword=v;};
-  bool   getFlagUsingBlank(){return flagUsingBlank;};
-  void   setFlagUsingBlank(bool b){flagUsingBlank=b;};
   bool   getFlagMW(){return flagMW;};
   void   setFlagMW(bool flag){flagMW=flag;};
   int    getMaxMW(){return maxMW;};
@@ -313,17 +311,11 @@ private:
   int    blankKeyword;    ///< The FITS header keyword BLANK.
   float  bscaleKeyword;   ///< The FITS header keyword BSCALE.
   float  bzeroKeyword;    ///< The FITS header keyword BZERO.
-  bool   flagUsingBlank;  ///< If true, we are using the blankPixValue
-                          ///   keyword, otherwise we use the value in
-                          ///   the FITS header.
+  //Milky-Way parameters
   bool   flagMW;          ///< A flag that indicates whether to ignore
 			  ///   the Milky Way channels.
   int    maxMW;           ///< Last  Milky Way channel
   int    minMW;           ///< First Milky Way channel
-  float  numPixBeam;      ///< Size (area) of the beam in pixels.
-  bool   flagUsingBeam;   ///< If true, we are using the numPixBeam
-                          ///   parameter, otherwise we use the value
-                          ///   in the FITS header.
   // Trim-related
   bool   flagTrim;        ///< Does the user want the cube trimmed?
   bool   hasBeenTrimmed;  ///< Has the cube been trimmed of excess
@@ -348,6 +340,10 @@ private:
   // Detection-related
   int    minPix;          ///< Minimum number of pixels for a detected
 			  ///   object to be counted
+  float  numPixBeam;      ///< Size (area) of the beam in pixels.
+  bool   flagUsingBeam;   ///< If true, we are using the numPixBeam
+                          ///   parameter, otherwise we use the value
+                          ///   in the FITS header.
   // Object growth
   bool   flagGrowth;      ///< Are we growing objects once they are
 			  ///   found?

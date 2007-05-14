@@ -38,12 +38,19 @@ the ragged edges that objects in the raw cube possess are smoothed by
 the removal of most of the noise. This enables better determination of
 the shapes and characteristics of objects.
 
-A further point to consider when using the reconstruction is that if
-the two-dimensional reconstruction is chosen (\texttt{reconDim=2}), it
-can be susceptible to edge effects. If the valid area in the cube (\ie
-the part that is not BLANK) has non-rectangular edges, the convolution
-can produce artefacts in the reconstruction that mimic the edges and
-can lead (depending on the selection threshold) to some spurious
+While the time overhead is larger for the reconstruction case, it will
+potentially provide a better recovery of real sources than the
+smoothing case. This is because it probes the full range of scales
+present in the cube (or spectral domain), rather than the specific
+scale determined by the Hanning filter or Gaussian kernel used in the
+smoothing. 
+
+When considering the reconstruction method, note that the 2D
+reconstruction (\texttt{reconDim=2}) can be susceptible to edge
+effects. If the valid area in the cube (\ie the part that is not
+BLANK) has non-rectangular edges, the convolution can produce
+artefacts in the reconstruction that mimic the edges and can lead
+(depending on the selection threshold) to some spurious
 sources. Caution is advised with such data -- the user is advised to
 check carefully the reconstructed cube for the presence of such
 artefacts. Note, however, that the 1- and 3-dimensional
@@ -79,6 +86,15 @@ the sources after the detection stage, and reject detections not
 meeting the minimum pixel or channel requirements.  It is thus better
 to aim for larger \texttt{alpha} values than those derived from a
 straight conversion of the desired false detection rate.
+
+If the FDR method is not used, caution is required when choosing the
+S/N cutoff. Typical cubes have very large numbers of pixels, so even
+an apparently large cutoff will still result in a not-insignificant
+number of detections simply due to random fluctuations of the noise
+background. For instance, a $4\sigma$ threshold on a cube of Gaussian
+noise of size $100\times100\times1024$ will result in $\sim340$
+detections. This is where the minimum channel and pixel requirements
+are important in rejecting spurious detections.
 
 Finally, as \duchamp is still undergoing development, there are some
 elements that are not fully developed. In particular, it is not as

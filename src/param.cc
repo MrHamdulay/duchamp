@@ -54,7 +54,7 @@ Param::Param(){
   this->blankKeyword      = 1;
   this->bscaleKeyword     = -8.00061;
   this->bzeroKeyword      = 0.;
-  this->flagUsingBlank    = false;
+  // Milky-Way parameters
   this->flagMW            = false;
   this->maxMW             = 112;
   this->minMW             = 75;
@@ -146,7 +146,6 @@ Param::Param (const Param& p)
   this->blankKeyword      = p.blankKeyword;   
   this->bscaleKeyword     = p.bscaleKeyword;  
   this->bzeroKeyword      = p.bzeroKeyword;   
-  this->flagUsingBlank    = p.flagUsingBlank; 
   this->flagMW            = p.flagMW;         
   this->maxMW             = p.maxMW;          
   this->minMW             = p.minMW;         
@@ -229,7 +228,6 @@ Param& Param::operator= (const Param& p)
   this->blankKeyword      = p.blankKeyword;   
   this->bscaleKeyword     = p.bscaleKeyword;  
   this->bzeroKeyword      = p.bzeroKeyword;   
-  this->flagUsingBlank    = p.flagUsingBlank; 
   this->flagMW            = p.flagMW;         
   this->maxMW             = p.maxMW;          
   this->minMW             = p.minMW;         
@@ -611,10 +609,8 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
    * Lists the parameters, a description of them, and their value.
    */
 
-  // Only show the [blankPixValue] bit if we are using the parameter
+  // Only show the [beamSize] bit if we are using the parameter
   // otherwise we have read it from the FITS header.
-  std::string blankParam = "";
-  if(par.getFlagUsingBlank()) blankParam = "[blankPixValue]";
   std::string beamParam = "";
   if(par.getFlagUsingBeam()) beamParam = "[beamSize]";
 
@@ -713,7 +709,7 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
   theStream  <<"------"<<std::endl;
   if(par.getFlagBlankPix()){
     theStream<<std::setw(widthText)<<"Blank Pixel Value"                    
-	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<< blankParam
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<< ""
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<par.getBlankPixVal()    <<std::endl;
   }

@@ -96,86 +96,66 @@ int FitsHeader::readBLANKinfo(std::string fname, Param &par)
    * store the keywords.
    */
   int returnStatus = 0, status = 0;
-//   if(par.getFlagBlankPix()){  // Only do this if we want the blank pix value
 
-    fitsfile *fptr;         
-    char *comment = new char[FLEN_COMMENT];
-    int blank;
-    float bscale, bzero;
+  fitsfile *fptr;         
+  char *comment = new char[FLEN_COMMENT];
+  int blank;
+  float bscale, bzero;
     
-    // Open the FITS file.
-    if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
-      fits_report_error(stderr, status);
-      return FAILURE;
-    }
+  // Open the FITS file.
+  if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
+    fits_report_error(stderr, status);
+    return FAILURE;
+  }
 
-    // Read the BLANK keyword. 
-    //  If this isn't present, make sure flagTrim is false (if it is
-    //  currently true, let the user know you're doing this) and set
-    //  flagBlankPix to false so that the isBlank functions all return
-    //  false
-    //  If it is, read the other two necessary keywords, and then set
-    //     the values accordingly.
+  // Read the BLANK keyword. 
+  //  If this isn't present, make sure flagTrim is false (if it is
+  //  currently true, let the user know you're doing this) and set
+  //  flagBlankPix to false so that the isBlank functions all return
+  //  false
+  //  If it is, read the other two necessary keywords, and then set
+  //     the values accordingly.
 
-    // THIS IS OLD STUFF
-//     //  If this isn't present, then report the error, and set to 
-//     //     the nominal values given in Param
-//     //  If it is, read the other two necessary keywords, and then set
-//     //     the values accordingly.
-    if(fits_read_key(fptr, TINT, "BLANK", &blank, comment, &returnStatus)){
+  if(fits_read_key(fptr, TINT, "BLANK", &blank, comment, &returnStatus)){
 
-      par.setFlagBlankPix(false);
+    par.setFlagBlankPix(false);
 
-      if(par.getFlagTrim()){
-	par.setFlagTrim(false);
-	std::stringstream errmsg;
-	if(returnStatus == KEY_NO_EXIST)
-	  duchampWarning("readBLANKinfo", 
-			 "There is no BLANK keyword present. Not doing any trimming.\n");
-	else{
-	  duchampWarning("readBLANKinfo", 
-			 "Error reading BLANK keyword, so not doing any trimming.");
-	  fits_report_error(stderr, returnStatus);
-	}
+    if(par.getFlagTrim()){
+      par.setFlagTrim(false);
+      std::stringstream errmsg;
+      if(returnStatus == KEY_NO_EXIST)
+	duchampWarning("readBLANKinfo", 
+		       "There is no BLANK keyword present. Not doing any trimming.\n");
+      else{
+	duchampWarning("readBLANKinfo", 
+		       "Error reading BLANK keyword, so not doing any trimming.");
+	fits_report_error(stderr, returnStatus);
       }
-//       std::stringstream errmsg;
-//       duchampWarning("readBLANKinfo", "Error reading BLANK keyword: ");
-//       fits_report_error(stderr, returnStatus);
-//       errmsg << "Using the BLANK value given as input parameter (" 
-// 	     << par.getBlankPixVal() << ").\n";
-//       duchampWarning("readBLANKinfo", errmsg.str());
-//       this->blankKeyword  = 1;
-//       this->bscaleKeyword = par.getBlankPixVal();
-//       this->bzeroKeyword  = 0;
-//       par.setBlankKeyword(1);
-//       par.setBzeroKeyword(0);
-//       par.setFlagUsingBlank(true);
     }
-    else{
-      status = 0;
-      fits_read_key(fptr, TFLOAT, "BZERO", &bzero, comment, &status);
-      status = 0;
-      fits_read_key(fptr, TFLOAT, "BSCALE", &bscale, NULL, &status);
-      this->blankKeyword  = blank;
-      this->bscaleKeyword = bscale;
-      this->bzeroKeyword  = bzero;
-      par.setBlankKeyword(blank);
-      par.setBscaleKeyword(bscale);
-      par.setBzeroKeyword(bzero);
-      par.setBlankPixVal( blank*bscale + bzero );
-    }
-  
-    // Close the FITS file.
+  }
+  else{
     status = 0;
-    fits_close_file(fptr, &status);
-    if (status){
-      duchampWarning("readBLANKinfo","Error closing file: ");
-      fits_report_error(stderr, status);
-    }
+    fits_read_key(fptr, TFLOAT, "BZERO", &bzero, comment, &status);
+    status = 0;
+    fits_read_key(fptr, TFLOAT, "BSCALE", &bscale, NULL, &status);
+    this->blankKeyword  = blank;
+    this->bscaleKeyword = bscale;
+    this->bzeroKeyword  = bzero;
+    par.setBlankKeyword(blank);
+    par.setBscaleKeyword(bscale);
+    par.setBzeroKeyword(bzero);
+    par.setBlankPixVal( blank*bscale + bzero );
+  }
   
-    delete [] comment;
-
-//   }
+  // Close the FITS file.
+  status = 0;
+  fits_close_file(fptr, &status);
+  if (status){
+    duchampWarning("readBLANKinfo","Error closing file: ");
+    fits_report_error(stderr, status);
+  }
+  
+  delete [] comment;
 
   return returnStatus;
 
