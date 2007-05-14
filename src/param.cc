@@ -569,7 +569,7 @@ int Param::readParams(std::string paramfile)
     errmsg << "The requested value of the parameter smoothType, \""
 	   << this->smoothType << "\" is invalid.\n"
 	   << "Changing to \"spectral\".\n";
-    duchampWarning("readParams",errmsg.str());
+    duchampWarning("Reading parameters",errmsg.str());
     this->smoothType = "spectral";
   }
   // If kernMin has not been given, or is negative, make it equal to kernMaj
@@ -582,7 +582,7 @@ int Param::readParams(std::string paramfile)
     errmsg << "The requested value of the parameter spectralMethod, \""
 	   << this->spectralMethod << "\" is invalid.\n"
 	   << "Changing to \"peak\".\n";
-    duchampWarning("readParams",errmsg.str());
+    duchampWarning("Reading parameters",errmsg.str());
     this->spectralMethod = "peak";
   }
 
@@ -594,7 +594,7 @@ int Param::readParams(std::string paramfile)
     errmsg << "The requested value of the parameter pixelCentre, \""
 	   << this->pixelCentre << "\" is invalid.\n"
 	   << "Changing to \"centroid\".\n";
-    duchampWarning("readParams",errmsg.str());
+    duchampWarning("Reading parameters",errmsg.str());
     this->pixelCentre = "centroid";
   }
 

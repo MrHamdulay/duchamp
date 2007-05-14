@@ -45,7 +45,7 @@ void Cube::plotDetectionMap(std::string pgDestination)
   int flag = newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
 
   if(flag<=0){
-    duchampError("plotDetectionMap", 
+    duchampError("Plot Detection Map", 
 		 "Could not open PGPlot device " + pgDestination + ".\n");
   }
   else{
@@ -170,7 +170,7 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
     plotFlag[i] = plotList[i].setUpPlot(pgDestination[i].c_str(),
 					float(xdim),float(ydim));
        
-    if(plotFlag[i]<=0) duchampError("plotMomentMap", 
+    if(plotFlag[i]<=0) duchampError("Plot Moment Map", 
 				    "Could not open PGPlot device " 
 				    + pgDestination[i] + ".\n");
     else{

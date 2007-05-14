@@ -232,7 +232,8 @@ double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z,
   double *world  = new double[naxis];
   double *phi    = new double[1];
   double *theta  = new double[1];
-  // correct from 0-indexed to 1-indexed pixel array by adding 1 to pixel values.
+  // correct from 0-indexed to 1-indexed pixel array by adding 1 to
+  // pixel values.
   for(int i=0;i<naxis;i++) pixcrd[i] = 1.;
   pixcrd[wcs->lng] += x;
   pixcrd[wcs->lat] += y;

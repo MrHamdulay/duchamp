@@ -23,7 +23,7 @@ void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par)
   if(par.getFlagBlankPix()){
 
     if(!cpgtest())
-      duchampError("drawBlankEdges","There is no PGPlot device open!\n");
+      duchampError("Draw Blank Edges","There is no PGPlot device open!\n");
     else{
 
       float xoff,x2,yoff,y2;

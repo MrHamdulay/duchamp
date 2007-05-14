@@ -62,8 +62,8 @@ void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input,
 
     for(int pos=0;pos<xdim; pos++) output[pos] = input[pos];
 
-    duchampWarning("atrous1DReconstruct",
-		   "There are no good pixels to be reconstructed -- all are BLANK.\nPerhaps you need to try this with flagBlankPix=false.\nReturning input array.\n");
+    duchampWarning("3D Reconstruction",
+		   "There are no good pixels to be reconstructed -- all are BLANK.\nPerhaps you need to try this with flagTrim=false.\nReturning input array.\n");
   }
   else{
     // Otherwise, all is good, and we continue.

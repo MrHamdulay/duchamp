@@ -81,7 +81,7 @@ void Cube::ReconCube()
     errmsg << "You requested a " << dimRecon << "-dimensional reconstruction,"
 	   << " but the FITS file is only " << numGoodDim << "-dimensional.\n"
 	   << "Changing reconDim to " << numGoodDim << ".\n";
-    duchampWarning("ReconCube",errmsg.str());
+    duchampWarning("Reconstruction",errmsg.str());
   }
 
   switch(dimRecon)
@@ -94,7 +94,7 @@ void Cube::ReconCube()
 	std::stringstream errmsg;
 	errmsg << "reconDim (" << dimRecon
 	       << ") is less than 1. Performing 1-D reconstruction.\n";
-	duchampWarning("ReconCube", errmsg.str());
+	duchampWarning("Reconstruction", errmsg.str());
 	this->par.setReconDim(1);
 	this->ReconCube1D();
       }
@@ -103,7 +103,7 @@ void Cube::ReconCube()
 	std::stringstream errmsg;
 	errmsg << "reconDim (" << dimRecon
 	       << ") is more than 3. Performing 3-D reconstruction.\n";
-	duchampWarning("ReconCube", errmsg.str());
+	duchampWarning("Reconstruction", errmsg.str());
 	this->par.setReconDim(3);
 	this->ReconCube3D();
       }

@@ -38,7 +38,7 @@ int Cube::getCube(std::string fname)
     fits_report_error(stderr, status);
     std::stringstream errmsg;
     errmsg << "Requested image (" << fname << ") does not exist!\n";
-    duchampError("getCube", errmsg.str());
+    duchampError("Cube Reader", errmsg.str());
     return FAILURE;
   }
 
@@ -48,7 +48,7 @@ int Cube::getCube(std::string fname)
     fits_report_error(stderr, status);
     if(((status==URL_PARSE_ERROR)||(status==BAD_NAXIS))
        &&(this->pars().getFlagSubsection()))
-      duchampError("getCube",
+      duchampError("Cube Reader",
 		   "It may be that the subsection you've entered is invalid.\n\
 Either it has the wrong number of axes, or one axis has too large a range.\n");
     return FAILURE;
@@ -73,7 +73,7 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    duchampWarning("getCube","Error closing file: ");
+    duchampWarning("Cube Reader","Error closing file: ");
     fits_report_error(stderr, status);
   }
 
@@ -92,7 +92,7 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
   this->head.defineWCS(fname, this->par);
 
   if(!this->head.isWCS()) 
-    duchampWarning("getCube","WCS is not good enough to be used.\n");
+    duchampWarning("Cube Reader","WCS is not good enough to be used.\n");
 
   // Get the data array from the FITS file.
   // Report the dimensions of the data array that was read (this can be

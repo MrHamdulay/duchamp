@@ -63,7 +63,7 @@ int Param::verifySubsection()
     fits_file_exists(this->imageFile.c_str(),&exists,&status);
     if(exists<=0){
       fits_report_error(stderr, status);
-      duchampWarning("verifySubsection", "Requested image does not exist!\n");
+      duchampWarning("Cube Reader", "Requested image does not exist!\n");
       return FAILURE;
     }
     // Open the FITS file
@@ -88,7 +88,7 @@ int Param::verifySubsection()
     status = 0;
     fits_close_file(fptr, &status);
     if (status){
-      duchampWarning("verifySubsection","Error closing file: ");
+      duchampWarning("Cube Reader","Error closing file: ");
       fits_report_error(stderr, status);
     }
 

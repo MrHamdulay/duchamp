@@ -44,7 +44,7 @@ namespace Column
       std::stringstream errmsg;
       errmsg << "Incorrect value for Col(num) --> num="<<num
 	     << ", should be between 0 and " << numColumns-1 << ".\n";
-      duchampError("Col constructor", errmsg.str());
+      duchampError("Column constructor", errmsg.str());
       this->width = 1;
       this->precision = 0;
       this->name = " ";

@@ -53,7 +53,7 @@ int FitsHeader::readBUNIT(std::string fname)
   // Read the BUNIT keyword, and translate to standard unit format if needs be
   fits_read_key(fptr, TSTRING, "BUNIT", unit, comment, &returnStatus);
   if (returnStatus){
-    duchampWarning("readBUNIT","Error reading BUNIT keyword: ");
+    duchampWarning("Cube Reader","Error reading BUNIT keyword: ");
     fits_report_error(stderr, returnStatus);
   }
   else{
@@ -65,7 +65,7 @@ int FitsHeader::readBUNIT(std::string fname)
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    duchampWarning("readBUNIT","Error closing file: ");
+    duchampWarning("Cube Reader","Error closing file: ");
     fits_report_error(stderr, status);
   }
 
@@ -124,10 +124,10 @@ int FitsHeader::readBLANKinfo(std::string fname, Param &par)
       par.setFlagTrim(false);
       std::stringstream errmsg;
       if(returnStatus == KEY_NO_EXIST)
-	duchampWarning("readBLANKinfo", 
+	duchampWarning("Cube Reader", 
 		       "There is no BLANK keyword present. Not doing any trimming.\n");
       else{
-	duchampWarning("readBLANKinfo", 
+	duchampWarning("Cube Reader", 
 		       "Error reading BLANK keyword, so not doing any trimming.");
 	fits_report_error(stderr, returnStatus);
       }
@@ -151,7 +151,7 @@ int FitsHeader::readBLANKinfo(std::string fname, Param &par)
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    duchampWarning("readBLANKinfo","Error closing file: ");
+    duchampWarning("Cube Reader","Error closing file: ");
     fits_report_error(stderr, status);
   }
   
@@ -207,7 +207,7 @@ int FitsHeader::readBeamInfo(std::string fname, Param &par)
     errmsg << "Header keywords not present: ";
     for(int i=0;i<5;i++) if(status[i+1]) errmsg<<keyword[i]<<" ";
     errmsg << "\nUsing parameter beamSize to determine size of beam.\n";
-    duchampWarning("readBeamInfo",errmsg.str());
+    duchampWarning("Cube Reader",errmsg.str());
     this->setBeamSize(par.getBeamSize());
     par.setFlagUsingBeam(true);
   }
@@ -222,7 +222,7 @@ int FitsHeader::readBeamInfo(std::string fname, Param &par)
   // Close the FITS file.
   fits_close_file(fptr, &status[6]);
   if (status[6]){
-    duchampWarning("readBeamInfo","Error closing file: ");
+    duchampWarning("Cube Reader","Error closing file: ");
     fits_report_error(stderr, status[6]);
   }
 

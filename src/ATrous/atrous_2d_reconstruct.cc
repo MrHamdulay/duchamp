@@ -54,7 +54,7 @@ void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, 
 
     for(int pos=0;pos<size; pos++) output[pos] = input[pos];
 
-    duchampWarning("atrous2DReconstruct","\
+    duchampWarning("2D Reconstruction","\
 There are no good pixels to be reconstructed -- all are BLANK.\n\
 Returning input array.\n");
   }

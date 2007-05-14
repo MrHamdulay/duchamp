@@ -94,7 +94,7 @@ int Cube::getFITSdata(std::string fname)
 			      fpixel, lpixel, inc, 
 // 			      this->array, nullarray, &anynul, &status)){
 			      pixarray, nullarray, &anynul, &status)){
-    duchampError("getFITSdata",
+    duchampError("Cube Reader",
 		 "There was an error reading in the data array:");
     fits_report_error(stderr, status);
     return FAILURE;
@@ -108,7 +108,7 @@ int Cube::getFITSdata(std::string fname)
     // no blank pixels, so don't bother with any trimming or checking...
     if(this->par.getFlagTrim()) {  
       // if user requested fixing, inform them of change.
-      duchampWarning("getFITSdata",
+      duchampWarning("Cube Reader",
 		     "No blank pixels, so setting flagTrim to false.\n");
     }
     this->par.setFlagBlankPix(false); 
@@ -135,7 +135,7 @@ int Cube::getFITSdata(std::string fname)
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    duchampWarning("defineWCS","Error closing file: ");
+    duchampWarning("Cube Reader","Error closing file: ");
     fits_report_error(stderr, status);
   }
 

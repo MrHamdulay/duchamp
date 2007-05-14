@@ -55,7 +55,7 @@ int Section::parse(std::vector<long> dimAxes)
     errmsg.str("");
     errmsg << "Subsection needs to be delimited by square brackets\n"
 	   << "You provided: " << this->subsection << std::endl;
-    duchampError("Section::parse",errmsg.str());
+    duchampError("Section parsing",errmsg.str());
     return FAILURE;
   }
 
@@ -72,7 +72,7 @@ int Section::parse(std::vector<long> dimAxes)
 	   <<" sections, compared to a cube with "
 	   << dimAxes.size() << " axes\n"
 	   << "Subsection provided was: " << this->subsection << std::endl;
-    duchampError("Section::parse",errmsg.str());
+    duchampError("Section parsing",errmsg.str());
     return FAILURE;
   }
 
@@ -125,7 +125,7 @@ int Section::parse(std::vector<long> dimAxes)
 		<< " but axis #" << str+1 
 		<<" has zero size, since its dimension is " << dimAxes[str]
 		<<".\nI'm not going to parse this! Go and fix it.\n";
-	  duchampError("Section::parse", errmsg.str());
+	  duchampError("Section parsing", errmsg.str());
 	  return FAILURE;
 	}
 	this->starts[str] = a;
@@ -167,7 +167,7 @@ int Section::parse(std::vector<long> dimAxes)
 
   if(removeStep){
     errmsg << this->subsection << std::endl;
-    duchampWarning("Section::parse", errmsg.str());
+    duchampWarning("Section parsing", errmsg.str());
   }
 
   return SUCCESS;

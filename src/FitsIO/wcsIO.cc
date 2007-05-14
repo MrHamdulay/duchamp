@@ -59,7 +59,7 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
   status = 0;
   fits_hdr2str(fptr, noComments, NULL, nExc, &hdr, &nkeys, &status);
   if( status ){
-    duchampWarning("defineWCS","Error whilst reading FITS header to string: ");
+    duchampWarning("Cube Reader","Error whilst reading FITS header to string: ");
     fits_report_error(stderr, status);
     return FAILURE;
   }
@@ -68,7 +68,7 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    duchampWarning("defineWCS","Error closing file: ");
+    duchampWarning("Cube Reader","Error closing file: ");
     fits_report_error(stderr, status);
   }
   
@@ -82,7 +82,7 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
     std::stringstream errmsg;
     errmsg << "wcsini failed! Code=" << status
 	   << ": " << wcs_errmsg[status] << std::endl;
-    duchampError("defineWCS",errmsg.str());
+    duchampError("Cube Reader",errmsg.str());
     return FAILURE;
   }
 
@@ -99,7 +99,7 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
     std::stringstream errmsg;
     errmsg << "wcspih failed!\nWCSLIB error code=" << status
 	   << ": " << wcs_errmsg[status] << std::endl;
-    duchampWarning("defineWCS",errmsg.str());
+    duchampWarning("Cube Reader",errmsg.str());
   }
   else{  
     int stat[NWCSFIX];
@@ -113,7 +113,7 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
 	if (stat[i] > 0) 
 	  errmsg << "WCSLIB error code=" << status << ": "
 		 << wcsfix_errmsg[stat[i]] << std::endl;
-      duchampWarning("defineWCS", errmsg.str() );
+      duchampWarning("Cube Reader", errmsg.str() );
     }
 
     // Set up the wcsprm struct. Report if something goes wrong.
@@ -123,7 +123,7 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
       errmsg<<"wcsset failed!\n"
 	    <<"WCSLIB error code=" << status 
 	    <<": "<<wcs_errmsg[status] << std::endl;
-      duchampWarning("defineWCS",errmsg.str());
+      duchampWarning("Cube Reader",errmsg.str());
     }
 
     if(localwcs->naxis>2){  // if there is a spectral axis
@@ -141,12 +141,12 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
       else{
 	// No rest frequency defined, so put spectral dimension in frequency. 
 	// Set the spectral axis to a standard specification: FREQ
-	duchampWarning("defineWCS",
+	duchampWarning("Cube Reader",
        "No rest frequency defined. Using frequency units in spectral axis.\n");
 	desiredType = duchampFrequencyType;
  	par.setSpectralUnits("MHz");
 	if(strcmp(localwcs->cunit[index],"")==0){
-	  duchampWarning("defineWCS",
+	  duchampWarning("Cube Reader",
 	  "No frequency unit given. Assuming frequency axis is in Hz.\n");
 	  strcpy(localwcs->cunit[index],"Hz");
 	}
@@ -181,7 +181,7 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
 		<< wcs_errmsg[status] << std::endl
 		<< "(wanted to convert from type \"" << specType
 		<< "\" to type \"" << desiredType << "\")\n";
-	  duchampWarning("defineWCS",errmsg.str());
+	  duchampWarning("Cube Reader",errmsg.str());
 
 	}
 

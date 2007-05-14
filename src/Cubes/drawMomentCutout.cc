@@ -31,7 +31,7 @@ void Cube::drawMomentCutout(Detection &object)
    */
 
   if(!cpgtest())
-    duchampError("drawMomentCutout","There is no PGPlot device open!\n");
+    duchampError("Draw Cutout","There is no PGPlot device open!\n");
   else{
 
     long size = (object.getXmax()-object.getXmin()+1);
@@ -159,7 +159,7 @@ void Cube::drawScale(float xstart, float ystart, float channel)
    */
 
   if(!cpgtest())
-    duchampError("drawScale","There is no PGPlot device open!\n");
+    duchampError("Draw Cutout","There is no PGPlot device open!\n");
   else{
 
     if(this->head.isWCS()){  // can only do this if the WCS is good!
@@ -267,7 +267,7 @@ void Detection::drawBorders(int xoffset, int yoffset)
    * \param yoffset The offset from 0 of the y-axis of the plotting window
    */ 
   if(!cpgtest())
-    duchampError("drawBorders","There is no PGPlot device open!\n");
+    duchampError("Draw Borders","There is no PGPlot device open!\n");
   else{
 
     float x1,x2,y1,y2;
@@ -323,7 +323,7 @@ void Cube::drawFieldEdge()
    * be a PGPLOT window open, else an error message is returned.
    */
   if(!cpgtest())
-    duchampError("drawFieldEdge","There is no PGPlot device open!\n");
+    duchampError("Draw Cutout","There is no PGPlot device open!\n");
   else{
     int ci;
     cpgqci(&ci);
