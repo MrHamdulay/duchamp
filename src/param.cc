@@ -572,7 +572,7 @@ int Param::readParams(std::string paramfile)
 	std::stringstream errmsg;
 	errmsg <<"The parameter flagBlankPix is deprecated. "
 	       <<"Please use the flagTrim parameter in future.\n"
-	       <<"Setting flagTrim = " << this->flagTrim << ".\n";
+	       <<"Setting flagTrim = " << stringize(this->flagTrim) << ".\n";
 	duchampWarning("Reading parameters",errmsg.str());
       }
       if(arg=="blankpixvalue"){
