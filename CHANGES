@@ -1,12 +1,16 @@
-Duchamp version 1.1beta (2007/05/01)
+Duchamp version 1.1 (2007/05/14)
 ------------------------------------
 
 Changes made since the last numbered release:
+
+EFFICIENCY OF EXECUTION:
 
 * Major change to the way detections are stored. They are now recorded
   via run-length encoding in the x-y plane, and stored as collections
   of channel-maps. This improves the memory usage and the speed of
   execution (particularly for routines such as the merging routines).
+
+SMOOTHING:
 
 * Addition of ability to spatially smooth the cube before
   searching. This is done with a Gaussian kernel, the size and shape
@@ -17,35 +21,60 @@ Changes made since the last numbered release:
   smoothType that distinguishes this method from the spectral (Hanning)
   smoothing already in use.
 
+DETECTIONS:
+
 * Changed the way detection is done -- now only search in 2D images,
   keeping all detections (ie. no minimum-pixel requirement). This
   should be the same as doing both the 1D and 2D searches with the
   minimum pixel requirement in, but simpler. The rejection is done at
-  the end after all the merging and growing has been done.
+  the end after all the merging and growing has been done. This leads
+  to a larger number of intermediate detections (ie.  the number
+  before merging), which may increase the run-time slightly, although
+  this is offset by the changes to the efficiency (see above).
 
 * Increased the range over which objects can be grown to match the
   threshSpatial & threshVelocity parameters, as well as rejecting new
   pixels based on the BLANK and MW tests.
 
-* Added ability to specify a statsec, so that the statistics are only
-  calculated from a given subsection of the cube, rather than the full
-  cube.
+INPUTS:
 
 * There has been a subtle change in the way BLANK pixels are dealt
   with. To enable trimming of BLANK pixels, users should use the new 
   parameter flagTrim. The parameters flagBlankPix and blankPixVal are
-  no longer accessible via the parameter file.
+  no longer accessible via the parameter file -- warning messages are
+  given if they are provided in the parameter file.
+
+* Added ability to specify a statsec, so that the statistics are only
+  calculated from a given subsection of the cube, rather than the full
+  cube.
+
+* The subsections can also specify the ability to remove a border of n
+  pixels from the edges of an axis (ie. n from the start and from the
+  end) -- as requested in Trac ticket #5.
+
+* Changed the default value of the reconDim parameter from 3 to 1, and
+  the default value of the flagATrous parameter to false.
+
+OUTPUTS:
 
 * The output now includes three different estimates of the "centre" of
   the detection: peak location, centroid (flux-weighted), or average. 
+
+* Some slight improvements to the user feedback during execution.
 
 * Spectral output now includes the baseline, if one was fitted. The
   format of the plot headers is slightly changed, to stop information
   falling off the edge of the page.
 
-* The subsections can also specify the ability to remove a border of n
-  pixels from the edges of an axis (ie. n from the start and from the
-  end) -- as requested in Trac ticket #5.
+* Added command-line option -x to directly disable the PGPLOT X-window
+  map plotting. This overrides the setting of flagXOutput in the
+  parameter file.
+
+* Fallback spectral units (in case the FITS header fails to record
+  them) changed to SPC, but code has been fixed so that any problem
+  should be caught before this becomes an issue.
+
+BUGFIXES:
 
 * Fixed bug (Trac ticket #4) that meant the velocity units were not
   correctly dealt with. Duchamp should be more robust for different
@@ -54,23 +83,13 @@ Changes made since the last numbered release:
 * Fixed bug (ticket #9) with the VOTable output, where the tags were
   not closing.
 
-* Added command-line option -x to directly disable the PGPLOT X-window
-  map plotting. This overrides the setting of flagXOutput in the
-  parameter file.
-
 * Fixed minor bug in calculating the flux threshold from the p-value
   threshold when the FDR method is used. This did not affect the
   actual thresholding, merely the quoted flux threshold in the results
   file. Also, the MW channels are kept out of the p-value threshold
   determination if they are being flagged.
 
-* Fallback spectral units (in case the FITS header fails to record
-  them) changed to SPC.
 
-* Some slight improvements to the user feedback during execution.
-
-* Changed the default value of the reconDim parameter from 3 to 1, and
-  the default value of the flagATrous parameter to false.
 
 Duchamp version 1.0.7 (2006/11/22)
 ----------------------------------

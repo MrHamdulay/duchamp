@@ -565,6 +565,23 @@ int Param::readParams(std::string paramfile)
       if(arg=="drawborders")     this->borders = readFlag(ss); 
       if(arg=="drawblankedges")  this->blankEdge = readFlag(ss); 
       if(arg=="verbose")         this->verbose = readFlag(ss); 
+
+      // Dealing with deprecated parameters.
+      if(arg=="flagblankpix"){
+	this->flagTrim = readFlag(ss);
+	std::stringstream errmsg;
+	errmsg <<"The parameter flagBlankPix is deprecated. "
+	       <<"Please use the flagTrim parameter in future.\n"
+	       <<"Setting flagTrim = " << this->flagTrim << ".\n";
+	duchampWarning("Reading parameters",errmsg.str());
+      }
+      if(arg=="blankpixvalue"){
+	std::stringstream errmsg;
+	errmsg <<"The parameter blankPixValue is deprectated.\n"
+	       <<"This value is only taken from the FITS header.\n";
+	duchampWarning("Reading parameters",errmsg.str());
+      }
+
     }
   }
 
