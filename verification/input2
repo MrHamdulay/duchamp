@@ -1,6 +1,6 @@
 imageFile	verification/verificationCube.fits
 flagMW		false
-flagBlankPix	false
+flagTrim	false
 flagAtrous	false
 flagFDR		true
 alphaFDR        0.05
