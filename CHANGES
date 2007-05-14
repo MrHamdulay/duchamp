@@ -54,6 +54,10 @@ Changes made since the last numbered release:
 * Fixed bug (ticket #9) with the VOTable output, where the tags were
   not closing.
 
+* Added command-line option -x to directly disable the PGPLOT X-window
+  map plotting. This overrides the setting of flagXOutput in the
+  parameter file.
+
 * Fixed minor bug in calculating the flux threshold from the p-value
   threshold when the FDR method is used. This did not affect the
   actual thresholding, merely the quoted flux threshold in the results

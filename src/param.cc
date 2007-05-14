@@ -292,18 +292,19 @@ int Param::getopts(int argc, char ** argv)
    *   \param argv The array of command line arguments.
    */
 
-  int returnValue;
+  int returnValue = FAILURE;
   if(argc==1){
     std::cout << ERR_USAGE_MSG;
     returnValue = FAILURE;
   }
   else {
     std::string file;
+    bool changeX = false;
     Param *newpars = new Param;
     *this = *newpars;
     delete newpars;
     char c;
-    while( ( c = getopt(argc,argv,"p:f:hv") )!=-1){
+    while( ( c = getopt(argc,argv,"p:f:hvx") )!=-1){
       switch(c) {
       case 'p':
 	file = optarg;
@@ -311,7 +312,6 @@ int Param::getopts(int argc, char ** argv)
 	  std::stringstream errmsg;
 	  errmsg << "Could not open parameter file " << file << ".\n";
 	  duchampError("Duchamp",errmsg.str());
-	  returnValue = FAILURE;
 	}
 	else returnValue = SUCCESS;
 	break;
@@ -322,13 +322,22 @@ int Param::getopts(int argc, char ** argv)
 	break;
       case 'v':
 	std::cout << PROGNAME << " version " << VERSION << std::endl;
-	returnValue = FAILURE;
+	break;
+      case 'x':
+	changeX = true;
 	break;
       case 'h':
       default :
 	std::cout << ERR_USAGE_MSG;
-	returnValue = FAILURE;
 	break;
+      }
+    }
+    if(changeX){
+      if(returnValue == SUCCESS) this->setFlagXOutput(false);
+      else {
+	duchampError("Duchamp",
+		     "You need to specify either a parameter file or FITS image.\n");
+	std::cout << "\n" << ERR_USAGE_MSG;
       }
     }
   }

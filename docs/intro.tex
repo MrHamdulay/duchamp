@@ -19,7 +19,9 @@ execution.
 
 The standard way to run \duchamp is by the command
 \begin{quote}
-\texttt{Duchamp -p [parameter file]}
+{\footnotesize
+\texttt{> Duchamp -p [parameter file]}
+}
 \end{quote}
 replacing \texttt{[parameter file]} with the name of the file listing
 the parameters. 
@@ -29,15 +31,29 @@ An even easier way is to use the default values for all parameters
 \texttt{InputComplete} included in the distribution directory) and use
 the syntax
 \begin{quote}
-\texttt{Duchamp -f [FITS file]}
+{\footnotesize
+\texttt{> Duchamp -f [FITS file]}
+}
 \end{quote}
 where \texttt{[FITS file]} is the file you wish to search. 
 
-In either case, the program will then work away and give you the list
-of detections and their spectra. The program execution is summarised
-below, and detailed in \S\ref{sec-flow}. Information on inputs is in
-\S\ref{sec-param} and Appendix~\ref{app-param}, and descriptions of
-the output is in \S\ref{sec-output}.
+The default action includes displaying a map of detected objects in a
+PGPLOT X-window. This can be disabled by setting the parameter
+\texttt{flagXOutput=false} or using the \texttt{-x} command-line
+option, as in
+\begin{quote}
+{\footnotesize
+\texttt{> Duchamp -x -p [parameter file]}
+}
+\end{quote}
+and similarly for the \texttt{-f} case.
+
+Once a FITS file and parameters have been set, the program will then
+work away and give you the list of detections and their spectra. The
+program execution is summarised below, and detailed in
+\S\ref{sec-flow}. Information on inputs is in \S\ref{sec-param} and
+Appendix~\ref{app-param}, and descriptions of the output is in
+\S\ref{sec-output}.
 
 \secB{Guide to terminology and conventions}
 
