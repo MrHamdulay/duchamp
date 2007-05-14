@@ -50,7 +50,7 @@ void Cube::ObjectMerger()
 	Detection *obj = new Detection;
 	*obj = currentList[i];
 	growObject(*obj,*this);
-	newList.push_back(*obj);
+	newList[i] = *obj;
 	delete obj;
       }
       currentList.clear();

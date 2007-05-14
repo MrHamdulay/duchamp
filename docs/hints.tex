@@ -15,7 +15,7 @@ The main drawback with the \atrous method is the long execution time:
 to reconstruct a $170\times160\times1024$ (\hipass) cube often
 requires three iterations and takes about 20-25 minutes to run
 completely. Note that this is for the more complete three-dimensional
-reconstruction: using \texttt{reconDim=1} makes the reconstruction
+reconstruction: using \texttt{reconDim = 1} makes the reconstruction
 quicker (the full program then takes less than 5 minutes), but it is
 still the largest part of the time.
 
@@ -46,7 +46,7 @@ scale determined by the Hanning filter or Gaussian kernel used in the
 smoothing. 
 
 When considering the reconstruction method, note that the 2D
-reconstruction (\texttt{reconDim=2}) can be susceptible to edge
+reconstruction (\texttt{reconDim = 2}) can be susceptible to edge
 effects. If the valid area in the cube (\ie the part that is not
 BLANK) has non-rectangular edges, the convolution can produce
 artefacts in the reconstruction that mimic the edges and can lead

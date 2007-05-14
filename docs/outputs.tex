@@ -15,14 +15,13 @@ If the cube is being trimmed (\S\ref{sec-modify}), the resulting
 dimensions are printed to indicate how much has been trimmed. If a
 reconstruction is being done, a continually updating message shows
 either the current iteration and scale, compared to the maximum scale
-(when \texttt{reconDim=3}), or a progress bar showing the amount of
+(when \texttt{reconDim = 3}), or a progress bar showing the amount of
 the cube that has been reconstructed (for smaller values of
 \texttt{reconDim}).
 
-During the searching algorithms, the progress through the 1D and 2D
-searches are shown. When the searches have completed, the number of
-objects found in both the 1D and 2D searches are reported (see
-\S\ref{sec-detection} for details).
+During the searching algorithms, the progress through the search is
+shown. When completed, the number of objects found is reported (this
+is the total number found, before any merging is done).
 
 In the merging process (where multiple detections of the same object
 are combined -- see \S\ref{sec-merger}), two stages of output
@@ -41,8 +40,8 @@ be very quick for small numbers of detections.
 
 Since this continual printing to screen has some overhead of time and
 CPU involved, the user can elect to not print this information by
-setting the parameter \texttt{verbose = 0}. In this case, the user is
-still informed as to the steps being undertaken, but the details of
+setting the parameter \texttt{verbose = false}. In this case, the user
+is still informed as to the steps being undertaken, but the details of
 the progress are not shown.
 
 There may also be Warning or Error messages printed to screen. The
@@ -136,11 +135,12 @@ related columns are not printed, but the pixel coordinates are still
 provided.
 
 The velocity units can be specified by the user, using the parameter
-\texttt{spectralUnits} (enter it as a single string). The default
-value is km/s, which should be suitable for most users. These units
-are also used to give the units of integrated flux. Note that if there
-is no rest frequency specified in the FITS header, the \duchamp
-output will instead default to using Frequency, with units of MHz.
+\texttt{spectralUnits} (enter it as a single string with no
+spaces). The default value is km/s, which should be suitable for most
+users. These units are also used to give the units of integrated
+flux. Note that if there is no rest frequency specified in the FITS
+header, the \duchamp output will instead default to using Frequency,
+with units of MHz.
 
 If the WCS is absent or not sufficiently specified, then all columns
 from RA/GLON to w\_VEL will be left blank. Also, F\_int will be
@@ -167,9 +167,9 @@ caution is advised.
 Two additional results files can also be requested. One option is a
 VOTable-format XML file, containing just the RA, Dec, Velocity and the
 corresponding widths of the detections, as well as the fluxes. The
-user should set \texttt{flagVOT = 1}, and put the desired filename in
-the parameter \texttt{votFile} -- note that the default is for it not
-to be produced. This file should be compatible with all Virtual
+user should set \texttt{flagVOT = true}, and put the desired filename
+in the parameter \texttt{votFile} -- note that the default is for it
+not to be produced. This file should be compatible with all Virtual
 Observatory tools (such as Aladin%
 \footnote{%Aladin can be found on the web at
 \href{http://aladin.u-strasbg.fr/}{http://aladin.u-strasbg.fr/}}
@@ -181,7 +181,7 @@ tools (in particular, with \texttt{kvis}). This will draw a circle at
 the position of each detection, scaled by the spatial size of the
 detection, and number it according to the Obj\# given above. To make
 use of this option, the user should set
-\texttt{flagKarma = 1}, and put the desired filename in the parameter
+\texttt{flagKarma = true}, and put the desired filename in the parameter
 \texttt{karmaFile} -- again, the default is for it not to be produced.
 
 As the program is running, it also (optionally) records the detections
@@ -279,10 +279,9 @@ The production or otherwise of these images is governed by the
 
 The moment map is also displayed in a PGPlot XWindow (with the
 \texttt{/xs} display option). This feature can be turned off by
-setting the \texttt{flagXOutput} parameter to \texttt{false} -- this
-might be useful if running \duchamp on a terminal with no window
-display capability, or if you have set up a script to run it in a
-batch mode.
+setting \texttt{flagXOutput = false} -- this might be useful if
+running \duchamp on a terminal with no window display capability, or
+if you have set up a script to run it in a batch mode.
 
 The purpose of these images are to provide a visual guide to where the
 detections have been made, and, particularly in the case of the moment

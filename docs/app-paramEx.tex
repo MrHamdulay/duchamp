@@ -29,11 +29,12 @@ threshVelocity  7
 \end{verbatim}
 
 Note that, as in this example, the flag parameters can be entered as
-strings (true/false) or integers (1/0). Also, note that it is not
-necessary to include all these parameters in the file, only those that
-need to be changed from the defaults (as listed in
-Appendix~\ref{app-param}), which in this case would be very few. A
-minimal parameter file might look like:
+strings (\texttt{true}/\texttt{false}) or integers
+(\texttt{1}/\texttt{0}). Also, note that it is not necessary to
+include all these parameters in the file, only those that need to be
+changed from the defaults (as listed in Appendix~\ref{app-param}),
+which in this case would be very few. A minimal parameter file might
+look like:
 \begin{verbatim}
 imageFile       /home/mduchamp/fountain.fits
 flagLog         false
@@ -57,12 +58,15 @@ used.
 %\begin{sideways}
 %Typical presentation of parameters in output and log files:  
 %\begin{minipage}{170mm}
+%
+% NOTE -- EXCISED THESE FROM THE EXAMPLE, AS THE SECOND LINE IS 18PT
+% TOO LONG...
+%Reconstructed array exists?................[reconExists]  =  true
+%FITS file containing reconstruction..........[reconFile]  =  fountain.RECON-1-1-4-1.fits
 {\scriptsize
 \begin{verbatim}
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  fountain.fits
-Reconstructed array exists?................[reconExists]  =  true
-FITS file containing reconstruction..........[reconFile]  =  fountain.RECON-1-1-4-1.fits
 Intermediate Logfile...........................[logFile]  =  duchamp-Logfile.txt
 Final Results file.............................[outFile]  =  duchamp-Results.txt
 Spectrum file..............................[spectraFile]  =  duchamp-Spectra.ps

@@ -6,6 +6,11 @@ is to read in a FITS data cube, find sources in the cube, and produce
 a text file of positions, velocities and fluxes of the detections, as
 well as a postscript file of the spectra of each detection.
 
+\duchamp searches fro groups of connected voxels (or pixels) that are
+all above some flux threshold. No assumption is made as to the shape
+of detections, and the only size constraints applied are those
+specified by the user.
+
 \secB{What to do}
 
 So, you have a FITS cube, and you want to find the sources in it. What
@@ -39,7 +44,7 @@ where \texttt{[FITS file]} is the file you wish to search.
 
 The default action includes displaying a map of detected objects in a
 PGPLOT X-window. This can be disabled by setting the parameter
-\texttt{flagXOutput=false} or using the \texttt{-x} command-line
+\texttt{flagXOutput = false} or using the \texttt{-x} command-line
 option, as in
 \begin{quote}
 {\footnotesize

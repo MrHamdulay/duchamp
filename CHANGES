@@ -8,7 +8,9 @@ EFFICIENCY OF EXECUTION:
 * Major change to the way detections are stored. They are now recorded
   via run-length encoding in the x-y plane, and stored as collections
   of channel-maps. This improves the memory usage and the speed of
-  execution (particularly for routines such as the merging routines).
+  execution (particularly for routines such as the merging
+  routines). The memory usage has also been improved by changing the
+  way the list of detected objects is stored.
 
 SMOOTHING:
 

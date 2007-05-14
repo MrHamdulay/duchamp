@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
                The Duchamp Source Finder
 -----------------------------------------------------------------------
-Duchamp 1.0.7 -- an object finder for spectral-line data cubes
+Duchamp 1.1 -- an object finder for spectral-line data cubes
 Copyright (C) 2006, Matthew Whiting, ATNF
 
 Duchamp is free software; you can redistribute it and/or modify it
@@ -125,6 +125,11 @@ a brief description of them. To get going quickly, just replace the
 
  >  Duchamp -p InputExample
 
+By default, a map of detections is displayed in a PGPLOT
+X-window. This can be disabled by using the flagXOutput parameter, or
+using the -x command-line option along with the -f or -p options. The
+-x option will override the setting in the parameter file.
+
 A User's Guide in the docs/ directory provides complete
 documentation. It comes in both postscript and portable document
 format (pdf -- note that this contains hyperlinks). This guide will
@@ -137,6 +142,6 @@ http://sourcecode.atnf.csiro.au/cgi-bin/trac_duchamp.cgi/newticket
 and submit a "ticket", or view previously submitted reports.
 
 Author: 
-  Matthew Whiting, Australia Telescope National Facility, November 2006
+  Matthew Whiting, Australia Telescope National Facility, May 2007
   Matthew.Whiting@csiro.au
 

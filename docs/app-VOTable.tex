@@ -1,9 +1,8 @@
 \begin{landscape}
 \secA{Example VOTable output}
 \label{app-votable}
-This is part of the VOTable, in XML format, corresponding to the
-output file in Appendix~\ref{app-output} (the indentation has been
-removed to make it fit on the page).
+This is part of the VOTable, in XML format, corresponding to a basic
+FDR search.
 
 %\begin{sideways}
 %\begin{minipage}[b]{180mm}
@@ -12,42 +11,43 @@ removed to make it fit on the page).
 <?xml version="1.0"?>
 <VOTABLE version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:noNamespaceSchemaLocation="http://www.ivoa.net/xml/VOTable/VOTable/v1.1">
-<COOSYS ID="J2000" equinox="J2000." epoch="J2000." system="eq_FK5"/>
-<RESOURCE name="Duchamp Output">
-<TABLE name="Detections">
-<DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>
-<PARAM name="FITS file" datatype="char" ucd="meta.file;meta.fits" value="/home/mduchamp/fountain.fits"/>
-<PARAM name="Threshold" datatype="float" ucd="stat.snr" value="2.5">
-<PARAM name="ATrous note" datatype="char" ucd="meta.note" value="The a trous reconstruction method was used, with the following parameters.">
-<PARAM name="ATrous Dimension" datatype="int" ucd="meta.code;stat" value="3">
-<PARAM name="ATrous Cut" datatype="float" ucd="stat.snr" value="4">
-<PARAM name="ATrous Minimum Scale" datatype="int" ucd="stat.param" value="1">
-<PARAM name="ATrous Filter" datatype="char" ucd="meta.code;stat" value="B3 spline function">
-<FIELD name="ID" ID="col1" ucd="meta.id" datatype="int" width="4"/>
-<FIELD name="Name" ID="col2" ucd="meta.id;meta.main" datatype="char" arraysize="14"/>
-<FIELD name="RA" ID="col3" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" width="10" precision="6" unit="deg"/>
-<FIELD name="Dec" ID="col4" ucd="pos.eq.dec;meta.main" ref="J2000" datatype="float" width="10" precision="6" unit="deg"/>
-<FIELD name="w_RA" ID="col3" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" width="7" precision="2" unit="arcmin"/>
-<FIELD name="w_Dec" ID="col4" ucd="phys.angSize;pos.eq.dec" ref="J2000" datatype="float" width="7" precision="2" unit="arcmin"/>
-<FIELD name="Vel" ID="col4" ucd="phys.veloc;src.dopplerVeloc" datatype="float" width="9" precision="3" unit="km/s"/>
-<FIELD name="w_Vel" ID="col4" ucd="phys.veloc;src.dopplerVeloc;spect.line.width" datatype="float" width="8" precision="3" unit="km/s"/>
-<FIELD name="Integrated_Flux" ID="col4" ucd="phys.flux;spect.line.intensity" datatype="float" width="10" precision="3" unit="km/s"/>
-<DATA>
-<TABLEDATA>
-<TR>
-<TD>   1</TD><TD> J0609-2200</TD><TD> 92.410416</TD><TD>-22.013390</TD><TD>  48.50</TD><TD>  39.42</TD><TD>  213.061</TD><TD>  65.957</TD><TD>    17.572</TD>
-</TR>
-<TR>
-<TD>   2</TD><TD> J0608-2605</TD><TD> 92.042633</TD><TD>-26.085157</TD><TD>  44.47</TD><TD>  39.47</TD><TD>  233.119</TD><TD>  39.574</TD><TD>     4.144</TD>
-</TR>
-<TR>
-<TD>   3</TD><TD> J0606-2724</TD><TD> 91.637840</TD><TD>-27.412022</TD><TD>  52.48</TD><TD>  47.57</TD><TD>  302.213</TD><TD>  39.574</TD><TD>    17.066</TD>
-</TR>
-(... table truncated for clarity ...)
-</TABLEDATA>
-</DATA>
-</TABLE>
-</RESOURCE>
+  <COOSYS ID="J2000" equinox="J2000." epoch="J2000." system="eq_FK5"/>
+  <RESOURCE name="Duchamp Output">
+    <TABLE name="Detections">
+      <DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>
+      <PARAM name="FITS file" datatype="char" ucd="meta.file;meta.fits" value="/DATA/SITAR_1/whi550/ObsData/cubes/H201_abcde_luther_chop.fits" arraysize="62"/>
+      <PARAM name="FDR Significance" datatype="float" ucd="stat.param" value="0.1"/>
+      <FIELD name="ID" ID="col01" ucd="meta.id" datatype="int" width="5" unit="--"/>
+      <FIELD name="Name" ID="col02" ucd="meta.id;meta.main" datatype="char" arraysize="15" unit="--"/>
+      <FIELD name="RA" ID="col03" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" width="13" precision="6" unit="deg"/>
+      <FIELD name="DEC" ID="col04" ucd="pos.galactic.lon;meta.main" ref="J2000" datatype="float" width="13" precision="6" unit="deg"/>
+      <FIELD name="w_RA" ID="col05" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" width="9" precision="2" unit="arcmin"/>
+      <FIELD name="w_DEC" ID="col06" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" width="9" precision="2" unit="arcmin"/>
+      <FIELD name="Vel" ID="col07" ucd="phys.veloc;src.dopplerVeloc" datatype="float" width="9" precision="3" unit="km/s"/>
+      <FIELD name="w_Vel" ID="col08" ucd="phys.veloc;src.dopplerVeloc;spect.line.width" datatype="float" width="9" precision="3" unit="km/s"/>
+      <FIELD name="Integrated_Flux" ID="col09" ucd="phot.flux;spect.line.intensity" datatype="float" width="10" precision="3" unit="Jy.km/s"/>
+      <FIELD name="Peak_Flux" ID="col10" ucd="phot.flux;spect.line.intensity" datatype="float" width="10" precision="3" unit="Jy/beam"/>
+      <FIELD name="Flag" ID="col11" ucd="meta.code.qual" datatype="char" arraysize="3" unit="--"/>
+      <FIELD name="X_Centroid" ID="col12" ucd="pos.cartesian.x" datatype="float" width="7" precision="1" unit=""/>
+      <FIELD name="Y_Centroid" ID="col13" ucd="pos.cartesian.y" datatype="float" width="7" precision="1" unit=""/>
+      <FIELD name="Z_Centroid" ID="col14" ucd="pos.cartesian.z" datatype="float" width="7" precision="1" unit=""/>
+      <FIELD name="X_Av" ID="col15" ucd="pos.cartesian.x" datatype="float" width="6" precision="1" unit=""/>
+      <FIELD name="Y_Av" ID="col16" ucd="pos.cartesian.y" datatype="float" width="6" precision="1" unit=""/>
+      <FIELD name="Z_Av" ID="col17" ucd="pos.cartesian.z" datatype="float" width="6" precision="1" unit=""/>
+      <FIELD name="X_Peak" ID="col18" ucd="pos.cartesian.x" datatype="int" width="7" precision="1" unit=""/>
+      <FIELD name="Y_Peak" ID="col19" ucd="pos.cartesian.y" datatype="int" width="7" precision="1" unit=""/>
+      <FIELD name="Z_Peak" ID="col20" ucd="pos.cartesian.z" datatype="int" width="7" precision="1" unit=""/>
+      <DATA>
+        <TABLEDATA>
+        <TR>
+          <TD>    1</TD><TD> J060925-215712</TD><TD>    92.356613</TD><TD>   -21.953545</TD><TD>    44.51</TD><TD>    39.49</TD><TD>  223.351</TD><TD>   52.765</TD><TD>    14.564</TD>
+<TD>     0.213</TD><TD>     </TD><TD> 59.175</TD><TD>140.463</TD><TD>114.439</TD><TD>59.554</TD><TD>140.580</TD><TD>114.536</TD><TD>     59</TD><TD>    140</TD><TD>    114</TD>
+        </TR>
+... truncated ...
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+  </RESOURCE>
 </VOTABLE>
   \end{verbatim}
 }

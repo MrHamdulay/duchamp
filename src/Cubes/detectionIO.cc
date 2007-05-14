@@ -12,12 +12,14 @@
 #include <Detection/detection.hh>
 #include <Detection/columns.hh>
 #include <Utils/utils.hh>
+#include <Utils/Statistics.hh>
  
 using std::endl;
 using std::setw;
 using std::setprecision;
 using namespace Column;
 using namespace PixelInfo;
+using namespace Statistics;
 
 void Cube::outputDetectionsKarma(std::ostream &stream)
 {
@@ -378,6 +380,14 @@ void Cube::outputStats()
     output<<"\n  Noise level = " << this->Stats.getMiddle()
 	  <<", Noise spread = " << this->Stats.getSpread()
 	  <<"\n";
+
+  if(this->par.getFlagGrowth()){
+    StatsContainer<float> growthStats = this->Stats;
+    growthStats.setThresholdSNR(this->par.getGrowthCut());
+    growthStats.setUseFDR(false);
+    output<<"  Detections grown down to threshold of " 
+	  << growthStats.getThreshold() << ".\n";
+  }
 
   output.close();
 }

@@ -25,7 +25,7 @@ structure, is also stored in the same class.
 
 A sub-section of a cube can be requested by defining the subsection
 with the \texttt{subsection} parameter and setting
-\texttt{flagSubsection=true} -- this can be a good idea if the cube
+\texttt{flagSubsection = true} -- this can be a good idea if the cube
 has very noisy edges, which may produce many spurious detections.
 
 There are two ways of specifying the \texttt{subsection} string. The
@@ -41,8 +41,10 @@ and any that are present are removed before the file is opened.
 
 If the entire range of a coordinate is required, one can replace the
 range with a single asterisk, \eg \texttt{[2:50,2:50,*]}. Thus, the
-subsection string \texttt{[*,*,*]} is simply the entire cube. A
-complete description of this section syntax can be found at the
+subsection string \texttt{[*,*,*]} is simply the entire cube. Note
+that the pixel ranges for each axis start at 1, so the full pixel
+range of a 100-pixel axis would be expressed as 1:100. A complete
+description of this section syntax can be found at the
 \textsc{fitsio} web site%
 \footnote{%
 \href%
@@ -58,7 +60,7 @@ subsection string. This just gives a number for each axis, \eg
 \texttt{[5,5,5]} (which would trim 5 pixels from the start \emph{and}
 end of each axis).
 
-All types of subsections can be combined \eg \texttt{[5,2:98,*]}.
+All types of subsections can be combined \eg \texttt{[5,2:98,*]}. 
 
 
 \secB{Image modification}
@@ -78,7 +80,7 @@ pixels is given by the FITS header keywords BLANK, BSCALE and
 BZERO. While these pixels make the image a nice shape, they will take
 up unnecessary space in memory, and so to potentially speed up the
 processing we can trim them from the edge. This is done when the
-parameter \texttt{flagTrim=true}. If the above keywords are not
+parameter \texttt{flagTrim = true}. If the above keywords are not
 present, the trimming will not be done (in this case, a similar effect
 can be accomplished, if one knows where the ``blank'' pixels are, by
 using the subsection option).
@@ -272,7 +274,7 @@ smoothing option, set the parameter \texttt{flagSmooth=true} and set
 
 \secC{Spectral smoothing}
 
-When \texttt{smoothType=spectral} is selected, the cube is smoothed
+When \texttt{smoothType = spectral} is selected, the cube is smoothed
 only in the spectral domain. Each spectrum is independently smoothed
 by a Hanning filter, and then put back together to form the smoothed
 cube, which is then used by the searching algorithm (see below). Note
@@ -297,7 +299,7 @@ one).
 
 \secC{Spatial smoothing}
 
-When \texttt{smoothType=spatial} is selected, the cube is smoothed
+When \texttt{smoothType = spatial} is selected, the cube is smoothed
 only in the spatial domain. Each channel map is independently smoothed
 by a two-dimensional Gaussian kernel, put back together to form the
 smoothed cube, and used in the searching algorithm (see below). Again,
@@ -308,11 +310,12 @@ The two-dimensional Gaussian has three parameters to define it,
 governed by the elliptical cross-sectional shape of the Gaussian
 function: the FWHM (full-width at half-maximum) of the major and minor
 axes, and the position angle of the major axis. These are given by the
-user parameters \texttt{kernMaj, kernMin \& kernPA}. If a circular
-Gaussian is required, the user need only provide the \texttt{kernMaj}
-parameter. The \texttt{kernMin} parameter will then be set to the same
-value, and \texttt{kernPA} to zero.  If we define these parameters as
-$a,b,\theta$ respectively, we can define the kernel by the function
+user parameters \texttt{kernMaj, kernMin} \& \texttt{kernPA}. If a
+circular Gaussian is required, the user need only provide the
+\texttt{kernMaj} parameter. The \texttt{kernMin} parameter will then
+be set to the same value, and \texttt{kernPA} to zero.  If we define
+these parameters as $a,b,\theta$ respectively, we can define the
+kernel by the function
 \[ 
 k(x,y) = \exp\left[-0.5 \left(\frac{X^2}{\sigma_X^2} + 
                               \frac{Y^2}{\sigma_Y^2}   \right) \right] 
@@ -385,15 +388,19 @@ find the file with the name as given above.
 
 \secC{Technique}
 
-The basic idea behind detection is to locate sets of contiguous voxels
-that lie above some threshold. One threshold is calculated for the
-entire cube, enabling calculation of signal-to-noise ratios for each
-source (see Section~\ref{sec-output} for details). The user can
-manually specify a value (using the parameter
-\texttt{threshold}) for the threshold, which will override the
-calculated value. Note that this only applies for the first of the two
-cases discussed below -- the FDR case ignores any manually-set
-threshold value.
+The basic idea behind detection in \duchamp is to locate sets of
+contiguous voxels that lie above some threshold. No size or shape
+requirement is imposed upon the detections -- that is, \duchamp does
+not fit \eg a Gaussian profile to each source. All it does is find
+connected groups of bright voxels.
+
+One threshold is calculated for the entire cube, enabling calculation
+of signal-to-noise ratios for each source (see
+Section~\ref{sec-output} for details). The user can manually specify a
+value (using the parameter \texttt{threshold}) for the threshold,
+which will override the calculated value. Note that this only applies
+for the first of the two cases discussed below -- the FDR case ignores
+any manually-set threshold value.
 
 The cube is searched one channel map at a time, using the
 2-dimensional raster-scanning algorithm of \citet{lutz80} that
@@ -523,7 +530,7 @@ in \S\ref{sec-notes}.
 %object is recorded using ``run-length'' encoding, where each row (a
 %fixed $y$ value) is stored by the starting $x$-value and the length
 
-\secB{Merging detected objects}
+\secB{Merging and growing detected objects}
 \label{sec-merger}
 
 The searching step produces a list of detected objects that will have

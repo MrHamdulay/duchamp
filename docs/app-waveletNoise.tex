@@ -45,28 +45,24 @@ filters used by \duchamp.
 Calculating these values is clearly a critical step in performing the
 reconstruction. The method used by \citet{starck02:book} was to
 simulate data sets with Gaussian noise, take the wavelet transform,
-and measure the value of $\sigma$ for each scale. We take a
-different approach, by calculating the scaling factors directly from
-the filter coefficients by taking the wavelet transform of an array
-made up of a 1 in the central pixel and 0s everywhere else. The
-scaling value is then derived by taking the square root of the sum (in
-quadrature) of all the wavelet coefficient values at each scale. We
-give the scaling factors for the three filters available to \duchamp
-on the following page. These values are hard-coded into \duchamp, so
-no on-the-fly calculation of them is necessary.
+and measure the value of $\sigma$ for each scale. We take a different
+approach, by calculating the scaling factors directly from the filter
+coefficients by taking the wavelet transform of an array made up of a
+1 in the central pixel and 0s everywhere else. The scaling value is
+then derived by taking the square root of the sum (in quadrature) of
+all the wavelet coefficient values at each scale. We give the scaling
+factors for the three filters available to \duchamp below. These
+values are hard-coded into \duchamp, so no on-the-fly calculation of
+them is necessary.
 
 Memory limitations prevent us from calculating factors for large
 scales, particularly for the three-dimensional case (hence the --
 symbols in the tables). To calculate factors for higher scales than
-those available, we note the following relationships apply for large
-scales to a sufficient level of precision:
-\begin{itemize}
-\item 1-D: factor(scale $i$) = factor(scale $i-1$)$/\sqrt{2}$.
-\item 2-D: factor(scale $i$) = factor(scale $i-1$)$/2$.
-\item 3-D: factor(scale $i$) = factor(scale $i-1$)$/\sqrt{8}$.
-\end{itemize}
+those available, we divide the previous scale's factor by either
+$\sqrt{2}$, $2$, or $\sqrt{8}$ for 1D, 2D and 3D respectively. 
 
-\newpage
+%\newpage
+{\small
 \begin{itemize}
 \item \textbf{B$_3$-Spline Function:} $\{1/16,1/4,3/8,1/4,1/16\}$
 
@@ -130,5 +126,5 @@ Scale & 1 dimension      & 2 dimension     & 3 dimension\\ \hline
 
 \end{tabular}
 
-
 \end{itemize}
+}
