@@ -258,8 +258,10 @@ void Detection::calcWCSparams(float *fluxArray, long *dim, FitsHeader &head)
       this->dec  = world[1];
       this->raS  = decToDMS(this->ra, this->lngtype);
       this->decS = decToDMS(this->dec,this->lattype);
-      this->raWidth = angularSeparation(world[9],world[1],world[12],world[1])*60.;
-      this->decWidth  = angularSeparation(world[0],world[10],world[0],world[13]) * 60.;
+      this->raWidth = angularSeparation(world[9],world[1],
+					world[12],world[1]) * 60.;
+      this->decWidth  = angularSeparation(world[0],world[10],
+					  world[0],world[13]) * 60.;
       this->name = head.getIAUName(this->ra, this->dec);
       this->vel    = head.specToVel(world[2]);
       this->velMin = head.specToVel(world[5]);
@@ -283,8 +285,12 @@ void Detection::calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head)
    *   putting velocity in units of km/s.
    *  Integrates over full spatial and velocity range as given 
    *   by the extrema calculated by calcWCSparams.
-   *  If the flux units end in "/beam" (eg. Jy/beam), then the
-   *   flux is corrected by the beam size (in pixels).
+   *
+   *  If the flux units end in "/beam" (eg. Jy/beam), then the flux is
+   *  corrected by the beam size (in pixels). This is done by
+   *  multiplying the integrated flux by the number of spatial pixels,
+   *  and dividing by the beam size in pixels (e.g. Jy/beam * pix /
+   *  pix/beam --> Jy)
    *
    *  \param fluxArray The array of flux values.
    *  \param dim The dimensions of the flux array.

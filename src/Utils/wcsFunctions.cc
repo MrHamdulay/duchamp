@@ -1,3 +1,32 @@
+// -----------------------------------------------------------------------
+// wcsFunctions.cc: Functions to convert between pixel and world
+//                  coordinates -- user-friendly front ends to the 
+//                  WCSLIB functions.
+// -----------------------------------------------------------------------
+// Copyright (C) 2006, Matthew Whiting, ATNF
+//
+// This program is free software; you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation; either version 2 of the License, or (at your
+// option) any later version.
+//
+// Duchamp is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+// for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Duchamp; if not, write to the Free Software Foundation,
+// Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA
+//
+// Correspondence concerning Duchamp may be directed to:
+//    Internet email: Matthew.Whiting [at] atnf.csiro.au
+//    Postal address: Dr. Matthew Whiting
+//                    Australia Telescope National Facility, CSIRO
+//                    PO Box 76
+//                    Epping NSW 1710
+//                    AUSTRALIA
+// -----------------------------------------------------------------------
 #include <iostream>
 #include <sstream>
 #include <math.h>
@@ -16,6 +45,10 @@ int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
    *    first pixel in that axis.
    *   Offsets these pixel values by 1 to account for the C arrays being 
    *    indexed to 0.
+   *
+   * \param wcs The wcsprm struct containing the WCS information.
+   * \param pix The array of pixel coordinates.
+   * \param world The returned array of world coordinates.
    */
 
   int naxis=wcs->naxis,npts=1,status;
@@ -32,7 +65,8 @@ int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
   double *tempworld = new double[naxis*npts];
   double *phi       = new double[npts];
   double *theta     = new double[npts];
-  status=wcsp2s(wcs, npts, naxis, newpix, imgcrd, phi, theta, tempworld, stat);
+  status=wcsp2s(wcs, npts, naxis, newpix, imgcrd, 
+		phi, theta, tempworld, stat);
   if(status>0){
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " << status <<": " << wcs_errmsg[status] 
@@ -63,6 +97,10 @@ int wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix)
    *   Assumes that world only has one point (three values eg RA Dec Velocity)
    *   Offsets the pixel values by 1 to account for the C arrays being 
    *    indexed to 0.
+   *
+   * \param wcs The wcsprm struct containing the WCS information.
+   * \param world The array of world coordinates.
+   * \param pix The returned array of pixel coordinates.
    */
 
   int naxis=wcs->naxis,npts=1,status;
@@ -79,7 +117,8 @@ int wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix)
   double *phi     = new double[npts];
   double *theta   = new double[npts];
 
-  status=wcss2p(wcs, npts, naxis, tempworld, phi, theta, imgcrd, temppix, stat);
+  status=wcss2p(wcs, npts, naxis, tempworld, 
+		phi, theta, imgcrd, temppix, stat);
 
   if( status > 0 ){
     std::stringstream errmsg;
@@ -103,7 +142,8 @@ int wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix)
   return status;
 }
 
-int pixToWCSMulti(struct wcsprm *wcs, const double *pix, double *world, const int npts)
+int pixToWCSMulti(struct wcsprm *wcs, const double *pix, 
+		  double *world, const int npts)
 {
   /** 
    *   Uses wcs to convert the three-dimensional pixel positions referenced 
@@ -111,6 +151,11 @@ int pixToWCSMulti(struct wcsprm *wcs, const double *pix, double *world, const in
    *   pix is assumed to hold the positions of npts points.
    *   Offsets these pixel values by 1 to account for the C arrays being 
    *    indexed to 0.
+   *
+   * \param wcs The wcsprm struct containing the WCS information.
+   * \param pix The array of pixel coordinates.
+   * \param world The returned array of world coordinates.
+   * \param npts The number of distinct pixels in the arrays.
    */
 
   int naxis=wcs->naxis,status;
@@ -131,7 +176,8 @@ int pixToWCSMulti(struct wcsprm *wcs, const double *pix, double *world, const in
   double *tempworld = new double[naxis*npts];
   double *phi       = new double[npts];
   double *theta     = new double[npts];
-  status=wcsp2s(wcs, npts, naxis, newpix, imgcrd, phi, theta, tempworld, stat);
+  status=wcsp2s(wcs, npts, naxis, newpix, imgcrd, 
+		phi, theta, tempworld, stat);
   if(status>0){
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " <<status<<": " << wcs_errmsg[status] 
@@ -158,7 +204,8 @@ int pixToWCSMulti(struct wcsprm *wcs, const double *pix, double *world, const in
   return status;
 }
 
-int wcsToPixMulti(struct wcsprm *wcs, const double *world, double *pix, const int npts)
+int wcsToPixMulti(struct wcsprm *wcs, const double *world, 
+		  double *pix, const int npts)
 {
   /** 
    *   Uses wcs to convert the three-dimensional world coordinate position 
@@ -167,6 +214,11 @@ int wcsToPixMulti(struct wcsprm *wcs, const double *world, double *pix, const in
    *   world is assumed to hold the positions of npts points.
    *   Offsets the pixel values by 1 to account for the C arrays being 
    *    indexed to 0.
+   *
+   * \param wcs The wcsprm struct containing the WCS information.
+   * \param world The array of world coordinates.
+   * \param pix The returned array of pixel coordinates.
+   * \param npts The number of distinct pixels in the arrays.
    */
 
   int naxis=wcs->naxis,status=0;
@@ -189,7 +241,8 @@ int wcsToPixMulti(struct wcsprm *wcs, const double *world, double *pix, const in
   double *imgcrd = new double[naxis*npts];
   double *phi    = new double[npts];
   double *theta  = new double[npts];
-  status=wcss2p(wcs,npts,naxis,tempworld,phi,theta,imgcrd,temppix,stat);
+  status=wcss2p(wcs,npts,naxis,tempworld,phi,theta,
+		imgcrd,temppix,stat);
   if(status>0){
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " <<status<<": " <<wcs_errmsg[status] 
@@ -223,6 +276,13 @@ double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z,
    *   Uses wcs to convert the three-dimensional pixel position (x,y,z)
    *   to world coordinates.
    *   Returns the velocity in the units given by velUnits.
+   *
+   * \param wcs  The wcsprm struct containing the WCS information.
+   * \param x The x pixel coordinate.
+   * \param y The y pixel coordinate.
+   * \param z The z pixel coordinate.
+   * \param velUnits The string containing the units of the output velocity.
+   * \return The velocity of the pixel.
    */
 
   int naxis=wcs->naxis,status=0;
@@ -238,7 +298,8 @@ double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z,
   pixcrd[wcs->lng] += x;
   pixcrd[wcs->lat] += y;
   pixcrd[wcs->spec]+= z;
-  status=wcsp2s(wcs, 1, naxis, pixcrd, imgcrd, phi, theta, world, stat);
+  status=wcsp2s(wcs, 1, naxis, pixcrd, imgcrd, 
+		phi, theta, world, stat);
   if(status>0){
     std::stringstream errmsg;
     errmsg <<"WCS Error Code = "<<status<<": "<<wcs_errmsg[status] 
@@ -258,12 +319,18 @@ double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z,
   return vel;
 }
  
-double coordToVel(struct wcsprm *wcs, const double coord, std::string outputUnits)
+double coordToVel(struct wcsprm *wcs, const double coord, 
+		  std::string outputUnits)
 {
   /** 
    *   Convert the wcs coordinate given by coord to a velocity in km/s.
    *   Does this by checking the ztype parameter in wcs to see if it is 
    *    FREQ or otherwise, and converts accordingly.
+   *
+   * \param wcs  The wcsprm struct containing the WCS information.
+   * \param coord The input WCS coordinate.
+   * \param outputUnits The string containing the units of the output velocity.
+   * \return The velocity of the input coord value.
    */
 
   static int errflag = 0;
@@ -290,17 +357,23 @@ double coordToVel(struct wcsprm *wcs, const double coord, std::string outputUnit
 
 }
 
-double velToCoord(struct wcsprm *wcs, const float velocity, std::string outputUnits)
+double velToCoord(struct wcsprm *wcs, const float velocity, 
+		  std::string outputUnits)
 {
   /** 
    *   Convert the velocity given to the appropriate world coordinate for wcs.
    *   Does this by checking the ztype parameter in wcs to see if it is 
    *    FREQ or otherwise, and converts accordingly.
+   *
+   * \param wcs  The wcsprm struct containing the WCS information.
+   * \param velocity The input velocity.
+   * \param outputUnits The string containing the units of the input velocity.
+   * \return The WCS coordinate corresponding to the input velocity.
    */
 
   double scale, offset, power;
   int specIndex = wcs->spec;
-  int status = wcsunits( wcs->cunit[specIndex], outputUnits.c_str(), 
+  int status = wcsunits( outputUnits.c_str(), wcs->cunit[specIndex], 
 			 &scale, &offset, &power);
 
   if(status > 0){

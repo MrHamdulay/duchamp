@@ -1,3 +1,31 @@
+// -----------------------------------------------------------------------
+// linear_regression.cc: Performs linear regression on a set of (x,y)
+//                       values.
+// -----------------------------------------------------------------------
+// Copyright (C) 2006, Matthew Whiting, ATNF
+//
+// This program is free software; you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation; either version 2 of the License, or (at your
+// option) any later version.
+//
+// Duchamp is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+// for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Duchamp; if not, write to the Free Software Foundation,
+// Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA
+//
+// Correspondence concerning Duchamp may be directed to:
+//    Internet email: Matthew.Whiting [at] atnf.csiro.au
+//    Postal address: Dr. Matthew Whiting
+//                    Australia Telescope National Facility, CSIRO
+//                    PO Box 76
+//                    Epping NSW 1710
+//                    AUSTRALIA
+// -----------------------------------------------------------------------
 #include <iostream>
 #include <math.h>
 int linear_regression(int num, float *x, float *y, int ilow, int ihigh, float &slope, float &errSlope, float &intercept, float &errIntercept, float &r)
@@ -9,6 +37,7 @@ int linear_regression(int num, float *x, float *y, int ilow, int ihigh, float &s
    * to ihigh.  (ie. if the full arrays are being used, then ilow=0
    * and ihigh=num-1.  Returns the values of slope & intercept (with
    * errors) as well as r, the regression coefficient.
+   *
    * \param num Size of the x & y arrays.
    * \param x   Array of abscissae.
    * \param y   Array of ordinates.
