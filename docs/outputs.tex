@@ -1,3 +1,31 @@
+% -----------------------------------------------------------------------
+% outputs.tex: Section detailing the different forms of text- and
+%              plot-based output.
+% -----------------------------------------------------------------------
+% Copyright (C) 2006, Matthew Whiting, ATNF
+%
+% This program is free software; you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the
+% Free Software Foundation; either version 2 of the License, or (at your
+% option) any later version.
+%
+% Duchamp is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+% for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with Duchamp; if not, write to the Free Software Foundation,
+% Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA
+%
+% Correspondence concerning Duchamp may be directed to:
+%    Internet email: Matthew.Whiting [at] atnf.csiro.au
+%    Postal address: Dr. Matthew Whiting
+%                    Australia Telescope National Facility, CSIRO
+%                    PO Box 76
+%                    Epping NSW 1710
+%                    AUSTRALIA
+% -----------------------------------------------------------------------
 \secA{Outputs}
 \label{sec-output}
 
@@ -78,61 +106,67 @@ the details of the WCS projection: they are shown below for the
 Equatorial and Galactic projection cases).
 
 \begin{entry}
-\item[Obj\#] The ID number of the detection (simply the sequential
-  count for the list, which is ordered by increasing velocity, or
-  channel number, if the WCS is not good enough to find the velocity).
-\item[Name] The ``IAU''-format name of the detection (derived from the
+\item[\texttt{Obj\#}] The ID number of the detection (simply the
+  sequential count for the list, which is ordered by increasing
+  velocity, or channel number, if the WCS is not good enough to find
+  the velocity).
+\item[\texttt{Name}] The ``IAU''-format name of the detection (derived from the
   WCS position -- see below for a description of the format).
-\item[X,Y,Z] The ``centre'' pixel position, determined by the input
+\item[\texttt{X,Y,Z}] The ``centre'' pixel position, determined by the input
   parameter \texttt{pixelCentre}.
-\item[RA/GLON] The Right Ascension or Galactic Longitude of the centre
+\item[\texttt{RA/GLON}] The Right Ascension or Galactic Longitude of the centre
   of the object.
-\item[DEC/GLAT] The Declination or Galactic Latitude of the centre of
+\item[\texttt{DEC/GLAT}] The Declination or Galactic Latitude of the centre of
   the object.
-\item[VEL] The mean velocity of the object [units given by the
+\item[\texttt{VEL}] The mean velocity of the object [units given by the
   \texttt{spectralUnits} parameter].
-\item[w\_RA/w\_GLON] The width of the object in Right Ascension or
+\item[\texttt{w\_RA/w\_GLON}] The width of the object in Right Ascension or
   Galactic Longitude (depending on FITS coordinates) [arcmin].
-\item[w\_DEC/w\_GLAT] The width of the object in Declination Galactic
+\item[\texttt{w\_DEC/w\_GLAT}] The width of the object in Declination Galactic
   Latitude [arcmin].
-\item[w\_VEL] The full velocity width of the detection (max channel
+\item[\texttt{w\_VEL}] The full velocity width of the detection (max channel
   $-$ min channel, in velocity units [see note below]).
-\item[F\_int] The integrated flux over the object, in the units of
+\item[\texttt{F\_int}] The integrated flux over the object, in the units of
   flux times velocity, corrected for the beam if necessary.
-\item[F\_peak] The peak flux over the object, in the units of flux.
-\item[S/Nmax] The signal-to-noise ratio at the peak pixel.
-\item[X1, X2] The minimum and maximum X-pixel coordinates.
-\item[Y1, Y2] The minimum and maximum Y-pixel coordinates.
-\item[Z1, Z2] The minimum and maximum Z-pixel coordinates.
-\item[Npix] The number of voxels (\ie distinct $(x,y,z)$ coordinates)
+\item[\texttt{F\_tot}] The sum of the flux values of all detected voxels.
+\item[\texttt{F\_peak}] The peak flux over the object, in the units of flux.
+\item[\texttt{S/Nmax}] The signal-to-noise ratio at the peak pixel.
+\item[\texttt{X1, X2}] The minimum and maximum X-pixel coordinates.
+\item[\texttt{Y1, Y2}] The minimum and maximum Y-pixel coordinates.
+\item[\texttt{Z1, Z2}] The minimum and maximum Z-pixel coordinates.
+\item[\texttt{Npix}] The number of voxels (\ie distinct $(x,y,z)$ coordinates)
   in the detection.
-\item[Flag] Whether the detection has any warning flags (see below).
+\item[\texttt{Flag}] Whether the detection has any warning flags (see below).
 \end{entry}
 
-Note that the X, Y, Z columns depend on the \texttt{pixelCentre}
+Note that the \texttt{X, Y, Z} columns depend on the \texttt{pixelCentre}
 parameter. This is because there are three alternative ways of
 expressing the centre of a detection, which are all listed in the list
 of detections written to the output file. These alternatives are:
 \begin{entry}
-\item[X\_av, Y\_av, Z\_av] The average pixel value in each axis
-  direction \ie X\_av is the average of the $x$-values of all pixels
-  in the detection.
-\item[X\_cent, Y\_cent, Z\_cent] The centroid position, being the
-  flux-weighted average of the pixels.
-\item[X\_peak, Y\_peak, Z\_peak] The location of the pixel containing
-  the peak flux value.
+\item[\texttt{X\_av, Y\_av, Z\_av}] The average pixel value in each
+  axis direction \ie X\_av is the average of the $x$-values of all
+  pixels in the detection.
+\item[\texttt{X\_cent, Y\_cent, Z\_cent}] The centroid position, being
+  the flux-weighted average of the pixels.
+\item[\texttt{X\_peak, Y\_peak, Z\_peak}] The location of the pixel
+  containing the peak flux value.
 \end{entry}
+These are also written to the table in the output file, although not
+to the screen (as it would make the width of the table
+unwieldy). Similarly, the \texttt{F\_tot} column is only written to the output
+file, and not at run-time.
 
-The Name is derived from the WCS position. For instance, a source that
-is centred on the RA,Dec position 12$^h$53$^m$45$^s$,
+The \texttt{Name} is derived from the WCS position. For instance, a
+source that is centred on the RA,Dec position 12$^h$53$^m$45$^s$,
 -36$^\circ$24$'$12$''$ will be given the name J125345$-$362412, if the
 epoch is J2000, or the name B125345$-$362412 if it is B1950. An
 alternative form is used for Galactic coordinates: a source centred on
 the position ($l$,$b$) = (323.1245, 5.4567) will be called
 G323.124$+$05.457. If the WCS is not valid (\ie is not present or does
-not have all the necessary information), the Name, RA, DEC, VEL and
-related columns are not printed, but the pixel coordinates are still
-provided.
+not have all the necessary information), the \texttt{Name, RA, DEC,
+VEL} and related columns are not printed, but the pixel coordinates
+are still provided.
 
 The velocity units can be specified by the user, using the parameter
 \texttt{spectralUnits} (enter it as a single string with no
@@ -143,11 +177,10 @@ header, the \duchamp output will instead default to using Frequency,
 with units of MHz.
 
 If the WCS is absent or not sufficiently specified, then all columns
-from RA/GLON to w\_VEL will be left blank. Also, F\_int will be
-replaced with the more simple F\_tot -- the total flux in the
-detection, being the sum of all detected voxels.
+from \texttt{RA/GLON} to \texttt{w\_VEL} will be left blank. Also,
+\texttt{F\_int} will be replaced with the more simple \texttt{F\_tot}.
 
-The last column contains any warning flags, such as:
+The \texttt{Flag} column contains any warning flags, such as:
 \begin{itemize}
 \item \textbf{E} -- The detection is next to the spatial edge of the image,
 meaning either the limit of the pixels, or the limit of the non-BLANK
