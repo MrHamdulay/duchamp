@@ -215,6 +215,24 @@ std::string FitsHeader::getIAUName(double ra, double dec)
 
 void FitsHeader::fixUnits(Param &par)
 {
+  /**
+   *  Put the units for the FITS header into some sort of standard form.
+   *
+   *  We first get the desired spectral units from the Parameter set,
+   *  and then transform the spectral units of the wcsprm struct to
+   *  those units. If this doesn't work, we leave them as they are. If
+   *  they are blank, we make them SPC and give an error message --
+   *  this should hopefully NOT happen.
+   *
+   *  We also work out the units for the integrated flux. If there are
+   *  three axes, we just append the spectral units to the flux units
+   *  (removing "/beam" if it is present). If there are just two, we
+   *  simply keep it the same, removing the "/beam".
+   *
+   *  \param par The parameter set telling us what the desired
+   *             spectral units are.
+   */
+
   // define spectral units from the param set
   this->spectralUnits = par.getSpectralUnits();
 
@@ -236,7 +254,8 @@ void FitsHeader::fixUnits(Param &par)
       this->spectralUnits = this->wcs->cunit[this->wcs->spec];
       if(this->spectralUnits==""){
 	errmsg << "Spectral units not specified. "
-	       << "For data presentation, we will use dummy units of \"SPC\".\n"
+	       << "For data presentation, we will use dummy units of \"SPC\"."
+	       << "\n"
 	       << "Please report this occurence -- it should not happen now!"
 	       << "In the meantime, you may want to set the CUNIT"
 	       << this->wcs->spec + 1 <<" keyword to make this work.\n";
@@ -255,12 +274,14 @@ void FitsHeader::fixUnits(Param &par)
   //  by the spectral units.
   // Otherwise, just muliply by the spectral units.
   if(this->fluxUnits.size()>0){
+    
     if(this->fluxUnits.substr(this->fluxUnits.size()-5,
 			      this->fluxUnits.size()   ) == "/beam"){
-      this->intFluxUnits = this->fluxUnits.substr(0,this->fluxUnits.size()-5)
-	+" " +this->spectralUnits;
+      this->intFluxUnits = this->fluxUnits.substr(0,this->fluxUnits.size()-5);
     }
-    else this->intFluxUnits = this->fluxUnits + " " + this->spectralUnits;
+    else this->intFluxUnits = this->fluxUnits;
+
+    if(this->naxis>2) this->intFluxUnits += " " + this->spectralUnits;
   }
 
 }

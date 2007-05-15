@@ -1,3 +1,30 @@
+// -----------------------------------------------------------------------
+// columns.cc: Define a set of columns for Duchamp output.
+// -----------------------------------------------------------------------
+// Copyright (C) 2006, Matthew Whiting, ATNF
+//
+// This program is free software; you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation; either version 2 of the License, or (at your
+// option) any later version.
+//
+// Duchamp is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+// for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Duchamp; if not, write to the Free Software Foundation,
+// Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA
+//
+// Correspondence concerning Duchamp may be directed to:
+//    Internet email: Matthew.Whiting [at] atnf.csiro.au
+//    Postal address: Dr. Matthew Whiting
+//                    Australia Telescope National Facility, CSIRO
+//                    PO Box 76
+//                    Epping NSW 1710
+//                    AUSTRALIA
+// -----------------------------------------------------------------------
 #include <iostream>
 #include <sstream>
 
@@ -217,10 +244,11 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
       for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
 
       // Vel -- check width, title and units.
-      if(head.getNumAxes() > 2){
+//       if(head.getNumAxes() > 2){
 	if(head.WCS().restfrq == 0) // using frequency, not velocity
 	  newset[VEL].setName("FREQ");
-	newset[VEL].setUnits("[" + head.getSpectralUnits() + "]");
+	if(head.getSpectralUnits().size()>0)
+	  newset[VEL].setUnits("[" + head.getSpectralUnits() + "]");
 	tempwidth = newset[VEL].getUnits().size() + 1;
 	for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
 	
@@ -232,7 +260,7 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
 	  minval = pow(10, -1. * newset[VEL].getPrecision()+1); 
 	  if(val < minval) newset[VEL].upPrec();
 	}
-      }
+//       }
 
       // w_RA -- check width & title. leave units for the moment.
       tempwidth = newset[RA].getUnits().size() + 1;
@@ -259,10 +287,11 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
       }
 
       // w_Vel -- check width, title and units.
-      if(head.getNumAxes() > 2){
+//       if(head.getNumAxes() > 2){
 	if(head.WCS().restfrq == 0) // using frequency, not velocity
 	  newset[WVEL].setName("w_FREQ");
-	newset[WVEL].setUnits("[" + head.getSpectralUnits() + "]");
+	if(head.getSpectralUnits().size()>0)
+	  newset[WVEL].setUnits("[" + head.getSpectralUnits() + "]");
 	tempwidth = newset[WVEL].getUnits().size() + 1;
 	for(int i=newset[WVEL].getWidth();i<tempwidth;i++)newset[WVEL].widen();
 	val = objectList[obj].getVel();
@@ -286,7 +315,7 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
 	  minval = pow(10, -1. * newset[FINT].getPrecision()+1); 
 	  if(val < minval) newset[FINT].upPrec();
 	}
-      }
+//       }
     }
 
     // F_tot

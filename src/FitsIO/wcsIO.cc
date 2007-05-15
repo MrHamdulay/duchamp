@@ -59,7 +59,8 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
   status = 0;
   fits_hdr2str(fptr, noComments, NULL, nExc, &hdr, &nkeys, &status);
   if( status ){
-    duchampWarning("Cube Reader","Error whilst reading FITS header to string: ");
+    duchampWarning("Cube Reader",
+		   "Error whilst reading FITS header to string: ");
     fits_report_error(stderr, status);
     return FAILURE;
   }
@@ -72,11 +73,12 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
     fits_report_error(stderr, status);
   }
   
+  // Define a temporary, local version of the WCS
   struct wcsprm *localwcs;
   localwcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
   localwcs->flag=-1;
 
-  // Initialise the wcsprm structure
+  // Initialise this temporary wcsprm structure
   status = wcsini(true, numAxes, localwcs);
   if(status){
     std::stringstream errmsg;
@@ -86,7 +88,9 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
     return FAILURE;
   }
 
-  this->naxis = numAxes;
+  this->naxis=0;
+  for(int i=0;i<numAxes;i++)
+    if(dimAxes[i]>1) this->naxis++;
 
   int relax=1; // for wcspih -- admit all recognised informal WCS extensions
   int ctrl=2;  // for wcspih -- report each rejected card and its reason for
@@ -126,11 +130,11 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
       duchampWarning("Cube Reader",errmsg.str());
     }
 
-    if(localwcs->naxis>2){  // if there is a spectral axis
-
+    if(this->naxis>2){  // if there is a spectral axis
+      
       int index = localwcs->spec;
       std::string desiredType,specType = localwcs->ctype[index];
-// 	      << "  " << localwcs->ctype[localwcs->spec] << "\n";
+
       if(localwcs->restfrq != 0){
 	// Set the spectral axis to a standard specification: VELO-F2V
 	desiredType = duchampVelocityType;
