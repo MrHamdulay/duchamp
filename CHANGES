@@ -85,6 +85,10 @@ BUGFIXES:
 * Fixed bug (ticket #9) with the VOTable output, where the tags were
   not closing.
 
+* Fixed a bug that meant the integrated fluxes were not calculated
+  properly -- no allowance was made for the number of spatial
+  pixels. This should also work properly for 2D images now as well.
+
 * Fixed minor bug in calculating the flux threshold from the p-value
   threshold when the FDR method is used. This did not affect the
   actual thresholding, merely the quoted flux threshold in the results
