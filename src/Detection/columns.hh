@@ -162,9 +162,12 @@ namespace Column
 
   private:
     int width;          ///< How wide is the column (in ascii spaces)
-    int precision;      ///< What precision should be used to print the values? (If 0, the setprecision command is not used.)
-    std::string name;        ///< The title of the column
-    std::string units;       ///< The units that the values in the column are expressed in.
+    int precision;      ///< What precision should be used to print
+			///   the values? (If 0, the setprecision command
+			///   is not used.)
+    std::string name;   ///< The title of the column
+    std::string units;  ///< The units that the values in the column
+			///   are expressed in.
   };
 
   
