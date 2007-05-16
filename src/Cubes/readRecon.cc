@@ -90,7 +90,7 @@ int Cube::readReconCube()
       fits_file_exists(reconFile.c_str(),&exists,&status);
       if(exists<=0){
 	fits_report_error(stderr, status);
-	duchampWarning("readReconCube","ReconFile not present.\n");
+// 	duchampWarning("readReconCube","ReconFile not present.\n");
 	reconGood = false;
       }
 

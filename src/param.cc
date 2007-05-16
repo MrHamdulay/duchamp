@@ -745,17 +745,17 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<stringize(par.getFlagXOutput())     <<std::endl;
   if(par.getFlagATrous()){			       
     theStream<<std::setw(widthText)<<"Saving reconstructed cube?"           
-	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagoutputrecon]"
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagOutputRecon]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<stringize(par.getFlagOutputRecon())<<std::endl;
     theStream<<std::setw(widthText)<<"Saving residuals from reconstruction?"
-	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagoutputresid]"
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagOutputResid]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<stringize(par.getFlagOutputResid())<<std::endl;
   }						       
   if(par.getFlagSmooth()){			       
     theStream<<std::setw(widthText)<<"Saving smoothed cube?"           
-	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagoutputsmooth]"
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagOutputSmooth]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<stringize(par.getFlagOutputSmooth())<<std::endl;
   }						       

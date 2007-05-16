@@ -304,7 +304,8 @@ void Detection::calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head)
     long ysize = (this->getYmax()-this->getYmin()+3);
     long zsize = (this->getZmax()-this->getZmin()+3); 
     vector <bool> isObj(xsize*ysize*zsize,false);
-    vector <float> localFlux(xsize*ysize*zsize,0.);
+    double *localFlux = new double[xsize*ysize*zsize];
+    for(int i=0;i<xsize*ysize*zsize;i++) localFlux[i]=0.;
     // work out which pixels are object pixels
     for(int m=0; m<this->pixelArray.getNumChanMap(); m++){
       ChanMap tempmap = this->pixelArray.getChanMap(m);
@@ -332,24 +333,26 @@ void Detection::calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head)
       world[i] = head.pixToVel(xpt,ypt,zpt);
     }
 
-    this->intFlux = 0.;
+    double integrated = 0.;
     for(int pix=0; pix<xsize*ysize; pix++){ // loop over each spatial pixel.
       for(int z=0; z<zsize; z++){
 	int pos =  z*xsize*ysize + pix;
 	if(isObj[pos]){ // if it's an object pixel...
-	  float deltaVel;
+	  double deltaVel;
 	  if(z==0) 
 	    deltaVel = (world[pos+xsize*ysize] - world[pos]);
 	  else if(z==(zsize-1)) 
 	    deltaVel = (world[pos] - world[pos-xsize*ysize]);
 	  else 
 	    deltaVel = (world[pos+xsize*ysize] - world[pos-xsize*ysize]) / 2.;
-	  this->intFlux += localFlux[pos] * fabs(deltaVel);
+	  integrated += localFlux[pos] * absval(deltaVel);
 	}
       }
     }
+    this->intFlux = integrated;
 
     delete [] world;
+    delete [] localFlux;
 
   }
   else // in this case there is just a 2D image.

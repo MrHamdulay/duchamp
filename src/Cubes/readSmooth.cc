@@ -94,7 +94,7 @@ int Cube::readSmoothCube()
       fits_file_exists(smoothFile.c_str(),&exists,&status);
       if(exists<=0){
 	fits_report_error(stderr, status);
-	duchampWarning("readSmoothCube","SmoothFile not present.\n");
+// 	duchampWarning("readSmoothCube","SmoothFile not present.\n");
 	smoothGood = false;
       }
 
