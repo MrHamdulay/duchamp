@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-#include <Utils/utils.hh>
+#include <Devel/devel.hh>
 #define WCSLIB_GETWCSTAB // define this so that we don't try and redefine 
                          //  wtbarr (this is a problem when using gcc v.4+
 #include <fitsio.h>
@@ -161,7 +161,8 @@ void write_header_info(fitsfile *fptr)
   fits_write_key(fptr, TFLOAT,  "CDELT3", &val, "", &status);
   val = 0.;
   fits_write_key(fptr, TFLOAT,  "CROTA3", &val, "", &status);
-  val = 64.0;
+//   val = 64.0;
+  val = 0.0;
   fits_write_key(fptr, TFLOAT,  "CRPIX3", &val, "", &status);
   str = "M/S";
   fits_write_key(fptr, TSTRING, "CUNIT3", (char *)str.c_str(), "", &status);
