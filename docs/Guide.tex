@@ -71,18 +71,56 @@
 \newcommand{\atrous}{\textit{{\`a} trous}\xspace}
 \newcommand{\Atrous}{\textit{{\`A} trous}\xspace}
 \newcommand{\diff}{{\rm d}}
-\newcommand{\entrylabel}[1]{\mbox{\textsf{\bf{#1:}}}\hfil}
+\newcommand{\entrylabel}[1]{\mbox{\texttt{#1:}}\hfil}
 \newenvironment{entry}
         {\begin{list}{}%
                 {\renewcommand{\makelabel}{\entrylabel}%
-                        \setlength{\labelwidth}{30mm}%
-                        \setlength{\labelsep}{5pt}%
-                        \setlength{\itemsep}{2pt}%
+                        \setlength{\leftmargin}{33mm}%
+                        \setlength{\labelwidth}{33mm}%
+                        \setlength{\labelsep}{0pt}%
+                        \setlength{\itemsep}{3pt}%
                         \setlength{\parsep}{2pt}%
-                        \setlength{\leftmargin}{35mm}%
                 }%
         }%
 {\end{list}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newlength{\MyLen}
+\newcommand{\Lentrylabel}[1]{%
+  \settowidth{\MyLen}{\texttt{#1:}}%
+%  \setlength{\labelwidth}{30mm}%
+  \ifthenelse{\lengthtest{\MyLen > \labelwidth}}%
+    {\parbox[b]{\labelwidth}% term > labelwidth
+      {\makebox[0pt][l]{\texttt{#1:}}\\}}%
+    {\texttt{#1:}}% term < labelwidth
+    \hfil\relax}
+
+\newenvironment{Lentry}%
+	       {\renewcommand{\entrylabel}{\Lentrylabel}\begin{entry}
+%		   \setlength{\itemsep}{3pt}%
+%		   \setlength{\leftmargin}{25mm}%
+%                  \setlength{\itemindent}{0mm}%
+%                  \setlength{\listparindent}{0mm}%
+%                  \setlength{\labelsep}{0mm}%
+	       }%
+	       {\end{entry}%
+	       }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\Mentrylabel}[1]%
+	   {\raisebox{0pt}[1ex][0pt]{\makebox[\labelwidth][l]%
+	       {\parbox[t]{\labelwidth}{\hspace{0pt}\texttt{#1}}}}}
+\newenvironment{Mentry}
+	       {\renewcommand{\entrylabel}{\Mentrylabel}\begin{entry}%
+		   \setlength{\labelwidth}{33mm}%
+                   \setlength{\leftmargin}{35mm}%
+	       }%
+	       {\end{entry}%
+	       }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %%%%%%% FANCY HEADINGS %%%%%%%%%%
 %\usepackage{fancyheadings}

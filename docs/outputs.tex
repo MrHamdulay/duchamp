@@ -105,53 +105,53 @@ the title of the columns depending on WCS information will depend on
 the details of the WCS projection: they are shown below for the
 Equatorial and Galactic projection cases).
 
-\begin{entry}
-\item[\texttt{Obj\#}] The ID number of the detection (simply the
+\begin{Lentry}
+\item[{Obj\#}] The ID number of the detection (simply the
   sequential count for the list, which is ordered by increasing
   velocity, or channel number, if the WCS is not good enough to find
   the velocity).
-\item[\texttt{Name}] The ``IAU''-format name of the detection (derived from the
+\item[{Name}] The ``IAU''-format name of the detection (derived from the
   WCS position -- see below for a description of the format).
-\item[\texttt{X,Y,Z}] The ``centre'' pixel position, determined by the input
+\item[{X,Y,Z}] The ``centre'' pixel position, determined by the input
   parameter \texttt{pixelCentre}.
-\item[\texttt{RA/GLON}] The Right Ascension or Galactic Longitude of the centre
+\item[{RA/GLON}] The Right Ascension or Galactic Longitude of the centre
   of the object.
-\item[\texttt{DEC/GLAT}] The Declination or Galactic Latitude of the centre of
+\item[{DEC/GLAT}] The Declination or Galactic Latitude of the centre of
   the object.
-\item[\texttt{VEL}] The mean velocity of the object [units given by the
+\item[{VEL}] The mean velocity of the object [units given by the
   \texttt{spectralUnits} parameter].
-\item[\texttt{w\_RA/w\_GLON}] The width of the object in Right Ascension or
+\item[{w\_RA/w\_GLON}] The width of the object in Right Ascension or
   Galactic Longitude (depending on FITS coordinates) [arcmin].
-\item[\texttt{w\_DEC/w\_GLAT}] The width of the object in Declination Galactic
+\item[{w\_DEC/w\_GLAT}] The width of the object in Declination Galactic
   Latitude [arcmin].
-\item[\texttt{w\_VEL}] The full velocity width of the detection (max channel
+\item[{w\_VEL}] The full velocity width of the detection (max channel
   $-$ min channel, in velocity units [see note below]).
-\item[\texttt{F\_int}] The integrated flux over the object, in the units of
+\item[{F\_int}] The integrated flux over the object, in the units of
   flux times velocity, corrected for the beam if necessary.
-\item[\texttt{F\_tot}] The sum of the flux values of all detected voxels.
-\item[\texttt{F\_peak}] The peak flux over the object, in the units of flux.
-\item[\texttt{S/Nmax}] The signal-to-noise ratio at the peak pixel.
-\item[\texttt{X1, X2}] The minimum and maximum X-pixel coordinates.
-\item[\texttt{Y1, Y2}] The minimum and maximum Y-pixel coordinates.
-\item[\texttt{Z1, Z2}] The minimum and maximum Z-pixel coordinates.
-\item[\texttt{Npix}] The number of voxels (\ie distinct $(x,y,z)$ coordinates)
+\item[{F\_tot}] The sum of the flux values of all detected voxels.
+\item[{F\_peak}] The peak flux over the object, in the units of flux.
+\item[{S/Nmax}] The signal-to-noise ratio at the peak pixel.
+\item[{X1, X2}] The minimum and maximum X-pixel coordinates.
+\item[{Y1, Y2}] The minimum and maximum Y-pixel coordinates.
+\item[{Z1, Z2}] The minimum and maximum Z-pixel coordinates.
+\item[{Npix}] The number of voxels (\ie distinct $(x,y,z)$ coordinates)
   in the detection.
-\item[\texttt{Flag}] Whether the detection has any warning flags (see below).
-\end{entry}
+\item[{Flag}] Whether the detection has any warning flags (see below).
+\end{Lentry}
 
 Note that the \texttt{X, Y, Z} columns depend on the \texttt{pixelCentre}
 parameter. This is because there are three alternative ways of
 expressing the centre of a detection, which are all listed in the list
 of detections written to the output file. These alternatives are:
-\begin{entry}
-\item[\texttt{X\_av, Y\_av, Z\_av}] The average pixel value in each
+\begin{Lentry}
+\item[{X\_av, Y\_av, Z\_av}] The average pixel value in each
   axis direction \ie X\_av is the average of the $x$-values of all
   pixels in the detection.
-\item[\texttt{X\_cent, Y\_cent, Z\_cent}] The centroid position, being
+\item[{X\_cent, Y\_cent, Z\_cent}] The centroid position, being
   the flux-weighted average of the pixels.
-\item[\texttt{X\_peak, Y\_peak, Z\_peak}] The location of the pixel
+\item[{X\_peak, Y\_peak, Z\_peak}] The location of the pixel
   containing the peak flux value.
-\end{entry}
+\end{Lentry}
 These are also written to the table in the output file, although not
 to the screen (as it would make the width of the table
 unwieldy). Similarly, the \texttt{F\_tot} column is only written to the output
