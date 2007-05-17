@@ -149,11 +149,11 @@ DataArray::~DataArray()
 {
   /** 
    *  Destructor -- arrays deleted if they have been allocated, and the 
-   *   object list is cleared.
+   *   object list is deleted.
    */
   if(this->numPixels>0) delete [] this->array;
   if(this->numDim>0)    delete [] this->axisDim;
-  this->objectList->clear();
+  delete this->objectList;
 }
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
@@ -804,6 +804,8 @@ void Cube::setCubeStats()
       this->par.setThreshold( this->Stats.getThreshold() );
     }
     
+    delete [] mask;
+
   }
 
   if(this->par.isVerbose()){

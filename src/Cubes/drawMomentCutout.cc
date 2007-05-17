@@ -166,6 +166,8 @@ void Cube::drawMomentCutout(Detection &object)
 
     cpgsci(ci);
 
+    delete [] isGood;
+
   }
 
 }

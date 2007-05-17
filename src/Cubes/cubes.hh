@@ -141,7 +141,7 @@ public:
   /** Return the Param set.*/
   Param              getParam(){ return par; }; 
   /** Save a Param set to the Cube.*/
-  void               saveParam(Param newpar){par = newpar;};
+  void               saveParam(Param &newpar){par = newpar;};
   /** Provides a reference to the Param set.*/
   Param&             pars(){ Param &rpar = par; return rpar; }; 
   /** Is the voxel number given by vox a BLANK value?*/

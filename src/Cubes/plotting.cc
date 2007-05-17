@@ -466,6 +466,7 @@ void Cube::plotWCSaxes()
 	  nldprm, 256, &ic, cache, &ierr);
 
   wcsfree(tempwcs);
+  free(tempwcs);
 
   cpgsci(colour);
   cpgsch(size);

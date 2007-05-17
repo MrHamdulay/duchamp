@@ -62,8 +62,8 @@ void Cube::SmoothSearch()
 
     if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
   
-    *this->objectList = search3DArraySimple(this->axisDim,this->recon,
-					    this->par,this->Stats); 
+    *(this->objectList) = search3DArraySimple(this->axisDim,this->recon,
+					      this->par,this->Stats); 
  
     if(this->par.isVerbose()) std::cout << "  Updating detection map... " 
 					<< std::flush;

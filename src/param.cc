@@ -45,7 +45,22 @@
 ///////////////////////////////////////////////////
 //// Accessor Functions for Parameter class:
 ///////////////////////////////////////////////////
-Param::Param(){
+Param::~Param()
+{
+  /**
+   * Deletes the offsets array if the sizeOffsets parameter is
+   * positive.
+   */
+  if(this->sizeOffsets>0) delete [] this->offsets;
+}
+
+Param::Param()
+{
+  this->defaultValues();
+}
+
+void Param::defaultValues()
+{
   /** 
    * Provides default intial values for the parameters. Note that
    * imageFile has no default value!
@@ -183,10 +198,12 @@ Param::Param (const Param& p)
   this->borderRight       = p.borderRight;    
   this->borderBottom      = p.borderBottom;   
   this->borderTop         = p.borderTop;      
+  if(this->sizeOffsets>0) delete [] this->offsets;
   this->sizeOffsets       = p.sizeOffsets;
-  this->offsets           = new long[this->sizeOffsets];
-  if(this->sizeOffsets>0)
+  if(this->sizeOffsets>0){
+    this->offsets           = new long[this->sizeOffsets];
     for(int i=0;i<this->sizeOffsets;i++) this->offsets[i] = p.offsets[i];
+  }
   this->xSubOffset        = p.xSubOffset;     
   this->ySubOffset        = p.ySubOffset;     
   this->zSubOffset        = p.zSubOffset;
@@ -265,10 +282,12 @@ Param& Param::operator= (const Param& p)
   this->borderRight       = p.borderRight;    
   this->borderBottom      = p.borderBottom;   
   this->borderTop         = p.borderTop;      
+  if(this->sizeOffsets>0) delete [] this->offsets;
   this->sizeOffsets       = p.sizeOffsets;
-  this->offsets           = new long[this->sizeOffsets];
-  if(this->sizeOffsets>0)
+  if(this->sizeOffsets>0){
+    this->offsets           = new long[this->sizeOffsets];
     for(int i=0;i<this->sizeOffsets;i++) this->offsets[i] = p.offsets[i];
+  }
   this->xSubOffset        = p.xSubOffset;     
   this->ySubOffset        = p.ySubOffset;     
   this->zSubOffset        = p.zSubOffset;
@@ -327,9 +346,7 @@ int Param::getopts(int argc, char ** argv)
   else {
     std::string file;
     bool changeX = false;
-    Param *newpars = new Param;
-    *this = *newpars;
-    delete newpars;
+    this->defaultValues();
     char c;
     while( ( c = getopt(argc,argv,"p:f:hvx") )!=-1){
       switch(c) {

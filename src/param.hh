@@ -60,9 +60,12 @@ public:
   /** Assignment operator for Param.*/
   Param& operator= (const Param& p);
 
-  /** Destructor function. Deletes the offsets array if the
-      sizeOffsets parameter is positive. */
-  virtual ~Param(){if(sizeOffsets>0) delete [] offsets;};
+  /** Destructor function.  */
+  virtual ~Param();
+
+  /** Define the default values of each parameter.*/
+  void  defaultValues();
+
   //-----------------
   // Functions in param.cc
   //
@@ -98,6 +101,9 @@ public:
 
   /** Set the correct offset values for each axis */
   void   setOffsets(struct wcsprm *wcs);
+
+  /** Set the correct offset values for each axis */
+  void   setOffsets(struct wcsprm &wcs);
 
   //------------------
   // These are in param.cc

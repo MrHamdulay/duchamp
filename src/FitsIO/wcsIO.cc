@@ -226,7 +226,11 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
 
   }
 
+  // clean up allocated memory
   wcsvfree(&localnwcs,&localwcs);
+  wcsfree(localwcs);
+  free(localwcs);
+  free(hdr);
   delete [] dimAxes;
 
   // Get the brightness unit, so that we can set the units for the 

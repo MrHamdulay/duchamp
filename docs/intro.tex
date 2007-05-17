@@ -27,16 +27,21 @@
 % -----------------------------------------------------------------------
 \secA{Introduction and getting going quickly}
 
+\secB{About Duchamp}
+
 This document provides a user's guide to \duchamp, an object-finder
 for use on spectral-line data cubes. The basic execution of \duchamp
 is to read in a FITS data cube, find sources in the cube, and produce
 a text file of positions, velocities and fluxes of the detections, as
 well as a postscript file of the spectra of each detection.
 
-\duchamp searches fro groups of connected voxels (or pixels) that are
-all above some flux threshold. No assumption is made as to the shape
-of detections, and the only size constraints applied are those
-specified by the user.
+\duchamp has been designed to search for objects in particular sorts
+of data: those with relatively small, isolated objects in a large
+amount of background or noise. Examples of such data are extragalactic
+\hi surveys, or maser surveys. \duchamp searches for groups of
+connected voxels (or pixels) that are all above some flux
+threshold. No assumption is made as to the shape of detections, and
+the only size constraints applied are those specified by the user.
 
 \secB{What to do}
 

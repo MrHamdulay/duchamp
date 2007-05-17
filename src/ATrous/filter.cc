@@ -44,6 +44,7 @@ Filter::~Filter()
 {
   filter1D.clear();
   maxNumScales.clear();
+  //for(int i=0;i<3;i++) delete this->sigmaFactors[i];
   sigmaFactors.clear();
 }
 //-----------------------------------------------------------------------
