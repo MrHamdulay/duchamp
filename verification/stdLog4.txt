@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Wed May 16 14:39:04 2007
+New run of the Duchamp sourcefinder: Thu May 17 11:52:56 2007
 Executing statement : ./Duchamp -p verification/input4 
 
 ---- Parameters ----
@@ -7,7 +7,7 @@ Intermediate Logfile...........................[logFile]  =  verification/log4.t
 Final Results file.............................[outFile]  =  verification/results4.txt
 Spectrum file..............................[spectraFile]  =  verification/spectra4.ps
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
-Saving smoothed cube?.................[flagoutputsmooth]  =  false
+Saving smoothed cube?.................[flagOutputSmooth]  =  false
 ------
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false

@@ -1,4 +1,4 @@
-Results of the Duchamp source finder: Wed May 16 14:39:41 2007
+Results of the Duchamp source finder: Thu May 17 11:53:33 2007
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
@@ -6,8 +6,8 @@ Intermediate Logfile...........................[logFile]  =  verification/log3.t
 Final Results file.............................[outFile]  =  verification/results3.txt
 Spectrum file..............................[spectraFile]  =  verification/spectra3.ps
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
-Saving reconstructed cube?.............[flagoutputrecon]  =  false
-Saving residuals from reconstruction?..[flagoutputresid]  =  false
+Saving reconstructed cube?.............[flagOutputRecon]  =  false
+Saving residuals from reconstruction?..[flagOutputResid]  =  false
 ------
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false

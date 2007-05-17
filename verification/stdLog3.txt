@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Wed May 16 14:39:22 2007
+New run of the Duchamp sourcefinder: Thu May 17 11:53:14 2007
 Executing statement : ./Duchamp -p verification/input3 
 
 ---- Parameters ----
@@ -7,8 +7,8 @@ Intermediate Logfile...........................[logFile]  =  verification/log3.t
 Final Results file.............................[outFile]  =  verification/results3.txt
 Spectrum file..............................[spectraFile]  =  verification/spectra3.ps
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
-Saving reconstructed cube?.............[flagoutputrecon]  =  false
-Saving residuals from reconstruction?..[flagoutputresid]  =  false
+Saving reconstructed cube?.............[flagOutputRecon]  =  false
+Saving residuals from reconstruction?..[flagOutputResid]  =  false
 ------
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false
