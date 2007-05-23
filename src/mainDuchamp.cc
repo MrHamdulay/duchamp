@@ -180,9 +180,10 @@ int main(int argc, char * argv[])
     cube->setObjectFlags();
     
     cube->sortDetections();
-    
-    cube->outputDetectionList();
   }
+  
+  cube->outputDetectionList();
+
 
   std::cout<<"Creating the maps...  "<<std::flush;
   std::vector<std::string> devices;

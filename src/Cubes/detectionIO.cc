@@ -432,12 +432,14 @@ void Cube::outputDetectionList()
   std::ofstream output(this->par.getOutFile().c_str(),std::ios::app);
   output<<"Total number of detections = "<<this->objectList->size()<<endl;
   output<<"--------------------\n";
-  this->setupColumns();
-  this->objectList->at(0).outputDetectionTextHeaderFull(output,this->fullCols);
-  this->objectList->at(0).outputDetectionTextHeader(std::cout,this->fullCols);
-  for(int i=0;i<this->objectList->size();i++){
-    this->objectList->at(i).outputDetectionTextWCSFull(output,this->fullCols);
-    this->objectList->at(i).outputDetectionTextWCS(std::cout,this->fullCols);
+  if(this->objectList->size()>0){
+    this->setupColumns();
+    this->objectList->at(0).outputDetectionTextHeaderFull(output,this->fullCols);
+    this->objectList->at(0).outputDetectionTextHeader(std::cout,this->fullCols);
+    for(int i=0;i<this->objectList->size();i++){
+      this->objectList->at(i).outputDetectionTextWCSFull(output,this->fullCols);
+      this->objectList->at(i).outputDetectionTextWCS(std::cout,this->fullCols);
+    }
   }
 
   output.close();
