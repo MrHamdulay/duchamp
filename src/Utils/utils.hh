@@ -69,23 +69,6 @@ template <class T> void findAllStats(T *array, int size, bool *mask,
 				     T &median, T &madfm);
 
 
-//--------------------
-// PLOTTING ROUTINES
-//--------------------
-// The following are in plottingUtilities.cc
-//
-void plotLine(const float slope, const float intercept);
-void lineOfEquality();
-void lineOfBestFit(int size, float *x, float *y);
-void lineOfBestFitPB(const int size, const float *x, const float *y);
-void plotVertLine(const float xval, const int colour, const int style);
-void plotVertLine(const float xval);
-void plotVertLine(const float xval, const int colour);
-void plotHorizLine(const float yval, const int colour, const int style);
-void plotHorizLine(const float yval);
-void plotHorizLine(const float yval, const int colour);
-void drawContours(const int size, const float *x, const float *y);
-
 // POSITION-RELATED ROUTINES
 std::string getIAUNameEQ(double ra, double dec, float equinox);
 std::string getIAUNameGAL(double ra, double dec);

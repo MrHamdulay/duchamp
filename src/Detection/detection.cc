@@ -345,7 +345,7 @@ void Detection::calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head)
 	    deltaVel = (world[pos] - world[pos-xsize*ysize]);
 	  else 
 	    deltaVel = (world[pos+xsize*ysize] - world[pos-xsize*ysize]) / 2.;
-	  integrated += localFlux[pos] * absval(deltaVel);
+	  integrated += localFlux[pos] * fabs(deltaVel);
 	}
       }
     }

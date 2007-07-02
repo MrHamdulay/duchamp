@@ -71,7 +71,7 @@ void spectralSelection(std::vector<float> &xvalues,
     cube->saveParam(par);
     cube->getCube();
     zdim = cube->getDimZ();
-//     if(par.getFlagMW()) cube->removeMW();
+    //     if(par.getFlagMW()) cube->removeMW();
     zdim = cube->getDimZ();
 
     long xpos,ypos;

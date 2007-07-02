@@ -239,6 +239,16 @@ int main(int argc, char * argv[])
     karmafile.close();
   }
 
+  if(cube->pars().getFlagLog()){
+    // Open the logfile and write the time on the first line
+    std::ofstream logfile(cube->pars().getLogFile().c_str(),std::ios::app);
+    logfile << "Duchamp completed: ";
+    time_t now = time(NULL);
+    logfile << asctime( localtime(&now) );
+    logfile.close();
+  }
+
+
   delete cube;
 
   return SUCCESS;

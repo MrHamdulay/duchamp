@@ -212,8 +212,8 @@ public:
   float       getZAverage(){return pixelArray.getZcentre();};
   float       getTotalFlux(){return totalFlux;};
   void        setTotalFlux(float f){totalFlux=f;};
-  float       getIntegFlux(){return intFlux;};
-  void        setIntegFlux(float f){intFlux=f;};
+  double      getIntegFlux(){return intFlux;};
+  void        setIntegFlux(double f){intFlux=f;};
   float       getPeakFlux(){return peakFlux;};
   void        setPeakFlux(float f){peakFlux=f;};
   long        getXPeak(){return xpeak;};
@@ -280,7 +280,7 @@ private:
   long           zSubOffset;     ///< The z-offset, from subsectioned cube
   // Flux related
   float          totalFlux;      ///< sum of the fluxes of all the pixels
-  float          intFlux;        ///< integrated flux : involves
+  double         intFlux;        ///< integrated flux : involves
 				 ///    integration over velocity.
   float          peakFlux;       ///< maximum flux over all the pixels
   long           xpeak;          ///< x-pixel location of peak flux
