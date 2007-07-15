@@ -130,7 +130,9 @@ void Cube::drawMomentCutout(Detection &object)
     float tr[6] = {xmin-1,1.,0.,ymin-1,0.,1.};
 
     cpgswin(xmin-0.5,xmax-0.5,ymin-0.5,ymax-0.5);
-    cpggray(image, size, size, 1, size, 1, size, z1, z2, tr);
+//     cpggray(image, size, size, 1, size, 1, size, z1, z2, tr);
+    cpggray(image, size, size, 1, size, 1, size, z2, z1, tr);
+    cpgbox("bc",0,0,"bc",0,0);
 
     delete [] image;
 
