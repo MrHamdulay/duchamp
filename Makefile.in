@@ -55,7 +55,7 @@ HEADS = $(BASE)/duchamp.hh\
 	$(UTILDIR)/feedback.hh\
 	$(UTILDIR)/mycpgplot.hh
 
-OBJECTS = $(BASE)/mainDuchamp.o \
+OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(BASE)/duchamp.o\
 	$(BASE)/param.o\
 	$(BASE)/fitsHeader.o\
@@ -80,17 +80,12 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(DETECTIONDIR)/spectrumDetect.o\
 	$(CUBESDIR)/cubes.o\
 	$(CUBESDIR)/cubes_extended.o\
-	$(CUBESDIR)/plots.o\
 	$(CUBESDIR)/baseline.o\
 	$(CUBESDIR)/CubicSearch.o\
 	$(CUBESDIR)/detectionIO.o\
-	$(CUBESDIR)/drawMomentCutout.o\
-	$(CUBESDIR)/drawBlankEdges.o\
 	$(CUBESDIR)/getImage.o\
 	$(CUBESDIR)/invertCube.o\
 	$(CUBESDIR)/Merger.o\
-	$(CUBESDIR)/outputSpectra.o\
-	$(CUBESDIR)/plotting.o\
 	$(CUBESDIR)/readRecon.o\
 	$(CUBESDIR)/readSmooth.o\
 	$(CUBESDIR)/saveImage.o\
@@ -107,11 +102,23 @@ OBJECTS = $(BASE)/mainDuchamp.o \
 	$(UTILDIR)/Hanning.o\
 	$(UTILDIR)/getStats.o\
 	$(UTILDIR)/linear_regression.o\
-	$(UTILDIR)/pgplot_related.o\
 	$(UTILDIR)/position_related.o\
 	$(UTILDIR)/sort.o\
 	$(UTILDIR)/wcsFunctions.o\
 	$(UTILDIR)/zscale.o
+
+ifeq ($(strip $(PGPLOTLIB)),)
+  OBJECTS = $(OBJECTS-NOPG)
+else
+  OBJECTS = $(OBJECTS-NOPG)\
+	$(CUBESDIR)/drawBlankEdges.o\
+	$(CUBESDIR)/drawMomentCutout.o\
+	$(CUBESDIR)/outputSpectra.o\
+	$(CUBESDIR)/plotting.o\
+	$(UTILSDIR)/mycpgplot.o\
+	$(CUBESDIR)/plots.o\
+	$(UTILSDIR)/pgplot_related.o
+endif
 
 duchamp : $(OBJECTS)
 	$(CXX) -o $(INSTALLDIR)/$(EXEC) $(OBJECTS) $(LIBS)
