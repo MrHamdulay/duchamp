@@ -453,13 +453,13 @@ void Cube::plotWCSaxes()
 
   //Colour indices used by cpgsbox: make it all the same colour for thin 
   // line case.
-  ci[0] = DUCHAMP_ID_TEXT_COLOUR; // grid lines, coord 1
-  ci[1] = DUCHAMP_ID_TEXT_COLOUR; // grid lines, coord 2
-  ci[2] = DUCHAMP_ID_TEXT_COLOUR; // numeric labels, coord 1
-  ci[3] = DUCHAMP_ID_TEXT_COLOUR; // numeric labels, coord 2
-  ci[4] = DUCHAMP_ID_TEXT_COLOUR; // axis annotation, coord 1
-  ci[5] = DUCHAMP_ID_TEXT_COLOUR; // axis annotation, coord 2
-  ci[6] = DUCHAMP_ID_TEXT_COLOUR; // title
+  ci[0] = DUCHAMP_WCS_AXIS_COLOUR; // grid lines, coord 1
+  ci[1] = DUCHAMP_WCS_AXIS_COLOUR; // grid lines, coord 2
+  ci[2] = DUCHAMP_WCS_AXIS_COLOUR; // numeric labels, coord 1
+  ci[3] = DUCHAMP_WCS_AXIS_COLOUR; // numeric labels, coord 2
+  ci[4] = DUCHAMP_WCS_AXIS_COLOUR; // axis annotation, coord 1
+  ci[5] = DUCHAMP_WCS_AXIS_COLOUR; // axis annotation, coord 2
+  ci[6] = DUCHAMP_WCS_AXIS_COLOUR; // title
 
   cpgsbox(blc, trc, idents, opt, 2100, 0, ci, gcode, 0.0, 0, grid1, 0, grid2,
 	  0, pgwcsl_, 1, WCSLEN, 1, nlcprm, (int *)tempwcs, 

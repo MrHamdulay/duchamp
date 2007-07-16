@@ -30,7 +30,7 @@
 
 #include <iostream>
 #include <string>
-#include <mycpgplot.hh>
+#include <Utils/mycpgplot.hh>
 
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_NAME
@@ -100,7 +100,7 @@ const int DUCHAMP_TICKMARK_COLOUR = mycpgplot::RED;
 /** The colour for the text identifying objects on the maps */
 const int DUCHAMP_ID_TEXT_COLOUR = mycpgplot::RED;
 /** The colour for the WCS axes on the maps */
-const int DUCHAMP_ID_TEXT_COLOUR = mycpgplot::WCSGREEN;
+const int DUCHAMP_WCS_AXIS_COLOUR = mycpgplot::WCSGREEN;
 
 // The following are the FITS Header Keywords corresponding to the
 // parameters related to the atrous reconstruction.

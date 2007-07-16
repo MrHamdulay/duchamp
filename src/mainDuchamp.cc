@@ -28,16 +28,13 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-// #ifdef HAVE_PGPLOT 
-// #include <cpgplot.h>
-// #endif
-#include <pgheader.hh>
 #include <math.h>
 #include <unistd.h>
 #include <time.h>
 
 #include <duchamp.hh>
 #include <param.hh>
+#include <pgheader.hh>
 #include <Detection/detection.hh>
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>

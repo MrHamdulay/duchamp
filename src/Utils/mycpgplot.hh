@@ -30,30 +30,6 @@
 #define MYCPGPLOT_H
 #include <string>
 
-#ifdef HAVE_PGPLOT
-
-#include <cpgplot.h>
-
-// The following are in pgplot_related.c
-//
-/** Is a PGPLOT device open? */
-extern "C" int  cpgtest();
-
-/** Is a PGPLOT device a postscript (hardcopy) device? */ 
-extern "C" int  cpgIsPS(); 
-
-/** Do a logarithmic-scaled wedge, as in PGWEDG */
-extern "C" void cpgwedglog(const char* side, float disp, float width, 
-			   float fg, float bg, const char *label);
-
-/** Do CPGHIST but with the y-axis logarithmic */
-extern "C" void cpghistlog(int npts, float *data, float datamin, 
-			   float datamax, int nbin, int pgflag);
-
-/** Do a PGPLOT cumulative distribution */
-extern "C" void cpgcumul(int npts, float *data, float datamin, 
-			 float datamax, int pgflag);
-
 //--------------------
 /**
  * A namespace that holds definitions and basic functions to aid the
@@ -70,21 +46,6 @@ namespace mycpgplot
 
   /** Enumerated colour names for the inverse case, such as for /xs devices.*/
   enum INVERSE {XS_BLACK, XS_WHITE};
-
-  /** A front-end to the cpgopen function, with other necessary definitions.*/
-  int mycpgopen(std::string device);
-
-  /** Define the DARKGREEN colour, with RGB value of (0,0.7,0).*/
-  inline void setDarkGreen();
-
-  /** Define the WCSGREEN colour, with RGB value of (0.3,0.5,0.3). */
-  inline void setWCSGreen();
-
-  /** A device-independent way to set the colour to white. */
-  inline void setWhite();
-
-  /** A device-independent way to set the colour to black. */
-  inline void setBlack();
 
   /** Enumerated PGPLOT line styles. */
   enum LINESTYLE {FULL=1, DASHED, DASHDOT, DOTTED, DASHDOT3};
@@ -111,9 +72,68 @@ namespace mycpgplot
 
 }
 
-#else // from ifdef HAVE_PGPLOT
+//////////////////////
 
-namespace mycpgplot {};
+#ifdef HAVE_PGPLOT
+
+#include <cpgplot.h>
+
+// The following are in pgplot_related.c
+//
+/** Is a PGPLOT device open? */
+extern "C" int  cpgtest();
+
+/** Is a PGPLOT device a postscript (hardcopy) device? */ 
+extern "C" int  cpgIsPS(); 
+
+/** Do a logarithmic-scaled wedge, as in PGWEDG */
+extern "C" void cpgwedglog(const char* side, float disp, float width, 
+			   float fg, float bg, const char *label);
+
+/** Do CPGHIST but with the y-axis logarithmic */
+extern "C" void cpghistlog(int npts, float *data, float datamin, 
+			   float datamax, int nbin, int pgflag);
+
+/** Do a PGPLOT cumulative distribution */
+extern "C" void cpgcumul(int npts, float *data, float datamin, 
+			 float datamax, int pgflag);
+
+namespace mycpgplot {
+
+  /** A front-end to the cpgopen function, with other necessary definitions.*/
+  int mycpgopen(std::string device);
+
+  /** Define the DARKGREEN colour, with RGB value of (0,0.7,0).*/
+  inline void setDarkGreen();
+
+  /** Define the WCSGREEN colour, with RGB value of (0.3,0.5,0.3). */
+  inline void setWCSGreen();
+
+  /** A device-independent way to set the colour to white. */
+  inline void setWhite();
+
+  /** A device-independent way to set the colour to black. */
+  inline void setBlack();
+
+}
+
+#else // from ifdef HAVE_PGPLOT
+// PGPLOT has not been defined.
+// extern "C" int  cpgtest(){return 0;};
+// extern "C" int  cpgIsPS(){return 0;}; 
+// extern "C" void cpgwedglog(const char* side, float disp, float width, 
+// 			   float fg, float bg, const char *label){ };
+// extern "C" void cpghistlog(int npts, float *data, float datamin, 
+// 			   float datamax, int nbin, int pgflag){ };
+// extern "C" void cpgcumul(int npts, float *data, float datamin, 
+// 			 float datamax, int pgflag){ };
+// namespace mycpgplot {
+//   int mycpgopen(std::string device){return 0;};
+//   inline void setDarkGreen(){ };
+//   inline void setWCSGreen(){ };
+//   inline void setWhite(){ };
+//   inline void setBlack(){ };
+// }
 
 #endif // from ifdef HAVE_PGPLOT
 
