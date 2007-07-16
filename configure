@@ -4699,11 +4699,7 @@ if test "x$PGPLOTLIB" = x; then
 echo "$as_me:
      WARNING! PGPLOT could not be found.
      Compiling Duchamp without graphics capabilities." >&6;}
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_PGPLOT 0
-_ACEOF
-
+#  AC_DEFINE([HAVE_PGPLOT], [0], [Define to 1 if PGPLOT is available.])
 else
   { echo "$as_me:$LINENO: PGPLOT appears to be available." >&5
 echo "$as_me: PGPLOT appears to be available." >&6;}
