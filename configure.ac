@@ -109,12 +109,16 @@ AC_CHECK_LIB([cpgplot], [cpgopen],   [PGPLOTLIB="-lcpgplot $PGPLOTLIB"],
              [PGPLOTLIB=], [$PGPLOTLIB $LIBS])
 
 if test "x$PGPLOTLIB" = x; then
-  AC_MSG_ERROR([
-    -------------------------------------------------------
-    Could not find the PGPLOT library.
-
-    ERROR: Duchamp configuration failure.
-    -------------------------------------------------------], [1])
+#  AC_MSG_ERROR([
+#    -------------------------------------------------------
+#    Could not find the PGPLOT library.
+#
+#    ERROR: Duchamp configuration failure.
+#    -------------------------------------------------------], [1])
+  AC_MSG_NOTICE([
+     WARNING! PGPLOT could not be found.
+     Compiling Duchamp without graphics capabilities.])               
+  AC_DEFINE([HAVE_PGPLOT], [0], [Define to 1 if PGPLOT is available.])
 else
   AC_MSG_NOTICE([PGPLOT appears to be available.])
   AC_DEFINE([HAVE_PGPLOT], [1], [Define to 1 if PGPLOT is available.])

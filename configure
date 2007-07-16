@@ -4687,19 +4687,23 @@ fi
 
 
 if test "x$PGPLOTLIB" = x; then
-  { { echo "$as_me:$LINENO: error:
-    -------------------------------------------------------
-    Could not find the PGPLOT library.
+#  AC_MSG_ERROR([
+#    -------------------------------------------------------
+#    Could not find the PGPLOT library.
+#
+#    ERROR: Duchamp configuration failure.
+#    -------------------------------------------------------], [1])
+  { echo "$as_me:$LINENO:
+     WARNING! PGPLOT could not be found.
+     Compiling Duchamp without graphics capabilities." >&5
+echo "$as_me:
+     WARNING! PGPLOT could not be found.
+     Compiling Duchamp without graphics capabilities." >&6;}
 
-    ERROR: Duchamp configuration failure.
-    -------------------------------------------------------" >&5
-echo "$as_me: error:
-    -------------------------------------------------------
-    Could not find the PGPLOT library.
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_PGPLOT 0
+_ACEOF
 
-    ERROR: Duchamp configuration failure.
-    -------------------------------------------------------" >&2;}
-   { (exit 1); exit 1; }; }
 else
   { echo "$as_me:$LINENO: PGPLOT appears to be available." >&5
 echo "$as_me: PGPLOT appears to be available." >&6;}

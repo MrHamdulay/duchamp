@@ -28,7 +28,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <cpgplot.h>
+// #ifdef HAVE_PGPLOT 
+// #include <cpgplot.h>
+// #endif
+#include <pgheader.hh>
 #include <math.h>
 #include <unistd.h>
 #include <time.h>
@@ -184,27 +187,30 @@ int main(int argc, char * argv[])
   
   cube->outputDetectionList();
 
-
-  std::cout<<"Creating the maps...  "<<std::flush;
-  std::vector<std::string> devices;
-  if(cube->pars().getFlagXOutput()) devices.push_back("/xs");
-  if(cube->pars().getFlagMaps()) 
-    devices.push_back(cube->pars().getMomentMap()+"/vcps");
-  cube->plotMomentMap(devices);
-  if(cube->pars().getFlagMaps())
-    cube->plotDetectionMap(cube->pars().getDetectionMap()+"/vcps");
-  std::cout << "Done.\n";
-
-  if((cube->getDimZ()>1) && (cube->getNumObj()>0)){
-    std::cout << "Plotting the individual spectra... " << std::flush;
-    cube->outputSpectra();
+  if(USE_PGPLOT){
+    std::cout<<"Creating the maps...  "<<std::flush;
+    std::vector<std::string> devices;
+    if(cube->pars().getFlagXOutput()) devices.push_back("/xs");
+    if(cube->pars().getFlagMaps()) 
+      devices.push_back(cube->pars().getMomentMap()+"/vcps");
+    cube->plotMomentMap(devices);
+    if(cube->pars().getFlagMaps())
+      cube->plotDetectionMap(cube->pars().getDetectionMap()+"/vcps");
     std::cout << "Done.\n";
+    
+    if((cube->getDimZ()>1) && (cube->getNumObj()>0)){
+      std::cout << "Plotting the individual spectra... " << std::flush;
+      cube->outputSpectra();
+      std::cout << "Done.\n";
+    }
+    else if(cube->getDimZ()<=1) 
+      duchampWarning("Duchamp",
+		     "Not plotting any spectra : no third dimension.\n");
   }
-  else if(cube->getDimZ()<=1) 
-    duchampWarning("Duchamp",
-		   "Not plotting any spectra : no third dimension.\n");
-
-  cpgend();
+  else{
+    std::cout << "PGPLOT has not been enabled, so no graphical output.\n";
+  }
+  endPGPLOT();
 
   if(cube->pars().getFlagATrous()&&
      (cube->pars().getFlagOutputRecon()||cube->pars().getFlagOutputResid()) ){
