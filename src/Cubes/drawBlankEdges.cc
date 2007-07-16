@@ -54,6 +54,10 @@ void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par)
       duchampError("Draw Blank Edges","There is no PGPlot device open!\n");
     else{
 
+      int colour;
+      cpgqci(&colour);
+      cpgsci(DUCHAMP_BLANK_EDGE_COLOUR);
+
       float xoff,x2,yoff,y2;
       cpgqwin(&xoff,&x2,&yoff,&y2);
 
@@ -85,7 +89,9 @@ void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par)
       }
 
       delete [] blank;
-      
+     
+      cpgsci(colour);
+ 
     }
 
   

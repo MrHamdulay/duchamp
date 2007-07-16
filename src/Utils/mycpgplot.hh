@@ -29,6 +29,9 @@
 #ifndef MYCPGPLOT_H
 #define MYCPGPLOT_H
 #include <string>
+
+#ifdef HAVE_PGPLOT
+
 #include <cpgplot.h>
 
 // The following are in pgplot_related.c
@@ -62,39 +65,26 @@ namespace mycpgplot
   /** Enumerated PGPLOT colour names. */
   enum COLOUR {BACKGND=0, FOREGND, RED, GREEN, BLUE, CYAN, 
 	       MAGENTA, YELLOW, ORANGE, GREENYELLOW, GREENCYAN, BLUECYAN, 
-	       BLUEMAGENTA, REDMAGENTA, DARKGREY, LIGHTGREY, DARKGREEN};
+	       BLUEMAGENTA, REDMAGENTA, DARKGREY, LIGHTGREY, DARKGREEN,
+	       WCSGREEN};
 
   /** Enumerated colour names for the inverse case, such as for /xs devices.*/
   enum INVERSE {XS_BLACK, XS_WHITE};
 
-  /** 
-   * Define the DARKGREEN colour, with RGB value of (0,0.7,0).
-   */
-  inline void setDarkGreen(){cpgscr(DARKGREEN,0.,0.7,0.);};
+  /** A front-end to the cpgopen function, with other necessary definitions.*/
+  int mycpgopen(std::string device);
 
-  /**
-   * A device independent way to set the colour to white.
-   *
-   * Uses cpgIsPS() to determine whether a device is a postscript
-   * one. If so, we use the BACKGND colour (ie. 0), otherwise use
-   * FOREGND (1).
-   */
-  inline void setWhite(){
-    if(cpgIsPS()) cpgsci(BACKGND);
-    else cpgsci(FOREGND);
-  };
+  /** Define the DARKGREEN colour, with RGB value of (0,0.7,0).*/
+  inline void setDarkGreen();
 
-  /**
-   * A device independent way to set the colour to black.
-   *
-   * Uses cpgIsPS() to determine whether a device is a postscript
-   * one. If so, we use the FOREGND colour (ie. 1), otherwise use
-   * BACKGND (0).
-   */
-  inline void setBlack(){
-    if(cpgIsPS()) cpgsci(FOREGND);
-    else cpgsci(BACKGND);
-  };
+  /** Define the WCSGREEN colour, with RGB value of (0.3,0.5,0.3). */
+  inline void setWCSGreen();
+
+  /** A device-independent way to set the colour to white. */
+  inline void setWhite();
+
+  /** A device-independent way to set the colour to black. */
+  inline void setBlack();
 
   /** Enumerated PGPLOT line styles. */
   enum LINESTYLE {FULL=1, DASHED, DASHDOT, DOTTED, DASHDOT3};
@@ -121,5 +111,10 @@ namespace mycpgplot
 
 }
 
+#else // from ifdef HAVE_PGPLOT
+
+namespace mycpgplot {};
+
+#endif // from ifdef HAVE_PGPLOT
 
 #endif

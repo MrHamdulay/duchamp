@@ -226,12 +226,12 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   plot.gotoMainSpectrum(vmin,vmax,min,max,fluxLabel);
   cpgline(zdim,specx,specy);
   if(this->par.getFlagBaseline()){
-    cpgsci(YELLOW);
+    cpgsci(DUCHAMP_BASELINE_SPECTRA_COLOUR);
     cpgline(zdim,specx,base);
     cpgsci(FOREGND);
   }
   if(this->reconExists){
-    cpgsci(RED);
+    cpgsci(DUCHAMP_RECON_SPECTRA_COLOUR);
     cpgline(zdim,specx,specy2);    
     cpgsci(FOREGND);
   }
@@ -265,12 +265,12 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   plot.gotoZoomSpectrum(minvel,maxvel,min,max);
   cpgline(zdim,specx,specy);
   if(this->par.getFlagBaseline()){
-    cpgsci(YELLOW);
+    cpgsci(DUCHAMP_BASELINE_SPECTRA_COLOUR);
     cpgline(zdim,specx,base);
     cpgsci(FOREGND);
   }
   if(this->reconExists){
-    cpgsci(RED);
+    cpgsci(DUCHAMP_RECON_SPECTRA_COLOUR);
     cpgline(zdim,specx,specy2);    
     cpgsci(FOREGND);
   }

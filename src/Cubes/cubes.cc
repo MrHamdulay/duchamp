@@ -929,62 +929,62 @@ void Cube::setupFDR(float *input)
 			    this->Stats.getMiddle() );
 
   ///////////////////////////
-  if(TESTING){
-    std::stringstream ss;
-    float *xplot = new float[2*max];
-    for(int i=0;i<2*max;i++) xplot[i]=float(i)/float(count);
-    cpgopen("latestFDR.ps/vcps");
-    cpgpap(8.,1.);
-    cpgslw(3);
-    cpgenv(0,float(2*max)/float(count),0,orderedP[2*max],0,0);
-    cpglab("i/N (index)", "p-value","");
-    cpgpt(2*max,xplot,orderedP,DOT);
+//   if(TESTING){
+//     std::stringstream ss;
+//     float *xplot = new float[2*max];
+//     for(int i=0;i<2*max;i++) xplot[i]=float(i)/float(count);
+//     cpgopen("latestFDR.ps/vcps");
+//     cpgpap(8.,1.);
+//     cpgslw(3);
+//     cpgenv(0,float(2*max)/float(count),0,orderedP[2*max],0,0);
+//     cpglab("i/N (index)", "p-value","");
+//     cpgpt(2*max,xplot,orderedP,DOT);
 
-    ss.str("");
-    ss << "\\gm = " << this->Stats.getMiddle();
-    cpgtext(max/(4.*count),0.9*orderedP[2*max],ss.str().c_str());
-    ss.str("");
-    ss << "\\gs = " << this->Stats.getSpread();
-    cpgtext(max/(4.*count),0.85*orderedP[2*max],ss.str().c_str());
-    ss.str("");
-    ss << "Slope = " << slope;
-    cpgtext(max/(4.*count),0.8*orderedP[2*max],ss.str().c_str());
-    ss.str("");
-    ss << "Alpha = " << this->par.getAlpha();
-    cpgtext(max/(4.*count),0.75*orderedP[2*max],ss.str().c_str());
-    ss.str("");
-    ss << "c\\dN\\u = " << cN;
-    cpgtext(max/(4.*count),0.7*orderedP[2*max],ss.str().c_str());
-    ss.str("");
-    ss << "max = "<<max << " (out of " << count << ")";
-    cpgtext(max/(4.*count),0.65*orderedP[2*max],ss.str().c_str());
-    ss.str("");
-    ss << "Threshold = "<<zStat*this->Stats.getSpread()+this->Stats.getMiddle();
-    cpgtext(max/(4.*count),0.6*orderedP[2*max],ss.str().c_str());
+//     ss.str("");
+//     ss << "\\gm = " << this->Stats.getMiddle();
+//     cpgtext(max/(4.*count),0.9*orderedP[2*max],ss.str().c_str());
+//     ss.str("");
+//     ss << "\\gs = " << this->Stats.getSpread();
+//     cpgtext(max/(4.*count),0.85*orderedP[2*max],ss.str().c_str());
+//     ss.str("");
+//     ss << "Slope = " << slope;
+//     cpgtext(max/(4.*count),0.8*orderedP[2*max],ss.str().c_str());
+//     ss.str("");
+//     ss << "Alpha = " << this->par.getAlpha();
+//     cpgtext(max/(4.*count),0.75*orderedP[2*max],ss.str().c_str());
+//     ss.str("");
+//     ss << "c\\dN\\u = " << cN;
+//     cpgtext(max/(4.*count),0.7*orderedP[2*max],ss.str().c_str());
+//     ss.str("");
+//     ss << "max = "<<max << " (out of " << count << ")";
+//     cpgtext(max/(4.*count),0.65*orderedP[2*max],ss.str().c_str());
+//     ss.str("");
+//     ss << "Threshold = "<<zStat*this->Stats.getSpread()+this->Stats.getMiddle();
+//     cpgtext(max/(4.*count),0.6*orderedP[2*max],ss.str().c_str());
   
-    cpgslw(1);
-    cpgsci(RED);
-    cpgmove(0,0);
-    cpgdraw(1,slope);
-    cpgsci(BLUE);
-    cpgsls(DOTTED);
-    cpgmove(0,orderedP[max]);
-    cpgdraw(2*max/float(count),orderedP[max]);
-    cpgmove(max/float(count),0);
-    cpgdraw(max/float(count),orderedP[2*max]);
-    cpgsci(GREEN);
-    cpgsls(SOLID);
-    for(int i=1;i<=10;i++) {
-      ss.str("");
-      ss << float(i)/2. << "\\gs";
-      float prob = 0.5*erfc((float(i)/2.)/M_SQRT2);
-      cpgtick(0, 0, 0, orderedP[2*max],
-	      prob/orderedP[2*max],
-	      0, 1, 1.5, 90., ss.str().c_str());
-    }
-    cpgend();
-    delete [] xplot;
-  }
+//     cpgslw(1);
+//     cpgsci(RED);
+//     cpgmove(0,0);
+//     cpgdraw(1,slope);
+//     cpgsci(BLUE);
+//     cpgsls(DOTTED);
+//     cpgmove(0,orderedP[max]);
+//     cpgdraw(2*max/float(count),orderedP[max]);
+//     cpgmove(max/float(count),0);
+//     cpgdraw(max/float(count),orderedP[2*max]);
+//     cpgsci(GREEN);
+//     cpgsls(SOLID);
+//     for(int i=1;i<=10;i++) {
+//       ss.str("");
+//       ss << float(i)/2. << "\\gs";
+//       float prob = 0.5*erfc((float(i)/2.)/M_SQRT2);
+//       cpgtick(0, 0, 0, orderedP[2*max],
+// 	      prob/orderedP[2*max],
+// 	      0, 1, 1.5, 90., ss.str().c_str());
+//     }
+//     cpgend();
+//     delete [] xplot;
+//   }
   delete [] orderedP;
 
 }

@@ -140,13 +140,13 @@ void Cube::drawMomentCutout(Detection &object)
     cpgqci(&ci);
 
     // Draw the border of the BLANK region, if there is one...
-    this->plotBlankEdges();
+    drawBlankEdges(this->array,this->axisDim[0],this->axisDim[1],this->par);
 
     // Draw the border of cube's pixels
     this->drawFieldEdge();
 
     // Draw the borders around the object
-    cpgsci(BLUE);
+    cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
     cpgsfs(OUTLINE);
     if(this->par.drawBorders()) 
       object.drawBorders(xmin,ymin);
@@ -262,7 +262,7 @@ void Cube::drawScale(float xstart, float ystart, float channel)
       float tickpt3 = ystart;
       int colour;
       cpgqci(&colour);
-      cpgsci(RED);
+      cpgsci(DUCHAMP_TICKMARK_COLOUR);
       int thickness;
       cpgqlw(&thickness);
       cpgslw(3);
@@ -358,7 +358,7 @@ void Cube::drawFieldEdge()
   else{
     int ci;
     cpgqci(&ci);
-    cpgsci(YELLOW);
+    cpgsci(DUCHAMP_CUBE_EDGE_COLOUR);
   
     cpgmove(-0.5,-0.5);
     cpgdraw(-0.5,this->axisDim[1]-0.5);

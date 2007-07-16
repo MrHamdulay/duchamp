@@ -109,7 +109,7 @@ void Cube::plotDetectionMap(std::string pgDestination)
     }
     delete [] detectMap;
       
-    this->plotBlankEdges();
+    drawBlankEdges(this->array,this->axisDim[0],this->axisDim[1],this->par);
       
     if(this->head.isWCS()) this->plotWCSaxes();
   
@@ -121,11 +121,11 @@ void Cube::plotDetectionMap(std::string pgDestination)
       float xoff=0.;
       float yoff=newplot.cmToCoord(0.5);
       if(this->par.drawBorders()){
-	cpgsci(BLUE);
+	cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
 	for(int i=0;i<this->objectList->size();i++) 
 	  this->objectList->at(i).drawBorders(0,0);
       }
-      cpgsci(RED);
+      cpgsci(DUCHAMP_ID_TEXT_COLOUR);
       std::stringstream label;
       cpgslw(1);
       for(int i=0;i<this->objectList->size();i++){
@@ -220,7 +220,7 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 				   boxYmin+0.5,boxYmin+ydim+0.5,
 				   "X pixel","Y pixel");
 	
-	this->plotBlankEdges();
+	drawBlankEdges(this->array,this->axisDim[0],this->axisDim[1],this->par);
 	
 	if(this->head.isWCS()) this->plotWCSaxes();
       }
@@ -350,7 +350,7 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 	cpgwedglog("rg",3.2,2,z2,z1,wedgeLabel.c_str());
 
 
-	this->plotBlankEdges();
+	drawBlankEdges(this->array,this->axisDim[0],this->axisDim[1],this->par);
 
 	if(this->head.isWCS()) this->plotWCSaxes();
   
@@ -360,11 +360,11 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 	float xoff=0.;
 	float yoff=plotList[iplot].cmToCoord(0.5);
 	if(this->par.drawBorders()){
-	  cpgsci(BLUE);
+	  cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
 	  for(int i=0;i<this->objectList->size();i++) 
 	    this->objectList->at(i).drawBorders(0,0);
 	}
-	cpgsci(RED);
+	cpgsci(DUCHAMP_ID_TEXT_COLOUR);
 	std::stringstream label;
 	cpgslw(1);
 	for(int i=0;i<this->objectList->size();i++){
@@ -434,12 +434,12 @@ void Cube::plotWCSaxes()
   cpgqci(&colour);
   float size;
   cpgqch(&size);
-  cpgsci(GREEN);
+  cpgsci(DUCHAMP_ID_TEXT_COLOUR);
   cpgsch(0.8);
   int    c0[7], ci[7], gcode[2], ic, ierr;
   for(int i=0;i<7;i++) c0[i] = -1;
-  /* define a Dark Green colour. */
-  cpgscr(17, 0.3, 0.5, 0.3);
+  /* define the WCS axes colour */
+  setWCSGreen();
 
   gcode[0] = 2;  // type of grid to draw: 0=none, 1=ticks only, 2=full grid
   gcode[1] = 2;
@@ -453,13 +453,13 @@ void Cube::plotWCSaxes()
 
   //Colour indices used by cpgsbox: make it all the same colour for thin 
   // line case.
-  ci[0] = 17; // grid lines, coord 1
-  ci[1] = 17; // grid lines, coord 2
-  ci[2] = 17; // numeric labels, coord 1
-  ci[3] = 17; // numeric labels, coord 2
-  ci[4] = 17; // axis annotation, coord 1
-  ci[5] = 17; // axis annotation, coord 2
-  ci[6] = 17; // title
+  ci[0] = DUCHAMP_ID_TEXT_COLOUR; // grid lines, coord 1
+  ci[1] = DUCHAMP_ID_TEXT_COLOUR; // grid lines, coord 2
+  ci[2] = DUCHAMP_ID_TEXT_COLOUR; // numeric labels, coord 1
+  ci[3] = DUCHAMP_ID_TEXT_COLOUR; // numeric labels, coord 2
+  ci[4] = DUCHAMP_ID_TEXT_COLOUR; // axis annotation, coord 1
+  ci[5] = DUCHAMP_ID_TEXT_COLOUR; // axis annotation, coord 2
+  ci[6] = DUCHAMP_ID_TEXT_COLOUR; // title
 
   cpgsbox(blc, trc, idents, opt, 2100, 0, ci, gcode, 0.0, 0, grid1, 0, grid2,
 	  0, pgwcsl_, 1, WCSLEN, 1, nlcprm, (int *)tempwcs, 

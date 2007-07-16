@@ -61,7 +61,7 @@ namespace Plot
      * \param pgDestination The std::string indicating the PGPLOT device to
      * be written to.
      *
-     * \return The value returned by cpgopen. If <= 0, then an error
+     * \return The value returned by mycpgopen. If <= 0, then an error
      * has occurred.
      */
     paperHeight = paperWidth*M_SQRT2; 
@@ -69,7 +69,7 @@ namespace Plot
       paperHeight = a4height - 2*psVoffset;
       paperWidth = paperHeight / M_SQRT2;
     }
-    identifier = cpgopen(pgDestination.c_str());
+    identifier = mycpgopen(pgDestination);
     if(identifier>0) cpgpap(paperWidth, paperHeight/paperWidth); 
     // make paper size to fit on A4.
     return identifier;
@@ -197,7 +197,7 @@ namespace Plot
     cpgqwin(&dud,&dud,&min,&max);
     cpgqci(&ci);
     cpgqls(&ls);
-    cpgsci(BLUE);
+    cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
     cpgsls(DASHED);
     cpgmove(v1,min);  cpgdraw(v1,max);
     cpgmove(v2,min);  cpgdraw(v2,max);
@@ -221,7 +221,7 @@ namespace Plot
     cpgqci(&ci);
     cpgqfs(&fs);
     setDarkGreen();
-    cpgsci(DARKGREEN);
+    cpgsci(DUCHAMP_MILKY_WAY_COLOUR);
     cpgsfs(HATCHED);
     cpgrect(v1,v2,min,max);
     cpgsfs(OUTLINE);
@@ -257,7 +257,7 @@ namespace Plot
      *   written to.
      * \param x The length of the X-axis.
      * \param y The length of the Y-axis.
-     * \return The value returned by cpgopen: if <= 0, then an error 
+     * \return The value returned by mycpgopen: if <= 0, then an error 
      *  has occurred.
      */
     xdim = x;
@@ -271,7 +271,7 @@ namespace Plot
       marginWidth *= correction;
       wedgeWidth *= correction;
     }
-    identifier = cpgopen(pgDestination.c_str());
+    identifier = mycpgopen(pgDestination);
     if(identifier>0) cpgpap(paperWidth, aspectRatio);
     return identifier;
   }

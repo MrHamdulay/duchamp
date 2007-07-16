@@ -118,7 +118,7 @@ if test "x$PGPLOTLIB" = x; then
   AC_MSG_NOTICE([
      WARNING! PGPLOT could not be found.
      Compiling Duchamp without graphics capabilities.])               
-  AC_DEFINE([HAVE_PGPLOT], [0], [Define to 1 if PGPLOT is available.])
+#  AC_DEFINE([HAVE_PGPLOT], [0], [Define to 1 if PGPLOT is available.])
 else
   AC_MSG_NOTICE([PGPLOT appears to be available.])
   AC_DEFINE([HAVE_PGPLOT], [1], [Define to 1 if PGPLOT is available.])

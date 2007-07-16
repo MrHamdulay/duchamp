@@ -490,9 +490,6 @@ public:
   // ----------------------------------
   // Graphical plotting of the cube and the detections.
   //
-  /** Draw blank edges of cube. */
-  void        plotBlankEdges();  // in cubes.cc
-
   //  in Cubes/plotting.cc
   /** Plot a spatial map of detections based on number of detected
       channels. */

@@ -104,25 +104,3 @@ void Cube::readSavedArrays()
 }
 
 //--------------------------------------------------------------------
-
-void Cube::plotBlankEdges()
-{
-  /** 
-   *  A front end to the drawBlankEdges() function. This draws the lines
-   *   indicating the extent of the non-BLANK region of the cube in the 
-   *   PGPLOT colour MAGENTA (from the namespace mycpgplot), using the Cube's
-   *   arrays and dimensions.
-   *
-   *  Note that a PGPLOT device needs to be open. This is only done if the 
-   *   appropriate Param parameter is set.
-   */
-  if(this->par.drawBlankEdge()){
-    int colour;
-    cpgqci(&colour);
-    cpgsci(MAGENTA);
-    drawBlankEdges(this->array,this->axisDim[0],this->axisDim[1],this->par);
-    cpgsci(colour);
-  }
-}
-//--------------------------------------------------------------------
-
