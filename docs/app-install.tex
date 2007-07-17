@@ -95,8 +95,18 @@ And then just run make in the usual fashion:
 }
 \end{quote}
 
-This will produce the executable \texttt{Duchamp}. You can verify that
-it is running correctly by running the verification shell script:
+Note that, of the external libraries mentioned, \textsc{cfitsio} and
+\textsc{wcslib} are essential for the workings of
+\duchamp. \textsc{pgplot} is only used for the graphical output, and
+so if \texttt{configure} cannot find the \textsc{pgplot} libraries, it
+will give a warning message but still continue. \duchamp can still be
+compiled and run (assuming the other two libraries are present) -- the
+source-finding will be done as normal, but the graphical outputs will
+be skipped (with a warning message printed to screen).
+
+Once \texttt{make} has been run, you will have the executable
+\texttt{Duchamp}. You can verify that it is running correctly by
+running the verification shell script:
 \begin{quote}
 {\footnotesize
 \texttt{> VerifyDuchamp.sh}

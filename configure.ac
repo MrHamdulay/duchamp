@@ -108,17 +108,14 @@ AC_CHECK_LIB([pgplot],  [pgbeg_],    [PGPLOTLIB="-lpgplot $PGPLOTLIB"],
 AC_CHECK_LIB([cpgplot], [cpgopen],   [PGPLOTLIB="-lcpgplot $PGPLOTLIB"],
              [PGPLOTLIB=], [$PGPLOTLIB $LIBS])
 
+# If PGPLOT is not present, we give a warning message but still continue. 
+# The compilation is able to work without the PGPLOT-dependent files.
 if test "x$PGPLOTLIB" = x; then
-#  AC_MSG_ERROR([
-#    -------------------------------------------------------
-#    Could not find the PGPLOT library.
-#
-#    ERROR: Duchamp configuration failure.
-#    -------------------------------------------------------], [1])
   AC_MSG_NOTICE([
-     WARNING! PGPLOT could not be found.
-     Compiling Duchamp without graphics capabilities.])               
-#  AC_DEFINE([HAVE_PGPLOT], [0], [Define to 1 if PGPLOT is available.])
+    -------------------------------------------------------
+    WARNING! PGPLOT could not be found.
+    Compiling Duchamp without graphics capabilities.               
+    -------------------------------------------------------])
 else
   AC_MSG_NOTICE([PGPLOT appears to be available.])
   AC_DEFINE([HAVE_PGPLOT], [1], [Define to 1 if PGPLOT is available.])
@@ -140,6 +137,8 @@ AC_CHECK_LIB([socket],  [recv],   [CFITSIOLIB="-lsocket"], [], [$LIBS])
 AC_CHECK_LIB([cfitsio], [ffopen], [CFITSIOLIB="-lcfitsio $CFITSIOLIB"], [],
              [$CFITSIOLIB $LIBS])
 
+# CFITSIO is essential for Duchamp, so exit with error message if it
+#   is not present.
 if test "x$CFITSIOINC" = x -o "x$CFITSIOLIB" = x; then
   AC_MSG_ERROR([
     -------------------------------------------------------
@@ -179,6 +178,9 @@ AC_CHECK_LIB([pgsbox], [cpgsbox], [WCSLIB="-lpgsbox $WCSLIB"], [],
 AC_CHECK_LIB([wcs], [wcss2p], [WCSLIB="-lwcs $WCSLIB"], [],
              [$WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB])
 
+# WCSLIB is essential for Duchamp, so exit with error message if it
+#   is not present. Need at least libwcs to be available -- libpgsbox will
+#   depend on PGPLOT being available, but is not critical.
 if test "x$WCSINC" = x -o "x$WCSLIB" = x; then
   AC_MSG_ERROR([
     -------------------------------------------------------
