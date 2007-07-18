@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Thu May 17 11:52:49 2007
+New run of the Duchamp sourcefinder: Fri Jun  1 10:06:20 2007
 Executing statement : ./Duchamp -p verification/input2 
 
 ---- Parameters ----
@@ -2502,3 +2502,4 @@ Detection #5
 
 ---
 --------------
+Duchamp completed: Fri Jun  1 10:06:23 2007
