@@ -69,13 +69,17 @@ std::string getIAUNameGAL(double lon, double lat)
 std::string decToDMS(const double dec, const std::string type)
 {
   /** 
-   *  std::string decToDMS(double, string)
-   *   converts a decimal angle (in degrees) to a format reflecting the axis type:
-   *       RA   (right ascension)    --> hh:mm:ss.ss, with dec made modulo 360. (or 24hrs)
-   *       DEC  (declination)        --> sdd:mm:ss.ss  (with sign, either + or -)
-   *       GLON (galactic longitude) --> ddd:mm:ss.ss, with dec made modulo 360.
-   *       GLAT (galactic latitude)  --> sdd:mm:ss.ss  (with sign, either + or -)
+   *Converts a decimal angle (in degrees) to a format reflecting the axis type:
+   *  RA   (right ascension):     hh:mm:ss.ss, with dec modulo 360. (24hrs)
+   *  DEC  (declination):        sdd:mm:ss.ss  (with sign, either + or -)
+   *  GLON (galactic longitude): ddd:mm:ss.ss, with dec made modulo 360.
+   *  GLAT (galactic latitude):  sdd:mm:ss.ss  (with sign, either + or -)
    *    Any other type defaults to RA, and prints warning.
+   *
+   * \param dec Decimal value of the angle, in degrees.
+   * \param type String indicating desired type of output. Options RA, DEC, 
+   *              GLON, GLAT
+   * \return String with angle in desired format.
    */
 
   double dec_abs,sec;
@@ -86,7 +90,7 @@ std::string decToDMS(const double dec, const std::string type)
   int degSize = 2; // number of figures in the degrees part of the output.
 
   if((type=="RA")||(type=="GLON")){
-    if(type=="GLON")  degSize = 3; // three figures in degrees when doing longitude.
+    if(type=="GLON")  degSize = 3; // longitude has three figures in degrees.
     // Make these modulo 360.;
     while (thisDec < 0.) { thisDec += 360.; }
     while (thisDec >= 360.) { thisDec -= 360.; }
@@ -97,8 +101,6 @@ std::string decToDMS(const double dec, const std::string type)
     else sign = "+";
   }
   else { // UNKNOWN TYPE -- DEFAULT TO RA.
-//     duchampWarning("decToDMS",
-// 		   "Unknown axis type (" + type + "). Defaulting to using RA.\n");
     std::cerr << "WARNING <decToDMS> : Unknown axis type ("
 	      << type << "). Defaulting to using RA.\n";
     while (thisDec < 0.) { thisDec += 360.; }
@@ -107,10 +109,10 @@ std::string decToDMS(const double dec, const std::string type)
   }
   
   dec_abs = fabs(thisDec);
-  deg = int(dec_abs);//floor(d)
-  min = (int)(fmod(dec_abs,1.)*60.);
+  deg = int(dec_abs);
+  min = int(fmod(dec_abs,1.)*60.);
   sec = fmod(dec_abs,onemin)*3600.;
-  if(fabs(sec-60.)<1.e-10){ /* to prevent rounding errors stuffing things up*/
+  if(fabs(sec-60.)<1.e-10){ // to prevent rounding errors stuffing things up
     sec=0.;
     min++;
   }
