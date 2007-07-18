@@ -30,6 +30,14 @@
 #define MYCPGPLOT_H
 #include <string>
 
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#undef HAVE_PGPLOT
+#include "../config.h"
+
 //--------------------
 /**
  * A namespace that holds definitions and basic functions to aid the
@@ -83,9 +91,6 @@ namespace mycpgplot
 /** Is a PGPLOT device open? */
 extern "C" int  cpgtest();
 
-/** Is a PGPLOT device a postscript (hardcopy) device? */ 
-extern "C" int  cpgIsPS(); 
-
 /** Do a logarithmic-scaled wedge, as in PGWEDG */
 extern "C" void cpgwedglog(const char* side, float disp, float width, 
 			   float fg, float bg, const char *label);
@@ -99,6 +104,9 @@ extern "C" void cpgcumul(int npts, float *data, float datamin,
 			 float datamax, int pgflag);
 
 namespace mycpgplot {
+
+  /** Is a PGPLOT device a postscript (hardcopy) device? */ 
+  int  cpgIsPS(); 
 
   /** A front-end to the cpgopen function, with other necessary definitions.*/
   int mycpgopen(std::string device);

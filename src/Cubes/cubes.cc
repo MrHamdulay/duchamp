@@ -35,7 +35,6 @@
 
 #include <wcs.h>
 
-// #ifdef HAVE_PGPLOT
 #include <cpgplot.h>
 
 #include <duchamp.hh>

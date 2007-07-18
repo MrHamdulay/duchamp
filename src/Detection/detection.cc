@@ -363,7 +363,7 @@ void Detection::calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head)
     int size = this->fluxUnits.size();
     std::string tailOfFluxUnits = this->fluxUnits.substr(size-5,size);
     if(tailOfFluxUnits == "/beam")
-      this->intFlux  *= this->getSpatialSize()/head.getBeamSize();
+      this->intFlux  *= double(this->getSpatialSize())/head.getBeamSize();
   }
 
 }

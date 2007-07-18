@@ -9,7 +9,7 @@ echo "Done. Comparison to standard result:"
 echo "Differences with Results:"
 diff -I"Results of the Duchamp source finder:" verification/results1.txt verification/stdResults1.txt
 echo "Differences with Log:"
-diff -I"New run of the Duchamp sourcefinder" verification/log1.txt verification/stdLog1.txt
+diff -I"New run of the Duchamp sourcefinder" -I"Duchamp complete:" verification/log1.txt verification/stdLog1.txt
 
 echo " "
 echo "Running the second Duchamp test:"
@@ -20,7 +20,7 @@ echo "Done. Comparison to standard result:"
 echo "Differences with Results:"
 diff -I"Results of the Duchamp source finder:" verification/results2.txt verification/stdResults2.txt
 echo "Differences with Log:"
-diff -I"New run of the Duchamp sourcefinder" verification/log2.txt verification/stdLog2.txt
+diff -I"New run of the Duchamp sourcefinder" -I"Duchamp complete:" verification/log2.txt verification/stdLog2.txt
 
 echo " "
 echo "Running the third Duchamp test:"
@@ -32,7 +32,7 @@ echo "Done. Comparison to standard result:"
 echo "Differences with Results:"
 diff -I"Results of the Duchamp source finder:" verification/results4.txt verification/stdResults4.txt
 echo "Differences with Log:"
-diff -I"New run of the Duchamp sourcefinder" verification/log4.txt verification/stdLog4.txt
+diff -I"New run of the Duchamp sourcefinder" -I"Duchamp complete:" verification/log4.txt verification/stdLog4.txt
 
 echo " "
 echo "Running the fourth Duchamp test:"
@@ -45,7 +45,7 @@ echo "Done. Comparison to standard result:"
 echo "Differences with Results:"
 diff -I"Results of the Duchamp source finder:" verification/results3.txt verification/stdResults3.txt
 echo "Differences with Log:"
-diff -I"New run of the Duchamp sourcefinder" verification/log3.txt verification/stdLog3.txt
+diff -I"New run of the Duchamp sourcefinder" -I"Duchamp complete:" verification/log3.txt verification/stdLog3.txt
 
 echo " "
 echo "No differences? Then everything worked as expected\!"

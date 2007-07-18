@@ -37,6 +37,7 @@
 #undef PACKAGE_STRING
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
+#undef HAVE_PGPLOT
 #include "config.h"
 
 /** how to convey whether a function has worked */

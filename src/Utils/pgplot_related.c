@@ -42,8 +42,6 @@
 
   int cpgtest() --> a front-end to cpgqinf, to test whether a pgplot
                     device is currently open. 
-  int cpgIsPS() --> a front-end to cpgqinf, to test whether a postscript
-                    device is currently open.
   void cpgwedglog(const char* side, float disp, float width, 
                   float fg, float bg, const char *label)
                 --> a C-code version of pgwedg, plotting the wedge 
@@ -72,22 +70,6 @@ int cpgtest()
   int answer_len = sizeof(answer); /* allocated size of answer[] */
   cpgqinf("STATE", answer, &answer_len);
   return strcmp(answer, "OPEN") == 0;
-}
-
-/********************************************************************/
-/*   CPGISPS                                                        */
-/********************************************************************/
-
-int cpgIsPS()
-{
-  /** 
-   *     A front-end to cpgqinf, that tests whether the device is using a 
-   *     postscript (by which we mean "hardcopy") device
-   */
-  char answer[50];
-  int answer_len = sizeof(answer);
-  cpgqinf("TYPE", answer, &answer_len);
-  return ((answer[answer_len-2]=='P')&&((answer[answer_len-1]=='S')));
 }
 
 /********************************************************************/

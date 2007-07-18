@@ -24,3 +24,6 @@
 /* Define this to utilise the testing parts of the code -- bits that
    won't normally be utilised */
 #define TEST_DEBUG
+
+/* Assume we have PGPLOT working for testing purposes... */
+#define HAVE_PGPLOT 1

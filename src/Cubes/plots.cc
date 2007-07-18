@@ -31,6 +31,7 @@
 #include <math.h>
 #include <cpgplot.h>
 #include <param.hh>
+#include <duchamp.hh>
 #include <Utils/mycpgplot.hh>
 #include <Cubes/plots.hh>
 

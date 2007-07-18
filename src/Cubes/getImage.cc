@@ -34,7 +34,7 @@
 #include <wcsfix.h>
 #include <wcsunits.h>
 #define WCSLIB_GETWCSTAB // define this so that we don't try and redefine 
-                         //  wtbarr (this is a problem when using gcc v.4+
+                         //  wtbarr (this is a problem when using gcc v.4+)
 #include <fitsio.h>
 #include <math.h>
 #include <duchamp.hh>

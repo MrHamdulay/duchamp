@@ -1,6 +1,13 @@
 #ifndef PGHEADER_HH
 #define PGHEADER_HH
 
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#include "config.h"
+
 #ifdef  HAVE_PGPLOT
 #include <cpgplot.h>
 

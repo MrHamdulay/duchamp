@@ -27,11 +27,31 @@
 // -----------------------------------------------------------------------
 #include <string>
 #include <cpgplot.h>
-#include <mycpgplot.hh>
+#include <Utils/mycpgplot.hh>
 
 namespace mycpgplot
 {
   
+  int cpgIsPS()
+  {
+    /** 
+     *     A front-end to cpgqinf, that tests whether the device is using a 
+     *     postscript (by which we mean "hardcopy") device
+     */
+    char answer[50];
+    int answer_len = sizeof(answer);
+    cpgqinf("TYPE", answer, &answer_len);
+    return ((answer[answer_len-2]=='P')&&((answer[answer_len-1]=='S')));
+  }
+  
+  void setDarkGreen(){
+    cpgscr(DARKGREEN,0.,0.7,0.);
+  }
+
+  void setWCSGreen(){
+    cpgscr(WCSGREEN,0.3,0.5,0.3);
+  }
+
   int mycpgopen(std::string device)
   {
     /** 
@@ -49,14 +69,6 @@ namespace mycpgplot
       setWCSGreen();
     }
     return status;
-  }
-
-  void setDarkGreen(){
-    cpgscr(DARKGREEN,0.,0.7,0.);
-  }
-
-  void setWCSGreen(){
-    cpgscr(WCSGREEN,0.3,0.5,0.3);
   }
 
   void setWhite(){
