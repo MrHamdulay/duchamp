@@ -108,8 +108,7 @@ namespace Column
 	   << "";
   }
   
-  template <class T> 
-  void Col::printEntry(std::ostream &stream, T value)
+  template <class T> void Col::printEntry(std::ostream &stream, T value)
   {
     /**
      *  \param stream Where the printing is done.
