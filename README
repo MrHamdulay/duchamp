@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
                The Duchamp Source Finder
 -----------------------------------------------------------------------
-Duchamp 1.1 -- an object finder for spectral-line data cubes
+Duchamp 1.1.1 -- an object finder for spectral-line data cubes
 Copyright (C) 2006, Matthew Whiting, ATNF
 
 Duchamp is free software; you can redistribute it and/or modify it
@@ -50,9 +50,10 @@ The Duchamp web page is at
 http://www.atnf.csiro.au/people/Matthew.Whiting/Duchamp
 where you can download a gzipped tar archive of the source code.
 
-Duchamp uses three main external libraries: pgplot, cfitsio (version
-2.5 and greater, version 3+ preferred) and wcslib. If you do not have
-the libraries, they can be downloaded from the following locations:
+Duchamp uses three main external libraries: pgplot (although see note
+below), cfitsio (version 2.5 and greater, version 3+ preferred) and
+wcslib. If you do not have the libraries, they can be downloaded from
+the following locations:
 
 PGPlot -- http://www.astro.caltech.edu/~tjp/pgplot/ 
 cfitsio -- http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html 
@@ -83,6 +84,11 @@ LIBDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox" \
 INCDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox"
 And then just run make in the usual fashion:
  >  make
+
+If PGPLOT is not installed on your system, but WCSLIB and CFITSIO are,
+it is still possible to install Duchamp. It will not be capable of
+providing graphical output, but will still perform the searching as
+usual.
 
 There is a script included in the distribution that allows you to make
 sure Duchamp is running correctly. It will use a dummy FITS image in
@@ -138,10 +144,10 @@ execution of Duchamp.
 
 Any questions, please contact me. To report problems or bugs, or to
 suggest improvements, please go to the Duchamp Trac wiki site:
-http://sourcecode.atnf.csiro.au/cgi-bin/trac_duchamp.cgi/newticket 
+http://svn.atnf.csiro.au/trac/duchamp/newticket 
 and submit a "ticket", or view previously submitted reports.
 
 Author: 
-  Matthew Whiting, Australia Telescope National Facility, May 2007
+  Matthew Whiting, Australia Telescope National Facility, July 2007
   Matthew.Whiting [at] csiro.au
 
