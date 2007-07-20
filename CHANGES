@@ -1,7 +1,7 @@
 Duchamp version 1.1.1 (2007/07/20)
 ------------------------------------
 
-Minor update to the release, with just a couple of changes:
+Minor update to the release, with just a few changes:
 
 * The verification script was generating diffs due to differences in
   the precision of some calculations when done on different machines. 
@@ -18,8 +18,10 @@ Minor update to the release, with just a couple of changes:
 * The configure/make system has been altered so that it is possible to
   compile Duchamp on a system that does not have PGPLOT installed. In
   this case, Duchamp will run as normal, just without any graphical
-  output. 
+  output. This entailed some restructuring of some files. 
 
+* The time of completion is now written to the log file, so that the
+  user can have some idea of how long the program took.
 
 
 Duchamp version 1.1 (2007/05/17)
