@@ -1,4 +1,4 @@
-Results of the Duchamp source finder: Fri Jun  1 10:07:01 2007
+Results of the Duchamp source finder: Fri Jun  1 10:06:39 2007
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
@@ -6,24 +6,23 @@ Intermediate Logfile...........................[logFile]  =  verification/log3.t
 Final Results file.............................[outFile]  =  verification/results3.txt
 Spectrum file..............................[spectraFile]  =  verification/spectra3.ps
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
-Saving reconstructed cube?.............[flagOutputRecon]  =  false
-Saving residuals from reconstruction?..[flagOutputResid]  =  false
+Saving smoothed cube?.................[flagOutputSmooth]  =  false
 ------
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false
 Removing Milky Way channels?....................[flagMW]  =  false
 Beam Size (pixels)......................................  =  10.1788
 Removing baselines before search?.........[flagBaseline]  =  false
-Smoothing each spectrum first?..............[flagSmooth]  =  false
-Using A Trous reconstruction?...............[flagATrous]  =  true
-Number of dimensions in reconstruction........[reconDim]  =  1
-Minimum scale in reconstruction...............[scaleMin]  =  1
-SNR Threshold within reconstruction...........[snrRecon]  =  3
-Filter being used for reconstruction........[filterCode]  =  1 (B3 spline function)
+Smoothing each spectrum first?..............[flagSmooth]  =  true
+Type of smoothing...........................[smoothType]  =  spatial
+Gaussian kernel semi-major axis [pix]..........[kernMaj]  =  3
+Gaussian kernel semi-minor axis [pix]..........[kernMin]  =  3
+Gaussian kernel position angle [deg]............[kernPA]  =  0
+Using A Trous reconstruction?...............[flagATrous]  =  false
 Using FDR analysis?............................[flagFDR]  =  false
 SNR Threshold (in sigma)........................[snrCut]  =  3
 Minimum # Pixels in a detection.................[minPix]  =  2
-Minimum # Channels in a detection..........[minChannels]  =  2
+Minimum # Channels in a detection..........[minChannels]  =  3
 Growing objects after detection?............[flagGrowth]  =  false
 Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
 Max. velocity separation for merging....[threshVelocity]  =  7
@@ -33,16 +32,18 @@ Type of object centre used in results......[pixelCentre]  =  centroid
 
 --------------------
 Summary of statistics:
-  Detection threshold = 2.92664 Jy/beam
-  Noise level = 0.0148019, Noise spread = 0.970613
+  Detection threshold = 3.0426 Jy/beam in smoothed cube.
+  Noise level = 0.0148019, Noise spread = 1.00927 in smoothed cube.
+  Noise properties for the original cube are:
+  Noise level = 0.0148019, Noise spread = 1.00927
 Total number of detections = 5
 --------------------
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  Obj#           Name     X     Y     Z           RA          DEC      VEL     w_RA    w_DEC    w_VEL      F_int     F_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2  Npix Flag  X_av  Y_av  Z_av X_cent Y_cent Z_cent X_peak Y_peak Z_peak
                                                                    [km/s] [arcmin] [arcmin]   [km/s]  [Jy km/s] [Jy/beam] [Jy/beam]                                [pix]                                                                 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    1 J060912-273517  25.0  25.0  20.0  06:09:12.73 -27:35:17.74  277.426    44.66    43.40  158.296 359478.240  3382.712    11.489  11.82  20  30  20  30  14  26   640       25.0  25.0  20.0   25.0   25.0   20.0     26     25     21
-    2 J055408-273521  75.1  25.0  41.9  05:54:08.98 -27:35:21.38  566.166    39.40    40.60  158.296 318840.189  3237.171    11.766  12.11  70  79  20  29  36  48   604       75.1  25.0  41.9   75.1   25.0   41.9     76     25     43
-    3 J060143-255600  49.9  50.0  64.0  06:01:43.87 -25:56:00.22  857.380    43.98    44.03  158.296 366674.427  3408.855    10.926  11.24  45  55  45  55  58  70   635       49.9  50.0  64.0   49.9   50.0   64.0     50     51     66
-    4 J060900-241502  25.1  75.1  86.0  06:09:00.12 -24:15:02.60 1148.294    44.53    39.42  211.061 360494.329  3351.403    10.445  10.75  20  30  70  79  80  96   641       25.0  75.1  86.0   25.1   75.1   86.0     26     75     86
-    5 J055425-241522  74.9  75.0 108.1  05:54:25.47 -24:15:22.58 1438.679    43.42    44.66  158.296 406687.553  3448.463    11.304  11.63  70  80  70  80 102 114   656       74.9  75.0 108.0   74.9   75.0  108.1     74     75    107
+    1 J060912-273525  25.0  25.0  20.0  06:09:12.58 -27:35:25.74  277.036    60.94    59.19  263.826 715599.128  3972.476    11.489  11.37  18  32  17  31   8  28   782       25.0  24.9  20.0   25.0   25.0   20.0     26     25     21
+    2 J055410-273510  75.0  25.0  42.0  05:54:10.90 -27:35:10.27  566.910    59.12    56.91  184.678 721359.995  3919.852    11.766  11.64  68  82  19  32  36  50   771       75.0  25.0  42.0   75.0   25.0   42.0     76     25     43
+    3 J060143-255623  50.0  49.9  64.0  06:01:43.05 -25:56:23.22  857.427    63.97    56.05  263.826 723142.342  3985.674    10.926  10.81  43  58  43  56  57  77   776       50.0  49.9  64.0   50.0   49.9   64.0     50     51     66
+    4 J060901-241456  25.0  75.1  86.0  06:09:01.96 -24:14:56.22 1148.270    64.77    59.18  250.635 728819.846  3960.390    10.445  10.33  18  33  68  82  79  98   786       24.9  75.1  86.1   25.0   75.1   86.0     26     75     86
+    5 J055424-241517  74.9  75.0 108.0  05:54:24.61 -24:15:17.15 1438.174    55.30    52.85  211.061 686542.529  3983.107    11.304  11.19  69  82  69  81  99 115   783       75.0  75.0 108.0   74.9   75.0  108.0     74     75    107

@@ -2,10 +2,12 @@ imageFile	verification/verificationCube.fits
 flagMW		false
 flagTrim	false
 flagFDR		false
-flagAtrous	true
-snrRecon        3
-snrCut		3
-minChannels     2
+flagAtrous	false
+flagSmooth      true
+smoothType      spatial
+kernMaj         3
+kernMin         3
+kernPA          0
 flagMaps        false
 flagLog         true
 logFile         verification/log3.txt
