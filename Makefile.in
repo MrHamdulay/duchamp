@@ -115,9 +115,9 @@ else
 	$(CUBESDIR)/drawMomentCutout.o\
 	$(CUBESDIR)/outputSpectra.o\
 	$(CUBESDIR)/plotting.o\
-	$(UTILSDIR)/mycpgplot.o\
+	$(UTILDIR)/mycpgplot.o\
 	$(CUBESDIR)/plots.o\
-	$(UTILSDIR)/pgplot_related.o
+	$(UTILDIR)/pgplot_related.o
 endif
 
 duchamp : $(OBJECTS)

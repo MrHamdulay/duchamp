@@ -112,16 +112,16 @@ namespace mycpgplot {
   int mycpgopen(std::string device);
 
   /** Define the DARKGREEN colour, with RGB value of (0,0.7,0).*/
-  inline void setDarkGreen();
+  void setDarkGreen();
 
   /** Define the WCSGREEN colour, with RGB value of (0.3,0.5,0.3). */
-  inline void setWCSGreen();
+  void setWCSGreen();
 
   /** A device-independent way to set the colour to white. */
-  inline void setWhite();
+  void setWhite();
 
   /** A device-independent way to set the colour to black. */
-  inline void setBlack();
+   void setBlack();
 
 }
 
