@@ -1,10 +1,8 @@
 #!/bin/tcsh
 
-if( $# == 0 ) then
-    set progname = ./Duchamp
-else
-    set progname = $1
-endif
+set version = `./Duchamp* -v | awk '{print $3}'`
+
+set progname = ./Duchamp-$version
 
 set numErrors = 0
 

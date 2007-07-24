@@ -28,7 +28,7 @@ Correspondence concerning Duchamp may be directed to:
 -----------------------------------------------------------------------
 
 Introduction
-------------
+============
 
 Duchamp is a stand-alone program designed to find objects in
 astronomical data cubes, particularly spectral-line observations. Its
@@ -44,7 +44,7 @@ velocity information for all detected sources.
 
 
 Obtaining and Building Duchamp
-------------------------------
+==============================
 
 The Duchamp web page is at 
 http://www.atnf.csiro.au/people/Matthew.Whiting/Duchamp
@@ -55,40 +55,70 @@ below), cfitsio (version 2.5 and greater, version 3+ preferred) and
 wcslib. If you do not have the libraries, they can be downloaded from
 the following locations:
 
-PGPlot -- http://www.astro.caltech.edu/~tjp/pgplot/ 
+PGPLOT -- http://www.astro.caltech.edu/~tjp/pgplot/ 
 cfitsio -- http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html 
 wcslib -- http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html
 
-Duchamp can be built on Unix systems by typing (note that the terminal
-prompt here is represented by > -- don't type this character!):
+Note that PGPLOT is optional. Duchamp can be compiled and run without
+PGPLOT, but you will miss out on the useful graphical outputs!  The
+other two libraries, cftisio and wcslib, are essential.
+
+
+Basic Compilation and Installation
+----------------------------------
+
+Duchamp can be built and installed on Unix systems by typing (note
+that the terminal prompt here is represented by > -- don't type this
+character!):
 
  >  ./configure
  >  make
  >  make clean (optional -- to remove the object files from the src
                 directory)
+ >  make install 
 
-This way, configure should find all the necessary libraries, but if
-the above-mentioned libraries have been installed in non-standard
-locations, you can specify additional directories to look in. There
-are separate options for library files (eg. libcpgplot.a) and header
-files (eg. cpgplot.h).
+This default setup will search in standard locations for the necessary
+libraries, and install the executable ("Duchamp") in /usr/local/bin (a
+copy will also be in the current directory). If you want this to go
+somewhere else, eg if you don't have write-access to that directory,
+or you need to tweak the libraries, see the next section. Otherwise,
+jump to the testing section.
 
-For example, suppose wcslib had been locally installed in
-/home/mduchamp/wcslib. There will then be two libraries created that
-are likely to be in separate subdirectories: C/ and pgsbox/. Each
-subdirectory needs to be searched for library and header files, so one
-could build Duchamp by typing:
 
- >  ./configure \
-LIBDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox" \
-INCDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox"
+Tweaking the installation setup
+-------------------------------
+
+To install Duchamp in a directory other than /usr/local/bin, use the
+--prefix option with configure. eg:
+
+ >  ./configure --prefix=/home/mduchamp/bin
+
+
+If the above-mentioned libraries have been installed in non-standard
+locations, or you have more than one version installed on your system,
+you can specify specific locations by using the --with-cfitsio=<dir>,
+--with-wcslib=<dir> or --with-pgplot=<dir> flags. For example:
+
+ >  ./configure --with-wcslib=/home/mduchamp/wcslib-4.2 
 And then just run make in the usual fashion:
  >  make
 
-If PGPLOT is not installed on your system, but WCSLIB and CFITSIO are,
-it is still possible to install Duchamp. It will not be capable of
-providing graphical output, but will still perform the searching as
-usual.
+Duchamp can be compiled without PGPLOT if it is not installed on your
+system -- the searching and text-based output remains the same, but
+you will not have any graphical output. 
+To manually specify this option, use the --without-pgplot flag, eg:
+
+ >  ./configure --without-pgplot
+
+(Note that CFITSIO and WCSLIB are essential, however, so
+--without-wcslib or --without-cfitsio will not work.).
+Even if you do not give the --without-pgplot option, and the PGPLOT
+library is not found, Duchamp will still compile (albeit without
+graphical capabilities).
+
+
+Testing
+=======
 
 There is a script included in the distribution that allows you to make
 sure Duchamp is running correctly. It will use a dummy FITS image in
@@ -107,7 +137,7 @@ program works).
 
 
 Using Duchamp
----------------
+=============
 
 There are two possible ways to run Duchamp. The first is:
 
@@ -147,6 +177,7 @@ suggest improvements, please go to the Duchamp Trac wiki site:
 http://svn.atnf.csiro.au/trac/duchamp/newticket 
 and submit a "ticket", or view previously submitted reports.
 
+-------
 Author: 
   Matthew Whiting, Australia Telescope National Facility, July 2007
   Matthew.Whiting [at] csiro.au

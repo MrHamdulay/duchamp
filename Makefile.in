@@ -8,9 +8,14 @@ F77=    @F77@ $(FFLAGS)
 
 BASE = ./src
 
-INSTALLDIR = .
+INSTALLDIR = @prefix@
 
-EXEC = Duchamp
+V = @PACKAGE_VERSION@
+EXEC = Duchamp-$(V)
+EXEC-STUB = Duchamp
+
+INSTALL = @INSTALL@
+LN_S = @LN_S@
 
 PGPLOTINC = @PGPLOTINC@
 PGPLOTLIB = @PGPLOTLIB@
@@ -23,7 +28,7 @@ WCSLIB = @WCSLIB@
 
 CINC = $(PGPLOTINC) $(WCSINC) $(CFITSIOINC) -I$(BASE)
 
-LIBS = @LDFLAGS@ $(WCSLIB) $(CFITSIOLIB) $(PGPLOTLIB) @LIBS@
+LIBS = $(WCSLIB) $(CFITSIOLIB) $(PGPLOTLIB) @LIBS@
 
 ATROUSDIR = $(BASE)/ATrous
 PIXELMAPDIR = $(BASE)/PixelMap
@@ -121,12 +126,18 @@ else
 endif
 
 duchamp : $(OBJECTS)
-	$(CXX) -o $(INSTALLDIR)/$(EXEC) $(OBJECTS) $(LIBS)
+	$(CXX) -o $(EXEC) $(OBJECTS) $(LIBS)
 
 createTestImage : $(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o
 	$(CXX) -o createTestImage.x\
 	$(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o\
 	$(CFITSIOLIB) @LIBS@
+
+install : 
+	$(INSTALL) -d -m 2755 $(INSTALLDIR)
+	$(INSTALL) -m 755 $(EXEC) $(INSTALLDIR)
+	$(RM) $(INSTALLDIR)/$(EXEC-STUB)
+	$(LN_S) $(INSTALLDIR)/$(EXEC) $(INSTALLDIR)/$(EXEC-STUB)
 
 $(OBJECTS) : $(HEADS)
 

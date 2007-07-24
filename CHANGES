@@ -15,10 +15,12 @@ Minor update to the release, with just a few changes:
   been inverted. This makes it consistent with the scale used in the
   maps, and hopefully easier to see when printing.
 
-* The configure/make system has been altered so that it is possible to
-  compile Duchamp on a system that does not have PGPLOT installed. In
-  this case, Duchamp will run as normal, just without any graphical
-  output. This entailed some restructuring of some files. 
+* The configure/make system has been altered to make it easier to
+  install, and to specify different external libraries. In particular,
+  it is now not necessary to have PGPLOT installed on your system to
+  run Duchamp. In the absence of PGPLOT, Duchamp will run as normal,
+  just without any graphical output. Some source code needed to be
+  restructured to make this work.
 
 * The time of completion is now written to the log file, so that the
   user can have some idea of how long the program took.

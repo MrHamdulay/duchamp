@@ -54,6 +54,8 @@ locations:
 {\footnotesize http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html}
 \end{itemize}
 
+\secC{Basic installation}
+
 \duchamp can be built on Unix/Linux systems by typing (assuming that
 the prompt your terminal provides is a \texttt{> } -- don't type this
 character!):
@@ -62,47 +64,62 @@ character!):
 \texttt{%
 > ./configure\\
 > make\\
-> make clean (optional -- to remove the object files)}
+> make clean (optional -- to remove the object files)\\
+> make install }
 }
 \end{quote}
 
-Run in this manner, \texttt{configure} should find all the necessary
-libraries, but if some libraries have been installed in non-standard
-locations, it may fail. In this case, you can specify additional
-directories to look in by giving extra command-line arguments. There
-are separate options for library files (eg. libcpgplot.a) and header
-files (eg. cpgplot.h).
+This default setup will search in standard locations for the necessary
+libraries, and install the executable (\texttt{``Duchamp''}) in
+\texttt{/usr/local/bin} (a copy will also be in the current
+directory). If you want this to go somewhere else, \eg if you don't
+have write-access to that directory, or you need to tweak the
+libraries, see the next section. Otherwise, jump to the testing
+section.
 
-For example, suppose \textsc{wcslib} had been locally installed in the
-directory \texttt{/home/mduchamp/wcslib}. There will then be two
-libraries created that are likely to be in the following
-subdirectories: \texttt{C/} and \texttt{pgsbox/}. Each subdirectory
-needs to be searched for library and header files, so one could build
-Duchamp by typing:
+\secC{Tweaking the installation process}
+
+To install Duchamp in a directory other than \texttt{/usr/local/bin},
+use the \texttt{--prefix} option with configure, \eg
 \begin{quote}
 {\footnotesize
 \texttt{%
->  ./configure $\backslash$ \\ 
-LIBDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox" 
-$\backslash$\\
-INCDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox"}
+> ./configure --prefix=/home/mduchamp/bin}
 }
 \end{quote}
-And then just run make in the usual fashion:
+and then run \texttt{make} and \texttt{make install} as stated above. 
+
+If the above-mentioned libraries have been installed in non-standard
+locations, or you have more than one version installed on your system,
+you can specify specific locations by using the
+\texttt{--with-cfitsio=<dir>}, \texttt{--with-wcslib=<dir>} or
+\texttt{--with-pgplot=<dir>} flags. For example:
 \begin{quote}
 {\footnotesize
-\texttt{> make}
+\texttt{%
+> ./configure --with-wcslib=/home/mduchamp/wcslib-4.2}
+}
+\end{quote}
+And then just run \texttt{make} in the usual fashion.
+
+Duchamp can be compiled without \textsc{pgplot} if it is not installed
+on your system -- the searching and text-based output remains the
+same, but you will not have any graphical output.  To manually specify
+this option, use the \texttt{--without-pgplot} flag:
+\begin{quote}
+{\footnotesize
+\texttt{%
+> ./configure --without-pgplot}
 }
 \end{quote}
 
-Note that, of the external libraries mentioned, \textsc{cfitsio} and
-\textsc{wcslib} are essential for the workings of
-\duchamp. \textsc{pgplot} is only used for the graphical output, and
-so if \texttt{configure} cannot find the \textsc{pgplot} libraries, it
-will give a warning message but still continue. \duchamp can still be
-compiled and run (assuming the other two libraries are present) -- the
-source-finding will be done as normal, but the graphical outputs will
-be skipped (with a warning message printed to screen).
+(Note that CFITSIO and WCSLIB are essential, however, so flags such as
+\texttt{--without-wcslib} or \texttt{--without-cfitsio} will not
+work.).  Even if you do not give the \texttt{--without-pgplot} option,
+and the \textsc{pgplot} library is not found, Duchamp will still
+compile (albeit without graphical capabilities).
+
+\secC{Making sure it all works}
 
 Running make will create the executable \texttt{Duchamp}. You can
 verify that it is running correctly by running the verification shell
