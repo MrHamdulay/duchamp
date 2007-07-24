@@ -101,7 +101,7 @@ PGPLOTINCDIRS=$INCDIRS
 PGPLOTLIBDIRS=$LIBDIRS
 ])
 
-if test "x$PGPLOTLIBDIRS" = xno; then
+if test "x$PGPLOTLIBDIRS" = x; then
   #the argument to --with-pgplot was no, so we don't look for it.
   AC_MSG_NOTICE([Not enabling PGPLOT use.])
 else
@@ -178,8 +178,10 @@ if test "x$withval" = xno; then
   CFITSIOLIBDIRS=$LIBDIRS
 else
   AC_MSG_NOTICE([Using directory "$withval"])
-  CFITSIOINCDIRS=$withval
-  CFITSIOLIBDIRS=$withval
+  CFITSIOINCDIRS="$withval \
+              $withval/include"
+  CFITSIOLIBDIRS="$withval \
+              $withval/lib"
 fi
 ],
 [ # if directory not specified, go searching.
