@@ -454,7 +454,7 @@ bool Param::isStatOK(int x, int y, int z)
 //// Other Functions using the  Parameter class:
 ///////////////////////////////////////////////////
 
-inline std::string makelower( std::string s )
+std::string makelower( std::string s )
 {
   // "borrowed" from Matt Howlett's 'fred'
   std::string out = "";
