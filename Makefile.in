@@ -1,14 +1,14 @@
-CFLAGS = -c
+CFLAGS = -c -O2
 
 FFLAGS = -C -fast -O4
 
-CC =    @CC@
-CXX =   @CXX@
+CC =    @CC@ -O2
+CXX =   @CXX@ -O2
 F77=    @F77@ $(FFLAGS)
 
 BASE = ./src
 
-INSTALLDIR = @prefix@
+INSTALLDIR = @prefix@/bin
 
 V = @PACKAGE_VERSION@
 EXEC = Duchamp-$(V)
@@ -28,7 +28,7 @@ WCSLIB = @WCSLIB@
 
 CINC = $(PGPLOTINC) $(WCSINC) $(CFITSIOINC) -I$(BASE)
 
-LIBS = $(WCSLIB) $(CFITSIOLIB) $(PGPLOTLIB) @LIBS@
+LIBS = $(WCSLIB) $(CFITSIOLIB) $(PGPLOTLIB)
 
 ATROUSDIR = $(BASE)/ATrous
 PIXELMAPDIR = $(BASE)/PixelMap

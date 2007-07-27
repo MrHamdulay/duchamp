@@ -5,7 +5,7 @@ AC_PREREQ(2.57)
 AC_INIT([Duchamp], [1.1.1], [Matthew.Whiting@csiro.au])
 AC_CONFIG_SRCDIR([src/duchamp.hh])
 AC_CONFIG_HEADER([src/config.h])
-AC_PREFIX_DEFAULT(/usr/local/bin)
+AC_PREFIX_DEFAULT(/usr/local)
 
 # Checks for programs.
 AC_PROG_CXX
@@ -14,8 +14,7 @@ AC_PROG_CPP
 AC_PROG_LN_S
 AC_CHECK_PROGS(INSTALL, install)
 
-# Checks for libraries.
-AC_CHECK_LIB([g2c], [gerror_])
+# Check for maths library -- will add -lm to $LIBS
 AC_CHECK_LIB([m], [log])
 
 # Checks for header files.
@@ -106,6 +105,8 @@ if test "x$PGPLOTLIBDIRS" = x; then
   AC_MSG_NOTICE([Not enabling PGPLOT use.])
 else
 
+  #Set up the PGPLOT-related libraries and includes.
+
   for INCDIR in $PGPLOTINCDIRS ; do
     AC_CHECK_FILE([$INCDIR/cpgplot.h], [PGPLOTINC=-I$INCDIR; break])
     INCDIR=$INCDIR/pgplot
@@ -120,6 +121,9 @@ else
   AC_CHECK_LIB([F77],     [f77_init],  [PGPLOTLIB="-lF77 $PGPLOTLIB"],
                [], [$PGPLOTLIB $LIBS])
   
+  # Checks for extra libraries needed by PGPLOT -- will add -lg2c to $LIBS
+  AC_CHECK_LIB([g2c], [gerror_])
+
   # Search for X11 includes and libraries.
   AC_PATH_X
   if test "x$ac_x_libraries" != x; then
@@ -137,6 +141,8 @@ else
                [], [$PGPLOTLIB $LIBS])
   AC_CHECK_LIB([cpgplot], [cpgopen],   [PGPLOTLIB="-lcpgplot $PGPLOTLIB"],
                [], [$PGPLOTLIB $LIBS])
+
+  PGPLOTLIB="$PGPLOTLIB $LIBS"
   
   # If PGPLOT is not present, we give a warning message but still continue. 
   # The compilation is able to work without the PGPLOT-dependent files.
