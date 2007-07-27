@@ -89,10 +89,13 @@ Tweaking the installation setup
 -------------------------------
 
 To install Duchamp in a directory other than /usr/local/bin, use the
---prefix option with configure. eg:
+--prefix option with configure, specifying the directory above the
+\texttt{bin/} directory. eg:
 
- >  ./configure --prefix=/home/mduchamp/bin
+ >  ./configure --prefix=/home/mduchamp
 
+which, if you run "make" and "make install", will result in the binary
+being put in the directory /home/mduchamp/bin.
 
 If the above-mentioned libraries have been installed in non-standard
 locations, or you have more than one version installed on your system,

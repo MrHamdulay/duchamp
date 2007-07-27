@@ -20,7 +20,8 @@ Minor update to the release, with just a few changes:
   it is now not necessary to have PGPLOT installed on your system to
   run Duchamp. In the absence of PGPLOT, Duchamp will run as normal,
   just without any graphical output. Some source code needed to be
-  restructured to make this work.
+  restructured to make this work. Please read the README file, or the
+  Installation appendix in the User's Guide, for complete details.
 
 * The time of completion is now written to the log file, so that the
   user can have some idea of how long the program took.
