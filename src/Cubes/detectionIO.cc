@@ -454,35 +454,40 @@ void Cube::logDetectionList()
    *   final list.
    */
 
-  long left = this->par.getBorderLeft();
-  long bottom = this->par.getBorderBottom();
+  if(this->objectList->size()>0){
 
-  std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
-  this->setupColumns();
-  this->objectList->at(0).outputDetectionTextHeader(fout,this->logCols);
+    long left = this->par.getBorderLeft();
+    long bottom = this->par.getBorderBottom();
 
-  if(this->par.getFlagBaseline()){
-    for(int i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
-      this->array[i] += this->baseline[i];
-  }
+    std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
+    this->setupColumns();
+    this->objectList->at(0).outputDetectionTextHeader(fout,this->logCols);
 
-  for(int objCtr=0;objCtr<this->objectList->size();objCtr++){
-    Detection *obj = new Detection;
-    *obj = objectList->at(objCtr);
-    obj->setOffsets(par);
-    if(this->par.getFlagCubeTrimmed()){
-      obj->pixels().addOffsets(left,bottom,0);
+    if(this->par.getFlagBaseline()){
+      for(int i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
+	this->array[i] += this->baseline[i];
     }
-    obj->calcFluxes(this->array, this->axisDim);
-    obj->outputDetectionText(fout,this->logCols,objCtr+1);
-    delete obj;
+
+    for(int objCtr=0;objCtr<this->objectList->size();objCtr++){
+      Detection *obj = new Detection;
+      *obj = objectList->at(objCtr);
+      obj->setOffsets(par);
+      if(this->par.getFlagCubeTrimmed()){
+	obj->pixels().addOffsets(left,bottom,0);
+      }
+      obj->calcFluxes(this->array, this->axisDim);
+      obj->outputDetectionText(fout,this->logCols,objCtr+1);
+      delete obj;
+    }
+
+    if(this->par.getFlagBaseline()){
+      for(int i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
+	this->array[i] -= this->baseline[i];
+    }
+    fout.close();
+ 
   }
 
-  if(this->par.getFlagBaseline()){
-    for(int i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
-      this->array[i] -= this->baseline[i];
-  }
-  fout.close();
 }
 
 void Cube::logDetection(Detection obj, int counter)

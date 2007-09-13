@@ -141,6 +141,7 @@ void Param::defaultValues()
   this->flagATrous        = false;
   this->reconDim          = 1;
   this->scaleMin          = 1;
+  this->scaleMax          = 0;
   this->snrRecon          = 4.;
   this->filterCode        = 1;
   this->reconFilter.define(this->filterCode);
@@ -227,6 +228,7 @@ Param::Param (const Param& p)
   this->flagATrous        = p.flagATrous;
   this->reconDim          = p.reconDim;
   this->scaleMin          = p.scaleMin;
+  this->scaleMax          = p.scaleMax;
   this->snrRecon          = p.snrRecon;
   this->filterCode        = p.filterCode;
   this->reconFilter       = p.reconFilter;
@@ -311,6 +313,7 @@ Param& Param::operator= (const Param& p)
   this->flagATrous        = p.flagATrous;
   this->reconDim          = p.reconDim;
   this->scaleMin          = p.scaleMin;
+  this->scaleMax          = p.scaleMax;
   this->snrRecon          = p.snrRecon;
   this->filterCode        = p.filterCode;
   this->reconFilter       = p.reconFilter;
@@ -592,6 +595,7 @@ int Param::readParams(std::string paramfile)
       if(arg=="flagatrous")      this->flagATrous = readFlag(ss); 
       if(arg=="recondim")        this->reconDim = readIval(ss); 
       if(arg=="scalemin")        this->scaleMin = readIval(ss); 
+      if(arg=="scalemax")        this->scaleMax = readIval(ss); 
       if(arg=="snrrecon")        this->snrRecon = readFval(ss); 
       if(arg=="filtercode"){
 	                         this->filterCode = readIval(ss); 
@@ -848,10 +852,18 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[reconDim]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<par.getReconDim()       <<std::endl;
-    theStream<<std::setw(widthText)<<"Minimum scale in reconstruction"      
-	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[scaleMin]"
-	     <<"  =  " <<resetiosflags(std::ios::right)
-	     <<par.getMinScale()       <<std::endl;
+    if(par.getMaxScale()>0){
+      theStream<<std::setw(widthText-1)<<"Scales used in reconstruction"      
+	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[scaleMin-scaleMax]"
+	       <<"  =  " <<resetiosflags(std::ios::right)
+	       <<par.getMinScale() << "-" << par.getMaxScale()   <<std::endl;
+    }
+    else{
+      theStream<<std::setw(widthText)<<"Minimum scale in reconstruction"      
+	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[scaleMin]"
+	       <<"  =  " <<resetiosflags(std::ios::right)
+	       <<par.getMinScale()      <<std::endl;
+    }
     theStream<<std::setw(widthText)<<"SNR Threshold within reconstruction"  
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[snrRecon]"
 	     <<"  =  " <<resetiosflags(std::ios::right)

@@ -263,6 +263,8 @@ public:
   void   setReconDim(int i){reconDim=i;};
   int    getMinScale(){return scaleMin;};
   void   setMinScale(int s){scaleMin=s;};
+  int    getMaxScale(){return scaleMax;};
+  void   setMaxScale(int s){scaleMax=s;};
   float  getAtrousCut(){return snrRecon;};
   void   setAtrousCut(float c){snrRecon=c;};
   int    getFilterCode(){return filterCode;};
@@ -412,6 +414,7 @@ private:
   int    reconDim;        ///< How many dimensions to use for the
 			  ///   reconstruction?
   int    scaleMin;        ///< Min scale used in a trous reconstruction
+  int    scaleMax;        ///< Max scale used in a trous reconstruction
   float  snrRecon;        ///< SNR cutoff used in a trous
 			  ///   reconstruction (only wavelet coefficients
 			  ///   that survive this threshold are kept)

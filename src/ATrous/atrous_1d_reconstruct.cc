@@ -26,6 +26,7 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <iostream>
+#include <sstream>
 #include <iomanip>
 #include <math.h>
 #include <duchamp.hh>
@@ -58,8 +59,23 @@ void atrous1DReconstruct(long &xdim, float *&input, float *&output, Param &par)
 
   const float SNR_THRESH=par.getAtrousCut();
   const int MIN_SCALE=par.getMinScale();
+  static bool firstTime = true;
 
   int numScales = par.filter().getNumScales(xdim);
+  int maxScale = par.getMaxScale();
+  if((maxScale>0)&&(maxScale<=numScales))
+    maxScale = std::min(maxScale,numScales);
+  else{
+    if((firstTime)&&(maxScale!=0)){
+      firstTime=false;
+      std::stringstream errmsg;
+      errmsg << "The requested value of the parameter scaleMax, \""
+	     << maxScale << "\" is outside the allowed range (1-"
+	     << numScales <<").\nSetting to " << numScales << ".\n";
+      duchampWarning("Reading parameters",errmsg.str());
+    } 
+    maxScale = numScales;
+  }
   double *sigmaFactors = new double[numScales+1];
   for(int i=0;i<=numScales;i++){
     if(i<=par.filter().maxFactor(1)) 
@@ -122,7 +138,7 @@ void atrous1DReconstruct(long &xdim, float *&input, float *&output, Param &par)
       for(int scale = 1; scale<=numScales; scale++){
 
 	if(par.isVerbose()) {
-	  printBackSpace(12);
+// 	  printBackSpace(12);
 	  std::cout << "Scale " << std::setw(2) << scale
 		    << " /"     << std::setw(2) << numScales <<std::flush;
 	}
@@ -181,7 +197,10 @@ void atrous1DReconstruct(long &xdim, float *&input, float *&output, Param &par)
 
       } //-> end of scale loop 
 
-      for(int pos=0;pos<xdim;pos++) if(isGood[pos]) output[pos] += coeffs[pos];
+      // Only add the final smoothed array if we are doing *all* the scales. 
+      if(numScales == par.filter().getNumScales(xdim))
+	for(int pos=0;pos<xdim;pos++) 
+	  if(isGood[pos]) output[pos] += coeffs[pos];
 
       array = new float[xdim];
       goodSize=0;

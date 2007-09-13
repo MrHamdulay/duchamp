@@ -230,13 +230,13 @@ int main(int argc, char * argv[])
     logfile.close();
   }
 
-  if(cube->pars().getFlagVOT()){
+  if(cube->pars().getFlagVOT() && (cube->getNumObj()>0)){
     std::ofstream votfile(cube->pars().getVOTFile().c_str());
     cube->outputDetectionsVOTable(votfile);
     votfile.close();
   }
 
-  if(cube->pars().getFlagKarma()){
+  if(cube->pars().getFlagKarma() && (cube->getNumObj()>0)){
     std::ofstream karmafile(cube->pars().getKarmaFile().c_str());
     cube->outputDetectionsKarma(karmafile);
     karmafile.close();

@@ -62,7 +62,7 @@ void Cube::ObjectMerger()
     for(int i=0;i<startSize;i++) currentList[i] = this->objectList->at(i);
     this->objectList->clear();
 
-    mergeList(currentList, this->par);
+    if(this->axisDim[2]>1) mergeList(currentList, this->par);
 
     // Do growth stuff
     if(this->par.getFlagGrowth()) {
@@ -87,7 +87,7 @@ void Cube::ObjectMerger()
 
       // and do the merging again to pick up objects that have
       //  grown into each other.
-      mergeList(currentList, this->par);
+      if(this->axisDim[2]>1) mergeList(currentList, this->par);
     }
 
     finaliseList(currentList, this->par);

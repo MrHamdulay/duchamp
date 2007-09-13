@@ -42,17 +42,19 @@ void spectralSelection(std::vector<float> &xvalues,
 		       std::vector<float> &yvalues, 
 		       long &zdim)
 {
-  std::cout << "Do you want:\t1) HI Cubes?\n";
-  std::cout << "\t\t2) PHFS quasar spectra?\n";
-  std::cout << "\t\t3) Orion Chandra time series?\n";
-  std::cout << "\t\t4) 2BL spectra?\n";
-  std::cout << "\t\t5) Gaussian noise?\n";
-  std::cout << "\t\t6) Gaussian noise with a single Gaussian source?\n";
-  std::cout << "\t\t7) A unit pulse at the central pixel?\n";
-  std::cout << "\t\t8) To enter your own filename (text file only)?\n";
+  std::cout << "Do you want:\t 1) HI Cubes?\n";
+  std::cout << "\t\t 2) PHFS quasar spectra?\n";
+  std::cout << "\t\t 3) Orion Chandra time series?\n";
+  std::cout << "\t\t 4) 2BL spectra?\n";
+  std::cout << "\t\t 5) Gaussian noise?\n";
+  std::cout << "\t\t 6) Gaussian noise with a single Gaussian source?\n";
+  std::cout << "\t\t 7) As for 6) but with absorption as well?"<<std::endl;
+  std::cout << "\t\t 8) A unit pulse at the central pixel?\n";
+  std::cout << "\t\t 9) B1555-140 spectra?\n";
+  std::cout << "\t\t10) To enter your own filename (text file only)?\n";
   int choice=0;
-  while((choice<1)||(choice>8)){
-    std::cout << "Enter choice (1 -- 8) : ";
+  while((choice<1)||(choice>10)){
+    std::cout << "Enter choice (1 -- 10) : ";
     std::cin >> choice;
   }
   
@@ -64,14 +66,18 @@ void spectralSelection(std::vector<float> &xvalues,
   if(choice==1){
     fname=menu();
     std::cerr << fname <<std::endl;
+    char ans;
     Cube *cube = new Cube;
     Param par;
+    std::cout << "Remove Milky Way emission (y/n)? : ";
+    std::cin >> ans;
+    par.setFlagMW(ans=='y');
     par.setImageFile(fname);
     par.setVerbosity(false);
     cube->saveParam(par);
     cube->getCube();
     zdim = cube->getDimZ();
-    //     if(par.getFlagMW()) cube->removeMW();
+    if(par.getFlagMW()) cube->removeMW();
     zdim = cube->getDimZ();
 
     long xpos,ypos;
@@ -104,7 +110,7 @@ void spectralSelection(std::vector<float> &xvalues,
     delete cube;
     delete [] array;
   }
-  else if((choice==6)||(choice==5)){
+  else if((choice==7)||(choice==6)||(choice==5)){
     zdim=1024;
     specx.resize(zdim);
     specy.resize(zdim);
@@ -115,8 +121,8 @@ void spectralSelection(std::vector<float> &xvalues,
     for(int i=0;i<zdim;i++) specy[i] = tempy[i];
     delete [] tempx;
     delete [] tempy;
-    if(choice==6){
-      float src,snr,loc,fwhm;
+    if((choice==7)||(choice==6)){
+      float src,snr,loc=-1,fwhm,snrAbs,fwhmAbs;
       std::cout << "Enter signal-to-noise of source: ";
       std::cin >> snr;
       while((loc<0)||(loc>=zdim)){
@@ -127,9 +133,23 @@ void spectralSelection(std::vector<float> &xvalues,
 	src = snr * exp( -(specx[i]-loc)*(specx[i]-loc)/(fwhm*fwhm) );
 	specy[i] += src;
       }
+      if(choice==7){
+	fwhmAbs=fwhm;
+	snrAbs = snr;
+	while(fwhmAbs>=fwhm && snrAbs>=snr){
+	  std::cout << "Enter SNR (<" << snr 
+		    << ") and FWHM (<" << fwhm 
+		    << ") of absorption line: ";
+	  std::cin >> snrAbs >> fwhmAbs;
+	}
+	for(int i=0;i<zdim;i++){
+	  src = snrAbs * exp(-(specx[i]-loc)*(specx[i]-loc)/(fwhmAbs*fwhmAbs));
+	  specy[i] -= src;
+	}
+      }
     }
   }
-  else if(choice==7){
+  else if(choice==8){
     zdim=1024;
     specx.resize(zdim);
     specy.resize(zdim);
@@ -143,6 +163,7 @@ void spectralSelection(std::vector<float> &xvalues,
     if(choice==2) fname=specMenu();
     else if(choice==3) fname=orionMenu();
     else if(choice==4) fname=twoblMenu();
+    else if(choice==9) fname=b1555Menu();
     else {
       std::cout << "Enter filename (full path): ";
       std::cin >> fname;

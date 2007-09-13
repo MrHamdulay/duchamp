@@ -38,6 +38,7 @@ std::string specMenu();
 std::string orionMenu();
 std::string imageMenu();
 std::string twoblMenu();
+std::string b1555Menu();
 void spectralSelection(std::vector<float> &xvalues, 
 		       std::vector<float> &yvalues, 
 		       long &zdim);

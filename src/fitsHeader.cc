@@ -239,7 +239,7 @@ void FitsHeader::fixUnits(Param &par)
   double sc=1.;
   double of=0.;
   double po=1.;
-  if(this->wcsIsGood){
+  if((this->wcsIsGood) && (this->naxis>2)){
     int status = wcsunits( this->wcs->cunit[this->wcs->spec], 
 			   this->spectralUnits.c_str(), 
 			   &sc, &of, &po);
@@ -256,7 +256,7 @@ void FitsHeader::fixUnits(Param &par)
 	errmsg << "Spectral units not specified. "
 	       << "For data presentation, we will use dummy units of \"SPC\"."
 	       << "\n"
-	       << "Please report this occurence -- it should not happen now!"
+	       << "Please report this occurence -- it should not happen now! "
 	       << "In the meantime, you may want to set the CUNIT"
 	       << this->wcs->spec + 1 <<" keyword to make this work.\n";
 	this->spectralUnits = "SPC";
