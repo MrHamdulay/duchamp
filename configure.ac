@@ -152,6 +152,7 @@ else
       WARNING! PGPLOT could not be found.
       Compiling Duchamp without graphics capabilities.               
       -------------------------------------------------------])
+    AC_DEFINE([HAVE_PGPLOT], [0], [Define to 1 if PGPLOT is available.])
   else
     AC_MSG_NOTICE([PGPLOT appears to be available.])
     AC_DEFINE([HAVE_PGPLOT], [1], [Define to 1 if PGPLOT is available.])
@@ -201,6 +202,12 @@ for INCDIR in $CFITSIOINCDIRS ; do
   AC_CHECK_FILE([$INCDIR/fitsio.h], [CFITSIOINC=-I$INCDIR; break])
 done
 
+for LIBDIR in $CFITSIOLIBDIRS ; do
+  AC_CHECK_FILE([$LIBDIR/libcfitsio.a], [CFITSIOLIB="-L$LIBDIR $CFITSIOLIB"; break])
+  LIBDIR=$LIBDIR/cfitsio
+  AC_CHECK_FILE([$LIBDIR/libcfitsio.a], [CFITSIOLIB="-L$LIBDIR $CFITSIOLIB"; break])
+done
+
 AC_CHECK_LIB([socket],  [recv],   [CFITSIOLIB="-lsocket"], [], [$LIBS])
 AC_CHECK_LIB([cfitsio], [ffopen], [CFITSIOLIB="-lcfitsio $CFITSIOLIB"], [],
              [$CFITSIOLIB $LIBS])
@@ -215,11 +222,6 @@ if test "x$CFITSIOINC" = x -o "x$CFITSIOLIB" = x; then
     ERROR: Duchamp configuration failure.
     -------------------------------------------------------], [1])
 else
-  for LIBDIR in $CFITSIOLIBDIRS ; do
-    AC_CHECK_FILE([$LIBDIR/libcfitsio.a], [CFITSIOLIB="-L$LIBDIR $CFITSIOLIB"; break])
-    LIBDIR=$LIBDIR/cfitsio
-    AC_CHECK_FILE([$LIBDIR/libcfitsio.a], [CFITSIOLIB="-L$LIBDIR $CFITSIOLIB"; break])
-  done
   AC_MSG_NOTICE([CFITSIO appears to be available.])
   AC_DEFINE([HAVE_CFITSIO], [1], [Define to 1 if CFITSIO is available.])
 fi
@@ -268,6 +270,17 @@ for INCDIR in $WCSINCDIRS ; do
   AC_CHECK_FILE([$INCDIR/wcs.h], [WCSINC="-I$INCDIR $WCSINC"; break])
 done
 
+for LIBDIR in $WCSLIBDIRS ; do
+  AC_CHECK_FILE([$LIBDIR/libpgsbox.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
+  LIBDIR=$LIBDIR/wcs
+  AC_CHECK_FILE([$LIBDIR/libpgsbox.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
+done
+for LIBDIR in $WCSLIBDIRS ; do
+  AC_CHECK_FILE([$LIBDIR/libwcs.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
+  LIBDIR=$LIBDIR/wcs
+  AC_CHECK_FILE([$LIBDIR/libwcs.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
+done
+
 AC_CHECK_LIB([pgsbox], [cpgsbox], [WCSLIB="-lpgsbox $WCSLIB"], [],
              [$WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB])
 AC_CHECK_LIB([wcs], [wcss2p], [WCSLIB="-lwcs $WCSLIB"], [],
@@ -284,16 +297,6 @@ if test "x$WCSINC" = x -o "x$WCSLIB" = x; then
     ERROR: Duchamp configuration failure.
     -------------------------------------------------------], [1])
 else
-  for LIBDIR in $WCSLIBDIRS ; do
-    AC_CHECK_FILE([$LIBDIR/libpgsbox.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
-    LIBDIR=$LIBDIR/wcs
-    AC_CHECK_FILE([$LIBDIR/libpgsbox.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
-  done
-  for LIBDIR in $WCSLIBDIRS ; do
-    AC_CHECK_FILE([$LIBDIR/libwcs.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
-    LIBDIR=$LIBDIR/wcs
-    AC_CHECK_FILE([$LIBDIR/libwcs.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
-  done
   AC_MSG_NOTICE([WCSLIB appears to be available.])
   AC_DEFINE([HAVE_WCSLIB], [1], [Define to 1 if WCSLIB is available.])
 fi

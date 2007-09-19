@@ -13,12 +13,9 @@
 
 const bool USE_PGPLOT=true;
 
-void endPGPLOT(){cpgend();};
-
 #else
 
 const bool USE_PGPLOT=false;
-void endPGPLOT(){};
 
 #endif // matches #ifdef HAVE_PGPLOT
 

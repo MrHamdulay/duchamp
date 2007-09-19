@@ -1,3 +1,15 @@
+Duchamp version 1.1.2 (2007/09/19)
+------------------------------------
+
+* The compilation had problems working correctly when the cfitsio and
+  wcs libraries were  not in standard locations. The configure script
+  has been tweaked to make sure the libraries are found.
+
+* Problems with compiling in the absence of pgplot have been fixed,
+  and it should now compile fine.
+
+
+
 Duchamp version 1.1.1 (2007/07/20)
 ------------------------------------
 

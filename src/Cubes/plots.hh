@@ -33,7 +33,7 @@
 #include <sstream>
 #include <string>
 #include <math.h>
-#include <cpgplot.h>
+#include <pgheader.hh>
 
 /**
  * A namespace to control plotting of the spectral output and the
@@ -162,37 +162,12 @@ namespace Plot
     
   };
 
-  //----------------------------------------------------------
-  // Inline SpectralPlot functions...
-  //----------------------------------------------------------
-  inline void  SpectralPlot::firstHeaderLine(std::string line)
-  {
-    cpgsch(spTitleSize); 
-    cpgmtxt("t",Plot::spTitleOffset1*spLabelSize/spTitleSize,
-	    0.5,0.5,line.c_str());
-  }
-  inline void  SpectralPlot::secondHeaderLine(std::string line)
-  {
-    cpgsch(spLabelSize); 
-    cpgmtxt("t",Plot::spTitleOffset2,0.5,0.5,line.c_str());
-  }
-  inline void  SpectralPlot::thirdHeaderLine(std::string line)
-  {
-    cpgsch(spLabelSize);
-    cpgmtxt("t",Plot::spTitleOffset3,0.5,0.5,line.c_str());
-  }
-  inline void  SpectralPlot::fourthHeaderLine(std::string line)
-  {
-    cpgsch(spLabelSize); 
-    cpgmtxt("t",Plot::spTitleOffset4,0.5,0.5,line.c_str());
-  }
   inline int   SpectralPlot::getNumOnPage(){return numOnPage;}
   inline void  SpectralPlot::setNumOnPage(int i){numOnPage=i;}
   inline float SpectralPlot::getPaperWidth(){return paperWidth;}
   inline void  SpectralPlot::setPaperWidth(float f){paperWidth=f;}
   inline float SpectralPlot::getPaperHeight(){return paperHeight;}
   inline void  SpectralPlot::setPaperHeight(float f){paperHeight=f;}
-  inline void  SpectralPlot::goToPlot(){cpgslct(identifier);}
 
   //***************************************************************************
   //***************************************************************************
@@ -264,7 +239,6 @@ namespace Plot
   inline float ImagePlot::getPaperWidth() {return paperWidth;}
   inline float ImagePlot::getImageHeight(){return imageWidth()*imageRatio;}
   inline float ImagePlot::getAspectRatio(){return aspectRatio;}
-  inline void  ImagePlot::goToPlot(){cpgslct(identifier);}
   
 }
 

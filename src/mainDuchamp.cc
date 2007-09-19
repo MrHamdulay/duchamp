@@ -207,7 +207,6 @@ int main(int argc, char * argv[])
   else{
     std::cout << "PGPLOT has not been enabled, so no graphical output.\n";
   }
-  endPGPLOT();
 
   if(cube->pars().getFlagATrous()&&
      (cube->pars().getFlagOutputRecon()||cube->pars().getFlagOutputResid()) ){
@@ -230,13 +229,13 @@ int main(int argc, char * argv[])
     logfile.close();
   }
 
-  if(cube->pars().getFlagVOT() && (cube->getNumObj()>0)){
+  if(cube->pars().getFlagVOT()){
     std::ofstream votfile(cube->pars().getVOTFile().c_str());
     cube->outputDetectionsVOTable(votfile);
     votfile.close();
   }
 
-  if(cube->pars().getFlagKarma() && (cube->getNumObj()>0)){
+  if(cube->pars().getFlagKarma()){
     std::ofstream karmafile(cube->pars().getKarmaFile().c_str());
     cube->outputDetectionsKarma(karmafile);
     karmafile.close();

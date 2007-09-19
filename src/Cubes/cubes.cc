@@ -35,7 +35,7 @@
 
 #include <wcs.h>
 
-#include <cpgplot.h>
+#include <pgheader.hh>
 
 #include <duchamp.hh>
 #include <param.hh>
