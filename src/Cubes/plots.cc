@@ -231,30 +231,30 @@ namespace Plot
     cpgsfs(fs);
   }
   //----------------------------------------------------------
-  // Inline SpectralPlot functions...
+  // SpectralPlot functions...
   //----------------------------------------------------------
-  inline void  SpectralPlot::firstHeaderLine(std::string line)
+  void  SpectralPlot::firstHeaderLine(std::string line)
   {
     cpgsch(spTitleSize); 
     cpgmtxt("t",Plot::spTitleOffset1*spLabelSize/spTitleSize,
 	    0.5,0.5,line.c_str());
   }
-  inline void  SpectralPlot::secondHeaderLine(std::string line)
+  void  SpectralPlot::secondHeaderLine(std::string line)
   {
     cpgsch(spLabelSize); 
     cpgmtxt("t",Plot::spTitleOffset2,0.5,0.5,line.c_str());
   }
-  inline void  SpectralPlot::thirdHeaderLine(std::string line)
+  void  SpectralPlot::thirdHeaderLine(std::string line)
   {
     cpgsch(spLabelSize);
     cpgmtxt("t",Plot::spTitleOffset3,0.5,0.5,line.c_str());
   }
-  inline void  SpectralPlot::fourthHeaderLine(std::string line)
+  void  SpectralPlot::fourthHeaderLine(std::string line)
   {
     cpgsch(spLabelSize); 
     cpgmtxt("t",Plot::spTitleOffset4,0.5,0.5,line.c_str());
   }
-  inline void  SpectralPlot::goToPlot(){cpgslct(identifier);}
+  void  SpectralPlot::goToPlot(){cpgslct(identifier);}
 
   //----------------------------------------------------------
   //----------------------------------------------------------
@@ -335,7 +335,7 @@ namespace Plot
     cpgmtxt("t", Plot::imTitleOffset, 0.5, 0.5, title.c_str());
   }
 
-  inline void  ImagePlot::goToPlot(){cpgslct(identifier);}
+  void  ImagePlot::goToPlot(){cpgslct(identifier);}
 
 
 }

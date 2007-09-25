@@ -122,10 +122,6 @@ else
   AC_CHECK_LIB([F77],     [f77_init],  [EXTRAPGLIB="-lF77 $EXTRAPGLIB"],
                [], [$EXTRAPGLIB $LIBS])
   
-  # Checks for extra libraries needed by PGPLOT -- will add -lg2c -lstdc++ to $LIBS
-  AC_CHECK_LIB([g2c], [gerror_])
-  AC_CHECK_LIB([stdc++], [main])
-
   # Search for X11 includes and libraries.
   AC_PATH_X
   if test "x$ac_x_libraries" != x; then
@@ -147,8 +143,11 @@ else
 
   AC_LANG(Fortran 77)
   AC_CHECK_LIB([pgplot],  [pgopen],    [PGPLOTLIB="-lpgplot"],
-               [], [$PGPLOTLIB $LIBS $EXTRAPGLIB])
+               [], [$PGPLOTLIB $EXTRAPGLIB])
   AC_LANG(C)
+  # Checks for extra libraries needed by PGPLOT -- will add -lg2c -lstdc++ to $LIBS
+  AC_CHECK_LIB([g2c], [gerror_])
+  AC_CHECK_LIB([stdc++], [main])
   if test "x$F77" = xgfortran; then
     PGPLOTLIB="-lcpgplot $PGPLOTLIB"
     AC_MSG_NOTICE([ Using gfortran, so manually adding -lcpgplot to PGPLOTLIB string.])
@@ -156,10 +155,6 @@ else
     AC_CHECK_LIB([cpgplot], [cpgopen],   [PGPLOTLIB="-lcpgplot $PGPLOTLIB"],
                  [], [$PGPLOTLIB $LIBS $EXTRAPGLIB])
   fi
-#  AC_SEARCH_LIBS([cpgopen],  [cpgplot],  [PGPLOTLIB="$PGPLOTLIB -lcpgplot"],
-#               [], [$PGPLOTLIB $LIBS $EXTRAPGLIB])
-
-#  PGPLOTLIB="$PGPLOTLIB $LIBS"
   
   # If PGPLOT is not present, we give a warning message but still continue. 
   # The compilation is able to work without the PGPLOT-dependent files.
