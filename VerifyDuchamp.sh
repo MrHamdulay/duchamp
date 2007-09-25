@@ -162,7 +162,8 @@ endif
 echo " "
 if( $numErrors == 0 ) then
     echo "No errors! Everything is working fine."
-    echo "\nHappy Finding! If you ever need to report a bug or request an upgrade, go to"
+    echo " "
+    echo "Happy Finding! If you ever need to report a bug or request an upgrade, go to"
     echo "  http://svn.atnf.csiro.au/trac/duchamp/newticket"
 else
     echo "There were some differences in the results compared to the standards."
