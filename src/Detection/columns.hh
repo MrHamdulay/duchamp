@@ -140,7 +140,7 @@ namespace Column
     void   widen(){width++;};
 
     /** Increase the precision by one, widening the column if necessary. */
-    void   upPrec(){precision++; if(width<precision+3) width++;};
+    void   upPrec(){precision++; width++;};
 
     //--------------
     // Outputting functions -- all in columns.cc

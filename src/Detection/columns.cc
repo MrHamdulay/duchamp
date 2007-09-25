@@ -206,28 +206,28 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
 
     // X position
     val = objectList[obj].getXcentre();
-    tempwidth = int( log10(val) + 1) + newset[X].getPrecision() + 2;
-    for(int i=newset[X].getWidth();i<tempwidth;i++) newset[X].widen();
     if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[X].getPrecision()+1); 
       if(val < minval) newset[X].upPrec();
     }
+    tempwidth = int( log10(val) + 1) + newset[X].getPrecision() + 2;
+    for(int i=newset[X].getWidth();i<tempwidth;i++) newset[X].widen();
     // Y position
     val = objectList[obj].getYcentre();
-    tempwidth = int( log10(val) + 1) + newset[Y].getPrecision() + 2;
-    for(int i=newset[Y].getWidth();i<tempwidth;i++) newset[Y].widen();
     if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[Y].getPrecision()+1); 
       if(val < minval) newset[Y].upPrec();
     }
+    tempwidth = int( log10(val) + 1) + newset[Y].getPrecision() + 2;
+    for(int i=newset[Y].getWidth();i<tempwidth;i++) newset[Y].widen();
     // Z position
     val = objectList[obj].getZcentre();
-    tempwidth = int( log10(val) + 1) + newset[Z].getPrecision() + 2;
-    for(int i=newset[Z].getWidth();i<tempwidth;i++) newset[Z].widen();
     if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[Z].getPrecision()+1); 
       if((val>0.)&&(val < minval)) newset[Z].upPrec();
     }
+    tempwidth = int( log10(val) + 1) + newset[Z].getPrecision() + 2;
+    for(int i=newset[Z].getWidth();i<tempwidth;i++) newset[Z].widen();
 
     if(head.isWCS()){  
       // RA -- assign correct title. Check width but should be ok by definition
@@ -244,46 +244,46 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
 
       // Vel -- check width, title and units.
 //       if(head.getNumAxes() > 2){
-	if(head.WCS().restfrq == 0) // using frequency, not velocity
-	  newset[VEL].setName("FREQ");
-	if(head.getSpectralUnits().size()>0)
-	  newset[VEL].setUnits("[" + head.getSpectralUnits() + "]");
-	tempwidth = newset[VEL].getUnits().size() + 1;
-	for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
+      if(head.WCS().restfrq == 0) // using frequency, not velocity
+	newset[VEL].setName("FREQ");
+      if(head.getSpectralUnits().size()>0)
+	newset[VEL].setUnits("[" + head.getSpectralUnits() + "]");
+      tempwidth = newset[VEL].getUnits().size() + 1;
+      for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
 	
-	val = objectList[obj].getVel();
-	tempwidth = int(log10(fabs(val)) + 1) + newset[VEL].getPrecision() + 2;
-	if(val<0) tempwidth++;
-	for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
-	if((fabs(val) < 1.)&&(val>0.)){
-	  minval = pow(10, -1. * newset[VEL].getPrecision()+1); 
-	  if(val < minval) newset[VEL].upPrec();
-	}
+      val = objectList[obj].getVel();
+      if((fabs(val) < 1.)&&(val>0.)){
+	minval = pow(10, -1. * newset[VEL].getPrecision()+1); 
+	if(val < minval) newset[VEL].upPrec();
+      }
+      tempwidth = int(log10(fabs(val)) + 1) + newset[VEL].getPrecision() + 2;
+      if(val<0) tempwidth++;
+      for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
 //       }
 
       // w_RA -- check width & title. leave units for the moment.
       tempwidth = newset[RA].getUnits().size() + 1;
       for(int i=newset[RA].getWidth();i<tempwidth;i++) newset[RA].widen();
       val = objectList[obj].getRAWidth();
-      tempwidth = int( log10(fabs(val)) + 1) + newset[WRA].getPrecision() + 2;
-      if(val<0) tempwidth++;
-      for(int i=newset[WRA].getWidth();i<tempwidth;i++) newset[WRA].widen();
       if((fabs(val) < 1.)&&(val>0.)){
 	minval = pow(10, -1. * newset[WRA].getPrecision()+1); 
 	if(val < minval) newset[WRA].upPrec();
       }
+      tempwidth = int( log10(fabs(val)) + 1) + newset[WRA].getPrecision() + 2;
+      if(val<0) tempwidth++;
+      for(int i=newset[WRA].getWidth();i<tempwidth;i++) newset[WRA].widen();
 
       // w_DEC -- check width & title. leave units for the moment.
       tempwidth = newset[DEC].getUnits().size() + 1;
       for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
       val = objectList[obj].getDecWidth();
-      tempwidth = int( log10(fabs(val)) + 1) + newset[WDEC].getPrecision() + 2;
-      if(val<0) tempwidth++;
-      for(int i=newset[WDEC].getWidth();i<tempwidth;i++) newset[WDEC].widen();
       if((fabs(val) < 1.)&&(val>0.)){
 	minval = pow(10, -1. * newset[WDEC].getPrecision()+1); 
 	if(val < minval) newset[WDEC].upPrec();
       }
+      tempwidth = int( log10(fabs(val)) + 1) + newset[WDEC].getPrecision() + 2;
+      if(val<0) tempwidth++;
+      for(int i=newset[WDEC].getWidth();i<tempwidth;i++) newset[WDEC].widen();
 
       // w_Vel -- check width, title and units.
 //       if(head.getNumAxes() > 2){
@@ -294,26 +294,26 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
 	tempwidth = newset[WVEL].getUnits().size() + 1;
 	for(int i=newset[WVEL].getWidth();i<tempwidth;i++)newset[WVEL].widen();
 	val = objectList[obj].getVel();
-	tempwidth = int( log10(fabs(val)) + 1) + newset[WVEL].getPrecision() + 2;
-	if(val<0) tempwidth++;
-	for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
 	if((fabs(val) < 1.)&&(val>0.)){
 	  minval = pow(10, -1. * newset[WVEL].getPrecision()+1); 
 	  if(val < minval) newset[WVEL].upPrec();
 	}
+	tempwidth = int( log10(fabs(val)) + 1) + newset[WVEL].getPrecision() + 2;
+	if(val<0) tempwidth++;
+	for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
 
 	// F_int -- check width & units
 	newset[FINT].setUnits("[" + head.getIntFluxUnits() + "]");
 	tempwidth = newset[FINT].getUnits().size() + 1;
 	for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
 	val = objectList[obj].getIntegFlux();
-	tempwidth = int( log10(fabs(val)) + 1) + newset[FINT].getPrecision() + 2;
-	if(val<0) tempwidth++;
-	for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
 	if((fabs(val) < 1.)&&(val>0.)){
 	  minval = pow(10, -1. * newset[FINT].getPrecision()+1); 
 	  if(val < minval) newset[FINT].upPrec();
 	}
+	tempwidth = int( log10(fabs(val)) + 1) + newset[FINT].getPrecision() + 2;
+	if(val<0) tempwidth++;
+	for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
 //       }
     }
 
@@ -322,37 +322,36 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
     tempwidth = newset[FTOT].getUnits().size() + 1;
     for(int i=newset[FTOT].getWidth();i<tempwidth;i++) newset[FTOT].widen();
     val = objectList[obj].getTotalFlux();
-    tempwidth = int( log10(fabs(val)) + 1) + newset[FTOT].getPrecision() + 2;
-    if(val<0) tempwidth++;
-    for(int i=newset[FTOT].getWidth();i<tempwidth;i++) newset[FTOT].widen();
     if((fabs(val) < 1.)&&(val>0.)){
       minval = pow(10, -1. * newset[FTOT].getPrecision()+1); 
       if(val < minval) newset[FTOT].upPrec();
     }
+    tempwidth = int( log10(fabs(val)) + 1) + newset[FTOT].getPrecision() + 2;
+    if(val<0) tempwidth++;
+    for(int i=newset[FTOT].getWidth();i<tempwidth;i++) newset[FTOT].widen();
 
     // F_peak
     newset[FPEAK].setUnits("[" + head.getFluxUnits() + "]");
     tempwidth = newset[FPEAK].getUnits().size() + 1;
     for(int i=newset[FPEAK].getWidth();i<tempwidth;i++) newset[FPEAK].widen();
     val = objectList[obj].getPeakFlux();
-    tempwidth = int( log10(fabs(val)) + 1) + newset[FPEAK].getPrecision() + 2;
-    if(val<0) tempwidth++;
-    for(int i=newset[FPEAK].getWidth();i<tempwidth;i++) newset[FPEAK].widen();
     if((fabs(val) < 1.)&&(val>0.)){
       minval = pow(10, -1. * newset[FPEAK].getPrecision()+1); 
       if(val < minval) newset[FPEAK].upPrec();
     }
+    tempwidth = int( log10(fabs(val)) + 1) + newset[FPEAK].getPrecision() + 2;
+    if(val<0) tempwidth++;
+    for(int i=newset[FPEAK].getWidth();i<tempwidth;i++) newset[FPEAK].widen();
 
     // S/N_peak
     val = objectList[obj].getPeakSNR();
-    tempwidth = int( log10(fabs(val)) + 1) + newset[SNRPEAK].getPrecision() +2;
-    if(val<0) tempwidth++;
-    for(int i=newset[SNRPEAK].getWidth();i<tempwidth;i++) 
-      newset[SNRPEAK].widen();
     if((fabs(val) < 1.)&&(val>0.)){
       minval = pow(10, -1. * newset[SNRPEAK].getPrecision()+1); 
       if(val < minval) newset[SNRPEAK].upPrec();
     }
+    tempwidth = int( log10(fabs(val)) + 1) + newset[SNRPEAK].getPrecision() +2;
+    if(val<0) tempwidth++;
+    for(int i=newset[SNRPEAK].getWidth();i<tempwidth;i++) newset[SNRPEAK].widen();
 
     // X1 position
     tempwidth = int( log10(objectList[obj].getXmin()) + 1) + 
@@ -386,78 +385,78 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
     
     // average X position
     val = objectList[obj].getXAverage();
-    tempwidth = int( log10(val) + 1) + newset[XAV].getPrecision() + 2;
-    for(int i=newset[XAV].getWidth();i<tempwidth;i++) newset[XAV].widen();
     if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[XAV].getPrecision()+1); 
       if(val < minval) newset[XAV].upPrec();
     }
+    tempwidth = int( log10(val) + 1) + newset[XAV].getPrecision() + 2;
+    for(int i=newset[XAV].getWidth();i<tempwidth;i++) newset[XAV].widen();
     // average Y position
     val = objectList[obj].getYAverage();
-    tempwidth = int( log10(val) + 1) + newset[YAV].getPrecision() + 2;
-    for(int i=newset[YAV].getWidth();i<tempwidth;i++) newset[YAV].widen();
     if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[YAV].getPrecision()+1); 
       if(val < minval) newset[YAV].upPrec();
     }
+    tempwidth = int( log10(val) + 1) + newset[YAV].getPrecision() + 2;
+    for(int i=newset[YAV].getWidth();i<tempwidth;i++) newset[YAV].widen();
     // average Z position
     val = objectList[obj].getZAverage();
-    tempwidth = int( log10(val) + 1) + newset[ZAV].getPrecision() + 2;
-    for(int i=newset[ZAV].getWidth();i<tempwidth;i++) newset[ZAV].widen();
     if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[ZAV].getPrecision()+1); 
       if((val>0.)&&(val < minval)) newset[ZAV].upPrec();
     }
+    tempwidth = int( log10(val) + 1) + newset[ZAV].getPrecision() + 2;
+    for(int i=newset[ZAV].getWidth();i<tempwidth;i++) newset[ZAV].widen();
     
     // X position of centroid
     val = objectList[obj].getXCentroid();
-    tempwidth = int( log10(val) + 1) + newset[XCENT].getPrecision() + 2;
-    for(int i=newset[XCENT].getWidth();i<tempwidth;i++) newset[XCENT].widen();
     if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[XCENT].getPrecision()+1); 
       if(val < minval) newset[XCENT].upPrec();
     }
+    tempwidth = int( log10(val) + 1) + newset[XCENT].getPrecision() + 2;
+    for(int i=newset[XCENT].getWidth();i<tempwidth;i++) newset[XCENT].widen();
     // Y position of centroid
     val = objectList[obj].getYCentroid();
-    tempwidth = int( log10(val) + 1) + newset[YCENT].getPrecision() + 2;
-    for(int i=newset[YCENT].getWidth();i<tempwidth;i++) newset[YCENT].widen();
     if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[YCENT].getPrecision()+1); 
       if(val < minval) newset[YCENT].upPrec();
     }
+    tempwidth = int( log10(val) + 1) + newset[YCENT].getPrecision() + 2;
+    for(int i=newset[YCENT].getWidth();i<tempwidth;i++) newset[YCENT].widen();
     // Z position of centroid
     val = objectList[obj].getZCentroid();
-    tempwidth = int( log10(val) + 1) + newset[ZCENT].getPrecision() + 2;
-    for(int i=newset[ZCENT].getWidth();i<tempwidth;i++) newset[ZCENT].widen();
     if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[ZCENT].getPrecision()+1); 
       if((val>0.)&&(val < minval)) newset[ZCENT].upPrec();
     }
+    tempwidth = int( log10(val) + 1) + newset[ZCENT].getPrecision() + 2;
+    for(int i=newset[ZCENT].getWidth();i<tempwidth;i++) newset[ZCENT].widen();
     
     // X position of peak flux
     val = objectList[obj].getXPeak();
-    tempwidth = int( log10(val) + 1) + newset[XPEAK].getPrecision() + 2;
-    for(int i=newset[XPEAK].getWidth();i<tempwidth;i++) newset[XPEAK].widen();
     if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[XPEAK].getPrecision()+1); 
       if(val < minval) newset[XPEAK].upPrec();
     }
+    tempwidth = int( log10(val) + 1) + newset[XPEAK].getPrecision() + 2;
+    for(int i=newset[XPEAK].getWidth();i<tempwidth;i++) newset[XPEAK].widen();
     // Y position of peak flux
     val = objectList[obj].getYPeak();
-    tempwidth = int( log10(val) + 1) + newset[YPEAK].getPrecision() + 2;
-    for(int i=newset[YPEAK].getWidth();i<tempwidth;i++) newset[YPEAK].widen();
     if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[YPEAK].getPrecision()+1); 
       if(val < minval) newset[YPEAK].upPrec();
     }
+    tempwidth = int( log10(val) + 1) + newset[YPEAK].getPrecision() + 2;
+    for(int i=newset[YPEAK].getWidth();i<tempwidth;i++) newset[YPEAK].widen();
     // Z position of peak flux
     val = objectList[obj].getZPeak();
-    tempwidth = int( log10(val) + 1) + newset[ZPEAK].getPrecision() + 2;
-    for(int i=newset[ZPEAK].getWidth();i<tempwidth;i++) newset[ZPEAK].widen();
     if((val<1.)&&(val>0.)){
       minval = pow(10, -1. * newset[ZPEAK].getPrecision()+1); 
       if((val>0.)&&(val < minval)) newset[ZPEAK].upPrec();
     }
+    tempwidth = int( log10(val) + 1) + newset[ZPEAK].getPrecision() + 2;
+    for(int i=newset[ZPEAK].getWidth();i<tempwidth;i++) newset[ZPEAK].widen();
   }
 
   return newset;
