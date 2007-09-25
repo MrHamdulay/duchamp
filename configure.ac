@@ -1,4 +1,4 @@
-#                                               -*- Autoconf -*-
+# -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
@@ -11,6 +11,7 @@ AC_PREFIX_DEFAULT(/usr/local)
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_CPP
+AC_PROG_F77
 AC_PROG_LN_S
 AC_CHECK_PROGS(INSTALL, install)
 
@@ -114,35 +115,51 @@ else
   done
   
   # PGPLOT compiled with a SUN compiler but linked with something else.
-  AC_CHECK_LIB([sunmath], [cosd],      [PGPLOTLIB="-lsunmath $PGPLOTLIB"],
-               [], [$PGPLOTLIB $LIBS])
-  AC_CHECK_LIB([M77],     [iand_],     [PGPLOTLIB="-lM77 $PGPLOTLIB"],
-               [], [$PGPLOTLIB $LIBS])
-  AC_CHECK_LIB([F77],     [f77_init],  [PGPLOTLIB="-lF77 $PGPLOTLIB"],
-               [], [$PGPLOTLIB $LIBS])
+  AC_CHECK_LIB([sunmath], [cosd],      [EXTRAPGLIB="-lsunmath $EXTRAPGLIB"],
+               [], [$EXTRAPGLIB $LIBS])
+  AC_CHECK_LIB([M77],     [iand_],     [EXTRAPGLIB="-lM77 $EXTRAPGLIB"],
+               [], [$EXTRAPGLIB $LIBS])
+  AC_CHECK_LIB([F77],     [f77_init],  [EXTRAPGLIB="-lF77 $EXTRAPGLIB"],
+               [], [$EXTRAPGLIB $LIBS])
   
-  # Checks for extra libraries needed by PGPLOT -- will add -lg2c to $LIBS
+  # Checks for extra libraries needed by PGPLOT -- will add -lg2c -lstdc++ to $LIBS
   AC_CHECK_LIB([g2c], [gerror_])
+  AC_CHECK_LIB([stdc++], [main])
 
   # Search for X11 includes and libraries.
   AC_PATH_X
   if test "x$ac_x_libraries" != x; then
     LDFLAGS="$LDFLAGS -L$ac_x_libraries"
-    PGPLOTLIB="-L$ac_x_libraries -lX11 $PGPLOTLIB"
+    EXTRAPGLIB="-L$ac_x_libraries -lX11 $EXTRAPGLIB"
   fi
+
+#  # Add pgplot libraries, if they exist to the lib path
+#  for LIBDIR in $PGPLOTLIBDIRS ; do
+#    AC_CHECK_FILE([$LIBDIR/libcpgplot.a], [PGPLOTLIB="-L$LIBDIR $PGPLOTLIB"; break])
+#  done
   
   # It is possible that other libraries may be required depending on what
   # graphics drivers were installed with PGPLOT.
-  AC_CHECK_LIB([z],       [deflate],   [PGPLOTLIB="-lz $PGPLOTLIB"],
-               [], [$PGPLOTLIB $LIBS])
-  AC_CHECK_LIB([png],     [png_error], [PGPLOTLIB="-lpng $PGPLOTLIB"], 
-  	     [], [$PGPLOTLIB $LIBS])
-  AC_CHECK_LIB([pgplot],  [pgbeg_],    [PGPLOTLIB="-lpgplot $PGPLOTLIB"],
-               [], [$PGPLOTLIB $LIBS])
-  AC_CHECK_LIB([cpgplot], [cpgopen],   [PGPLOTLIB="-lcpgplot $PGPLOTLIB"],
-               [], [$PGPLOTLIB $LIBS])
+  AC_CHECK_LIB([z],       [deflate],   [EXTRAPGLIB="$EXTRAPGLIB -lz"],
+               [], [$EXTRAPGLIB $LIBS])
+  AC_CHECK_LIB([png],     [png_error], [EXTRAPGLIB="$EXTRAPGLIB -lpng"], 
+  	     [], [$EXTRAPGLIB $LIBS])
 
-  PGPLOTLIB="$PGPLOTLIB $LIBS"
+  AC_LANG(Fortran 77)
+  AC_CHECK_LIB([pgplot],  [pgopen],    [PGPLOTLIB="-lpgplot"],
+               [], [$PGPLOTLIB $LIBS $EXTRAPGLIB])
+  AC_LANG(C)
+  if test "x$F77" = xgfortran; then
+    PGPLOTLIB="-lcpgplot $PGPLOTLIB"
+    AC_MSG_NOTICE([ Using gfortran, so manually adding -lcpgplot to PGPLOTLIB string.])
+  else
+    AC_CHECK_LIB([cpgplot], [cpgopen],   [PGPLOTLIB="-lcpgplot $PGPLOTLIB"],
+                 [], [$PGPLOTLIB $LIBS $EXTRAPGLIB])
+  fi
+#  AC_SEARCH_LIBS([cpgopen],  [cpgplot],  [PGPLOTLIB="$PGPLOTLIB -lcpgplot"],
+#               [], [$PGPLOTLIB $LIBS $EXTRAPGLIB])
+
+#  PGPLOTLIB="$PGPLOTLIB $LIBS"
   
   # If PGPLOT is not present, we give a warning message but still continue. 
   # The compilation is able to work without the PGPLOT-dependent files.
@@ -152,13 +169,16 @@ else
       WARNING! PGPLOT could not be found.
       Compiling Duchamp without graphics capabilities.               
       -------------------------------------------------------])
-    AC_DEFINE([HAVE_PGPLOT], [0], [Define to 1 if PGPLOT is available.])
   else
+    PGPLOTLIB="$PGPLOTLIB $EXTRAPGLIB $LIBS"
     AC_MSG_NOTICE([PGPLOT appears to be available.])
     AC_DEFINE([HAVE_PGPLOT], [1], [Define to 1 if PGPLOT is available.])
     for LIBDIR in $PGPLOTLIBDIRS ; do
-      AC_CHECK_FILE([$LIBDIR/libcpgplot.a], [PGPLOTLIB="-L$LIBDIR $PGPLOTLIB"; break])
+     AC_CHECK_FILE([$LIBDIR/libcpgplot.a], [PGPLOTLIB="-L$LIBDIR $PGPLOTLIB"; break])
     done
+    if test "x$F77" = xgfortran; then
+      PGPLOTLIB="$PGPLOTLIB -bind_at_load"
+    fi
   fi
 
 fi
@@ -189,6 +209,12 @@ else
               $withval/include"
   CFITSIOLIBDIRS="$withval \
               $withval/lib"
+  for LIBDIR in $CFITSIOLIBDIRS ; do
+    AC_CHECK_FILE([$LIBDIR], [LDFLAGS="$LDFLAGS -L$LIBDIR"], [continue])
+  done
+  for INCDIR in $CFITSIOINCDIRS ; do
+    AC_CHECK_FILE([$INCDIR], [CPPFLAGS="$CPPFLAGS -I$INCDIR"], [continue])
+  done
 fi
 ],
 [ # if directory not specified, go searching.
@@ -202,14 +228,8 @@ for INCDIR in $CFITSIOINCDIRS ; do
   AC_CHECK_FILE([$INCDIR/fitsio.h], [CFITSIOINC=-I$INCDIR; break])
 done
 
-for LIBDIR in $CFITSIOLIBDIRS ; do
-  AC_CHECK_FILE([$LIBDIR/libcfitsio.a], [CFITSIOLIB="-L$LIBDIR $CFITSIOLIB"; break])
-  LIBDIR=$LIBDIR/cfitsio
-  AC_CHECK_FILE([$LIBDIR/libcfitsio.a], [CFITSIOLIB="-L$LIBDIR $CFITSIOLIB"; break])
-done
-
-AC_CHECK_LIB([socket],  [recv],   [CFITSIOLIB="-lsocket"], [], [$LIBS])
-AC_CHECK_LIB([cfitsio], [ffopen], [CFITSIOLIB="-lcfitsio $CFITSIOLIB"], [],
+AC_CHECK_LIB([socket],  [recv],   [CFITSIOLIB="$CFITSIOLIB -lsocket"], [], [$LIBS])
+AC_CHECK_LIB([cfitsio], [ffopen], [CFITSIOLIB="$CFITSIOLIB -lcfitsio"], [],
              [$CFITSIOLIB $LIBS])
 
 # CFITSIO is essential for Duchamp, so exit with error message if it
@@ -224,6 +244,12 @@ if test "x$CFITSIOINC" = x -o "x$CFITSIOLIB" = x; then
 else
   AC_MSG_NOTICE([CFITSIO appears to be available.])
   AC_DEFINE([HAVE_CFITSIO], [1], [Define to 1 if CFITSIO is available.])
+for LIBDIR in $CFITSIOLIBDIRS ; do
+  AC_CHECK_FILE([$LIBDIR/libcfitsio.a], [CFITSIOLIB="-L$LIBDIR $CFITSIOLIB"; break])
+  LIBDIR=$LIBDIR/cfitsio
+  AC_CHECK_FILE([$LIBDIR/libcfitsio.a], [CFITSIOLIB="-L$LIBDIR $CFITSIOLIB"; break])
+done
+
 fi
 
 AC_SUBST([CFITSIOINC])
@@ -232,7 +258,7 @@ AC_SUBST([CFITSIOLIB])
 
 ##########################################################################
 # Search for WCSLIB.
-# use --with-cfitsio=directory to specify a particular CFITSIO directory.
+# use --with-wcslib=directory to specify a particular WCSLIB directory.
 # else do the normal searching for libraries.
 
 AC_MSG_NOTICE([  -- WCSLIB -- ])
@@ -244,14 +270,20 @@ if test "x$withval" = xno; then
   AC_MSG_NOTICE([
     The WCSLIB library is required.
     Ignoring the "--with-wcslib=no" and searching for the library.], [1])
-  CFITSIOINCDIRS=$INCDIRS
-  CFITSIOLIBDIRS=$LIBDIRS
+  WCSINCDIRS=$INCDIRS
+  WCSLIBDIRS=$LIBDIRS
 else
   AC_MSG_NOTICE([Using directory "$withval"])
   WCSINCDIRS="$withval \
               $withval/include"
   WCSLIBDIRS="$withval \
               $withval/lib"
+  for LIBDIR in $WCSLIBDIRS ; do
+    AC_CHECK_FILE([$LIBDIR], [LDFLAGS="$LDFLAGS -L$LIBDIR"], [continue])
+  done
+  for INCDIR in $WCSINCDIRS ; do
+    AC_CHECK_FILE([$INCDIR], [CPPFLAGS="$CPPFLAGS -I$INCDIR"], [continue])
+  done
 fi
 ],
 [ # if directory not specified, go searching.
@@ -259,32 +291,45 @@ WCSINCDIRS=$INCDIRS
 WCSLIBDIRS=$LIBDIRS
 ])
 
-for INCDIR in $WCSINCDIRS ; do
-  AC_CHECK_FILE([$INCDIR/cpgsbox.h], [WCSINC="-I$INCDIR $WCSINC"; break])
-  INCDIR=$INCDIR/wcslib
-  AC_CHECK_FILE([$INCDIR/cpgsbox.h], [WCSINC="-I$INCDIR $WCSINC"; break])
-done
-for INCDIR in $WCSINCDIRS ; do
-  AC_CHECK_FILE([$INCDIR/wcs.h], [WCSINC="-I$INCDIR $WCSINC"; break])
-  INCDIR=$INCDIR/wcslib
-  AC_CHECK_FILE([$INCDIR/wcs.h], [WCSINC="-I$INCDIR $WCSINC"; break])
+DIRLIST=". \
+         wcs \
+         wcslib"
+
+for INCBASE in $WCSINCDIRS ; do
+  for DIR in $DIRLIST; do
+    if test "x$DIR" = x.; then
+     INCDIR=$INCBASE
+    else
+     INCDIR="$INCBASE/$DIR"
+    fi
+    AC_CHECK_FILE([$INCDIR/wcs.h], 
+                  [WCSINC="-I$INCDIR $WCSINC"; 
+                  AC_CHECK_FILE([$INCDIR/cpgsbox.h], [], [
+                    for INCBASE2 in $WCSINCDIRS ; do
+                     for DIR2 in $DIRLIST; do
+                      if test "x$DIR" = x.; then
+                       INCDIR=$INCBASE
+                      else
+                       INCDIR="$INCBASE/$DIR"
+                      fi
+                      AC_CHECK_FILE([$INCDIR2/cpgsbox.h],
+                                    [WCSINC="-I$INCDIR $WCSINC"; break])
+                     done
+                    done])
+                  break])
+  done
 done
 
-for LIBDIR in $WCSLIBDIRS ; do
-  AC_CHECK_FILE([$LIBDIR/libpgsbox.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
-  LIBDIR=$LIBDIR/wcs
-  AC_CHECK_FILE([$LIBDIR/libpgsbox.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
-done
-for LIBDIR in $WCSLIBDIRS ; do
-  AC_CHECK_FILE([$LIBDIR/libwcs.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
-  LIBDIR=$LIBDIR/wcs
-  AC_CHECK_FILE([$LIBDIR/libwcs.a], [WCSLIB="-L$LIBDIR $WCSLIB"; break])
-done
-
-AC_CHECK_LIB([pgsbox], [cpgsbox], [WCSLIB="-lpgsbox $WCSLIB"], [],
+# Look for libwcs.a, and libpgsbox.a
+AC_CHECK_LIB([wcs], [wcss2p], [WCSLIB="$WCSLIB -lwcs"], [],
              [$WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB])
-AC_CHECK_LIB([wcs], [wcss2p], [WCSLIB="-lwcs $WCSLIB"], [],
-             [$WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB])
+if test "x$F77" = xgfortran; then
+  WCSLIB="$WCSLIB -lpgsbox"
+  AC_MSG_NOTICE([ Using gfortran, so manually adding -lpgsbox to WCSLIB string.])
+else
+  AC_CHECK_LIB([pgsbox], [cpgsbox], [WCSLIB="$WCSLIB -lpgsbox"], [],
+               [$WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB])
+fi
 
 # WCSLIB is essential for Duchamp, so exit with error message if it
 #   is not present. Need at least libwcs to be available -- libpgsbox will
@@ -299,6 +344,35 @@ if test "x$WCSINC" = x -o "x$WCSLIB" = x; then
 else
   AC_MSG_NOTICE([WCSLIB appears to be available.])
   AC_DEFINE([HAVE_WCSLIB], [1], [Define to 1 if WCSLIB is available.])
+# Now add the -L statements to start of WCSLIB.
+# Search for libwcs.a, and, if we find it, search for libpgsbox in same directory and
+#   then in other directories, keeping the appropriate order of -L calls.
+
+  for LIBBASE in $WCSLIBDIRS ; do
+    for DIR in $DIRLIST; do
+      if test "x$DIR" = x.; then
+       LIBDIR=$LIBBASE
+      else
+       LIBDIR="$LIBBASE/$DIR"
+      fi
+      AC_CHECK_FILE([$LIBDIR/libwcs.a], 
+             [WCSLIBFRONT="-L$LIBDIR"; 
+             AC_CHECK_FILE([$LIBDIR/libpgsbox.a], [], [
+               for LIBBASE2 in $WCSLIBDIRS ; do
+                for DIR2 in $DIRLIST; do
+                 if test "x$DIR" = x.; then
+                  LIBDIR=$LIBBASE
+                 else
+                  LIBDIR="$LIBBASE/$DIR"
+                 fi
+                 AC_CHECK_FILE([$LIBDIR2/libpgsbox.a],
+                               [WCSLIBFRONT="$WCSLIB -L$LIBDIR2"; break])
+                done
+               done])
+              break])
+    done
+  done
+  WCSLIB="$WCSLIBFRONT $WCSLIB"
 fi
 
 AC_SUBST([WCSINC])

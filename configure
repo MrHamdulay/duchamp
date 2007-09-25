@@ -312,7 +312,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT CC CFLAGS ac_ct_CC CPP LN_S INSTALL EGREP RANLIB ac_ct_RANLIB POW_LIB LIBOBJS PGPLOTINC PGPLOTLIB CFITSIOINC CFITSIOLIB WCSINC WCSLIB LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT CC CFLAGS ac_ct_CC CPP F77 FFLAGS ac_ct_F77 LN_S INSTALL EGREP RANLIB ac_ct_RANLIB POW_LIB LIBOBJS PGPLOTINC PGPLOTLIB CFITSIOINC CFITSIOLIB WCSINC WCSLIB LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -781,6 +781,14 @@ ac_env_CPP_set=${CPP+set}
 ac_env_CPP_value=$CPP
 ac_cv_env_CPP_set=${CPP+set}
 ac_cv_env_CPP_value=$CPP
+ac_env_F77_set=${F77+set}
+ac_env_F77_value=$F77
+ac_cv_env_F77_set=${F77+set}
+ac_cv_env_F77_value=$F77
+ac_env_FFLAGS_set=${FFLAGS+set}
+ac_env_FFLAGS_value=$FFLAGS
+ac_cv_env_FFLAGS_set=${FFLAGS+set}
+ac_cv_env_FFLAGS_value=$FFLAGS
 
 #
 # Report the --help message.
@@ -879,6 +887,8 @@ Some influential environment variables:
   CC          C compiler command
   CFLAGS      C compiler flags
   CPP         C preprocessor
+  F77         Fortran 77 compiler command
+  FFLAGS      Fortran 77 compiler flags
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -2854,6 +2864,242 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
+ac_ext=f
+ac_compile='$F77 -c $FFLAGS conftest.$ac_ext >&5'
+ac_link='$F77 -o conftest$ac_exeext $FFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_f77_compiler_gnu
+if test -n "$ac_tool_prefix"; then
+  for ac_prog in g77 f77 xlf frt pgf77 fort77 fl32 af77 f90 xlf90 pgf90 epcf90 f95 fort xlf95 ifc efc pgf95 lf95 gfortran
+  do
+    # Extract the first word of "$ac_tool_prefix$ac_prog", so it can be a program name with args.
+set dummy $ac_tool_prefix$ac_prog; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_prog_F77+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$F77"; then
+  ac_cv_prog_F77="$F77" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_F77="$ac_tool_prefix$ac_prog"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+fi
+fi
+F77=$ac_cv_prog_F77
+if test -n "$F77"; then
+  echo "$as_me:$LINENO: result: $F77" >&5
+echo "${ECHO_T}$F77" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+    test -n "$F77" && break
+  done
+fi
+if test -z "$F77"; then
+  ac_ct_F77=$F77
+  for ac_prog in g77 f77 xlf frt pgf77 fort77 fl32 af77 f90 xlf90 pgf90 epcf90 f95 fort xlf95 ifc efc pgf95 lf95 gfortran
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_prog_ac_ct_F77+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$ac_ct_F77"; then
+  ac_cv_prog_ac_ct_F77="$ac_ct_F77" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_ac_ct_F77="$ac_prog"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+fi
+fi
+ac_ct_F77=$ac_cv_prog_ac_ct_F77
+if test -n "$ac_ct_F77"; then
+  echo "$as_me:$LINENO: result: $ac_ct_F77" >&5
+echo "${ECHO_T}$ac_ct_F77" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+  test -n "$ac_ct_F77" && break
+done
+
+  F77=$ac_ct_F77
+fi
+
+
+# Provide some information about the compiler.
+echo "$as_me:2959:" \
+     "checking for Fortran 77 compiler version" >&5
+ac_compiler=`set X $ac_compile; echo $2`
+{ (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
+  (eval $ac_compiler --version </dev/null >&5) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }
+{ (eval echo "$as_me:$LINENO: \"$ac_compiler -v </dev/null >&5\"") >&5
+  (eval $ac_compiler -v </dev/null >&5) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }
+{ (eval echo "$as_me:$LINENO: \"$ac_compiler -V </dev/null >&5\"") >&5
+  (eval $ac_compiler -V </dev/null >&5) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }
+rm -f a.out
+
+# If we don't use `.F' as extension, the preprocessor is not run on the
+# input file.  (Note that this only needs to work for GNU compilers.)
+ac_save_ext=$ac_ext
+ac_ext=F
+echo "$as_me:$LINENO: checking whether we are using the GNU Fortran 77 compiler" >&5
+echo $ECHO_N "checking whether we are using the GNU Fortran 77 compiler... $ECHO_C" >&6
+if test "${ac_cv_f77_compiler_gnu+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+      program main
+#ifndef __GNUC__
+       choke me
+#endif
+
+      end
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_f77_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_compiler_gnu=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_compiler_gnu=no
+fi
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+ac_cv_f77_compiler_gnu=$ac_compiler_gnu
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_f77_compiler_gnu" >&5
+echo "${ECHO_T}$ac_cv_f77_compiler_gnu" >&6
+ac_ext=$ac_save_ext
+ac_test_FFLAGS=${FFLAGS+set}
+ac_save_FFLAGS=$FFLAGS
+FFLAGS=
+echo "$as_me:$LINENO: checking whether $F77 accepts -g" >&5
+echo $ECHO_N "checking whether $F77 accepts -g... $ECHO_C" >&6
+if test "${ac_cv_prog_f77_g+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  FFLAGS=-g
+cat >conftest.$ac_ext <<_ACEOF
+      program main
+
+      end
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_f77_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_prog_f77_g=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_prog_f77_g=no
+fi
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_prog_f77_g" >&5
+echo "${ECHO_T}$ac_cv_prog_f77_g" >&6
+if test "$ac_test_FFLAGS" = set; then
+  FFLAGS=$ac_save_FFLAGS
+elif test $ac_cv_prog_f77_g = yes; then
+  if test "x$ac_cv_f77_compiler_gnu" = xyes; then
+    FFLAGS="-g -O2"
+  else
+    FFLAGS="-g"
+  fi
+else
+  if test "x$ac_cv_f77_compiler_gnu" = xyes; then
+    FFLAGS="-O2"
+  else
+    FFLAGS=
+  fi
+fi
+
+G77=`test $ac_compiler_gnu = yes && echo yes`
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
 echo "$as_me:$LINENO: checking whether ln -s works" >&5
 echo $ECHO_N "checking whether ln -s works... $ECHO_C" >&6
 LN_S=$as_ln_s
@@ -4333,7 +4579,7 @@ if test "${ac_cv_lib_sunmath_cosd+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lsunmath $PGPLOTLIB $LIBS $LIBS"
+LIBS="-lsunmath $EXTRAPGLIB $LIBS $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -4392,7 +4638,7 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_sunmath_cosd" >&5
 echo "${ECHO_T}$ac_cv_lib_sunmath_cosd" >&6
 if test $ac_cv_lib_sunmath_cosd = yes; then
-  PGPLOTLIB="-lsunmath $PGPLOTLIB"
+  EXTRAPGLIB="-lsunmath $EXTRAPGLIB"
 fi
 
   echo "$as_me:$LINENO: checking for iand_ in -lM77" >&5
@@ -4401,7 +4647,7 @@ if test "${ac_cv_lib_M77_iand_+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lM77 $PGPLOTLIB $LIBS $LIBS"
+LIBS="-lM77 $EXTRAPGLIB $LIBS $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -4460,7 +4706,7 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_M77_iand_" >&5
 echo "${ECHO_T}$ac_cv_lib_M77_iand_" >&6
 if test $ac_cv_lib_M77_iand_ = yes; then
-  PGPLOTLIB="-lM77 $PGPLOTLIB"
+  EXTRAPGLIB="-lM77 $EXTRAPGLIB"
 fi
 
   echo "$as_me:$LINENO: checking for f77_init in -lF77" >&5
@@ -4469,7 +4715,7 @@ if test "${ac_cv_lib_F77_f77_init+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lF77 $PGPLOTLIB $LIBS $LIBS"
+LIBS="-lF77 $EXTRAPGLIB $LIBS $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -4528,11 +4774,11 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_F77_f77_init" >&5
 echo "${ECHO_T}$ac_cv_lib_F77_f77_init" >&6
 if test $ac_cv_lib_F77_f77_init = yes; then
-  PGPLOTLIB="-lF77 $PGPLOTLIB"
+  EXTRAPGLIB="-lF77 $EXTRAPGLIB"
 fi
 
 
-  # Checks for extra libraries needed by PGPLOT -- will add -lg2c to $LIBS
+  # Checks for extra libraries needed by PGPLOT -- will add -lg2c -lstdc++ to $LIBS
 
 echo "$as_me:$LINENO: checking for gerror_ in -lg2c" >&5
 echo $ECHO_N "checking for gerror_ in -lg2c... $ECHO_C" >&6
@@ -4604,6 +4850,74 @@ if test $ac_cv_lib_g2c_gerror_ = yes; then
 _ACEOF
 
   LIBS="-lg2c $LIBS"
+
+fi
+
+
+echo "$as_me:$LINENO: checking for main in -lstdc++" >&5
+echo $ECHO_N "checking for main in -lstdc++... $ECHO_C" >&6
+if test "${ac_cv_lib_stdcpp_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lstdc++  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_stdcpp_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_stdcpp_main=no
+fi
+rm -f conftest.err conftest.$ac_objext \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_stdcpp_main" >&5
+echo "${ECHO_T}$ac_cv_lib_stdcpp_main" >&6
+if test $ac_cv_lib_stdcpp_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSTDC__ 1
+_ACEOF
+
+  LIBS="-lstdc++ $LIBS"
 
 fi
 
@@ -4845,8 +5159,13 @@ fi
 
   if test "x$ac_x_libraries" != x; then
     LDFLAGS="$LDFLAGS -L$ac_x_libraries"
-    PGPLOTLIB="-L$ac_x_libraries -lX11 $PGPLOTLIB"
+    EXTRAPGLIB="-L$ac_x_libraries -lX11 $EXTRAPGLIB"
   fi
+
+#  # Add pgplot libraries, if they exist to the lib path
+#  for LIBDIR in $PGPLOTLIBDIRS ; do
+#    AC_CHECK_FILE([$LIBDIR/libcpgplot.a], [PGPLOTLIB="-L$LIBDIR $PGPLOTLIB"; break])
+#  done
 
   # It is possible that other libraries may be required depending on what
   # graphics drivers were installed with PGPLOT.
@@ -4856,7 +5175,7 @@ if test "${ac_cv_lib_z_deflate+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lz $PGPLOTLIB $LIBS $LIBS"
+LIBS="-lz $EXTRAPGLIB $LIBS $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -4915,7 +5234,7 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_z_deflate" >&5
 echo "${ECHO_T}$ac_cv_lib_z_deflate" >&6
 if test $ac_cv_lib_z_deflate = yes; then
-  PGPLOTLIB="-lz $PGPLOTLIB"
+  EXTRAPGLIB="$EXTRAPGLIB -lz"
 fi
 
   echo "$as_me:$LINENO: checking for png_error in -lpng" >&5
@@ -4924,7 +5243,7 @@ if test "${ac_cv_lib_png_png_error+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpng $PGPLOTLIB $LIBS $LIBS"
+LIBS="-lpng $EXTRAPGLIB $LIBS $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -4983,37 +5302,27 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_png_png_error" >&5
 echo "${ECHO_T}$ac_cv_lib_png_png_error" >&6
 if test $ac_cv_lib_png_png_error = yes; then
-  PGPLOTLIB="-lpng $PGPLOTLIB"
+  EXTRAPGLIB="$EXTRAPGLIB -lpng"
 fi
 
-  echo "$as_me:$LINENO: checking for pgbeg_ in -lpgplot" >&5
-echo $ECHO_N "checking for pgbeg_ in -lpgplot... $ECHO_C" >&6
-if test "${ac_cv_lib_pgplot_pgbeg_+set}" = set; then
+
+  ac_ext=f
+ac_compile='$F77 -c $FFLAGS conftest.$ac_ext >&5'
+ac_link='$F77 -o conftest$ac_exeext $FFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_f77_compiler_gnu
+
+
+echo "$as_me:$LINENO: checking for pgopen in -lpgplot" >&5
+echo $ECHO_N "checking for pgopen in -lpgplot... $ECHO_C" >&6
+if test "${ac_cv_lib_pgplot_pgopen+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpgplot $PGPLOTLIB $LIBS $LIBS"
+LIBS="-lpgplot $PGPLOTLIB $LIBS $EXTRAPGLIB $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char pgbeg_ ();
-int
-main ()
-{
-pgbeg_ ();
-  ;
-  return 0;
-}
+      program main
+      call pgopen
+      end
 _ACEOF
 rm -f conftest.$ac_objext conftest$ac_exeext
 if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
@@ -5024,7 +5333,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
+	 { ac_try='test -z "$ac_f77_werror_flag"
 			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
@@ -5037,30 +5346,41 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_lib_pgplot_pgbeg_=yes
+  ac_cv_lib_pgplot_pgopen=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_lib_pgplot_pgbeg_=no
+ac_cv_lib_pgplot_pgopen=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_pgplot_pgbeg_" >&5
-echo "${ECHO_T}$ac_cv_lib_pgplot_pgbeg_" >&6
-if test $ac_cv_lib_pgplot_pgbeg_ = yes; then
-  PGPLOTLIB="-lpgplot $PGPLOTLIB"
+echo "$as_me:$LINENO: result: $ac_cv_lib_pgplot_pgopen" >&5
+echo "${ECHO_T}$ac_cv_lib_pgplot_pgopen" >&6
+if test $ac_cv_lib_pgplot_pgopen = yes; then
+  PGPLOTLIB="-lpgplot"
 fi
 
-  echo "$as_me:$LINENO: checking for cpgopen in -lcpgplot" >&5
+  ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+  if test "x$F77" = xgfortran; then
+    PGPLOTLIB="-lcpgplot $PGPLOTLIB"
+    { echo "$as_me:$LINENO:  Using gfortran, so manually adding -lcpgplot to PGPLOTLIB string." >&5
+echo "$as_me:  Using gfortran, so manually adding -lcpgplot to PGPLOTLIB string." >&6;}
+  else
+    echo "$as_me:$LINENO: checking for cpgopen in -lcpgplot" >&5
 echo $ECHO_N "checking for cpgopen in -lcpgplot... $ECHO_C" >&6
 if test "${ac_cv_lib_cpgplot_cpgopen+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lcpgplot $PGPLOTLIB $LIBS $LIBS"
+LIBS="-lcpgplot $PGPLOTLIB $LIBS $EXTRAPGLIB $LIBS"
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -5122,8 +5442,11 @@ if test $ac_cv_lib_cpgplot_cpgopen = yes; then
   PGPLOTLIB="-lcpgplot $PGPLOTLIB"
 fi
 
+  fi
+#  AC_SEARCH_LIBS([cpgopen],  [cpgplot],  [PGPLOTLIB="$PGPLOTLIB -lcpgplot"],
+#               [], [$PGPLOTLIB $LIBS $EXTRAPGLIB])
 
-  PGPLOTLIB="$PGPLOTLIB $LIBS"
+#  PGPLOTLIB="$PGPLOTLIB $LIBS"
 
   # If PGPLOT is not present, we give a warning message but still continue.
   # The compilation is able to work without the PGPLOT-dependent files.
@@ -5138,12 +5461,8 @@ echo "$as_me:
       WARNING! PGPLOT could not be found.
       Compiling Duchamp without graphics capabilities.
       -------------------------------------------------------" >&6;}
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_PGPLOT 0
-_ACEOF
-
   else
+    PGPLOTLIB="$PGPLOTLIB $EXTRAPGLIB $LIBS"
     { echo "$as_me:$LINENO: PGPLOT appears to be available." >&5
 echo "$as_me: PGPLOT appears to be available." >&6;}
 
@@ -5152,7 +5471,7 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
     for LIBDIR in $PGPLOTLIBDIRS ; do
-      as_ac_File=`echo "ac_cv_file_$LIBDIR/libcpgplot.a" | $as_tr_sh`
+     as_ac_File=`echo "ac_cv_file_$LIBDIR/libcpgplot.a" | $as_tr_sh`
 echo "$as_me:$LINENO: checking for $LIBDIR/libcpgplot.a" >&5
 echo $ECHO_N "checking for $LIBDIR/libcpgplot.a... $ECHO_C" >&6
 if eval "test \"\${$as_ac_File+set}\" = set"; then
@@ -5175,6 +5494,9 @@ if test `eval echo '${'$as_ac_File'}'` = yes; then
 fi
 
     done
+    if test "x$F77" = xgfortran; then
+      PGPLOTLIB="$PGPLOTLIB -bind_at_load"
+    fi
   fi
 
 fi
@@ -5211,6 +5533,58 @@ echo "$as_me: Using directory \"$withval\"" >&6;}
               $withval/include"
   CFITSIOLIBDIRS="$withval \
               $withval/lib"
+  for LIBDIR in $CFITSIOLIBDIRS ; do
+    as_ac_File=`echo "ac_cv_file_$LIBDIR" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $LIBDIR" >&5
+echo $ECHO_N "checking for $LIBDIR... $ECHO_C" >&6
+if eval "test \"\${$as_ac_File+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "$LIBDIR"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+if test `eval echo '${'$as_ac_File'}'` = yes; then
+  LDFLAGS="$LDFLAGS -L$LIBDIR"
+else
+  continue
+fi
+
+  done
+  for INCDIR in $CFITSIOINCDIRS ; do
+    as_ac_File=`echo "ac_cv_file_$INCDIR" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $INCDIR" >&5
+echo $ECHO_N "checking for $INCDIR... $ECHO_C" >&6
+if eval "test \"\${$as_ac_File+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "$INCDIR"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+if test `eval echo '${'$as_ac_File'}'` = yes; then
+  CPPFLAGS="$CPPFLAGS -I$INCDIR"
+else
+  continue
+fi
+
+  done
 fi
 
 else
@@ -5264,54 +5638,6 @@ echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
 echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
 if test `eval echo '${'$as_ac_File'}'` = yes; then
   CFITSIOINC=-I$INCDIR; break
-fi
-
-done
-
-for LIBDIR in $CFITSIOLIBDIRS ; do
-  as_ac_File=`echo "ac_cv_file_$LIBDIR/libcfitsio.a" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $LIBDIR/libcfitsio.a" >&5
-echo $ECHO_N "checking for $LIBDIR/libcfitsio.a... $ECHO_C" >&6
-if eval "test \"\${$as_ac_File+set}\" = set"; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  test "$cross_compiling" = yes &&
-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
-   { (exit 1); exit 1; }; }
-if test -r "$LIBDIR/libcfitsio.a"; then
-  eval "$as_ac_File=yes"
-else
-  eval "$as_ac_File=no"
-fi
-fi
-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
-echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
-if test `eval echo '${'$as_ac_File'}'` = yes; then
-  CFITSIOLIB="-L$LIBDIR $CFITSIOLIB"; break
-fi
-
-  LIBDIR=$LIBDIR/cfitsio
-  as_ac_File=`echo "ac_cv_file_$LIBDIR/libcfitsio.a" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $LIBDIR/libcfitsio.a" >&5
-echo $ECHO_N "checking for $LIBDIR/libcfitsio.a... $ECHO_C" >&6
-if eval "test \"\${$as_ac_File+set}\" = set"; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  test "$cross_compiling" = yes &&
-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
-   { (exit 1); exit 1; }; }
-if test -r "$LIBDIR/libcfitsio.a"; then
-  eval "$as_ac_File=yes"
-else
-  eval "$as_ac_File=no"
-fi
-fi
-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
-echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
-if test `eval echo '${'$as_ac_File'}'` = yes; then
-  CFITSIOLIB="-L$LIBDIR $CFITSIOLIB"; break
 fi
 
 done
@@ -5381,7 +5707,7 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_socket_recv" >&5
 echo "${ECHO_T}$ac_cv_lib_socket_recv" >&6
 if test $ac_cv_lib_socket_recv = yes; then
-  CFITSIOLIB="-lsocket"
+  CFITSIOLIB="$CFITSIOLIB -lsocket"
 fi
 
 echo "$as_me:$LINENO: checking for ffopen in -lcfitsio" >&5
@@ -5449,7 +5775,7 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_cfitsio_ffopen" >&5
 echo "${ECHO_T}$ac_cv_lib_cfitsio_ffopen" >&6
 if test $ac_cv_lib_cfitsio_ffopen = yes; then
-  CFITSIOLIB="-lcfitsio $CFITSIOLIB"
+  CFITSIOLIB="$CFITSIOLIB -lcfitsio"
 fi
 
 
@@ -5477,6 +5803,54 @@ cat >>confdefs.h <<\_ACEOF
 #define HAVE_CFITSIO 1
 _ACEOF
 
+for LIBDIR in $CFITSIOLIBDIRS ; do
+  as_ac_File=`echo "ac_cv_file_$LIBDIR/libcfitsio.a" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $LIBDIR/libcfitsio.a" >&5
+echo $ECHO_N "checking for $LIBDIR/libcfitsio.a... $ECHO_C" >&6
+if eval "test \"\${$as_ac_File+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "$LIBDIR/libcfitsio.a"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+if test `eval echo '${'$as_ac_File'}'` = yes; then
+  CFITSIOLIB="-L$LIBDIR $CFITSIOLIB"; break
+fi
+
+  LIBDIR=$LIBDIR/cfitsio
+  as_ac_File=`echo "ac_cv_file_$LIBDIR/libcfitsio.a" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $LIBDIR/libcfitsio.a" >&5
+echo $ECHO_N "checking for $LIBDIR/libcfitsio.a... $ECHO_C" >&6
+if eval "test \"\${$as_ac_File+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "$LIBDIR/libcfitsio.a"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+if test `eval echo '${'$as_ac_File'}'` = yes; then
+  CFITSIOLIB="-L$LIBDIR $CFITSIOLIB"; break
+fi
+
+done
+
 fi
 
 
@@ -5485,7 +5859,7 @@ fi
 
 ##########################################################################
 # Search for WCSLIB.
-# use --with-cfitsio=directory to specify a particular CFITSIO directory.
+# use --with-wcslib=directory to specify a particular WCSLIB directory.
 # else do the normal searching for libraries.
 
 { echo "$as_me:$LINENO:   -- WCSLIB -- " >&5
@@ -5502,8 +5876,8 @@ if test "x$withval" = xno; then
 echo "$as_me:
     The WCSLIB library is required.
     Ignoring the \"--with-wcslib=no\" and searching for the library." >&1;}
-  CFITSIOINCDIRS=$INCDIRS
-  CFITSIOLIBDIRS=$LIBDIRS
+  WCSINCDIRS=$INCDIRS
+  WCSLIBDIRS=$LIBDIRS
 else
   { echo "$as_me:$LINENO: Using directory \"$withval\"" >&5
 echo "$as_me: Using directory \"$withval\"" >&6;}
@@ -5511,6 +5885,58 @@ echo "$as_me: Using directory \"$withval\"" >&6;}
               $withval/include"
   WCSLIBDIRS="$withval \
               $withval/lib"
+  for LIBDIR in $WCSLIBDIRS ; do
+    as_ac_File=`echo "ac_cv_file_$LIBDIR" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $LIBDIR" >&5
+echo $ECHO_N "checking for $LIBDIR... $ECHO_C" >&6
+if eval "test \"\${$as_ac_File+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "$LIBDIR"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+if test `eval echo '${'$as_ac_File'}'` = yes; then
+  LDFLAGS="$LDFLAGS -L$LIBDIR"
+else
+  continue
+fi
+
+  done
+  for INCDIR in $WCSINCDIRS ; do
+    as_ac_File=`echo "ac_cv_file_$INCDIR" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $INCDIR" >&5
+echo $ECHO_N "checking for $INCDIR... $ECHO_C" >&6
+if eval "test \"\${$as_ac_File+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "$INCDIR"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+if test `eval echo '${'$as_ac_File'}'` = yes; then
+  CPPFLAGS="$CPPFLAGS -I$INCDIR"
+else
+  continue
+fi
+
+  done
 fi
 
 else
@@ -5520,55 +5946,18 @@ WCSLIBDIRS=$LIBDIRS
 
 fi;
 
-for INCDIR in $WCSINCDIRS ; do
-  as_ac_File=`echo "ac_cv_file_$INCDIR/cpgsbox.h" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $INCDIR/cpgsbox.h" >&5
-echo $ECHO_N "checking for $INCDIR/cpgsbox.h... $ECHO_C" >&6
-if eval "test \"\${$as_ac_File+set}\" = set"; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  test "$cross_compiling" = yes &&
-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
-   { (exit 1); exit 1; }; }
-if test -r "$INCDIR/cpgsbox.h"; then
-  eval "$as_ac_File=yes"
-else
-  eval "$as_ac_File=no"
-fi
-fi
-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
-echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
-if test `eval echo '${'$as_ac_File'}'` = yes; then
-  WCSINC="-I$INCDIR $WCSINC"; break
-fi
+DIRLIST=". \
+         wcs \
+         wcslib"
 
-  INCDIR=$INCDIR/wcslib
-  as_ac_File=`echo "ac_cv_file_$INCDIR/cpgsbox.h" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $INCDIR/cpgsbox.h" >&5
-echo $ECHO_N "checking for $INCDIR/cpgsbox.h... $ECHO_C" >&6
-if eval "test \"\${$as_ac_File+set}\" = set"; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  test "$cross_compiling" = yes &&
-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
-   { (exit 1); exit 1; }; }
-if test -r "$INCDIR/cpgsbox.h"; then
-  eval "$as_ac_File=yes"
-else
-  eval "$as_ac_File=no"
-fi
-fi
-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
-echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
-if test `eval echo '${'$as_ac_File'}'` = yes; then
-  WCSINC="-I$INCDIR $WCSINC"; break
-fi
-
-done
-for INCDIR in $WCSINCDIRS ; do
-  as_ac_File=`echo "ac_cv_file_$INCDIR/wcs.h" | $as_tr_sh`
+for INCBASE in $WCSINCDIRS ; do
+  for DIR in $DIRLIST; do
+    if test "x$DIR" = x.; then
+     INCDIR=$INCBASE
+    else
+     INCDIR="$INCBASE/$DIR"
+    fi
+    as_ac_File=`echo "ac_cv_file_$INCDIR/wcs.h" | $as_tr_sh`
 echo "$as_me:$LINENO: checking for $INCDIR/wcs.h" >&5
 echo $ECHO_N "checking for $INCDIR/wcs.h... $ECHO_C" >&6
 if eval "test \"\${$as_ac_File+set}\" = set"; then
@@ -5587,13 +5976,10 @@ fi
 echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
 echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
 if test `eval echo '${'$as_ac_File'}'` = yes; then
-  WCSINC="-I$INCDIR $WCSINC"; break
-fi
-
-  INCDIR=$INCDIR/wcslib
-  as_ac_File=`echo "ac_cv_file_$INCDIR/wcs.h" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $INCDIR/wcs.h" >&5
-echo $ECHO_N "checking for $INCDIR/wcs.h... $ECHO_C" >&6
+  WCSINC="-I$INCDIR $WCSINC";
+                  as_ac_File=`echo "ac_cv_file_$INCDIR/cpgsbox.h" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $INCDIR/cpgsbox.h" >&5
+echo $ECHO_N "checking for $INCDIR/cpgsbox.h... $ECHO_C" >&6
 if eval "test \"\${$as_ac_File+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5601,7 +5987,36 @@ else
   { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
 echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
    { (exit 1); exit 1; }; }
-if test -r "$INCDIR/wcs.h"; then
+if test -r "$INCDIR/cpgsbox.h"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+if test `eval echo '${'$as_ac_File'}'` = yes; then
+  :
+else
+
+                    for INCBASE2 in $WCSINCDIRS ; do
+                     for DIR2 in $DIRLIST; do
+                      if test "x$DIR" = x.; then
+                       INCDIR=$INCBASE
+                      else
+                       INCDIR="$INCBASE/$DIR"
+                      fi
+                      as_ac_File=`echo "ac_cv_file_$INCDIR2/cpgsbox.h" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $INCDIR2/cpgsbox.h" >&5
+echo $ECHO_N "checking for $INCDIR2/cpgsbox.h... $ECHO_C" >&6
+if eval "test \"\${$as_ac_File+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "$INCDIR2/cpgsbox.h"; then
   eval "$as_ac_File=yes"
 else
   eval "$as_ac_File=no"
@@ -5613,171 +6028,17 @@ if test `eval echo '${'$as_ac_File'}'` = yes; then
   WCSINC="-I$INCDIR $WCSINC"; break
 fi
 
+                     done
+                    done
+fi
+
+                  break
+fi
+
+  done
 done
 
-for LIBDIR in $WCSLIBDIRS ; do
-  as_ac_File=`echo "ac_cv_file_$LIBDIR/libpgsbox.a" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $LIBDIR/libpgsbox.a" >&5
-echo $ECHO_N "checking for $LIBDIR/libpgsbox.a... $ECHO_C" >&6
-if eval "test \"\${$as_ac_File+set}\" = set"; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  test "$cross_compiling" = yes &&
-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
-   { (exit 1); exit 1; }; }
-if test -r "$LIBDIR/libpgsbox.a"; then
-  eval "$as_ac_File=yes"
-else
-  eval "$as_ac_File=no"
-fi
-fi
-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
-echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
-if test `eval echo '${'$as_ac_File'}'` = yes; then
-  WCSLIB="-L$LIBDIR $WCSLIB"; break
-fi
-
-  LIBDIR=$LIBDIR/wcs
-  as_ac_File=`echo "ac_cv_file_$LIBDIR/libpgsbox.a" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $LIBDIR/libpgsbox.a" >&5
-echo $ECHO_N "checking for $LIBDIR/libpgsbox.a... $ECHO_C" >&6
-if eval "test \"\${$as_ac_File+set}\" = set"; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  test "$cross_compiling" = yes &&
-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
-   { (exit 1); exit 1; }; }
-if test -r "$LIBDIR/libpgsbox.a"; then
-  eval "$as_ac_File=yes"
-else
-  eval "$as_ac_File=no"
-fi
-fi
-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
-echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
-if test `eval echo '${'$as_ac_File'}'` = yes; then
-  WCSLIB="-L$LIBDIR $WCSLIB"; break
-fi
-
-done
-for LIBDIR in $WCSLIBDIRS ; do
-  as_ac_File=`echo "ac_cv_file_$LIBDIR/libwcs.a" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $LIBDIR/libwcs.a" >&5
-echo $ECHO_N "checking for $LIBDIR/libwcs.a... $ECHO_C" >&6
-if eval "test \"\${$as_ac_File+set}\" = set"; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  test "$cross_compiling" = yes &&
-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
-   { (exit 1); exit 1; }; }
-if test -r "$LIBDIR/libwcs.a"; then
-  eval "$as_ac_File=yes"
-else
-  eval "$as_ac_File=no"
-fi
-fi
-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
-echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
-if test `eval echo '${'$as_ac_File'}'` = yes; then
-  WCSLIB="-L$LIBDIR $WCSLIB"; break
-fi
-
-  LIBDIR=$LIBDIR/wcs
-  as_ac_File=`echo "ac_cv_file_$LIBDIR/libwcs.a" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $LIBDIR/libwcs.a" >&5
-echo $ECHO_N "checking for $LIBDIR/libwcs.a... $ECHO_C" >&6
-if eval "test \"\${$as_ac_File+set}\" = set"; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  test "$cross_compiling" = yes &&
-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
-   { (exit 1); exit 1; }; }
-if test -r "$LIBDIR/libwcs.a"; then
-  eval "$as_ac_File=yes"
-else
-  eval "$as_ac_File=no"
-fi
-fi
-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
-echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
-if test `eval echo '${'$as_ac_File'}'` = yes; then
-  WCSLIB="-L$LIBDIR $WCSLIB"; break
-fi
-
-done
-
-echo "$as_me:$LINENO: checking for cpgsbox in -lpgsbox" >&5
-echo $ECHO_N "checking for cpgsbox in -lpgsbox... $ECHO_C" >&6
-if test "${ac_cv_lib_pgsbox_cpgsbox+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpgsbox $WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-/* Override any gcc2 internal prototype to avoid an error.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-/* We use char because int might match the return type of a gcc2
-   builtin and then its argument prototype would still apply.  */
-char cpgsbox ();
-int
-main ()
-{
-cpgsbox ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
-			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_pgsbox_cpgsbox=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_lib_pgsbox_cpgsbox=no
-fi
-rm -f conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_pgsbox_cpgsbox" >&5
-echo "${ECHO_T}$ac_cv_lib_pgsbox_cpgsbox" >&6
-if test $ac_cv_lib_pgsbox_cpgsbox = yes; then
-  WCSLIB="-lpgsbox $WCSLIB"
-fi
-
+# Look for libwcs.a, and libpgsbox.a
 echo "$as_me:$LINENO: checking for wcss2p in -lwcs" >&5
 echo $ECHO_N "checking for wcss2p in -lwcs... $ECHO_C" >&6
 if test "${ac_cv_lib_wcs_wcss2p+set}" = set; then
@@ -5843,9 +6104,83 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_wcs_wcss2p" >&5
 echo "${ECHO_T}$ac_cv_lib_wcs_wcss2p" >&6
 if test $ac_cv_lib_wcs_wcss2p = yes; then
-  WCSLIB="-lwcs $WCSLIB"
+  WCSLIB="$WCSLIB -lwcs"
 fi
 
+if test "x$F77" = xgfortran; then
+  WCSLIB="$WCSLIB -lpgsbox"
+  { echo "$as_me:$LINENO:  Using gfortran, so manually adding -lpgsbox to WCSLIB string." >&5
+echo "$as_me:  Using gfortran, so manually adding -lpgsbox to WCSLIB string." >&6;}
+else
+  echo "$as_me:$LINENO: checking for cpgsbox in -lpgsbox" >&5
+echo $ECHO_N "checking for cpgsbox in -lpgsbox... $ECHO_C" >&6
+if test "${ac_cv_lib_pgsbox_cpgsbox+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpgsbox $WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char cpgsbox ();
+int
+main ()
+{
+cpgsbox ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_pgsbox_cpgsbox=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_pgsbox_cpgsbox=no
+fi
+rm -f conftest.err conftest.$ac_objext \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_pgsbox_cpgsbox" >&5
+echo "${ECHO_T}$ac_cv_lib_pgsbox_cpgsbox" >&6
+if test $ac_cv_lib_pgsbox_cpgsbox = yes; then
+  WCSLIB="$WCSLIB -lpgsbox"
+fi
+
+fi
 
 # WCSLIB is essential for Duchamp, so exit with error message if it
 #   is not present. Need at least libwcs to be available -- libpgsbox will
@@ -5872,6 +6207,98 @@ cat >>confdefs.h <<\_ACEOF
 #define HAVE_WCSLIB 1
 _ACEOF
 
+# Now add the -L statements to start of WCSLIB.
+# Search for libwcs.a, and, if we find it, search for libpgsbox in same directory and
+#   then in other directories, keeping the appropriate order of -L calls.
+
+  for LIBBASE in $WCSLIBDIRS ; do
+    for DIR in $DIRLIST; do
+      if test "x$DIR" = x.; then
+       LIBDIR=$LIBBASE
+      else
+       LIBDIR="$LIBBASE/$DIR"
+      fi
+      as_ac_File=`echo "ac_cv_file_$LIBDIR/libwcs.a" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $LIBDIR/libwcs.a" >&5
+echo $ECHO_N "checking for $LIBDIR/libwcs.a... $ECHO_C" >&6
+if eval "test \"\${$as_ac_File+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "$LIBDIR/libwcs.a"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+if test `eval echo '${'$as_ac_File'}'` = yes; then
+  WCSLIBFRONT="-L$LIBDIR";
+             as_ac_File=`echo "ac_cv_file_$LIBDIR/libpgsbox.a" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $LIBDIR/libpgsbox.a" >&5
+echo $ECHO_N "checking for $LIBDIR/libpgsbox.a... $ECHO_C" >&6
+if eval "test \"\${$as_ac_File+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "$LIBDIR/libpgsbox.a"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+if test `eval echo '${'$as_ac_File'}'` = yes; then
+  :
+else
+
+               for LIBBASE2 in $WCSLIBDIRS ; do
+                for DIR2 in $DIRLIST; do
+                 if test "x$DIR" = x.; then
+                  LIBDIR=$LIBBASE
+                 else
+                  LIBDIR="$LIBBASE/$DIR"
+                 fi
+                 as_ac_File=`echo "ac_cv_file_$LIBDIR2/libpgsbox.a" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $LIBDIR2/libpgsbox.a" >&5
+echo $ECHO_N "checking for $LIBDIR2/libpgsbox.a... $ECHO_C" >&6
+if eval "test \"\${$as_ac_File+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "$LIBDIR2/libpgsbox.a"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+if test `eval echo '${'$as_ac_File'}'` = yes; then
+  WCSLIBFRONT="$WCSLIB -L$LIBDIR2"; break
+fi
+
+                done
+               done
+fi
+
+              break
+fi
+
+    done
+  done
+  WCSLIB="$WCSLIBFRONT $WCSLIB"
 fi
 
 
@@ -6503,6 +6930,9 @@ s,@CC@,$CC,;t t
 s,@CFLAGS@,$CFLAGS,;t t
 s,@ac_ct_CC@,$ac_ct_CC,;t t
 s,@CPP@,$CPP,;t t
+s,@F77@,$F77,;t t
+s,@FFLAGS@,$FFLAGS,;t t
+s,@ac_ct_F77@,$ac_ct_F77,;t t
 s,@LN_S@,$LN_S,;t t
 s,@INSTALL@,$INSTALL,;t t
 s,@EGREP@,$EGREP,;t t
