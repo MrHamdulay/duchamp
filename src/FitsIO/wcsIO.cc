@@ -201,8 +201,6 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
       //  We use wcssptr to translate it if it is not of the desired type,
       //  or if the spectral units are not defined.
 
-      std::cerr << specType << "\n";
-
       bool needToTranslate = false;
 
 //       if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0) 

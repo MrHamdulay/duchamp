@@ -235,7 +235,6 @@ void FitsHeader::fixUnits(Param &par)
 
   // define spectral units from the param set
   this->spectralUnits = par.getSpectralUnits();
-  std::cerr << this->wcs->cunit[this->wcs->spec] << " " <<this->spectralUnits << "\n";
   double sc=1.;
   double of=0.;
   double po=1.;
@@ -269,7 +268,6 @@ void FitsHeader::fixUnits(Param &par)
   this->scale = sc;
   this->offset= of;
   this->power = po;
-  std::cerr << sc << " " << of << " " << po << "\n";
 
   // Work out the integrated flux units, based on the spectral units.
   // If flux is per beam, trim the /beam from the flux units and multiply 
