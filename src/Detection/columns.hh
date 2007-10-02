@@ -67,7 +67,7 @@ namespace Column
   /** Number of types of precision. */
   const int numPrec=6;        
   /** Enumerated precision categories */
-  enum PrecType {prFLUX, prVEL, prXYZ, prPOS, prWPOS, prSNR}; 
+  enum PrecType {prFLUX=0, prVEL, prXYZ, prPOS, prWPOS, prSNR}; 
 
   /** Precision values in same order as enum list.*/
   const int prec[numPrec]={3, 3, 1, 6, 2, 2}; 
