@@ -251,7 +251,7 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
   //  integrated flux when we go to fixUnits.
   this->readBUNIT(fname);
 
-  if(localwcs->spec>=0) this->fixUnits(par);
+  if(this->wcs->spec>=0) this->fixUnits(par);
 
   return SUCCESS;
 

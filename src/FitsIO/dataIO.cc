@@ -107,7 +107,8 @@ int Cube::getFITSdata(std::string fname)
   }
   lpixel[lng] = dimAxes[lng];
   if(numAxes>1) lpixel[lat] = dimAxes[lat];
-  if(numAxes>2) lpixel[spc] = dimAxes[spc];
+//   if(numAxes>2) lpixel[spc] = dimAxes[spc];
+  if(spc>=0) lpixel[spc] = dimAxes[spc];
 
     
   int colnum = 0;  // want the first dataset in the FITS file
