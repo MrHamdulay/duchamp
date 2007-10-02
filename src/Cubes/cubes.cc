@@ -456,7 +456,7 @@ void Cube::initialiseCube(long *dimensions)
     this->axisDim[0] = dimensions[lng];
     if(this->head.getNumAxes()>1) this->axisDim[1] = dimensions[lat];
     else this->axisDim[1] = 1;
-    if(this->isSpecOK()) this->axisDim[2] = dimensions[spc];
+    if(this->head.isSpecOK()) this->axisDim[2] = dimensions[spc];
     else this->axisDim[2] = 1;
     for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
     this->reconExists = false;
