@@ -90,7 +90,8 @@ int Cube::getFITSdata(std::string fname)
   int anynul;
   int npix = dimAxes[lng];
   if(numAxes>1) npix *= dimAxes[lat];
-  if(numAxes>2) npix *= dimAxes[spc];
+//   if(numAxes>2) npix *= dimAxes[spc];
+   if(spc>=0) npix *= dimAxes[spc];
 
   float *pixarray = new float[npix];// the array of pixel values
   char *nullarray = new char[npix]; // the array of null pixels

@@ -364,7 +364,7 @@ std::string Detection::outputLabelWidths()
     ss << std::setprecision(this->posPrec);
     ss << "w_"          << this->lngtype  <<"="    << this->raWidth;
     ss << ", w_"        << this->lattype  <<"="    << this->decWidth;
-    if(this->numAxes>2){
+    if(this->specOK){
       ss << std::setprecision(this->velPrec);
       ss << ", w_Vel="    << this->velWidth << " " << this->specUnits;
     }

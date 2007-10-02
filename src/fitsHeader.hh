@@ -117,6 +117,8 @@ public:
   //
   /** Is the WCS good enough to be used? */
   bool    isWCS(){return wcsIsGood;};
+  /** Is the spectral axis OK to be used? */
+  bool    isSpecOK(){return (wcs->spec >= 0);};
   int     getNWCS(){return nwcs;};
   void    setNWCS(int i){nwcs=i;};
   int     getNumAxes(){return naxis;};

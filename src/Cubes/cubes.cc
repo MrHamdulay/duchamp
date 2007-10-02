@@ -427,7 +427,7 @@ void Cube::initialiseCube(long *dimensions)
 
   size   = dimensions[lng];
   if(this->head.getNumAxes()>1) size *= dimensions[lat];
-  if(this->head.getNumAxes()>2) size *= dimensions[spc];
+  if(this->head.isSpecOK()) size *= dimensions[spc];
   imsize = dimensions[lng];
   if(this->head.getNumAxes()>1) imsize *= dimensions[lat];
 
@@ -456,7 +456,7 @@ void Cube::initialiseCube(long *dimensions)
     this->axisDim[0] = dimensions[lng];
     if(this->head.getNumAxes()>1) this->axisDim[1] = dimensions[lat];
     else this->axisDim[1] = 1;
-    if(this->head.getNumAxes()>2) this->axisDim[2] = dimensions[spc];
+    if(this->isSpecOK()) this->axisDim[2] = dimensions[spc];
     else this->axisDim[2] = 1;
     for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
     this->reconExists = false;
@@ -893,7 +893,7 @@ void Cube::setupFDR(float *input)
   int max = 0;
   float cN = 0.;
   int numVox = int(ceil(this->par.getBeamSize()));
-  if(this->head.getNumAxes()>2) numVox *= 2;
+  if(this->head.isSpecOK()) numVox *= 2;
   // why beamSize*2? we are doing this in 3D, so spectrally assume just the
   //  neighbouring channels are correlated, but spatially all those within
   //  the beam, so total number of voxels is 2*beamSize

@@ -235,20 +235,21 @@ void FitsHeader::fixUnits(Param &par)
 
   // define spectral units from the param set
   this->spectralUnits = par.getSpectralUnits();
-
+  std::cerr << this->wcs->cunit[this->wcs->spec] << " " <<this->spectralUnits << "\n";
   double sc=1.;
   double of=0.;
   double po=1.;
-  if((this->wcsIsGood) && (this->naxis>2)){
+//   if((this->wcsIsGood) && (this->naxis>2)){
+  if(this->wcsIsGood){
     int status = wcsunits( this->wcs->cunit[this->wcs->spec], 
-			   this->spectralUnits.c_str(), 
+			   (char *)this->spectralUnits.c_str(), 
 			   &sc, &of, &po);
     if(status > 0){
       std::stringstream errmsg;
       errmsg << "WCSUNITS Error, Code = " << status
-	     << ": " << wcsunits_errmsg[status];
+	     << ": " << wcsunits_errmsg[status] << "\n";
       if(status == 10) 
-	errmsg << "\nTried to get conversion from \"" 
+	errmsg << "Tried to get conversion from \"" 
 	       << this->wcs->cunit[this->wcs->spec] << "\" to \"" 
 	       << this->spectralUnits.c_str() << "\".\n";
       this->spectralUnits = this->wcs->cunit[this->wcs->spec];
@@ -262,12 +263,13 @@ void FitsHeader::fixUnits(Param &par)
 	this->spectralUnits = "SPC";
       }
       duchampError("fixUnits", errmsg.str());
-      
     }
+
   }
   this->scale = sc;
   this->offset= of;
   this->power = po;
+  std::cerr << sc << " " << of << " " << po << "\n";
 
   // Work out the integrated flux units, based on the spectral units.
   // If flux is per beam, trim the /beam from the flux units and multiply 
@@ -275,8 +277,8 @@ void FitsHeader::fixUnits(Param &par)
   // Otherwise, just muliply by the spectral units.
   if(this->fluxUnits.size()>0){
     
-    if(this->fluxUnits.substr(this->fluxUnits.size()-5,
-			      this->fluxUnits.size()   ) == "/beam"){
+    if(makelower(this->fluxUnits.substr(this->fluxUnits.size()-5,
+					this->fluxUnits.size()   )) == "/beam"){
       this->intFluxUnits = this->fluxUnits.substr(0,this->fluxUnits.size()-5);
     }
     else this->intFluxUnits = this->fluxUnits;

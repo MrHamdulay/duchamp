@@ -243,23 +243,23 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
       for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
 
       // Vel -- check width, title and units.
-//       if(head.getNumAxes() > 2){
-      if(head.WCS().restfrq == 0) // using frequency, not velocity
-	newset[VEL].setName("FREQ");
-      if(head.getSpectralUnits().size()>0)
-	newset[VEL].setUnits("[" + head.getSpectralUnits() + "]");
-      tempwidth = newset[VEL].getUnits().size() + 1;
-      for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
+      if(head.isSpecOK()){
+	if(head.WCS().restfrq == 0) // using frequency, not velocity
+	  newset[VEL].setName("FREQ");
+	if(head.getSpectralUnits().size()>0)
+	  newset[VEL].setUnits("[" + head.getSpectralUnits() + "]");
+	tempwidth = newset[VEL].getUnits().size() + 1;
+	for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
 	
-      val = objectList[obj].getVel();
-      if((fabs(val) < 1.)&&(val>0.)){
-	minval = pow(10, -1. * (newset[VEL].getPrecision()+1)); 
-	if(val < minval) newset[VEL].upPrec();
+	val = objectList[obj].getVel();
+	if((fabs(val) < 1.)&&(val>0.)){
+	  minval = pow(10, -1. * (newset[VEL].getPrecision()+1)); 
+	  if(val < minval) newset[VEL].upPrec();
+	}
+	tempwidth = int(log10(fabs(val)) + 1) + newset[VEL].getPrecision() + 2;
+	if(val<0) tempwidth++;
+	for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
       }
-      tempwidth = int(log10(fabs(val)) + 1) + newset[VEL].getPrecision() + 2;
-      if(val<0) tempwidth++;
-      for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
-//       }
 
       // w_RA -- check width & title. leave units for the moment.
       tempwidth = newset[RA].getUnits().size() + 1;
@@ -286,7 +286,7 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
       for(int i=newset[WDEC].getWidth();i<tempwidth;i++) newset[WDEC].widen();
 
       // w_Vel -- check width, title and units.
-//       if(head.getNumAxes() > 2){
+      if(head.isSpecOK()){
 	if(head.WCS().restfrq == 0) // using frequency, not velocity
 	  newset[WVEL].setName("w_FREQ");
 	if(head.getSpectralUnits().size()>0)
@@ -315,7 +315,7 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
 	tempwidth = int( log10(fabs(val)) + 1) + newset[FINT].getPrecision() + 2;
 	if(val<0) tempwidth++;
 	for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
-//       }
+      }
     }
 
     // F_tot

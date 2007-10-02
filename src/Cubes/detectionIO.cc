@@ -171,7 +171,7 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
   localCol.push_back(this->fullCols[WDEC]);  // 5 = w_dec
   localCol.push_back(this->fullCols[VEL]);  // 6 = vel
   localCol.push_back(this->fullCols[WVEL]); // 7 = w_vel
-  if(this->head.getNumAxes()>2)
+  if(this->head.isSpecOK())
     localCol.push_back(this->fullCols[FINT]); // 8 = f_int
   else
     localCol.push_back(this->fullCols[FTOT]); // 8 = f_tot
@@ -265,7 +265,7 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
   stream<<"      <FIELD name=\"w_Vel\" ID=\"col08\" ucd=\"phys.veloc;src.dopplerVeloc;spect.line.width\""
 	<<" datatype=\"float\" width=\""<<localCol[7].getWidth()<<"\" precision=\""
 	<<prec[prVEL]<<"\" unit=\""<<fixUnitsVOT(localCol[7].getUnits())<<"\"/>\n";
-  if(this->head.getNumAxes()>2)
+  if(this->head.isSpecOK())
     stream<<"      <FIELD name=\"Integrated_Flux\" ID=\"col09\" ucd=\"phot.flux;spect.line.intensity\""
 	  <<" datatype=\"float\" width=\""<<localCol[8].getWidth()<<"\" precision=\""
 	  <<prec[prFLUX]<<"\" unit=\""<<fixUnitsVOT(localCol[8].getUnits())<<"\"/>\n";
@@ -316,7 +316,7 @@ void Cube::outputDetectionsVOTable(std::ostream &stream)
       stream<<"<TD>" << setw(localCol[6].getWidth()) << this->objectList->at(i).getVel()        <<"</TD>";
       stream<<"<TD>" << setw(localCol[7].getWidth()) << this->objectList->at(i).getVelWidth()   <<"</TD>";
       stream<<setprecision(prec[prFLUX]);
-      if(this->head.getNumAxes()>2)
+      if(this->head.isSpecOK())
 	stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList->at(i).getIntegFlux() <<"</TD>";
       else
 	stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList->at(i).getTotalFlux() <<"</TD>";

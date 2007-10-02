@@ -625,7 +625,7 @@ int Param::readParams(std::string paramfile)
       }
       if(arg=="blankpixvalue"){
 	std::stringstream errmsg;
-	errmsg <<"The parameter blankPixValue is deprectated.\n"
+	errmsg <<"The parameter blankPixValue is deprecated.\n"
 	       <<"This value is only taken from the FITS header.\n";
 	duchampWarning("Reading parameters",errmsg.str());
       }

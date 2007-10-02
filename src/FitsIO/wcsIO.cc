@@ -140,9 +140,10 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
     if(status) {
       std::stringstream errmsg;
       errmsg << "wcsfix failed:\n";
+      errmsg << "Function status returns are:\n";
       for(int i=0; i<NWCSFIX; i++)
 	if (stat[i] > 0) 
-	  errmsg << "WCSLIB error code=" << status << ": "
+	  errmsg << i+1 << ": WCSFIX error code=" << stat[i] << ": "
 		 << wcsfix_errmsg[stat[i]] << std::endl;
       duchampWarning("Cube Reader", errmsg.str() );
     }
@@ -157,23 +158,35 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
       duchampWarning("Cube Reader",errmsg.str());
     }
 
-    if(this->naxis>2){  // if there is a spectral axis
-      
+    if(localwcs->spec>=0){ //if there is a spectral axis
+
       int index = localwcs->spec;
       std::string desiredType,specType = localwcs->ctype[index];
-
-      if(localwcs->restfrq != 0){
-	// Set the spectral axis to a standard specification: VELO-F2V
-	desiredType = duchampVelocityType;
-	if(localwcs->restwav == 0) 
-	  localwcs->restwav = 299792458.0 /  localwcs->restfrq;
-	this->spectralDescription = duchampSpectralDescription[VELOCITY];
+      std::string shortType = specType.substr(0,4);
+      if(shortType=="VELO" || shortType=="VOPT" || shortType=="ZOPT" || shortType=="VRAD" || shortType=="BETA"){
+	if(localwcs->restfrq != 0){
+	  // Set the spectral axis to a standard specification: VELO-F2V
+	  desiredType = duchampVelocityType;
+	  if(localwcs->restwav == 0) 
+	    localwcs->restwav = 299792458.0 /  localwcs->restfrq;
+	  this->spectralDescription = duchampSpectralDescription[VELOCITY];
+	}
+        else{
+	  // No rest frequency defined, so put spectral dimension in frequency. 
+	  // Set the spectral axis to a standard specification: FREQ
+	  duchampWarning("Cube Reader",
+			 "No rest frequency defined. Using frequency units in spectral axis.\n");
+	  desiredType = duchampFrequencyType;
+	  par.setSpectralUnits("MHz");
+	  if(strcmp(localwcs->cunit[index],"")==0){
+	    duchampWarning("Cube Reader",
+			   "No frequency unit given. Assuming frequency axis is in Hz.\n");
+	    strcpy(localwcs->cunit[index],"Hz");
+	  }
+	  this->spectralDescription = duchampSpectralDescription[FREQUENCY];
+	}
       }
-      else{
-	// No rest frequency defined, so put spectral dimension in frequency. 
-	// Set the spectral axis to a standard specification: FREQ
-	duchampWarning("Cube Reader",
-       "No rest frequency defined. Using frequency units in spectral axis.\n");
+      else {
 	desiredType = duchampFrequencyType;
  	par.setSpectralUnits("MHz");
 	if(strcmp(localwcs->cunit[index],"")==0){
@@ -182,17 +195,18 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
 	  strcpy(localwcs->cunit[index],"Hz");
 	}
 	this->spectralDescription = duchampSpectralDescription[FREQUENCY];
-      }
-
+      }	
 
       // Now we need to make sure the spectral axis has the correct setup.
       //  We use wcssptr to translate it if it is not of the desired type,
       //  or if the spectral units are not defined.
 
+      std::cerr << specType << "\n";
+
       bool needToTranslate = false;
 
-      if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0) 
-	needToTranslate = true;
+//       if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0) 
+// 	needToTranslate = true;
 
       std::string blankstring = "";
       if(strcmp(localwcs->cunit[localwcs->spec],blankstring.c_str())==0)
@@ -218,7 +232,7 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
 
       }
     
-    } // end of if(numAxes>2)
+  } // end of if(localwcs->spec>=0)
     
     // Save the wcs to the FitsHeader class that is running this function
     this->setWCS(localwcs);
@@ -237,7 +251,7 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
   //  integrated flux when we go to fixUnits.
   this->readBUNIT(fname);
 
-  if(numAxes>2) this->fixUnits(par);
+  if(localwcs->spec>=0) this->fixUnits(par);
 
   return SUCCESS;
 

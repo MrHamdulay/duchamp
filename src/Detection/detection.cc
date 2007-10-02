@@ -68,7 +68,7 @@ Detection::Detection(const Detection& d)
   this->id           = d.id;
   this->name         = d.name;
   this->flagWCS      = d.flagWCS;
-  this->numAxes      = d.numAxes;
+  this->specOK       = d.specOK;
   this->raS          = d.raS;
   this->decS         = d.decS;
   this->ra           = d.ra;
@@ -117,7 +117,7 @@ Detection& Detection::operator= (const Detection& d)
   this->id           = d.id;
   this->name         = d.name;
   this->flagWCS      = d.flagWCS;
-  this->numAxes      = d.numAxes;
+  this->specOK       = d.specOK;
   this->raS          = d.raS;
   this->decS         = d.decS;
   this->ra           = d.ra;
@@ -247,7 +247,7 @@ void Detection::calcWCSparams(float *fluxArray, long *dim, FitsHeader &head)
       // world now has the WCS coords for the five points 
       //    -- use this to work out WCS params
   
-      this->numAxes = head.getNumAxes();
+      this->specOK = (head.WCS().spec >= 0);
       this->lngtype = head.WCS().lngtyp;
       this->lattype = head.WCS().lattyp;
       this->specUnits = head.getSpectralUnits();

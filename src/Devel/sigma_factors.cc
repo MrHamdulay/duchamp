@@ -28,6 +28,7 @@
 // -----------------------------------------------------------------------
 #include <iostream>
 #include <iomanip>
+#include <math.h>
 #include <ATrous/atrous.hh>
 #include <ATrous/filter.hh>
 #define DEBUG true
