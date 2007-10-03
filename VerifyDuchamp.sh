@@ -1,10 +1,10 @@
-#!/bin/tcsh
+#!/bin/sh
 
-set version = `./Duchamp* -v | awk '{print $3}'`
+version=`./Duchamp* -v | awk '{print $3}'`
 
-set progname = ./Duchamp-$version
+progname=./Duchamp-$version
 
-set numErrors = 0
+numErrors=0
 
 ##################################################################
 # Run the first test, looking at simple sigma-clipped search
@@ -18,32 +18,32 @@ echo "  [This is a simple sigma-clipping search]"
 rm -f /tmp/duchampRes /tmp/duchampComp /tmp/duchamptest
 $progname -p verification/input1 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
-set numDet = `grep "Total number" verification/results1.txt | cut -f 6 -d " "`
-if( $numDet == 5 ) then
+numDet=`grep "Total number" verification/results1.txt | cut -f 6 -d " "`
+if [ $numDet == 5 ]; then
     tail -5 verification/results1.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
     tail -5 verification/stdResults1.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
-    if( `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ) then
+    if [ `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ]; then
 	echo "  Found correct number of sources, but positions differ."
 	echo "  ERROR: Differences in positions of sources:"
 	diff  -I"Results of the Duchamp source finder:" verification/results1.txt verification/stdResults1.txt
-	$numErrors++
+	numErrors=$numErrors+1
     else
 	echo "  All detections correct."
-    endif
+    fi
 else
     echo "  ERROR. Wrong number of sources found."
     echo "Differences in results:"
     diff  -I"Results of the Duchamp source finder:" verification/results1.txt verification/stdResults1.txt
-    $numErrors++
-endif
+    numErrors=$numErrors+1
+fi
 #Test the log files.
-if( `diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log1.txt verification/stdLog1.txt | wc -l` == 0 ) then
+if [ `diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log1.txt verification/stdLog1.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
     diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log1.txt verification/stdLog1.txt
-    $numErrors++
-endif
+    numErrors=$numErrors+1
+fi
 
 ##################################################################
 # The next test uses the FDR method, but is otherwise the same.
@@ -55,31 +55,31 @@ rm -f /tmp/duchampRes /tmp/duchampComp /tmp/duchamptest
 $progname -p verification/input2 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
 set numDet = `grep "Total number" verification/results2.txt | cut -f 6 -d " "`
-if( $numDet == 5 ) then
+if [ $numDet == 5 ]; then
     tail -5 verification/results2.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
     tail -5 verification/stdResults2.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
-    if( `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ) then
+    if [ `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ]; then
 	echo "  Found correct number of sources, but positions differ."
 	echo "  ERROR: Differences in positions of sources:"
 	diff  -I"Results of the Duchamp source finder:" verification/results2.txt verification/stdResults2.txt
-	$numErrors++
+	numErrors=$numErrors+1
     else
 	echo "  All detections correct."
-    endif
+    fi
 else
     echo "  ERROR. Wrong number of sources found."
     echo "Differences in results:"
     diff  -I"Results of the Duchamp source finder:" verification/results2.txt verification/stdResults2.txt
-    $numErrors++
-endif
+    numErrors=$numErrors+1
+fi
 #Test the log files.
-if( `diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log2.txt verification/stdLog2.txt | wc -l` == 0 ) then
+if [ `diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log2.txt verification/stdLog2.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
     diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log2.txt verification/stdLog2.txt
-    $numErrors++
-endif
+    numErrors=$numErrors+1
+fi
 
 ##################################################################
 # The third test smoothes the cube and uses sigma-clipping
@@ -92,31 +92,31 @@ rm -f /tmp/duchampRes /tmp/duchampComp /tmp/duchamptest
 $progname -p verification/input3 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
 set numDet = `grep "Total number" verification/results3.txt | cut -f 6 -d " "`
-if( $numDet == 5 ) then
+if [ $numDet == 5 ]; then
     tail -5 verification/results3.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
     tail -5 verification/stdResults3.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
-    if( `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ) then
+    if [ `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ]; then
 	echo "  Found correct number of sources, but positions differ."
 	echo "  ERROR: Differences in positions of sources:"
 	diff  -I"Results of the Duchamp source finder:" verification/results3.txt verification/stdResults3.txt
-	$numErrors++
+	numErrors=$numErrors+1
     else
 	echo "  All detections correct."
-    endif
+    fi
 else
     echo "  ERROR. Wrong number of sources found."
     echo "Differences in results:"
     diff  -I"Results of the Duchamp source finder:" verification/results3.txt verification/stdResults3.txt
-    $numErrors++
-endif
+    numErrors=$numErrors+1
+fi
 #Test the log files.
-if( `diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log3.txt verification/stdLog3.txt | wc -l` == 0 ) then
+if [ `diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log3.txt verification/stdLog3.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
     diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log3.txt verification/stdLog3.txt
-    $numErrors++
-endif
+    numErrors=$numErrors+1
+fi
 
 ##################################################################
 # The final test reconstructs the cube and uses sigma-clipping
@@ -129,38 +129,38 @@ rm -f /tmp/duchampRes /tmp/duchampComp /tmp/duchamptest
 $progname -p verification/input4 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
 set numDet = `grep "Total number" verification/results4.txt | cut -f 6 -d " "`
-if( $numDet == 5 ) then
+if [ $numDet == 5 ]; then
     tail -5 verification/results4.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
     tail -5 verification/stdResults4.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
-    if( `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ) then
+    if [ `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ]; then
 	echo "  Found correct number of sources, but positions differ."
 	echo "  ERROR: Differences in positions of sources:"
 	diff  -I"Results of the Duchamp source finder:" verification/results4.txt verification/stdResults4.txt
-	$numErrors++
+	numErrors=$numErrors+1
     else
 	echo "  All detections correct."
-    endif
+    fi
 else
     echo "  ERROR. Wrong number of sources found."
     echo "Differences in results:"
     diff  -I"Results of the Duchamp source finder:" verification/results4.txt verification/stdResults4.txt
-    $numErrors++
-endif
+    numErrors=$numErrors+1
+fi
 #Test the log files.
-if( `diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log4.txt verification/stdLog4.txt | wc -l` == 0 ) then
+if [ `diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log4.txt verification/stdLog4.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
     diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log4.txt verification/stdLog4.txt
-    $numErrors++
-endif
+    numErrors=$numErrors+1
+fi
 
 ##################################################################
 # Summarise the results
 # Either give the OK, or give some advice about what to do.
 
 echo " "
-if( $numErrors == 0 ) then
+if [ $numErrors == 0 ]; then
     echo "No errors! Everything is working fine."
     echo " "
     echo "Happy Finding! If you ever need to report a bug or request an upgrade, go to"
@@ -170,4 +170,4 @@ else
     echo "Have a look at the diffs to see if they are trivial or not (eg. precision errors)."
     echo "If they are more serious (wrong number of sources found), submit a bug report"
     echo "  at http://svn.atnf.csiro.au/trac/duchamp/newticket"
-endif
+fi
