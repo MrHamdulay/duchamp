@@ -79,6 +79,10 @@ section.
 
 \secC{Tweaking the installation process}
 
+The \texttt{configure} script allows the user to tailor the
+installation according to the particular requirements of their
+system. 
+
 To install Duchamp in a directory other than \texttt{/usr/local/bin},
 use the \texttt{--prefix} option with configure, specifying the
 directory above the \texttt{bin/} directory \eg
@@ -103,7 +107,6 @@ you can specify specific locations by using the
 > ./configure --with-wcslib=/home/mduchamp/wcslib-4.2}
 }
 \end{quote}
-And then just run \texttt{make} in the usual fashion.
 
 Duchamp can be compiled without \textsc{pgplot} if it is not installed
 on your system -- the searching and text-based output remains the
@@ -122,9 +125,34 @@ work.).  Even if you do not give the \texttt{--without-pgplot} option,
 and the \textsc{pgplot} library is not found, Duchamp will still
 compile (albeit without graphical capabilities).
 
+An additional option that is useful is the ability to specify which
+compiler to use. This is very important for the Fortran compiler (used
+for linking due to the use of \textsc{pgplot}), particularly on Mac OS
+X, where \texttt{gfortran} is often used instead of \texttt{gcc}. To
+specify a particular Fortran compiler, use the \texttt{F77} flag:
+\begin{quote}
+{\footnotesize
+\texttt{%
+> ./configure F77=gfortran}
+}
+\end{quote}
+
+Of course, all desired flags should be combined in one
+\texttt{configure} call. For a full list of the options with
+\texttt{configure}, run:
+\begin{quote}
+{\footnotesize
+\texttt{%
+> ./configure --help}
+}
+\end{quote}
+Once \texttt{configure} has run correctly, simply run \texttt{make}
+and \texttt{make install} to build \duchamp and put it in the correct
+place. 
+
 \secC{Making sure it all works}
 
-Running make will create the executable \texttt{Duchamp}. You can
+Running make will create the executable \texttt{Duchamp-{\version}}. You can
 verify that it is running correctly by running the verification shell
 script:
 \begin{quote}

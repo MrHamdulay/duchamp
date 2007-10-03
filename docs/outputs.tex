@@ -93,10 +93,18 @@ associated with the cube, by the mean $z$-pixel position). The results
 are then printed to the screen and to the output file, given by the
 \texttt{OutFile} parameter. 
 
-The output consists of three parts. First, a list of the parameters
+The output consists of two sections. First, a list of the parameters
 are printed to the output file, for future reference. Next, the
 detection threshold that was used is given, so comparison can be made
-with other searches. The noise level and its spread are also reported.
+with other searches. The noise level and its spread are also
+reported. Thirdly, the number of detections are reported. 
+
+All this information, known as the ``header'', can either be written
+to the start of the output file (denoted by the parameter
+\texttt{OutFile}), or written to a separate file from the list of
+detections. This second option is activated by the parameter
+\texttt{flagSeparateHeader}, and the information is written to the
+file given by \texttt{HeaderFile}.
 
 The most interesting part, however, is the list of detected
 objects. This list, an example of which can be seen in

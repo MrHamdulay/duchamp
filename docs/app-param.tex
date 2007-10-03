@@ -67,7 +67,15 @@ not matter, they are grouped here in logical sections.
 \begin{Lentry}
 \item[{OutFile [duchamp-\\Results.txt]}] The file containing the
   final list of detections. This also records the list of input
-  parameters. 
+  parameters.
+\item[{flagSeparateHeader [false]}] A flag to indicate that the header
+  information that would normally be printed at the start of the
+  results file (containing information on the parameters, image
+  statistics and number of detections) should instead be written to a
+  separate file.
+\item[{HeaderFile [duchamp-\\Results.hdr]}] The file to which the
+  header information should be written, assuming
+  \texttt{flagSeparateHeader=true}.
 \item[{SpectraFile [duchamp-\\Spectra.ps]}] The postscript file
   containing the resulting integrated spectra and images of the
   detections.  
@@ -184,6 +192,11 @@ not matter, they are grouped here in logical sections.
   cube in one go.
 \item[{scaleMin [1]}] The minimum wavelet scale to be used in the
   reconstruction. A value of 1 means ``use all scales''.
+\item[{scaleMax [0]}] The maximum wavelet scale to be used in the
+  reconstruction. If the value is $\le0$ then the maximum scale is
+  calculated from the size of the input array. Similarly, if the value
+  given is larger than this calculated value, the calculated value is
+  used instead.
 \item[{snrRecon [4]}] The thresholding cutoff used in the
   reconstruction -- only wavelet coefficients this many $\sigma$ above
   the mean (or greater) are included in the reconstruction. 

@@ -208,6 +208,19 @@ The steps in the \atrous reconstruction are as follows:
   wavelet coefficient arrays will have zero mean.
 \end{enumerate}
 
+The range of scales at which the selection of wavelet coefficients is
+made is governed by the \texttt{scaleMin} and \texttt{scaleMax}
+parameters. The minimum scale used is given by \texttt{scaleMin},
+where the default value is 1 (the first scale). This parameter is
+useful if you want to ignore the highest-frequency features
+(e.g. high-frequency noise that might be present). Normally the
+maximum scale is calculated from the size of the input array, but it
+can be specified by using \texttt{scaleMax}. A value $\le0$ will
+result in the use of the calculated value, as will a value of
+\texttt{scaleMax} greater than the calculated value. Use of these two
+parameters can allow searching for features of a particular scale
+size, for instance searching for narrow absorption features.
+
 The reconstruction has at least two iterations. The first iteration
 makes a first pass at the wavelet reconstruction (the process outlined
 in the 8 stages above), but the residual array will likely have some
