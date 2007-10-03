@@ -352,7 +352,10 @@ void Cube::prepareOutputFile()
    *  statistical information to the output file.
    */
 
-  std::ofstream output(this->par.getOutFile().c_str());
+  std::string outfile;
+  if(this->par.getFlagSeparateHeader()) outfile = this->par.getHeaderFile();
+  else outfile = this->par.getOutFile();
+  std::ofstream output(outfile.c_str());
   output<<"Results of the Duchamp source finder: ";
   time_t now = time(NULL);
   output << asctime( localtime(&now) );
@@ -360,7 +363,6 @@ void Cube::prepareOutputFile()
   output<<"--------------------\n";
   output.close();
   this->outputStats();
-  output<<"--------------------\n";
   
 }
 
@@ -375,7 +377,10 @@ void Cube::outputStats()
    *  original array are calculated and printed as well.
    */
 
-  std::ofstream output(this->par.getOutFile().c_str(),std::ios::app);
+  std::string outfile;
+  if(this->par.getFlagSeparateHeader()) outfile = this->par.getHeaderFile();
+  else outfile = this->par.getOutFile();
+  std::ofstream output(outfile.c_str(),std::ios::app);
   output<<"Summary of statistics:\n";
   output<<"  Detection threshold = " << this->Stats.getThreshold()
 	<<" " << this->head.getFluxUnits();
@@ -416,6 +421,7 @@ void Cube::outputStats()
 	  << growthStats.getThreshold() << ".\n";
   }
 
+  output<<"--------------------\n";
   output.close();
 }
 
@@ -429,9 +435,19 @@ void Cube::outputDetectionList()
    *   have been calculated to outputDetectionTextWCS.
    */
 
-  std::ofstream output(this->par.getOutFile().c_str(),std::ios::app);
+  std::string outfile;
+  if(this->par.getFlagSeparateHeader()) outfile = this->par.getHeaderFile();
+  else outfile = this->par.getOutFile();
+  std::ofstream output(outfile.c_str(),std::ios::app);
   output<<"Total number of detections = "<<this->objectList->size()<<endl;
   output<<"--------------------\n";
+  output.close();
+
+ if(this->par.getFlagSeparateHeader()) 
+   output.open(this->par.getOutFile().c_str());
+ else 
+   output.open(this->par.getOutFile().c_str(),std::ios::app);
+
   if(this->objectList->size()>0){
     this->setupColumns();
     this->objectList->at(0).outputDetectionTextHeaderFull(output,this->fullCols);

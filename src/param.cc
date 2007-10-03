@@ -78,6 +78,8 @@ void Param::defaultValues()
   this->flagLog           = false;
   this->logFile           = "duchamp-Logfile.txt";
   this->outFile           = "duchamp-Results.txt";
+  this->flagSeparateHeader= false;
+  this->headerFile        = "duchamp-Results.hdr";
   this->spectraFile       = "duchamp-Spectra.ps";
   this->flagOutputSmooth  = false;
   this->flagOutputRecon   = false;
@@ -171,6 +173,8 @@ Param::Param (const Param& p)
   this->smoothFile        = p.smoothFile;      
   this->flagLog           = p.flagLog;        
   this->logFile           = p.logFile;       
+  this->flagSeparateHeader= p.flagSeparateHeader;
+  this->headerFile        = p.headerFile;
   this->outFile           = p.outFile;        
   this->spectraFile       = p.spectraFile;    
   this->flagOutputSmooth  = p.flagOutputSmooth;
@@ -257,6 +261,8 @@ Param& Param::operator= (const Param& p)
   this->flagLog           = p.flagLog;        
   this->logFile           = p.logFile;       
   this->outFile           = p.outFile;        
+  this->flagSeparateHeader= p.flagSeparateHeader;
+  this->headerFile        = p.headerFile;
   this->spectraFile       = p.spectraFile;    
   this->flagOutputSmooth  = p.flagOutputSmooth;
   this->flagOutputRecon   = p.flagOutputRecon;
@@ -549,6 +555,8 @@ int Param::readParams(std::string paramfile)
       if(arg=="flaglog")         this->flagLog = readFlag(ss); 
       if(arg=="logfile")         this->logFile = readSval(ss); 
       if(arg=="outfile")         this->outFile = readSval(ss); 
+      if(arg=="flagseparateheader") this->flagSeparateHeader = readFlag(ss);
+      if(arg=="headerfile")      this->headerFile = readSval(ss);
       if(arg=="spectrafile")     this->spectraFile = readSval(ss); 
       if(arg=="flagoutputsmooth")this->flagOutputSmooth = readFlag(ss); 
       if(arg=="flagoutputrecon") this->flagOutputRecon = readFlag(ss); 
@@ -733,6 +741,11 @@ std::ostream& operator<< ( std::ostream& theStream, Param& par)
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[outFile]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
 	     <<par.getOutFile()        <<std::endl;
+  if(par.getFlagSeparateHeader())
+    theStream <<std::setw(widthText)<<"Header for results file" 
+	      <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[headerFile]"
+	      <<"  =  " <<resetiosflags(std::ios::right)
+	      <<par.getHeaderFile()        <<std::endl;
   theStream  <<std::setw(widthText)<<"Spectrum file"                        
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[spectraFile]"
 	     <<"  =  " <<resetiosflags(std::ios::right)

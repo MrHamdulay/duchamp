@@ -149,6 +149,10 @@ public:
   void   setLogFile(std::string fname){logFile = fname;};
   std::string getOutFile(){return outFile;};
   void   setOutFile(std::string fname){outFile = fname;};
+  bool   getFlagSeparateHeader(){return flagSeparateHeader;};
+  void   setFlagSeparateHeader(bool b){flagSeparateHeader=b;};
+  std::string getHeaderFile(){return headerFile;};
+  void   setHeaderFile(std::string s){headerFile=s;};
   std::string getSpectraFile(){return spectraFile;};
   void   setSpectraFile(std::string fname){spectraFile = fname;};
   bool   getFlagOutputSmooth(){return flagOutputSmooth;};
@@ -315,6 +319,12 @@ private:
   bool   flagLog;         ///< Should we do the intermediate logging?
   std::string logFile;    ///< Where the intermediate logging goes.
   std::string outFile;    ///< Where the final results get put.
+  bool   flagSeparateHeader;///< Should the header information
+			    ///   (parameters & statistics) be written
+			    ///   to a separate file to the table of
+			    ///   results?
+  std::string headerFile; ///< Where the header information to go with
+			  ///   the results table should be written.
   std::string spectraFile;///< Where the spectra are displayed
   bool   flagOutputSmooth;///< Should the smoothed cube be written?
   bool   flagOutputRecon; ///< Should the reconstructed cube be

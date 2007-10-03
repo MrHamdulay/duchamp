@@ -1,6 +1,8 @@
 Duchamp version 1.1.2-beta (2007/10/03)
 ------------------------------------
 
+Compilation:
+
 * The compilation had problems working correctly when the cfitsio and
   wcs libraries were  not in standard locations. The configure script
   has been tweaked to make sure the libraries are found.
@@ -10,6 +12,9 @@ Duchamp version 1.1.2-beta (2007/10/03)
 
 * Improved the configure script for use with Mac OS X and gfortran.
 
+
+Bugfixing:
+
 * A major problem with the text-based output was fixed. The widths of
   the columns were not being calculated correctly, and were running
   together. This has been fixed.
@@ -18,6 +23,15 @@ Duchamp version 1.1.2-beta (2007/10/03)
   improved. Non-standard types (in particular, AIPS types such as
   FELO-HEL) are now dealt with appropriately and the velocity scaling
   should be accurate.
+
+New user parameters:
+
+* The header information that is printed at the start of the results
+  file -- that is, the list of parameters, the statistics of the cube,
+  and the number of detections -- can now be written to a separate
+  file. Set the flagSeparateHeader parameter to true or 1 and it will
+  go to the file indicated by the headerFile parameter (the default is
+  duchamp-Results.hdr).
 
 * A "scaleMax" parameter has been added, so that the wavelet
   reconstruction can include only a specified range of scales (for

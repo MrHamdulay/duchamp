@@ -31,6 +31,11 @@ reconFile	your-smoothed-file-here
 # flagLog -- log the intermediate results?   
 # logfile-- the file to put that in.
 # outFile -- the final output list. 
+# flagSeparateHeader -- whether to write the header information 
+#                        (i.e. parameters, statistics and number of detections)
+#                        to a separate file from the outFile (so that the 
+#                        outFile just contains the table of detections).
+# headerFile -- the file to write the header information to.
 # spectraFile -- the postscript file of spectra
 # flagOutputSmooth -- whether to save the smoothed arrays as a FITS file
 # flagOutputRecon/Resid -- whether to save the reconstruction & residual arrays
@@ -46,6 +51,8 @@ reconFile	your-smoothed-file-here
 flagLog         0
 logFile		duchamp-Logfile.txt
 outFile		duchamp-Results.txt
+flagSeparateHeader 0
+headerFile      duchamp-Results.hdr
 spectraFile	duchamp-Spectra.ps
 flagOutputSmooth 0
 flagOutputRecon	0
@@ -101,6 +108,9 @@ growthCut	2.
 # reconDim -- The number of dimensions in which to perform the reconstruction.
 # scaleMin -- The minimum scale (starts at 1) to be included in the 
 #              reconstruction
+# scaleMax -- The maximum scale to be included in the reconstruction. If it 
+#              is <=0 then the maximum scale is calculated from the size of 
+#              the array being reconstructed.
 # snrRecon -- The threshold used in filtering the wavelet coefficient arrays.
 # filterCode -- The code number for the choice of filter to be used in the 
 #               reconstruction:  1 = B3-spline filter, 2 = Triangle function, 
@@ -109,6 +119,7 @@ growthCut	2.
 flagATrous	false
 reconDim        1
 scaleMin	1
+scaleMax        0
 snrRecon	4.
 filterCode      1
 
