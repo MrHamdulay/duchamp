@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
                The Duchamp Source Finder
 -----------------------------------------------------------------------
-Duchamp -- an object finder for spectral-line data cubes
+Duchamp 1.1.2-beta -- an object finder for spectral-line data cubes
 Copyright (C) 2006, Matthew Whiting, ATNF
 
 Duchamp is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@ Correspondence concerning Duchamp may be directed to:
 -----------------------------------------------------------------------
 
 Introduction
-------------
+============
 
 Duchamp is a stand-alone program designed to find objects in
 astronomical data cubes, particularly spectral-line observations. Its
@@ -44,11 +44,11 @@ velocity information for all detected sources.
 
 
 The "Beta" Version
-------------------
+==================
 
-This distribution of Duchamp, dated 15/5/2007, is known as the beta
-version. (The version number when "Duchamp -v" is run is given as 1.1
-though.) It is more recent than the most recent release (v1.0.7), as
+This distribution of Duchamp, dated 3/10/2007, is known as the beta
+version. (The version number when "Duchamp -v" is run is given as 1.1.2
+though.) It is more recent than the most recent release (v1.1.1), as
 it has several new functions and features. The user should be aware
 that these may not yet be documented and, while they have been tested
 on a limited number of cases, their stability is not assured to the
@@ -62,46 +62,101 @@ Having said all that, do note that I won't post a beta version on the
 website unless I know that it is functioning in most cases, so it
 should work to a large degree (and if it doesn't -- let me know!)
 
+
+
 Obtaining and Building Duchamp
-------------------------------
+==============================
 
 The Duchamp web page is at 
 http://www.atnf.csiro.au/people/Matthew.Whiting/Duchamp
 where you can download a gzipped tar archive of the source code.
 
-Duchamp uses three main external libraries: pgplot, cfitsio (version
-2.5 and greater, version 3+ preferred) and wcslib. If you do not have
-the libraries, they can be downloaded from the following locations:
+Duchamp uses three main external libraries: pgplot (although see note
+below), cfitsio (version 2.5 and greater, version 3+ preferred) and
+wcslib. If you do not have the libraries, they can be downloaded from
+the following locations:
 
-PGPlot -- http://www.astro.caltech.edu/~tjp/pgplot/ 
+PGPLOT -- http://www.astro.caltech.edu/~tjp/pgplot/ 
 cfitsio -- http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html 
 wcslib -- http://www.atnf.csiro.au/people/Mark.Calabretta/WCS/index.html
 
-Duchamp can be built on Unix systems by typing (note that the terminal
-prompt here is represented by > -- don't type this character!):
+Note that PGPLOT is optional. Duchamp can be compiled and run without
+PGPLOT, but you will miss out on the useful graphical outputs!  The
+other two libraries, cftisio and wcslib, are essential.
+
+
+Basic Compilation and Installation
+----------------------------------
+
+Duchamp can be built and installed on Unix systems by typing (note
+that the terminal prompt here is represented by > -- don't type this
+character!):
 
  >  ./configure
  >  make
  >  make clean (optional -- to remove the object files from the src
                 directory)
+ >  make install 
 
-This way, configure should find all the necessary libraries, but if
-the above-mentioned libraries have been installed in non-standard
-locations, you can specify additional directories to look in. There
-are separate options for library files (eg. libcpgplot.a) and header
-files (eg. cpgplot.h).
+This default setup will search in standard locations for the necessary
+libraries, and install the executable ("Duchamp") in /usr/local/bin (a
+copy will also be in the current directory). If you want this to go
+somewhere else, eg if you don't have write-access to that directory,
+or you need to tweak the libraries, see the next section. Otherwise,
+jump to the testing section.
 
-For example, suppose wcslib had been locally installed in
-/home/mduchamp/wcslib. There will then be two libraries created that
-are likely to be in separate subdirectories: C/ and pgsbox/. Each
-subdirectory needs to be searched for library and header files, so one
-could build Duchamp by typing:
 
- >  ./configure \
-LIBDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox" \
-INCDIRS="/home/mduchamp/wcslib/C /home/mduchamp/wcslib/pgsbox"
+Tweaking the installation setup
+-------------------------------
+
+To install Duchamp in a directory other than /usr/local/bin, use the
+--prefix option with configure, specifying the directory above the
+\texttt{bin/} directory. eg:
+
+ >  ./configure --prefix=/home/mduchamp
+
+which, if you run "make" and "make install", will result in the binary
+being put in the directory /home/mduchamp/bin.
+
+If the above-mentioned libraries have been installed in non-standard
+locations, or you have more than one version installed on your system,
+you can specify specific locations by using the --with-cfitsio=<dir>,
+--with-wcslib=<dir> or --with-pgplot=<dir> flags. For example:
+
+ >  ./configure --with-wcslib=/home/mduchamp/wcslib-4.2 
 And then just run make in the usual fashion:
  >  make
+
+Duchamp can be compiled without PGPLOT if it is not installed on your
+system -- the searching and text-based output remains the same, but
+you will not have any graphical output. 
+To manually specify this option, use the --without-pgplot flag, eg:
+
+ >  ./configure --without-pgplot
+
+(Note that CFITSIO and WCSLIB are essential, however, so
+--without-wcslib or --without-cfitsio will not work.).
+Even if you do not give the --without-pgplot option, and the PGPLOT
+library is not found, Duchamp will still compile (albeit without
+graphical capabilities).
+
+
+Installing on Mac OS X with gfortran
+------------------------------------
+
+Some recent testing on a Mac with OS X and gfortran has shown that
+slight tweaking needs to be done with the use of configure. In
+addition to the options noted above, configure should be run with F77
+set to the desired fortran compiler command. Note that this should be
+the same as that used to compile the pgplot package, if you are using
+it: gfortran is probably the best choice. 
+This is done simply by:
+
+ >  ./configure F77=gfortran ...[other options]...
+
+
+Testing
+=======
 
 There is a script included in the distribution that allows you to make
 sure Duchamp is running correctly. It will use a dummy FITS image in
@@ -120,7 +175,7 @@ program works).
 
 
 Using Duchamp
----------------
+=============
 
 There are two possible ways to run Duchamp. The first is:
 
@@ -157,10 +212,11 @@ execution of Duchamp.
 
 Any questions, please contact me. To report problems or bugs, or to
 suggest improvements, please go to the Duchamp Trac wiki site:
-http://sourcecode.atnf.csiro.au/cgi-bin/trac_duchamp.cgi/newticket 
+http://svn.atnf.csiro.au/trac/duchamp/newticket 
 and submit a "ticket", or view previously submitted reports.
 
+-------
 Author: 
-  Matthew Whiting, Australia Telescope National Facility, May 2007
+  Matthew Whiting, Australia Telescope National Facility, October 2007
   Matthew.Whiting [at] csiro.au
 

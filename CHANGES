@@ -1,4 +1,4 @@
-Duchamp version 1.1.2 (2007/09/19)
+Duchamp version 1.1.2-beta (2007/10/03)
 ------------------------------------
 
 * The compilation had problems working correctly when the cfitsio and
@@ -8,6 +8,24 @@ Duchamp version 1.1.2 (2007/09/19)
 * Problems with compiling in the absence of pgplot have been fixed,
   and it should now compile fine.
 
+* Improved the configure script for use with Mac OS X and gfortran.
+
+* A major problem with the text-based output was fixed. The widths of
+  the columns were not being calculated correctly, and were running
+  together. This has been fixed.
+
+* The way Duchamp deals with different spectral axes has been
+  improved. Non-standard types (in particular, AIPS types such as
+  FELO-HEL) are now dealt with appropriately and the velocity scaling
+  should be accurate.
+
+* A "scaleMax" parameter has been added, so that the wavelet
+  reconstruction can include only a specified range of scales (for
+  instance, if one wants to search for narrow features such as
+  absorption lines).
+
+* Other minor changes to improve the speed and efficiency, especially
+  of the merging code.
 
 
 Duchamp version 1.1.1 (2007/07/20)

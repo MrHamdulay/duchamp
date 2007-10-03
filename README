@@ -120,6 +120,20 @@ library is not found, Duchamp will still compile (albeit without
 graphical capabilities).
 
 
+Installing on Mac OS X with gfortran
+------------------------------------
+
+Some recent testing on a Mac with OS X and gfortran has shown that
+slight tweaking needs to be done with the use of configure. In
+addition to the options noted above, configure should be run with F77
+set to the desired fortran compiler command. Note that this should be
+the same as that used to compile the pgplot package, if you are using
+it: gfortran is probably the best choice. 
+This is done simply by:
+
+ >  ./configure F77=gfortran ...[other options]...
+
+
 Testing
 =======
 
