@@ -376,26 +376,10 @@ Detection operator+ (Detection lhs, Detection rhs)
    *  operator.
    *
    *  The pixel parameters are recalculated in the process (equivalent
-   *  to calling pixels().calcParams()), but WCS parameters
-   *  are not.
+   *  to calling pixels().calcParams()), but WCS parameters are not.
    */
-  Detection output;
+  Detection output = lhs;
   output.pixelArray = lhs.pixelArray + rhs.pixelArray;
-//   output.totalFlux  = lhs.totalFlux  + rhs.totalFlux;
-//   if(lhs.peakFlux > rhs.peakFlux){
-//     output.peakFlux = lhs.peakFlux;
-//     output.xpeak    = lhs.xpeak;
-//     output.ypeak    = lhs.ypeak;
-//     output.zpeak    = lhs.zpeak;
-//     output.peakSNR  = lhs.peakSNR;
-//   }
-//   else{
-//     output.peakFlux = rhs.peakFlux;
-//     output.xpeak    = rhs.xpeak;
-//     output.ypeak    = rhs.ypeak;
-//     output.zpeak    = rhs.zpeak;
-//     output.peakSNR  = rhs.peakSNR;
-//   }
   return output;
 }
 //--------------------------------------------------------------------
