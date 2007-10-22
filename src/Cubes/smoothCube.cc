@@ -116,7 +116,8 @@ void Cube::SpectralSmooth()
   ProgressBar bar;
 
   if(!this->reconExists && this->par.getSmoothType()=="spectral"){
-    if(!this->head.isSpecOK())
+    //    if(!this->head.isSpecOK())
+    if(!this->head.canUseThirdAxis())
       duchampWarning("SpectralSmooth",
 		     "There is no spectral axis, so cannot do the spectal smoothing.\n");
     else{

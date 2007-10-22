@@ -48,11 +48,7 @@
 class Detection
 {
 public:
-  Detection(){
-    flagWCS=false; negSource = false; flagText="";
-    totalFlux = peakFlux = 0.;
-    centreType="centroid";
-  };
+  Detection();
   Detection(const Detection& d);
   Detection& operator= (const Detection& d);
   virtual ~Detection(){};

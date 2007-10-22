@@ -42,7 +42,7 @@
 class Section
 {
 public:
-  Section(){numSections=0;};
+  Section();
   Section(std::string &s){subsection=s;};
   Section(const Section& s);
   Section& operator= (const Section& s);

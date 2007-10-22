@@ -45,7 +45,7 @@ int Cube::getFITSdata(std::string fname)
    *   data array. These axes are given by the wcsprm variables wcs->lng, 
    *   wcs->lat and wcs->spec. 
    *  All other axes are just read by their first pixel, using the 
-   *   fits_read_subsetnull_ functions
+   *   fits_read_subsetnull_flt function
    */
 
   int numAxes, status = 0;  /* MUST initialize status */
@@ -90,8 +90,7 @@ int Cube::getFITSdata(std::string fname)
   int anynul;
   int npix = dimAxes[lng];
   if(numAxes>1) npix *= dimAxes[lat];
-//   if(numAxes>2) npix *= dimAxes[spc];
-   if(spc>=0) npix *= dimAxes[spc];
+  if(spc>=0) npix *= dimAxes[spc];
 
   float *pixarray = new float[npix];// the array of pixel values
   char *nullarray = new char[npix]; // the array of null pixels
@@ -107,21 +106,15 @@ int Cube::getFITSdata(std::string fname)
   }
   lpixel[lng] = dimAxes[lng];
   if(numAxes>1) lpixel[lat] = dimAxes[lat];
-//   if(numAxes>2) lpixel[spc] = dimAxes[spc];
   if(spc>=0) lpixel[spc] = dimAxes[spc];
 
     
   int colnum = 0;  // want the first dataset in the FITS file
 
-  // prepare the Cube's pixel array -- so that we don't have to use saveArray;
-//   if(this->numPixels>0) delete [] array;
-//   this->array = new float[npix];
-//   this->numPixels = npix;
   // read the relevant subset, defined by the first & last pixel ranges
   status = 0;
   if(fits_read_subsetnull_flt(fptr, colnum, numAxes, dimAxes,
 			      fpixel, lpixel, inc, 
-// 			      this->array, nullarray, &anynul, &status)){
 			      pixarray, nullarray, &anynul, &status)){
     duchampError("Cube Reader",
 		 "There was an error reading in the data array:");
@@ -149,13 +142,12 @@ int Cube::getFITSdata(std::string fname)
   delete [] pixarray;
   delete [] dimAxes;
   this->par.setOffsets(this->head.WCS());
+
   //-------------------------------------------------------------
   // Once the array is saved, change the value of the blank pixels from
   // 0 (as they are set by fits_read_pixnull) to the correct blank value
   // as determined by the above code.
   for(int i=0; i<npix;i++){
-//     if(nullarray[i]==1) this->array[i] = blank*bscale + bzero;  
-//     if(isnan(array[i])) this->array[i] = par.getBlankPixVal();
     if(nullarray[i]==1) this->array[i] = this->par.getBlankPixVal();  
   }
 

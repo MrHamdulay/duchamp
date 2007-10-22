@@ -51,7 +51,7 @@ namespace PixelInfo
   class Object2D
   {
   public:
-    Object2D(){numPix=0;};
+    Object2D();
     Object2D(const Object2D& o);
     Object2D& operator= (const Object2D& o);  
     virtual ~Object2D(){};

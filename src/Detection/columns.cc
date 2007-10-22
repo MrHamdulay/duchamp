@@ -44,13 +44,28 @@ namespace Column
   Col::Col()
   {
     /** Set the default values for the parameters. */
-    width=1; 
-    precision=0; 
-    name=" "; 
-    units=" ";
+    this->width=1; 
+    this->precision=0; 
+    this->name=" "; 
+    this->units=" ";
   };
 
   Col::~Col(){}
+
+  Col::Col(const Col& c)
+  {
+    operator=(c);
+  }
+
+  Col& Col::operator=(const Col& c)
+  {
+    if(this==&c) return *this;
+    this->width = c.width;
+    this->precision = c.precision;
+    this->name = c.name;
+    this->units = c.units;
+    return *this;
+  }
 
   Col::Col(int num)
   {
@@ -243,7 +258,8 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
       for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
 
       // Vel -- check width, title and units.
-      if(head.isSpecOK()){
+      //if(head.isSpecOK()){
+      if(head.canUseThirdAxis()){
 	if(head.WCS().restfrq == 0) // using frequency, not velocity
 	  newset[VEL].setName("FREQ");
 	if(head.getSpectralUnits().size()>0)
@@ -286,7 +302,9 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
       for(int i=newset[WDEC].getWidth();i<tempwidth;i++) newset[WDEC].widen();
 
       // w_Vel -- check width, title and units.
-      if(head.isSpecOK()){
+      //if(head.isSpecOK()){
+      if(head.canUseThirdAxis()){
+	std::cerr << "ere\n";
 	if(head.WCS().restfrq == 0) // using frequency, not velocity
 	  newset[WVEL].setName("w_FREQ");
 	if(head.getSpectralUnits().size()>0)
@@ -301,21 +319,23 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
 	tempwidth = int( log10(fabs(val)) + 1) + newset[WVEL].getPrecision() + 2;
 	if(val<0) tempwidth++;
 	for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
-
-	// F_int -- check width & units
-	newset[FINT].setUnits("[" + head.getIntFluxUnits() + "]");
-	tempwidth = newset[FINT].getUnits().size() + 1;
-	for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
-	val = objectList[obj].getIntegFlux();
-	if((fabs(val) < 1.)// &&(val>0.)
-	   ){
-	  int minprec = int(fabs(log10(fabs(val))))+2;
-	  for(int i=newset[FINT].getPrecision();i<minprec;i++) newset[FINT].upPrec();
-	}
-	tempwidth = int( log10(fabs(val)) + 1) + newset[FINT].getPrecision() + 2;
-	if(val<0) tempwidth++;
-	for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
       }
+
+      // F_int -- check width & units
+      if(head.getIntFluxUnits().size()>0)
+	newset[FINT].setUnits("[" + head.getIntFluxUnits() + "]");
+      tempwidth = newset[FINT].getUnits().size() + 1;
+      for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
+      val = objectList[obj].getIntegFlux();
+      if((fabs(val) < 1.)// &&(val>0.)
+	 ){
+	minval = pow(10, -1. * (newset[X].getPrecision()+1)); 
+	if(val < minval) newset[X].upPrec();
+      }
+      tempwidth = int( log10(fabs(val)) + 1) + newset[FINT].getPrecision() + 2;
+      if(val<0) tempwidth++;
+      for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
+      
     }
 
     // F_tot

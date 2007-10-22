@@ -43,6 +43,8 @@ class Hanning
 public:
   Hanning();          ///< Basic constructor -- no filter width set.
   virtual ~Hanning(); ///< Destructor
+  Hanning(const Hanning& h);
+  Hanning& operator=(const Hanning& h);
   Hanning(int size);  ///< Specific constructor that sets width and
 		      ///   coefficients
 

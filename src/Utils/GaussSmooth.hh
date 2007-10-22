@@ -41,6 +41,9 @@ class GaussSmooth
 public:
   GaussSmooth();          ///< Basic constructor: no kernel defined.
   virtual ~GaussSmooth(); ///< Destructor
+  GaussSmooth(const GaussSmooth& g);
+  GaussSmooth& operator=(const GaussSmooth& g);
+  
 
   /** Specific constructor that sets up kernel.*/
   GaussSmooth(float maj, float min, float pa);  

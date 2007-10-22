@@ -51,7 +51,7 @@ namespace PixelInfo
   class Scan
   {
   public:
-    Scan(){itsY=-1;itsX=-1;itsXLen=0;};
+    Scan();
     Scan(long y, long x, long xl){itsY=y; itsX=x; itsXLen=xl;};
     Scan(const Scan& s);
     Scan& operator= (const Scan& s);

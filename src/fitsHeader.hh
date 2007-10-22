@@ -119,6 +119,7 @@ public:
   bool    isWCS(){return wcsIsGood;};
   /** Is the spectral axis OK to be used? */
   bool    isSpecOK(){return (wcs->spec >= 0);};
+  bool    canUseThirdAxis(){return ((wcs->spec >= 0)||(naxis>2));};
   int     getNWCS(){return nwcs;};
   void    setNWCS(int i){nwcs=i;};
   int     getNumAxes(){return naxis;};

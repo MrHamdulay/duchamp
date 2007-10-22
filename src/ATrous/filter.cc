@@ -38,6 +38,22 @@ Filter::Filter()
   for(int i=0;i<3;i++) this->sigmaFactors[i] = new std::vector<double>(20);
   this->loadSpline();
 }
+
+Filter::Filter(const Filter& f)
+{
+  operator=(f);
+}
+
+Filter& Filter::operator=(const Filter& f)
+{
+  if(this==&f) return *this;
+  this->name = f.name;
+  this->filter1D = f.filter1D;
+  this->maxNumScales = f.maxNumScales;
+  this->sigmaFactors = f.sigmaFactors;
+  return *this;
+}
+
 //-----------------------------------------------------------------------
 
 Filter::~Filter()

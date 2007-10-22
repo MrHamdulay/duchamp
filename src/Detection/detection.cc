@@ -46,53 +46,19 @@ using std::vector;
 
 using namespace PixelInfo;
 
-Detection::Detection(const Detection& d)
+Detection::Detection()
 {
-  this->pixelArray   = d.pixelArray;
-  this->xSubOffset   = d.xSubOffset;
-  this->ySubOffset   = d.ySubOffset;
-  this->zSubOffset   = d.zSubOffset;
-  this->totalFlux    = d.totalFlux;
-  this->intFlux	     = d.intFlux;
-  this->peakFlux     = d.peakFlux;
-  this->xpeak        = d.xpeak;
-  this->ypeak        = d.ypeak;
-  this->zpeak        = d.zpeak;
-  this->peakSNR      = d.peakSNR;
-  this->xCentroid    = d.xCentroid;
-  this->yCentroid    = d.yCentroid;
-  this->zCentroid    = d.zCentroid;
-  this->centreType   = d.centreType;
-  this->negSource    = d.negSource;
-  this->flagText     = d.flagText;
-  this->id           = d.id;
-  this->name         = d.name;
-  this->flagWCS      = d.flagWCS;
-  this->specOK       = d.specOK;
-  this->raS          = d.raS;
-  this->decS         = d.decS;
-  this->ra           = d.ra;
-  this->dec	     = d.dec;
-  this->raWidth	     = d.raWidth;
-  this->decWidth     = d.decWidth;
-  this->specUnits    = d.specUnits;
-  this->fluxUnits    = d.fluxUnits;
-  this->intFluxUnits = d.intFluxUnits;
-  this->lngtype	     = d.lngtype;
-  this->lattype	     = d.lattype;
-  this->vel          = d.vel;
-  this->velWidth     = d.velWidth;
-  this->velMin       = d.velMin;
-  this->velMax       = d.velMax;
-  this->posPrec      = d.posPrec;
-  this->xyzPrec      = d.xyzPrec;
-  this->fintPrec     = d.fintPrec;
-  this->fpeakPrec    = d.fpeakPrec;
-  this->velPrec	     = d.velPrec;
-  this->snrPrec      = d.snrPrec;
+  this->flagWCS=false; 
+  this->negSource = false; 
+  this->flagText="";
+  this->totalFlux = peakFlux = 0.;
+  this->centreType="centroid";
 }
 
-//--------------------------------------------------------------------
+Detection::Detection(const Detection& d)
+{
+  operator=(d);
+}
 
 Detection& Detection::operator= (const Detection& d)
 {
@@ -247,7 +213,8 @@ void Detection::calcWCSparams(float *fluxArray, long *dim, FitsHeader &head)
       // world now has the WCS coords for the five points 
       //    -- use this to work out WCS params
   
-      this->specOK = (head.WCS().spec >= 0);
+      //      this->specOK = ((head.WCS().spec >= 0);
+      this->specOK = head.canUseThirdAxis();
       this->lngtype = head.WCS().lngtyp;
       this->lattype = head.WCS().lattyp;
       this->specUnits = head.getSpectralUnits();

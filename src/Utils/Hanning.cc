@@ -37,6 +37,23 @@ Hanning::~Hanning(){
   if(allocated) delete [] coeffs;
 }
 
+Hanning::Hanning(const Hanning& h)
+{
+  operator=(h);
+}
+
+Hanning& Hanning::operator=(const Hanning& h)
+{
+  if(this==&h) return *this;
+  this->hanningSize = h.hanningSize;
+  this->allocated = h.allocated;
+  if(h.allocated){
+    this->coeffs = new float[this->hanningSize];
+    for(int i=0;i<h.hanningSize;i++) this->coeffs[i] = h.coeffs[i];
+  }
+  return *this;
+}
+
 Hanning::Hanning(int size){
   /**
    * Constructor that sets the Hanning width and calculates the
@@ -59,7 +76,8 @@ void Hanning::define(int size)
    */ 
   if(size%2==0){ 
     std::cerr << "Hanning: need an odd number for the size. "
-	      << "Changing "<< size << " to " << ++size<<".\n";
+	      << "Changing "<< size << " to " << size+1<<".\n";
+    size++;
   }
   this->hanningSize = size;
   if(this->allocated) delete [] this->coeffs;

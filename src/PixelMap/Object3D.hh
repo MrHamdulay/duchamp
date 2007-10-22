@@ -49,7 +49,7 @@ namespace PixelInfo
   class ChanMap
   {
   public:
-    ChanMap(){itsZ=-1;};
+    ChanMap();
     ChanMap(long z){itsZ=z;};
     ChanMap(long z, Object2D obj){itsZ=z; itsObject=obj;};
     ChanMap(const ChanMap& m);
@@ -124,7 +124,7 @@ namespace PixelInfo
   class Object3D
   {
   public:
-    Object3D(){numVox=0;};
+    Object3D();
     Object3D(const Object3D& o);
     Object3D& operator= (const Object3D& o);  
     virtual ~Object3D(){};

@@ -29,6 +29,33 @@
 #include <string>
 #include <Utils/feedback.hh>
 
+void printBackSpace(std::ostream &stream, int num)
+{
+  for(int i=0;i<num;i++) stream << '\b';
+}
+void printBackSpace(int num)
+{
+  printBackSpace(std::cout,num);
+}
+
+void printSpace(std::ostream &stream, int num)
+{
+  for(int i=0;i<num;i++) stream << ' '; 
+}
+void printSpace(int num)
+{
+  printSpace(std::cout,num);
+}
+
+void printHash(std::ostream &stream, int num)
+{
+  for(int i=0;i<num;i++) stream << '#'; 
+}
+void printHash(int num)
+{
+  printHash(std::cout,num);
+}
+
 
 ProgressBar::ProgressBar()
 {

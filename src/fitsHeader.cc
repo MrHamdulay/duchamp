@@ -46,6 +46,7 @@ FitsHeader::FitsHeader()
   this->offset=0.;
   this->power=1.;
   this->fluxUnits="counts";
+  this->intFluxUnits="counts";
 }
 
 FitsHeader::~FitsHeader()
@@ -58,26 +59,7 @@ FitsHeader::~FitsHeader()
 
 FitsHeader::FitsHeader(const FitsHeader& h)
 {
-  this->wcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
-  this->wcs->flag     = -1;
-  wcsini(true, h.wcs->naxis, this->wcs); 
-  wcscopy(true, h.wcs, this->wcs); 
-  wcsset(this->wcs);
-  this->nwcs          = h.nwcs;
-  this->wcsIsGood     = h.wcsIsGood;
-  this->spectralUnits = h.spectralUnits;
-  this->fluxUnits     = h.fluxUnits;
-  this->intFluxUnits  = h.intFluxUnits;
-  this->beamSize      = h.beamSize;
-  this->bmajKeyword   = h.bmajKeyword;
-  this->bminKeyword   = h.bminKeyword;
-  this->bpaKeyword    = h.bpaKeyword;
-  this->blankKeyword  = h.blankKeyword;
-  this->bzeroKeyword  = h.bzeroKeyword;
-  this->bscaleKeyword = h.bscaleKeyword;
-  this->scale         = h.scale;
-  this->offset        = h.offset;
-  this->power         = h.power;
+  operator=(h);
 }
 
 FitsHeader& FitsHeader::operator= (const FitsHeader& h)

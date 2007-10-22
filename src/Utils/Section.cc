@@ -33,12 +33,14 @@
 #include <Utils/Section.hh>
 #include <duchamp.hh>
 
+Section::Section()
+{
+  this->numSections = 0;
+}
+
 Section::Section(const Section& s)
 {
-  this->subsection  = s.subsection;
-  this->numSections = s.numSections;
-  this->starts 	    = s.starts;
-  this->dims        = s.dims;
+  operator=(s);
 }
 //--------------------------------------------
  

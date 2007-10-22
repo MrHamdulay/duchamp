@@ -1,4 +1,4 @@
-# Doxyfile 1.4.2
+bg# Doxyfile 1.4.2
 
 # This file describes the settings to be used by the documentation system
 # doxygen (www.doxygen.org) for a project
@@ -30,7 +30,7 @@ PROJECT_NUMBER         = 1.0.7
 # If a relative path is entered, it will be relative to the location 
 # where doxygen was started. If left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = /DATA/SITAR_1/whi550/Code/Duchamp-working/docs/doxygen
+OUTPUT_DIRECTORY       = /Users/whi550/PROJECTS/Duchamp/Working/docs/doxygen
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 
 # 4096 sub-directories (in 2 levels) under the output directory of each output 
@@ -450,7 +450,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = /DATA/SITAR_1/whi550/Code/Duchamp-working/src
+INPUT                  = /Users/whi550/PROJECTS/Duchamp/Working/src
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 

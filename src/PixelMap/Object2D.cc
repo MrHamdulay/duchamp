@@ -34,18 +34,15 @@
 namespace PixelInfo
 {
 
+  Object2D::Object2D()
+  {
+    this->numPix = 0;
+  }
+
   Object2D::Object2D(const Object2D& o)
   {
-    this->scanlist = o.scanlist;
-    this->numPix   = o.numPix;
-    this->xSum     = o.xSum;
-    this->ySum     = o.ySum;
-    this->xmin     = o.xmin;
-    this->ymin     = o.ymin;
-    this->xmax     = o.xmax;
-    this->ymax     = o.ymax;
+    operator=(o);
   }  
-  //------------------------------------------------------
 
   Object2D& Object2D::operator= (const Object2D& o)
   {

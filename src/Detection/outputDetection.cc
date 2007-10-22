@@ -37,6 +37,7 @@
 #include <Cubes/cubes.hh>
 #include <Utils/utils.hh>
 #include <Detection/columns.hh>
+#include <Utils/feedback.hh>
 
 using namespace Column;
 
@@ -119,10 +120,12 @@ void Detection::outputDetectionTextWCS(std::ostream &stream,
     if(this->flagWCS){
       columns[RA].printEntry(stream,this->raS);
       columns[DEC].printEntry(stream,this->decS);
-      columns[VEL].printEntry(stream,this->vel);
+      if(this->specOK) columns[VEL].printEntry(stream,this->vel);
+      else columns[VEL].printEntry(stream,0.);
       columns[WRA].printEntry(stream,this->raWidth);
       columns[WDEC].printEntry(stream,this->decWidth);
-      columns[WVEL].printEntry(stream,this->velWidth);
+      if(this->specOK) columns[WVEL].printEntry(stream,this->velWidth);
+      else columns[WVEL].printEntry(stream,0.);
     }
     else for(int i=RA;i<=WVEL;i++) columns[i].printBlank(stream);
     if(this->flagWCS)
@@ -249,10 +252,13 @@ void Detection::outputDetectionTextWCSFull(std::ostream &stream,
     if(this->flagWCS){
       columns[RA].printEntry(stream,this->raS);
       columns[DEC].printEntry(stream,this->decS);
-      columns[VEL].printEntry(stream,this->vel);
+      if(this->specOK) columns[VEL].printEntry(stream,this->vel);
+//       else printSpace(stream,columns[VEL].getWidth());
+      else columns[VEL].printEntry(stream,0.);
       columns[WRA].printEntry(stream,this->raWidth);
       columns[WDEC].printEntry(stream,this->decWidth);
-      columns[WVEL].printEntry(stream,this->velWidth);
+      if(this->specOK) columns[WVEL].printEntry(stream,this->velWidth);
+      else columns[WVEL].printEntry(stream,0.);
     }
     else for(int i=RA;i<=WVEL;i++) columns[i].printBlank(stream);
     columns[FINT].printEntry(stream,this->intFlux);

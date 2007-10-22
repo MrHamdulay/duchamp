@@ -38,6 +38,28 @@ GaussSmooth::~GaussSmooth()
   if(allocated) delete [] kernel;
 };
 
+GaussSmooth::GaussSmooth(const GaussSmooth& g)
+{
+  operator=(g);
+}
+
+GaussSmooth& GaussSmooth::operator=(const GaussSmooth& g)
+{
+  if(this==&g) return *this;
+  this->kernMaj   = g.kernMaj;
+  this->kernMin   = g.kernMin;
+  this->kernPA    = g.kernPA;
+  this->kernWidth = g.kernWidth;
+  this->stddevScale = g.stddevScale;
+  this->allocated = g.allocated;
+  if(this->allocated){
+    this->kernel = new float[this->kernWidth*this->kernWidth];
+    for(int i=0;i<this->kernWidth*this->kernWidth;i++)
+      this->kernel[i] = g.kernel[i];
+  }
+  return *this;
+}
+
 GaussSmooth::GaussSmooth(float maj, float min, float pa)
 {
   this->allocated=false;

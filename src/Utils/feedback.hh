@@ -34,9 +34,12 @@
 
 // Simple functions to print a given number of backspaces or spaces
 //  to std::cout
-inline void printBackSpace(int num){for(int i=0;i<num;i++) std::cout << '\b';};
-inline void printSpace(int num){ for(int i=0;i<num;i++) std::cout << ' '; };
-inline void printHash(int num){ for(int i=0;i<num;i++) std::cout << '#'; };
+inline void printBackSpace(std::ostream &stream, int num);
+inline void printBackSpace(int num);
+inline void printSpace(std::ostream &stream, int num);
+inline void printSpace(int num);
+inline void printHash(std::ostream &stream, int num);
+inline void printHash(int num);
 
 /**
  *  Controls printing out a progress bar.
@@ -48,7 +51,7 @@ inline void printHash(int num){ for(int i=0;i<num;i++) std::cout << '#'; };
  *   declaring the object.
  *   There are five functions: 
  *    <ul><li>init(int)   Prints an empty bar, and defines the increment
- *        <li>update(int) Prints the correct number of #s, but only when
+ *        <li>update(int) Prints the correct number of hashes, but only when
  *                         num is a multiple of the increment.
  *        <li>rewind()    Prints backspaces to cover the entire bar.
  *        <li>remove()    Does a rewind(), then prints spaces to overwrite

@@ -163,7 +163,8 @@ int FitsHeader::defineWCS(std::string fname, Param &par)
       int index = localwcs->spec;
       std::string desiredType,specType = localwcs->ctype[index];
       std::string shortType = specType.substr(0,4);
-      if(shortType=="VELO" || shortType=="VOPT" || shortType=="ZOPT" || shortType=="VRAD" || shortType=="BETA"){
+      if(shortType=="VELO" || shortType=="VOPT" || shortType=="ZOPT" 
+	 || shortType=="VRAD" || shortType=="BETA"){
 	if(localwcs->restfrq != 0){
 	  // Set the spectral axis to a standard specification: VELO-F2V
 	  desiredType = duchampVelocityType;

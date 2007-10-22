@@ -31,11 +31,16 @@
 namespace PixelInfo
 {
 
+  Scan::Scan()
+  {
+    this->itsY=-1;
+    this->itsX=-1;
+    this->itsXLen=0;
+  }
+
   Scan::Scan(const Scan& s)
   {
-    this->itsY=s.itsY; 
-    this->itsX=s.itsX; 
-    this->itsXLen=s.itsXLen;
+    operator=(s);
   }
   //------------------------------------------------------
   

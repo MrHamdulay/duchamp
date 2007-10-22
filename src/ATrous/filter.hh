@@ -47,6 +47,8 @@ class Filter
 public:
   // these are all in atrous.cc
   Filter();                         ///< Constructor
+  Filter(const Filter& f);
+  Filter& operator=(const Filter& f);
   virtual ~Filter();                ///< Destructor
 
   /** Define the parameters for a given filter. */

@@ -35,11 +35,14 @@
 namespace PixelInfo
 {
 
-  ChanMap::ChanMap(const ChanMap& m){
-    this->itsZ=m.itsZ; 
-    this->itsObject=m.itsObject;
+  ChanMap::ChanMap()
+  {
+    this->itsZ = -1;
   }
-  //--------------------------------------------
+
+  ChanMap::ChanMap(const ChanMap& m){
+    operator=(m);
+  }
 
   ChanMap& ChanMap::operator= (const ChanMap& m)
   {
@@ -52,19 +55,14 @@ namespace PixelInfo
   //============================================
   //--------------------------------------------
 
+  Object3D::Object3D()
+  {
+    this->numVox=0;
+  }
+
   Object3D::Object3D(const Object3D& o)
   {
-    this->maplist = o.maplist;
-    this->numVox  = o.numVox;
-    this->xSum    = o.xSum;
-    this->ySum    = o.ySum;
-    this->zSum    = o.zSum;
-    this->xmin    = o.xmin;
-    this->ymin    = o.ymin;
-    this->zmin    = o.zmin;
-    this->xmax    = o.xmax;
-    this->ymax    = o.ymax;
-    this->zmax    = o.zmax;
+    operator=(o);
   }
   //--------------------------------------------
 

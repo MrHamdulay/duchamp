@@ -46,12 +46,32 @@ namespace Plot
   //----------------------------------------------------------
 
   SpectralPlot::SpectralPlot(){
-    paperWidth=a4width/inchToCm - 2*psHoffset; 
-    spectraCount=0;
-    numOnPage = 5;
-  };
+    this->paperWidth=a4width/inchToCm - 2*psHoffset; 
+    this->spectraCount=0;
+    this->numOnPage = 5;
+  }
 
-  SpectralPlot::~SpectralPlot(){};
+  SpectralPlot::~SpectralPlot(){}
+
+  SpectralPlot::SpectralPlot(const SpectralPlot& p)
+  {
+    operator=(p);
+  }
+
+  SpectralPlot& SpectralPlot::operator=(const SpectralPlot& p)
+  {
+    if(this==&p) return *this;
+    this->numOnPage = p.numOnPage;
+    this->spectraCount = p.spectraCount;  
+    for(int i=0;i<4;i++) this->mainCoords[i] = p.mainCoords[i]; 
+    for(int i=0;i<4;i++) this->zoomCoords[i] = p.zoomCoords[i]; 
+    for(int i=0;i<4;i++) this->mapCoords[i] = p.mapCoords[i]; 
+    this->paperWidth = p.paperWidth;    
+    this->paperHeight = p.paperHeight;   
+    this->identifier = p.identifier;    
+    return *this;
+  }
+
   //----------------------------------------------------------
   int SpectralPlot::setUpPlot(std::string pgDestination){
     /** 
@@ -269,6 +289,27 @@ namespace Plot
   };
 
   ImagePlot::~ImagePlot(){};
+
+  ImagePlot::ImagePlot(const ImagePlot& p)
+  {
+    operator=(p);
+  }
+
+  ImagePlot& ImagePlot::operator=(const ImagePlot& p)
+  {
+    if(this==&p) return *this;
+    this->paperWidth = p.paperWidth;    
+    this->maxPaperHeight = p.maxPaperHeight;   
+    this->marginWidth = p.marginWidth;    
+    this->wedgeWidth = p.wedgeWidth; 
+    this->imageRatio = p.imageRatio;
+    this->aspectRatio = p.aspectRatio;
+    this->xdim = p.xdim;
+    this->ydim = p.ydim;
+    this->identifier = p.identifier;    
+    return *this;
+  }
+
   //----------------------------------------------------------
 
   int ImagePlot::setUpPlot(std::string pgDestination, float x, float y){

@@ -54,18 +54,10 @@ namespace Statistics
   StatsContainer<Type>::StatsContainer(const StatsContainer<Type>& s)
   {
     /** 
-     *  The copy constructor for the StatsContainer class.
+     *  The copy constructor for the StatsContainer class. Just uses
+     *  the assignment operator.
      */
-
-    this->defined    = s.defined;
-    this->mean       = s.mean;
-    this->stddev     = s.stddev;
-    this->median     = s.median;
-    this->madfm      = s.madfm;
-    this->threshold  = s.threshold;
-    this->pThreshold = s.pThreshold;
-    this->useRobust  = s.useRobust;
-    this->useFDR     = s.useFDR;
+    operator=(s);
   }
   template StatsContainer<int>::StatsContainer(const StatsContainer<int>& s);
   template StatsContainer<long>::StatsContainer(const StatsContainer<long>& s);

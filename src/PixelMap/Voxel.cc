@@ -43,10 +43,7 @@ namespace PixelInfo
 
   Voxel::Voxel(const Voxel& v)
   {
-    this->itsX=v.itsX; 
-    this->itsY=v.itsY; 
-    this->itsZ=v.itsZ; 
-    this->itsF=v.itsF;
+    operator=(v);
   }
   //--------------------------------------------------------------------
 
@@ -90,9 +87,7 @@ namespace PixelInfo
 
   Pixel::Pixel(const Pixel& p)
   {
-    this->itsX=p.itsX; 
-    this->itsY=p.itsY; 
-    this->itsF=p.itsF;
+    operator=(p);
   }
   //--------------------------------------------------------------------
 

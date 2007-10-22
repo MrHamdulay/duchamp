@@ -120,6 +120,8 @@ namespace Column
   public:
     Col();          ///< Basic constructor
     Col(int num);   ///< Specific constructor
+    Col(const Col& c);///< Assignment constructor
+    Col& operator=(const Col& c); ///< Copy constructor
     virtual ~Col(); ///< Default destructor;
     //--------------
     // basic accessor functions

@@ -97,6 +97,8 @@ namespace Plot
   public:
     SpectralPlot();    ///< Constructor
     virtual ~SpectralPlot(); ///< Destructor
+    SpectralPlot(const SpectralPlot& p);
+    SpectralPlot& operator=(const SpectralPlot& p);
 
     /** Set up PGPLOT output.*/
     int setUpPlot(std::string pgDestination); 
@@ -187,6 +189,8 @@ namespace Plot
   public:
     ImagePlot();  ///< Constructor
     virtual ~ImagePlot(); ///< Destructor
+    ImagePlot(const ImagePlot& p);
+    ImagePlot& operator=(const ImagePlot& p);
   
     /** Set up PGPLOT output.*/
     int   setUpPlot(std::string pgDestination, float x, float y); 
