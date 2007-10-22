@@ -304,7 +304,6 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
       // w_Vel -- check width, title and units.
       //if(head.isSpecOK()){
       if(head.canUseThirdAxis()){
-	std::cerr << "ere\n";
 	if(head.WCS().restfrq == 0) // using frequency, not velocity
 	  newset[WVEL].setName("w_FREQ");
 	if(head.getSpectralUnits().size()>0)
@@ -329,8 +328,8 @@ std::vector<Col> getFullColSet(std::vector<Detection> &objectList,
       val = objectList[obj].getIntegFlux();
       if((fabs(val) < 1.)// &&(val>0.)
 	 ){
-	minval = pow(10, -1. * (newset[X].getPrecision()+1)); 
-	if(val < minval) newset[X].upPrec();
+	int minprec = int(fabs(log10(fabs(val))))+2;
+	for(int i=newset[FINT].getPrecision();i<minprec;i++) newset[FINT].upPrec();
       }
       tempwidth = int( log10(fabs(val)) + 1) + newset[FINT].getPrecision() + 2;
       if(val<0) tempwidth++;
