@@ -34,12 +34,12 @@
 
 // Simple functions to print a given number of backspaces or spaces
 //  to std::cout
-inline void printBackSpace(std::ostream &stream, int num);
-inline void printBackSpace(int num);
-inline void printSpace(std::ostream &stream, int num);
-inline void printSpace(int num);
-inline void printHash(std::ostream &stream, int num);
-inline void printHash(int num);
+void printBackSpace(std::ostream &stream, int num);
+void printBackSpace(int num);
+void printSpace(std::ostream &stream, int num);
+void printSpace(int num);
+void printHash(std::ostream &stream, int num);
+void printHash(int num);
 
 /**
  *  Controls printing out a progress bar.

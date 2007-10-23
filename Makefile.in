@@ -126,7 +126,7 @@ else
 endif
 
 duchamp : $(OBJECTS)
-	$(CXX) -o $(EXEC) $(OBJECTS) $(LIBS)
+	$(F77) -o $(EXEC) $(OBJECTS) $(LIBS)
 
 createTestImage : $(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o
 	$(CXX) -o createTestImage.x\
