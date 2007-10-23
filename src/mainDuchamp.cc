@@ -195,14 +195,15 @@ int main(int argc, char * argv[])
       cube->plotDetectionMap(cube->pars().getDetectionMap()+"/vcps");
     std::cout << "Done.\n";
     
-    if((cube->getDimZ()>1) && (cube->getNumObj()>0)){
+//     if((cube->getDimZ()>1) && (cube->getNumObj()>0)){
+    if(cube->getNumObj()>0){
       std::cout << "Plotting the individual spectra... " << std::flush;
       cube->outputSpectra();
       std::cout << "Done.\n";
     }
-    else if(cube->getDimZ()<=1) 
-      duchampWarning("Duchamp",
-		     "Not plotting any spectra : no third dimension.\n");
+//     else if(cube->getDimZ()<=1) 
+//       duchampWarning("Duchamp",
+// 		     "Not plotting any spectra : no third dimension.\n");
   }
   else{
     std::cout << "PGPLOT has not been enabled, so no graphical output.\n";

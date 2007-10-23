@@ -85,15 +85,15 @@ namespace Plot
      * \return The value returned by mycpgopen. If <= 0, then an error
      * has occurred.
      */
-    paperHeight = paperWidth*M_SQRT2; 
-    if(paperHeight+2*psVoffset > a4height){
-      paperHeight = a4height - 2*psVoffset;
-      paperWidth = paperHeight / M_SQRT2;
+    this->paperHeight = this->paperWidth*M_SQRT2; 
+    if(this->paperHeight+2*Plot::psVoffset > Plot::a4height){
+      this->paperHeight = Plot::a4height - 2*Plot::psVoffset;
+      this->paperWidth = this->paperHeight / M_SQRT2;
     }
-    identifier = mycpgopen(pgDestination);
-    if(identifier>0) cpgpap(paperWidth, paperHeight/paperWidth); 
+    this->identifier = mycpgopen(pgDestination);
+    if(this->identifier>0) cpgpap(this->paperWidth, this->paperHeight/this->paperWidth); 
     // make paper size to fit on A4.
-    return identifier;
+    return this->identifier;
   }
   //----------------------------------------------------------
   void SpectralPlot::calcCoords(){
@@ -104,17 +104,19 @@ namespace Plot
      *  page, going down the page in increasing number (given by 
      *  SpectralPlot::spectraCount).
      */
-    int posOnPage = (numOnPage - (spectraCount%numOnPage))%numOnPage;
-    mainCoords[0] = Plot::spMainX1/inchToCm;
-    mainCoords[1] = Plot::spMainX2/inchToCm;
-    zoomCoords[0] = Plot::spZoomX1/inchToCm;
-    zoomCoords[1] = Plot::spZoomX2/inchToCm;
-    mainCoords[2] = zoomCoords[2] = mapCoords[2] = 
-      posOnPage*paperHeight/float(numOnPage) + Plot::spMainY1/inchToCm;
-    mainCoords[3] = zoomCoords[3] = mapCoords[3] = 
-      posOnPage*paperHeight/float(numOnPage) + Plot::spMainY2/inchToCm;
-    mapCoords[0]  = Plot::spMapX1/inchToCm;
-    mapCoords[1]  = mapCoords[0] + (mapCoords[3]-mapCoords[2]);
+    int posOnPage = (this->numOnPage - 
+		     (this->spectraCount%this->numOnPage))
+      %this->numOnPage;
+    this->mainCoords[0] = Plot::spMainX1/inchToCm;
+    this->mainCoords[1] = Plot::spMainX2/inchToCm;
+    this->zoomCoords[0] = Plot::spZoomX1/inchToCm;
+    this->zoomCoords[1] = Plot::spZoomX2/inchToCm;
+    this->mainCoords[2] = this->zoomCoords[2] = this->mapCoords[2] = 
+      posOnPage*paperHeight/float(this->numOnPage) + Plot::spMainY1/inchToCm;
+    this->mainCoords[3] = this->zoomCoords[3] = this->mapCoords[3] = 
+      posOnPage*paperHeight/float(this->numOnPage) + Plot::spMainY2/inchToCm;
+    this->mapCoords[0]  = Plot::spMapX1/inchToCm;
+    this->mapCoords[1]  = this->mapCoords[0] + (this->mapCoords[3]-this->mapCoords[2]);
   }
   //----------------------------------------------------------
   void SpectralPlot::gotoHeader(std::string xlabel){
@@ -127,9 +129,9 @@ namespace Plot
      */
     if(spectraCount%numOnPage==0) cpgpage();
     spectraCount++;
-    calcCoords();
-    cpgvsiz(0., paperWidth, mainCoords[2], mainCoords[3]);  
-    cpgsch(spLabelSize);
+    this->calcCoords();
+    cpgvsiz(0., this->paperWidth, this->mainCoords[2], this->mainCoords[3]);  
+    cpgsch(Plot::spLabelSize);
     cpgmtxt("b",Plot::spXlabelOffset,0.5,0.5,xlabel.c_str());
   }
   //----------------------------------------------------------
@@ -144,11 +146,12 @@ namespace Plot
      * \param y2 Maximum Y-coordinate of box.
      * \param ylabel Label for the flux (Y) axis.
      */
-    cpgvsiz(mainCoords[0],mainCoords[1],mainCoords[2],mainCoords[3]);
-    cpgsch(spIndexSize);
+    cpgvsiz(this->mainCoords[0],this->mainCoords[1],
+	    this->mainCoords[2],this->mainCoords[3]);
+    cpgsch(Plot::spIndexSize);
     cpgswin(x1,x2,y1,y2);
     cpgbox("1bcnst",0.,0,"bcnst1v",0.,0);
-    cpgsch(spLabelSize);
+    cpgsch(Plot::spLabelSize);
     cpgmtxt("l",Plot::spYlabelOffset,0.5,0.5,ylabel.c_str());
   }
   //----------------------------------------------------------
@@ -161,8 +164,9 @@ namespace Plot
      * \param y1 Minimum Y-coordinate of box.
      * \param y2 Maximum Y-coordinate of box.
      */
-    cpgvsiz(zoomCoords[0],zoomCoords[1],zoomCoords[2],zoomCoords[3]);
-    cpgsch(spIndexSize);
+    cpgvsiz(this->zoomCoords[0],this->zoomCoords[1],
+	    this->zoomCoords[2],this->zoomCoords[3]);
+    cpgsch(Plot::spIndexSize);
     cpgswin(x1,x2,y1,y2);
     cpgbox("bc",0.,0,"bcstn1v",0.,0);
     float lengthL,lengthR,disp,tickpt,step;
@@ -202,8 +206,9 @@ namespace Plot
   }
   //----------------------------------------------------------
   void SpectralPlot::gotoMap(){
-    cpgvsiz(mapCoords[0],mapCoords[1],mapCoords[2],mapCoords[3]);
-    cpgsch(spIndexSize);
+    cpgvsiz(this->mapCoords[0],this->mapCoords[1],
+	    this->mapCoords[2],this->mapCoords[3]);
+    cpgsch(Plot::spIndexSize);
   }
   //----------------------------------------------------------
   void SpectralPlot::drawVelRange(float v1, float v2){
@@ -255,26 +260,26 @@ namespace Plot
   //----------------------------------------------------------
   void  SpectralPlot::firstHeaderLine(std::string line)
   {
-    cpgsch(spTitleSize); 
-    cpgmtxt("t",Plot::spTitleOffset1*spLabelSize/spTitleSize,
+    cpgsch(Plot::spTitleSize); 
+    cpgmtxt("t",Plot::spTitleOffset1*Plot::spLabelSize/Plot::spTitleSize,
 	    0.5,0.5,line.c_str());
   }
   void  SpectralPlot::secondHeaderLine(std::string line)
   {
-    cpgsch(spLabelSize); 
+    cpgsch(Plot::spLabelSize); 
     cpgmtxt("t",Plot::spTitleOffset2,0.5,0.5,line.c_str());
   }
   void  SpectralPlot::thirdHeaderLine(std::string line)
   {
-    cpgsch(spLabelSize);
+    cpgsch(Plot::spLabelSize);
     cpgmtxt("t",Plot::spTitleOffset3,0.5,0.5,line.c_str());
   }
   void  SpectralPlot::fourthHeaderLine(std::string line)
   {
-    cpgsch(spLabelSize); 
+    cpgsch(Plot::spLabelSize); 
     cpgmtxt("t",Plot::spTitleOffset4,0.5,0.5,line.c_str());
   }
-  void  SpectralPlot::goToPlot(){cpgslct(identifier);}
+  void  SpectralPlot::goToPlot(){cpgslct(this->identifier);}
 
   //----------------------------------------------------------
   //----------------------------------------------------------
@@ -282,10 +287,10 @@ namespace Plot
   //----------------------------------------------------------
 
   ImagePlot::ImagePlot(){
-    paperWidth = 7.5; 
-    maxPaperHeight = 10.; 
-    marginWidth = 0.8; 
-    wedgeWidth = 0.7;
+    this->paperWidth = 7.5; 
+    this->maxPaperHeight = 10.; 
+    this->marginWidth = 0.8; 
+    this->wedgeWidth = 0.7;
   };
 
   ImagePlot::~ImagePlot(){};
@@ -327,20 +332,23 @@ namespace Plot
      * \return The value returned by mycpgopen: if <= 0, then an error 
      *  has occurred.
      */
-    xdim = x;
-    ydim = y;
-    imageRatio= ydim / xdim; 
-    aspectRatio =  (imageRatio*imageWidth() + 2*marginWidth) / paperWidth;
+    this->xdim = x;
+    this->ydim = y;
+    this->imageRatio= this->ydim / this->xdim; 
+    this->aspectRatio =  (this->imageRatio*this->imageWidth() + 2*this->marginWidth) 
+      / this->paperWidth;
     float correction;
-    if((imageRatio*imageWidth() + 2*marginWidth) > maxPaperHeight){
-      correction = maxPaperHeight / (imageRatio*imageWidth()+2*marginWidth);
-      paperWidth *= correction;
-      marginWidth *= correction;
-      wedgeWidth *= correction;
+    if((this->imageRatio*this->imageWidth() + 2*this->marginWidth) > 
+       this->maxPaperHeight){
+      correction = this->maxPaperHeight / 
+	(this->imageRatio*this->imageWidth()+2*this->marginWidth);
+      this->paperWidth *= correction;
+      this->marginWidth *= correction;
+      this->wedgeWidth *= correction;
     }
-    identifier = mycpgopen(pgDestination);
-    if(identifier>0) cpgpap(paperWidth, aspectRatio);
-    return identifier;
+    this->identifier = mycpgopen(pgDestination);
+    if(this->identifier>0) cpgpap(this->paperWidth, this->aspectRatio);
+    return this->identifier;
   }
   //----------------------------------------------------------
   void ImagePlot::drawMapBox(float x1, float x2, float y1, float y2, 
@@ -356,8 +364,8 @@ namespace Plot
      * \param xlabel The label to be put on the X-axis.
      * \param ylabel The label to be put on the Y-axis.
      */
-    cpgvsiz(marginWidth, marginWidth + imageWidth(),
-	    marginWidth, marginWidth + (imageWidth()*imageRatio));
+    cpgvsiz(this->marginWidth, this->marginWidth + this->imageWidth(),
+	    this->marginWidth, this->marginWidth + (this->imageWidth()*this->imageRatio));
     cpgslw(2);
     cpgswin(x1,x2,y1,y2);
     cpgbox("bcst",0.,0,"bcst",0.,0);
@@ -376,7 +384,149 @@ namespace Plot
     cpgmtxt("t", Plot::imTitleOffset, 0.5, 0.5, title.c_str());
   }
 
-  void  ImagePlot::goToPlot(){cpgslct(identifier);}
+  void  ImagePlot::goToPlot(){cpgslct(this->identifier);}
 
+  float ImagePlot::imageWidth(){ 
+    return this->paperWidth - 2*this->marginWidth - this->wedgeWidth;
+  }
+
+  float ImagePlot::cmToCoord(float cm){
+    /** \param cm Distance to be converted.*/
+    return (cm/Plot::inchToCm) * this->ydim / (this->imageWidth()*this->imageRatio);
+  }
+
+
+  //----------------------------------------------------------
+  //----------------------------------------------------------
+  // CutoutPlot functions
+  //----------------------------------------------------------
+  //----------------------------------------------------------
+
+  CutoutPlot::CutoutPlot(){
+    this->paperWidth=a4width/inchToCm - 2*psHoffset; 
+    this->sourceCount=0;
+    this->numOnPage = 7;
+  }
+
+  CutoutPlot::~CutoutPlot(){}
+
+  CutoutPlot::CutoutPlot(const CutoutPlot& p)
+  {
+    operator=(p);
+  }
+
+  CutoutPlot& CutoutPlot::operator=(const CutoutPlot& p)
+  {
+    if(this==&p) return *this;
+    this->numOnPage = p.numOnPage;
+    this->sourceCount = p.sourceCount;  
+    for(int i=0;i<4;i++) this->mainCoords[i] = p.mainCoords[i]; 
+    for(int i=0;i<4;i++) this->mapCoords[i] = p.mapCoords[i]; 
+    this->paperWidth = p.paperWidth;    
+    this->paperHeight = p.paperHeight;   
+    this->identifier = p.identifier;    
+    return *this;
+  }
+
+  //----------------------------------------------------------
+  int CutoutPlot::setUpPlot(std::string pgDestination){
+    /** 
+     * Opens the designated pgplot device.  Scales the paper so that
+     * it fits on an A4 sheet (using known values of the default
+     * pgplot offsets).  
+     *
+     * \param pgDestination The std::string indicating the PGPLOT device to
+     * be written to.
+     *
+     * \return The value returned by mycpgopen. If <= 0, then an error
+     * has occurred.
+     */
+    this->paperHeight = this->paperWidth*M_SQRT2; 
+    if(this->paperHeight+2*Plot::psVoffset > Plot::a4height){
+      this->paperHeight = Plot::a4height - 2*Plot::psVoffset;
+      this->paperWidth = this->paperHeight / M_SQRT2;
+    }
+    this->identifier = mycpgopen(pgDestination);
+    if(this->identifier>0) cpgpap(this->paperWidth, this->paperHeight/this->paperWidth); 
+    // make paper size to fit on A4.
+    return this->identifier;
+  }
+  //----------------------------------------------------------
+  void CutoutPlot::calcCoords(){
+    /**
+     * Calculates the boundaries for the various boxes, in inches measured
+     *  from the lower left corner.
+     * Based on the fact that there are numOnPage spectra shown on each 
+     *  page, going down the page in increasing number (given by 
+     *  CutoutPlot::spectraCount).
+     */
+    int posOnPage = (this->numOnPage - 
+		     (this->sourceCount%this->numOnPage))
+      %this->numOnPage;
+    this->mainCoords[0] = Plot::cuMainX1/inchToCm;
+    this->mainCoords[1] = Plot::cuMainX2/inchToCm;
+    this->mainCoords[2] = this->mapCoords[2] = 
+      posOnPage*paperHeight/float(this->numOnPage) + Plot::cuMainY1/inchToCm;
+    this->mainCoords[3] = this->mapCoords[3] = 
+      posOnPage*paperHeight/float(this->numOnPage) + Plot::cuMainY2/inchToCm;
+    this->mapCoords[0]  = Plot::cuMapX1/inchToCm;
+    this->mapCoords[1]  = this->mapCoords[0] + (this->mapCoords[3]-this->mapCoords[2]);
+  }
+  //----------------------------------------------------------
+  void CutoutPlot::gotoHeader(){
+    /** 
+     * Calls calcCoords, to calculate correct coordinates for this spectrum.
+     * Defines the region for the header information, making it centred
+     *  on the page.
+     * Also writes the velocity (x axis) label, given by the string argument.
+     * \param xlabel Label to go on the velocity/spectral axis.
+     */
+    if(sourceCount%numOnPage==0) cpgpage();
+    sourceCount++;
+    this->calcCoords();
+//     cpgvsiz(0., this->paperWidth, this->mainCoords[2], this->mainCoords[3]);  
+    cpgvsiz(this->mainCoords[0], this->mainCoords[1], 
+	    this->mainCoords[2], this->mainCoords[3]);  
+    cpgsch(Plot::spLabelSize);
+    //   cpgmtxt("b",Plot::spXlabelOffset,0.5,0.5,xlabel.c_str());
+    cpgswin(0.,1.,0.,1.);
+    //    cpgbox("bc",0,0,"bc",0,0);
+  }
+  //----------------------------------------------------------
+
+  void CutoutPlot::gotoMap(){
+    cpgvsiz(this->mapCoords[0],this->mapCoords[1],
+	    this->mapCoords[2],this->mapCoords[3]);
+    cpgsch(Plot::spIndexSize);
+  }
+  //----------------------------------------------------------
+  // CutoutPlot functions...
+  //----------------------------------------------------------
+  void  CutoutPlot::firstHeaderLine(std::string line)
+  {
+    cpgsch(Plot::spTitleSize); 
+//     cpgmtxt("t",Plot::spTitleOffset1*Plot::spLabelSize/Plot::spTitleSize,
+// 	    0.5,0.5,line.c_str());
+    cpgptxt(0.5,0.8,0.,0.5,line.c_str());
+  }
+  void  CutoutPlot::secondHeaderLine(std::string line)
+  {
+    cpgsch(Plot::spLabelSize); 
+    //    cpgmtxt("t",Plot::spTitleOffset2,0.5,0.5,line.c_str());
+    cpgptxt(0.5,0.6,0.,0.5,line.c_str());
+  }
+  void  CutoutPlot::thirdHeaderLine(std::string line)
+  {
+    cpgsch(Plot::spLabelSize);
+    //    cpgmtxt("t",Plot::spTitleOffset3,0.5,0.5,line.c_str());
+    cpgptxt(0.5,0.4,0.,0.5,line.c_str());
+  }
+  void  CutoutPlot::fourthHeaderLine(std::string line)
+  {
+    cpgsch(Plot::spLabelSize); 
+    //    cpgmtxt("t",Plot::spTitleOffset4,0.5,0.5,line.c_str());
+    cpgptxt(0.5,0.2,0.,0.5,line.c_str());
+ }
+  void  CutoutPlot::goToPlot(){cpgslct(this->identifier);}
 
 }

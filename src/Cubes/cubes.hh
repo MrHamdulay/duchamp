@@ -512,6 +512,8 @@ public:
 
   /** Print spectrum of a single object */
   void        plotSpectrum(Detection obj,Plot::SpectralPlot &plot);
+  /** Plot the image cutout for a single object */
+  void        plotSource(Detection obj, Plot::CutoutPlot &plot);
 
   //  in Cubes/drawMomentCutout.cc
   /** Draw the 0th moment map for a single object. */

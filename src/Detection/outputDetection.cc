@@ -307,9 +307,11 @@ std::string Detection::outputLabelWCS()
   ss << std::setfill(' ');
   ss << this->raS << ", ";
   ss << this->decS;
-  ss << std::setprecision(this->velPrec);
-  ss.setf(std::ios::fixed);
-  ss << ", " << this->vel << " " << this->specUnits;
+  if(this->specOK){
+    ss << std::setprecision(this->velPrec);
+    ss.setf(std::ios::fixed);
+    ss << ", " << this->vel << " " << this->specUnits;
+  }
 
   return ss.str();
 
@@ -397,12 +399,16 @@ std::string Detection::outputLabelPix()
   ss <<", "      << this->getYcentre() + this->ySubOffset;
   ss <<", "      << this->getZcentre() + this->zSubOffset << ")";
   ss <<", Size: "<< this->pixelArray.getSize() << " voxels,  ";
-  ss <<"Range: ["<< this->getXmin() + this->xSubOffset 
+  ss <<"Range: [";
+  ss <<             this->getXmin() + this->xSubOffset 
      <<":"       << this->getXmax() + this->xSubOffset;
   ss <<", "      << this->getYmin() + this->ySubOffset 
      <<":"       << this->getYmax() + this->ySubOffset;
-  ss <<", "      << this->getZmin() + this->zSubOffset 
-     <<":"       << this->getZmax() + this->zSubOffset << "]";
+  if(this->specOK){
+    ss <<", "      << this->getZmin() + this->zSubOffset 
+       <<":"       << this->getZmax() + this->zSubOffset;
+  }
+  ss<< "]";
   
   return ss.str();
 }

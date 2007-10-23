@@ -50,32 +50,53 @@ void getSmallZRange(Detection &obj, float *minz, float *maxz);
 void Cube::outputSpectra()
 {
   /** 
-   * The way to print out the spectra of the detected objects.
-   * Make use of the SpectralPlot class in plots.h, which sizes everything 
-   *   correctly.
-   * Main choice is whether to use the peak pixel, in which case the 
-   *  spectrum is just that of the peak pixel, or the sum, where the 
-   *  spectrum is summed over all spatial pixels that are in the object.
-   * If a reconstruction has been done, that spectrum is plotted in red.
-   * The limits of the detection are marked in blue.
-   * A 0th moment map of the detection is also plotted, with a scale bar 
-   *  indicating the spatial scale.
+   * The way to display individual detected objects. The standard way
+   * is plot the full spectrum, plus a zoomed-in spectrum showing just
+   * the object, plus the 0th-moment map. If there is no spectral
+   * axis, just the 0th moment map is plotted (using
+   * Cube::plotSource() rather than Cube::plotSpectrum()).
+   *
+   * It makes use of the SpectralPlot or CutoutPlot classes from plots.h, which size
+   * everything correctly.  
+   *
+   * The main choice for SpectralPlot() is whether to use the peak
+   * pixel, in which case the spectrum is just that of the peak pixel,
+   * or the sum, where the spectrum is summed over all spatial pixels
+   * that are in the object.  If a reconstruction has been done, that
+   * spectrum is plotted in red.  The limits of the detection are
+   * marked in blue.  A 0th moment map of the detection is also
+   * plotted, with a scale bar indicating the spatial scale.
    */
 
   if(this->fullCols.size()==0) this->setupColumns(); 
   // in case cols haven't been set -- need the precisions for printing values.
 
   std::string spectrafile = this->par.getSpectraFile() + "/vcps";
-  Plot::SpectralPlot newplot;
-  if(newplot.setUpPlot(spectrafile.c_str())>0) {
+  if(this->getDimZ()<=1){
+    Plot::CutoutPlot newplot;
+    if(newplot.setUpPlot(spectrafile.c_str())>0) {
 
-    for(int nobj=0;nobj<this->objectList->size();nobj++){
-      // for each object in the cube:
-      this->plotSpectrum(this->objectList->at(nobj),newplot);
+      for(int nobj=0;nobj<this->objectList->size();nobj++){
+	// for each object in the cube:
+	this->plotSource(this->objectList->at(nobj),newplot);
       
-    }// end of loop over objects.
+      }// end of loop over objects.
 
-    cpgclos();
+      cpgclos();
+    }
+  }
+  else{
+    Plot::SpectralPlot newplot;
+    if(newplot.setUpPlot(spectrafile.c_str())>0) {
+
+      for(int nobj=0;nobj<this->objectList->size();nobj++){
+	// for each object in the cube:
+	this->plotSpectrum(this->objectList->at(nobj),newplot);
+      
+      }// end of loop over objects.
+
+      cpgclos();
+    }
   }
 }
 
@@ -369,5 +390,44 @@ void getSmallZRange(Detection &obj, float *minz, float *maxz)
     *minz = obj.getZcentre() - 10.;
     *maxz = obj.getZcentre() + 10.;
   }
+
+}
+
+
+void Cube::plotSource(Detection obj, Plot::CutoutPlot &plot)
+{
+  /** 
+   * The way to print out the 2d image cutout of a Detection.
+   * Makes use of the CutoutPlot class in plots.hh, which sizes 
+   *  everything correctly.
+   *
+   * A 0th moment map of the detection is plotted, with a scale
+   * bar indicating the spatial size.
+   *
+   * Basic information on the source is printed next to it as well. 
+   *
+   * \param obj The Detection to be plotted.
+   * \param plot The PGPLOT device to plot the spectrum on.
+   */
+
+  obj.calcFluxes(this->array, this->axisDim);
+
+  std::string label;
+  plot.gotoHeader();
+
+  if(this->head.isWCS()){
+    label = obj.outputLabelWCS();
+    plot.firstHeaderLine(label);
+    label = obj.outputLabelFluxes();
+    plot.secondHeaderLine(label);
+  }
+  label = obj.outputLabelWidths();
+  plot.thirdHeaderLine(label);
+  label = obj.outputLabelPix();
+  plot.fourthHeaderLine(label);
+    
+  // DRAW THE MOMENT MAP OF THE DETECTION -- SUMMED OVER ALL CHANNELS
+  plot.gotoMap();
+  this->drawMomentCutout(obj);
 
 }

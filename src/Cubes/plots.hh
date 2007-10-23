@@ -78,6 +78,13 @@ namespace Plot
   // These are the constants used for spacing out elements in ImagePlot.
   const float imTitleOffset = 2.7;  ///< Offset for title of map.
 
+  // These are the constants used for spacing out elements in CutoutPlot.
+  const float cuMainX1 = 1.0;
+  const float cuMainX2 = 15.8;
+  const float cuMainY1 = 1.0;
+  const float cuMainY2 = 3.8;
+  const float cuMapX1 = 16.0;
+
   //***************************************************************************
   //***************************************************************************
 
@@ -232,18 +239,88 @@ namespace Plot
   // Inline ImagePlot functions...
   //----------------------------------------------------------
 
-  inline float ImagePlot::imageWidth(){ 
-    return paperWidth - 2*marginWidth - wedgeWidth;
-  }
-  inline float ImagePlot::cmToCoord(float cm){
-    /** \param cm Distance to be converted.*/
-    return (cm/inchToCm) * ydim / (imageWidth()*imageRatio);
-  }
   inline float ImagePlot::getMargin()     {return marginWidth;}
   inline float ImagePlot::getPaperWidth() {return paperWidth;}
   inline float ImagePlot::getImageHeight(){return imageWidth()*imageRatio;}
   inline float ImagePlot::getAspectRatio(){return aspectRatio;}
   
+  //***************************************************************************
+  //***************************************************************************
+
+  /** 
+   *  A class for plotting just the image cutouts of individual sources.
+   *  This class is designed to hold the dimensions and set up for the
+   *  plotting of the cutouts, plus the textual information for each source.
+   *  The physical dimensions (in inches) of the plot and the elements 
+   *   within it are stored, on the assumption that the plot will go on 
+   *   an A4 page.
+   *  Simple accessor functions are provided to enable access to quantities
+   *   needed for pgplot routines.
+   */
+  class CutoutPlot
+  {
+  public:
+    CutoutPlot();    ///< Constructor
+    virtual ~CutoutPlot(); ///< Destructor
+    CutoutPlot(const CutoutPlot& p);
+    CutoutPlot& operator=(const CutoutPlot& p);
+
+    /** Set up PGPLOT output.*/
+    int setUpPlot(std::string pgDestination); 
+
+    /** Calculate boundaries for boxes.*/
+    void calcCoords();
+    /** Set up the header box */
+    void gotoHeader();
+
+    /** Write first line of header information (position/velocity
+	info) in correct place.*/
+    void firstHeaderLine(std::string line);   
+    
+    /** Write second line of header information (fluxes) in
+	correct place.*/
+    void secondHeaderLine(std::string line);  
+
+    /** Write third line of header information (WCS widths) in
+	correct place. */
+    void thirdHeaderLine(std::string line);   
+
+    /** Write fourth line of header information (pixel coordinates) in
+	correct place. */
+    void fourthHeaderLine(std::string line);   
+
+    /** Defines the region for the moment map.*/
+    void gotoMap();
+
+    /** Goes to the plot when more than one are open.*/ 
+    void  goToPlot();   
+
+    /** Return the number of objects that go on a page. */           
+    int   getNumOnPage(){return numOnPage;}
+    /** Set number of objects that go on a page.*/
+    void  setNumOnPage(int i){numOnPage=i;}
+
+    /** Return width of plottable region.*/
+    float getPaperWidth(){return paperWidth;}
+    /** Set width of plottable region.*/
+    void  setPaperWidth(float f){paperWidth=f;}
+    /** Return height of plottable region.*/
+    float getPaperHeight(){return paperHeight;}
+    /** Set height of plottable region.*/
+    void  setPaperHeight(float f){paperHeight=f;}
+
+  private:
+    int numOnPage;       ///< Number of sources to put on one page.
+    int sourceCount;     ///< Number of sources done so far: where on the page?
+    float mainCoords[4]; ///< Boundaries for the main spectrum [inches]
+    float mapCoords[4];  ///< Boundaries for the map box [inches]
+    float paperWidth;    ///< Width of plottable region of the paper [inches]
+    float paperHeight;   ///< Height of plottable region of the paper [inches]
+    int   identifier;    ///< The identifier code used by cpgslct.
+    
+  };
+
+
 }
 
 
