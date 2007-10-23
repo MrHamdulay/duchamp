@@ -41,6 +41,14 @@ New user parameters:
 * Other minor changes to improve the speed and efficiency, especially
   of the merging code.
 
+New Feature:
+
+* When Duchamp is run on a 2D image (i.e. with no spectral output), it
+  now produces a postscript file that shows information each
+  individual source plus the image cutout of the source. This is
+  similar to the spectral output file, but without the spectra. The
+  filename is given by the spectraFile parameter.
+
 
 Duchamp version 1.1.1 (2007/07/20)
 ------------------------------------
