@@ -260,27 +260,28 @@ namespace PixelInfo
 
   bool Object2D::isInObject(long x, long y)
   {
-    bool result = false;
+
     long scanCount = 0;
     do{
 
       if(y == this->scanlist[scanCount].itsY){
 	// if the y value is already in the list
 
-	if((x>=this->scanlist[scanCount].itsX)&&
-	   (x<this->scanlist[scanCount].getXlen())){
+ 	if((x>=this->scanlist[scanCount].itsX)&&
+	   (x<=this->scanlist[scanCount].getXmax())){
 	  // if the x value is already in the range, the pixel is
 	  //  already stored, so return true
-	  result = true;
+	  return true;
 	}
 
       }
 
       scanCount++;
 
-    }while( !result && (scanCount<this->scanlist.size()) );
+    }while( scanCount<this->scanlist.size() );
 
-    return result;
+    // if we get to here, we've looked at each pixel with no match.
+    return false; 
 
   }
   //------------------------------------------------------
