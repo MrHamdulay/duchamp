@@ -242,12 +242,13 @@ this log file can be prevented by setting \texttt{flagLog = false}
 \secB{Graphical output}
 \secC{Spectral plots}
 
-As well as the output data file, a postscript file is created that
-shows the spectrum for each detection, together with a small cutout
-image (the 0th moment) and basic information about the detection (note
-that any flags are printed after the name of the detection, in the
-format \texttt{[E]}). If the cube was reconstructed, the spectrum from
-the reconstruction is shown in red, over the top of the original
+As well as the output data file, a postscript file (with the filename
+given by the \texttt{spectralFile} parameter) is created that shows
+the spectrum for each detection, together with a small cutout image
+(the 0th moment) and basic information about the detection (note that
+any flags are printed after the name of the detection, in the format
+\texttt{[E]}). If the cube was reconstructed, the spectrum from the
+reconstruction is shown in red, over the top of the original
 spectrum. The spectral extent of the detected object is indicated by
 two dashed blue lines, and the region covered by the ``Milky Way''
 channels is shown by a green hashed box. An example detection can be
@@ -291,6 +292,15 @@ pixels will always be shown in black. The first type of line is always
 drawn, while the second is governed by the parameter
 \texttt{drawBlankEdges} (whose default is \texttt{true}), and
 obviously whether there are any BLANK pixel present.
+
+\secC{Output for 2-dimensional images}
+
+When the input image is two-dimensional, with no spectral dimension,
+this spectral plot would not make much sense. Instead, \duchamp
+creates a similar postscript file that simply includes the text
+headers as well as the 0th-moment map of the detection. As for the
+normal spectral case, this file will be written to the filename given
+by the \texttt{spectralFile} parameter.
 
 \secC{Spatial maps}
 
