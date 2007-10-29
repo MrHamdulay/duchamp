@@ -143,10 +143,10 @@ int Cube::getFITSdata(std::string fname)
   delete [] dimAxes;
   this->par.setOffsets(this->head.WCS());
 
-  //-------------------------------------------------------------
-  // Once the array is saved, change the value of the blank pixels from
-  // 0 (as they are set by fits_read_pixnull) to the correct blank value
-  // as determined by the above code.
+  //------------------------------------------------------------- 
+  // Once the array is saved, change the value of the blank pixels
+  // from 0 (as they are set by fits_read_subsetnull_flt) to the
+  // correct blank value as determined by the above code.
   for(int i=0; i<npix;i++){
     if(nullarray[i]==1) this->array[i] = this->par.getBlankPixVal();  
   }

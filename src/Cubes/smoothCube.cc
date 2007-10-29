@@ -176,7 +176,9 @@ void Cube::SpatialSmooth()
       long zdim = this->axisDim[2];
 
       ProgressBar bar;
-
+//       bool useBar = this->head.canUseThirdAxis();
+      bool useBar = (zdim > 1);
+      
       // if kernMin is negative (not defined), make it equal to kernMaj
       if(this->par.getKernMin() < 0) 
 	this->par.setKernMin(this->par.getKernMaj());
@@ -187,14 +189,14 @@ void Cube::SpatialSmooth()
 
       if(this->par.isVerbose()) {
 	std::cout<<"  Smoothing spatially... " << std::flush;
-	bar.init(zdim);
+	if(useBar) bar.init(zdim);
       }
 
       float *image = new float[xySize];
 
       for(int z=0;z<zdim;z++){
 
-	if( this->par.isVerbose() ) bar.update(z+1);
+	if( this->par.isVerbose() && useBar ) bar.update(z+1);
       
 	for(int pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];
     
@@ -217,8 +219,12 @@ void Cube::SpatialSmooth()
  
       this->reconExists = true;
   
-      if(par.isVerbose()) bar.fillSpace("All Done.\n");
-    } 
+      if(par.isVerbose()){
+	if(useBar) bar.fillSpace("All Done.");
+	std::cout << "\n";
+      }
+
+    }
   }
 }
 //-----------------------------------------------------------
