@@ -25,6 +25,12 @@ Bugfixing:
   non-standard types are now dealt with appropriately and the velocity
   scaling should be accurate.
 
+* Another bug meant the beam correction was always applied to the
+  integrated spectra, regardless of whether the flux units involved
+  the beam (e.g. Jy/beam). This has been fixed. Note that the values
+  of the integrated flux presented in the results table were always
+  calculated correctly.
+
 New user parameters:
 
 * The header information that is printed at the start of the results
