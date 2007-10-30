@@ -125,7 +125,6 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
   long xdim = this->axisDim[0];
   long ydim = this->axisDim[1];
   long zdim = this->axisDim[2];
-  float beam = this->par.getBeamSize();
 
   obj.calcFluxes(this->array, this->axisDim);
 
@@ -158,6 +157,11 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
     for(zval=0;zval<zdim;zval++) specx[int(zval)] = zval;
 
   std::string fluxLabel = "Flux";
+  
+  float beamCorrection;
+  if(this->header().needBeamSize())
+    beamCorrection = this->par.getBeamSize();
+  else beamCorrection = 1.;
 
   if(this->par.getSpectralMethod()=="sum"){
     fluxLabel = "Integrated " + fluxLabel;
@@ -172,11 +176,11 @@ void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
 	done[pos] = true;
 	for(int z=0;z<zdim;z++){
 	  if(!(this->isBlank(pos+z*xdim*ydim))){
-	    specy[z] += this->array[pos + z*xdim*ydim] / beam;
+	    specy[z] += this->array[pos + z*xdim*ydim] / beamCorrection;
 	    if(this->reconExists)
-	      specy2[z] += this->recon[pos + z*xdim*ydim] / beam;
+	      specy2[z] += this->recon[pos + z*xdim*ydim] / beamCorrection;
 	    if(this->par.getFlagBaseline())
-	      base[z] += this->baseline[pos + z*xdim*ydim] / beam;
+	      base[z] += this->baseline[pos + z*xdim*ydim] / beamCorrection;
 	  }	    
 	}
       }

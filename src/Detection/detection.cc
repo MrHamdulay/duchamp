@@ -327,9 +327,7 @@ void Detection::calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head)
 
   if(head.isWCS()){
     // correct for the beam size if the flux units string ends in "/beam"
-    int size = this->fluxUnits.size();
-    std::string tailOfFluxUnits = this->fluxUnits.substr(size-5,size);
-    if(tailOfFluxUnits == "/beam")
+    if(head.needBeamSize())
       this->intFlux  *= double(this->getSpatialSize())/head.getBeamSize();
   }
 

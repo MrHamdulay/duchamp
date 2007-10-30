@@ -195,6 +195,21 @@ std::string FitsHeader::getIAUName(double ra, double dec)
     return getIAUNameGAL(ra, dec);
 }
 
+bool FitsHeader::needBeamSize()
+{
+  /**
+   *  A function that tells you whether the beam correction is
+   *  needed. It checks to see whether the flux units string ends in
+   *  "/beam" (in which case the beam size etc is needed and
+   *  integrated fluxes need to be corrected).
+   *  /return True if FitsHeader::fluxUnits ends in "/beam". False
+   *  otherwise.
+   */
+  int size = this->fluxUnits.size();
+  std::string tailOfFluxUnits = this->fluxUnits.substr(size-5,size);
+  return (tailOfFluxUnits == "/beam");
+}
+
 void FitsHeader::fixUnits(Param &par)
 {
   /**

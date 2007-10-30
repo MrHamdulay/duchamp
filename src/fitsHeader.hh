@@ -154,6 +154,7 @@ public:
 			(wcs->pc[wcs->naxis+1]*wcs->cdelt[1])));
   };
 
+  bool    needBeamSize();
 
 private:
   struct wcsprm *wcs;           ///< The WCS parameters for the cube

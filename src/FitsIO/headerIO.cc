@@ -51,7 +51,8 @@ int FitsHeader::readHeaderInfo(std::string fname, Param &par)
   
   if(this->readBLANKinfo(fname, par)==FAILURE) returnValue=FAILURE;
   
-  if(this->readBeamInfo(fname, par)==FAILURE) returnValue=FAILURE;
+  if(this->needBeamSize())
+    if(this->readBeamInfo(fname, par)==FAILURE) returnValue=FAILURE;
 
   return returnValue;
 }
