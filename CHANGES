@@ -19,10 +19,11 @@ Bugfixing:
   the columns were not being calculated correctly, and were running
   together. This should no longer be the case.
 
-* The way Duchamp deals with different spectral axes has been
-  improved. Non-standard types (in particular, AIPS types such as
-  FELO-HEL) are now dealt with appropriately and the velocity scaling
-  should be accurate.
+* There was a bug in the way Duchamp interpreted spectral axes,
+  particularly AIPS types such as FELO-HEL, leading to incorrect
+  scaling of the velocity axis. This has been fixed, so that
+  non-standard types are now dealt with appropriately and the velocity
+  scaling should be accurate.
 
 New user parameters:
 

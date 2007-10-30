@@ -124,8 +124,8 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
   // Get the data array from the FITS file.
   // Report the dimensions of the data array that was read (this can be
   //   different to the full FITS array).
-  if(this->par.isVerbose()) std::cout << "Reading data ... ";
-  this->getFITSdata(fname);
+  if(this->par.isVerbose()) std::cout << "Reading data ... "<<std::flush;
+  if(this->getFITSdata(fname)) return FAILURE;
   if(this->par.isVerbose()){
     std::cout << "Done. Data array has dimensions: ";
     std::cout << this->axisDim[0];

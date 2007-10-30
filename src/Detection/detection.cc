@@ -207,7 +207,7 @@ void Detection::calcWCSparams(float *fluxArray, long *dim, FitsHeader &head)
     int flag = head.pixToWCS(pixcrd, world, 5);
     delete [] pixcrd;
     if(flag!=0) duchampError("calcWCSparams",
-			     "Error in calculating the WCS for this object.");
+			     "Error in calculating the WCS for this object.\n");
     else{
 
       // world now has the WCS coords for the five points 
