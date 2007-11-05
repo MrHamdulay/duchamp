@@ -185,13 +185,14 @@ void Cube::ReconCube2D()
    */
   long xySize = this->axisDim[0] * this->axisDim[1];
   ProgressBar bar;
+  bool useBar = (this->axisDim[2]>1);
 
   if(!this->reconExists){
     std::cout<<"  Reconstructing... ";
-    if(par.isVerbose()) bar.init(this->axisDim[2]);
+    if(useBar&&par.isVerbose()) bar.init(this->axisDim[2]);
     for(int z=0;z<this->axisDim[2];z++){
 
-      if( par.isVerbose() ) bar.update((z+1));
+      if( par.isVerbose() && useBar ) bar.update((z+1));
 
       if(!this->par.isInMW(z)){
 	float *im = new float[xySize];
@@ -214,7 +215,7 @@ void Cube::ReconCube2D()
       }
     }
     this->reconExists = true;
-    bar.fillSpace(" All Done.");
+    if(useBar) bar.fillSpace(" All Done.");
     printSpace(22);
     std::cout << "\n";
   }
@@ -410,8 +411,8 @@ searchReconArraySimple(long *dim, float *originalArray,
   long zdim = dim[2];
   int num=0;
   ProgressBar bar;
-
-  if(par.isVerbose()) bar.init(zdim);
+  bool useBar = (zdim>1);
+  if(useBar&&par.isVerbose()) bar.init(zdim);
   
   long *imdim = new long[2];
   imdim[0] = dim[0]; imdim[1] = dim[1];
@@ -423,7 +424,7 @@ searchReconArraySimple(long *dim, float *originalArray,
 
   for(int z=0; z<zdim; z++){  // loop over all channels
 
-    if( par.isVerbose() ) bar.update(z+1);
+    if( par.isVerbose() && useBar ) bar.update(z+1);
 
     if(!par.isInMW(z)){ 
       // purpose of this is to ignore the Milky Way channels 
@@ -445,8 +446,8 @@ searchReconArraySimple(long *dim, float *originalArray,
   delete channelImage;
 
   if(par.isVerbose()){
-    bar.fillSpace("Found ");
-    std::cout << num << ".\n";
+    if(useBar) bar.remove();
+    std::cout << "Found " << num << ".\n";
   }
 
 

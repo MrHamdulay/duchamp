@@ -93,13 +93,13 @@ void Cube::SmoothCube()
   if(this->par.getSmoothType()=="spectral"){
     
     this->SpectralSmooth();
-
-    }
-    else if(this->par.getSmoothType()=="spatial"){
-      
-      this->SpatialSmooth();
-      
-    }
+    
+  }
+  else if(this->par.getSmoothType()=="spatial"){
+    
+    this->SpatialSmooth();
+    
+  }
 }
 //-----------------------------------------------------------
 
@@ -119,7 +119,7 @@ void Cube::SpectralSmooth()
     //    if(!this->head.isSpecOK())
     if(!this->head.canUseThirdAxis())
       duchampWarning("SpectralSmooth",
-		     "There is no spectral axis, so cannot do the spectal smoothing.\n");
+		     "There is no spectral axis, so cannot do the spectral smoothing.\n");
     else{
 
       Hanning hann(this->par.getHanningWidth());

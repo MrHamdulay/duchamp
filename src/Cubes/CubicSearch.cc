@@ -234,7 +234,8 @@ std::vector <Detection> search3DArraySimple(long *dim, float *Array,
   int num = 0;
 
   ProgressBar bar;
-  if(par.isVerbose()) bar.init(zdim);
+  bool useBar = (zdim>1);
+  if(useBar && par.isVerbose()) bar.init(zdim);
   
   num = 0;
 
@@ -248,7 +249,7 @@ std::vector <Detection> search3DArraySimple(long *dim, float *Array,
 
   for(int z=0; z<zdim; z++){
 
-    if( par.isVerbose() ) bar.update(z+1);
+    if( par.isVerbose() && useBar ) bar.update(z+1);
 
     if(!par.isInMW(z)){
 
@@ -268,8 +269,8 @@ std::vector <Detection> search3DArraySimple(long *dim, float *Array,
   delete channelImage;
 
   if(par.isVerbose()){
-    bar.fillSpace("Found ");
-    std::cout << num << ".\n";
+    if(useBar) bar.remove();
+    std::cout << "Found " << num << ".\n";
   }
 
   return outputList;

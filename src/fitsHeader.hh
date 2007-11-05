@@ -30,6 +30,7 @@
 
 #include <string>
 #include <wcs.h>
+#include <math.h>
 
 class Param;
 
