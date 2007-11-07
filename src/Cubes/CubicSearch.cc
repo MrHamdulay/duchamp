@@ -40,6 +40,9 @@ using std::vector;
 using namespace PixelInfo;
 using namespace Statistics;
 
+namespace duchamp
+{
+
 void Cube::CubicSearch()
 {
   /**
@@ -277,3 +280,4 @@ std::vector <Detection> search3DArraySimple(long *dim, float *Array,
 }
 
 
+}

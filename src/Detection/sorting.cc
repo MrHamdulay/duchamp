@@ -70,69 +70,28 @@ private:
 
 //======================================================================
 
-
-void SortByZ(vector <Detection> &inputList)
+namespace duchamp
 {
-  /**
-   * A Function that takes a list of Detections and sorts them in
-   * order of increasing z-pixel value.  Upon return, the inputList
-   * is sorted.
-   *
-   * We use the std::stable_sort function, so that the order of
-   * objects with the same z-value is preserved.
-   * \param inputList List of Detections to be sorted.
-   * \return The inputList is returned with the elements sorted.
-   */
 
-  long size = inputList.size();
-  Pair *info = new Pair[size];
-  
-  for(int i=0;i<size;i++) info[i].define(inputList[i].getZcentre(), float(i));
-
-  std::stable_sort(info,info+size);
-  
-  vector <Detection> sorted;
-  for(int i=0;i<size;i++) sorted.push_back( inputList[int(info[i].get2())] );
-
-  delete [] info;
-
-  inputList.clear();
-  for(int i=0;i<size;i++) inputList.push_back( sorted[i] );
-  sorted.clear();
-  
-}
-
-//======================================================================
-
-void SortByVel(vector <Detection> &inputList)
-{
-  /**
-   * A Function that takes a list of Detections and sorts them in 
-   *  order of increasing velocity.
-   * Every member of the vector needs to have WCS defined, (and if so,
-   *   then vel is assumed to be defined for all), otherwise no sorting
-   *   is done.
-   *
-   * We use the std::stable_sort function, so that the order of
-   * objects with the same z-value is preserved.
-   *
-   * \param inputList List of Detections to be sorted.
-   * \return The inputList is returned with the elements sorted,
-   * unless the WCS is not good for at least one element, in which
-   * case it is returned unaltered.
-   */
-
-  bool isGood = true;
-  for(int i=0;i<inputList.size();i++) isGood = isGood && inputList[i].isWCS();
-
-  if(isGood){
+  void SortByZ(vector <Detection> &inputList)
+  {
+    /**
+     * A Function that takes a list of Detections and sorts them in
+     * order of increasing z-pixel value.  Upon return, the inputList
+     * is sorted.
+     *
+     * We use the std::stable_sort function, so that the order of
+     * objects with the same z-value is preserved.
+     * \param inputList List of Detections to be sorted.
+     * \return The inputList is returned with the elements sorted.
+     */
 
     long size = inputList.size();
     Pair *info = new Pair[size];
-    
-    for(int i=0;i<size;i++) info[i].define(inputList[i].getVel(), float(i));
+  
+    for(int i=0;i<size;i++) info[i].define(inputList[i].getZcentre(), float(i));
 
-    std::stable_sort(info, info+size);
+    std::stable_sort(info,info+size);
   
     vector <Detection> sorted;
     for(int i=0;i<size;i++) sorted.push_back( inputList[int(info[i].get2())] );
@@ -145,4 +104,49 @@ void SortByVel(vector <Detection> &inputList)
   
   }
 
-}  
+  //======================================================================
+
+  void SortByVel(vector <Detection> &inputList)
+  {
+    /**
+     * A Function that takes a list of Detections and sorts them in 
+     *  order of increasing velocity.
+     * Every member of the vector needs to have WCS defined, (and if so,
+     *   then vel is assumed to be defined for all), otherwise no sorting
+     *   is done.
+     *
+     * We use the std::stable_sort function, so that the order of
+     * objects with the same z-value is preserved.
+     *
+     * \param inputList List of Detections to be sorted.
+     * \return The inputList is returned with the elements sorted,
+     * unless the WCS is not good for at least one element, in which
+     * case it is returned unaltered.
+     */
+
+    bool isGood = true;
+    for(int i=0;i<inputList.size();i++) isGood = isGood && inputList[i].isWCS();
+
+    if(isGood){
+
+      long size = inputList.size();
+      Pair *info = new Pair[size];
+    
+      for(int i=0;i<size;i++) info[i].define(inputList[i].getVel(), float(i));
+
+      std::stable_sort(info, info+size);
+  
+      vector <Detection> sorted;
+      for(int i=0;i<size;i++) sorted.push_back( inputList[int(info[i].get2())] );
+
+      delete [] info;
+
+      inputList.clear();
+      for(int i=0;i<size;i++) inputList.push_back( sorted[i] );
+      sorted.clear();
+  
+    }
+
+  }  
+
+}

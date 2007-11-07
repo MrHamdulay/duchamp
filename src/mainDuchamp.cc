@@ -40,6 +40,8 @@
 #include <Utils/utils.hh>
 #include <ATrous/atrous.hh>
 
+using namespace duchamp;
+
 int main(int argc, char * argv[])
 {
 

@@ -36,6 +36,9 @@
 #include <Utils/Statistics.hh> 
 #include <Utils/utils.hh>
 
+namespace duchamp
+{
+
 void Cube::SmoothSearch()
 {
   /**
@@ -316,5 +319,7 @@ void Cube::SpatialSmoothNSearch()
   }
     
   *this->objectList = outputList;
+
+}
 
 }

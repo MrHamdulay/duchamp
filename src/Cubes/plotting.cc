@@ -46,6 +46,9 @@
 using namespace mycpgplot;
 using namespace PixelInfo;
 
+namespace duchamp
+{
+
 void Cube::plotDetectionMap(std::string pgDestination)
 {
   /** 
@@ -471,5 +474,7 @@ void Cube::plotWCSaxes()
   cpgsci(colour);
   cpgsch(size);
   cpgslw(lineWidth);
+}
+
 }
 

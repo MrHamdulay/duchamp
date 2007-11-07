@@ -71,7 +71,7 @@ int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " << status <<": " << wcs_errmsg[status] 
 	   << "\nstat value is " << stat[0] << std::endl;
-    duchampError("pixToWCSSingle",errmsg.str());
+    duchamp::duchampError("pixToWCSSingle",errmsg.str());
   }
 
   //return just the spatial/velocity information
@@ -124,7 +124,7 @@ int wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix)
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " <<status<<": " << wcs_errmsg[status] 
 	   << "\nstat value is " << stat[0] << std::endl;
-    duchampError("wcsToPixSingle",errmsg.str());
+    duchamp::duchampError("wcsToPixSingle",errmsg.str());
   }
 
   pix[0] = temppix[wcs->lng] - 1.;
@@ -182,7 +182,7 @@ int pixToWCSMulti(struct wcsprm *wcs, const double *pix,
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " <<status<<": " << wcs_errmsg[status] 
 	   << "\nstat value is " << stat[0] << std::endl;
-    duchampError("pixToWCSMulti",errmsg.str());
+    duchamp::duchampError("pixToWCSMulti",errmsg.str());
   }
   else{
     //return just the spatial/velocity information, keeping the
@@ -247,7 +247,7 @@ int wcsToPixMulti(struct wcsprm *wcs, const double *world,
     std::stringstream errmsg;
     errmsg << "WCS Error Code = " <<status<<": " <<wcs_errmsg[status] 
 	   << "\nstat value is " << stat[0] << std::endl;
-    duchampError("wcsToPixMulti",errmsg.str());
+    duchamp::duchampError("wcsToPixMulti",errmsg.str());
   }
   else{
     // correct from 1-indexed to 0-indexed pixel array 
@@ -304,7 +304,7 @@ double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z,
     std::stringstream errmsg;
     errmsg <<"WCS Error Code = "<<status<<": "<<wcs_errmsg[status] 
 	   << "\nstat value is "<<stat[0]<<std::endl;
-    duchampError("pixelToVelocity",errmsg.str());
+    duchamp::duchampError("pixelToVelocity",errmsg.str());
   }
 
   double vel = coordToVel(wcs, world[wcs->spec], velUnits);
@@ -348,7 +348,7 @@ double coordToVel(struct wcsprm *wcs, const double coord,
 			      << wcs->cunit[specIndex]
 			      << " to " << outputUnits.c_str();
       errmsg << "\nUsing coordinate value instead.\n";
-      duchampError("coordToVel", errmsg.str());
+      duchamp::duchampError("coordToVel", errmsg.str());
       errflag = 1;
     }
     return coord;
@@ -380,7 +380,7 @@ double velToCoord(struct wcsprm *wcs, const float velocity,
     std::stringstream errmsg;
     errmsg << "WCSUNITS Error Code = " << status << ":"
 	   << wcsunits_errmsg[status] << "\nUsing coordinate value instead.\n";
-    duchampError("velToCoord",errmsg.str());
+    duchamp::duchampError("velToCoord",errmsg.str());
     return velocity;
   }
   else return (pow(velocity, 1./power) - offset) / scale;
