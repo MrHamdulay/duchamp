@@ -33,6 +33,10 @@ Bugfixing:
 
 New user parameters:
 
+* There is now the possibility to save a FITS file that contains a
+  mask array, indicating where the detected objects are. This is
+  governed by the flagOutputMask parameter.
+
 * The header information that is printed at the start of the results
   file -- that is, the list of parameters, the statistics of the cube,
   and the number of detections -- can now be written to a separate
@@ -55,6 +59,9 @@ New Feature:
   individual source plus the image cutout of the source. This is
   similar to the spectral output file, but without the spectra. The
   filename is given by the spectraFile parameter.
+
+* Ability to save a FITS file containing a mask array, with pixel
+  values of 1 for pixels in a detected object, and 0 elsewhere.
 
 
 Duchamp version 1.1.1 (2007/07/20)

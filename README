@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
                The Duchamp Source Finder
 -----------------------------------------------------------------------
-Duchamp 1.1.1 -- an object finder for spectral-line data cubes
+Duchamp 1.1.2 -- an object finder for spectral-line data cubes
 Copyright (C) 2006, Matthew Whiting, ATNF
 
 Duchamp is free software; you can redistribute it and/or modify it
@@ -194,8 +194,24 @@ suggest improvements, please go to the Duchamp Trac wiki site:
 http://svn.atnf.csiro.au/trac/duchamp/newticket 
 and submit a "ticket", or view previously submitted reports.
 
+Acknowledging the use of Duchamp
+================================
+
+Duchamp is provided in the hope that it will be useful for your
+research. If you find that it is, I would ask that you acknowledge it
+in your publication by using the following:
+"This research made use of the Duchamp source finder, produced at
+the Australia Telescope National Facility, CSIRO, by M. Whiting."
+
+There is a journal paper under preparation that describes Duchamp, but
+until that is published, you can refer to the following conference
+proceedings paper:
+"Astronomers! Do you know where your galaxies are?", M.Whiting,
+proceedings of Local Volume meeting (held July 8-13 2007),
+Astrophysics & Space Science, Eds. B.Koribalski & H.Jerjen, in press.
+
 -------
 Author: 
-  Matthew Whiting, Australia Telescope National Facility, July 2007
+  Matthew Whiting, Australia Telescope National Facility, November 2007
   Matthew.Whiting [at] csiro.au
 
