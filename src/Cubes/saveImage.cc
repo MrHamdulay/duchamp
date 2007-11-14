@@ -38,6 +38,8 @@
 #include <fitsio.h>
 #include <duchamp.hh>
 #include <Cubes/cubes.hh>
+#include <PixelMap/Voxel.hh>
+#include <PixelMap/Object3D.hh>
 
 namespace duchamp
 {
@@ -47,6 +49,122 @@ namespace duchamp
 
   /** Write FITS headers in correct format for smoothed array output */
   void writeSmoothHeaderInfo(fitsfile *fptr, Param &par);
+
+  /** Write FITS headers in correct format for mask array output */
+  void writeMaskHeaderInfo(fitsfile *fptr, Param &par);
+  //---------------------------------------------------------------------------
+
+  void Cube::saveMaskCube()
+  {
+    /**
+     *  A function to save a mask to a FITS file, indicating where the
+     *  detections where made. The mask cube consists of pixels with a
+     *  value of 1 if they are part of a detected object, and 0 if
+     *  they are not.
+     *
+     *
+     */
+
+    int newbitpix = SHORT_IMG;
+    long *fpixel = new long[this->numDim];
+    for(int i=0;i<this->numDim;i++) fpixel[i]=1;
+    int status = 0;  /* MUST initialize status */
+    fitsfile *fptrOld, *fptrNew;         
+    fits_open_file(&fptrOld,this->par.getImageFile().c_str(),READONLY,&status);
+    if (status){
+      duchampError("saveMask","Fits Error 1:");
+      fits_report_error(stderr, status);
+    }
+
+    std::string fileout = "!" + this->par.outputMaskFile(); 
+    // the ! is there so that it writes over an existing file.
+
+    status = 0;
+    fits_create_file(&fptrNew,fileout.c_str(),&status);
+    if (status){
+      duchampError("saveMask","Fits Error 2:");
+      fits_report_error(stderr, status);
+    }
+    else {
+      status = 0;
+      fits_movabs_hdu(fptrOld, 1, NULL, &status);
+      if (status){
+	duchampError("saveMask","Fits Error 3:");
+	fits_report_error(stderr, status);
+      }
+      status = 0;
+      fits_copy_header(fptrOld, fptrNew, &status);
+      if (status){
+	duchampError("saveMask","Fits Error 4:");
+	fits_report_error(stderr, status);
+      }
+      status = 0;
+      fits_update_key(fptrNew, TINT, "BITPIX", &newbitpix, 
+		      "number of bits per data pixel", &status);
+      if (status){
+	duchampError("saveMask","Fits Error 5:");
+	fits_report_error(stderr, status);
+      }
+      float bscale=1., bzero=0.;
+      fits_update_key(fptrNew, TFLOAT, "BSCALE", &bscale, "", &status);
+      fits_update_key(fptrNew, TFLOAT, "BZERO", &bzero, "", &status);
+      fits_set_bscale(fptrNew, 1, 0, &status);
+      if (status){
+	duchampError("saveMask","Fits Error 6:");
+	fits_report_error(stderr, status);
+      }
+      char *comment = new char[80];
+      long dud;
+      // Need to correct the dimensions, if we have subsectioned the image
+      if(this->par.getFlagSubsection()){
+	fits_read_key(fptrOld, TLONG, "NAXIS1", &dud, comment, &status);
+	fits_update_key(fptrNew, TLONG, "NAXIS1", 
+			&(this->axisDim[0]), comment, &status);
+	fits_read_key(fptrOld, TLONG, "NAXIS2", &dud, comment, &status);
+	fits_update_key(fptrNew, TLONG, "NAXIS2", 
+			&(this->axisDim[1]), comment, &status);
+	fits_read_key(fptrOld, TLONG, "NAXIS3", &dud, comment, &status);
+	fits_update_key(fptrNew, TLONG, "NAXIS3", 
+			&(this->axisDim[2]), comment, &status);
+      }
+
+      delete [] comment;
+
+      writeMaskHeaderInfo(fptrNew, this->par);
+	
+      short *mask = new short[this->numPixels];
+      for(int i=0;i<this->numPixels;i++) mask[i]=0;
+      for(int o=0;o<this->objectList->size();o++){
+        std::vector<PixelInfo::Voxel> voxlist = 
+          this->objectList->at(o).pixels().getPixelSet();
+        for(int p=0;p<voxlist.size();p++){
+          int pixelpos = voxlist[p].getX() + this->axisDim[0]*voxlist[p].getY() + 
+            this->axisDim[0]*this->axisDim[1]*voxlist[p].getZ();
+          mask[pixelpos] = 1;
+        }
+      }
+      status=0;
+      fits_write_pix(fptrNew, TSHORT, fpixel, this->numPixels, mask, &status);
+      if(status){
+	duchampError("saveMask","Fits Error 7:");
+	fits_report_error(stderr,status);
+      }
+      status = 0;
+      fits_close_file(fptrNew, &status);
+      if (status){
+	duchampError("saveMask","Fits Error 8:");
+	fits_report_error(stderr, status);
+      }
+
+      delete [] mask;
+
+    }
+
+    delete [] fpixel;
+
+  }
+  
+  //---------------------------------------------------------------------------
 
   void Cube::saveSmoothedCube()
   {
@@ -111,6 +229,8 @@ namespace duchamp
 			  &(this->axisDim[2]), comment, &status);
 	}
 
+	delete [] comment;
+
 	writeSmoothHeaderInfo(fptrNew, this->par);
 
 	if(this->par.getFlagBlankPix())
@@ -122,11 +242,15 @@ namespace duchamp
 	status = 0;
 	fits_close_file(fptrNew, &status);
 	if (status) fits_report_error(stderr, status);
+
       }
     }
 
+    delete [] fpixel;
+
   }
 
+  //---------------------------------------------------------------------------
 
   void Cube::saveReconstructedCube()
   {
@@ -194,6 +318,8 @@ namespace duchamp
 			    &(this->axisDim[2]), comment, &status);
 	  }
 
+	  delete [] comment;
+
 	  writeReconHeaderInfo(fptrNew, this->par, "recon");
 
 	  if(this->par.getFlagBlankPix())
@@ -252,6 +378,8 @@ namespace duchamp
 			    &(this->axisDim[2]), comment, &status);
 	  }
 
+	  delete [] comment;
+
 	  writeReconHeaderInfo(fptrNew, this->par, "resid");
 
 	  if(this->par.getFlagBlankPix())
@@ -269,6 +397,7 @@ namespace duchamp
 
   }
 
+  //---------------------------------------------------------------------------
 
   void writeReconHeaderInfo(fitsfile *fptr, Param &par, std::string nature)
   {
@@ -334,6 +463,8 @@ namespace duchamp
 
   }
 
+  //---------------------------------------------------------------------------
+
   void writeSmoothHeaderInfo(fitsfile *fptr, Param &par)
   {
     /**
@@ -385,6 +516,36 @@ namespace duchamp
       int vali = par.getHanningWidth();
       fits_write_key(fptr, TINT, (char *)keyword_hanningwidth.c_str(), &vali,
 		     (char *)comment_hanningwidth.c_str(), &status);
+    }
+  }
+
+  //---------------------------------------------------------------------------
+
+  void writeMaskHeaderInfo(fitsfile *fptr, Param &par)
+  {
+    /**
+     *   A simple function that writes all the necessary keywords and comments
+     *    to the FITS header pointed to by fptr.
+     *   The keyword names and comments are taken from duchamp.hh
+     */
+
+
+    int status = 0;
+
+    fits_write_history(fptr, (char *)header_maskHistory.c_str(), &status);
+    status = 0;
+    fits_write_history(fptr, (char *)header_maskHistory_input.c_str(),&status);
+    status = 0;
+    fits_write_history(fptr, (char *)par.getImageFile().c_str(), &status);
+
+    if(par.getFlagSubsection()){
+      status = 0;
+      fits_write_comment(fptr,(char *)header_maskSubsection_comment.c_str(),
+			 &status);
+      status = 0;
+      fits_write_key(fptr, TSTRING, (char *)keyword_subsection.c_str(), 
+		     (char *)par.getSubsection().c_str(),
+		     (char *)comment_subsection.c_str(), &status);
     }
   }
 

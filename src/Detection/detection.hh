@@ -66,7 +66,7 @@ namespace duchamp
       return lhs;
     }
 
-    /** Provides a reference to the StatsContainer. */
+    /** Provides a reference to the pixel array. */
     PixelInfo::Object3D& pixels(){ 
       PixelInfo::Object3D &rpix = this->pixelArray; 
       return rpix;

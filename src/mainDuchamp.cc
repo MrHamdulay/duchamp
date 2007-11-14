@@ -224,6 +224,12 @@ int main(int argc, char * argv[])
     cube->saveSmoothedCube();
     std::cout << "done.\n";
   }
+  if(cube->pars().getFlagOutputMask()){
+    std::cout << "Saving mask cube to "
+	      << cube->pars().outputMaskFile() << "... " <<std::flush;
+    cube->saveMaskCube();
+    std::cout << "done.\n";
+  }
 
   if(cube->pars().getFlagLog() && (cube->getNumObj()>0)){
     std::ofstream logfile(cube->pars().getLogFile().c_str(),std::ios::app);

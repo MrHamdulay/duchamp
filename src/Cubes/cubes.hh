@@ -355,7 +355,10 @@ namespace duchamp
     /** Function to retrieve FITS data array */
     int         getFITSdata(std::string fname);   // in FitsIO/dataIO.cc
 
-    /** Save Hanning-smoothed array to disk.*/
+    /** Save a mask array to disk.*/
+    void        saveMaskCube();       // in Cubes/saveImage.cc
+
+    /** Save Smoothed array to disk.*/
     void        saveSmoothedCube();       // in Cubes/saveImage.cc
 
     /** Save Reconstructed array to disk. */

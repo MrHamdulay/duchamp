@@ -83,6 +83,7 @@ namespace duchamp
     this->flagSeparateHeader= false;
     this->headerFile        = "duchamp-Results.hdr";
     this->spectraFile       = "duchamp-Spectra.ps";
+    this->flagOutputMask    = false;
     this->flagOutputSmooth  = false;
     this->flagOutputRecon   = false;
     this->flagOutputResid   = false;
@@ -185,6 +186,7 @@ namespace duchamp
     this->flagSeparateHeader= p.flagSeparateHeader;
     this->headerFile        = p.headerFile;
     this->spectraFile       = p.spectraFile;    
+    this->flagOutputMask    = p.flagOutputMask;
     this->flagOutputSmooth  = p.flagOutputSmooth;
     this->flagOutputRecon   = p.flagOutputRecon;
     this->flagOutputResid   = p.flagOutputResid;
@@ -479,6 +481,7 @@ namespace duchamp
 	if(arg=="flagseparateheader") this->flagSeparateHeader = readFlag(ss);
 	if(arg=="headerfile")      this->headerFile = readSval(ss);
 	if(arg=="spectrafile")     this->spectraFile = readSval(ss); 
+	if(arg=="flagoutputmask")  this->flagOutputMask = readFlag(ss); 
 	if(arg=="flagoutputsmooth")this->flagOutputSmooth = readFlag(ss); 
 	if(arg=="flagoutputrecon") this->flagOutputRecon = readFlag(ss); 
 	if(arg=="flagoutputresid") this->flagOutputResid = readFlag(ss); 
@@ -714,6 +717,10 @@ namespace duchamp
 	       <<"  =  " <<resetiosflags(std::ios::right)
 	       <<stringize(par.getFlagOutputSmooth())<<std::endl;
     }						       
+    theStream<<std::setw(widthText)<<"Saving mask cube?"           
+	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagOutputMask]"
+	     <<"  =  " <<resetiosflags(std::ios::right)
+	     <<stringize(par.getFlagOutputMask())<<std::endl;
     theStream  <<"------"<<std::endl;
     if(par.getFlagBlankPix()){
       theStream<<std::setw(widthText)<<"Blank Pixel Value"                    
@@ -902,6 +909,22 @@ namespace duchamp
       this->bzeroKeyword;
 
     this->numPixBeam    = head.getBeamSize();
+  }
+
+  std::string Param::outputMaskFile()
+  {
+    /**
+     *  This function produces the required filename in which to save
+     *  the mask image, indicating which pixels have been detected as
+     *  part of an object. If the input image is image.fits, then the
+     *  output will be image.MASK.fits.
+     */
+    std::string inputName = this->imageFile;
+    std::stringstream ss;
+    ss << inputName.substr(0,inputName.size()-5);  
+    // remove the ".fits" on the end.
+    ss << ".MASK.fits";
+    return ss.str();
   }
 
   std::string Param::outputSmoothFile()

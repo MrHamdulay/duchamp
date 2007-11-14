@@ -180,6 +180,14 @@ Duchamp is an object finder for spectral-line FITS cubes.\n\
   const std::string header_smoothSpatial = "Spatial, gaussian kernel";
   const std::string header_smoothSpectral= "Spectral, hanning filter";
 
+  // Descriptive Headers: for the output Mask image
+  const std::string header_maskHistory =
+    "Results of searching by Duchamp v." + VERSION;
+  const std::string header_maskHistory_input = 
+    "Input image used by Duchamp follows";
+  const std::string header_maskSubsection_comment = 
+    "A subsection of the original was searched by Duchamp";
+
 }
 
 #endif

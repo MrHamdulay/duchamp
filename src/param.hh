@@ -83,6 +83,9 @@ namespace duchamp
 	object */
     void   copyHeaderInfo(FitsHeader &head);
 
+    /** Determine filename in which to save the mask array. */
+    std::string outputMaskFile();
+
     /** Determine filename in which to save the smoothed array. */
     std::string outputSmoothFile();
 
@@ -160,6 +163,8 @@ namespace duchamp
     void   setHeaderFile(std::string s){headerFile=s;};
     std::string getSpectraFile(){return spectraFile;};
     void   setSpectraFile(std::string fname){spectraFile = fname;};
+    bool   getFlagOutputMask(){return flagOutputMask;};
+    void   setFlagOutputMask(bool flag){flagOutputMask=flag;};
     bool   getFlagOutputSmooth(){return flagOutputSmooth;};
     void   setFlagOutputSmooth(bool flag){flagOutputSmooth=flag;};
     bool   getFlagOutputRecon(){return flagOutputRecon;};
@@ -331,6 +336,7 @@ namespace duchamp
     std::string headerFile; ///< Where the header information to go with
     ///   the results table should be written.
     std::string spectraFile;///< Where the spectra are displayed
+    bool   flagOutputMask;  ///< Should the mask image be written?
     bool   flagOutputSmooth;///< Should the smoothed cube be written?
     bool   flagOutputRecon; ///< Should the reconstructed cube be
     ///   written?
