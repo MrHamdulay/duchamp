@@ -240,6 +240,18 @@ this log file can be prevented by setting \texttt{flagLog = false}
 (which is the default).
 
 \secB{Graphical output}
+
+\secC{Mask image}
+\label{sec-maskOut}
+
+It is possible to create a FITS file containing a mask array. This
+array is designed to indicate the location of detected objects, by
+setting pixel values to 1 for pixels in a detected object and 0
+elsewhere. To create this FITS file, set the input parameter
+\texttt{flagOutputMask=true}. The file will be given the name
+\texttt{image.MASK.fits} (where the input image is called
+\texttt{image.fits}). 
+
 \secC{Spectral plots}
 
 As well as the output data file, a postscript file (with the filename

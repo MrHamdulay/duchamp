@@ -86,6 +86,10 @@ not matter, they are grouped here in logical sections.
   not been merged. This is primarily for use in debugging and
   diagnostic purposes: normal use of the program will probably not
   require it.
+\item[{flagOutputMask [false]}] A flag to say whether or not to save a
+  FITS file containing a mask array, with values 1 where there is a
+  detected object and 0 elsewhere. The filename will be derived
+  according to the naming scheme detailed in Section~\ref{sec-maskOut}.
 \item[{flagOutputRecon [false]}] A flag to say whether or not
   to save the reconstructed cube as a FITS file. The filename will be
   derived according to the naming scheme detailed in
