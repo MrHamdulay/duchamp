@@ -312,7 +312,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT CC CFLAGS ac_ct_CC CPP F77 FFLAGS ac_ct_F77 LN_S INSTALL EGREP RANLIB ac_ct_RANLIB POW_LIB LIBOBJS PGPLOTINC PGPLOTLIB CFITSIOINC CFITSIOLIB WCSINC WCSLIB LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT CC CFLAGS ac_ct_CC CPP F77 FFLAGS ac_ct_F77 LN_S INSTALL EGREP RANLIB ac_ct_RANLIB POW_LIB LIBOBJS LINKER PGPLOTINC PGPLOTLIB CFITSIOINC CFITSIOLIB WCSINC WCSLIB LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -4520,72 +4520,14 @@ if test "x$PGPLOTLIBDIRS" = x; then
   #the argument to --with-pgplot was no, so we don't look for it.
   { echo "$as_me:$LINENO: Not enabling PGPLOT use." >&5
 echo "$as_me: Not enabling PGPLOT use." >&6;}
-  if test "x$F77" = xgfortran; then
-    echo "$as_me:$LINENO: checking for main in -lstdc++" >&5
-echo $ECHO_N "checking for main in -lstdc++... $ECHO_C" >&6
-if test "${ac_cv_lib_stdcpp_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
+  LINKER=$CXX
+#  AC_CHECK_LIB([stdc++], [main], [PGPLOTLIB="-lstdc++"])
+#  if test "x$F77" = xgfortran; then
+#    PGPLOTLIB="$PGPLOTLIB -bind_at_load"
+#  fi
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lstdc++  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
 
-
-int
-main ()
-{
-main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
-			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_lib_stdcpp_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_lib_stdcpp_main=no
-fi
-rm -f conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_stdcpp_main" >&5
-echo "${ECHO_T}$ac_cv_lib_stdcpp_main" >&6
-if test $ac_cv_lib_stdcpp_main = yes; then
-  PGPLOTLIB="-lstdc++"
-fi
-
-    PGPLOTLIB="$PGPLOTLIB -bind_at_load"
-  fi
-else
+  LINKER=$F77
 
   #Set up the PGPLOT-related libraries and includes.
 
@@ -5560,6 +5502,7 @@ fi
   fi
 
 fi
+
 
 
 
@@ -7000,6 +6943,7 @@ s,@RANLIB@,$RANLIB,;t t
 s,@ac_ct_RANLIB@,$ac_ct_RANLIB,;t t
 s,@POW_LIB@,$POW_LIB,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
+s,@LINKER@,$LINKER,;t t
 s,@PGPLOTINC@,$PGPLOTINC,;t t
 s,@PGPLOTLIB@,$PGPLOTLIB,;t t
 s,@CFITSIOINC@,$CFITSIOINC,;t t

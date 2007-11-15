@@ -17,13 +17,13 @@
 #define HAVE_INTTYPES_H 1
 
 /* Define to 1 if you have the `g2c' library (-lg2c). */
-/* #undef HAVE_LIBG2C */
+#define HAVE_LIBG2C 1
 
 /* Define to 1 if you have the `m' library (-lm). */
 #define HAVE_LIBM 1
 
 /* Define to 1 if you have the `stdc++' library (-lstdc++). */
-/* #undef HAVE_LIBSTDC__ */
+#define HAVE_LIBSTDC__ 1
 
 /* Define to 1 if you have the `log' function. */
 #define HAVE_LOG 1
@@ -35,7 +35,7 @@
 #define HAVE_MEMORY_H 1
 
 /* Define to 1 if PGPLOT is available. */
-/* #undef HAVE_PGPLOT */
+#define HAVE_PGPLOT 1
 
 /* Define to 1 if you have the `pow' function. */
 #define HAVE_POW 1

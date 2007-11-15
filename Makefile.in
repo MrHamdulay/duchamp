@@ -5,6 +5,7 @@ FFLAGS = -C -fast -O4
 CC =    @CC@ -O2
 CXX =   @CXX@ -O2
 F77=    @F77@ $(FFLAGS)
+LINK=   @LINKER@
 
 BASE = ./src
 
@@ -112,7 +113,7 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(UTILDIR)/wcsFunctions.o\
 	$(UTILDIR)/zscale.o
 
-ifeq ($(strip $(PGPLOTINC)),)
+ifeq ($(strip $(PGPLOTLIB)),)
   OBJECTS = $(OBJECTS-NOPG)
 else
   OBJECTS = $(OBJECTS-NOPG)\
@@ -126,7 +127,7 @@ else
 endif
 
 duchamp : $(OBJECTS)
-	$(F77) -o $(EXEC) $(OBJECTS) $(LIBS)
+	$(LINK) -o $(EXEC) $(OBJECTS) $(LIBS)
 
 createTestImage : $(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o
 	$(CXX) -o createTestImage.x\

@@ -104,10 +104,13 @@ PGPLOTLIBDIRS=$LIBDIRS
 if test "x$PGPLOTLIBDIRS" = x; then
   #the argument to --with-pgplot was no, so we don't look for it.
   AC_MSG_NOTICE([Not enabling PGPLOT use.])
-  if test "x$F77" = xgfortran; then
-    AC_CHECK_LIB([stdc++], [main], [PGPLOTLIB="-lstdc++"])
-    PGPLOTLIB="$PGPLOTLIB -bind_at_load"
-  fi
+  #This is the command to do the linking stage of the compilation
+  #If no pgplot, we can just link with g++ (or equivalent)
+  LINKER=$CXX 
+#  AC_CHECK_LIB([stdc++], [main], [PGPLOTLIB="-lstdc++"])
+#  if test "x$F77" = xgfortran; then
+#    PGPLOTLIB="$PGPLOTLIB -bind_at_load"
+#  fi
 else
 
   #Set up the PGPLOT-related libraries and includes.
@@ -168,7 +171,11 @@ else
       WARNING! PGPLOT could not be found.
       Compiling Duchamp without graphics capabilities.               
       -------------------------------------------------------])
+    #We have no pgplot, so we just link with g++ (or equivalent)
+    LINKER=$CXX 
   else
+    #We are using pgplot, so link with the fortran compiler.
+    LINKER=$F77
     PGPLOTLIB="$PGPLOTLIB $EXTRAPGLIB $LIBS"
     AC_MSG_NOTICE([PGPLOT appears to be available.])
     AC_DEFINE([HAVE_PGPLOT], [1], [Define to 1 if PGPLOT is available.])
@@ -182,6 +189,7 @@ else
 
 fi
 
+AC_SUBST([LINKER])
 AC_SUBST([PGPLOTINC])
 AC_SUBST([PGPLOTLIB])
 ##########################################################################
