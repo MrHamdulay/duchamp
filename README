@@ -146,11 +146,16 @@ and compares to known results, looking for differences and reporting
 any. There should be none reported if everything is working
 correctly. To run, enter the command
 
- >  VerifyDuchamp.sh
+ >  ./VerifyDuchamp.sh
+
+Once you know it is working, you can install Duchamp on your system
+with the command 
+
+ > make install
 
 You can also use the dummy image for your own testing if you like (for
 instance, testing different thresholds to get a feel for how the
-program works).
+program works). 
 
 
 Using Duchamp

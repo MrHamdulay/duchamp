@@ -158,7 +158,7 @@ verify that it is running correctly by running the verification shell
 script:
 \begin{quote}
 {\footnotesize
-\texttt{> VerifyDuchamp.sh}
+\texttt{> ./VerifyDuchamp.sh}
 }
 \end{quote}
 This will use a dummy FITS image in the \texttt{verification/}
@@ -166,7 +166,13 @@ directory -- this image has some Gaussian random noise, with five
 Gaussian sources present, plus a dummy WCS. The script runs
 Duchamp on this image with four different sets of inputs, and
 compares to known results, looking for differences and reporting
-any. There should be none reported if everything is working correctly.
+any. There should be none reported if everything is working
+correctly. You can then install \duchamp on your system via:
+\begin{quote}
+{\footnotesize
+\texttt{> make install}
+}
+\end{quote}
 
 \secB{Running \duchamp}
 You can then run \duchamp on your own data. This can be done in one
