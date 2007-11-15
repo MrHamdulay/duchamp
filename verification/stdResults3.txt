@@ -1,4 +1,4 @@
-Results of the Duchamp source finder: Wed Oct  3 11:00:37 2007
+Results of the Duchamp source finder: Thu Nov 15 12:11:53 2007
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
@@ -7,6 +7,7 @@ Final Results file.............................[outFile]  =  verification/result
 Spectrum file..............................[spectraFile]  =  verification/spectra3.ps
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 Saving smoothed cube?.................[flagOutputSmooth]  =  false
+Saving mask cube?.......................[flagOutputMask]  =  false
 ------
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false
@@ -36,6 +37,7 @@ Summary of statistics:
   Noise level = 0.0148019, Noise spread = 1.00927 in smoothed cube.
   Noise properties for the original cube are:
   Noise level = 0.0148019, Noise spread = 1.00927
+--------------------
 Total number of detections = 5
 --------------------
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

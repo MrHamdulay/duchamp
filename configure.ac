@@ -104,6 +104,10 @@ PGPLOTLIBDIRS=$LIBDIRS
 if test "x$PGPLOTLIBDIRS" = x; then
   #the argument to --with-pgplot was no, so we don't look for it.
   AC_MSG_NOTICE([Not enabling PGPLOT use.])
+  if test "x$F77" = xgfortran; then
+    AC_CHECK_LIB([stdc++], [main], [PGPLOTLIB="-lstdc++"])
+    PGPLOTLIB="$PGPLOTLIB -bind_at_load"
+  fi
 else
 
   #Set up the PGPLOT-related libraries and includes.

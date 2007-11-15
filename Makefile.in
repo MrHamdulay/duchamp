@@ -112,7 +112,7 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(UTILDIR)/wcsFunctions.o\
 	$(UTILDIR)/zscale.o
 
-ifeq ($(strip $(PGPLOTLIB)),)
+ifeq ($(strip $(PGPLOTINC)),)
   OBJECTS = $(OBJECTS-NOPG)
 else
   OBJECTS = $(OBJECTS-NOPG)\

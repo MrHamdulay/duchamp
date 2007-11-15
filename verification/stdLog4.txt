@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Wed Oct  3 11:00:39 2007
+New run of the Duchamp sourcefinder: Thu Nov 15 12:11:55 2007
 Executing statement : ./Duchamp -p verification/input4 
 
 ---- Parameters ----
@@ -9,6 +9,7 @@ Spectrum file..............................[spectraFile]  =  verification/spectr
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 Saving reconstructed cube?.............[flagOutputRecon]  =  false
 Saving residuals from reconstruction?..[flagOutputResid]  =  false
+Saving mask cube?.......................[flagOutputMask]  =  false
 ------
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false
@@ -3354,4 +3355,4 @@ Detection #5
 
 ---
 --------------
-Duchamp completed: Wed Oct  3 11:00:53 2007
+Duchamp completed: Thu Nov 15 12:12:08 2007

@@ -1,4 +1,4 @@
-Results of the Duchamp source finder: Wed Oct  3 11:00:22 2007
+Results of the Duchamp source finder: Thu Nov 15 12:11:39 2007
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
@@ -6,6 +6,7 @@ Intermediate Logfile...........................[logFile]  =  verification/log1.t
 Final Results file.............................[outFile]  =  verification/results1.txt
 Spectrum file..............................[spectraFile]  =  verification/spectra1.ps
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
+Saving mask cube?.......................[flagOutputMask]  =  false
 ------
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false
@@ -29,6 +30,7 @@ Type of object centre used in results......[pixelCentre]  =  centroid
 Summary of statistics:
   Detection threshold = 4.05187 Jy/beam
   Noise level = 0.0148019, Noise spread = 1.00927
+--------------------
 Total number of detections = 5
 --------------------
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
