@@ -164,6 +164,10 @@ not matter, they are grouped here in logical sections.
 \item[{StatSec [ [*,*,*] ]}] The subsection of the cube used
   for calculating statistics -- see \S\ref{sec-input} for details on
  the subsection format. Only used if \texttt{flagStatSec=true}.
+\item[{flagRobustStats [true]}] A flag indicating whether to use the
+  robust statistics (median and MADFM) to estimate the noise
+  parameters, rather than the mean and rms. See \S\ref{sec-stats} for
+  details. 
 \item[{flagNegative [false]}] A flag indicating that the
   features of interest are negative. The cube is inverted prior to
   searching.

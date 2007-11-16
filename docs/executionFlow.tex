@@ -147,6 +147,7 @@ the true, signal-free baseline. Note that this trimming is only a
 temporary measure which does not affect the source-detection.
 
 \secC{Ignoring bright Milky Way emission}
+\label{sec-MW}
 
 Finally, a single set of contiguous channels can be ignored -- these
 may exhibit very strong emission, such as that from the Milky Way as
@@ -243,20 +244,24 @@ the shape of the valid part of the cube is preserved.
 \secC{Note on Statistics}
 
 The correct calculation of the reconstructed array needs good
-estimators of the underlying mean and standard deviation of the
-background noise distribution. These statistics are estimated using
-robust methods, to avoid corruption by strong outlying points. The
-mean of the distribution is actually estimated by the median, while
-the median absolute deviation from the median (MADFM) is calculated
-and corrected assuming Gaussianity to estimate the underlying standard
-deviation $\sigma$. The Gaussianity (or Normality) assumption is
-critical, as the MADFM does not give the same value as the usual rms
-or standard deviation value -- for a Normal distribution
-$N(\mu,\sigma)$ we find MADFM$=0.6744888\sigma$, but this will change
-for different distributions. Since this ratio is corrected for, the
-user need only think in the usual multiples of the rms when setting
-\texttt{snrRecon}. See Appendix~\ref{app-madfm} for a derivation of
-this value.
+estimators of the underlying mean and standard deviation (or rms) of
+the background noise distribution. The methods used to estimate these
+quantities are detailed in \S\ref{sec-stats} -- the default behaviour
+is to use robust estimators, to avoid biasing due to bright pixels.
+
+%These statistics are estimated using
+%robust methods, to avoid corruption by strong outlying points. The
+%mean of the distribution is actually estimated by the median, while
+%the median absolute deviation from the median (MADFM) is calculated
+%and corrected assuming Gaussianity to estimate the underlying standard
+%deviation $\sigma$. The Gaussianity (or Normality) assumption is
+%critical, as the MADFM does not give the same value as the usual rms
+%or standard deviation value -- for a Normal distribution
+%$N(\mu,\sigma)$ we find MADFM$=0.6744888\sigma$, but this will change
+%for different distributions. Since this ratio is corrected for, the
+%user need only think in the usual multiples of the rms when setting
+%\texttt{snrRecon}. See Appendix~\ref{app-madfm} for a derivation of
+%this value.
 
 When thresholding the different wavelet scales, the value of the rms
 as measured from the wavelet array needs to be scaled to account for
@@ -469,13 +474,29 @@ is complete. All outputs are done in the same manner as normal, so
 that fluxes of detections will be negative.
 
 \secC{Calculating statistics}
+\label{sec-stats}
 
-A crucial part of the detection process is estimating the statistics
-that define the detection threshold. To determine a threshold, we need
-to estimate from the data two parameters: the middle of the noise
+A crucial part of the detection process (as well as the wavelet
+reconstruction: \S\ref{sec-recon}) is estimating the statistics that
+define the detection threshold. To determine a threshold, we need to
+estimate from the data two parameters: the middle of the noise
 distribution (the ``noise level''), and the width of the distribution
-(the ``noise spread''). For both cases, we again use robust methods,
-using the median and MADFM.
+(the ``noise spread''). The noise level is estimated by either the
+mean or the median, and the noise spread by the rms (or the standard
+deviation) or the median absolute deviation from the median
+(MADFM). The median and MADFM are robust statistics, in that they are
+not biased by the presence of a few pixels much brighter than the
+noise.
+
+All four statistics are calculated automatically, but the choice of
+parameters that will be used is governed by the input parameter
+\texttt{flagRobustStats}. This has the default value \texttt{true},
+meaning the underlying mean of the noise distribution is estimated by
+the median, and the underlying standard deviation is estimated by the
+MADFM. In the latter case, the value is corrected, under the
+assumption that the underlying distribution is Normal (Gaussian), by
+dividing by 0.6744888 -- see Appendix~\ref{app-madfm} for details. If
+\texttt{flagRobustStats=false}, the mean and rms are used instead.
 
 The choice of pixels to be used depend on the analysis method. If the
 wavelet reconstruction has been done, the residuals (defined
@@ -499,12 +520,14 @@ noise in the cube. For the case of small objects embedded in many
 noise pixels (\eg the case of \hi surveys), using the full cube will
 provide good estimators. It is possible, however, to use only a
 subsection of the cube by setting the parameter \texttt{flagStatSec =
-true} and providing the desired subsection to the \texttt{StatSec}
+  true} and providing the desired subsection to the \texttt{StatSec}
 parameter. This subsection works in exactly the same way as the pixel
 subsection discussed in \S\ref{sec-input}. Note that this subsection
 applies only to the statistics used to determine the threshold. It
 does not affect the calculation of statistics in the case of the
-wavelet reconstruction.
+wavelet reconstruction. Note also that pixels flagged as BLANK or as
+part of the ``Milky Way'' range of channels are ignored in the
+statistics calculations.
 
 \secC{Determining the threshold}
 
@@ -512,9 +535,11 @@ Once the statistics have been calculated, the threshold is determined
 in one of two ways. The first way is a simple sigma-clipping, where a
 threshold is set at a fixed number $n$ of standard deviations above
 the mean, and pixels above this threshold are flagged as detected. The
-value of $n$ is set with the parameter \texttt{snrCut}. As before, the
-value of the standard deviation is estimated by the MADFM, and
-corrected by the ratio derived in Appendix~\ref{app-madfm}.
+value of $n$ is set with the parameter \texttt{snrCut}. The ``mean''
+and ``standard deviation'' here are estimated according to
+\texttt{flagRobustStats}, as discussed in \S\ref{sec-stats}. In this
+first case only, if the user specifies a threshold, using the
+\texttt{threshold} parameter, the sigma-clipped value is ignored.
 
 The second method uses the False Discovery Rate (FDR) technique
 \citep{miller01,hopkins02}, whose basis we briefly detail here. The

@@ -37,6 +37,8 @@ reconFile	your-smoothed-file-here
 #                        outFile just contains the table of detections).
 # headerFile -- the file to write the header information to.
 # spectraFile -- the postscript file of spectra
+# flagOutputMask -- whether to save a FITS file containing a mask
+#                   array, showing the locations of detected objects
 # flagOutputSmooth -- whether to save the smoothed arrays as a FITS file
 # flagOutputRecon/Resid -- whether to save the reconstruction & residual arrays
 #                          as FITS files
@@ -54,6 +56,7 @@ outFile		duchamp-Results.txt
 flagSeparateHeader 0
 headerFile      duchamp-Results.hdr
 spectraFile	duchamp-Spectra.ps
+flagOutputMask  0
 flagOutputSmooth 0
 flagOutputRecon	0
 flagOutputResid	0
@@ -86,6 +89,8 @@ flagBaseline    0
 #                the statistics.
 # StatSec -- The subsection used for statistics calculations. It has the 
 #            same format as the pixel subsection.
+# flagRobustStats -- Shall we use robust statistics to characterise
+#                    the noise in the image?
 # flagNegative -- Are the features being searched for negative (set to true) 
 #                 or positive (false -- the default)?
 # snrCut --  How many sigma above mean is a detection when sigma-clipping
@@ -97,6 +102,7 @@ flagBaseline    0
 
 flagStatSec     0
 StatSec         [*,*,*]
+flagRobustStats 1
 flagNegative    0
 snrCut		3.
 threshold	0.
