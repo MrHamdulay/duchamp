@@ -132,6 +132,7 @@ namespace duchamp
     // Other detection      
     this->flagStatSec       = false;
     this->statSec.setSection(baseSection);
+    this->flagRobustStats   = true;
     this->snrCut            = 3.;
     this->threshold         = 0.;
     this->flagUserThreshold = false;
@@ -229,7 +230,8 @@ namespace duchamp
     this->flagFDR           = p.flagFDR;
     this->alphaFDR          = p.alphaFDR;
     this->flagStatSec       = p.flagStatSec; 
-    this->statSec           = p.statSec; 
+    this->statSec           = p.statSec;
+    this->flagRobustStats   = p.flagRobustStats;
     this->snrCut            = p.snrCut;
     this->threshold         = p.threshold;
     this->flagUserThreshold = p.flagUserThreshold;
@@ -511,6 +513,7 @@ namespace duchamp
 
 	if(arg=="flagstatsec")     this->flagStatSec = readFlag(ss); 
 	if(arg=="statsec")         this->statSec.setSection(readSval(ss));
+	if(arg=="flagrobuststats") this->flagRobustStats = readFlag(ss); 
 	if(arg=="snrcut")          this->snrCut = readFval(ss); 
 	if(arg=="threshold"){
 	  this->threshold = readFval(ss);
@@ -815,6 +818,10 @@ namespace duchamp
 	       <<par.getFilterCode() 
 	       << " (" << par.getFilterName()  << ")" <<std::endl;
     }	     					       
+    theStream  <<std::setw(widthText)<<"Using Robust statistics?"                  
+	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagRobustStats]"
+	       <<"  =  " <<resetiosflags(std::ios::right)
+	       <<stringize(par.getFlagRobustStats()) <<std::endl;
     if(par.getFlagStatSec()){
       theStream<<std::setw(widthText)<<"Section used by statistics calculation"
 	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[statSec]"

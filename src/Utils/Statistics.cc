@@ -144,8 +144,8 @@ namespace Statistics
      * flag -- it will be either the median (if true), or the mean (if
      * false).
      */
-    if(useRobust) return float(median); 
-    else return mean;
+    if(useRobust) return float(this->median); 
+    else return this->mean;
   }
   template float StatsContainer<int>::getMiddle();
   template float StatsContainer<long>::getMiddle();
@@ -162,8 +162,8 @@ namespace Statistics
      * converted to an equivalent rms under the assumption of
      * Gaussianity, using the Statistics::madfmToSigma function.
      */
-    if(useRobust) return madfmToSigma(madfm); 
-    else return stddev;
+    if(useRobust) return madfmToSigma(this->madfm); 
+    else return this->stddev;
   }
   template float StatsContainer<int>::getSpread();
   template float StatsContainer<long>::getSpread();

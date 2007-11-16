@@ -67,7 +67,7 @@ namespace duchamp
 
     int newbitpix = SHORT_IMG;
     long *fpixel = new long[this->numDim];
-    for(int i=0;i<this->numDim;i++) fpixel[i]=1;
+    for(int i=0;i<this->header().WCS().naxis;i++) fpixel[i]=1;
     int status = 0;  /* MUST initialize status */
     fitsfile *fptrOld, *fptrNew;         
     fits_open_file(&fptrOld,this->par.getImageFile().c_str(),READONLY,&status);
@@ -117,14 +117,19 @@ namespace duchamp
       long dud;
       // Need to correct the dimensions, if we have subsectioned the image
       if(this->par.getFlagSubsection()){
-	fits_read_key(fptrOld, TLONG, "NAXIS1", &dud, comment, &status);
-	fits_update_key(fptrNew, TLONG, "NAXIS1", 
+	std::stringstream naxis;
+	fits_read_key(fptrOld, TLONG, (char *)naxis.str().c_str(), &dud, comment, &status);
+	fits_update_key(fptrNew, TLONG, (char *)naxis.str().c_str(),
 			&(this->axisDim[0]), comment, &status);
-	fits_read_key(fptrOld, TLONG, "NAXIS2", &dud, comment, &status);
-	fits_update_key(fptrNew, TLONG, "NAXIS2", 
+	naxis.str("");
+	naxis << "NAXIS" << this->head.WCS().lat;
+	fits_read_key(fptrOld, TLONG, (char *)naxis.str().c_str(), &dud, comment, &status);
+	fits_update_key(fptrNew, TLONG, (char *)naxis.str().c_str(), 
 			&(this->axisDim[1]), comment, &status);
-	fits_read_key(fptrOld, TLONG, "NAXIS3", &dud, comment, &status);
-	fits_update_key(fptrNew, TLONG, "NAXIS3", 
+	naxis.str("");
+	naxis << "NAXIS" << this->head.WCS().spec;
+	fits_read_key(fptrOld, TLONG, (char *)naxis.str().c_str(), &dud, comment, &status);
+	fits_update_key(fptrNew, TLONG, (char *)naxis.str().c_str(), 
 			&(this->axisDim[2]), comment, &status);
       }
 

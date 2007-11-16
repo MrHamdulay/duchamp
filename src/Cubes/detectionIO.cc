@@ -386,14 +386,14 @@ namespace duchamp
     else outfile = this->par.getOutFile();
     std::ofstream output(outfile.c_str(),std::ios::app);
     output<<"Summary of statistics:\n";
-    output<<"  Detection threshold = " << this->Stats.getThreshold()
+    output<<"Detection threshold = " << this->Stats.getThreshold()
 	  <<" " << this->head.getFluxUnits();
     if(this->par.getFlagFDR())
       output<<" (or S/N=" << this->Stats.getThresholdSNR()<<")";
     if(this->par.getFlagSmooth()){
       output << " in smoothed cube.";
       if(!this->par.getFlagUserThreshold())
-	output<<"\n  Noise level = " << this->Stats.getMiddle()
+	output<<"\nNoise level = " << this->Stats.getMiddle()
 	      <<", Noise spread = " << this->Stats.getSpread()
 	      <<" in smoothed cube.";
     
@@ -409,11 +409,11 @@ namespace duchamp
       this->par.setFlagFDR(fdrflag);
       this->par.setFlagSmooth(true);
       
-      output << "\n  Noise properties for the original cube are:";
+      output << "\nNoise properties for the original cube are:";
     }
      
     if(!this->par.getFlagUserThreshold())
-      output<<"\n  Noise level = " << this->Stats.getMiddle()
+      output<<"\nNoise level = " << this->Stats.getMiddle()
 	    <<", Noise spread = " << this->Stats.getSpread()
 	    <<"\n";
 
@@ -424,6 +424,8 @@ namespace duchamp
       output<<"  Detections grown down to threshold of " 
 	    << growthStats.getThreshold() << ".\n";
     }
+
+    output << "\nFull stats:\n" << this->Stats;
 
     output<<"--------------------\n";
     output.close();

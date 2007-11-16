@@ -678,6 +678,8 @@ namespace duchamp
      *  </ul>
      */
 
+    this->Stats.setRobust(this->par.getFlagRobustStats());
+
     if(!this->par.getFlagFDR() && this->par.getFlagUserThreshold() ){
       // if the user has defined a threshold, set this in the StatsContainer
       this->Stats.setThreshold( this->par.getThreshold() );
@@ -797,7 +799,6 @@ namespace duchamp
 	// done with the StatsContainer::calculate function, using the
 	// mask generated earlier.
 	this->Stats.calculate(this->array,this->numPixels,mask);
-
       }
 
       this->Stats.setUseFDR( this->par.getFlagFDR() );
