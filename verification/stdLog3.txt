@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Thu Nov 15 12:11:42 2007
+New run of the Duchamp sourcefinder: Wed Nov 28 11:23:04 2007
 Executing statement : ./Duchamp -p verification/input3 
 
 ---- Parameters ----
@@ -21,6 +21,7 @@ Gaussian kernel semi-major axis [pix]..........[kernMaj]  =  3
 Gaussian kernel semi-minor axis [pix]..........[kernMin]  =  3
 Gaussian kernel position angle [deg]............[kernPA]  =  0
 Using A Trous reconstruction?...............[flagATrous]  =  false
+Using Robust statistics?...............[flagRobustStats]  =  true
 Using FDR analysis?............................[flagFDR]  =  false
 SNR Threshold (in sigma)........................[snrCut]  =  3
 Minimum # Pixels in a detection.................[minPix]  =  2
@@ -5426,4 +5427,4 @@ Detection #5
 
 ---
 --------------
-Duchamp completed: Thu Nov 15 12:11:55 2007
+Duchamp completed: Wed Nov 28 11:23:18 2007

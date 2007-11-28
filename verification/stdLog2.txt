@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Thu Nov 15 12:11:39 2007
+New run of the Duchamp sourcefinder: Wed Nov 28 11:23:01 2007
 Executing statement : ./Duchamp -p verification/input2 
 
 ---- Parameters ----
@@ -16,6 +16,7 @@ Beam Size (pixels)......................................  =  10.1788
 Removing baselines before search?.........[flagBaseline]  =  false
 Smoothing each spectrum first?..............[flagSmooth]  =  false
 Using A Trous reconstruction?...............[flagATrous]  =  false
+Using Robust statistics?...............[flagRobustStats]  =  true
 Using FDR analysis?............................[flagFDR]  =  true
 Alpha value for FDR analysis..................[alphaFDR]  =  0.05
 Minimum # Pixels in a detection.................[minPix]  =  2
@@ -2503,4 +2504,4 @@ Detection #5
 
 ---
 --------------
-Duchamp completed: Thu Nov 15 12:11:42 2007
+Duchamp completed: Wed Nov 28 11:23:04 2007

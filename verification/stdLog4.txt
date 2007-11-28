@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Thu Nov 15 12:11:55 2007
+New run of the Duchamp sourcefinder: Wed Nov 28 11:23:18 2007
 Executing statement : ./Duchamp -p verification/input4 
 
 ---- Parameters ----
@@ -22,6 +22,7 @@ Number of dimensions in reconstruction........[reconDim]  =  1
 Minimum scale in reconstruction...............[scaleMin]  =  1
 SNR Threshold within reconstruction...........[snrRecon]  =  3
 Filter being used for reconstruction........[filterCode]  =  1 (B3 spline function)
+Using Robust statistics?...............[flagRobustStats]  =  true
 Using FDR analysis?............................[flagFDR]  =  false
 SNR Threshold (in sigma)........................[snrCut]  =  3
 Minimum # Pixels in a detection.................[minPix]  =  2
@@ -3355,4 +3356,4 @@ Detection #5
 
 ---
 --------------
-Duchamp completed: Thu Nov 15 12:12:08 2007
+Duchamp completed: Wed Nov 28 11:23:31 2007
