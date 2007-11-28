@@ -91,6 +91,8 @@ namespace duchamp
     virtual void       setPixValue(long pos, float f){array[pos] = f;};
     Detection          getObject(long number){ return objectList->at(number); };
     std::vector <Detection> getObjectList(){ return *objectList; };
+    std::vector <Detection> *pObjectList(){ return objectList; };
+    std::vector <Detection> &ObjectList(){ std::vector<Detection> &rlist = *objectList; return rlist; };
     long               getNumObj(){ return objectList->size(); };
 
     /** Delete all objects from the list of detections. */
@@ -264,6 +266,7 @@ namespace duchamp
 
     /** Save reconstructed array to an external array. */
     void        getRecon(float *output);
+    float *     getRecon(){return recon; };
 
     /** Set Milky Way channels to zero. */
     void        removeMW();

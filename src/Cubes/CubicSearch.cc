@@ -220,16 +220,16 @@ std::vector <Detection> search3DArraySimple(long *dim, float *Array,
   /**
    *  Takes a dimension array and data array as input (and Parameter
    *  set) and searches for detections just in the channel maps -- no
-   *  1D searches are done.  * Returns a vector list of Detections.
-   *  No reconstruction is assumed to have taken place, so statistics
-   *  are calculated (using robust methods) from the data array
-   *  itself.
+   *  1D searches are done.  
+   *  Returns a vector list of Detections.
+   *  No reconstruction is assumed to have taken place, so only the base
+   *  data array is searched.
    * \param dim Array of dimension sizes for the data array.
    * \param Array Array of data.
    * \param par Param set defining how to do detection, and what a
    *              BLANK pixel is etc.
    * \param stats The statistics that define what a detection is.
-   * \return Vector of detected objects.
+   * \return A std::vector of detected objects.
    */
 
   std::vector <Detection> outputList;

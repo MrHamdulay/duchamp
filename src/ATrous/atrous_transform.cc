@@ -46,9 +46,9 @@
 // }
 
   
-void atrousTransform(long &length, int &numScales, float *spectrum, double *coeffs, double *wavelet, Param &par)
+void atrousTransform(long &length, int &numScales, float *spectrum, double *coeffs, double *wavelet, duchamp::Param &par)
 {
-  Filter reconFilter = par.filter();
+  duchamp::Filter reconFilter = par.filter();
   int filterHW = reconFilter.width()/2;
 
   for(int i=0;i<length;i++)  coeffs[i] = wavelet[i] = spectrum[i];
@@ -80,9 +80,9 @@ void atrousTransform(long &length, int &numScales, float *spectrum, double *coef
 
 }
 
-void atrousTransform(long &length, float *spectrum, float *coeffs, float *wavelet, Param &par)
+void atrousTransform(long &length, float *spectrum, float *coeffs, float *wavelet, duchamp::Param &par)
 {
-  Filter reconFilter = par.filter();
+  duchamp::Filter reconFilter = par.filter();
   int filterHW = reconFilter.width()/2;
   int numScales = reconFilter.getNumScales(length);
 
@@ -126,9 +126,9 @@ void atrousTransform(long &length, float *spectrum, float *coeffs, float *wavele
 /////  2-DIMENSIONAL TRANSFORM
 /***********************************************************************/
 
-void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet, Param &par)
+void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet, duchamp::Param &par)
 {
-  Filter reconFilter = par.filter();
+  duchamp::Filter reconFilter = par.filter();
   float blankPixValue = par.getBlankPixVal();
   int filterHW = reconFilter.width()/2;
 
@@ -322,9 +322,9 @@ void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, dou
 /////  3-DIMENSIONAL TRANSFORM
 /***********************************************************************/
 
-void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *&input, float *&coeffs, float *&wavelet, Param &par)
+void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *&input, float *&coeffs, float *&wavelet, duchamp::Param &par)
 {
-  Filter reconFilter = par.filter();
+  duchamp::Filter reconFilter = par.filter();
   float blankPixValue = par.getBlankPixVal();
   int filterHW = reconFilter.width()/2;
 
