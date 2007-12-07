@@ -64,6 +64,8 @@ character!):
 \texttt{%
 > ./configure\\
 > make\\
+> make lib (optional -- to create a library for development
+purposes)\\ 
 > make clean (optional -- to remove the object files)\\
 > make install }
 }
@@ -72,7 +74,10 @@ character!):
 This default setup will search in standard locations for the necessary
 libraries, and install the executable (\texttt{``Duchamp''}) in
 \texttt{/usr/local/bin} (a copy will also be in the current
-directory). If you want this to go somewhere else, \eg if you don't
+directory). The library (if you've made it) will be installed in
+\texttt{/usr/local/lib}, and the full set of header files will be
+installed in \texttt{/usr/local/include/duchamp} and subdirectories
+thereof.  If you want these to go somewhere else, \eg if you don't
 have write-access to that directory, or you need to tweak the
 libraries, see the next section. Otherwise, jump to the testing
 section.
@@ -92,9 +97,11 @@ directory above the \texttt{bin/} directory \eg
 > ./configure --prefix=/home/mduchamp}
 }
 \end{quote}
-and then run \texttt{make} and \texttt{make install} as stated
-above. This will put the binary in the directory
-\texttt{/home/mduchamp/bin}. 
+and then run \texttt{make}, (\texttt{make lib} if you like), and
+\texttt{make install} as stated above. This will put the binary in the
+directory \texttt{/home/mduchamp/bin}. The library, if made, will be
+put in \texttt{/home/mduchamp/lib} and the header files in
+\texttt{/home/mduchamp/include/duchamp} and subdirectories.
 
 If the above-mentioned libraries have been installed in non-standard
 locations, or you have more than one version installed on your system,

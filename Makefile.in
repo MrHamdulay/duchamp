@@ -10,10 +10,15 @@ LINK=   @LINKER@
 BASE = ./src
 
 INSTALLDIR = @prefix@/bin
+LIBDIR = @prefix@/lib
+INCDIR = @prefix@/include/duchamp
 
 V = @PACKAGE_VERSION@
 EXEC = Duchamp-$(V)
 EXEC-STUB = Duchamp
+
+AR = ar cq
+LIB = libduchamp.a
 
 INSTALL = @INSTALL@
 LN_S = @LN_S@
@@ -129,6 +134,9 @@ endif
 duchamp : $(OBJECTS)
 	$(LINK) -o $(EXEC) $(OBJECTS) $(LIBS)
 
+lib     : $(OBJECTS)
+	$(AR) $(LIB) $(OBJECTS)
+
 createTestImage : $(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o
 	$(CXX) -o createTestImage.x\
 	$(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o\
@@ -139,6 +147,20 @@ install :
 	$(INSTALL) -m 755 $(EXEC) $(INSTALLDIR)
 	$(RM) $(INSTALLDIR)/$(EXEC-STUB)
 	$(LN_S) $(INSTALLDIR)/$(EXEC) $(INSTALLDIR)/$(EXEC-STUB)
+	$(INSTALL) -d -m 2755 $(LIBDIR)
+	$(INSTALL) -m 644 $(LIB) $(LIBDIR)
+	$(INSTALL) -d -m 2755 $(INCDIR)
+	$(INSTALL) -m 644 $(BASE)/*.hh $(INCDIR)
+	$(INSTALL) -d -m 2755 $(INCDIR)/Cubes
+	$(INSTALL) -m 644 $(CUBESDIR)/*.hh $(INCDIR)/Cubes
+	$(INSTALL) -d -m 2755 $(INCDIR)/ATrous
+	$(INSTALL) -m 644 $(ATROUSDIR)/*.hh $(INCDIR)/ATrous
+	$(INSTALL) -d -m 2755 $(INCDIR)/Detection
+	$(INSTALL) -m 644 $(DETECTIONDIR)/*.hh $(INCDIR)/Detection
+	$(INSTALL) -d -m 2755 $(INCDIR)/PixelMap
+	$(INSTALL) -m 644 $(PIXELMAPDIR)/*.hh $(INCDIR)/PixelMap
+	$(INSTALL) -d -m 2755 $(INCDIR)/Utils
+	$(INSTALL) -m 644 $(UTILDIR)/*.hh $(INCDIR)/Utils
 
 $(OBJECTS) : $(HEADS)
 

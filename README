@@ -73,16 +73,20 @@ character!):
 
  >  ./configure
  >  make
- >  make clean (optional -- to remove the object files from the src
-                directory)
+ >  make lib   (optional -- this makes a library for use in code
+    	        development)
+ >  make clean (again optional -- to remove the object files from the
+    	        src directory)
  >  make install 
 
 This default setup will search in standard locations for the necessary
 libraries, and install the executable ("Duchamp") in /usr/local/bin (a
-copy will also be in the current directory). If you want this to go
-somewhere else, eg if you don't have write-access to that directory,
-or you need to tweak the libraries, see the next section. Otherwise,
-jump to the testing section.
+copy will also be in the current directory). It also installs the
+library libduchamp.a in /usr/local/lib and the header (.hh) files in
+/usr/local/include/duchamp. If you want these to go somewhere else, eg
+if you don't have write-access to that directory, or you need to tweak
+the libraries, see the next section. Otherwise, jump to the testing
+section.
 
 
 Tweaking the installation setup
@@ -95,7 +99,9 @@ To install Duchamp in a directory other than /usr/local/bin, use the
  >  ./configure --prefix=/home/mduchamp
 
 which, if you run "make" and "make install", will result in the binary
-being put in the directory /home/mduchamp/bin.
+being put in the directory /home/mduchamp/bin. Similarly the library
+will be put in /home/mduchamp/lib and the header files in
+/home/mduchamp/include/duchamp and subdirectories thereof.
 
 If the above-mentioned libraries have been installed in non-standard
 locations, or you have more than one version installed on your system,

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-version=`./Duchamp* -v | awk '{print $3}'`
+version=`grep VERSION src/config.h | sed '/\"/s///' | sed '/\"/s///' | awk '{print $3}'`
 
 progname=./Duchamp-$version
 

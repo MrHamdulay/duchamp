@@ -1,5 +1,5 @@
-Duchamp version 1.1.2-beta (2007/10/24)
----------------------------------------
+Duchamp version 1.1.2 (2007/12/07)
+----------------------------------
 
 Compilation:
 
@@ -31,6 +31,9 @@ Bugfixing:
   of the integrated flux presented in the results table were always
   calculated correctly.
 
+* Other minor changes to improve the speed and efficiency, especially
+  of the merging code.
+
 New user parameters:
 
 * There is now the possibility to save a FITS file that contains a
@@ -49,8 +52,11 @@ New user parameters:
   instance, if one wants to search just for narrow features such as
   absorption lines).
 
-* Other minor changes to improve the speed and efficiency, especially
-  of the merging code.
+* A "flagRobustStats" parameter has been added. This allows the user
+  to elect to use robust statistics (median and median absolute
+  deviation from the median) to estimate the noise parameters. If set
+  to false, the mean and standard deviation will be used. The default
+  value is true.
 
 New Feature:
 
