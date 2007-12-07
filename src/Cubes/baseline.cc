@@ -27,10 +27,10 @@
 // -----------------------------------------------------------------------
 #include <iostream>
 #include <iomanip>
-#include <param.hh>
-#include <ATrous/atrous.hh>
-#include <Cubes/cubes.hh>
-#include <Utils/feedback.hh>
+#include <duchamp/param.hh>
+#include <duchamp/ATrous/atrous.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Utils/feedback.hh>
 
 namespace duchamp
 {

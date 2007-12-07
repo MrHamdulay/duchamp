@@ -32,8 +32,8 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#include <PixelMap/Scan.hh>
-#include <PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Scan.hh>
+#include <duchamp/PixelMap/Voxel.hh>
 
 namespace PixelInfo
 {

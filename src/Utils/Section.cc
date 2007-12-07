@@ -30,8 +30,8 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
-#include <Utils/Section.hh>
-#include <duchamp.hh>
+#include <duchamp/Utils/Section.hh>
+#include <duchamp/duchamp.hh>
 
 namespace duchamp
 {

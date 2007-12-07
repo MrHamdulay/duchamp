@@ -32,8 +32,8 @@
 #include <math.h>
 #include <wcs.h>
 #include <wcsunits.h>
-#include <duchamp.hh>
-#include <Utils/utils.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/Utils/utils.hh>
 
 int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
 {

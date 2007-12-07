@@ -25,9 +25,9 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
-#include <Cubes/cubes.hh>
-#include <PixelMap/Voxel.hh>
-#include <PixelMap/Object2D.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Object2D.hh>
 #include <vector>
 
 using namespace PixelInfo;

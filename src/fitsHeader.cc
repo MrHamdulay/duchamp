@@ -30,10 +30,10 @@
 #include <string>
 #include <wcs.h>
 #include <wcsunits.h>
-#include <duchamp.hh>
-#include <param.hh>
-#include <fitsHeader.hh>
-#include <Utils/utils.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/param.hh>
+#include <duchamp/fitsHeader.hh>
+#include <duchamp/Utils/utils.hh>
 
 namespace duchamp
 {

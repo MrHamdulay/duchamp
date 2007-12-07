@@ -30,7 +30,7 @@
 #include <iostream>
 #include <math.h>
 #include <cpgplot.h>
-#include <Utils/utils.hh>
+#include <duchamp/Utils/utils.hh>
 
 void plotLine(const float slope, const float intercept)
 {

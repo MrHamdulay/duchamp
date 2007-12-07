@@ -28,13 +28,13 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
-#include <duchamp.hh>
-#include <param.hh>
-#include <ATrous/atrous.hh>
-#include <ATrous/filter.hh>
-#include <Utils/utils.hh>
-#include <Utils/feedback.hh>
-#include <Utils/Statistics.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/param.hh>
+#include <duchamp/ATrous/atrous.hh>
+#include <duchamp/ATrous/filter.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/Utils/feedback.hh>
+#include <duchamp/Utils/Statistics.hh>
 using Statistics::madfmToSigma;
 
 using std::endl;

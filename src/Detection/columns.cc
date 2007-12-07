@@ -29,12 +29,12 @@
 #include <sstream>
 
 #include <math.h>
-#include <duchamp.hh>
-#include <fitsHeader.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/fitsHeader.hh>
 #include <vector> 
 #include <string>
-#include <Detection/detection.hh>
-#include <Detection/columns.hh>
+#include <duchamp/Detection/detection.hh>
+#include <duchamp/Detection/columns.hh>
 
 namespace duchamp
 {

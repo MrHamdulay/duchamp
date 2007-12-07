@@ -37,9 +37,9 @@
                          //  wtbarr (this is a problem when using gcc v.4+
 #include <fitsio.h>
 #include <math.h>
-#include <duchamp.hh>
-#include <fitsHeader.hh>
-#include <Cubes/cubes.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/fitsHeader.hh>
+#include <duchamp/Cubes/cubes.hh>
 
 namespace duchamp
 {

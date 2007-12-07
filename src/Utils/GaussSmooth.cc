@@ -27,7 +27,7 @@
 // -----------------------------------------------------------------------
 #include <iostream>
 #include <math.h>
-#include <Utils/GaussSmooth.hh>
+#include <duchamp/Utils/GaussSmooth.hh>
 
 GaussSmooth::GaussSmooth()
 {

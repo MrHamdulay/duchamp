@@ -31,10 +31,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <param.hh>
-#include <PixelMap/Voxel.hh>
-#include <PixelMap/Object3D.hh>
-#include <Detection/columns.hh>
+#include <duchamp/param.hh>
+#include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Object3D.hh>
+#include <duchamp/Detection/columns.hh>
 
 namespace duchamp
 {

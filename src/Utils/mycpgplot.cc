@@ -27,7 +27,7 @@
 // -----------------------------------------------------------------------
 #include <string>
 #include <cpgplot.h>
-#include <Utils/mycpgplot.hh>
+#include <duchamp/Utils/mycpgplot.hh>
 
 namespace mycpgplot
 {

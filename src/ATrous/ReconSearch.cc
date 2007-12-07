@@ -29,14 +29,14 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
-#include <duchamp.hh>
-#include <PixelMap/Object3D.hh>
-#include <Cubes/cubes.hh>
-#include <Detection/detection.hh>
-#include <ATrous/atrous.hh>
-#include <Utils/utils.hh>
-#include <Utils/feedback.hh>
-#include <Utils/Statistics.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/PixelMap/Object3D.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Detection/detection.hh>
+#include <duchamp/ATrous/atrous.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/Utils/feedback.hh>
+#include <duchamp/Utils/Statistics.hh>
 
 using namespace PixelInfo;
 using namespace Statistics;

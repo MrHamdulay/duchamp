@@ -28,7 +28,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include <duchamp.hh>
+#include <duchamp/duchamp.hh>
 
 namespace duchamp
 {

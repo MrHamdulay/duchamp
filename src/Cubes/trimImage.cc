@@ -26,9 +26,9 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <iostream>
-#include <param.hh>
-#include <Cubes/cubes.hh>
-#include <PixelMap/Object3D.hh>
+#include <duchamp/param.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/PixelMap/Object3D.hh>
 
 using namespace PixelInfo;
 

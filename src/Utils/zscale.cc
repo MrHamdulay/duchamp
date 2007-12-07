@@ -28,7 +28,7 @@
 // -----------------------------------------------------------------------
 #include <iostream>
 #include <algorithm>
-#include <Utils/utils.hh>
+#include <duchamp/Utils/utils.hh>
 const int nsample=1000;
 // const int width=300;
 const int width=150;

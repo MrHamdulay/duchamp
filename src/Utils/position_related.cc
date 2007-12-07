@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <string>
 #include <math.h>
-#include <Utils/utils.hh>
+#include <duchamp/Utils/utils.hh>
 
 using std::setw;
 using std::setfill;

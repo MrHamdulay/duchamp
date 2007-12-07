@@ -32,12 +32,12 @@
 #include <iomanip>
 #include <string>
 #include <vector>
-#include <duchamp.hh>
-#include <Detection/detection.hh>
-#include <Cubes/cubes.hh>
-#include <Utils/utils.hh>
-#include <Detection/columns.hh>
-#include <Utils/feedback.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/Detection/detection.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/Detection/columns.hh>
+#include <duchamp/Utils/feedback.hh>
 
 namespace duchamp
 {

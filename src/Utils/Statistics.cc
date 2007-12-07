@@ -27,8 +27,8 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <iostream>
-#include <Utils/Statistics.hh>
-#include <Utils/utils.hh>
+#include <duchamp/Utils/Statistics.hh>
+#include <duchamp/Utils/utils.hh>
 
 namespace Statistics
 {

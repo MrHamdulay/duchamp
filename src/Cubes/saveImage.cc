@@ -36,10 +36,10 @@
 // (this is a problem when using cfitsio v.3 and g++ v.4)
 
 #include <fitsio.h>
-#include <duchamp.hh>
-#include <Cubes/cubes.hh>
-#include <PixelMap/Voxel.hh>
-#include <PixelMap/Object3D.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Object3D.hh>
 
 namespace duchamp
 {

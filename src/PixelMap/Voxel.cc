@@ -27,7 +27,7 @@
 // -----------------------------------------------------------------------
 #include <iostream>
 #include <iomanip>
-#include <PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Voxel.hh>
 
 namespace PixelInfo
 {

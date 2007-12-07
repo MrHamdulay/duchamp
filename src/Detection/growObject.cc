@@ -28,11 +28,11 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
-#include <Cubes/cubes.hh>
-#include <Utils/utils.hh>
-#include <Utils/Statistics.hh>
-#include <PixelMap/Voxel.hh>
-#include <Detection/detection.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/Utils/Statistics.hh>
+#include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/Detection/detection.hh>
 
 using std::vector;
 using std::setw;

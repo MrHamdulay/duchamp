@@ -27,7 +27,7 @@
 // -----------------------------------------------------------------------
 #include <iostream>
 #include <math.h>
-#include <Utils/Hanning.hh>
+#include <duchamp/Utils/Hanning.hh>
 
 Hanning::Hanning(){
   allocated=false;

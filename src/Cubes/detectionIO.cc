@@ -32,14 +32,14 @@
 #include <string>
 #include <vector>
 #include <time.h>
-#include <param.hh>
-#include <fitsHeader.hh>
-#include <Cubes/cubes.hh> 
-#include <PixelMap/Object3D.hh>
-#include <Detection/detection.hh>
-#include <Detection/columns.hh>
-#include <Utils/utils.hh>
-#include <Utils/Statistics.hh>
+#include <duchamp/param.hh>
+#include <duchamp/fitsHeader.hh>
+#include <duchamp/Cubes/cubes.hh> 
+#include <duchamp/PixelMap/Object3D.hh>
+#include <duchamp/Detection/detection.hh>
+#include <duchamp/Detection/columns.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/Utils/Statistics.hh>
  
 using std::endl;
 using std::setw;

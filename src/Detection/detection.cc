@@ -31,13 +31,13 @@
 #include <string>
 #include <wcs.h>
 #include <math.h>
-#include <duchamp.hh>
-#include <param.hh>
-#include <fitsHeader.hh>
-#include <Utils/utils.hh>
-#include <PixelMap/Voxel.hh>
-#include <PixelMap/Object3D.hh>
-#include <Detection/detection.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/param.hh>
+#include <duchamp/fitsHeader.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Object3D.hh>
+#include <duchamp/Detection/detection.hh>
 
 using std::setw;
 using std::setprecision;

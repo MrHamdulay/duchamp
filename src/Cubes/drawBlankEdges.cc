@@ -27,9 +27,9 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <cpgplot.h>
-#include <duchamp.hh>
-#include <param.hh>
-#include <Utils/mycpgplot.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/param.hh>
+#include <duchamp/Utils/mycpgplot.hh>
 #include <string>
 
 namespace duchamp

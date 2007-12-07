@@ -26,10 +26,10 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <iostream>
-#include <PixelMap/Voxel.hh>
-#include <PixelMap/Scan.hh>
-#include <PixelMap/Object2D.hh>
-#include <PixelMap/Object3D.hh>
+#include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Scan.hh>
+#include <duchamp/PixelMap/Object2D.hh>
+#include <duchamp/PixelMap/Object3D.hh>
 #include <vector>
 
 namespace PixelInfo

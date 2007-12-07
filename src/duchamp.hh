@@ -30,7 +30,7 @@
 
 #include <iostream>
 #include <string>
-#include <Utils/mycpgplot.hh>
+#include <duchamp/Utils/mycpgplot.hh>
 
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_NAME

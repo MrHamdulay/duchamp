@@ -25,8 +25,8 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
-#include <Cubes/cubes.hh>
-#include <PixelMap/Scan.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/PixelMap/Scan.hh>
 
 using namespace PixelInfo;
 

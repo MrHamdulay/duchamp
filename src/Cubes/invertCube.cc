@@ -25,8 +25,8 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
-#include <Cubes/cubes.hh>
-#include <Detection/detection.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Detection/detection.hh>
 
 namespace duchamp
 {

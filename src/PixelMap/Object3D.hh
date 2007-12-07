@@ -29,9 +29,9 @@
 #ifndef OBJECT3D_H
 #define OBJECT3D_H
 
-#include <PixelMap/Voxel.hh>
-#include <PixelMap/Scan.hh>
-#include <PixelMap/Object2D.hh>
+#include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Scan.hh>
+#include <duchamp/PixelMap/Object2D.hh>
 #include <vector>
 #include <algorithm>
 #include <iostream>

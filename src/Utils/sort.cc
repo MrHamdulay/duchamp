@@ -27,7 +27,7 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <functional>
-#include <Utils/utils.hh>
+#include <duchamp/Utils/utils.hh>
 // #include <algorithm>
 // #include <iterator>
 // #include <iostream>

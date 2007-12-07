@@ -25,9 +25,9 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
-#include <PixelMap/Scan.hh>
-#include <PixelMap/Object2D.hh>
-#include <PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Scan.hh>
+#include <duchamp/PixelMap/Object2D.hh>
+#include <duchamp/PixelMap/Voxel.hh>
 #include <iostream>
 #include <vector>
 

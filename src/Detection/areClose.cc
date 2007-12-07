@@ -27,10 +27,10 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <math.h>
-#include <Detection/detection.hh>
-#include <PixelMap/Scan.hh>
-#include <PixelMap/Object3D.hh>
-#include <param.hh>
+#include <duchamp/Detection/detection.hh>
+#include <duchamp/PixelMap/Scan.hh>
+#include <duchamp/PixelMap/Object3D.hh>
+#include <duchamp/param.hh>
 
 using namespace PixelInfo;
 

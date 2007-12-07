@@ -33,12 +33,12 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <math.h>
-#include <param.hh>
-#include <fitsHeader.hh>
-#include <duchamp.hh>
-#include <ATrous/filter.hh>
-#include <Utils/utils.hh>
-#include <Utils/Section.hh>
+#include <duchamp/param.hh>
+#include <duchamp/fitsHeader.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/ATrous/filter.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/Utils/Section.hh>
 
 namespace duchamp
 {

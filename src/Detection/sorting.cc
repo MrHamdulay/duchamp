@@ -27,7 +27,7 @@
 // -----------------------------------------------------------------------
 #include <vector>
 #include <algorithm>
-#include <Detection/detection.hh>
+#include <duchamp/Detection/detection.hh>
 
 using std::vector;
 

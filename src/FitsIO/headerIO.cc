@@ -34,8 +34,8 @@
 #include <fitsio.h>
 #include <longnam.h>
 #include <math.h>
-#include <duchamp.hh>
-#include <Cubes/cubes.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/Cubes/cubes.hh>
 
 namespace duchamp
 {

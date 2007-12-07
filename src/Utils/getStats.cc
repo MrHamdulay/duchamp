@@ -29,7 +29,7 @@
 #include <iostream>
 #include <algorithm>
 #include <math.h>
-#include <Utils/utils.hh>
+#include <duchamp/Utils/utils.hh>
 
 template <class T> T absval(T value)
 {

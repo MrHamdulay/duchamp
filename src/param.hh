@@ -34,8 +34,8 @@
 #include <math.h>
 #include <wcs.h>
 #include <wcshdr.h>
-#include <Utils/Section.hh>
-#include <ATrous/filter.hh>
+#include <duchamp/Utils/Section.hh>
+#include <duchamp/ATrous/filter.hh>
 
 namespace duchamp
 {

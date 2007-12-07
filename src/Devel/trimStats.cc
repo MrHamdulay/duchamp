@@ -28,7 +28,7 @@
 // -----------------------------------------------------------------------
 #include <iostream>
 #include <math.h>
-#include <Utils/utils.hh>
+#include <duchamp/Utils/utils.hh>
 
 void findTrimmedHistStatsOLD(float *array, const int size, 
 			     float &tmean, float &tsigma)

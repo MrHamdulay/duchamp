@@ -29,8 +29,8 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
-#include <ATrous/atrous.hh>
-#include <ATrous/filter.hh>
+#include <duchamp/ATrous/atrous.hh>
+#include <duchamp/ATrous/filter.hh>
 #define DEBUG true
 
 void getSigmaFactors1DNew(int &numScales)

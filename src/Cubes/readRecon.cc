@@ -33,8 +33,8 @@
 #define WCSLIB_GETWCSTAB // define this so that we don't try to redefine wtbarr
                          // (this is a problem when using gcc v.4+
 #include <fitsio.h>
-#include <duchamp.hh>
-#include <Cubes/cubes.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/Cubes/cubes.hh>
 
 namespace duchamp
 {

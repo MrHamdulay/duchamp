@@ -32,14 +32,14 @@
 #include <string>
 #include <vector>
 
-#include <param.hh>
-#include <fitsHeader.hh>
-#include <Detection/detection.hh>
-#include <Detection/columns.hh>
-#include <Cubes/plots.hh>
-#include <Utils/Statistics.hh>
-#include <PixelMap/Scan.hh>
-#include <PixelMap/Object2D.hh>
+#include <duchamp/param.hh>
+#include <duchamp/fitsHeader.hh>
+#include <duchamp/Detection/detection.hh>
+#include <duchamp/Detection/columns.hh>
+#include <duchamp/Cubes/plots.hh>
+#include <duchamp/Utils/Statistics.hh>
+#include <duchamp/PixelMap/Scan.hh>
+#include <duchamp/PixelMap/Object2D.hh>
 
 
 namespace duchamp

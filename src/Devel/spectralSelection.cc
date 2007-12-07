@@ -31,9 +31,9 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-#include <param.hh>
-#include <Devel/devel.hh>
-#include <Cubes/cubes.hh>
+#include <duchamp/param.hh>
+#include <duchamp/Devel/devel.hh>
+#include <duchamp/Cubes/cubes.hh>
 #include <vector>
 
 using std::stringstream;

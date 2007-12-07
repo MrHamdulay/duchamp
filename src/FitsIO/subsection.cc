@@ -35,9 +35,9 @@
 #define WCSLIB_GETWCSTAB // define this so that we don't try and redefine 
                          //  wtbarr (this is a problem when using gcc v.4+
 #include <fitsio.h>
-#include <param.hh>
-#include <duchamp.hh>
-#include <Utils/Section.hh>
+#include <duchamp/param.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/Utils/Section.hh>
 
 namespace duchamp
 {

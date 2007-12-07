@@ -28,11 +28,11 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
-#include <param.hh>
-#include <ATrous/filter.hh>
-#include <ATrous/atrous.hh>
-#include <Utils/utils.hh>
-#include <Utils/feedback.hh>
+#include <duchamp/param.hh>
+#include <duchamp/ATrous/filter.hh>
+#include <duchamp/ATrous/atrous.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/Utils/feedback.hh>
 
 namespace duchamp
 {

@@ -30,14 +30,14 @@
 #include <cpgplot.h>
 #include <math.h>
 #include <wcs.h>
-#include <duchamp.hh>
-#include <param.hh>
-#include <fitsHeader.hh>
-#include <Cubes/cubes.hh>
-#include <Utils/utils.hh>
-#include <Utils/mycpgplot.hh>
-#include <PixelMap/Voxel.hh>
-#include <PixelMap/Object3D.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/param.hh>
+#include <duchamp/fitsHeader.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/Utils/mycpgplot.hh>
+#include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Object3D.hh>
 #include <vector>
 
 const int MIN_WIDTH=20;

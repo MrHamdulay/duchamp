@@ -29,12 +29,12 @@
 #include <iomanip>
 #include <fstream>
 #include <vector>
-#include <param.hh>
-#include <PixelMap/Object3D.hh>
-#include <Cubes/cubes.hh>
-#include <Utils/utils.hh>
-#include <Utils/feedback.hh>
-#include <Utils/Statistics.hh>
+#include <duchamp/param.hh>
+#include <duchamp/PixelMap/Object3D.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/Utils/feedback.hh>
+#include <duchamp/Utils/Statistics.hh>
 
 using std::vector;
 using namespace PixelInfo;

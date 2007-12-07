@@ -27,8 +27,8 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <vector>
-#include <Cubes/cubes.hh>
-#include <Utils/utils.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Utils/utils.hh>
 
 namespace duchamp
 {

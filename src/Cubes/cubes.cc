@@ -35,19 +35,19 @@
 
 #include <wcs.h>
 
-#include <pgheader.hh>
+#include <duchamp/pgheader.hh>
 
-#include <duchamp.hh>
-#include <param.hh>
-#include <fitsHeader.hh>
-#include <Cubes/cubes.hh>
-#include <PixelMap/Voxel.hh>
-#include <PixelMap/Object3D.hh>
-#include <Detection/detection.hh>
-#include <Detection/columns.hh>
-#include <Utils/utils.hh>
-#include <Utils/mycpgplot.hh>
-#include <Utils/Statistics.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/param.hh>
+#include <duchamp/fitsHeader.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Object3D.hh>
+#include <duchamp/Detection/detection.hh>
+#include <duchamp/Detection/columns.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/Utils/mycpgplot.hh>
+#include <duchamp/Utils/Statistics.hh>
 
 using namespace mycpgplot;
 using namespace Statistics;

@@ -33,7 +33,7 @@
 #include <sstream>
 #include <string>
 #include <math.h>
-#include <pgheader.hh>
+#include <duchamp/pgheader.hh>
 
 namespace duchamp
 {

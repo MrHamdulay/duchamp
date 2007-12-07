@@ -27,8 +27,8 @@
 // -----------------------------------------------------------------------
 #include <iostream>
 #include <sstream>
-#include <duchamp.hh>
-#include <ATrous/filter.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/ATrous/filter.hh>
 #include <math.h>
 #include <vector>
 

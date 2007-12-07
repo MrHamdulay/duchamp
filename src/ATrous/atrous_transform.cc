@@ -1,8 +1,8 @@
 #include <iostream>
 #include <math.h>
-#include <param.hh>
-#include <ATrous/atrous.hh>
-#include <Utils/utils.hh>
+#include <duchamp/param.hh>
+#include <duchamp/ATrous/atrous.hh>
+#include <duchamp/Utils/utils.hh>
 
 /***********************************************************************/
 /////  1-DIMENSIONAL TRANSFORM

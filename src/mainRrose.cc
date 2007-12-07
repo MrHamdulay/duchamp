@@ -33,13 +33,13 @@
 #include <unistd.h>
 #include <time.h>
 
-#include <duchamp.hh>
-#include <param.hh>
-#include <PixelMap/Voxel.hh>
-#include <Detection/detection.hh>
-#include <Cubes/cubes.hh>
-#include <Utils/utils.hh>
-#include <ATrous/atrous.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/param.hh>
+#include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/Detection/detection.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/ATrous/atrous.hh>
 
 using namespace PixelInfo;
 

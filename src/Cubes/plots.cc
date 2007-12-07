@@ -30,10 +30,10 @@
 #include <string>
 #include <math.h>
 #include <cpgplot.h>
-#include <param.hh>
-#include <duchamp.hh>
-#include <Utils/mycpgplot.hh>
-#include <Cubes/plots.hh>
+#include <duchamp/param.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/Utils/mycpgplot.hh>
+#include <duchamp/Cubes/plots.hh>
 
 using std::stringstream;
 using namespace mycpgplot;

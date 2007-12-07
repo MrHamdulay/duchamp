@@ -34,14 +34,14 @@
 #include <cpgsbox.h>
 #include <pgwcsl.h>
 #include <wcs.h>
-#include <duchamp.hh>
-#include <param.hh>
-#include <fitsHeader.hh>
-#include <PixelMap/Object3D.hh>
-#include <Cubes/cubes.hh>
-#include <Cubes/plots.hh>
-#include <Utils/utils.hh>
-#include <Utils/mycpgplot.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/param.hh>
+#include <duchamp/fitsHeader.hh>
+#include <duchamp/PixelMap/Object3D.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Cubes/plots.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/Utils/mycpgplot.hh>
 
 using namespace mycpgplot;
 using namespace PixelInfo;

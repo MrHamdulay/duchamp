@@ -38,12 +38,12 @@
                          // using gcc v.4+
 #include <fitsio.h>
 #include <math.h>
-#include <duchamp.hh>
-#include <param.hh>
-#include <Cubes/cubes.hh>
-#include <Detection/detection.hh>
-#include <ATrous/atrous.hh>
-#include <Utils/utils.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/param.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Detection/detection.hh>
+#include <duchamp/ATrous/atrous.hh>
+#include <duchamp/Utils/utils.hh>
 
 std::string imageType[4] = {"point", "spectrum", "image", "cube"};
 

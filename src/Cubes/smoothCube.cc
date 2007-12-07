@@ -26,15 +26,15 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <vector>
-#include <duchamp.hh>
-#include <Cubes/cubes.hh>
-#include <Detection/detection.hh>
-#include <PixelMap/Object2D.hh>
-#include <Utils/feedback.hh>
-#include <Utils/Hanning.hh>
-#include <Utils/GaussSmooth.hh>
-#include <Utils/Statistics.hh> 
-#include <Utils/utils.hh>
+#include <duchamp/duchamp.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Detection/detection.hh>
+#include <duchamp/PixelMap/Object2D.hh>
+#include <duchamp/Utils/feedback.hh>
+#include <duchamp/Utils/Hanning.hh>
+#include <duchamp/Utils/GaussSmooth.hh>
+#include <duchamp/Utils/Statistics.hh> 
+#include <duchamp/Utils/utils.hh>
 
 namespace duchamp
 {

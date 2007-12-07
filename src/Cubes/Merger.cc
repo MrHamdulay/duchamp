@@ -31,11 +31,11 @@
 #include <iomanip>
 #include <math.h>
 #include <vector>
-#include <PixelMap/Object3D.hh>
-#include <Cubes/cubes.hh>
-#include <Detection/detection.hh>
-#include <Utils/utils.hh>
-#include <Utils/feedback.hh>
+#include <duchamp/PixelMap/Object3D.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Detection/detection.hh>
+#include <duchamp/Utils/utils.hh>
+#include <duchamp/Utils/feedback.hh>
 
 using std::vector;
 using namespace PixelInfo;

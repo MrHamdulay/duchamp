@@ -30,8 +30,8 @@
 #include <iomanip>
 #include <fstream>
 #include <vector>
-#include <Cubes/cubes.hh>
-#include <Utils/utils.hh>
+#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Utils/utils.hh>
 using std::endl;
 using std::setw;
 

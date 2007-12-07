@@ -27,7 +27,7 @@
 // -----------------------------------------------------------------------
 #include <iostream>
 #include <string>
-#include <Utils/feedback.hh>
+#include <duchamp/Utils/feedback.hh>
 
 void printBackSpace(std::ostream &stream, int num)
 {
