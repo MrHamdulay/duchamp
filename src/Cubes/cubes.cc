@@ -33,7 +33,7 @@
 #include <string>
 #include <math.h>
 
-#include <wcs.h>
+#include <wcslib/wcs.h>
 
 #include <duchamp/pgheader.hh>
 

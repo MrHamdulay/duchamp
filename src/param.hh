@@ -32,8 +32,8 @@
 #include <string>
 #include <vector>
 #include <math.h>
-#include <wcs.h>
-#include <wcshdr.h>
+#include <wcslib/wcs.h>
+#include <wcslib/wcshdr.h>
 #include <duchamp/Utils/Section.hh>
 #include <duchamp/ATrous/filter.hh>
 

@@ -29,7 +29,7 @@
 #include <sstream>
 #include <cpgplot.h>
 #include <math.h>
-#include <wcs.h>
+#include <wcslib/wcs.h>
 #include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>

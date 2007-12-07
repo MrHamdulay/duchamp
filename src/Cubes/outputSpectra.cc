@@ -31,7 +31,7 @@
 #include <string>
 #include <cpgplot.h>
 #include <math.h>
-#include <wcs.h>
+#include <wcslib/wcs.h>
 #include <duchamp/param.hh>
 #include <duchamp/duchamp.hh>
 #include <duchamp/fitsHeader.hh>

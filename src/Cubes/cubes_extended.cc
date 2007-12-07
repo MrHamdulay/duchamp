@@ -34,7 +34,7 @@
 #include <string>
 #include <math.h>
 
-#include <wcs.h>
+#include <wcslib/wcs.h>
 
 #include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>

@@ -31,7 +31,7 @@
 #include <string>
 #include <vector>
 #include <math.h>
-#include <wcs.h>
+#include <wcslib/wcs.h>
 #define WCSLIB_GETWCSTAB // define this so that we don't try and redefine 
                          //  wtbarr (this is a problem when using gcc v.4+
 #include <fitsio.h>

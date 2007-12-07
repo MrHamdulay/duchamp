@@ -29,7 +29,7 @@
 #define FITSHEADER_H
 
 #include <string>
-#include <wcs.h>
+#include <wcslib/wcs.h>
 #include <math.h>
 
 namespace duchamp

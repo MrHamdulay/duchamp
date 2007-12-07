@@ -6,7 +6,7 @@
 #undef PACKAGE_STRING
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
-#include "config.h"
+#include <duchamp/config.h>
 
 #ifdef  HAVE_PGPLOT
 #include <cpgplot.h>

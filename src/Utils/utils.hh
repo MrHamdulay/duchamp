@@ -28,7 +28,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <wcs.h>
+#include <wcslib/wcs.h>
 #include <string>
 
 struct wcsprm; // just foreshadow this.

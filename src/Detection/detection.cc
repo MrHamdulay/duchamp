@@ -29,7 +29,7 @@
 #include <iomanip>
 #include <vector>
 #include <string>
-#include <wcs.h>
+#include <wcslib/wcs.h>
 #include <math.h>
 #include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>

@@ -28,8 +28,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <wcs.h>
-#include <wcshdr.h>
+#include <wcslib/wcs.h>
+#include <wcslib/wcshdr.h>
 #define WCSLIB_GETWCSTAB // define this so that we don't try to redefine wtbarr
                          // (this is a problem when using gcc v.4+
 #include <fitsio.h>

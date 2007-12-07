@@ -28,11 +28,11 @@
 #include <iostream>
 #include <string>
 #include <string.h>
-#include <wcs.h>
-#include <wcshdr.h>
+#include <wcslib/wcs.h>
+#include <wcslib/wcshdr.h>
 #include <fitshdr.h>
-#include <wcsfix.h>
-#include <wcsunits.h>
+#include <wcslib/wcsfix.h>
+#include <wcslib/wcsunits.h>
 #define WCSLIB_GETWCSTAB // define this so that we don't try and redefine 
                          //  wtbarr (this is a problem when using gcc v.4+)
 #include <fitsio.h>

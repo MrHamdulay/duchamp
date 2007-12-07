@@ -28,8 +28,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <wcs.h>
-#include <wcsunits.h>
+#include <wcslib/wcs.h>
+#include <wcslib/wcsunits.h>
 #include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
