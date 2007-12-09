@@ -151,6 +151,7 @@ install :
 	$(INSTALL) -m 644 $(LIB) $(LIBDIR)
 	$(INSTALL) -d -m 2755 $(INCDIR)
 	$(INSTALL) -m 644 $(BASE)/*.hh $(INCDIR)
+	$(INSTALL) -m 644 $(BASE)/*.h $(INCDIR)
 	$(INSTALL) -d -m 2755 $(INCDIR)/Cubes
 	$(INSTALL) -m 644 $(CUBESDIR)/*.hh $(INCDIR)/Cubes
 	$(INSTALL) -d -m 2755 $(INCDIR)/ATrous

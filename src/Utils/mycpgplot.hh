@@ -36,7 +36,7 @@
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
 #undef HAVE_PGPLOT
-#include "../config.h"
+#include <duchamp/config.h>
 
 //--------------------
 /**
