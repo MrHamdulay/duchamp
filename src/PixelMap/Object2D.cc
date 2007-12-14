@@ -420,4 +420,16 @@ namespace PixelInfo
     return returnval;
   }
 
+  //------------------------------------------------------
+
+  void Object2D::addOffsets(long xoff, long yoff)
+  {
+    for(unsigned int i=0;i<this->scanlist.size();i++) 
+      this->scanlist[i].addOffsets(xoff,yoff);
+    this->xSum += xoff*numPix;
+    this->xmin += xoff; xmax += xoff;
+    this->ySum += yoff*numPix;
+    this->ymin += yoff; ymax += yoff;
+  }
+
 }

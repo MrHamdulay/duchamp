@@ -397,4 +397,28 @@ namespace PixelInfo
 
   }
 
+  //--------------------------------------------------------------------
+
+  void ChanMap::addOffsets(long xoff, long yoff, long zoff)
+  {
+    this->itsZ += zoff;
+    this->itsObject.addOffsets(xoff,yoff);
+  }
+ 
+  //--------------------------------------------------------------------
+
+  void Object3D::addOffsets(long xoff, long yoff, long zoff)
+    {
+      for(unsigned int i=0;i<this->maplist.size();i++)
+	this->maplist[i].addOffsets(xoff,yoff,zoff);
+      this->xSum += xoff*numVox;
+      this->xmin += xoff; xmax += xoff;
+      this->ySum += yoff*numVox;
+      this->ymin += yoff; ymax += yoff;
+      this->zSum += zoff*numVox;
+      this->zmin += zoff; zmax += zoff;
+    };
+
+
+
 }

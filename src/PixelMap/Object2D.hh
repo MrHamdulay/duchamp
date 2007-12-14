@@ -100,13 +100,7 @@ namespace PixelInfo
 
     /** Add values to the x- and y-axes, making sure to add the
 	offsets to the sums and min/max values. */
-    void  addOffsets(long xoff, long yoff){
-      for(int i=0;i<scanlist.size();i++) scanlist[i].addOffsets(xoff,yoff);
-      xSum += xoff*numPix;
-      xmin += xoff; xmax += xoff;
-      ySum += yoff*numPix;
-      ymin += yoff; ymax += yoff;
-    };
+    void  addOffsets(long xoff, long yoff);
 
     /** Calculate the sums, mins, maxs for x&y -- should not be
 	necessary as these are done when pixels & Scans are added. */

@@ -74,13 +74,8 @@ namespace PixelInfo
     /** The number of scans in the Object2D set. */
     long     getNumScan(){return itsObject.scanlist.size();};
 
-    void     addOffsets(long xoff, long yoff, long zoff){
-      /**
-       * Add constant offsets to each of the coordinates.
-       */
-      itsZ += zoff;
-      itsObject.addOffsets(xoff,yoff);
-    };
+    /** Add constant offsets to each of the coordinates.*/
+    void     addOffsets(long xoff, long yoff, long zoff);
 
     friend bool operator< (ChanMap lhs, ChanMap rhs){
       /** The less-than operator: only acting on the channel number. */
@@ -202,19 +197,9 @@ namespace PixelInfo
 	voxels in the Object */
     Object2D getSpatialMap();
 
-    void     addOffsets(long xoff, long yoff, long zoff){
-      /**
-       *  Add constant offsets to each of the dimensions, changing the
-       *  parameters at the same time.
-       */
-      for(int i=0;i<maplist.size();i++) maplist[i].addOffsets(xoff,yoff,zoff);
-      xSum += xoff*numVox;
-      xmin += xoff; xmax += xoff;
-      ySum += yoff*numVox;
-      ymin += yoff; ymax += yoff;
-      zSum += zoff*numVox;
-      zmin += zoff; zmax += zoff;
-    };
+    /** Add constant offsets to each of the dimensions, changing the
+	parameters at the same time. */
+    void     addOffsets(long xoff, long yoff, long zoff);
 
     /** Output operator for the Object3D. */
     friend std::ostream& operator<< ( std::ostream& theStream, Object3D& obj);
