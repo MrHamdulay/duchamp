@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <wcslib/wcs.h>
 #include <wcslib/wcshdr.h>
-#include <fitshdr.h>
+#include <wcslib/fitshdr.h>
 #include <wcslib/wcsfix.h>
 #include <wcslib/wcsunits.h>
 #define WCSLIB_GETWCSTAB // define this so that we don't try and redefine 
