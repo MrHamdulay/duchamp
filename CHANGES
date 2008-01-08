@@ -1,3 +1,14 @@
+Duchamp version 1.1.2.1 (2008/01/08)
+------------------------------------
+
+A minor update that just improves the build process. The location of
+the wcslib include files was not specified correctly, so that some
+machines were unable to find them. The configure script has been fixed
+so that the compilation should work in all cases. 
+
+As this is the only change in this version, if you have a working
+version of Duchamp 1.1.2 there is probably no reason to update.
+
 Duchamp version 1.1.2 (2007/12/07)
 ----------------------------------
 
