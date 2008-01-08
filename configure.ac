@@ -269,6 +269,7 @@ AC_SUBST([CFITSIOLIB])
 # else do the normal searching for libraries.
 
 AC_MSG_NOTICE([  -- WCSLIB -- ])
+WCSINCDIR=""
 AC_ARG_WITH(wcslib,
 	AC_HELP_STRING([--with-wcslib=<dir>],
 		       [The WCSLIB library and include files are in directory <dir>.]),
@@ -289,7 +290,9 @@ else
     AC_CHECK_FILE([$LIBDIR], [LDFLAGS="$LDFLAGS -L$LIBDIR"], [continue])
   done
   for INCDIR in $WCSINCDIRS ; do
-    AC_CHECK_FILE([$INCDIR], [CPPFLAGS="$CPPFLAGS -I$INCDIR"], [continue])
+    AC_CHECK_FILE([$INCDIR/wcslib], 
+                  [CPPFLAGS="$CPPFLAGS -I$INCDIR"; WCSINCDIR=$INCDIR; break], 
+		  [continue])
   done
 fi
 ],
@@ -298,34 +301,15 @@ WCSINCDIRS=$INCDIRS
 WCSLIBDIRS=$LIBDIRS
 ])
 
-DIRLIST=". \
-         wcs \
-         wcslib"
 
-for INCBASE in $WCSINCDIRS ; do
-  for DIR in $DIRLIST; do
-    if test "x$DIR" = x.; then
-     INCDIR=$INCBASE
-    else
-     INCDIR="$INCBASE/$DIR"
-    fi
-    AC_CHECK_FILE([$INCDIR/wcs.h], 
-                  [WCSINC="-I$INCDIR $WCSINC"; 
-                  AC_CHECK_FILE([$INCDIR/cpgsbox.h], [], [
-                    for INCBASE2 in $WCSINCDIRS ; do
-                     for DIR2 in $DIRLIST; do
-                      if test "x$DIR" = x.; then
-                       INCDIR=$INCBASE
-                      else
-                       INCDIR="$INCBASE/$DIR"
-                      fi
-                      AC_CHECK_FILE([$INCDIR2/cpgsbox.h],
-                                    [WCSINC="-I$INCDIR $WCSINC"; break])
-                     done
-                    done])
-                  break])
+if test "x$WCSINCDIR" = x; then
+  for INCBASE in $WCSINCDIRS ; do
+    AC_CHECK_FILE([$INCBASE/wcslib/wcs.h], [WCSINC="-I$INCBASE $WCSINC"; break])
   done
-done
+else
+  AC_CHECK_FILE([$WCSINCDIR/wcslib/wcs.h], [WCSINC="-I$WCSINCDIR $WCSINC"])
+fi
+
 
 # Look for libwcs.a, and libpgsbox.a
 AC_CHECK_LIB([wcs], [wcss2p], [WCSLIB="$WCSLIB -lwcs"], [],
@@ -354,6 +338,10 @@ else
 # Now add the -L statements to start of WCSLIB.
 # Search for libwcs.a, and, if we find it, search for libpgsbox in same directory and
 #   then in other directories, keeping the appropriate order of -L calls.
+
+  DIRLIST=". \
+           wcs \
+           wcslib"
 
   for LIBBASE in $WCSLIBDIRS ; do
     for DIR in $DIRLIST; do

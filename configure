@@ -4520,14 +4520,14 @@ if test "x$PGPLOTLIBDIRS" = x; then
   #the argument to --with-pgplot was no, so we don't look for it.
   { echo "$as_me:$LINENO: Not enabling PGPLOT use." >&5
 echo "$as_me: Not enabling PGPLOT use." >&6;}
+  #This is the command to do the linking stage of the compilation
+  #If no pgplot, we can just link with g++ (or equivalent)
   LINKER=$CXX
 #  AC_CHECK_LIB([stdc++], [main], [PGPLOTLIB="-lstdc++"])
 #  if test "x$F77" = xgfortran; then
 #    PGPLOTLIB="$PGPLOTLIB -bind_at_load"
 #  fi
 else
-
-  LINKER=$F77
 
   #Set up the PGPLOT-related libraries and includes.
 
@@ -5463,7 +5463,11 @@ echo "$as_me:
       WARNING! PGPLOT could not be found.
       Compiling Duchamp without graphics capabilities.
       -------------------------------------------------------" >&6;}
+    #We have no pgplot, so we just link with g++ (or equivalent)
+    LINKER=$CXX
   else
+    #We are using pgplot, so link with the fortran compiler.
+    LINKER=$F77
     PGPLOTLIB="$PGPLOTLIB $EXTRAPGLIB $LIBS"
     { echo "$as_me:$LINENO: PGPLOT appears to be available." >&5
 echo "$as_me: PGPLOT appears to be available." >&6;}
@@ -5867,6 +5871,7 @@ fi
 
 { echo "$as_me:$LINENO:   -- WCSLIB -- " >&5
 echo "$as_me:   -- WCSLIB -- " >&6;}
+WCSINCDIR=""
 
 # Check whether --with-wcslib or --without-wcslib was given.
 if test "${with_wcslib+set}" = set; then
@@ -5915,9 +5920,9 @@ fi
 
   done
   for INCDIR in $WCSINCDIRS ; do
-    as_ac_File=`echo "ac_cv_file_$INCDIR" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $INCDIR" >&5
-echo $ECHO_N "checking for $INCDIR... $ECHO_C" >&6
+    as_ac_File=`echo "ac_cv_file_$INCDIR/wcslib" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $INCDIR/wcslib" >&5
+echo $ECHO_N "checking for $INCDIR/wcslib... $ECHO_C" >&6
 if eval "test \"\${$as_ac_File+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5925,7 +5930,7 @@ else
   { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
 echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
    { (exit 1); exit 1; }; }
-if test -r "$INCDIR"; then
+if test -r "$INCDIR/wcslib"; then
   eval "$as_ac_File=yes"
 else
   eval "$as_ac_File=no"
@@ -5934,7 +5939,7 @@ fi
 echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
 echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
 if test `eval echo '${'$as_ac_File'}'` = yes; then
-  CPPFLAGS="$CPPFLAGS -I$INCDIR"
+  CPPFLAGS="$CPPFLAGS -I$INCDIR"; WCSINCDIR=$INCDIR; break
 else
   continue
 fi
@@ -5949,20 +5954,12 @@ WCSLIBDIRS=$LIBDIRS
 
 fi;
 
-DIRLIST=". \
-         wcs \
-         wcslib"
 
-for INCBASE in $WCSINCDIRS ; do
-  for DIR in $DIRLIST; do
-    if test "x$DIR" = x.; then
-     INCDIR=$INCBASE
-    else
-     INCDIR="$INCBASE/$DIR"
-    fi
-    as_ac_File=`echo "ac_cv_file_$INCDIR/wcs.h" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $INCDIR/wcs.h" >&5
-echo $ECHO_N "checking for $INCDIR/wcs.h... $ECHO_C" >&6
+if test "x$WCSINCDIR" = x; then
+  for INCBASE in $WCSINCDIRS ; do
+    as_ac_File=`echo "ac_cv_file_$INCBASE/wcslib/wcs.h" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $INCBASE/wcslib/wcs.h" >&5
+echo $ECHO_N "checking for $INCBASE/wcslib/wcs.h... $ECHO_C" >&6
 if eval "test \"\${$as_ac_File+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
@@ -5970,7 +5967,7 @@ else
   { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
 echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
    { (exit 1); exit 1; }; }
-if test -r "$INCDIR/wcs.h"; then
+if test -r "$INCBASE/wcslib/wcs.h"; then
   eval "$as_ac_File=yes"
 else
   eval "$as_ac_File=no"
@@ -5979,67 +5976,35 @@ fi
 echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
 echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
 if test `eval echo '${'$as_ac_File'}'` = yes; then
-  WCSINC="-I$INCDIR $WCSINC";
-                  as_ac_File=`echo "ac_cv_file_$INCDIR/cpgsbox.h" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $INCDIR/cpgsbox.h" >&5
-echo $ECHO_N "checking for $INCDIR/cpgsbox.h... $ECHO_C" >&6
-if eval "test \"\${$as_ac_File+set}\" = set"; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  test "$cross_compiling" = yes &&
-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
-   { (exit 1); exit 1; }; }
-if test -r "$INCDIR/cpgsbox.h"; then
-  eval "$as_ac_File=yes"
-else
-  eval "$as_ac_File=no"
-fi
-fi
-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
-echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
-if test `eval echo '${'$as_ac_File'}'` = yes; then
-  :
-else
-
-                    for INCBASE2 in $WCSINCDIRS ; do
-                     for DIR2 in $DIRLIST; do
-                      if test "x$DIR" = x.; then
-                       INCDIR=$INCBASE
-                      else
-                       INCDIR="$INCBASE/$DIR"
-                      fi
-                      as_ac_File=`echo "ac_cv_file_$INCDIR2/cpgsbox.h" | $as_tr_sh`
-echo "$as_me:$LINENO: checking for $INCDIR2/cpgsbox.h" >&5
-echo $ECHO_N "checking for $INCDIR2/cpgsbox.h... $ECHO_C" >&6
-if eval "test \"\${$as_ac_File+set}\" = set"; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  test "$cross_compiling" = yes &&
-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
-   { (exit 1); exit 1; }; }
-if test -r "$INCDIR2/cpgsbox.h"; then
-  eval "$as_ac_File=yes"
-else
-  eval "$as_ac_File=no"
-fi
-fi
-echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
-echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
-if test `eval echo '${'$as_ac_File'}'` = yes; then
-  WCSINC="-I$INCDIR $WCSINC"; break
-fi
-
-                     done
-                    done
-fi
-
-                  break
+  WCSINC="-I$INCBASE $WCSINC"; break
 fi
 
   done
-done
+else
+  as_ac_File=`echo "ac_cv_file_$WCSINCDIR/wcslib/wcs.h" | $as_tr_sh`
+echo "$as_me:$LINENO: checking for $WCSINCDIR/wcslib/wcs.h" >&5
+echo $ECHO_N "checking for $WCSINCDIR/wcslib/wcs.h... $ECHO_C" >&6
+if eval "test \"\${$as_ac_File+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  test "$cross_compiling" = yes &&
+  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+   { (exit 1); exit 1; }; }
+if test -r "$WCSINCDIR/wcslib/wcs.h"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
+echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
+if test `eval echo '${'$as_ac_File'}'` = yes; then
+  WCSINC="-I$WCSINCDIR $WCSINC"
+fi
+
+fi
+
 
 # Look for libwcs.a, and libpgsbox.a
 echo "$as_me:$LINENO: checking for wcss2p in -lwcs" >&5
@@ -6213,6 +6178,10 @@ _ACEOF
 # Now add the -L statements to start of WCSLIB.
 # Search for libwcs.a, and, if we find it, search for libpgsbox in same directory and
 #   then in other directories, keeping the appropriate order of -L calls.
+
+  DIRLIST=". \
+           wcs \
+           wcslib"
 
   for LIBBASE in $WCSLIBDIRS ; do
     for DIR in $DIRLIST; do
