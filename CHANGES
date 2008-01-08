@@ -6,8 +6,12 @@ the wcslib include files was not specified correctly, so that some
 machines were unable to find them. The configure script has been fixed
 so that the compilation should work in all cases. 
 
-As this is the only change in this version, if you have a working
-version of Duchamp 1.1.2 there is probably no reason to update.
+Some minor changes have also been made to the code in the PixelMap
+directory,  to fix warnings that may appear in compilation.
+
+However, there are no changes to the actual workings of the code in
+this minor version, so if you have a working version of Duchamp 1.1.2
+there is probably no reason to update.
 
 Duchamp version 1.1.2 (2007/12/07)
 ----------------------------------
