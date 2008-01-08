@@ -31,8 +31,8 @@
 #include <sstream>
 #include <math.h>
 #include <cpgplot.h>
-#include <cpgsbox.h>
-#include <pgwcsl.h>
+#include <wcslib/cpgsbox.h>
+#include <wcslib/pgwcsl.h>
 #include <wcslib/wcs.h>
 #include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>
