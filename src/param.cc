@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <math.h>
+#include <unistd.h>
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/duchamp.hh>
