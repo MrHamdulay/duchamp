@@ -209,8 +209,11 @@ namespace duchamp
      *  otherwise.
      */
     int size = this->fluxUnits.size();
-    std::string tailOfFluxUnits = this->fluxUnits.substr(size-5,size);
-    return (tailOfFluxUnits == "/beam");
+    if(size<6) return false;
+    else {
+      std::string tailOfFluxUnits = this->fluxUnits.substr(size-5,size);
+      return (tailOfFluxUnits == "/beam");
+    }
   }
 
   void FitsHeader::fixUnits(Param &par)
@@ -273,7 +276,7 @@ namespace duchamp
     // If flux is per beam, trim the /beam from the flux units and multiply 
     //  by the spectral units.
     // Otherwise, just muliply by the spectral units.
-    if(this->fluxUnits.size()>0){
+    if(this->fluxUnits.size()>5){
     
       if(makelower(this->fluxUnits.substr(this->fluxUnits.size()-5,
 					  this->fluxUnits.size()   )) == "/beam"){
