@@ -208,7 +208,7 @@ namespace PixelInfo
 	Overlapping channels are combined using addChannel(). */
     friend Object3D operator+ (Object3D lhs, Object3D rhs){
       Object3D output = lhs;
-      for(int m=0;m<rhs.maplist.size();m++) output.addChannel(rhs.maplist[m]);
+      for(unsigned int m=0;m<rhs.maplist.size();m++) output.addChannel(rhs.maplist[m]);
       return output;
     }
 

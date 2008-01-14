@@ -128,7 +128,7 @@ namespace PixelInfo
     /** Adding two Objects together. */
     friend Object2D operator+ (Object2D lhs, Object2D rhs){
       Object2D output = lhs;
-      for(int s=0;s<rhs.scanlist.size();s++) output.addScan(rhs.scanlist[s]);
+      for(unsigned int s=0;s<rhs.scanlist.size();s++) output.addScan(rhs.scanlist[s]);
       return output;
     }
 
