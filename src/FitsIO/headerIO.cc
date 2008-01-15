@@ -207,7 +207,7 @@ namespace duchamp
      */
     char *comment = new char[80];
     std::string keyword[5]={"BMAJ","BMIN","BPA","CDELT1","CDELT2"};
-    float bmaj,bmin,bpa,cdelt1,cdelt2;
+    float bmaj,bmin,bpa;
     int status[7];
     fitsfile *fptr;         
 
@@ -228,22 +228,20 @@ namespace duchamp
 		  comment, &status[2]);
     fits_read_key(fptr, TFLOAT, (char *)keyword[2].c_str(), &bpa, 
 		  comment, &status[3]);
-    fits_read_key(fptr, TFLOAT, (char *)keyword[3].c_str(), &cdelt1, 
-		  comment, &status[4]);
-    fits_read_key(fptr, TFLOAT, (char *)keyword[4].c_str(), &cdelt2, 
-		  comment, &status[5]);
 
-    if(status[1]||status[2]||status[3]||status[4]||status[5]){ // error
+    if(status[1]||status[2]||status[3]// ||status[4]||status[5]
+       ){ // error
       std::stringstream errmsg;
       errmsg << "Header keywords not present: ";
-      for(int i=0;i<5;i++) if(status[i+1]) errmsg<<keyword[i]<<" ";
+      for(int i=0;i<3;i++) if(status[i+1]) errmsg<<keyword[i]<<" ";
       errmsg << "\nUsing parameter beamSize to determine size of beam.\n";
       duchampWarning("Cube Reader",errmsg.str());
       this->setBeamSize(par.getBeamSize());
       par.setFlagUsingBeam(true);
     }
     else{ // all keywords present
-      this->setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / fabs(cdelt1*cdelt2) );
+      float pixScale = this->getAvPixScale();
+      this->setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / (pixScale*pixScale) );
       this->setBmajKeyword(bmaj);
       this->setBminKeyword(bmin);
       this->setBpaKeyword(bpa);
