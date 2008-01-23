@@ -310,7 +310,6 @@ namespace PixelInfo
   {
     this->xSum = 0;
     this->ySum = 0;
-    int count = 0;
     for(int s=0;s<this->scanlist.size();s++){
 
       if(s==0){
@@ -325,10 +324,11 @@ namespace PixelInfo
 	if(this->xmax<this->scanlist[s].getXmax()) this->xmax = this->scanlist[s].getXmax();
       }
 
-      count += this->scanlist[s].getXlen();
       this->ySum += this->scanlist[s].itsY*this->scanlist[s].getXlen();
-      for(int x=this->scanlist[s].itsX;x<this->scanlist[s].getXmax();x++)
+      for(int x=this->scanlist[s].itsX;x<=this->scanlist[s].getXmax();x++)
 	this->xSum += x;
+//       this->xSum += (this->scanlist[s].getXmax()*(this->scanlist[s].getXmax()+1) -
+// 		     this->scanlist[s].itsX*(this->scanlist[s].itsX-1) ) / 2;
 
     }
 

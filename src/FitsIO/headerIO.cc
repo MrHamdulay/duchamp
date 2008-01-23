@@ -206,12 +206,12 @@ namespace duchamp
      * \param par The Param set.
      */
     char *comment = new char[80];
-    std::string keyword[5]={"BMAJ","BMIN","BPA","CDELT1","CDELT2"};
+    std::string keyword[3]={"BMAJ","BMIN","BPA"};
     float bmaj,bmin,bpa;
-    int status[7];
+    int status[5];
     fitsfile *fptr;         
 
-    for(int i=0;i<7;i++) status[i] = 0;
+    for(int i=0;i<5;i++) status[i] = 0;
 
     // Open the FITS file
     if( fits_open_file(&fptr,fname.c_str(),READONLY,&status[0]) ){
@@ -229,8 +229,7 @@ namespace duchamp
     fits_read_key(fptr, TFLOAT, (char *)keyword[2].c_str(), &bpa, 
 		  comment, &status[3]);
 
-    if(status[1]||status[2]||status[3]// ||status[4]||status[5]
-       ){ // error
+    if(status[1]||status[2]||status[3]){ // error
       std::stringstream errmsg;
       errmsg << "Header keywords not present: ";
       for(int i=0;i<3;i++) if(status[i+1]) errmsg<<keyword[i]<<" ";
@@ -249,16 +248,16 @@ namespace duchamp
     }
    
     // Close the FITS file.
-    fits_close_file(fptr, &status[6]);
-    if (status[6]){
+    fits_close_file(fptr, &status[4]);
+    if (status[4]){
       duchampWarning("Cube Reader","Error closing file: ");
-      fits_report_error(stderr, status[6]);
+      fits_report_error(stderr, status[4]);
     }
 
     delete [] comment;
 
     int returnStatus = status[0];
-    for(int i=1;i<7;i++) if(status[i]>returnStatus) returnStatus=status[i];
+    for(int i=1;i<5;i++) if(status[i]>returnStatus) returnStatus=status[i];
 
     return returnStatus;
   }

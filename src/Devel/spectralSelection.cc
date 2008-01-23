@@ -36,7 +36,6 @@
 #include <duchamp/Cubes/cubes.hh>
 #include <vector>
 
-using std::stringstream;
 
 void spectralSelection(std::vector<float> &xvalues, 
 		       std::vector<float> &yvalues, 
@@ -67,8 +66,8 @@ void spectralSelection(std::vector<float> &xvalues,
     fname=menu();
     std::cerr << fname <<std::endl;
     char ans;
-    Cube *cube = new Cube;
-    Param par;
+    duchamp::Cube *cube = new duchamp::Cube;
+    duchamp::Param par;
     std::cout << "Remove Milky Way emission (y/n)? : ";
     std::cin >> ans;
     par.setFlagMW(ans=='y');

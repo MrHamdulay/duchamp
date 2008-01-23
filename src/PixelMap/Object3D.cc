@@ -292,7 +292,6 @@ namespace PixelInfo
     this->xSum = 0;
     this->ySum = 0;
     this->zSum = 0;
-    int count = 0;
     for(int m=0;m<this->maplist.size();m++){
 
       this->maplist[m].itsObject.calcParams();
@@ -321,7 +320,6 @@ namespace PixelInfo
       this->xSum += this->maplist[m].itsObject.xSum;
       this->ySum += this->maplist[m].itsObject.ySum;
       this->zSum += this->maplist[m].itsZ * size;
-      count += size;
 
     }
 
