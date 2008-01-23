@@ -1027,7 +1027,9 @@ namespace duchamp
       this->objectList->at(i).setID(i+1);
       this->objectList->at(i).setCentreType(this->par.getPixelCentre());
       this->objectList->at(i).calcFluxes(this->array,this->axisDim);
-      this->objectList->at(i).calcWCSparams(this->array,this->axisDim,this->head);
+      //      this->objectList->at(i).calcWCSparams(this->array,this->axisDim,this->head);
+      this->objectList->at(i).calcWCSparams(this->head);
+      this->objectList->at(i).calcIntegFlux(this->array,this->axisDim,this->head);
     
       if(this->par.getFlagUserThreshold())
 	this->objectList->at(i).setPeakSNR( this->objectList->at(i).getPeakFlux() / this->Stats.getThreshold() );

@@ -75,14 +75,22 @@ namespace duchamp
     /** Calculate basic parameters of the Detection. */
     void   calcParams(){pixelArray.calcParams();}; 
 
+    /** Test whether voxel lists match */
+    bool voxelListsMatch(std::vector<PixelInfo::Voxel> voxelList);
+
     /** Calculate flux-related parameters of the Detection. */
     void   calcFluxes(float *fluxArray, long *dim); 
+    /** Calculate flux-related parameters of the Detection. */
+    void   calcFluxes(std::vector<PixelInfo::Voxel> voxelList); 
 
     /** Calculate parameters related to the World Coordinate System. */
-    void   calcWCSparams(float *fluxArray, long *dim, FitsHeader &head); 
+    //    void   calcWCSparams(float *fluxArray, long *dim, FitsHeader &head); 
+    void   calcWCSparams(FitsHeader &head); 
 
     /** Calculate the integrated flux over the entire Detection. */
     void   calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head); 
+    /** Calculate the integrated flux over the entire Detection. */
+    void   calcIntegFlux(std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head); 
 
     /** Set the values of the axis offsets from the cube. */
     void   setOffsets(Param &par); 

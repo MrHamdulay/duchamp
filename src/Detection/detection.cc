@@ -114,6 +114,94 @@ namespace duchamp
 
   //--------------------------------------------------------------------
 
+  bool Detection::voxelListsMatch(std::vector<Voxel> voxelList)
+  {
+    /**
+     *  A test to see whether there is a 1-1 correspondence between
+     *  the given list of Voxels and the voxel positions contained in
+     *  this Detection's pixel list. No testing of the fluxes of the
+     *  Voxels is done.
+     *
+     * \param voxelList The std::vector list of Voxels to be tested.
+     */
+
+    bool listsMatch = true;
+    // compare sizes
+    listsMatch = listsMatch && (voxelList.size() == this->getSize());
+    if(!listsMatch) return listsMatch;
+
+    // make sure all voxels are in Detection
+    for(int i=0;i<voxelList.size();i++)
+      listsMatch = listsMatch && this->pixelArray.isInObject(voxelList[i]);
+    // make sure all Detection pixels are in voxel list
+    int v1=0;
+    while(listsMatch && v1<this->getSize()){
+      bool inList = false;
+      int v2=0;
+      Voxel test = this->getPixel(v1);
+      while(!inList && v2<voxelList.size()){
+	inList = inList || (test.getX()==voxelList[v2].getX() && 
+			    test.getY()==voxelList[v2].getY() && 
+			    test.getZ()==voxelList[v2].getZ() );
+	v2++;
+      }
+      listsMatch = listsMatch && inList;
+    }
+
+    return listsMatch;
+
+  }
+
+  //--------------------------------------------------------------------
+
+  void Detection::calcFluxes(std::vector<Voxel> voxelList)
+  {
+    /**
+     *  A function that calculates total & peak fluxes (and the location
+     *  of the peak flux) for a Detection.
+     *
+     *  \param fluxArray The array of flux values to calculate the
+     *  flux parameters from.
+     *  \param dim The dimensions of the flux array.
+     */
+
+    this->totalFlux = this->peakFlux = 0;
+    this->xCentroid = this->yCentroid = this->zCentroid = 0.;
+
+    // first check that the voxel list and the Detection's pixel list
+    // have a 1-1 correspondence
+
+    if(!voxelListsMatch(voxelList)){
+      duchampError("Detection::calcFluxes","Voxel list provided does not match");
+      return;
+    }
+
+    for(int i=0;i<voxelList.size();i++) {
+      long x = voxelList[i].getX();
+      long y = voxelList[i].getY();
+      long z = voxelList[i].getZ();
+      float f = voxelList[i].getF();
+      this->totalFlux += f;
+      this->xCentroid += x*f;
+      this->yCentroid += y*f;
+      this->zCentroid += z*f;
+      if( (i==0) ||  //first time round
+	  (this->negSource&&(f<this->peakFlux)) || 
+	  (!this->negSource&&(f>this->peakFlux))   )
+	{
+	  this->peakFlux = f;
+	  this->xpeak =    x;
+	  this->ypeak =    y;
+	  this->zpeak =    z;
+	}
+    }
+
+    this->xCentroid /= this->totalFlux;
+    this->yCentroid /= this->totalFlux;
+    this->zCentroid /= this->totalFlux;
+  }
+  //--------------------------------------------------------------------
+
   void Detection::calcFluxes(float *fluxArray, long *dim)
   {
     /**
@@ -166,7 +254,8 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::calcWCSparams(float *fluxArray, long *dim, FitsHeader &head)
+  //  void Detection::calcWCSparams(float *fluxArray, long *dim, FitsHeader &head)
+  void Detection::calcWCSparams(FitsHeader &head)
   {
     /**
      *  Use the input wcs to calculate the position and velocity 
@@ -178,14 +267,9 @@ namespace duchamp
      *      <li> coord type for all three axes, nuRest, 
      *      <li> name (IAU-style, in equatorial or Galactic) 
      *  </ul>
-     *  Uses Detection::calcIntegFlux() to calculate the
-     *  integrated flux in (say) [Jy km/s]
      *
      *  Note that the regular parameters are NOT recalculated!
      *
-     *  \param fluxArray The array of flux values to calculate the
-     *  integrated flux from.
-     *  \param dim The dimensions of the flux array.
      *  \param head FitsHeader object that contains the WCS information.
      */
 
@@ -217,7 +301,6 @@ namespace duchamp
 	// world now has the WCS coords for the five points 
 	//    -- use this to work out WCS params
   
-	//      this->specOK = ((head.WCS().spec >= 0);
 	this->specOK = head.canUseThirdAxis();
 	this->lngtype = head.WCS().lngtyp;
 	this->lattype = head.WCS().lattyp;
@@ -239,13 +322,102 @@ namespace duchamp
 	this->velMax = head.specToVel(world[8]);
 	this->velWidth = fabs(this->velMax - this->velMin);
 
-	this->calcIntegFlux(fluxArray,dim,head);
+	//	this->calcIntegFlux(fluxArray,dim,head);
     
 	this->flagWCS = true;
       }
       delete [] world;
 
     }
+  }
+  //--------------------------------------------------------------------
+
+  void Detection::calcIntegFlux(std::vector<Voxel> voxelList, FitsHeader &head)
+  {
+    /**
+     *  Uses the input WCS to calculate the velocity-integrated flux, 
+     *   putting velocity in units of km/s.
+     *  The fluxes used are taken from the Voxels, rather than an
+     *   array of flux values.
+     *  Integrates over full spatial and velocity range as given 
+     *   by the extrema calculated by calcWCSparams.
+     *
+     *  If the flux units end in "/beam" (eg. Jy/beam), then the flux is
+     *  corrected by the beam size (in pixels). This is done by
+     *  multiplying the integrated flux by the number of spatial pixels,
+     *  and dividing by the beam size in pixels (e.g. Jy/beam * pix /
+     *  pix/beam --> Jy)
+     *
+     *  \param voxelList The list of Voxels with flux information
+     *  \param head FitsHeader object that contains the WCS information.
+     */
+
+    if(!voxelListsMatch(voxelList)){
+      duchampError("Detection::calcIntegFlux","Voxel list provided does not match");
+      return;
+    }
+
+    if(head.getNumAxes() > 2) {
+
+      // include one pixel either side in each direction
+      long xsize = (this->getXmax()-this->getXmin()+3);
+      long ysize = (this->getYmax()-this->getYmin()+3);
+      long zsize = (this->getZmax()-this->getZmin()+3); 
+      vector <bool> isObj(xsize*ysize*zsize,false);
+      double *localFlux = new double[xsize*ysize*zsize];
+      for(int i=0;i<xsize*ysize*zsize;i++) localFlux[i]=0.;
+
+      for(int i=0;i<voxelList.size();i++){
+	long x = voxelList[i].getX();
+	long y = voxelList[i].getY();
+	long z = voxelList[i].getZ();
+	long pos = (x-this->getXmin()+1) + (y-this->getYmin()+1)*xsize
+	  + (z-this->getZmin()+1)*xsize*ysize;
+	localFlux[pos] = voxelList[i].getF();
+	isObj[pos] = true;
+      }
+  
+      // work out the WCS coords for each pixel
+      double *world  = new double[xsize*ysize*zsize];
+      double xpt,ypt,zpt;
+      for(int i=0;i<xsize*ysize*zsize;i++){
+	xpt = double( this->getXmin() -1 + i%xsize );
+	ypt = double( this->getYmin() -1 + (i/xsize)%ysize );
+	zpt = double( this->getZmin() -1 + i/(xsize*ysize) );
+	world[i] = head.pixToVel(xpt,ypt,zpt);
+      }
+
+      double integrated = 0.;
+      for(int pix=0; pix<xsize*ysize; pix++){ // loop over each spatial pixel.
+	for(int z=0; z<zsize; z++){
+	  int pos =  z*xsize*ysize + pix;
+	  if(isObj[pos]){ // if it's an object pixel...
+	    double deltaVel;
+	    if(z==0) 
+	      deltaVel = (world[pos+xsize*ysize] - world[pos]);
+	    else if(z==(zsize-1)) 
+	      deltaVel = (world[pos] - world[pos-xsize*ysize]);
+	    else 
+	      deltaVel = (world[pos+xsize*ysize] - world[pos-xsize*ysize]) / 2.;
+	    integrated += localFlux[pos] * fabs(deltaVel);
+	  }
+	}
+      }
+      this->intFlux = integrated;
+
+      delete [] world;
+      delete [] localFlux;
+
+    }
+    else // in this case there is just a 2D image.
+      this->intFlux = this->totalFlux;
+
+    if(head.isWCS()){
+      // correct for the beam size if the flux units string ends in "/beam"
+      if(head.needBeamSize())
+	this->intFlux  *= double(this->getSpatialSize())/head.getBeamSize();
+    }
+
   }
   //--------------------------------------------------------------------
 
