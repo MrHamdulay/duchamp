@@ -332,12 +332,12 @@ namespace PixelInfo
       Object2D tempObject = obj.maplist[m].getObject();
       for(int s=0;s<tempObject.getNumScan();s++){
 	Scan tempscan = tempObject.getScan(s);
-	//      theStream << obj.maplist[m].getZ() << " " << tempscan << "\n";
-	for(int x=tempscan.getX();x<=tempscan.getXmax();x++){
-	  theStream << x                     << " " 
-		    << tempscan.getY()       << " " 
-		    << obj.maplist[m].getZ() << "\n";
-	}
+	theStream << tempscan << ", " << obj.maplist[m].getZ() << "\n";
+// 	for(int x=tempscan.getX();x<=tempscan.getXmax();x++){
+// 	  theStream << x                     << " " 
+// 		    << tempscan.getY()       << " " 
+// 		    << obj.maplist[m].getZ() << "\n";
+// 	}
       }
     }  
     theStream << "\n";

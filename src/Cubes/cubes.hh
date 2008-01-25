@@ -296,6 +296,8 @@ namespace duchamp
 
     /** Calculate the WCS parameters for each Cube Detection. */
     void        calcObjectWCSparams();
+    /** Calculate the WCS parameters for each Cube Detection, using flux information in Voxels. */
+    void        calcObjectWCSparams(std::vector< std::vector<PixelInfo::Voxel> > bigVoxList);
 
     /** Sort the list of detections. */
     void        sortDetections();
@@ -484,6 +486,9 @@ namespace duchamp
 
     /** Output detections to the output file and standard output. */
     void        outputDetectionList();
+
+    /** Prepare the log file for output. */
+    void        prepareLogFile(int argc, char *argv[]);
 
     /** Output detections to the log file. */
     void        logDetectionList();

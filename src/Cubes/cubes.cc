@@ -1052,6 +1052,49 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
+  void Cube::calcObjectWCSparams(std::vector< std::vector<PixelInfo::Voxel> > bigVoxList)
+  {
+    /** 
+     *  A function that calculates the WCS parameters for each object in the 
+     *  Cube's list of detections.
+     *  Each object gets an ID number assigned to it (which is simply its order 
+     *   in the list), and if the WCS is good, the WCS paramters are calculated.
+     *
+     *  This version uses vectors of Voxels to define the fluxes.
+     *
+     * \param bigVoxList A vector of vectors of Voxels, with the same
+     * number of elements as this->objectList, where each element is a
+     * vector of Voxels corresponding to the same voxels in each
+     * detection and indicating the flux of each voxel.
+     */
+  
+    for(int i=0;i<this->objectList->size();i++){
+      this->objectList->at(i).setID(i+1);
+      this->objectList->at(i).setCentreType(this->par.getPixelCentre());
+      this->objectList->at(i).calcFluxes(bigVoxList[i]);
+      this->objectList->at(i).calcWCSparams(this->head);
+      this->objectList->at(i).calcIntegFlux(bigVoxList[i],this->head);
+    
+      if(this->par.getFlagUserThreshold())
+	this->objectList->at(i).setPeakSNR( this->objectList->at(i).getPeakFlux() / this->Stats.getThreshold() );
+      else
+	this->objectList->at(i).setPeakSNR( (this->objectList->at(i).getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+    }  
+
+    if(!this->head.isWCS()){ 
+      // if the WCS is bad, set the object names to Obj01 etc
+      int numspaces = int(log10(this->objectList->size())) + 1;
+      std::stringstream ss;
+      for(int i=0;i<this->objectList->size();i++){
+	ss.str("");
+	ss << "Obj" << std::setfill('0') << std::setw(numspaces) << i+1;
+	this->objectList->at(i).setName(ss.str());
+      }
+    }
+  
+  }
+  //--------------------------------------------------------------------
+
   void Cube::updateDetectMap()
   {
     /**
@@ -1140,8 +1183,9 @@ namespace duchamp
      *   This first calculates the WCS parameters for all objects, then
      *    sets up the columns (calculates their widths and precisions and so on).
      *   The precisions are also stored in each Detection object.
+     *   Need to have called calcObjectWCSparams() somewhere beforehand.
      */ 
-    this->calcObjectWCSparams();  
+    //    this->calcObjectWCSparams();  
     // need this as the colSet functions use vel, RA, Dec, etc...
   
     this->fullCols.clear();

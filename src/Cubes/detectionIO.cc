@@ -467,6 +467,31 @@ namespace duchamp
     output.close();
   }
 
+  void Cube::prepareLogFile(int argc, char *argv[])
+  {
+    /**
+     *  Opens the log file so that it can be written to, and writes
+     *  the parameter summary as well as the time of execution to the
+     *  file.
+     *
+     *  It also writes the command-line statement, hence the need for
+     *  argv and argc.
+     */
+    // Open the logfile and write the time on the first line
+    std::ofstream logfile(this->par.getLogFile().c_str());
+    logfile << "New run of the Duchamp sourcefinder: ";
+    time_t now = time(NULL);
+    logfile << asctime( localtime(&now) );
+    // Write out the command-line statement
+    logfile << "Executing statement : ";
+    for(int i=0;i<argc;i++) logfile << argv[i] << " ";
+    logfile << std::endl;
+    logfile << this->par;
+    logfile.close();
+
+  }
+
+
   void Cube::logDetectionList()
   {
     /**

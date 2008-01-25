@@ -134,18 +134,17 @@ namespace duchamp
     for(int i=0;i<voxelList.size();i++)
       listsMatch = listsMatch && this->pixelArray.isInObject(voxelList[i]);
     // make sure all Detection pixels are in voxel list
-    int v1=0;
-    while(listsMatch && v1<this->getSize()){
+    int v1=0, mysize=this->getSize();
+    while(listsMatch && v1<mysize){
       bool inList = false;
       int v2=0;
       Voxel test = this->getPixel(v1);
       while(!inList && v2<voxelList.size()){
-	inList = inList || (test.getX()==voxelList[v2].getX() && 
-			    test.getY()==voxelList[v2].getY() && 
-			    test.getZ()==voxelList[v2].getZ() );
+	inList = inList || test.match(voxelList[v2]);
 	v2++;
       }
       listsMatch = listsMatch && inList;
+      v1++;
     }
 
     return listsMatch;
@@ -171,7 +170,7 @@ namespace duchamp
     // first check that the voxel list and the Detection's pixel list
     // have a 1-1 correspondence
 
-    if(!voxelListsMatch(voxelList)){
+    if(!this->voxelListsMatch(voxelList)){
       duchampError("Detection::calcFluxes","Voxel list provided does not match");
       return;
     }

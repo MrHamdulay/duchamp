@@ -74,6 +74,29 @@ namespace PixelInfo
     return theStream;
 
   }
+  //------------------------------------------------------
+
+  bool operator== (Voxel lhs, Voxel rhs)
+  {
+    /**
+     * For two voxels to be equal, all four parameters must be equal.
+     */ 
+    return (lhs.itsX == rhs.itsX) &&
+      (lhs.itsY == rhs.itsY) &&
+      (lhs.itsZ == rhs.itsZ) &&
+      (lhs.itsF == rhs.itsF);
+  }
+  //------------------------------------------------------
+
+  bool Voxel::match(Voxel other)
+  {
+    /**
+     * This function just tests for equality of position. The flux is ignored.
+     */ 
+    return (this->itsX == other.itsX) &&
+      (this->itsY == other.itsY) &&
+      (this->itsZ == other.itsZ);
+  }
   //--------------------------------------------------------------------
   //--------------------------------------------------------------------
 

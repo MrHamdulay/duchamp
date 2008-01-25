@@ -177,6 +177,9 @@ namespace duchamp
     /** Return a single voxel. */
     PixelInfo::Voxel getPixel(int i){return pixelArray.getPixel(i);};
 
+    /** Return the set of voxels. */
+    std::vector<PixelInfo::Voxel> getPixelSet(){return pixelArray.getPixelSet();};
+
     /** How many voxels are in the Detection? */
     int    getSize(){return pixelArray.getSize();};
 

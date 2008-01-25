@@ -185,9 +185,12 @@ namespace PixelInfo
     /**
      *  Output the three key parameters of the scan.
      */
-    theStream << scan.itsY;
-    theStream << " " << scan.itsX;
-    theStream << " " << scan.itsXLen;
+//     theStream << scan.itsY;
+//     theStream << " " << scan.itsX;
+//     theStream << " " << scan.itsXLen;
+    theStream << scan.itsX;
+    theStream << "-" << scan.getXmax();
+    theStream << ", " << scan.itsY;
     return theStream;
   }
   //------------------------------------------------------

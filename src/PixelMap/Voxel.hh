@@ -74,6 +74,13 @@ namespace PixelInfo
     /** Operator to print information of voxel. */
     friend std::ostream& operator<< ( std::ostream& theStream, Voxel& vox);
 
+    /** Operator to test for equality.*/
+    friend bool operator== (Voxel lhs, Voxel rhs);
+    
+    /** Function to test for equality of positions only.*/
+    bool match(Voxel other);
+    
+
   protected:
     long  itsX;         ///< x-position of pixel
     long  itsY;         ///< y-position of pixel
