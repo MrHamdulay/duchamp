@@ -32,11 +32,12 @@
 GaussSmooth::GaussSmooth()
 {
   allocated=false;
-};
+}
+
 GaussSmooth::~GaussSmooth()
 {
   if(allocated) delete [] kernel;
-};
+}
 
 GaussSmooth::GaussSmooth(const GaussSmooth& g)
 {
@@ -64,13 +65,13 @@ GaussSmooth::GaussSmooth(float maj, float min, float pa)
 {
   this->allocated=false;
   this->define(maj, min, pa);
-};
+}
 
 GaussSmooth::GaussSmooth(float maj)
 {
   this->allocated=false;
   this->define(maj, maj, 0);
-};
+}
 
 void GaussSmooth::define(float maj, float min, float pa)
 {

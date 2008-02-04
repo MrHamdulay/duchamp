@@ -165,7 +165,7 @@ namespace duchamp
     this->borders           = true;
     this->blankEdge         = true;
     this->verbose           = true;
-  };
+  }
 
   Param::Param (const Param& p)
   {
@@ -334,7 +334,7 @@ namespace duchamp
      */
     return this->flagBlankPix &&
       (this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword));
-  };
+  }
 
   bool *Param::makeBlankMask(float *array, int size)
   {
@@ -382,7 +382,7 @@ namespace duchamp
       zval += pixelSec.getStart(2);
     }
     return !flagStatSec || statSec.isInside(xval,yval,zval);
-  };
+  }
 
   /****************************************************************/
   ///////////////////////////////////////////////////

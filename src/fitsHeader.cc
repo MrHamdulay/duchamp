@@ -123,19 +123,19 @@ namespace duchamp
   int FitsHeader::wcsToPix(const double *world, double *pix)
   {      
     return wcsToPixSingle(this->wcs, world, pix);  
-  };
+  }
   int FitsHeader::wcsToPix(const double *world, double *pix, const int npts)
   { 
     return wcsToPixMulti(this->wcs, world, pix, npts);  
-  };
+  }
   int FitsHeader::pixToWCS(const double *pix, double *world)
   {    
     return pixToWCSSingle(this->wcs, pix, world);  
-  };
+  }
   int FitsHeader::pixToWCS(const double *pix, double *world, const int npts)
   {
     return pixToWCSMulti(this->wcs, pix,world, npts);  
-  };
+  }
 
 
   double FitsHeader::pixToVel(double &x, double &y, double &z)

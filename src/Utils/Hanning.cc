@@ -65,7 +65,7 @@ Hanning::Hanning(int size){
 
   this->allocated=false;
   this->define(size);
-};
+}
 
 void Hanning::define(int size)
 {

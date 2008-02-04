@@ -142,10 +142,7 @@ namespace PixelInfo
     }
 
     /** Sort the list of channel maps by their channel number. */
-    void     order(){
-      for(int i=0;i<maplist.size();i++) maplist[i].itsObject.order();
-      std::stable_sort(maplist.begin(),maplist.end());
-    };
+    void     order();
 
     /** Calculate the averages and extrema of the three coordinates. */
     void     calcParams();

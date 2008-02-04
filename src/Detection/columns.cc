@@ -49,7 +49,7 @@ namespace duchamp
       this->precision=0; 
       this->name=" "; 
       this->units=" ";
-    };
+    }
 
     Col::~Col(){}
 

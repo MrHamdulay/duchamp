@@ -77,7 +77,7 @@ namespace duchamp
     this->numDim=0; 
     this->numPixels=0;
     this->objectList = new std::vector<Detection>;
-  }; 
+  }
   //--------------------------------------------------------------------
 
   DataArray::DataArray(short int nDim){
@@ -91,7 +91,7 @@ namespace duchamp
     this->numDim=nDim; 
     this->numPixels=0;
     this->objectList = new std::vector<Detection>;
-  }; 
+  } 
   //--------------------------------------------------------------------
 
   DataArray::DataArray(short int nDim, long size){
@@ -263,7 +263,7 @@ namespace duchamp
      */
     if(par.isBlank(value)) return false;
     else return Stats.isDetection(value);
-  };  
+  }
   //--------------------------------------------------------------------
 
   bool DataArray::isDetection(long voxel){
@@ -276,7 +276,7 @@ namespace duchamp
     if((voxel<0)||(voxel>this->numPixels)) return false;
     else if(par.isBlank(this->array[voxel])) return false;
     else return Stats.isDetection(this->array[voxel]);
-  };  
+  }  
   //--------------------------------------------------------------------
 
   std::ostream& operator<< ( std::ostream& theStream, DataArray &array)
@@ -320,7 +320,7 @@ namespace duchamp
      */
     numPixels=0; numDim=3; 
     reconExists = false; reconAllocated = false; baselineAllocated = false;
-  };
+  }
   //--------------------------------------------------------------------
 
   Cube::Cube(long size){
@@ -480,7 +480,7 @@ namespace duchamp
     std::string fname = par.getImageFile();
     if(par.getFlagSubsection()) fname+=par.getSubsection();
     return getCube(fname);
-  };
+  }
   //--------------------------------------------------------------------
 
   void Cube::saveArray(float *input, long size){
@@ -1011,7 +1011,7 @@ namespace duchamp
      */
     long voxel = z*axisDim[0]*axisDim[1] + y*axisDim[0] + x;
     return DataArray::isDetection(array[voxel]);
-  };
+  }
   //--------------------------------------------------------------------
 
   void Cube::calcObjectWCSparams()

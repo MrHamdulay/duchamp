@@ -67,7 +67,7 @@ ProgressBar::ProgressBar()
   length=20; 
   loc=BEG; 
   numVisible = 0;
-};
+}
 
 ProgressBar::ProgressBar(int newlength){
   /**
@@ -80,9 +80,9 @@ ProgressBar::ProgressBar(int newlength){
   length=newlength; 
   loc=BEG; 
   numVisible = 0;
-};
+}
 
-ProgressBar::~ProgressBar(){};
+ProgressBar::~ProgressBar(){}
 
 void ProgressBar::init(int size){ 
   /**
@@ -99,7 +99,7 @@ void ProgressBar::init(int size){
   printSpace(length); 
   std::cout << "|" << std::flush;
   loc = END;
-};
+}
 
 void ProgressBar::update(int num){
   /**
@@ -126,7 +126,7 @@ void ProgressBar::update(int num){
     std::cout << "|" << std::flush;
     loc=END;
   }
-};
+}
 
 void ProgressBar::rewind(){
   /**
@@ -137,7 +137,7 @@ void ProgressBar::rewind(){
   if(loc==END) printBackSpace(length+2); 
   loc=BEG;
   std::cout << std::flush;
-};
+}
 
 void ProgressBar::remove(){
   /**
@@ -149,7 +149,7 @@ void ProgressBar::remove(){
   loc=END; 
   rewind(); 
   std::cout << std::flush;
-};
+}
 
 void ProgressBar::fillSpace(std::string someString){
   /**

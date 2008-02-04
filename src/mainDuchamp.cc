@@ -92,7 +92,7 @@ int main(int argc, char * argv[])
 
   if(cube->pars().getFlagLog()){
     // Prepare the log file.
-    cube->prepareLogFile(argc, argv)
+    cube->prepareLogFile(argc, argv);
   }
 
   //if(cube->pars().getFlagBlankPix()){

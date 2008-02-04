@@ -229,7 +229,7 @@ namespace duchamp
     float       getBaselineValue(long pos){ return baseline[pos]; };
     float       getBaselineValue(long x, long y, long z){ 
       return baseline[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x]; };
-    void        setPixValue(long pos, float f){array[pos] = f;};;
+    void        setPixValue(long pos, float f){array[pos] = f;};
     void        setPixValue(long x, long y, long z, float f){ 
       array[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x] = f;};
     void        setDetectMapValue(long pos, short f){ detectMap[pos] = f;};
@@ -654,7 +654,7 @@ namespace duchamp
     float     getPixValue(long pos){ return array[pos]; };
     float     getPixValue(long x, long y){return array[y*axisDim[0] + x];};
     // the next few should have checks against array overflow...
-    void      setPixValue(long pos, float f){array[pos] = f;};;
+    void      setPixValue(long pos, float f){array[pos] = f;};
     void      setPixValue(long x, long y, float f){array[y*axisDim[0] + x] = f;};
     bool      isBlank(int vox){return par.isBlank(array[vox]);};
     bool      isBlank(long x,long y){return par.isBlank(array[y*axisDim[0]+x]);};

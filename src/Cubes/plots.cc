@@ -294,9 +294,9 @@ namespace duchamp
       this->maxPaperHeight = 10.; 
       this->marginWidth = 0.8; 
       this->wedgeWidth = 0.7;
-    };
+    }
 
-    ImagePlot::~ImagePlot(){};
+    ImagePlot::~ImagePlot(){}
 
     ImagePlot::ImagePlot(const ImagePlot& p)
     {

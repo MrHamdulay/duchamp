@@ -249,6 +249,15 @@ namespace PixelInfo
 
   }
   //--------------------------------------------
+  
+  void Object3D::order(){
+    std::vector<ChanMap>::iterator map;
+    for(map=maplist.begin();map<maplist.end();map++) map->itsObject.order();
+    std::stable_sort(maplist.begin(),maplist.end());
+  }
+  
+
+  //--------------------------------------------
 
   // long Object3D::getSize()
   // {
@@ -328,16 +337,12 @@ namespace PixelInfo
 
   std::ostream& operator<< ( std::ostream& theStream, Object3D& obj)
   {
-    for(int m=0;m<obj.maplist.size();m++){
-      Object2D tempObject = obj.maplist[m].getObject();
+    std::vector<ChanMap>::iterator map;
+    for(map<obj.maplist.begin();map<obj.maplist.end();map++){
+      Object2D tempObject = map->getObject();
       for(int s=0;s<tempObject.getNumScan();s++){
 	Scan tempscan = tempObject.getScan(s);
-	theStream << tempscan << ", " << obj.maplist[m].getZ() << "\n";
-// 	for(int x=tempscan.getX();x<=tempscan.getXmax();x++){
-// 	  theStream << x                     << " " 
-// 		    << tempscan.getY()       << " " 
-// 		    << obj.maplist[m].getZ() << "\n";
-// 	}
+	theStream << tempscan << ", " << map->getZ() << "\n";
       }
     }  
     theStream << "\n";
@@ -406,17 +411,15 @@ namespace PixelInfo
   //--------------------------------------------------------------------
 
   void Object3D::addOffsets(long xoff, long yoff, long zoff)
-    {
-      for(unsigned int i=0;i<this->maplist.size();i++)
-	this->maplist[i].addOffsets(xoff,yoff,zoff);
-      this->xSum += xoff*numVox;
-      this->xmin += xoff; xmax += xoff;
-      this->ySum += yoff*numVox;
-      this->ymin += yoff; ymax += yoff;
-      this->zSum += zoff*numVox;
-      this->zmin += zoff; zmax += zoff;
-    };
-
-
+  {
+    for(unsigned int i=0;i<this->maplist.size();i++)
+      this->maplist[i].addOffsets(xoff,yoff,zoff);
+    this->xSum += xoff*numVox;
+    this->xmin += xoff; xmax += xoff;
+    this->ySum += yoff*numVox;
+    this->ymin += yoff; ymax += yoff;
+    this->zSum += zoff*numVox;
+    this->zmin += zoff; zmax += zoff;
+  }
 
 }
