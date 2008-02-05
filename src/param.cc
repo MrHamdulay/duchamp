@@ -37,6 +37,7 @@
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/duchamp.hh>
+#include <duchamp/pgheader.hh>
 #include <duchamp/ATrous/filter.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/Section.hh>
@@ -568,6 +569,9 @@ namespace duchamp
 
       }
     }
+
+    // If pgplot was not included in the compilation, need to set flagXOutput to false
+    if(!USE_PGPLOT) this->flagXOutput = false;
 
     // The wavelet reconstruction takes precendence over the smoothing.
     if(this->flagATrous) this->flagSmooth = false;

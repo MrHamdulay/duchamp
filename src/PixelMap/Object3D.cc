@@ -338,7 +338,7 @@ namespace PixelInfo
   std::ostream& operator<< ( std::ostream& theStream, Object3D& obj)
   {
     std::vector<ChanMap>::iterator map;
-    for(map<obj.maplist.begin();map<obj.maplist.end();map++){
+    for(map=obj.maplist.begin();map<obj.maplist.end();map++){
       Object2D tempObject = map->getObject();
       for(int s=0;s<tempObject.getNumScan();s++){
 	Scan tempscan = tempObject.getScan(s);

@@ -507,6 +507,7 @@ namespace duchamp
       long bottom = this->par.getBorderBottom();
 
       std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
+      this->calcObjectFluxes();
       this->setupColumns();
       this->objectList->at(0).outputDetectionTextHeader(fout,this->logCols);
 

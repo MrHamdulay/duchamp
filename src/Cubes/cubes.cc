@@ -1014,6 +1014,24 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
+  void Cube::calcObjectFluxes()
+  {
+    /**
+     *  A function to calculate the fluxes and centroids for each
+     *  object in the Cube's list of detections. Uses
+     *  Detection::calcFluxes() for each object.
+     */
+    std::vector<Detection>::iterator obj;
+    for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
+      obj->calcFluxes(this->array, this->axisDim);
+      if(this->par.getFlagUserThreshold())
+	obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
+      else
+	obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+    }
+  }
+  //--------------------------------------------------------------------
+
   void Cube::calcObjectWCSparams()
   {
     /** 

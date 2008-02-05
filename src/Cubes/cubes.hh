@@ -294,6 +294,9 @@ namespace duchamp
     // Dealing with the detections 
     //
 
+    /** Calculate the object fluxes */
+    void        calcObjectFluxes();
+
     /** Calculate the WCS parameters for each Cube Detection. */
     void        calcObjectWCSparams();
     /** Calculate the WCS parameters for each Cube Detection, using flux information in Voxels. */
