@@ -425,7 +425,10 @@ namespace duchamp
 	    << growthStats.getThreshold() << ".\n";
     }
 
-    output << "\nFull stats:\n" << this->Stats;
+    if(!this->par.getFlagUserThreshold())
+      output << "\nFull stats:\n" << this->Stats;
+    else
+      output << "\n\nNot calculating full stats since threshold given.\n";
 
     output<<"--------------------\n";
     output.close();
