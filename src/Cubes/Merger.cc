@@ -65,7 +65,7 @@ namespace duchamp
       for(int i=0;i<startSize;i++) currentList[i] = this->objectList->at(i);
       this->objectList->clear();
 
-      if(this->axisDim[2]>1) mergeList(currentList, this->par);
+      mergeList(currentList, this->par);
 
       // Do growth stuff
       if(this->par.getFlagGrowth()) {
@@ -90,7 +90,7 @@ namespace duchamp
 
 	// and do the merging again to pick up objects that have
 	//  grown into each other.
-	if(this->axisDim[2]>1) mergeList(currentList, this->par);
+	mergeList(currentList, this->par);
       }
 
       finaliseList(currentList, this->par);
