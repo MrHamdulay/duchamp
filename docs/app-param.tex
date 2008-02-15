@@ -78,7 +78,15 @@ not matter, they are grouped here in logical sections.
   \texttt{flagSeparateHeader=true}.
 \item[{SpectraFile [duchamp-\\Spectra.ps]}] The postscript file
   containing the resulting integrated spectra and images of the
-  detections.  
+  detections.
+\item[{flagTextSpectra [false]}] A flag to say whether the spectra
+  should be saved in text form in a single file. See below for a
+  description. 
+\item[{spectraTextFile [duchamp-\\Spectra.txt]}] The file containing
+  the spectra of each object in ascii format. This file will have a
+  column showing the spectral coordinates, and one column for each of
+  the detected objects, showing the flux values as plotted in the
+  graphical output of \texttt{spectraFile}.
 \item[{flagLog [false]}] A flag to indicate whether the
   details of intermediate detections should be logged.
 \item[{LogFile [duchamp-\\Logfile.txt]}] The file in which

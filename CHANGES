@@ -1,3 +1,31 @@
+Duchamp version 1.1.4 (2008/02/15)
+----------------------------------
+
+Most of the changes incorporated in this update result from ASKAP code
+development (that makes use of some of the Duchamp functionality),
+but do not actually affect the way Duchamp runs (other than, in a
+couple of cases, making it a bit faster). Changes that are
+relevant for regular users of Duchamp are as follows:
+
+* A new option has been made available (thanks to Mary Putman et al
+  for the suggestion!) to save the spectra of all detected objects in
+  a text file. This has the form of one column for the spectral
+  coordinates and one column of fluxes for each object. This is
+  enabled by the input parameters flagTextSpectra and spectraTextFile.
+
+* Slight changes to the output include he formatting of the way the
+  detected objects are written to the log file. This meant the
+  verification files were also updated. Also the cube statistics are
+  not printed to the results file if a user threshold is specified (as
+  they are not calculated!).
+
+* The determination of beam size has been made more reliable, as has
+  the BUNIT determination.
+
+* Fixed a bug that meant source merging was not done for 2D images
+  (not usually a problem, as the source-finding takes care of this,
+  but came up in parallelisation development).
+
 Duchamp version 1.1.3 (2008/01/08)
 ----------------------------------
 

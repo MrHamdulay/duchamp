@@ -37,6 +37,9 @@ reconFile	your-smoothed-file-here
 #                        outFile just contains the table of detections).
 # headerFile -- the file to write the header information to.
 # spectraFile -- the postscript file of spectra
+# flagTextSpectra -- whether to save a text file detailing the spectra
+#                    of each source
+# spectraTextFile -- the file in which to save the text-formatted spectra
 # flagOutputMask -- whether to save a FITS file containing a mask
 #                   array, showing the locations of detected objects
 # flagOutputSmooth -- whether to save the smoothed arrays as a FITS file
@@ -56,6 +59,8 @@ outFile		duchamp-Results.txt
 flagSeparateHeader 0
 headerFile      duchamp-Results.hdr
 spectraFile	duchamp-Spectra.ps
+flagTextSpectra 0
+spectraTextFile duchamp-Spectra.txt
 flagOutputMask  0
 flagOutputSmooth 0
 flagOutputRecon	0

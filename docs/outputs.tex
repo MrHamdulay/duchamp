@@ -206,7 +206,7 @@ caution is advised.
 
 \secC{Other results lists}
 
-Two additional results files can also be requested. One option is a
+Three additional results files can also be requested. One option is a
 VOTable-format XML file, containing just the RA, Dec, Velocity and the
 corresponding widths of the detections, as well as the fluxes. The
 user should set \texttt{flagVOT = true}, and put the desired filename
@@ -217,16 +217,52 @@ Observatory tools (such as Aladin%
 \href{http://aladin.u-strasbg.fr/}{http://aladin.u-strasbg.fr/}}
 or TOPCAT\footnote{%Tool for OPerations on Catalogues And Tables:
 \href{http://www.star.bristol.ac.uk/~mbt/topcat/}%
-{http://www.star.bristol.ac.uk/~mbt/topcat/}}). The second option is
-an annotation file for use with the Karma toolkit of visualisation
-tools (in particular, with \texttt{kvis}). This will draw a circle at
-the position of each detection, scaled by the spatial size of the
-detection, and number it according to the Obj\# given above. To make
-use of this option, the user should set
-\texttt{flagKarma = true}, and put the desired filename in the parameter
-\texttt{karmaFile} -- again, the default is for it not to be produced.
+{http://www.star.bristol.ac.uk/~mbt/topcat/}}). 
 
-As the program is running, it also (optionally) records the detections
+A second option is an annotation file for use with the Karma toolkit
+of visualisation tools (in particular, with \texttt{kvis}). This will
+draw a circle at the position of each detection, scaled by the spatial
+size of the detection, and number it according to the Obj\# given
+above. To make use of this option, the user should set
+\texttt{flagKarma = true}, and put the desired filename in the
+parameter \texttt{karmaFile} -- again, the default is for it not to be
+produced.
+
+The final optional results file produced is a simple text file that
+contains the spectra for each detected object. The format of the file
+is as follows: the first column has the spectral coordinate, over the
+full range of values; the remaining columns represent the flux values
+for each object at the corresponding spectral position. The flux value
+used is the same as that plotted in the spectral plot detailed below,
+and governed by the \texttt{spectralMethod} parameter. An example of
+what a spectral text file might look like is given below:
+
+\begin{quote}
+  {\footnotesize
+    \begin{tabular}{lllll}
+      1405.00219727  &0.01323344  &0.23648241  &0.04202826  &-0.00506790  \\
+      1405.06469727  &0.01302835  &0.27393046  &0.04686056  &-0.00471084  \\
+      1405.12719727  &0.01583361  &0.27760920  &0.04114933  &-0.01168737  \\
+      1405.18969727  &0.01271889  &0.31489247  &0.03307962  &-0.00300790  \\
+      1405.25219727  &0.01597644  &0.30401203  &0.05356426  &-0.00551653  \\
+      1405.31469727  &0.00773827  &0.30031312  &0.04074831  &-0.00570147  \\
+      1405.37719727  &0.00738304  &0.27921870  &0.05272378  &-0.00504959  \\
+      1405.43969727  &0.01353923  &0.26132512  &0.03667958  &-0.00151006  \\  
+      1405.50219727  &0.01119724  &0.28987029  &0.03497849  &-0.00645589  \\  
+      1405.56469727  &0.00813379  &0.29839963  &0.04711142  &0.00536576   \\  
+      1405.62719727  &0.00774377  &0.26530230  &0.04620502  &0.00724631   \\  
+      1405.68969727  &0.00576067  &0.23215000  &0.04995513  &0.00290841   \\ 
+      1405.75219727  &0.00452834  &0.16484940  &0.04261605  &-0.00612812  \\  
+      1405.81469727  &0.01406293  &0.15989439  &0.03817926  &-0.00758385  \\ 
+      1405.87719727  &0.01116611  &0.11890682  &0.05499069  &-0.00626362  \\  
+      1405.93969727  &0.00687582  &0.10620256  &0.04743370  &0.00055177   \\
+      $\vdots$       &$\vdots$    &$\vdots$    &$\vdots$    &$\vdots$     \\
+    \end{tabular}
+  }
+\end{quote}
+
+In addition to these three files, a log file can also be produced. As
+the program is running, it also (optionally) records the detections
 made in each individual spectrum or channel (see \S\ref{sec-detection}
 for details on this process). This is recorded in the file given by
 the parameter \texttt{LogFile}. This file does not include the columns

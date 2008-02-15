@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
                The Duchamp Source Finder
 -----------------------------------------------------------------------
-Duchamp 1.1.3-beta -- an object finder for spectral-line data cubes
+Duchamp 1.1.4-beta -- an object finder for spectral-line data cubes
 Copyright (C) 2006, Matthew Whiting, ATNF
 
 Duchamp is free software; you can redistribute it and/or modify it
@@ -46,9 +46,9 @@ velocity information for all detected sources.
 The "Beta" Version
 ==================
 
-This distribution of Duchamp, dated 3/10/2007, is known as the beta
-version. (The version number when "Duchamp -v" is run is given as 1.1.3
-though.) It is more recent than the most recent release (v1.1.1), as
+This distribution of Duchamp, dated 15/2/2008, is known as the beta
+version. (The version number when "Duchamp -v" is run is given as 1.1.4
+though.) It is more recent than the most recent release (v1.1.4), as
 it has several new functions and features. The user should be aware
 that these may not yet be documented and, while they have been tested
 on a limited number of cases, their stability is not assured to the

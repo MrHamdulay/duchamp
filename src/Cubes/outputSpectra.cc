@@ -143,6 +143,8 @@ namespace duchamp
     }
     
     std::ofstream fspec(this->par.getSpectraTextFile().c_str());
+    fspec.setf(std::ios::fixed);
+
     for(int z=0;z<zdim;z++){
       
       fspec << std::setprecision(8);
