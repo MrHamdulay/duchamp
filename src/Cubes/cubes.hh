@@ -90,6 +90,7 @@ namespace duchamp
     virtual float      getPixValue(long pos){ return array[pos]; };
     virtual void       setPixValue(long pos, float f){array[pos] = f;};
     Detection          getObject(long number){ return objectList->at(number); };
+    Detection *        pObject(long number){ return &(objectList->at(number));};
     std::vector <Detection> getObjectList(){ return *objectList; };
     std::vector <Detection> *pObjectList(){ return objectList; };
     std::vector <Detection> &ObjectList(){ std::vector<Detection> &rlist = *objectList; return rlist; };
@@ -528,10 +529,16 @@ namespace duchamp
     /** Print spectra of each detected object. */
     void        outputSpectra();
 
+    /** Write out text file of all spectra. */
+    void        writeSpectralData();
+
     /** Print spectrum of a single object */
-    void        plotSpectrum(Detection obj,Plot::SpectralPlot &plot);
+    void        plotSpectrum(int objNum, Plot::SpectralPlot &plot);
     /** Plot the image cutout for a single object */
     void        plotSource(Detection obj, Plot::CutoutPlot &plot);
+
+    /** Get the spectral arrays */
+    void        getSpectralArrays(int objNumber, float *specx, float *specy, float *specRecon, float *specBase);
 
     //  in Cubes/drawMomentCutout.cc
     /** Draw the 0th moment map for a single object. */

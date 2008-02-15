@@ -85,6 +85,8 @@ namespace duchamp
     this->flagSeparateHeader= false;
     this->headerFile        = "duchamp-Results.hdr";
     this->spectraFile       = "duchamp-Spectra.ps";
+    this->flagTextSpectra   = false;
+    this->spectraTextFile   = "duchamp-Spectra.txt";
     this->flagOutputMask    = false;
     this->flagOutputSmooth  = false;
     this->flagOutputRecon   = false;
@@ -189,6 +191,8 @@ namespace duchamp
     this->flagSeparateHeader= p.flagSeparateHeader;
     this->headerFile        = p.headerFile;
     this->spectraFile       = p.spectraFile;    
+    this->flagTextSpectra   = p.flagTextSpectra;    
+    this->spectraTextFile   = p.spectraTextFile;    
     this->flagOutputMask    = p.flagOutputMask;
     this->flagOutputSmooth  = p.flagOutputSmooth;
     this->flagOutputRecon   = p.flagOutputRecon;
@@ -485,6 +489,8 @@ namespace duchamp
 	if(arg=="flagseparateheader") this->flagSeparateHeader = readFlag(ss);
 	if(arg=="headerfile")      this->headerFile = readSval(ss);
 	if(arg=="spectrafile")     this->spectraFile = readSval(ss); 
+	if(arg=="flagtextspectra") this->flagTextSpectra = readFlag(ss); 
+	if(arg=="spectraTextfile") this->spectraTextFile = readSval(ss); 
 	if(arg=="flagoutputmask")  this->flagOutputMask = readFlag(ss); 
 	if(arg=="flagoutputsmooth")this->flagOutputSmooth = readFlag(ss); 
 	if(arg=="flagoutputrecon") this->flagOutputRecon = readFlag(ss); 
@@ -682,6 +688,12 @@ namespace duchamp
 	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[spectraFile]"
 	       <<"  =  " <<resetiosflags(std::ios::right)
 	       <<par.getSpectraFile()    <<std::endl;
+    if(par.getFlagTextSpectra()){
+      theStream<<std::setw(widthText)<<"Text file with ascii spectral data"                         
+	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[spectraTextFile]"
+	       <<"  =  " <<resetiosflags(std::ios::right)
+	       <<par.getSpectraTextFile()<<std::endl;
+    }
     if(par.getFlagVOT()){
       theStream<<std::setw(widthText)<<"VOTable file"                         
 	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[votFile]"

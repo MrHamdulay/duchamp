@@ -163,6 +163,10 @@ namespace duchamp
     void   setHeaderFile(std::string s){headerFile=s;};
     std::string getSpectraFile(){return spectraFile;};
     void   setSpectraFile(std::string fname){spectraFile = fname;};
+    bool   getFlagTextSpectra(){return flagTextSpectra;};
+    void   setFlagTextSpectra(bool b){flagTextSpectra = b;};
+    std::string getSpectraTextFile(){return spectraTextFile;};
+    void   setSpectraTextFile(std::string fname){spectraTextFile = fname;};
     bool   getFlagOutputMask(){return flagOutputMask;};
     void   setFlagOutputMask(bool flag){flagOutputMask=flag;};
     bool   getFlagOutputSmooth(){return flagOutputSmooth;};
@@ -338,6 +342,10 @@ namespace duchamp
     std::string headerFile; ///< Where the header information to go with
                             ///   the results table should be written.
     std::string spectraFile;///< Where the spectra are displayed
+    bool   flagTextSpectra; ///< Should a text file with all spectra
+			    ///   be written?
+    std::string spectraTextFile;///< Where the text spectra are
+				///   written.
     bool   flagOutputMask;  ///< Should the mask image be written?
     bool   flagOutputSmooth;///< Should the smoothed cube be written?
     bool   flagOutputRecon; ///< Should the reconstructed cube be

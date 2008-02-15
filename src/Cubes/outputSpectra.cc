@@ -26,6 +26,7 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <sstream>
 #include <string>
@@ -59,8 +60,8 @@ namespace duchamp
      * axis, just the 0th moment map is plotted (using
      * Cube::plotSource() rather than Cube::plotSpectrum()).
      *
-     * It makes use of the SpectralPlot or CutoutPlot classes from plots.h, which size
-     * everything correctly.  
+     * It makes use of the SpectralPlot or CutoutPlot classes from
+     * plots.h, which size everything correctly.
      *
      * The main choice for SpectralPlot() is whether to use the peak
      * pixel, in which case the spectrum is just that of the peak pixel,
@@ -94,16 +95,156 @@ namespace duchamp
 
 	for(int nobj=0;nobj<this->objectList->size();nobj++){
 	  // for each object in the cube:
-	  this->plotSpectrum(this->objectList->at(nobj),newplot);
+	  this->plotSpectrum(nobj,newplot);
       
 	}// end of loop over objects.
 
 	cpgclos();
       }
+
+      if(this->par.getFlagTextSpectra()){
+	if(this->par.isVerbose()) std::cout << "Saving spectra in text file ... ";
+	this->writeSpectralData();
+	if(this->par.isVerbose()) std::cout << "Done. ";
+      }
     }
   }
+  //--------------------------------------------------------------------
 
-  void Cube::plotSpectrum(Detection obj, Plot::SpectralPlot &plot)
+  void Cube::writeSpectralData()
+  {
+    /**
+     *  A function to write, in ascii form, the spectra of each
+     *  detected object to a file. The file consists of a column for
+     *  the spectral coordinates, and one column for each object
+     *  showing the flux at that spectral position. The units are the
+     *  same as those shown in the graphical output. The filename is
+     *  given by the Param::spectraTextFile parameter in the Cube::par
+     *  parameter set.
+     */
+
+    const int zdim = this->axisDim[2];
+    const int numObj = this->objectList->size();
+    float *specxOut = new float[zdim];
+    float *spectra = new float[numObj*zdim];
+    
+    for(int obj=0; obj<numObj; obj++){
+      float *temp = new float[zdim];
+      float *specx = new float[zdim];
+      float *recon = new float[zdim];
+      float *base = new float[zdim];
+      getSpectralArrays(obj, specx, temp, recon, base);
+      for(int z=0;z<zdim;z++) spectra[obj*zdim+z] = temp[z];
+      if(obj==0) for(int z=0;z<zdim;z++) specxOut[z] = specx[z];
+      delete [] specx;
+      delete [] recon;
+      delete [] base;
+      delete [] temp;
+    }
+    
+    std::ofstream fspec(this->par.getSpectraTextFile().c_str());
+    for(int z=0;z<zdim;z++){
+      
+      fspec << std::setprecision(8);
+      fspec << specxOut[z] << "  ";
+      for(int obj=0;obj<numObj; obj++) {
+	fspec << spectra[obj*zdim+z] << "  ";
+      }
+      fspec << "\n";
+
+    }
+    fspec.close();
+
+    delete [] spectra;
+    delete [] specxOut;
+
+  }
+  //--------------------------------------------------------------------
+
+  void Cube::getSpectralArrays(int objNum, float *specx, float *specy, 
+			       float *specRecon, float *specBase)
+  {
+    /**
+     *  A utility function that goes and calculates, for a given
+     *  Detection, the spectral arrays, according to whether we want
+     *  the peak or integrated flux. The arrays can be used by
+     *  Cube::plotSpectrum() and Cube::writeSpectralData(). The arrays
+     *  calculated are listed below. Their length is given by the
+     *  length of the Cube's spectral dimension.
+     *
+     *  Note that 'new' is used to allocate the array space, so the
+     *  array parameters need to be suitably defined
+     *
+     *  \param objNum The number of the object under consideration
+     *  \param specx The array of frequency/velocity/channel/etc
+     *         values (the x-axis on the spectral plot).
+     *  \param specy The array of flux values, matching the specx
+     *         array.
+     *  \param specRecon The reconstructed or smoothed array, done in
+     *         the same way as specy.
+     *  \param specBase The fitted baseline values, done in the same
+     *         way as specy.
+     */
+
+    long xdim = this->axisDim[0];
+    long ydim = this->axisDim[1];
+    long zdim = this->axisDim[2];
+
+    for(int i=0;i<zdim;i++) specy[i]     = 0.;
+    for(int i=0;i<zdim;i++) specRecon[i] = 0.;
+    for(int i=0;i<zdim;i++) specBase[i]  = 0.;
+
+    if(this->head.isWCS()){
+      double xval = double(this->objectList->at(objNum).getXcentre());
+      double yval = double(this->objectList->at(objNum).getYcentre());
+      for(double zval=0;zval<zdim;zval++) 
+	specx[int(zval)] = this->head.pixToVel(xval,yval,zval);
+    }
+    else 
+      for(double zval=0;zval<zdim;zval++) specx[int(zval)] = zval;
+
+    float beamCorrection;
+    if(this->header().needBeamSize())
+      beamCorrection = this->par.getBeamSize();
+    else beamCorrection = 1.;
+
+    if(this->par.getSpectralMethod()=="sum"){
+      bool *done = new bool[xdim*ydim]; 
+      for(int i=0;i<xdim*ydim;i++) done[i]=false;
+      std::vector<Voxel> voxlist = this->objectList->at(objNum).pixels().getPixelSet();
+      for(int pix=0;pix<voxlist.size();pix++){
+	int pos = voxlist[pix].getX() + xdim * voxlist[pix].getY();
+	if(!done[pos]){
+	  done[pos] = true;
+	  for(int z=0;z<zdim;z++){
+	    if(!(this->isBlank(pos+z*xdim*ydim))){
+	      specy[z] += this->array[pos + z*xdim*ydim] / beamCorrection;
+	      if(this->reconExists)
+		specRecon[z] += this->recon[pos + z*xdim*ydim] / beamCorrection;
+	      if(this->par.getFlagBaseline())
+		specBase[z] += this->baseline[pos + z*xdim*ydim] / beamCorrection;
+	    }	    
+	  }
+	}
+      }
+      delete [] done;
+    }
+    else {// if(par.getSpectralMethod()=="peak"){
+      int pos = this->objectList->at(objNum).getXPeak() +
+	xdim*this->objectList->at(objNum).getYPeak();
+      for(int z=0;z<zdim;z++){
+	specy[z] = this->array[pos + z*xdim*ydim];
+	if(this->reconExists) 
+	  specRecon[z] = this->recon[pos + z*xdim*ydim];
+	if(this->par.getFlagBaseline()) 
+	  specBase[z] = this->baseline[pos + z*xdim*ydim];
+      }
+    }
+
+  }
+  //--------------------------------------------------------------------
+
+  void Cube::plotSpectrum(int objNum, Plot::SpectralPlot &plot)
   {
     /** 
      * The way to print out the spectrum of a Detection.
@@ -121,19 +262,20 @@ namespace duchamp
      * A 0th moment map of the detection is also plotted, with a scale
      * bar indicating the spatial size.
      *
-     * \param obj The Detection to be plotted.
-     * \param plot The PGPLOT device to plot the spectrum on.
+     * \param objNum The number of the Detection to be plotted.
+     * \param plot The SpectralPlot object defining the PGPLOT device
+     *        to plot the spectrum on.
      */
 
     long xdim = this->axisDim[0];
     long ydim = this->axisDim[1];
     long zdim = this->axisDim[2];
 
-    obj.calcFluxes(this->array, this->axisDim);
+    this->objectList->at(objNum).calcFluxes(this->array, this->axisDim);
 
     double minMWvel,maxMWvel,xval,yval,zval;
-    xval = double(obj.getXcentre());
-    yval = double(obj.getYcentre());
+    xval = double(this->objectList->at(objNum).getXcentre());
+    yval = double(this->objectList->at(objNum).getYcentre());
     if(this->par.getFlagMW()){
       zval = double(this->par.getMinMW());
       minMWvel = this->head.pixToVel(xval,yval,zval);
@@ -143,64 +285,21 @@ namespace duchamp
 
     float *specx  = new float[zdim];
     float *specy  = new float[zdim];
-    for(int i=0;i<zdim;i++) specy[i] = 0.;
     float *specy2 = new float[zdim];
-    for(int i=0;i<zdim;i++) specy2[i] = 0.;
     float *base   = new float[zdim];
-    for(int i=0;i<zdim;i++) base[i] = 0.;
 
-    for(int i=0;i<zdim;i++) specy[i] = 0.;
-    if(this->par.getFlagATrous())  
-      for(int i=0;i<zdim;i++) specy2[i] = 0.;
-    
-    if(this->head.isWCS())
-      for(zval=0;zval<zdim;zval++) 
-	specx[int(zval)] = this->head.pixToVel(xval,yval,zval);
-    else 
-      for(zval=0;zval<zdim;zval++) specx[int(zval)] = zval;
+    this->getSpectralArrays(objNum,specx,specy,specy2,base);
 
     std::string fluxLabel = "Flux";
   
-    float beamCorrection;
-    if(this->header().needBeamSize())
-      beamCorrection = this->par.getBeamSize();
-    else beamCorrection = 1.;
-
     if(this->par.getSpectralMethod()=="sum"){
       fluxLabel = "Integrated " + fluxLabel;
       if(this->head.isWCS()) 
 	fluxLabel += " ["+this->head.getIntFluxUnits()+"]";
-      bool *done = new bool[xdim*ydim]; 
-      for(int i=0;i<xdim*ydim;i++) done[i]=false;
-      std::vector<Voxel> voxlist = obj.pixels().getPixelSet();
-      for(int pix=0;pix<voxlist.size();pix++){
-	int pos = voxlist[pix].getX() + xdim * voxlist[pix].getY();
-	if(!done[pos]){
-	  done[pos] = true;
-	  for(int z=0;z<zdim;z++){
-	    if(!(this->isBlank(pos+z*xdim*ydim))){
-	      specy[z] += this->array[pos + z*xdim*ydim] / beamCorrection;
-	      if(this->reconExists)
-		specy2[z] += this->recon[pos + z*xdim*ydim] / beamCorrection;
-	      if(this->par.getFlagBaseline())
-		base[z] += this->baseline[pos + z*xdim*ydim] / beamCorrection;
-	    }	    
-	  }
-	}
-      }
-      delete [] done;
     }
     else {// if(par.getSpectralMethod()=="peak"){
       fluxLabel = "Peak " + fluxLabel;
       if(this->head.isWCS()) fluxLabel += " ["+this->head.getFluxUnits()+"]";
-      int pos = obj.getXPeak() + xdim*obj.getYPeak();
-      for(int z=0;z<zdim;z++){
-	specy[z] = this->array[pos + z*xdim*ydim];
-	if(this->reconExists) 
-	  specy2[z] = this->recon[pos + z*xdim*ydim];
-	if(this->par.getFlagBaseline()) 
-	  base[z] = this->baseline[pos + z*xdim*ydim];
-      }
     }
     
     float vmax,vmin,width;
@@ -242,14 +341,14 @@ namespace duchamp
     else plot.gotoHeader("Spectral pixel value");
 
     if(this->head.isWCS()){
-      label = obj.outputLabelWCS();
+      label = this->objectList->at(objNum).outputLabelWCS();
       plot.firstHeaderLine(label);
-      label = obj.outputLabelFluxes();
+      label = this->objectList->at(objNum).outputLabelFluxes();
       plot.secondHeaderLine(label);
     }
-    label = obj.outputLabelWidths();
+    label = this->objectList->at(objNum).outputLabelWidths();
     plot.thirdHeaderLine(label);
-    label = obj.outputLabelPix();
+    label = this->objectList->at(objNum).outputLabelPix();
     plot.fourthHeaderLine(label);
     
     plot.gotoMainSpectrum(vmin,vmax,min,max,fluxLabel);
@@ -265,15 +364,15 @@ namespace duchamp
       cpgsci(FOREGND);
     }
     if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
-    if(this->head.isWCS()) plot.drawVelRange(obj.getVelMin(),obj.getVelMax());
-    else plot.drawVelRange(obj.getZmin(),obj.getZmax());
+    if(this->head.isWCS()) plot.drawVelRange(this->objectList->at(objNum).getVelMin(),this->objectList->at(objNum).getVelMax());
+    else plot.drawVelRange(this->objectList->at(objNum).getZmin(),this->objectList->at(objNum).getZmax());
 
     /**************************/
     // ZOOM IN SPECTRALLY ON THE DETECTION.
 
     float minvel,maxvel;
-    if(this->head.isWCS()) getSmallVelRange(obj,this->head,&minvel,&maxvel);
-    else getSmallZRange(obj,&minvel,&maxvel);
+    if(this->head.isWCS()) getSmallVelRange(this->objectList->at(objNum),this->head,&minvel,&maxvel);
+    else getSmallZRange(this->objectList->at(objNum),&minvel,&maxvel);
 
     // Find new max & min flux values
     std::swap(max,min);
@@ -304,14 +403,15 @@ namespace duchamp
       cpgsci(FOREGND);
     }
     if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
-    if(this->head.isWCS()) plot.drawVelRange(obj.getVelMin(),obj.getVelMax());
-    else plot.drawVelRange(obj.getZmin(),obj.getZmax());
+    if(this->head.isWCS()) plot.drawVelRange(this->objectList->at(objNum).getVelMin(),
+					     this->objectList->at(objNum).getVelMax());
+    else plot.drawVelRange(this->objectList->at(objNum).getZmin(),this->objectList->at(objNum).getZmax());
     
     /**************************/
 
     // DRAW THE MOMENT MAP OF THE DETECTION -- SUMMED OVER ALL CHANNELS
     plot.gotoMap();
-    this->drawMomentCutout(obj);
+    this->drawMomentCutout(this->objectList->at(objNum));
 
     delete [] specx;
     delete [] specy;
@@ -319,7 +419,7 @@ namespace duchamp
     delete [] base;
   
   }
-
+  //--------------------------------------------------------------------
 
   void getSmallVelRange(Detection &obj, FitsHeader head, 
 			float *minvel, float *maxvel)
@@ -374,6 +474,7 @@ namespace duchamp
     delete [] world;
 
   }
+  //--------------------------------------------------------------------
 
   void getSmallZRange(Detection &obj, float *minz, float *maxz)
   {
@@ -399,7 +500,7 @@ namespace duchamp
     }
 
   }
-
+  //--------------------------------------------------------------------
 
   void Cube::plotSource(Detection obj, Plot::CutoutPlot &plot)
   {

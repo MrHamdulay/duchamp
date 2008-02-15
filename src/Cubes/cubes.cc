@@ -1224,13 +1224,14 @@ namespace duchamp
     pos = fullCols[WRA].getPrecision();
     pos = std::max(pos, fullCols[WDEC].getPrecision());
   
-    for(int obj=0;obj<this->objectList->size();obj++){
-      this->objectList->at(obj).setVelPrec(vel);
-      this->objectList->at(obj).setFpeakPrec(fpeak);
-      this->objectList->at(obj).setXYZPrec(xyz);
-      this->objectList->at(obj).setPosPrec(pos);
-      this->objectList->at(obj).setFintPrec(fint);
-      this->objectList->at(obj).setSNRPrec(snr);
+    std::vector<Detection>::iterator obj;
+    for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
+      obj->setVelPrec(vel);
+      obj->setFpeakPrec(fpeak);
+      obj->setXYZPrec(xyz);
+      obj->setPosPrec(pos);
+      obj->setFintPrec(fint);
+      obj->setSNRPrec(snr);
     }
 
   }
