@@ -269,8 +269,6 @@ namespace duchamp
      *        to plot the spectrum on.
      */
 
-    long xdim = this->axisDim[0];
-    long ydim = this->axisDim[1];
     long zdim = this->axisDim[2];
 
     this->objectList->at(objNum).calcFluxes(this->array, this->axisDim);
