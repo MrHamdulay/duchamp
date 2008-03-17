@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Tue Feb  5 15:45:16 2008
+New run of the Duchamp sourcefinder: Tue Mar 18 10:09:22 2008
 Executing statement : ./Duchamp -p verification/input3 
 
 ---- Parameters ----
@@ -13,7 +13,7 @@ Saving mask cube?.......................[flagOutputMask]  =  false
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false
 Removing Milky Way channels?....................[flagMW]  =  false
-Beam Size (pixels)......................................  =  10.1788
+Beam Size (pixels)......................................  =  14.6848
 Removing baselines before search?.........[flagBaseline]  =  false
 Smoothing each spectrum first?..............[flagSmooth]  =  true
 Type of smoothing...........................[smoothType]  =  spatial
@@ -2599,4 +2599,4 @@ Detection #5
 
 ---
 --------------
-Duchamp completed: Tue Feb  5 15:45:30 2008
+Duchamp completed: Tue Mar 18 10:09:34 2008

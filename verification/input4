@@ -11,3 +11,5 @@ flagLog         true
 logFile         verification/log4.txt
 outFile         verification/results4.txt
 spectraFile     verification/spectra4.ps
+snrCut 4
+
