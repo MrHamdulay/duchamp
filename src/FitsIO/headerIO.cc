@@ -240,7 +240,7 @@ namespace duchamp
     }
     else{ // all keywords present
       float pixScale = this->getAvPixScale();
-      this->setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / (pixScale*pixScale) );
+      this->setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / (M_LN2*pixScale*pixScale) );
       this->setBmajKeyword(bmaj);
       this->setBminKeyword(bmin);
       this->setBpaKeyword(bpa);
