@@ -211,7 +211,7 @@ namespace duchamp
     int size = this->fluxUnits.size();
     if(size<6) return false;
     else {
-      std::string tailOfFluxUnits = this->fluxUnits.substr(size-5,size);
+      std::string tailOfFluxUnits = makelower(this->fluxUnits.substr(size-5,size));
       return (tailOfFluxUnits == "/beam");
     }
   }
