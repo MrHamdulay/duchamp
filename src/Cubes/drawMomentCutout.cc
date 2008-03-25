@@ -293,6 +293,66 @@ namespace duchamp
 
   }
 
+  std::vector<int> Detection::getVertexSet()
+  {
+    /**
+     * Gets a list of points being the end-points of 1-pixel long
+     * segments drawing a border around the spatial extend of a
+     * detection. The vector is a series of 4 integers, being: x_0,
+     * y_0, x_1, y_1.
+     * \return The vector of vertex positions.
+     */
+    std::vector<int> vertexSet;
+
+    int xmin = this->getXmin() - 1;
+    int xmax = this->getXmax() + 1;
+    int ymin = this->getYmin() - 1;
+    int ymax = this->getYmax() + 1;
+    int xsize = xmax - xmin + 1;
+    int ysize = ymax - ymin + 1;
+
+    std::vector<Voxel> voxlist = this->pixelArray.getPixelSet();
+    std::vector<bool> isObj(xsize*ysize,false);
+    for(int i=0;i<voxlist.size();i++){
+      int pos = (voxlist[i].getX()-xmin) + 
+	(voxlist[i].getY()-ymin)*xsize;
+      isObj[pos] = true;
+    }
+    voxlist.clear();
+    
+    for(int x=xmin; x<=xmax; x++){
+      // for each column...
+      for(int y=ymin+1;y<=ymax;y++){
+	int current  = (y-ymin)*xsize + x-xmin;
+	int previous = (y-ymin-1)*xsize + x-xmin;
+	if((isObj[current]&&!isObj[previous])   ||
+	   (!isObj[current]&&isObj[previous])){
+	  vertexSet.push_back(x);
+	  vertexSet.push_back(y);
+	  vertexSet.push_back(x+1);
+	  vertexSet.push_back(y);
+	}
+      }
+    }
+    for(int y=ymin; y<=ymax; y++){
+      // now for each row...
+      for(int x=xmin+1;x<=xmax;x++){
+	int current  = (y-ymin)*xsize + x-xmin;
+	int previous = (y-ymin)*xsize + x-xmin - 1;
+	if((isObj[current]&&!isObj[previous])   ||
+	   (!isObj[current]&&isObj[previous])){
+	  vertexSet.push_back(x);
+	  vertexSet.push_back(y);
+	  vertexSet.push_back(x);
+	  vertexSet.push_back(y+1);
+	}
+      }
+    }
+
+    return vertexSet;
+  
+  }
+  
   void Detection::drawBorders(int xoffset, int yoffset)
   {
     /** 
@@ -309,38 +369,16 @@ namespace duchamp
       int xsize = int(x2 - x1) + 1;
       int ysize = int(y2 - y1) + 1;
 
-      std::vector<Voxel> voxlist = this->pixelArray.getPixelSet();
-      std::vector<bool> isObj(xsize*ysize,false);
-      for(int i=0;i<voxlist.size();i++){
-	int pos = (voxlist[i].getX()-xoffset) + 
-	  (voxlist[i].getY()-yoffset)*xsize;
-	if(pos<xsize*ysize) isObj[pos] = true;
-      }
-      voxlist.clear();
-    
+      std::vector<int> vertexSet = this->getVertexSet();
+
       cpgswin(0,xsize-1,0,ysize-1);
-      for(int x=this->getXmin(); x<=this->getXmax(); x++){
-	// for each column...
-	for(int y=1;y<ysize;y++){
-	  int current = y*xsize + (x-xoffset);
-	  int previous = (y-1)*xsize + (x-xoffset);
-	  if((isObj[current]&&!isObj[previous])   ||
-	     (!isObj[current]&&isObj[previous])){
-	    cpgmove(x-xoffset+0, y+0);
-	    cpgdraw(x-xoffset+1, y+0);
-	  }
-	}
-      }
-      for(int y=this->getYmin(); y<=this->getYmax(); y++){
-	// now for each row...
-	for(int x=1;x<xsize;x++){
-	  int current = (y-yoffset)*xsize + x;
-	  int previous = (y-yoffset)*xsize + x - 1;
-	  if((isObj[current]&&!isObj[previous])   ||
-	     (!isObj[current]&&isObj[previous])){
-	    cpgmove(x+0, y-yoffset+0);
-	    cpgdraw(x+0, y-yoffset+1);
-	  }
+
+      if(vertexSet.size()%4 != 0)
+	duchampError("drawBorders","Vertex set wrong size!");
+      else{
+	for(int i=0;i<vertexSet.size()/4;i++){
+	  cpgmove(vertexSet[i*4]-xoffset,vertexSet[i*4+1]-yoffset);
+	  cpgdraw(vertexSet[i*4+2]-xoffset,vertexSet[i*4+3]-yoffset);
 	}
       }
       cpgswin(x1,x2,y1,y2);

@@ -75,42 +75,48 @@ namespace duchamp
       stream<<"#  ATrous Minimum Scale =" << this->par.getMinScale() << endl;
       stream<<"#  ATrous Filter = " << this->par.getFilterName() << endl;
     }
+    else if(this->par.getFlagSmooth()){
+      stream<<"# The data was smoothed prior to searching, with the following parameters." << endl;
+      stream<<"#  Smoothing type = " << this->par.getSmoothType() << endl;
+      if(this->par.getSmoothType()=="spectral"){
+	stream << "#  Hanning width = " << this->par.getHanningWidth() << endl;
+      }
+      else{
+	stream << "#  Kernel Major axis = " << this->par.getKernMaj() << endl;
+	if(this->par.getKernMin()>0) 
+	  stream << "#  Kernel Minor axis = " << this->par.getKernMin() << endl;
+	else
+	  stream << "#  Kernel Minor axis = " << this->par.getKernMaj() << endl;
+	stream << "#  Kernel Major axis = " << this->par.getKernPA() << endl;
+      }
+    }
     else stream << "# No ATrous reconstruction done." << endl;
     stream << "#\n";
     stream << "COLOR RED" << endl;
     stream << "COORD W" << endl;
-    for(int i=0;i<this->objectList->size();i++){
-      if(this->head.isWCS()){
-	float radius = this->objectList->at(i).getRAWidth()/120.;
-	if(this->objectList->at(i).getDecWidth()/120.>radius)
-	  radius = this->objectList->at(i).getDecWidth()/120.;
-	stream << "CIRCLE " 
-	       << this->objectList->at(i).getRA() << " " 
-	       << this->objectList->at(i).getDec() << " " 
-	       << radius << endl;
-	stream << "TEXT " 
-	       << this->objectList->at(i).getRA() << " " 
-	       << this->objectList->at(i).getDec() << " " 
-	       << this->objectList->at(i).getID() << endl;
+    stream << std::setprecision(6);
+    stream.setf(std::ios::fixed);
+    double *pix = new double[3];
+    double *wld = new double[3];
+    std::vector<Detection>::iterator obj;
+    for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
+      std::vector<int> vertexSet = obj->getVertexSet();
+      for(int i=0;i<vertexSet.size()/4;i++){
+	pix[0] = vertexSet[i*4]-0.5;
+	pix[1] = vertexSet[i*4+1]-0.5;
+	pix[2] = obj->getZcentre();
+	this->head.pixToWCS(pix,wld);
+	stream << "LINE " << wld[0] << " " << wld[1];
+	pix[0] = vertexSet[i*4+2]-0.5;
+	pix[1] = vertexSet[i*4+3]-0.5;
+	this->head.pixToWCS(pix,wld);
+	stream << " " << wld[0] << " " << wld[1] << "\n";
       }
-      else{
-	float radius = this->objectList->at(i).getXmax() - 
-	  this->objectList->at(i).getXmin() + 1;
-	if(this->objectList->at(i).getYmax()-this->objectList->at(i).getYmin() + 1 
-	   > radius)
-	  radius = this->objectList->at(i).getYmax() - 
-	    this->objectList->at(i).getYmin() + 1;
-	stream << "CIRCLE " 
-	       << this->objectList->at(i).getXcentre() << " " 
-	       << this->objectList->at(i).getYcentre() << " " 
-	       << radius << endl;
-	stream << "TEXT " 
-	       << this->objectList->at(i).getXcentre() << " " 
-	       << this->objectList->at(i).getYcentre() << " " 
-	       << this->objectList->at(i).getID() << endl;
-      }
-    }      
-
+      stream << "TEXT " 
+	     << obj->getRA() << " " 
+	     << obj->getDec() << " " 
+	     << obj->getID() << "\n\n";
+    }
   }
 
   std::string fixUnitsVOT(std::string oldstring)
