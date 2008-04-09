@@ -122,7 +122,7 @@ namespace duchamp
     class Col{
     public:
       Col();          ///< Basic constructor
-      Col(int num);   ///< Specific constructor
+      Col(int num, int prec=-1);   ///< Specific constructor
       Col(const Col& c);///< Assignment constructor
       Col& operator=(const Col& c); ///< Copy constructor
       virtual ~Col(); ///< Default destructor;

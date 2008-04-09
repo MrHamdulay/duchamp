@@ -41,6 +41,7 @@
 #include <duchamp/ATrous/filter.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/Section.hh>
+#include <duchamp/Detection/columns.hh>
 
 namespace duchamp
 {
@@ -99,6 +100,9 @@ namespace duchamp
     this->detectionMap      = "duchamp-DetectionMap.ps";
     this->momentMap         = "duchamp-MomentMap.ps";
     this->flagXOutput       = true;
+    this->precFlux          = Column::prec[Column::prFLUX];
+    this->precVel           = Column::prec[Column::prVEL];
+    this->precSNR           = Column::prec[Column::prSNR];
     // Cube related parameters 
     this->flagBlankPix      = true;
     this->blankPixValue     = -8.00061;
@@ -206,6 +210,9 @@ namespace duchamp
     this->detectionMap      = p.detectionMap;   
     this->momentMap         = p.momentMap;      
     this->flagXOutput       = p.flagXOutput;       
+    this->precFlux          = p.precFlux;
+    this->precVel           = p.precVel;
+    this->precSNR           = p.precSNR;
     this->flagBlankPix      = p.flagBlankPix;   
     this->blankPixValue     = p.blankPixValue;  
     this->blankKeyword      = p.blankKeyword;   
@@ -506,6 +513,9 @@ namespace duchamp
 	if(arg=="momentmap")       this->momentMap = readSval(ss); 
 	if(arg=="flagxoutput")     this->flagXOutput = readFlag(ss); 
 	if(arg=="newfluxunits")    this->newFluxUnits = readSval(ss);
+	if(arg=="precflux")        this->precFlux = readIval(ss);
+	if(arg=="precvel")         this->precVel = readIval(ss);
+	if(arg=="precsnr")         this->precSNR = readIval(ss);
 
 	if(arg=="flagnegative")    this->flagNegative = readFlag(ss);
 	if(arg=="flagtrim")        this->flagTrim = readFlag(ss); 
@@ -581,6 +591,11 @@ namespace duchamp
 
     // If pgplot was not included in the compilation, need to set flagXOutput to false
     if(!USE_PGPLOT) this->flagXOutput = false;
+
+    // Correcting bad precision values -- if negative, set to 0
+    if(this->precFlux<0) this->precFlux = 0;
+    if(this->precVel<0)  this->precVel = 0;
+    if(this->precSNR<0)  this->precSNR = 0;
 
     // The wavelet reconstruction takes precendence over the smoothing.
     if(this->flagATrous) this->flagSmooth = false;

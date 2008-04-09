@@ -68,7 +68,7 @@ namespace duchamp
       return *this;
     }
 
-    Col::Col(int num)
+    Col::Col(int num, int prec)
     {
       /**
        * A specialised constructor that defines one of the default 
@@ -76,10 +76,13 @@ namespace duchamp
        * \param num The number of the column to be constructed. 
        *            Corresponds to the order of the columns in the const 
        *            arrays in the Column namespace.
+       * \param prec The precision to use, if not the default. A value
+       * <0 or no value given results in the default being used.
        */ 
       if((num>=0)&&(num<numColumns)){
 	this->width     = defaultWidth[num];
-	this->precision = defaultPrec[num];
+	if(prec<0) this->precision = defaultPrec[num];
+	else this->precision = prec;
 	this->name      = defaultName[num];
 	this->units     = defaultUnits[num];
       }
@@ -94,6 +97,7 @@ namespace duchamp
 	this->units = " ";
       }
     }
+
     //------------------------------------------------------------
     void Col::printTitle(std::ostream &stream)
     {
@@ -152,7 +156,8 @@ namespace duchamp
        *  information on the columns necessary for output to the results
        *  file:
        *    Obj#,NAME,X,Y,Z,RA,DEC,VEL,w_RA,w_DEC,w_VEL,F_tot,F_int,F_peak,
-       *                X1,X2,Y1,Y2,Z1,Z2,Npix,Flag
+       *                X1,X2,Y1,Y2,Z1,Z2,Npix,Flag,
+       *                XAV,YAV,ZAV,XCENT,YCENT,ZCENT,XPEAK,YPEAK,ZPEAK
        *
        *   Each object in the provided objectList is checked to see if it
        *   requires any column to be widened, or for that column to have
@@ -170,8 +175,12 @@ namespace duchamp
 
       std::vector<Col> newset;
 
-      // set up the default columns 
+      // desired precisions for fluxes, velocities and SNR value
+      int precVel=objectList[0].getVelPrec(),
+	precFlux=objectList[0].getFpeakPrec(), // same as FintPrec at this point.
+	precSNR=objectList[0].getSNRPrec();
 
+      // set up the default columns 
       newset.push_back( Col(NUM) );
       newset.push_back( Col(NAME) );
       newset.push_back( Col(X) );
@@ -179,14 +188,14 @@ namespace duchamp
       newset.push_back( Col(Z) );
       newset.push_back( Col(RA) );
       newset.push_back( Col(DEC) );
-      newset.push_back( Col(VEL) );
+      newset.push_back( Col(VEL, precVel) );
       newset.push_back( Col(WRA) );
       newset.push_back( Col(WDEC) );
-      newset.push_back( Col(WVEL) );
-      newset.push_back( Col(FINT) );
-      newset.push_back( Col(FTOT) );
-      newset.push_back( Col(FPEAK) );
-      newset.push_back( Col(SNRPEAK) );
+      newset.push_back( Col(WVEL, precVel) );
+      newset.push_back( Col(FINT, precFlux) );
+      newset.push_back( Col(FTOT, precFlux) );
+      newset.push_back( Col(FPEAK, precFlux) );
+      newset.push_back( Col(SNRPEAK, precSNR) );
       newset.push_back( Col(X1) );
       newset.push_back( Col(X2) );
       newset.push_back( Col(Y1) );
@@ -204,6 +213,7 @@ namespace duchamp
       newset.push_back( Col(XPEAK) );
       newset.push_back( Col(YPEAK) );
       newset.push_back( Col(ZPEAK) );
+
 
       // Now test each object against each new column
       for( int obj = 0; obj < objectList.size(); obj++){

@@ -1197,14 +1197,27 @@ namespace duchamp
   void Cube::setupColumns()
   {
     /** 
-     *   A front-end to the two setup routines in columns.cc.
-     *   This first calculates the WCS parameters for all objects, then
-     *    sets up the columns (calculates their widths and precisions and so on).
-     *   The precisions are also stored in each Detection object.
-     *   Need to have called calcObjectWCSparams() somewhere beforehand.
+     *   A front-end to the two setup routines in columns.cc.  
+     *
+     *   This first gets the starting precisions, which may be from
+     *   the input parameters. It then sets up the columns (calculates
+     *   their widths and precisions and so on based on the values
+     *   within). The precisions are also stored in each Detection
+     *   object.
+     *
+     *   Need to have called calcObjectWCSparams() somewhere
+     *   beforehand.
      */ 
-    //    this->calcObjectWCSparams();  
-    // need this as the colSet functions use vel, RA, Dec, etc...
+
+    std::vector<Detection>::iterator obj;
+    for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
+      obj->setVelPrec( this->par.getPrecVel() );
+      obj->setFpeakPrec( this->par.getPrecFlux() );
+      obj->setXYZPrec( Column::prec[Column::prXYZ] );
+      obj->setPosPrec( Column::prec[Column::prWPOS] );
+      obj->setFintPrec( this->par.getPrecFlux() );
+      obj->setSNRPrec( this->par.getPrecSNR() );
+    }
   
     this->fullCols.clear();
     this->fullCols = getFullColSet(*(this->objectList), this->head);
@@ -1224,7 +1237,6 @@ namespace duchamp
     pos = fullCols[WRA].getPrecision();
     pos = std::max(pos, fullCols[WDEC].getPrecision());
   
-    std::vector<Detection>::iterator obj;
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
       obj->setVelPrec(vel);
       obj->setFpeakPrec(fpeak);

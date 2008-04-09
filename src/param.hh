@@ -191,6 +191,12 @@ namespace duchamp
     void   setMomentMap(std::string fname){momentMap = fname;};
     bool   getFlagXOutput(){return flagXOutput;};
     void   setFlagXOutput(bool b){flagXOutput=b;};
+    int    getPrecFlux(){return precFlux;};
+    void   setPrecFlux(int i){precFlux=i;};
+    int    getPrecVel(){return precVel;};
+    void   setPrecVel(int i){precVel=i;};
+    int    getPrecSNR(){return precSNR;};
+    void   setPrecSNR(int i){precSNR=i;};
     //
     bool   getFlagNegative(){return flagNegative;};
     void   setFlagNegative(bool flag){flagNegative=flag;};
@@ -367,6 +373,9 @@ namespace duchamp
     std::string momentMap;  ///< The name of the 0th moment map (ps file).
     bool   flagXOutput;     ///< Should there be an xwindows output of
                             ///   the detection map?
+    int    precFlux;        ///< The desired precision for flux values.
+    int    precVel;         ///< The desired precision for velocity/frequency values.
+    int    precSNR;         ///< The desired precision for the SNR values.
 
     // Cube related parameters
     bool   flagNegative;    ///< Are we going to search for negative

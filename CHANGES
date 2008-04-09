@@ -1,3 +1,14 @@
+Duchamp version 1.1.5 (2008/03/20)
+----------------------------------
+
+Bug fixes:
+* A major bug was discovered in the calculation of integrated
+  fluxes. The flux was incorrectly being weighted by the spatial size
+  of the detection, resulting in a (often considerable) overestimation
+  of the integrated flux. This has been corrected, as has the beam
+  size (which was out by a factor of 1/ln(2)).
+
+
 Duchamp version 1.1.4 (2008/02/15)
 ----------------------------------
 
