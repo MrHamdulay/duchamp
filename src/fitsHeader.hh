@@ -95,7 +95,10 @@ namespace duchamp
 
     /** Correct the units for the spectral axis */
     void    fixUnits(Param &par);
- 
+    
+    /** Define the units for integrated flux */
+    void    setIntFluxUnits();
+
     //--------------------
     // Functions in FitsIO/headerIO.cc
     //

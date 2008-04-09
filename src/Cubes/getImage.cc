@@ -144,8 +144,62 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
     // Read the necessary header information, and copy some of it into the Param.
     this->head.readHeaderInfo(fname, this->par);
 
+    // Convert the flux Units if the user has so requested
+    this->convertFluxUnits();
+
     return SUCCESS;
 
   }
+
+
+  void Cube::convertFluxUnits()
+  {
+    /**
+     *  If the user has requested new flux units (via the input
+     *  parameter newFluxUnits), this function converts the units
+     *  given by BUNIT to those given by newFluxUnits. If no simple
+     *  conversion can be found (by using wcs***) then nothing is done
+     *  and the user is informed, otherwise the FitsHeader::fluxUnits
+     *  parameter is updated and the pixel array is converted
+     *  accordingly.
+     *
+     */
+
+
+    if(this->par.getNewFluxUnits()!=""){
+
+      std::string oldUnit = this->head.getFluxUnits();
+      std::string newUnit = this->par.getNewFluxUnits();
+
+      if(this->par.isVerbose()){
+	std::cout << "Converting flux units from " << oldUnit << " to " << newUnit << "... ";
+	std::cout << std::flush;
+      }
+
+      double scale,offset,power;
+      int status = wcsunits(oldUnit.c_str(), newUnit.c_str(), &scale, &offset, &power);
+
+      if(status==0){
+	
+	this->head.setFluxUnits( newUnit );
+	this->head.setIntFluxUnits();
+
+	for(int i=0;i<this->numPixels;i++)
+	  this->array[i] = pow(scale * array[i] + offset, power);
+	if(this->par.isVerbose()) {
+	  std::cout << " Done.\n";
+	}
+      }
+      else{
+	std::stringstream ss;
+	ss << "Could not convert units from " << oldUnit << " to " << newUnit
+	   << ".\nLeaving BUNIT as " << oldUnit;
+	std::cout << "\n";
+	duchampWarning("convertFluxUnits", ss.str());
+      }
+    }
+
+  }
+
 
 }

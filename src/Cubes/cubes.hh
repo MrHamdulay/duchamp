@@ -361,6 +361,9 @@ namespace duchamp
     /** Function to read in FITS file.*/
     int         getCube(std::string fname);  // in Cubes/getImage.cc
 
+    /** Convert the flux units to something user-specified.*/
+    void        convertFluxUnits(); // in Cubes/getImage.cc
+
     /** Function to retrieve FITS data array */
     int         getFITSdata(std::string fname);   // in FitsIO/dataIO.cc
 

@@ -214,6 +214,8 @@ namespace duchamp
     float  getBeamSize(){return numPixBeam;};
     bool   getFlagUsingBeam(){return flagUsingBeam;};
     void   setFlagUsingBeam(bool b){flagUsingBeam=b;};
+    std::string getNewFluxUnits(){return newFluxUnits;};
+    void setNewFluxUnits(std::string s){newFluxUnits=s;};
     //
     bool   getFlagTrim(){return flagTrim;};
     void   setFlagTrim(bool b){flagTrim=b;};
@@ -377,6 +379,7 @@ namespace duchamp
     int    blankKeyword;    ///< The FITS header keyword BLANK.
     float  bscaleKeyword;   ///< The FITS header keyword BSCALE.
     float  bzeroKeyword;    ///< The FITS header keyword BZERO.
+    std::string  newFluxUnits;    ///< The user-requested flux units, to replace BUNIT.
     // Milky-Way parameters
     bool   flagMW;          ///< A flag that indicates whether to ignore
                             ///   the Milky Way channels.

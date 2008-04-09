@@ -105,6 +105,7 @@ namespace duchamp
     this->blankKeyword      = 1;
     this->bscaleKeyword     = -8.00061;
     this->bzeroKeyword      = 0.;
+    this->newFluxUnits      = "";
     // Milky-Way parameters
     this->flagMW            = false;
     this->maxMW             = 112;
@@ -210,6 +211,7 @@ namespace duchamp
     this->blankKeyword      = p.blankKeyword;   
     this->bscaleKeyword     = p.bscaleKeyword;  
     this->bzeroKeyword      = p.bzeroKeyword;   
+    this->newFluxUnits      = p.newFluxUnits;
     this->flagMW            = p.flagMW;         
     this->maxMW             = p.maxMW;          
     this->minMW             = p.minMW;         
@@ -503,6 +505,7 @@ namespace duchamp
 	if(arg=="detectionmap")    this->detectionMap = readSval(ss); 
 	if(arg=="momentmap")       this->momentMap = readSval(ss); 
 	if(arg=="flagxoutput")     this->flagXOutput = readFlag(ss); 
+	if(arg=="newfluxunits")    this->newFluxUnits = readSval(ss);
 
 	if(arg=="flagnegative")    this->flagNegative = readFlag(ss);
 	if(arg=="flagtrim")        this->flagTrim = readFlag(ss); 

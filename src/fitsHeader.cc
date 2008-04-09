@@ -272,10 +272,20 @@ namespace duchamp
     this->offset= of;
     this->power = po;
 
-    // Work out the integrated flux units, based on the spectral units.
-    // If flux is per beam, trim the /beam from the flux units and multiply 
-    //  by the spectral units.
-    // Otherwise, just muliply by the spectral units.
+    this->setIntFluxUnits();
+
+  }
+
+  void FitsHeader::setIntFluxUnits()
+  {
+
+    /**
+     * Work out the integrated flux units, based on the spectral units.
+     * If flux is per beam, trim the /beam from the flux units and multiply 
+     *  by the spectral units.
+     * Otherwise, just muliply by the spectral units.
+     */
+
     if(this->fluxUnits.size()>5){
     
       if(makelower(this->fluxUnits.substr(this->fluxUnits.size()-5,
