@@ -291,15 +291,26 @@ namespace duchamp
     this->getSpectralArrays(objNum,specx,specy,specy2,base);
 
     std::string fluxLabel = "Flux";
-  
+    std::string fluxUnits = this->head.getFluxUnits();
+    std::string intFluxUnits;// = this->head.getIntFluxUnits();
+    // Rather than use the intFluxUnits from the header, which will be like Jy MHz, 
+    // we just use the pixel units, removing the /beam if necessary.
+    if(makelower(fluxUnits.substr(fluxUnits.size()-5,
+				  fluxUnits.size()   )) == "/beam"){
+      intFluxUnits = fluxUnits.substr(0,fluxUnits.size()-5);
+    }
+    else intFluxUnits = fluxUnits;
+    
+
     if(this->par.getSpectralMethod()=="sum"){
       fluxLabel = "Integrated " + fluxLabel;
-      if(this->head.isWCS()) 
-	fluxLabel += " ["+this->head.getIntFluxUnits()+"]";
+      if(this->head.isWCS()) {
+	fluxLabel += " ["+intFluxUnits+"]";
+      }
     }
     else {// if(par.getSpectralMethod()=="peak"){
       fluxLabel = "Peak " + fluxLabel;
-      if(this->head.isWCS()) fluxLabel += " ["+this->head.getFluxUnits()+"]";
+      if(this->head.isWCS()) fluxLabel += " ["+fluxUnits+"]";
     }
     
     float vmax,vmin,width;
