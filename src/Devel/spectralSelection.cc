@@ -36,6 +36,7 @@
 #include <duchamp/Cubes/cubes.hh>
 #include <vector>
 
+using namespace duchamp;
 
 void spectralSelection(std::vector<float> &xvalues, 
 		       std::vector<float> &yvalues, 

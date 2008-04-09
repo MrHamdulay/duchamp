@@ -56,22 +56,22 @@ std::string menu()
   int cube=0;
   switch(file){
   case 1:
-    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/precut_p26cube22_poly.fits";
+    fname = "/Users/whi550/ObsData/cubes/precut_p26cube22_poly.fits";
     break;
   case 2:
-    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/precut_p34cube19_poly.fits";
+    fname = "/Users/whi550/ObsData/cubes/precut_p34cube19_poly.fits";
     break;
   case 3:
-    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/precut_p34cube20_poly.fits";
+    fname = "/Users/whi550/ObsData/cubes/precut_p34cube20_poly.fits";
     break;
   case 4:
-    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/precut_p42cube17_poly.fits";
+    fname = "/Users/whi550/ObsData/cubes/precut_p42cube17_poly.fits";
     break;
   case 5:
-    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/precut_p58cube10_poly.fits";
+    fname = "/Users/whi550/ObsData/cubes/precut_p58cube10_poly.fits";
     break;
   case 6:
-    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/H201_abcde_luther_chop.fits";
+    fname = "/Users/whi550/ObsData/cubes/H201_abcde_luther_chop.fits";
     break;
   case 7:
     while((cube<1)||(cube>538)){
@@ -112,25 +112,25 @@ std::string specMenu()
   std::string fname;
   switch(file){
   case 1:
-    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b1133m172";
+    fname = "/Users/whi550/ObsData/PHFS/PHFS_spectra/pks/b1133m172";
     break;
   case 2:
-    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b1136m135";
+    fname = "/Users/whi550/ObsData/PHFS/PHFS_spectra/pks/b1136m135";
     break;
   case 3:
-    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b1226p023";
+    fname = "/Users/whi550/ObsData/PHFS/PHFS_spectra/pks/b1226p023";
     break;
   case 4:
-    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b2126m158";
+    fname = "/Users/whi550/ObsData/PHFS/PHFS_spectra/pks/b2126m158";
     break;
   case 5:
-    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b2126_obj09";
+    fname = "/Users/whi550/ObsData/PHFS/PHFS_spectra/pks/b2126_obj09";
     break;
   case 6:
-    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b0823p033";
+    fname = "/Users/whi550/ObsData/PHFS/PHFS_spectra/pks/b0823p033";
     break;
   default:
-    fname = "/DATA/SITAR_1/whi550/ObsData/cubes/phfs_spectra/b1404_sdss.dat";
+    fname = "/Users/whi550/ObsData/PHFS/PHFS_spectra/pks/b1404_sdss.dat";
     break;
   }
   return fname;
