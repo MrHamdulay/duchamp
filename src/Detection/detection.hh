@@ -121,6 +121,10 @@ namespace duchamp
 	Detection. */
     std::string outputLabelWidths(); 
 
+    void printTableRow(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType);
+    void printTableEntry(std::ostream &stream, Column::Col column);
+
+
     /** Prints the column headers, except for the different pixel centres. */
     void   outputDetectionTextHeader(std::ostream &stream, 
 				     std::vector<Column::Col> columns); 

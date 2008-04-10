@@ -58,50 +58,52 @@ namespace duchamp
 		  FINT, FTOT, FPEAK, SNRPEAK,
 		  X1, X2, Y1, Y2, Z1, Z2, NPIX, FLAG,
 		  XAV, YAV, ZAV, XCENT, YCENT, ZCENT, 
-		  XPEAK, YPEAK, ZPEAK}; 
+		  XPEAK, YPEAK, ZPEAK,
+		  UNKNOWN};  // the last is for unclassified columns
 
     /** Guide for which columns are used for the results file */
-    const bool isFile[numColumns]=
+    const bool isFile[numColumns+1]=
       {true,true,true,true,true,
        true,true,false,false,true,
        true,true,true,
        true,true,true,true,
        true,true,true,true,true,true,true,true,
        true,true,true,true,true,true,
-       true,true,true};
+       true,true,true,
+       false};
 
     /** Guide for which columns are used for the results printed to screen */
-    const bool isScreen[numColumns]=
+    const bool isScreen[numColumns+1]=
       {true,true,true,true,true,
        true,true,false,false,true,
        true,true,true,
        true,true,true,true,
        true,true,true,true,true,true,true,true,
        false,false,false,false,false,false,
-       false,false,false};
+       false,false,false,
+       false};
 
     /** Guide for which columns are used for the log file */
-    const bool isLog[numColumns]=
+    const bool isLog[numColumns+1]=
       {true,false,true,true,true,
        false,false,false,false,false,
        false,false,false,
        false,true,true,true,
        true,true,true,true,true,true,true,false,
        false,false,false,false,false,false,
-       false,false,false};
+       false,false,false,
+       false};
 
      /** Guide for which columns are used for the VOTable file */
-    const bool isVOTable[numColumns]=
+    const bool isVOTable[numColumns+1]=
       {true,true,false,false,false,
        false,false,true,true,true,
        true,true,true,
        true,true,true,true,
        false,false,false,false,false,false,false,true,
        true,true,true,true,true,true,
-       true,true,true};
-
-    /** Decides whether a column is used for a given table type */
-    bool doCol(COLNAME column, std::string type, bool flagFint=true);
+       true,true,true,
+       false};
 
     /** Total number of columns used in logfile (no WCS ones). */
     const int numColumnsLog=14; 
@@ -115,19 +117,17 @@ namespace duchamp
     /** Enumerated precision categories */
     enum PrecType {prFLUX=3, prVEL=3, prXYZ=1, prPOS=6, prWPOS=2, prSNR=2}; 
 
-    /** Precision values in same order as enum list.*/
-    const int prec[numPrec]={3, 3, 1, 6, 2, 2}; 
-
     /** Default widths of all columns.*/
-    const int defaultWidth[numColumns]=
+    const int defaultWidth[numColumns+1]=
       {5, 8, 6, 6, 6,
        13, 13, 11, 11, 7, 9, 9, 7,
        10, 10, 9, 7,
        4, 4, 4, 4, 4, 4, 6, 5,
-       6, 6, 6, 7, 7, 7, 7, 7, 7};
+       6, 6, 6, 7, 7, 7, 7, 7, 7,
+       1};
 
     /** Default precisions for all columns.*/
-    const int defaultPrec[numColumns]=
+    const int defaultPrec[numColumns+1]=
       {0, 0, prXYZ, prXYZ, prXYZ,
        0, 0, prPOS, prPOS, prVEL, 
        prWPOS, prWPOS, prVEL,
@@ -135,34 +135,29 @@ namespace duchamp
        prSNR, 0, 0, 0, 0, 0, 0, 0, 0,
        prXYZ, prXYZ, prXYZ, 
        prXYZ, prXYZ, prXYZ, 
-       prXYZ, prXYZ, prXYZ}; 
-//       {0, 0, prec[prXYZ], prec[prXYZ], prec[prXYZ],
-//        0, 0, prec[prVEL], 
-//        prec[prWPOS], prec[prWPOS], prec[prVEL],
-//        prec[prFLUX], prec[prFLUX], prec[prFLUX], 
-//        prec[prSNR], 0, 0, 0, 0, 0, 0, 0, 0,
-//        prec[prXYZ], prec[prXYZ], prec[prXYZ], 
-//        prec[prXYZ], prec[prXYZ], prec[prXYZ], 
-//        prec[prXYZ], prec[prXYZ], prec[prXYZ]}; 
+       prXYZ, prXYZ, prXYZ,
+       0}; 
 
     /** Default Titles of all columns. */
-    const std::string defaultName[numColumns]=
+    const std::string defaultName[numColumns+1]=
       {"Obj#","Name","X","Y","Z",
        "RA","DEC","RAJD","DECJD","VEL",
        "w_RA","w_DEC","w_VEL",
        "F_int","F_tot","F_peak", "S/Nmax",
        "X1","X2","Y1","Y2","Z1","Z2","Npix","Flag",
        "X_av", "Y_av", "Z_av", "X_cent", "Y_cent", "Z_cent",
-       "X_peak", "Y_peak", "Z_peak"};
+       "X_peak", "Y_peak", "Z_peak",
+       " "};
 
     /** Default units of all columns. */
-    const std::string defaultUnits[numColumns]=
+    const std::string defaultUnits[numColumns+1]=
       {"","","","","",
        "","","[deg]","[deg]","",
        "[arcmin]","[arcmin]","",
        "","","", "",
        "","","","","","","[pix]","",
-       "","","","","","","","",""}; 
+       "","","","","","","","","",
+       ""}; 
 
 
     /** Class to store information about a single column.
@@ -188,6 +183,8 @@ namespace duchamp
       void   setName(std::string s){name=s;};  
       std::string getUnits(){return units;};         
       void   setUnits(std::string s){units=s;}; 
+      COLNAME getType(){return type;};
+      void   setType(COLNAME coltype){type=coltype;};
 
       //--------------
       // other functions
@@ -216,14 +213,19 @@ namespace duchamp
       /** Print a given value in a column with correct width & precision. */
       template <class T> void printEntry(std::ostream &stream, T value);
 
+      /** Decides whether the column is used for a given table type */
+      bool   doCol(std::string type, bool flagFint=true);
+
+
     private:
       int width;          ///< How wide is the column (in ascii spaces)
       int precision;      ///< What precision should be used to print
-      ///   the values? (If 0, the setprecision command
-      ///   is not used.)
+                          ///   the values? (If 0, the setprecision command
+                          ///   is not used.)
       std::string name;   ///< The title of the column
       std::string units;  ///< The units that the values in the column
-      ///   are expressed in.
+                          ///   are expressed in.
+      COLNAME type;       ///< The type of the column
     };
 
   

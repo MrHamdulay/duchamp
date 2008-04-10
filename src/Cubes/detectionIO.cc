@@ -117,280 +117,6 @@ namespace duchamp
     }
   }
 
-  std::string fixUnitsVOT(std::string oldstring)
-  {
-    /** Fix a string containing units to make it acceptable for a VOTable.
-     *
-     * This function makes the provided units string acceptable
-     * according to the standard found at
-     * http://vizier.u-strasbg.fr/doc/catstd-3.2.htx 
-     * This should then be able to convert the units used in the text
-     * table to units suitable for putting in a VOTable.
-     *
-     * Specifically, it removes any square brackets [] from the
-     * start/end of the string, and replaces blank spaces (representing
-     * multiplication) with a '.' (full stop).
-     */
-
-    std::string newstring;
-    for(int i=0;i<oldstring.size();i++){
-      if((oldstring[i]!='[')&&(oldstring[i]!=']')){
-	if(oldstring[i]==' ') newstring += '.';
-	else newstring += oldstring[i];
-      }
-    }
-    return newstring;  
-  }
-
-
-  template <class T> void printVOEntry(std::ostream &stream, Column::Col &col, T value)
-  {
-    stream << "<TD>";
-    col.printEntry(stream,value);
-    stream << "</TD>";
-  }
-  template void printVOEntry<int>(std::ostream &stream, Column::Col &col, int value);
-  template void printVOEntry<long>(std::ostream &stream, Column::Col &col, long value);
-  template void printVOEntry<unsigned>(std::ostream &stream, Column::Col &col, unsigned value);
-  template void printVOEntry<float>(std::ostream &stream, Column::Col &col, float value);
-  template void printVOEntry<double>(std::ostream &stream, Column::Col &col, double value);
-  template void printVOEntry<std::string>(std::ostream &stream, Column::Col &col, std::string value);
-  
-  void Cube::outputDetectionsVOTable(std::ostream &stream)
-  {
-    /**
-     *  Prints to a stream (provided) the list of detected objects in the cube
-     *   in a VOTable format.
-     *  Uses WCS information and assumes WCS parameters have been calculated for each
-     *   detected object.
-     *  If they have not (given by the isWCS() function), then those objects are not written...
-     */
-
-    // Set up Column definitions here
-    std::vector<Column::Col> localCol;
-    std::string posUCD[4];
-    localCol.push_back(this->fullCols[Column::NUM]);  // 0 = objID
-    localCol.push_back(this->fullCols[Column::NAME]);  // 1 = name
-    localCol.push_back(this->fullCols[Column::RAJD]);  // 2 = ra
-    if(makelower(localCol[2].getName())=="ra"){
-      posUCD[0] = "pos.eq.ra;meta.main";
-      posUCD[2] = "phys.angSize;pos.eq.ra";
-    }
-    else{
-      posUCD[0] = "pos.galactic.lat;meta.main";
-      posUCD[2] = "phys.angSize;pos.galactic.lat";
-    }
-    localCol.push_back(this->fullCols[Column::DECJD]);  // 3 = dec
-    if(makelower(localCol[2].getName())=="dec"){
-      posUCD[1] = "pos.eq.dec;meta.main";
-      posUCD[3] = "phys.angSize;pos.eq.dec";
-    }
-    else{
-      posUCD[1] = "pos.galactic.lon;meta.main";
-      posUCD[3] = "phys.angSize;pos.galactic.lon";
-    }
-    localCol.push_back(this->fullCols[Column::WRA]);  // 4 = w_ra
-    localCol.push_back(this->fullCols[Column::WDEC]);  // 5 = w_dec
-    localCol.push_back(this->fullCols[Column::VEL]);  // 6 = vel
-    localCol.push_back(this->fullCols[Column::WVEL]); // 7 = w_vel
-    if(this->head.isSpecOK())
-      localCol.push_back(this->fullCols[Column::FINT]); // 8 = f_int
-    else
-      localCol.push_back(this->fullCols[Column::FTOT]); // 8 = f_tot
-    localCol.push_back(this->fullCols[Column::FPEAK]); // 9 = f_peak
-    localCol.push_back(this->fullCols[Column::FLAG]); // 10 = flag
-    localCol.push_back(this->fullCols[Column::XCENT]); // 11 = x_cent
-    localCol.push_back(this->fullCols[Column::YCENT]); // 12 = y_cent
-    localCol.push_back(this->fullCols[Column::ZCENT]); // 13 = z_cent
-    localCol.push_back(this->fullCols[Column::XAV]); // 14 = x_av
-    localCol.push_back(this->fullCols[Column::YAV]); // 15 = y_av
-    localCol.push_back(this->fullCols[Column::ZAV]); // 16 = z_av
-    localCol.push_back(this->fullCols[Column::XPEAK]); // 17 = x_peak
-    localCol.push_back(this->fullCols[Column::YPEAK]); // 18 = y_peak
-    localCol.push_back(this->fullCols[Column::ZPEAK]); // 19 = z_peak
-
-    stream<<"<?xml version=\"1.0\"?>\n";
-    stream<<"<VOTABLE version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n";
-    stream<<" xsi:noNamespaceSchemaLocation=\"http://www.ivoa.net/xml/VOTable/VOTable/v1.1\">\n";
-
-    stream<<"  <COOSYS ID=\"J2000\" equinox=\"J2000.\" epoch=\"J2000.\" system=\"eq_FK5\"/>\n";
-    stream<<"  <RESOURCE name=\"Duchamp Output\">\n";
-    stream<<"    <TABLE name=\"Detections\">\n";
-    stream<<"      <DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>\n";
-
-    // PARAM section -- parts that are not entry-specific ie. apply to whole dataset
-    std::string fname = this->par.getImageFile();
-    if(this->par.getFlagSubsection()) fname+=this->par.getSubsection();
-    stream<<"      <PARAM name=\"FITS file\" datatype=\"char\" ucd=\"meta.file;meta.fits\" value=\"" 
-	  << fname << "\" arraysize=\""<<fname.size()<<"\"/>\n";
-    if(this->par.getFlagFDR())
-      stream<<"      <PARAM name=\"FDR Significance\" datatype=\"float\" ucd=\"stat.param\" value=\"" 
-	    << this->par.getAlpha() << "\"/>\n";
-    else
-      stream<<"      <PARAM name=\"Threshold\" datatype=\"float\" ucd=\"stat.snr\" value=\"" 
-	    << this->par.getCut() << "\"/>\n";
-    if(this->par.getFlagATrous()){
-      std::string note = "The a trous reconstruction method was used, with the following parameters.";
-      stream<<"      <PARAM name=\"ATrous note\" datatype=\"char\" ucd=\"meta.note\" value=\""
-	    <<note << "\" arraysize=\"" << note.size() << "\"/>\n";
-      stream<<"      <PARAM name=\"ATrous Dimension\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" 
-	    << this->par.getReconDim() << "\"/>\n";
-      stream<<"      <PARAM name=\"ATrous Threshold\" datatype=\"float\" ucd=\"stat.snr\" value=\"" 
-	    << this->par.getAtrousCut() << "\"/>\n";
-      stream<<"      <PARAM name=\"ATrous Minimum Scale\" datatype=\"int\" ucd=\"stat.param\" value=\"" 
-	    << this->par.getMinScale() << "\"/>\n";
-      stream<<"      <PARAM name=\"ATrous Filter\" datatype=\"char\" ucd=\"meta.code;stat\" value=\""
-	    << this->par.getFilterName() << "\" arraysize=\"" << this->par.getFilterName().size() << "\"/>\n";
-    }
-    if(this->par.getFlagSmooth()){
-      if(this->par.getSmoothType()=="spectral"){
-	std::string note = "The cube was smoothed spectrally with a Hanning filter, with the following parameters.";
-	stream<<"      <PARAM name=\"Smoothing note\" datatype=\"char\" ucd=\"meta.note\" value=\""
-	      <<note << "\" arraysize=\"" << note.size() << "\"/>\n";
-	stream<<"      <PARAM name=\"Hanning filter width\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" 
-	      << this->par.getHanningWidth() << "\"/>\n";
-      }
-      else if(this->par.getSmoothType()=="spatial"){
-	std::string note = "The cube was smoothed spatially with a Gaussian kernel, with the following parameters.";
-	stream<<"      <PARAM name=\"Smoothing note\" datatype=\"char\" ucd=\"meta.note\" value=\""
-	      <<note << "\" arraysize=\"" << note.size() << "\"/>\n";
-	stream<<"      <PARAM name=\"Gaussian kernel major-axis FWHM\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" 
-	      << this->par.getKernMaj() << "\"/>\n";
-	stream<<"      <PARAM name=\"Gaussian kernel minor-axis FWHM\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" 
-	      << this->par.getKernMin() << "\"/>\n";
-	stream<<"      <PARAM name=\"Gaussian kernel position angle\" datatype=\"int\" ucd=\"meta.code;stat\" value=\"" 
-	      << this->par.getKernPA() << "\"/>\n";
-      }    
-    }
-    // FIELD section -- names, titles and info for each column.
-    stream<<"      <FIELD name=\"ID\" ID=\"col01\" ucd=\"meta.id\" datatype=\"int\" width=\""
-	  <<localCol[0].getWidth()<<"\" unit=\"--\"/>\n";
-    stream<<"      <FIELD name=\"Name\" ID=\"col02\" ucd=\"meta.id;meta.main\" datatype=\"char\" arraysize=\""
-	  <<localCol[1].getWidth()<<"\" unit=\"--\"/>\n";
-    stream<<"      <FIELD name=\""<<localCol[2].getName()<<"\" ID=\"col03\" ucd=\""
-	  <<posUCD[0]<<"\" ref=\"J2000\" datatype=\"float\" width=\""
-	  <<localCol[2].getWidth()<<"\" precision=\""<<localCol[2].getPrecision()<<"\" unit=\"deg\"/>\n";
-    stream<<"      <FIELD name=\""<<localCol[3].getName()<<"\" ID=\"col04\" ucd=\""
-	  <<posUCD[1]<<"\" ref=\"J2000\" datatype=\"float\" width=\""
-	  <<localCol[3].getWidth()<<"\" precision=\""<<localCol[3].getPrecision()<<"\" unit=\"deg\"/>\n";
-    stream<<"      <FIELD name=\""<<localCol[4].getName()<<"\" ID=\"col05\" ucd=\""
-	  <<posUCD[2]<<"\" ref=\"J2000\" datatype=\"float\" width=\""
-	  <<localCol[4].getWidth()<<"\" precision=\""<<localCol[4].getPrecision()<<"\" unit=\""
-	  <<fixUnitsVOT(localCol[4].getUnits())<<"\"/>\n";
-    stream<<"      <FIELD name=\""<<localCol[5].getName()<<"\" ID=\"col06\" ucd=\""
-	  <<posUCD[2]<<"\" ref=\"J2000\" datatype=\"float\" width=\""
-	  <<localCol[5].getWidth()<<"\" precision=\""<<localCol[5].getPrecision()<<"\" unit=\""
-	  <<fixUnitsVOT(localCol[5].getUnits())<<"\"/>\n";
-    stream<<"      <FIELD name=\"Vel\" ID=\"col07\" ucd=\"phys.veloc;src.dopplerVeloc\" datatype=\"float\" width=\""
-	  <<localCol[6].getWidth()<<"\" precision=\""<<localCol[6].getPrecision()<<"\" unit=\""
-	  <<fixUnitsVOT(localCol[6].getUnits())<<"\"/>\n";
-    stream<<"      <FIELD name=\"w_Vel\" ID=\"col08\" ucd=\"phys.veloc;src.dopplerVeloc;spect.line.width\""
-	  <<" datatype=\"float\" width=\""<<localCol[7].getWidth()<<"\" precision=\""
-	  <<localCol[7].getPrecision()<<"\" unit=\""<<fixUnitsVOT(localCol[7].getUnits())<<"\"/>\n";
-    if(this->head.isSpecOK())
-      stream<<"      <FIELD name=\"Integrated_Flux\" ID=\"col09\" ucd=\"phot.flux;spect.line.intensity\""
-	    <<" datatype=\"float\" width=\""<<localCol[8].getWidth()<<"\" precision=\""
-	    <<localCol[8].getPrecision()<<"\" unit=\""<<fixUnitsVOT(localCol[8].getUnits())<<"\"/>\n";
-    else
-      stream<<"      <FIELD name=\"Total_Flux\" ID=\"col09\" ucd=\"phot.flux;spect.line.intensity\""
-	    <<" datatype=\"float\" width=\""<<localCol[8].getWidth()<<"\" precision=\""
-	    <<localCol[8].getPrecision()<<"\" unit=\""<<fixUnitsVOT(localCol[8].getUnits())<<"\"/>\n";
-    stream<<"      <FIELD name=\"Peak_Flux\" ID=\"col10\" ucd=\"phot.flux;spect.line.intensity\""
-	  <<" datatype=\"float\" width=\""<<localCol[9].getWidth()<<"\" precision=\""
-	  <<localCol[9].getPrecision()<<"\" unit=\""<<fixUnitsVOT(localCol[9].getUnits())<<"\"/>\n";
-    stream<<"      <FIELD name=\"Flag\" ID=\"col11\" ucd=\"meta.code.qual\" datatype=\"char\" arraysize=\"3\" unit=\"--\"/>\n";
-    stream<<"      <FIELD name=\"X_Centroid\" ID=\"col12\" ucd=\"pos.cartesian.x\""
-	  <<" datatype=\"float\" width=\""<<localCol[11].getWidth()<<"\" precision=\""<<localCol[11].getPrecision()<<"\" unit=\"\"/>\n";
-    stream<<"      <FIELD name=\"Y_Centroid\" ID=\"col13\" ucd=\"pos.cartesian.y\""
-	  <<" datatype=\"float\" width=\""<<localCol[12].getWidth()<<"\" precision=\""<<localCol[12].getPrecision()<<"\" unit=\"\"/>\n";
-    stream<<"      <FIELD name=\"Z_Centroid\" ID=\"col14\" ucd=\"pos.cartesian.z\""
-	  <<" datatype=\"float\" width=\""<<localCol[13].getWidth()<<"\" precision=\""<<localCol[13].getPrecision()<<"\" unit=\"\"/>\n";
-    stream<<"      <FIELD name=\"X_Av\" ID=\"col15\" ucd=\"pos.cartesian.x\""
-	  <<" datatype=\"float\" width=\""<<localCol[14].getWidth()<<"\" precision=\""<<localCol[14].getPrecision()<<"\" unit=\"\"/>\n";
-    stream<<"      <FIELD name=\"Y_Av\" ID=\"col16\" ucd=\"pos.cartesian.y\""
-	  <<" datatype=\"float\" width=\""<<localCol[15].getWidth()<<"\" precision=\""<<localCol[15].getPrecision()<<"\" unit=\"\"/>\n";
-    stream<<"      <FIELD name=\"Z_Av\" ID=\"col17\" ucd=\"pos.cartesian.z\""
-	  <<" datatype=\"float\" width=\""<<localCol[16].getWidth()<<"\" precision=\""<<localCol[16].getPrecision()<<"\" unit=\"\"/>\n";
-    stream<<"      <FIELD name=\"X_Peak\" ID=\"col18\" ucd=\"pos.cartesian.x\""
-	  <<" datatype=\"int\" width=\""<<localCol[17].getWidth()<<"\" precision=\""<<localCol[17].getPrecision()<<"\" unit=\"\"/>\n";
-    stream<<"      <FIELD name=\"Y_Peak\" ID=\"col19\" ucd=\"pos.cartesian.y\""
-	  <<" datatype=\"int\" width=\""<<localCol[18].getWidth()<<"\" precision=\""<<localCol[18].getPrecision()<<"\" unit=\"\"/>\n";
-    stream<<"      <FIELD name=\"Z_Peak\" ID=\"col20\" ucd=\"pos.cartesian.z\""
-	  <<" datatype=\"int\" width=\""<<localCol[19].getWidth()<<"\" precision=\""<<localCol[19].getPrecision()<<"\" unit=\"\"/>\n";
-
-
-    stream<<"      <DATA>\n"
-	  <<"        <TABLEDATA>\n";
-
-    stream.setf(std::ios::fixed);  
-    for(int i=0;i<this->objectList->size();i++){
-      if(this->objectList->at(i).isWCS()){
-	stream<<"        <TR>\n";
-	stream<<"          ";
-	printVOEntry(stream,localCol[0],i+1);
-	printVOEntry(stream,localCol[1],this->objectList->at(i).getName());
-	printVOEntry(stream,localCol[2],this->objectList->at(i).getRA());
-	printVOEntry(stream,localCol[3],this->objectList->at(i).getDec());
-	printVOEntry(stream,localCol[4],this->objectList->at(i).getRAWidth());
-	printVOEntry(stream,localCol[5],this->objectList->at(i).getDecWidth());
-	printVOEntry(stream,localCol[6],this->objectList->at(i).getVel());
-	printVOEntry(stream,localCol[7],this->objectList->at(i).getVelWidth());
-	if(this->head.isSpecOK())
-	  printVOEntry(stream,localCol[8],this->objectList->at(i).getIntegFlux());
-	else
-	  printVOEntry(stream,localCol[8],this->objectList->at(i).getTotalFlux());
-	printVOEntry(stream,localCol[9] ,this->objectList->at(i).getPeakFlux());
-	printVOEntry(stream,localCol[10],this->objectList->at(i).getFlagText());
-	printVOEntry(stream,localCol[11],this->objectList->at(i).getXCentroid());
-	printVOEntry(stream,localCol[12],this->objectList->at(i).getYCentroid());
-	printVOEntry(stream,localCol[13],this->objectList->at(i).getZCentroid());
-	printVOEntry(stream,localCol[14],this->objectList->at(i).getXAverage());
-	printVOEntry(stream,localCol[15],this->objectList->at(i).getYAverage());
-	printVOEntry(stream,localCol[16],this->objectList->at(i).getZAverage());
-	printVOEntry(stream,localCol[17],this->objectList->at(i).getXPeak());
-	printVOEntry(stream,localCol[18],this->objectList->at(i).getYPeak());
-	printVOEntry(stream,localCol[19],this->objectList->at(i).getZPeak());
-// 	stream<<"          <TD>"<<setw(localCol[0].getWidth())<<i+1<<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[1].getWidth()) << this->objectList->at(i).getName()       <<"</TD>";
-// 	stream<<setprecision(Column::prPOS);
-// 	stream<<"<TD>" << setw(localCol[2].getWidth()) << this->objectList->at(i).getRA()         <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[3].getWidth()) << this->objectList->at(i).getDec()        <<"</TD>";
-// 	stream<<setprecision(Column::prWPOS);
-// 	stream<<"<TD>" << setw(localCol[4].getWidth()) << this->objectList->at(i).getRAWidth()    <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[5].getWidth()) << this->objectList->at(i).getDecWidth()   <<"</TD>";
-// 	stream<<setprecision(Column::prVEL);
-// 	stream<<"<TD>" << setw(localCol[6].getWidth()) << this->objectList->at(i).getVel()        <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[7].getWidth()) << this->objectList->at(i).getVelWidth()   <<"</TD>";
-// 	stream<<setprecision(Column::prFLUX);
-// 	if(this->head.isSpecOK())
-// 	  stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList->at(i).getIntegFlux() <<"</TD>";
-// 	else
-// 	  stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList->at(i).getTotalFlux() <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[9].getWidth()) << this->objectList->at(i).getPeakFlux()   <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[10].getWidth())<< this->objectList->at(i).getFlagText()   <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[11].getWidth())<< this->objectList->at(i).getXCentroid()  <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[12].getWidth())<< this->objectList->at(i).getYCentroid()  <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[13].getWidth())<< this->objectList->at(i).getZCentroid()  <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[14].getWidth())<< this->objectList->at(i).getXAverage()   <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[15].getWidth())<< this->objectList->at(i).getYAverage()   <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[16].getWidth())<< this->objectList->at(i).getZAverage()   <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[17].getWidth())<< this->objectList->at(i).getXPeak()      <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[18].getWidth())<< this->objectList->at(i).getYPeak()      <<"</TD>";
-// 	stream<<"<TD>" << setw(localCol[19].getWidth())<< this->objectList->at(i).getZPeak()      <<"</TD>";
-      
-	stream<<endl;
-	stream<<"        </TR>\n";
-      }
-    }
-    stream<<"        </TABLEDATA>\n";
-    stream<<"      </DATA>\n";
-    stream<<"    </TABLE>\n";
-    stream<<"  </RESOURCE>\n";
-    stream<<"</VOTABLE>\n";
-    resetiosflags(std::ios::fixed);
-  
-  }
-
   void Cube::prepareOutputFile()
   {
     /** 
@@ -501,13 +227,12 @@ namespace duchamp
 
     if(this->objectList->size()>0){
       this->setupColumns();
-//       this->objectList->at(0).outputDetectionTextHeaderFull(output,this->fullCols);
-//       this->objectList->at(0).outputDetectionTextHeader(std::cout,this->fullCols);
       outputTableHeader(output,this->fullCols,"file",this->head.isWCS());
       outputTableHeader(std::cout,this->fullCols,"screen",this->head.isWCS());
-      for(int i=0;i<this->objectList->size();i++){
-	this->objectList->at(i).outputDetectionTextWCSFull(output,this->fullCols);
-	this->objectList->at(i).outputDetectionTextWCS(std::cout,this->fullCols);
+      std::vector<Detection>::iterator obj;
+      for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
+	obj->printTableRow(output,this->fullCols,"file");
+	obj->printTableRow(std::cout,this->fullCols,"screen");
       }
     }
 
@@ -556,7 +281,7 @@ namespace duchamp
       std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
       this->calcObjectFluxes();
       this->setupColumns();
-      this->objectList->at(0).outputDetectionTextHeader(fout,this->logCols);
+      outputTableHeader(fout,this->fullCols,"log",this->head.isWCS());
 
       if(this->par.getFlagBaseline()){
 	for(int i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
@@ -571,7 +296,8 @@ namespace duchamp
 	  obj->pixels().addOffsets(left,bottom,0);
 	}
 	obj->calcFluxes(this->array, this->axisDim);
-	obj->outputDetectionText(fout,this->logCols,objCtr+1);
+	obj->setID(objCtr+1);
+	obj->printTableRow(fout,this->fullCols,"log");
 	delete obj;
       }
 

@@ -47,21 +47,162 @@ namespace duchamp
   void outputTableHeader(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType, bool flagWCS)
   {
 
-    for(int i=0;i<Column::numColumns;i++) 
-      if(doCol(Column::COLNAME(i),tableType,flagWCS)) columns[i].printDash(stream);
+    std::vector<Column::Col>::iterator col;
+    for(col=columns.begin();col<columns.end();col++)
+      if(col->doCol(tableType,flagWCS)) col->printDash(stream);
     stream << "\n";
-    for(int i=0;i<Column::numColumns;i++)  
-      if(doCol(Column::COLNAME(i),tableType,flagWCS)) columns[i].printTitle(stream);
+    for(col=columns.begin();col<columns.end();col++)
+      if(col->doCol(tableType,flagWCS)) col->printTitle(stream);
     stream << "\n";
-    for(int i=0;i<Column::numColumns;i++)  
-      if(doCol(Column::COLNAME(i),tableType,flagWCS)) columns[i].printUnits(stream);
+    for(col=columns.begin();col<columns.end();col++)
+      if(col->doCol(tableType,flagWCS)) col->printUnits(stream);
     stream << "\n";
-    for(int i=0;i<Column::numColumns;i++)  
-      if(doCol(Column::COLNAME(i),tableType,flagWCS)) columns[i].printDash(stream);
+    for(col=columns.begin();col<columns.end();col++)
+      if(col->doCol(tableType,flagWCS)) col->printDash(stream);
     stream << "\n";
 
   }
 
+  void Detection::printTableRow(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType)
+  {
+
+    stream.setf(std::ios::fixed);  
+    std::vector<Column::Col>::iterator col;
+    for(col=columns.begin();col<columns.end();col++)
+      if(col->doCol(tableType,this->flagWCS)) this->printTableEntry(stream, *col);
+      
+    stream << "\n";
+
+  }
+
+
+
+  void Detection::printTableEntry(std::ostream &stream, Column::Col column)
+  {
+
+    switch(column.getType())
+      {
+      case NUM:
+	column.printEntry(stream,this->id);
+	break;
+      case NAME:
+	column.printEntry(stream,this->name);
+	break;
+      case X:
+	column.printEntry(stream,this->getXcentre() + this->xSubOffset);
+	break;
+      case Y:
+	column.printEntry(stream,this->getYcentre() + this->ySubOffset);
+	break;
+      case Z:
+	column.printEntry(stream,this->getZcentre() + this->zSubOffset);
+	break;
+      case RA:
+	if(this->flagWCS) column.printEntry(stream,this->raS);
+	else column.printBlank(stream);
+	break;
+      case DEC:
+	if(this->flagWCS) column.printEntry(stream,this->decS);
+	else column.printBlank(stream);
+	break;
+      case RAJD:
+	if(this->flagWCS) column.printEntry(stream,this->ra);
+	else column.printBlank(stream);
+	break;
+      case DECJD:
+	if(this->flagWCS) column.printEntry(stream,this->dec);
+	else column.printBlank(stream);
+	break;
+      case VEL:
+	if(this->flagWCS) {
+	  if(this->specOK) column.printEntry(stream,this->vel);
+	  else column.printEntry(stream,0.);
+	}
+	else column.printBlank(stream);
+	break;
+      case WRA:
+	if(this->flagWCS) column.printEntry(stream,this->raWidth);
+	else column.printBlank(stream);
+	break;
+      case WDEC:
+	if(this->flagWCS) column.printEntry(stream,this->decWidth);
+	else column.printBlank(stream);
+	break;
+      case WVEL:
+	if(this->flagWCS) {
+	  if(this->specOK) column.printEntry(stream,this->velWidth);
+	  else column.printEntry(stream,0.);
+	}
+	else column.printBlank(stream);
+	break;
+      case FINT:
+	column.printEntry(stream,this->intFlux);
+	break;
+      case FTOT:
+	column.printEntry(stream,this->totalFlux);
+	break;
+      case FPEAK:
+	column.printEntry(stream,this->peakFlux);
+	break;
+      case SNRPEAK:
+	column.printEntry(stream,this->peakSNR);
+	break;
+      case X1:
+	column.printEntry(stream,this->getXmin() + this->xSubOffset);
+	break;
+      case X2:
+	column.printEntry(stream,this->getXmax() + this->xSubOffset);
+	break;
+      case Y1:
+	column.printEntry(stream,this->getYmin() + this->ySubOffset);
+	break;
+      case Y2:
+	column.printEntry(stream,this->getYmax() + this->ySubOffset);
+	break;
+      case Z1:
+	column.printEntry(stream,this->getZmin() + this->zSubOffset);
+	break;
+      case Z2:
+	column.printEntry(stream,this->getZmax() + this->zSubOffset);
+	break;
+      case NPIX:
+	column.printEntry(stream,int(this->pixelArray.getSize()));
+	break;
+      case FLAG:
+	column.printEntry(stream,this->flagText);
+	break;
+      case XAV:
+	column.printEntry(stream,this->getXAverage() + this->xSubOffset);
+	break;
+      case YAV:
+	column.printEntry(stream,this->getYAverage() + this->ySubOffset);
+	break;
+      case ZAV:
+	column.printEntry(stream,this->getZAverage() + this->zSubOffset);
+	break;
+      case XCENT:
+	column.printEntry(stream,this->getXCentroid() + this->xSubOffset);
+	break;
+      case YCENT:
+	column.printEntry(stream,this->getYCentroid() + this->ySubOffset);
+	break;
+      case ZCENT:
+	column.printEntry(stream,this->getZCentroid() + this->zSubOffset);
+	break;
+      case XPEAK:
+	column.printEntry(stream,this->getXPeak() + this->xSubOffset);
+	break;
+      case YPEAK:
+	column.printEntry(stream,this->getYPeak() + this->ySubOffset);
+	break;
+      case ZPEAK:
+	column.printEntry(stream,this->getZPeak() + this->zSubOffset);
+	break;
+      case UNKNOWN:
+      default:
+	break;
+      };
+  }
 
   void Detection::outputDetectionTextHeader(std::ostream &stream, 
 					    std::vector<Column::Col> columns)
