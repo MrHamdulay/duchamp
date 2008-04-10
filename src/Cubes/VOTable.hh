@@ -46,6 +46,11 @@
 namespace duchamp
 {
 
+  /** 
+   *  A class that holds information for a <FIELD > entry in a
+   *  VOTable. It also provides useful functions to store and print
+   *  that information.
+   */
   class VOField
   {
   public:
@@ -68,6 +73,11 @@ namespace duchamp
 
   };
 
+  /** 
+   *  A class that holds information for a <PARAM > entry in a
+   *  VOTable. It also provides useful functions to store and print
+   *  that information.
+   */
   class VOParam
   {
   public:

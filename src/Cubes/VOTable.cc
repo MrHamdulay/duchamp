@@ -73,6 +73,9 @@ namespace duchamp
 
   void VOField::define(std::string i, std::string n, std::string U, std::string u, std::string d, std::string r, int w, int p)
   {
+    /**
+     * A basic definition function, defining each parameter individually.
+     */
     this->ID = i;
     this->name = n;
     this->UCD = U;
@@ -85,6 +88,9 @@ namespace duchamp
 
   void VOField::define(Column::Col column, std::string i, std::string U, std::string d, std::string r)
   {
+    /**
+     * Another definition function, using the information in a Column::Col object for some parameters.
+     */
     this->ID = i;
     this->name = column.getName();
     this->UCD = U;
@@ -97,6 +103,11 @@ namespace duchamp
 
   void VOField::define(Column::Col column)
   {
+    /**
+     * A more useful definition function, using the Column::COLNAME
+     * key to specify particular values for each of the parameters for
+     * different columns.
+     */
     switch(column.getType())
       {
       case NUM:
@@ -178,6 +189,9 @@ namespace duchamp
 
   void VOField::printField(std::ostream &stream)
   {
+    /**
+     * Print the Field entry with appropriate formatting.
+     */
     stream << "<FIELD name=\"" <<this->name
 	   << "\" ID=\"" << this->ID
 	   << "\" ucd=\"" << this->UCD;
@@ -202,6 +216,11 @@ namespace duchamp
 
   template <class T> void VOParam::define(std::string n, std::string U, std::string d, T v, int w)
   {
+    /**
+     * A basic definition function, defining each parameter
+     * individually. The value (v) is written to a stringstream, and
+     * from there stored as a string.
+     */
     this->name = n;
     this->UCD = U;
     this->datatype = d;
@@ -218,6 +237,9 @@ namespace duchamp
 
   void VOParam::printParam(std::ostream &stream)
   {
+    /**
+     * Print the Param entry with appropriate formatting.
+     */
     stream << "<PARAM name=\"" <<this->name
 	   << "\" ucd=\"" << this->UCD
 	   << "\" datatype=\"" << this->datatype;
@@ -237,7 +259,13 @@ namespace duchamp
   
   void Cube::outputDetectionsVOTable(std::ostream &stream)
   {
-
+    /**
+     *  Prints to a stream (provided) the list of detected objects in the cube
+     *   in a VOTable format.
+     *  Uses WCS information and assumes WCS parameters have been calculated for each
+     *   detected object. 
+     */
+    
     stream<<"<?xml version=\"1.0\"?>\n";
     stream<<"<VOTABLE version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n";
     stream<<" xsi:noNamespaceSchemaLocation=\"http://www.ivoa.net/xml/VOTable/VOTable/v1.1\">\n";

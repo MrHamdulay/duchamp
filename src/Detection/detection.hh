@@ -121,33 +121,12 @@ namespace duchamp
 	Detection. */
     std::string outputLabelWidths(); 
 
+    /** Print all required values for the Detection to a table.*/
     void printTableRow(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType);
+
+    /** Print a particular value for the Detection to a table.*/
     void printTableEntry(std::ostream &stream, Column::Col column);
 
-
-    /** Prints the column headers, except for the different pixel centres. */
-    void   outputDetectionTextHeader(std::ostream &stream, 
-				     std::vector<Column::Col> columns); 
-
-    /** Prints all the column headers. */
-    void   outputDetectionTextHeaderFull(std::ostream &stream, 
-					 std::vector<Column::Col> columns); 
-
-    /** Prints the full set of columns, including the WCS
-	information, but not the different pixel centres. */
-    void   outputDetectionTextWCS(std::ostream &stream, 
-				  std::vector<Column::Col> columns); 
-
-    /** Prints the full set of columns, including the WCS
-	information. */
-    void   outputDetectionTextWCSFull(std::ostream &stream, 
-				      std::vector<Column::Col> columns); 
-
-    /** Prints a limited set of columns, excluding any WCS
-	information. */
-    void   outputDetectionText(std::ostream &stream, 
-			       std::vector<Column::Col> columns, 
-			       int idNumber); 
     //---------------------------------- 
     // For plotting routines... in Cubes/drawMomentCutout.cc
     //
@@ -389,6 +368,7 @@ namespace duchamp
   /** Manage both the merging and the cleaning up of the list. */
   void ObjectMerger(std::vector<Detection> &objList, Param &par);
 
+  /** Print the header information to a particular table */
   void outputTableHeader(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType, bool flagWCS);
 
 }

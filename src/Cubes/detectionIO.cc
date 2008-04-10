@@ -207,9 +207,8 @@ namespace duchamp
     /** 
      *  A front-end to writing the full list of detected objects to a results 
      *   file and to cout.
-     *  Uses outputDetectionTextWCS for each objects.
      *  Leaves the testing of whether the WCS parameters for each object 
-     *   have been calculated to outputDetectionTextWCS.
+     *   have been calculated to the printing function.
      */
 
     std::string outfile;
@@ -268,7 +267,7 @@ namespace duchamp
   {
     /**
      *  A front-end to writing a list of detected objects to the log file.
-     *  Does not assume WCS, so uses outputDetectionText.
+     *  Does not assume WCS is present.
      *  Designed to be used by searching routines before returning their 
      *   final list.
      */
@@ -315,7 +314,7 @@ namespace duchamp
   {
     /**
      *  A front-end to writing a detected object to the log file.
-     *  Does not assume WCS, so uses outputDetectionText.
+     *  Does not assume WCS is present.
      *  Corrects for changes to positions of pixels and removal of baselines.
      *  Designed to be used by searching routines before returning their final 
      *   list.
@@ -365,7 +364,7 @@ namespace duchamp
       obj.pixels().addOffsets(left,bottom,0);
     }
     obj.calcFluxes(temparray, this->axisDim);
-    obj.outputDetectionText(fout,this->logCols,counter);
+    obj.printTableRow(fout,this->fullCols,"log");
     delete [] temparray;
     delete [] tempDim;
     fout.close();
