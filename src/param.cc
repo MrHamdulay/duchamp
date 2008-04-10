@@ -100,9 +100,9 @@ namespace duchamp
     this->detectionMap      = "duchamp-DetectionMap.ps";
     this->momentMap         = "duchamp-MomentMap.ps";
     this->flagXOutput       = true;
-    this->precFlux          = Column::prec[Column::prFLUX];
-    this->precVel           = Column::prec[Column::prVEL];
-    this->precSNR           = Column::prec[Column::prSNR];
+    this->precFlux          = Column::prFLUX;
+    this->precVel           = Column::prVEL;
+    this->precSNR           = Column::prSNR;
     // Cube related parameters 
     this->flagBlankPix      = true;
     this->blankPixValue     = -8.00061;

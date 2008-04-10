@@ -1213,8 +1213,8 @@ namespace duchamp
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
       obj->setVelPrec( this->par.getPrecVel() );
       obj->setFpeakPrec( this->par.getPrecFlux() );
-      obj->setXYZPrec( Column::prec[Column::prXYZ] );
-      obj->setPosPrec( Column::prec[Column::prWPOS] );
+      obj->setXYZPrec( Column::prXYZ );
+      obj->setPosPrec( Column::prWPOS );
       obj->setFintPrec( this->par.getPrecFlux() );
       obj->setSNRPrec( this->par.getPrecSNR() );
     }

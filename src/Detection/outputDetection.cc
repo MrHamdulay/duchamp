@@ -44,6 +44,25 @@ namespace duchamp
 
   using namespace Column;
 
+  void outputTableHeader(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType, bool flagWCS)
+  {
+
+    for(int i=0;i<Column::numColumns;i++) 
+      if(doCol(Column::COLNAME(i),tableType,flagWCS)) columns[i].printDash(stream);
+    stream << "\n";
+    for(int i=0;i<Column::numColumns;i++)  
+      if(doCol(Column::COLNAME(i),tableType,flagWCS)) columns[i].printTitle(stream);
+    stream << "\n";
+    for(int i=0;i<Column::numColumns;i++)  
+      if(doCol(Column::COLNAME(i),tableType,flagWCS)) columns[i].printUnits(stream);
+    stream << "\n";
+    for(int i=0;i<Column::numColumns;i++)  
+      if(doCol(Column::COLNAME(i),tableType,flagWCS)) columns[i].printDash(stream);
+    stream << "\n";
+
+  }
+
+
   void Detection::outputDetectionTextHeader(std::ostream &stream, 
 					    std::vector<Column::Col> columns)
   {
@@ -65,6 +84,7 @@ namespace duchamp
      */
 
     std::vector<Col> local = columns;
+    std::cerr << "++> " << local.size() << " " << int(FLAG) << "\n";    
     if(local.size()==Column::numColumns){
       std::vector <Col>::iterator iter;
       if(this->flagWCS)
@@ -72,10 +92,15 @@ namespace duchamp
       else 
 	iter = local.begin() + FINT;
       local.erase(iter);
+      iter = local.begin()+DECJD;
+      local.erase(iter);
+      iter = local.begin()+RAJD;
+      local.erase(iter);
     }
   
     int size = local.size();
     if(int(FLAG)<size) size = int(FLAG);
+    std::cerr << "++> " << size << " " << int(FLAG) << "\n";
 
     stream << std::setfill(' ');
     for(int i=0;i<size;i++) local[i].printDash(stream);

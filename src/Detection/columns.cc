@@ -42,6 +42,34 @@ namespace duchamp
   namespace Column
   {
 
+    bool doCol(COLNAME column, std::string tableType, bool flagFint)
+    {
+      /** 
+       *  Uses the info in the isFile etc arrays to determine whether
+       *  a given column, referenced by the enumeration COLNAME, is
+       *  used for a given table type.
+       * \param column The column under consideration.
+       * \param tableType The type of table: one of file, screen, log, votable.
+       * \param flagFint Whether to use FINT (true) or FTOT
+       * (false). This defaults to true, so need not be given. It only
+       * applies to the screen case -- both are written for the
+       * results file case.
+       * \return True if column is used for given table type. False
+       * otherwise. False if tableType not one of four listed.
+       */
+      
+      if(tableType == "file") return isFile[column];
+      else if(tableType == "screen"){
+	if(flagFint && column==FTOT) return false;
+	if(!flagFint && column==FINT) return false;
+	return isScreen[column];
+      }
+      else if(tableType == "log") return isLog[column];
+      else if(tableType == "votable") return isVOTable[column];
+      else return false;
+    }
+
+
     Col::Col()
     {
       /** Set the default values for the parameters. */
@@ -188,6 +216,8 @@ namespace duchamp
       newset.push_back( Col(Z) );
       newset.push_back( Col(RA) );
       newset.push_back( Col(DEC) );
+      newset.push_back( Col(RAJD) );
+      newset.push_back( Col(DECJD) );
       newset.push_back( Col(VEL, precVel) );
       newset.push_back( Col(WRA) );
       newset.push_back( Col(WDEC) );
@@ -267,6 +297,20 @@ namespace duchamp
 	  newset[DEC].setName(tempstr);
 	  tempwidth = objectList[obj].getDecs().size() + 1;
 	  for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
+
+	  // RA decimal degrees -- assign correct title. Check width but should be OK
+	  tempstr = head.WCS().lngtyp;
+	  newset[RAJD].setName(tempstr);
+	  val = objectList[obj].getRA();
+	  tempwidth = int( log10(fabs(val)) + 1) + newset[RAJD].getPrecision() + 2;
+	  for(int i=newset[RAJD].getWidth();i<tempwidth;i++) newset[RAJD].widen();
+      
+	  // Dec decimal degrees -- assign correct title. Check width but should be OK
+	  tempstr = head.WCS().lattyp;
+	  newset[DECJD].setName(tempstr);
+	  val = objectList[obj].getDec();
+	  tempwidth = int( log10(fabs(val)) + 1) + newset[DECJD].getPrecision() + 2;
+	  for(int i=newset[DECJD].getWidth();i<tempwidth;i++) newset[DECJD].widen();
 
 	  // Vel -- check width, title and units.
 	  //if(head.isSpecOK()){

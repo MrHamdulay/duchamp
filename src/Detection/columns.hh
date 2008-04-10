@@ -50,15 +50,58 @@ namespace duchamp
     //  the precision of different types of columns.
 
     /** Total number of columns being considered.*/
-    const int numColumns=32;    
+    const int numColumns=34;    
     /** Enumerated column titles */
     enum COLNAME {NUM=0, NAME, X, Y, Z,
-		  RA, DEC, VEL, 
+		  RA, DEC, RAJD, DECJD, VEL, 
 		  WRA, WDEC, WVEL,
 		  FINT, FTOT, FPEAK, SNRPEAK,
 		  X1, X2, Y1, Y2, Z1, Z2, NPIX, FLAG,
 		  XAV, YAV, ZAV, XCENT, YCENT, ZCENT, 
 		  XPEAK, YPEAK, ZPEAK}; 
+
+    /** Guide for which columns are used for the results file */
+    const bool isFile[numColumns]=
+      {true,true,true,true,true,
+       true,true,false,false,true,
+       true,true,true,
+       true,true,true,true,
+       true,true,true,true,true,true,true,true,
+       true,true,true,true,true,true,
+       true,true,true};
+
+    /** Guide for which columns are used for the results printed to screen */
+    const bool isScreen[numColumns]=
+      {true,true,true,true,true,
+       true,true,false,false,true,
+       true,true,true,
+       true,true,true,true,
+       true,true,true,true,true,true,true,true,
+       false,false,false,false,false,false,
+       false,false,false};
+
+    /** Guide for which columns are used for the log file */
+    const bool isLog[numColumns]=
+      {true,false,true,true,true,
+       false,false,false,false,false,
+       false,false,false,
+       false,true,true,true,
+       true,true,true,true,true,true,true,false,
+       false,false,false,false,false,false,
+       false,false,false};
+
+     /** Guide for which columns are used for the VOTable file */
+    const bool isVOTable[numColumns]=
+      {true,true,false,false,false,
+       false,false,true,true,true,
+       true,true,true,
+       true,true,true,true,
+       false,false,false,false,false,false,false,true,
+       true,true,true,true,true,true,
+       true,true,true};
+
+    /** Decides whether a column is used for a given table type */
+    bool doCol(COLNAME column, std::string type, bool flagFint=true);
 
     /** Total number of columns used in logfile (no WCS ones). */
     const int numColumnsLog=14; 
@@ -70,7 +113,7 @@ namespace duchamp
     /** Number of types of precision. */
     const int numPrec=6;        
     /** Enumerated precision categories */
-    enum PrecType {prFLUX=0, prVEL, prXYZ, prPOS, prWPOS, prSNR}; 
+    enum PrecType {prFLUX=3, prVEL=3, prXYZ=1, prPOS=6, prWPOS=2, prSNR=2}; 
 
     /** Precision values in same order as enum list.*/
     const int prec[numPrec]={3, 3, 1, 6, 2, 2}; 
@@ -78,26 +121,34 @@ namespace duchamp
     /** Default widths of all columns.*/
     const int defaultWidth[numColumns]=
       {5, 8, 6, 6, 6,
-       13, 13, 7, 9, 9, 7,
+       13, 13, 11, 11, 7, 9, 9, 7,
        10, 10, 9, 7,
        4, 4, 4, 4, 4, 4, 6, 5,
        6, 6, 6, 7, 7, 7, 7, 7, 7};
 
     /** Default precisions for all columns.*/
     const int defaultPrec[numColumns]=
-      {0, 0, prec[prXYZ], prec[prXYZ], prec[prXYZ],
-       0, 0, prec[prVEL], 
-       prec[prWPOS], prec[prWPOS], prec[prVEL],
-       prec[prFLUX], prec[prFLUX], prec[prFLUX], 
-       prec[prSNR], 0, 0, 0, 0, 0, 0, 0, 0,
-       prec[prXYZ], prec[prXYZ], prec[prXYZ], 
-       prec[prXYZ], prec[prXYZ], prec[prXYZ], 
-       prec[prXYZ], prec[prXYZ], prec[prXYZ]}; 
+      {0, 0, prXYZ, prXYZ, prXYZ,
+       0, 0, prPOS, prPOS, prVEL, 
+       prWPOS, prWPOS, prVEL,
+       prFLUX, prFLUX, prFLUX, 
+       prSNR, 0, 0, 0, 0, 0, 0, 0, 0,
+       prXYZ, prXYZ, prXYZ, 
+       prXYZ, prXYZ, prXYZ, 
+       prXYZ, prXYZ, prXYZ}; 
+//       {0, 0, prec[prXYZ], prec[prXYZ], prec[prXYZ],
+//        0, 0, prec[prVEL], 
+//        prec[prWPOS], prec[prWPOS], prec[prVEL],
+//        prec[prFLUX], prec[prFLUX], prec[prFLUX], 
+//        prec[prSNR], 0, 0, 0, 0, 0, 0, 0, 0,
+//        prec[prXYZ], prec[prXYZ], prec[prXYZ], 
+//        prec[prXYZ], prec[prXYZ], prec[prXYZ], 
+//        prec[prXYZ], prec[prXYZ], prec[prXYZ]}; 
 
     /** Default Titles of all columns. */
     const std::string defaultName[numColumns]=
       {"Obj#","Name","X","Y","Z",
-       "RA","DEC","VEL",
+       "RA","DEC","RAJD","DECJD","VEL",
        "w_RA","w_DEC","w_VEL",
        "F_int","F_tot","F_peak", "S/Nmax",
        "X1","X2","Y1","Y2","Z1","Z2","Npix","Flag",
@@ -107,7 +158,7 @@ namespace duchamp
     /** Default units of all columns. */
     const std::string defaultUnits[numColumns]=
       {"","","","","",
-       "","","",
+       "","","[deg]","[deg]","",
        "[arcmin]","[arcmin]","",
        "","","", "",
        "","","","","","","[pix]","",

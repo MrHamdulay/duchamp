@@ -50,8 +50,6 @@ using namespace Statistics;
 namespace duchamp
 {
 
-  using namespace Column;
-
   void Cube::outputDetectionsKarma(std::ostream &stream)
   {
     /**
@@ -144,6 +142,20 @@ namespace duchamp
     return newstring;  
   }
 
+
+  template <class T> void printVOEntry(std::ostream &stream, Column::Col &col, T value)
+  {
+    stream << "<TD>";
+    col.printEntry(stream,value);
+    stream << "</TD>";
+  }
+  template void printVOEntry<int>(std::ostream &stream, Column::Col &col, int value);
+  template void printVOEntry<long>(std::ostream &stream, Column::Col &col, long value);
+  template void printVOEntry<unsigned>(std::ostream &stream, Column::Col &col, unsigned value);
+  template void printVOEntry<float>(std::ostream &stream, Column::Col &col, float value);
+  template void printVOEntry<double>(std::ostream &stream, Column::Col &col, double value);
+  template void printVOEntry<std::string>(std::ostream &stream, Column::Col &col, std::string value);
+  
   void Cube::outputDetectionsVOTable(std::ostream &stream)
   {
     /**
@@ -155,11 +167,11 @@ namespace duchamp
      */
 
     // Set up Column definitions here
-    std::vector<Col> localCol;
+    std::vector<Column::Col> localCol;
     std::string posUCD[4];
-    localCol.push_back(this->fullCols[NUM]);  // 0 = objID
-    localCol.push_back(this->fullCols[NAME]);  // 1 = name
-    localCol.push_back(this->fullCols[RA]);  // 2 = ra
+    localCol.push_back(this->fullCols[Column::NUM]);  // 0 = objID
+    localCol.push_back(this->fullCols[Column::NAME]);  // 1 = name
+    localCol.push_back(this->fullCols[Column::RAJD]);  // 2 = ra
     if(makelower(localCol[2].getName())=="ra"){
       posUCD[0] = "pos.eq.ra;meta.main";
       posUCD[2] = "phys.angSize;pos.eq.ra";
@@ -168,7 +180,7 @@ namespace duchamp
       posUCD[0] = "pos.galactic.lat;meta.main";
       posUCD[2] = "phys.angSize;pos.galactic.lat";
     }
-    localCol.push_back(this->fullCols[DEC]);  // 3 = dec
+    localCol.push_back(this->fullCols[Column::DECJD]);  // 3 = dec
     if(makelower(localCol[2].getName())=="dec"){
       posUCD[1] = "pos.eq.dec;meta.main";
       posUCD[3] = "phys.angSize;pos.eq.dec";
@@ -177,25 +189,25 @@ namespace duchamp
       posUCD[1] = "pos.galactic.lon;meta.main";
       posUCD[3] = "phys.angSize;pos.galactic.lon";
     }
-    localCol.push_back(this->fullCols[WRA]);  // 4 = w_ra
-    localCol.push_back(this->fullCols[WDEC]);  // 5 = w_dec
-    localCol.push_back(this->fullCols[VEL]);  // 6 = vel
-    localCol.push_back(this->fullCols[WVEL]); // 7 = w_vel
+    localCol.push_back(this->fullCols[Column::WRA]);  // 4 = w_ra
+    localCol.push_back(this->fullCols[Column::WDEC]);  // 5 = w_dec
+    localCol.push_back(this->fullCols[Column::VEL]);  // 6 = vel
+    localCol.push_back(this->fullCols[Column::WVEL]); // 7 = w_vel
     if(this->head.isSpecOK())
-      localCol.push_back(this->fullCols[FINT]); // 8 = f_int
+      localCol.push_back(this->fullCols[Column::FINT]); // 8 = f_int
     else
-      localCol.push_back(this->fullCols[FTOT]); // 8 = f_tot
-    localCol.push_back(this->fullCols[FPEAK]); // 9 = f_peak
-    localCol.push_back(this->fullCols[FLAG]); // 10 = flag
-    localCol.push_back(this->fullCols[XCENT]); // 11 = x_cent
-    localCol.push_back(this->fullCols[YCENT]); // 12 = y_cent
-    localCol.push_back(this->fullCols[ZCENT]); // 13 = z_cent
-    localCol.push_back(this->fullCols[XAV]); // 14 = x_av
-    localCol.push_back(this->fullCols[YAV]); // 15 = y_av
-    localCol.push_back(this->fullCols[ZAV]); // 16 = z_av
-    localCol.push_back(this->fullCols[XPEAK]); // 17 = x_peak
-    localCol.push_back(this->fullCols[YPEAK]); // 18 = y_peak
-    localCol.push_back(this->fullCols[ZPEAK]); // 19 = z_peak
+      localCol.push_back(this->fullCols[Column::FTOT]); // 8 = f_tot
+    localCol.push_back(this->fullCols[Column::FPEAK]); // 9 = f_peak
+    localCol.push_back(this->fullCols[Column::FLAG]); // 10 = flag
+    localCol.push_back(this->fullCols[Column::XCENT]); // 11 = x_cent
+    localCol.push_back(this->fullCols[Column::YCENT]); // 12 = y_cent
+    localCol.push_back(this->fullCols[Column::ZCENT]); // 13 = z_cent
+    localCol.push_back(this->fullCols[Column::XAV]); // 14 = x_av
+    localCol.push_back(this->fullCols[Column::YAV]); // 15 = y_av
+    localCol.push_back(this->fullCols[Column::ZAV]); // 16 = z_av
+    localCol.push_back(this->fullCols[Column::XPEAK]); // 17 = x_peak
+    localCol.push_back(this->fullCols[Column::YPEAK]); // 18 = y_peak
+    localCol.push_back(this->fullCols[Column::ZPEAK]); // 19 = z_peak
 
     stream<<"<?xml version=\"1.0\"?>\n";
     stream<<"<VOTABLE version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n";
@@ -257,35 +269,35 @@ namespace duchamp
 	  <<localCol[1].getWidth()<<"\" unit=\"--\"/>\n";
     stream<<"      <FIELD name=\""<<localCol[2].getName()<<"\" ID=\"col03\" ucd=\""
 	  <<posUCD[0]<<"\" ref=\"J2000\" datatype=\"float\" width=\""
-	  <<localCol[2].getWidth()<<"\" precision=\""<<prec[prPOS]<<"\" unit=\"deg\"/>\n";
+	  <<localCol[2].getWidth()<<"\" precision=\""<<localCol[2].getPrecision()<<"\" unit=\"deg\"/>\n";
     stream<<"      <FIELD name=\""<<localCol[3].getName()<<"\" ID=\"col04\" ucd=\""
 	  <<posUCD[1]<<"\" ref=\"J2000\" datatype=\"float\" width=\""
-	  <<localCol[3].getWidth()<<"\" precision=\""<<prec[prPOS]<<"\" unit=\"deg\"/>\n";
+	  <<localCol[3].getWidth()<<"\" precision=\""<<localCol[3].getPrecision()<<"\" unit=\"deg\"/>\n";
     stream<<"      <FIELD name=\""<<localCol[4].getName()<<"\" ID=\"col05\" ucd=\""
 	  <<posUCD[2]<<"\" ref=\"J2000\" datatype=\"float\" width=\""
-	  <<localCol[4].getWidth()<<"\" precision=\""<<prec[prWPOS]<<"\" unit=\""
+	  <<localCol[4].getWidth()<<"\" precision=\""<<localCol[4].getPrecision()<<"\" unit=\""
 	  <<fixUnitsVOT(localCol[4].getUnits())<<"\"/>\n";
     stream<<"      <FIELD name=\""<<localCol[5].getName()<<"\" ID=\"col06\" ucd=\""
 	  <<posUCD[2]<<"\" ref=\"J2000\" datatype=\"float\" width=\""
-	  <<localCol[5].getWidth()<<"\" precision=\""<<prec[prWPOS]<<"\" unit=\""
+	  <<localCol[5].getWidth()<<"\" precision=\""<<localCol[5].getPrecision()<<"\" unit=\""
 	  <<fixUnitsVOT(localCol[5].getUnits())<<"\"/>\n";
     stream<<"      <FIELD name=\"Vel\" ID=\"col07\" ucd=\"phys.veloc;src.dopplerVeloc\" datatype=\"float\" width=\""
-	  <<localCol[6].getWidth()<<"\" precision=\""<<prec[prVEL]<<"\" unit=\""
+	  <<localCol[6].getWidth()<<"\" precision=\""<<localCol[6].getPrecision()<<"\" unit=\""
 	  <<fixUnitsVOT(localCol[6].getUnits())<<"\"/>\n";
     stream<<"      <FIELD name=\"w_Vel\" ID=\"col08\" ucd=\"phys.veloc;src.dopplerVeloc;spect.line.width\""
 	  <<" datatype=\"float\" width=\""<<localCol[7].getWidth()<<"\" precision=\""
-	  <<prec[prVEL]<<"\" unit=\""<<fixUnitsVOT(localCol[7].getUnits())<<"\"/>\n";
+	  <<localCol[7].getPrecision()<<"\" unit=\""<<fixUnitsVOT(localCol[7].getUnits())<<"\"/>\n";
     if(this->head.isSpecOK())
       stream<<"      <FIELD name=\"Integrated_Flux\" ID=\"col09\" ucd=\"phot.flux;spect.line.intensity\""
 	    <<" datatype=\"float\" width=\""<<localCol[8].getWidth()<<"\" precision=\""
-	    <<prec[prFLUX]<<"\" unit=\""<<fixUnitsVOT(localCol[8].getUnits())<<"\"/>\n";
+	    <<localCol[8].getPrecision()<<"\" unit=\""<<fixUnitsVOT(localCol[8].getUnits())<<"\"/>\n";
     else
       stream<<"      <FIELD name=\"Total_Flux\" ID=\"col09\" ucd=\"phot.flux;spect.line.intensity\""
 	    <<" datatype=\"float\" width=\""<<localCol[8].getWidth()<<"\" precision=\""
-	    <<prec[prFLUX]<<"\" unit=\""<<fixUnitsVOT(localCol[8].getUnits())<<"\"/>\n";
+	    <<localCol[8].getPrecision()<<"\" unit=\""<<fixUnitsVOT(localCol[8].getUnits())<<"\"/>\n";
     stream<<"      <FIELD name=\"Peak_Flux\" ID=\"col10\" ucd=\"phot.flux;spect.line.intensity\""
 	  <<" datatype=\"float\" width=\""<<localCol[9].getWidth()<<"\" precision=\""
-	  <<prec[prFLUX]<<"\" unit=\""<<fixUnitsVOT(localCol[9].getUnits())<<"\"/>\n";
+	  <<localCol[9].getPrecision()<<"\" unit=\""<<fixUnitsVOT(localCol[9].getUnits())<<"\"/>\n";
     stream<<"      <FIELD name=\"Flag\" ID=\"col11\" ucd=\"meta.code.qual\" datatype=\"char\" arraysize=\"3\" unit=\"--\"/>\n";
     stream<<"      <FIELD name=\"X_Centroid\" ID=\"col12\" ucd=\"pos.cartesian.x\""
 	  <<" datatype=\"float\" width=\""<<localCol[11].getWidth()<<"\" precision=\""<<localCol[11].getPrecision()<<"\" unit=\"\"/>\n";
@@ -314,33 +326,57 @@ namespace duchamp
     for(int i=0;i<this->objectList->size();i++){
       if(this->objectList->at(i).isWCS()){
 	stream<<"        <TR>\n";
-	stream<<"          <TD>"<<setw(localCol[0].getWidth())<<i+1<<"</TD>";
-	stream<<"<TD>" << setw(localCol[1].getWidth()) << this->objectList->at(i).getName()       <<"</TD>";
-	stream<<setprecision(prec[prPOS]);
-	stream<<"<TD>" << setw(localCol[2].getWidth()) << this->objectList->at(i).getRA()         <<"</TD>";
-	stream<<"<TD>" << setw(localCol[3].getWidth()) << this->objectList->at(i).getDec()        <<"</TD>";
-	stream<<setprecision(prec[prWPOS]);
-	stream<<"<TD>" << setw(localCol[4].getWidth()) << this->objectList->at(i).getRAWidth()    <<"</TD>";
-	stream<<"<TD>" << setw(localCol[5].getWidth()) << this->objectList->at(i).getDecWidth()   <<"</TD>";
-	stream<<setprecision(prec[prVEL]);
-	stream<<"<TD>" << setw(localCol[6].getWidth()) << this->objectList->at(i).getVel()        <<"</TD>";
-	stream<<"<TD>" << setw(localCol[7].getWidth()) << this->objectList->at(i).getVelWidth()   <<"</TD>";
-	stream<<setprecision(prec[prFLUX]);
+	stream<<"          ";
+	printVOEntry(stream,localCol[0],i+1);
+	printVOEntry(stream,localCol[1],this->objectList->at(i).getName());
+	printVOEntry(stream,localCol[2],this->objectList->at(i).getRA());
+	printVOEntry(stream,localCol[3],this->objectList->at(i).getDec());
+	printVOEntry(stream,localCol[4],this->objectList->at(i).getRAWidth());
+	printVOEntry(stream,localCol[5],this->objectList->at(i).getDecWidth());
+	printVOEntry(stream,localCol[6],this->objectList->at(i).getVel());
+	printVOEntry(stream,localCol[7],this->objectList->at(i).getVelWidth());
 	if(this->head.isSpecOK())
-	  stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList->at(i).getIntegFlux() <<"</TD>";
+	  printVOEntry(stream,localCol[8],this->objectList->at(i).getIntegFlux());
 	else
-	  stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList->at(i).getTotalFlux() <<"</TD>";
-	stream<<"<TD>" << setw(localCol[9].getWidth()) << this->objectList->at(i).getPeakFlux()   <<"</TD>";
-	stream<<"<TD>" << setw(localCol[10].getWidth())<< this->objectList->at(i).getFlagText()   <<"</TD>";
-	stream<<"<TD>" << setw(localCol[11].getWidth())<< this->objectList->at(i).getXCentroid()  <<"</TD>";
-	stream<<"<TD>" << setw(localCol[12].getWidth())<< this->objectList->at(i).getYCentroid()  <<"</TD>";
-	stream<<"<TD>" << setw(localCol[13].getWidth())<< this->objectList->at(i).getZCentroid()  <<"</TD>";
-	stream<<"<TD>" << setw(localCol[14].getWidth())<< this->objectList->at(i).getXAverage()   <<"</TD>";
-	stream<<"<TD>" << setw(localCol[15].getWidth())<< this->objectList->at(i).getYAverage()   <<"</TD>";
-	stream<<"<TD>" << setw(localCol[16].getWidth())<< this->objectList->at(i).getZAverage()   <<"</TD>";
-	stream<<"<TD>" << setw(localCol[17].getWidth())<< this->objectList->at(i).getXPeak()      <<"</TD>";
-	stream<<"<TD>" << setw(localCol[18].getWidth())<< this->objectList->at(i).getYPeak()      <<"</TD>";
-	stream<<"<TD>" << setw(localCol[19].getWidth())<< this->objectList->at(i).getZPeak()      <<"</TD>";
+	  printVOEntry(stream,localCol[8],this->objectList->at(i).getTotalFlux());
+	printVOEntry(stream,localCol[9] ,this->objectList->at(i).getPeakFlux());
+	printVOEntry(stream,localCol[10],this->objectList->at(i).getFlagText());
+	printVOEntry(stream,localCol[11],this->objectList->at(i).getXCentroid());
+	printVOEntry(stream,localCol[12],this->objectList->at(i).getYCentroid());
+	printVOEntry(stream,localCol[13],this->objectList->at(i).getZCentroid());
+	printVOEntry(stream,localCol[14],this->objectList->at(i).getXAverage());
+	printVOEntry(stream,localCol[15],this->objectList->at(i).getYAverage());
+	printVOEntry(stream,localCol[16],this->objectList->at(i).getZAverage());
+	printVOEntry(stream,localCol[17],this->objectList->at(i).getXPeak());
+	printVOEntry(stream,localCol[18],this->objectList->at(i).getYPeak());
+	printVOEntry(stream,localCol[19],this->objectList->at(i).getZPeak());
+// 	stream<<"          <TD>"<<setw(localCol[0].getWidth())<<i+1<<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[1].getWidth()) << this->objectList->at(i).getName()       <<"</TD>";
+// 	stream<<setprecision(Column::prPOS);
+// 	stream<<"<TD>" << setw(localCol[2].getWidth()) << this->objectList->at(i).getRA()         <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[3].getWidth()) << this->objectList->at(i).getDec()        <<"</TD>";
+// 	stream<<setprecision(Column::prWPOS);
+// 	stream<<"<TD>" << setw(localCol[4].getWidth()) << this->objectList->at(i).getRAWidth()    <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[5].getWidth()) << this->objectList->at(i).getDecWidth()   <<"</TD>";
+// 	stream<<setprecision(Column::prVEL);
+// 	stream<<"<TD>" << setw(localCol[6].getWidth()) << this->objectList->at(i).getVel()        <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[7].getWidth()) << this->objectList->at(i).getVelWidth()   <<"</TD>";
+// 	stream<<setprecision(Column::prFLUX);
+// 	if(this->head.isSpecOK())
+// 	  stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList->at(i).getIntegFlux() <<"</TD>";
+// 	else
+// 	  stream<<"<TD>" << setw(localCol[8].getWidth()) << this->objectList->at(i).getTotalFlux() <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[9].getWidth()) << this->objectList->at(i).getPeakFlux()   <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[10].getWidth())<< this->objectList->at(i).getFlagText()   <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[11].getWidth())<< this->objectList->at(i).getXCentroid()  <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[12].getWidth())<< this->objectList->at(i).getYCentroid()  <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[13].getWidth())<< this->objectList->at(i).getZCentroid()  <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[14].getWidth())<< this->objectList->at(i).getXAverage()   <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[15].getWidth())<< this->objectList->at(i).getYAverage()   <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[16].getWidth())<< this->objectList->at(i).getZAverage()   <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[17].getWidth())<< this->objectList->at(i).getXPeak()      <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[18].getWidth())<< this->objectList->at(i).getYPeak()      <<"</TD>";
+// 	stream<<"<TD>" << setw(localCol[19].getWidth())<< this->objectList->at(i).getZPeak()      <<"</TD>";
       
 	stream<<endl;
 	stream<<"        </TR>\n";
@@ -465,8 +501,10 @@ namespace duchamp
 
     if(this->objectList->size()>0){
       this->setupColumns();
-      this->objectList->at(0).outputDetectionTextHeaderFull(output,this->fullCols);
-      this->objectList->at(0).outputDetectionTextHeader(std::cout,this->fullCols);
+//       this->objectList->at(0).outputDetectionTextHeaderFull(output,this->fullCols);
+//       this->objectList->at(0).outputDetectionTextHeader(std::cout,this->fullCols);
+      outputTableHeader(output,this->fullCols,"file",this->head.isWCS());
+      outputTableHeader(std::cout,this->fullCols,"screen",this->head.isWCS());
       for(int i=0;i<this->objectList->size();i++){
 	this->objectList->at(i).outputDetectionTextWCSFull(output,this->fullCols);
 	this->objectList->at(i).outputDetectionTextWCS(std::cout,this->fullCols);

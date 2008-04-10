@@ -385,6 +385,8 @@ namespace duchamp
   /** Manage both the merging and the cleaning up of the list. */
   void ObjectMerger(std::vector<Detection> &objList, Param &par);
 
+  void outputTableHeader(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType, bool flagWCS);
+
 }
 
 #endif
