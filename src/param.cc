@@ -491,6 +491,7 @@ namespace duchamp
 	if(arg=="reconfile")       this->reconFile = readSval(ss); 
 	if(arg=="flagsmoothexists")this->flagSmoothExists = readFlag(ss); 
 	if(arg=="smoothfile")      this->smoothFile = readSval(ss); 
+	if(arg=="beamsize")        this->numPixBeam = readFval(ss); 
 
 	if(arg=="flaglog")         this->flagLog = readFlag(ss); 
 	if(arg=="logfile")         this->logFile = readSval(ss); 
@@ -517,14 +518,13 @@ namespace duchamp
 	if(arg=="precvel")         this->precVel = readIval(ss);
 	if(arg=="precsnr")         this->precSNR = readIval(ss);
 
-	if(arg=="flagnegative")    this->flagNegative = readFlag(ss);
 	if(arg=="flagtrim")        this->flagTrim = readFlag(ss); 
 	if(arg=="flagmw")          this->flagMW = readFlag(ss); 
 	if(arg=="maxmw")           this->maxMW = readIval(ss); 
 	if(arg=="minmw")           this->minMW = readIval(ss); 
-	if(arg=="beamsize")        this->numPixBeam = readFval(ss); 
-
 	if(arg=="flagbaseline")    this->flagBaseline = readFlag(ss); 
+
+	if(arg=="flagnegative")    this->flagNegative = readFlag(ss);
 	if(arg=="minpix")          this->minPix = readIval(ss); 
 	if(arg=="flaggrowth")      this->flagGrowth = readFlag(ss); 
 	if(arg=="growthcut")       this->growthCut = readFval(ss); 

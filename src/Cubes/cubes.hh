@@ -251,6 +251,8 @@ namespace duchamp
 
     /** Read in a FITS file, with subsection correction. */
     int         getCube();
+    /** Read in a FITS file, with subsection correction. */
+    int         getMetadata();
 
     /** Read in command-line options. */
     //   int         getopts(int argc, char ** argv);
@@ -359,6 +361,7 @@ namespace duchamp
     // FITS-I/O related functions -- not in cubes.cc
     //
     /** Function to read in FITS file.*/
+    int         getMetadata(std::string fname);  // in Cubes/getImage.cc
     int         getCube(std::string fname);  // in Cubes/getImage.cc
 
     /** Convert the flux units to something user-specified.*/

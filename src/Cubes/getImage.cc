@@ -47,14 +47,28 @@ namespace duchamp
 
   std::string imageType[4] = {"point", "spectrum", "image", "cube"};
 
-  int Cube::getCube(std::string fname)
+  int Cube::getMetadata(){  
+    /** 
+     * A front-end to the Cube::getMetadata() function, that does 
+     *  subsection checks.
+     * Assumes the Param is set up properly.
+     */
+    std::string fname = par.getImageFile();
+    if(par.getFlagSubsection()) fname+=par.getSubsection();
+    return getMetadata(fname);
+  }
+  //--------------------------------------------------------------------
+
+  int Cube::getMetadata(std::string fname)
   {
     /**
-     * Read in a cube from the file fname (assumed to be in FITS format).
-     *  Function is a front end to the I/O functions in the FitsIO/ directory.
-     *  This function will check that the file exists, report the dimensions
-     *   and then get other functions to read the data, WCS, and necessary 
-     *   header keywords.
+     * Read in the metadata associated with the cube from the file
+     *  fname (assumed to be in FITS format).  Function is a front end
+     *  to the I/O functions in the FitsIO/ directory.  This function
+     *  will check that the file exists, report the dimensions and
+     *  then get other functions to read the WCS and necessary header
+     *  keywords. This function does not read in the data array --
+     *  that is done by Cube::getCube().
      *  \param fname A std::string with name of FITS file.
      *  \return SUCCESS or FAILURE.
      */
@@ -124,6 +138,28 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
     if(!this->head.isWCS()) 
       duchampWarning("Cube Reader","WCS is not good enough to be used.\n");
 
+    // Read the necessary header information, and copy some of it into the Param.
+    this->head.readHeaderInfo(fname, this->par);
+
+    return SUCCESS;
+
+  }
+  //--------------------------------------------------------------------
+
+
+  int Cube::getCube(std::string fname)
+  {
+    /**
+     * Read in a cube from the file fname (assumed to be in FITS
+     *  format).  Function is a front end to the data I/O function in
+     *  the FitsIO/ directory.  This function calls the getMetadata()
+     *  function, then reads in the actual data array.
+     *  \param fname A std::string with name of FITS file.
+     *  \return SUCCESS or FAILURE.
+     */
+
+    this->getMetadata(fname);
+
     // Get the data array from the FITS file.
     // Report the dimensions of the data array that was read (this can be
     //   different to the full FITS array).
@@ -141,15 +177,13 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
       this->par.setMinChannels(0);
     }
 
-    // Read the necessary header information, and copy some of it into the Param.
-    this->head.readHeaderInfo(fname, this->par);
-
     // Convert the flux Units if the user has so requested
     this->convertFluxUnits();
 
-    return SUCCESS;
+    return SUCCESS;    
 
   }
+  //--------------------------------------------------------------------
 
 
   void Cube::convertFluxUnits()
@@ -193,8 +227,8 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
       else{
 	std::stringstream ss;
 	ss << "Could not convert units from " << oldUnit << " to " << newUnit
-	   << ".\nLeaving BUNIT as " << oldUnit;
-	std::cout << "\n";
+	   << ".\nLeaving BUNIT as " << oldUnit << "\n";
+	if(this->par.isVerbose()) std::cout << "\n";
 	duchampWarning("convertFluxUnits", ss.str());
       }
     }
