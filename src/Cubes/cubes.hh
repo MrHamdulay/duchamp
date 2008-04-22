@@ -185,6 +185,7 @@ namespace duchamp
     bool                     axisDimAllocated; ///< has axisDim been allocated?
     long                     numPixels;  ///< Total number of pixels in cube.
     float                   *array;      ///< Array of data.
+    bool                     arrayAllocated; ///< has the array been allocated?
     std::vector <Detection> *objectList; ///< The list of detected objects.
     Param                    par;        ///< A parameter list.
     Statistics::StatsContainer<float> Stats; ///< The statistics for the DataArray.

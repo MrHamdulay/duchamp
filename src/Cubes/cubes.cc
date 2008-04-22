@@ -78,6 +78,7 @@ namespace duchamp
     this->numPixels=0;
     this->objectList = new std::vector<Detection>;
     this->axisDimAllocated = false;
+    this->arrayAllocated = false;
   }
   //--------------------------------------------------------------------
 
@@ -89,6 +90,7 @@ namespace duchamp
      * \param nDim Number of dimensions.
      */
     this->axisDimAllocated = false;
+    this->arrayAllocated = false;
     if(nDim>0){
       this->axisDim = new long[nDim];
       this->axisDimAllocated = true;
@@ -111,6 +113,7 @@ namespace duchamp
      */
 
     this->axisDimAllocated = false;
+    this->arrayAllocated = false;
     if(size<0)
       duchampError("DataArray(nDim,size)",
 		   "Negative size -- could not define DataArray");
@@ -120,10 +123,13 @@ namespace duchamp
     else {
       if(size>0){
 	this->array = new float[size];
-	this->axisDimAllocated = true;
+	this->arrayAllocated = true;
       }
       this->numPixels = size;
-      if(nDim>0) this->axisDim = new long[nDim];
+      if(nDim>0){
+	this->axisDim = new long[nDim];
+	this->axisDimAllocated = true;
+      }
       this->numDim = nDim;
     }
     this->objectList = new std::vector<Detection>;
@@ -140,6 +146,7 @@ namespace duchamp
      * \param dimensions Array giving sizes of dimensions.
      */
     this->axisDimAllocated = false;
+    this->arrayAllocated = false;
     if(nDim<0)
       duchampError("DataArray(nDim,dimArray)",
 		   "Negative number of dimensions: could not define DataArray");
@@ -153,10 +160,13 @@ namespace duchamp
 	this->numPixels = size;
 	if(size>0){
 	  this->array = new float[size];
-	  this->axisDimAllocated = true;
+	  this->arrayAllocated = true;
 	}
 	this->numDim=nDim;
-	if(nDim>0) this->axisDim = new long[nDim];
+	if(nDim>0){
+	  this->axisDim = new long[nDim];
+	  this->axisDimAllocated = true;
+	}
 	for(int i=0;i<nDim;i++) this->axisDim[i] = dimensions[i];
       }
     }
@@ -169,7 +179,10 @@ namespace duchamp
      *  Destructor -- arrays deleted if they have been allocated, and the 
      *   object list is deleted.
      */
-    if(this->numPixels>0) delete [] this->array;
+    if(this->numPixels>0 && this->arrayAllocated){
+      delete [] this->array;
+      this->arrayAllocated = false;
+    }
     if(this->numDim>0 && this->axisDimAllocated){
       delete [] this->axisDim;
     this->axisDimAllocated = false;
@@ -227,9 +240,10 @@ namespace duchamp
       duchampError("DataArray::saveArray",
 		   "Input array different size to existing array. Cannot save.");
     else {
-      if(this->numPixels>0) delete [] this->array;
+      if(this->numPixels>0 && this->arrayAllocated) delete [] this->array;
       this->numPixels = size;
       this->array = new float[size];
+      this->arrayAllocated = true;
       for(int i=0;i<size;i++) this->array[i] = input[i];
     }
   }
@@ -251,25 +265,6 @@ namespace duchamp
     for(int i=0;i<newlist.size();i++) this->objectList->push_back(newlist[i]);
   }
   //--------------------------------------------------------------------
-
-  // void DataArray::addObjectOffsets(){
-  //   /**
-  //    * Add the pixel offsets (that is, offsets from the corner of the cube to the
-  //    *  corner of the utilised part) that are stored in the Param set to the
-  //    *  coordinate values of each object in the object list.
-  //    */
-  //   for(int i=0;i<this->objectList->size();i++){
-  //     for(int p=0;p<this->objectList->at(i).getSize();p++){
-  //       this->objectList->at(i).setX(p,this->objectList->at(i).getX(p)+
-  // 			       this->par.getXOffset());
-  //       this->objectList->at(i).setY(p,this->objectList->at(i).getY(p)+
-  // 			       this->par.getYOffset());
-  //       this->objectList->at(i).setZ(p,this->objectList->at(i).getZ(p)+
-  // 			       this->par.getZOffset());
-  //     }
-  //   }
-  // }
-  // //--------------------------------------------------------------------
 
   bool DataArray::isDetection(float value){
     /** 
@@ -348,12 +343,14 @@ namespace duchamp
     this->reconAllocated = false;
     this->baselineAllocated = false;
     this->axisDimAllocated = false;
+    this->arrayAllocated = false;
     this->numPixels = this->numDim = 0;
     if(size<0)
       duchampError("Cube(size)","Negative size -- could not define Cube");
     else{
       if(size>0){
 	this->array = new float[size];
+	this->arrayAllocated = true;
 	if(this->par.getFlagATrous()||this->par.getFlagSmooth()){
 	  this->recon = new float[size];
 	  this->reconAllocated = true;
@@ -365,8 +362,8 @@ namespace duchamp
       }
       this->numPixels = size;
       this->axisDim = new long[3];
-      this->numDim = 3;
       this->axisDimAllocated = true;
+      this->numDim = 3;
       this->reconExists = false;
     }
   }
@@ -383,6 +380,7 @@ namespace duchamp
     this->reconAllocated = false;
     this->baselineAllocated = false;
     this->axisDimAllocated = false;
+    this->arrayAllocated = false;
     this->numPixels = this->numDim = 0;
     if((size<0) || (imsize<0) )
       duchampError("Cube(dimArray)","Negative size -- could not define Cube");
@@ -390,6 +388,7 @@ namespace duchamp
       this->numPixels = size;
       if(size>0){
 	this->array      = new float[size];
+	this->arrayAllocated = false;
 	this->detectMap  = new short[imsize];
 	if(this->par.getFlagATrous()||this->par.getFlagSmooth()){
 	  this->recon    = new float[size];
@@ -465,6 +464,11 @@ namespace duchamp
       this->axisDimAllocated = false;
     }
 
+    if(this->arrayAllocated){
+      delete [] this->array;
+      this->arrayAllocated = false;
+    }
+
     if((size<0) || (imsize<0) )
       duchampError("Cube::initialiseCube(dimArray)",
 		   "Negative size -- could not define Cube.\n");
@@ -472,6 +476,7 @@ namespace duchamp
       this->numPixels = size;
       if(size>0){
 	this->array      = new float[size];
+	this->arrayAllocated = true;
 	this->detectMap  = new short[imsize];
 	if(this->par.getFlagATrous() || this->par.getFlagSmooth()){
 	  this->recon    = new float[size];
@@ -517,9 +522,10 @@ namespace duchamp
       duchampError("Cube::saveArray",errmsg.str());
     }
     else {
-      if(this->numPixels>0) delete [] array;
+      if(this->numPixels>0 && this->arrayAllocated) delete [] array;
       this->numPixels = size;
       this->array = new float[size];
+      this->arrayAllocated = true;
       for(int i=0;i<size;i++) this->array[i] = input[i];
     }
   }
@@ -1390,9 +1396,13 @@ namespace duchamp
     if(size<0)
       duchampError("Image(size)","Negative size -- could not define Image");
     else{
-      if(size>0) this->array = new float[size];
+      if(size>0 && !this->arrayAllocated){
+	this->array = new float[size];
+	this->arrayAllocated = true;
+      }
       this->numPixels = size;
       this->axisDim = new long[2];
+      this->axisDimAllocated = true;
       this->numDim = 2;
     }
   }
@@ -1405,7 +1415,10 @@ namespace duchamp
       duchampError("Image(dimArray)","Negative size -- could not define Image");
     else{
       this->numPixels = size;
-      if(size>0) this->array = new float[size];
+      if(size>0){
+	this->array = new float[size];
+	this->arrayAllocated = true;
+      }
       this->numDim=2;
       this->axisDim = new long[2];
       for(int i=0;i<2;i++) this->axisDim[i] = dimensions[i];
@@ -1427,10 +1440,13 @@ namespace duchamp
       duchampError("Image::saveArray",
 		   "Input array different size to existing array. Cannot save.");
     else {
-      if(this->numPixels>0) delete [] array;
+      if(this->numPixels>0 && this->arrayAllocated) delete [] array;
       this->numPixels = size;
-      if(this->numPixels>0) this->array = new float[size];
-      for(int i=0;i<size;i++) this->array[i] = input[i];
+      if(this->numPixels>0){
+	this->array = new float[size];
+	this->arrayAllocated = true;
+	for(int i=0;i<size;i++) this->array[i] = input[i];
+      }
     }
   }
   //--------------------------------------------------------------------
@@ -1455,10 +1471,13 @@ namespace duchamp
       duchampError("Image::extractSpectrum",
 		   "Input array different size to existing array. Cannot save.");
     else {
-      if(this->numPixels>0) delete [] array;
+      if(this->numPixels>0 && this->arrayAllocated) delete [] array;
       this->numPixels = dim[2];
-      if(this->numPixels>0) this->array = new float[dim[2]];
-      for(int z=0;z<dim[2];z++) this->array[z] = Array[z*dim[0]*dim[1] + pixel];
+      if(this->numPixels>0){
+	this->array = new float[dim[2]];
+	this->arrayAllocated = true;
+	for(int z=0;z<dim[2];z++) this->array[z] = Array[z*dim[0]*dim[1] + pixel];
+      }
     }
   }
   //--------------------------------------------------------------------
@@ -1482,11 +1501,14 @@ namespace duchamp
       duchampError("Image::extractSpectrum",
 		   "Input array different size to existing array. Cannot save.");
     else {
-      if(this->numPixels>0) delete [] array;
+      if(this->numPixels>0 && this->arrayAllocated) delete [] array;
       this->numPixels = zdim;
-      if(this->numPixels>0) this->array = new float[zdim];
-      for(int z=0;z<zdim;z++) 
-	this->array[z] = cube.getPixValue(z*spatSize + pixel);
+      if(this->numPixels>0){
+	this->array = new float[zdim];
+	this->arrayAllocated = true;
+	for(int z=0;z<zdim;z++) 
+	  this->array[z] = cube.getPixValue(z*spatSize + pixel);
+      }
     }
   }
   //--------------------------------------------------------------------
@@ -1513,11 +1535,14 @@ namespace duchamp
       duchampError("Image::extractImage",
 		   "Input array different size to existing array. Cannot save.");
     else {
-      if(this->numPixels>0) delete [] array;
+      if(this->numPixels>0 && this->arrayAllocated) delete [] array;
       this->numPixels = spatSize;
-      if(this->numPixels>0) this->array = new float[spatSize];
-      for(int npix=0; npix<spatSize; npix++)
-	this->array[npix] = Array[channel*spatSize + npix];
+      if(this->numPixels>0){
+	this->array = new float[spatSize];
+	this->arrayAllocated = true;
+	for(int npix=0; npix<spatSize; npix++)
+	  this->array[npix] = Array[channel*spatSize + npix];
+      }
     }
   }
   //--------------------------------------------------------------------
@@ -1540,11 +1565,14 @@ namespace duchamp
       duchampError("Image::extractImage",
 		   "Input array different size to existing array. Cannot save.");
     else {
-      if(this->numPixels>0) delete [] array;
+      if(this->numPixels>0 && this->arrayAllocated) delete [] array;
       this->numPixels = spatSize;
-      if(this->numPixels>0) this->array = new float[spatSize];
-      for(int npix=0; npix<spatSize; npix++) 
-	this->array[npix] = cube.getPixValue(channel*spatSize + npix);
+      if(this->numPixels>0){
+	this->array = new float[spatSize];
+	this->arrayAllocated = true;
+	for(int npix=0; npix<spatSize; npix++) 
+	  this->array[npix] = cube.getPixValue(channel*spatSize + npix);
+      }
     }
   }
   //--------------------------------------------------------------------
