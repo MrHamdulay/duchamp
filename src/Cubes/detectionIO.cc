@@ -98,18 +98,31 @@ namespace duchamp
     double *wld = new double[3];
     std::vector<Detection>::iterator obj;
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
-      std::vector<int> vertexSet = obj->getVertexSet();
-      for(int i=0;i<vertexSet.size()/4;i++){
-	pix[0] = vertexSet[i*4]-0.5;
-	pix[1] = vertexSet[i*4+1]-0.5;
-	pix[2] = obj->getZcentre();
-	this->head.pixToWCS(pix,wld);
-	stream << "LINE " << wld[0] << " " << wld[1];
-	pix[0] = vertexSet[i*4+2]-0.5;
-	pix[1] = vertexSet[i*4+3]-0.5;
-	this->head.pixToWCS(pix,wld);
-	stream << " " << wld[0] << " " << wld[1] << "\n";
+
+      if(this->par.getAnnotationType()=="borders"){
+	std::vector<int> vertexSet = obj->getVertexSet();
+	for(int i=0;i<vertexSet.size()/4;i++){
+	  pix[0] = vertexSet[i*4]-0.5;
+	  pix[1] = vertexSet[i*4+1]-0.5;
+	  pix[2] = obj->getZcentre();
+	  this->head.pixToWCS(pix,wld);
+	  stream << "LINE " << wld[0] << " " << wld[1];
+	  pix[0] = vertexSet[i*4+2]-0.5;
+	  pix[1] = vertexSet[i*4+3]-0.5;
+	  this->head.pixToWCS(pix,wld);
+	  stream << " " << wld[0] << " " << wld[1] << "\n";
+	}
       }
+      else if(this->par.getAnnotationType()=="circles"){
+        float radius = this->objectList->at(i).getRAWidth()/120.;
+        if(this->objectList->at(i).getDecWidth()/120.>radius)
+          radius = this->objectList->at(i).getDecWidth()/120.;
+        stream << "CIRCLE " 
+               << this->objectList->at(i).getRA() << " " 
+               << this->objectList->at(i).getDec() << " " 
+               << radius << "\n";
+      }
+
       stream << "TEXT " 
 	     << obj->getRA() << " " 
 	     << obj->getDec() << " " 

@@ -96,6 +96,7 @@ namespace duchamp
     this->votFile           = "duchamp-Results.xml";
     this->flagKarma         = false;
     this->karmaFile         = "duchamp-Results.ann";
+    this->annotationType    = "borders";
     this->flagMaps          = true;
     this->detectionMap      = "duchamp-DetectionMap.ps";
     this->momentMap         = "duchamp-MomentMap.ps";
@@ -206,6 +207,7 @@ namespace duchamp
     this->votFile           = p.votFile;        
     this->flagKarma         = p.flagKarma;      
     this->karmaFile         = p.karmaFile;      
+    this->annotationType    = p.annotationType;
     this->flagMaps          = p.flagMaps;       
     this->detectionMap      = p.detectionMap;   
     this->momentMap         = p.momentMap;      
@@ -509,6 +511,7 @@ namespace duchamp
 	if(arg=="votfile")         this->votFile = readSval(ss); 
 	if(arg=="flagkarma")       this->flagKarma = readFlag(ss); 
 	if(arg=="karmafile")       this->karmaFile = readSval(ss); 
+	if(arg=="annotationtype")  this->annotationType = readSval(ss); 
 	if(arg=="flagmaps")        this->flagMaps = readFlag(ss); 
 	if(arg=="detectionmap")    this->detectionMap = readSval(ss); 
 	if(arg=="momentmap")       this->momentMap = readSval(ss); 
@@ -600,6 +603,16 @@ namespace duchamp
     // The wavelet reconstruction takes precendence over the smoothing.
     if(this->flagATrous) this->flagSmooth = false;
 
+    // Make sure the annnotationType is an acceptable option -- default is "borders"
+    if((this->annotationType != "borders") && (this->annotationType!="circles")){
+      std::stringstream errmsg;
+      errmsg << "The requested value of the parameter annotationType, \""
+	     << this->annotationType << "\" is invalid.\n"
+	     << "Changing to \"borders\".\n";
+      duchampWarning("Reading parameters",errmsg.str());
+      this->annotationType = "borders";
+    }
+      
     // Make sure smoothType is an acceptable type -- default is "spectral"
     if((this->smoothType!="spectral")&&
        (this->smoothType!="spatial")){

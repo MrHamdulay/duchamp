@@ -181,6 +181,8 @@ namespace duchamp
     void   setVOTFile(std::string fname){votFile = fname;};
     bool   getFlagKarma(){return flagKarma;};
     void   setFlagKarma(bool flag){flagKarma=flag;};
+    std::string getAnnotationType(){return annotationType;};
+    void   setAnnotationType(std::string s){annotationType=s;};
     std::string getKarmaFile(){return karmaFile;};
     void   setKarmaFile(std::string fname){karmaFile = fname;};
     bool   getFlagMaps(){return flagMaps;};
@@ -366,6 +368,7 @@ namespace duchamp
     bool   flagKarma;       ///< Should we save results in Karma
                             ///   annotation format?
     std::string karmaFile;  ///< Where the Karma annotation file goes.
+    std::string annotationType; ///< Should the annoations be circles or borders?
     bool   flagMaps;        ///< Should we produce detection and moment
                             ///   maps in postscript form?
     std::string detectionMap;///< The name of the detection map
