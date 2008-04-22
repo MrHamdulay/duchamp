@@ -49,13 +49,21 @@ namespace duchamp
 
   int Cube::getMetadata(){  
     /** 
-     * A front-end to the Cube::getMetadata() function, that does 
-     *  subsection checks.
-     * Assumes the Param is set up properly.
+     * A front-end to the Cube::getMetadata() function, that does
+     *  subsection checks. Does the flux unit conversion if the user
+     *  has requested it. Assumes the Param is set up properly.
      */
     std::string fname = par.getImageFile();
     if(par.getFlagSubsection()) fname+=par.getSubsection();
-    return getMetadata(fname);
+
+    int result = getMetadata(fname);
+    
+    if(result==SUCCESS){
+      // Convert the flux Units if the user has so requested
+      this->convertFluxUnits();
+    }
+
+    return result;
   }
   //--------------------------------------------------------------------
 
@@ -68,7 +76,9 @@ namespace duchamp
      *  will check that the file exists, report the dimensions and
      *  then get other functions to read the WCS and necessary header
      *  keywords. This function does not read in the data array --
-     *  that is done by Cube::getCube().
+     *  that is done by Cube::getCube(). Note that no conversion of
+     *  flux units is done -- you need to call Cube::getMetadata() or
+     *  do it separately.
      *  \param fname A std::string with name of FITS file.
      *  \return SUCCESS or FAILURE.
      */
@@ -112,6 +122,11 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
       fits_report_error(stderr, status);
       return FAILURE;
     }
+
+    // allocate the dimension array in the Cube.
+    this->axisDim = new long[numAxes];
+    this->axisDimAllocated = true;
+    for(int i=0;i<numAxes;i++) this->axisDim[i] = dimAxes[i];
   
     // Close the FITS file.
     status = 0;
@@ -165,6 +180,11 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
     //   different to the full FITS array).
     if(this->par.isVerbose()) std::cout << "Reading data ... "<<std::flush;
     if(this->getFITSdata(fname)) return FAILURE;
+
+    if(this->axisDim[2] == 1){
+      this->par.setMinChannels(0);
+    }
+
     if(this->par.isVerbose()){
       std::cout << "Done. Data array has dimensions: ";
       std::cout << this->axisDim[0];
@@ -172,10 +192,6 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
       if(this->axisDim[2]>1) std::cout  <<"x"<< this->axisDim[2];
       std::cout << "\n";
     }   
-
-    if(this->axisDim[2] == 1){
-      this->par.setMinChannels(0);
-    }
 
     // Convert the flux Units if the user has so requested
     this->convertFluxUnits();
@@ -192,10 +208,10 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
      *  If the user has requested new flux units (via the input
      *  parameter newFluxUnits), this function converts the units
      *  given by BUNIT to those given by newFluxUnits. If no simple
-     *  conversion can be found (by using wcs***) then nothing is done
-     *  and the user is informed, otherwise the FitsHeader::fluxUnits
-     *  parameter is updated and the pixel array is converted
-     *  accordingly.
+     *  conversion can be found (by using wcsunits()) then nothing is
+     *  done and the user is informed, otherwise the
+     *  FitsHeader::fluxUnits parameter is updated and the pixel array
+     *  is converted accordingly.
      *
      */
 
@@ -205,31 +221,34 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
       std::string oldUnit = this->head.getFluxUnits();
       std::string newUnit = this->par.getNewFluxUnits();
 
-      if(this->par.isVerbose()){
-	std::cout << "Converting flux units from " << oldUnit << " to " << newUnit << "... ";
-	std::cout << std::flush;
-      }
+      if(oldUnit != newUnit){
 
-      double scale,offset,power;
-      int status = wcsunits(oldUnit.c_str(), newUnit.c_str(), &scale, &offset, &power);
-
-      if(status==0){
-	
-	this->head.setFluxUnits( newUnit );
-	this->head.setIntFluxUnits();
-
-	for(int i=0;i<this->numPixels;i++)
-	  if(!this->isBlank(i)) this->array[i] = pow(scale * array[i] + offset, power);
-	if(this->par.isVerbose()) {
-	  std::cout << " Done.\n";
+	if(this->par.isVerbose()){
+	  std::cout << "Converting flux units from " << oldUnit << " to " << newUnit << "... ";
+	  std::cout << std::flush;
 	}
-      }
-      else{
-	std::stringstream ss;
-	ss << "Could not convert units from " << oldUnit << " to " << newUnit
-	   << ".\nLeaving BUNIT as " << oldUnit << "\n";
-	if(this->par.isVerbose()) std::cout << "\n";
-	duchampWarning("convertFluxUnits", ss.str());
+
+	double scale,offset,power;
+	int status = wcsunits(oldUnit.c_str(), newUnit.c_str(), &scale, &offset, &power);
+
+	if(status==0){
+	
+	  this->head.setFluxUnits( newUnit );
+	  this->head.setIntFluxUnits();
+
+	  for(int i=0;i<this->numPixels;i++)
+	    if(!this->isBlank(i)) this->array[i] = pow(scale * array[i] + offset, power);
+	  if(this->par.isVerbose()) {
+	    std::cout << " Done.\n";
+	  }
+	}
+	else{
+	  std::stringstream ss;
+	  ss << "Could not convert units from " << oldUnit << " to " << newUnit
+	     << ".\nLeaving BUNIT as " << oldUnit << "\n";
+	  if(this->par.isVerbose()) std::cout << "\n";
+	  duchampWarning("convertFluxUnits", ss.str());
+	}
       }
     }
 

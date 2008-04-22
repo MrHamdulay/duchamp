@@ -181,9 +181,8 @@ namespace duchamp
 
   protected:
     short int                numDim;     ///< Number of dimensions.
-    long                    *axisDim;    ///< Array of dimensions of cube
-    ///   (ie. how large in each
-    ///   direction).
+    long                    *axisDim;    ///< Array of axis dimensions of cube
+    bool                     axisDimAllocated; ///< has axisDim been allocated?
     long                     numPixels;  ///< Total number of pixels in cube.
     float                   *array;      ///< Array of data.
     std::vector <Detection> *objectList; ///< The list of detected objects.

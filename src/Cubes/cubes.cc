@@ -77,6 +77,7 @@ namespace duchamp
     this->numDim=0; 
     this->numPixels=0;
     this->objectList = new std::vector<Detection>;
+    this->axisDimAllocated = false;
   }
   //--------------------------------------------------------------------
 
@@ -87,7 +88,11 @@ namespace duchamp
      * Number of pixels are set to 0. 
      * \param nDim Number of dimensions.
      */
-    if(nDim>0) this->axisDim = new long[nDim];
+    this->axisDimAllocated = false;
+    if(nDim>0){
+      this->axisDim = new long[nDim];
+      this->axisDimAllocated = true;
+    }
     this->numDim=nDim; 
     this->numPixels=0;
     this->objectList = new std::vector<Detection>;
@@ -105,6 +110,7 @@ namespace duchamp
      * Note that we can assign values to the dimension array.
      */
 
+    this->axisDimAllocated = false;
     if(size<0)
       duchampError("DataArray(nDim,size)",
 		   "Negative size -- could not define DataArray");
@@ -112,7 +118,10 @@ namespace duchamp
       duchampError("DataArray(nDim,size)",
 		   "Negative number of dimensions: could not define DataArray");
     else {
-      if(size>0) this->array = new float[size];
+      if(size>0){
+	this->array = new float[size];
+	this->axisDimAllocated = true;
+      }
       this->numPixels = size;
       if(nDim>0) this->axisDim = new long[nDim];
       this->numDim = nDim;
@@ -130,6 +139,7 @@ namespace duchamp
      * \param nDim Number of dimensions. 
      * \param dimensions Array giving sizes of dimensions.
      */
+    this->axisDimAllocated = false;
     if(nDim<0)
       duchampError("DataArray(nDim,dimArray)",
 		   "Negative number of dimensions: could not define DataArray");
@@ -141,7 +151,10 @@ namespace duchamp
 		     "Negative size: could not define DataArray");
       else{
 	this->numPixels = size;
-	if(size>0) this->array = new float[size];
+	if(size>0){
+	  this->array = new float[size];
+	  this->axisDimAllocated = true;
+	}
 	this->numDim=nDim;
 	if(nDim>0) this->axisDim = new long[nDim];
 	for(int i=0;i<nDim;i++) this->axisDim[i] = dimensions[i];
@@ -157,7 +170,10 @@ namespace duchamp
      *   object list is deleted.
      */
     if(this->numPixels>0) delete [] this->array;
-    if(this->numDim>0)    delete [] this->axisDim;
+    if(this->numDim>0 && this->axisDimAllocated){
+      delete [] this->axisDim;
+    this->axisDimAllocated = false;
+    }
     delete this->objectList;
   }
   //--------------------------------------------------------------------
@@ -331,6 +347,7 @@ namespace duchamp
      */
     this->reconAllocated = false;
     this->baselineAllocated = false;
+    this->axisDimAllocated = false;
     this->numPixels = this->numDim = 0;
     if(size<0)
       duchampError("Cube(size)","Negative size -- could not define Cube");
@@ -347,8 +364,9 @@ namespace duchamp
 	}
       }
       this->numPixels = size;
-      this->axisDim = new long[2];
+      this->axisDim = new long[3];
       this->numDim = 3;
+      this->axisDimAllocated = true;
       this->reconExists = false;
     }
   }
@@ -364,6 +382,7 @@ namespace duchamp
     int imsize = dimensions[0] * dimensions[1];
     this->reconAllocated = false;
     this->baselineAllocated = false;
+    this->axisDimAllocated = false;
     this->numPixels = this->numDim = 0;
     if((size<0) || (imsize<0) )
       duchampError("Cube(dimArray)","Negative size -- could not define Cube");
@@ -383,6 +402,7 @@ namespace duchamp
       }
       this->numDim  = 3;
       this->axisDim = new long[3];
+      this->axisDimAllocated = true;
       for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
       for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
       this->reconExists = false;
@@ -440,6 +460,11 @@ namespace duchamp
     this->reconAllocated = false;
     this->baselineAllocated = false;
 
+    if(this->axisDimAllocated){
+      delete [] this->axisDim;
+      this->axisDimAllocated = false;
+    }
+
     if((size<0) || (imsize<0) )
       duchampError("Cube::initialiseCube(dimArray)",
 		   "Negative size -- could not define Cube.\n");
@@ -459,6 +484,7 @@ namespace duchamp
       }
       this->numDim  = 3;
       this->axisDim = new long[this->numDim];
+      this->axisDimAllocated = true;
       this->axisDim[0] = dimensions[lng];
       if(this->head.getNumAxes()>1) this->axisDim[1] = dimensions[lat];
       else this->axisDim[1] = 1;
