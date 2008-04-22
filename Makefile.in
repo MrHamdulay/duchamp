@@ -58,6 +58,7 @@ HEADS = $(BASE)/duchamp.hh\
 	$(DETECTIONDIR)/columns.hh\
 	$(CUBESDIR)/cubes.hh\
 	$(CUBESDIR)/plots.hh\
+	$(CUBESDIR)/VOTable.hh\
 	$(UTILDIR)/Hanning.hh\
 	$(UTILDIR)/GaussSmooth.hh\
 	$(UTILDIR)/Section.hh\
@@ -102,6 +103,7 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(CUBESDIR)/saveImage.o\
 	$(CUBESDIR)/smoothCube.o\
 	$(CUBESDIR)/trimImage.o\
+	$(CUBESDIR)/VOTable.o\
 	$(FITSIODIR)/dataIO.o\
 	$(FITSIODIR)/headerIO.o\
 	$(FITSIODIR)/subsection.o\
