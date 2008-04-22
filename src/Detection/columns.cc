@@ -260,8 +260,7 @@ namespace duchamp
 	float val,minval;
 
 	// Obj#
-	tempwidth = int( log10(objectList[obj].getID()) + 1) + 
-	  newset[NUM].getPrecision() + 1;
+	tempwidth = int( log10(objectList[obj].getID()) + 1) + 1;
 	for(int i=newset[NUM].getWidth();i<tempwidth;i++) newset[NUM].widen();
 
 	// Name
