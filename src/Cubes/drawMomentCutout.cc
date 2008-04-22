@@ -292,66 +292,6 @@ namespace duchamp
     }
 
   }
-
-  std::vector<int> Detection::getVertexSet()
-  {
-    /**
-     * Gets a list of points being the end-points of 1-pixel long
-     * segments drawing a border around the spatial extend of a
-     * detection. The vector is a series of 4 integers, being: x_0,
-     * y_0, x_1, y_1.
-     * \return The vector of vertex positions.
-     */
-    std::vector<int> vertexSet;
-
-    int xmin = this->getXmin() - 1;
-    int xmax = this->getXmax() + 1;
-    int ymin = this->getYmin() - 1;
-    int ymax = this->getYmax() + 1;
-    int xsize = xmax - xmin + 1;
-    int ysize = ymax - ymin + 1;
-
-    std::vector<Voxel> voxlist = this->pixelArray.getPixelSet();
-    std::vector<bool> isObj(xsize*ysize,false);
-    for(int i=0;i<voxlist.size();i++){
-      int pos = (voxlist[i].getX()-xmin) + 
-	(voxlist[i].getY()-ymin)*xsize;
-      isObj[pos] = true;
-    }
-    voxlist.clear();
-    
-    for(int x=xmin; x<=xmax; x++){
-      // for each column...
-      for(int y=ymin+1;y<=ymax;y++){
-	int current  = (y-ymin)*xsize + x-xmin;
-	int previous = (y-ymin-1)*xsize + x-xmin;
-	if((isObj[current]&&!isObj[previous])   ||
-	   (!isObj[current]&&isObj[previous])){
-	  vertexSet.push_back(x);
-	  vertexSet.push_back(y);
-	  vertexSet.push_back(x+1);
-	  vertexSet.push_back(y);
-	}
-      }
-    }
-    for(int y=ymin; y<=ymax; y++){
-      // now for each row...
-      for(int x=xmin+1;x<=xmax;x++){
-	int current  = (y-ymin)*xsize + x-xmin;
-	int previous = (y-ymin)*xsize + x-xmin - 1;
-	if((isObj[current]&&!isObj[previous])   ||
-	   (!isObj[current]&&isObj[previous])){
-	  vertexSet.push_back(x);
-	  vertexSet.push_back(y);
-	  vertexSet.push_back(x);
-	  vertexSet.push_back(y+1);
-	}
-      }
-    }
-
-    return vertexSet;
-  
-  }
   
   void Detection::drawBorders(int xoffset, int yoffset)
   {
