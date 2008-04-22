@@ -5,9 +5,41 @@ Bug fixes:
 * A major bug was discovered in the calculation of integrated
   fluxes. The flux was incorrectly being weighted by the spatial size
   of the detection, resulting in a (often considerable) overestimation
-  of the integrated flux. This has been corrected, as has the beam
-  size (which was out by a factor of 1/ln(2)).
+  of the integrated flux. This has been corrected.
 
+* The beam size calculation was also incorrect, being out by a factor
+  of 1/ln(2). 
+
+* The "make install" command previously failed to work properly if the
+  library had not been created. This has been fixed so that the
+  installation works even if there is no library file.
+
+New Features:
+* You can now provide a new flux unit string, so that the pixel fluxes
+  will be converted to these new fluxes before any calculations are
+  done. This is done with the newFluxUnits input parameter. The new
+  units should be directly convertible from the old ones (given by the
+  BUNIT header -- e.g. if BUNIT = Jy/beam, you can give newFluxUnits
+  as mJy/beam, but not mJy).
+
+* You can now specify the precision used in the output files for flux,
+  velocity and S/N ratio columns, via new input parameters precFlux,
+  precVel and precSNR. These will apply to the VOTable output as well
+  as the text table and information on the spectral plots.
+
+* The Karma annotation files previously provided just a circle at the
+  spatial location of the detected object. You now have the option to
+  draw a border around the detected pixels (in a similar manner to the
+  PGPLOT moment maps). Karma does not do this perfectly, so the lines
+  may not line up exactly with the pixel borders, so the option
+  remains to keep using the circles. This is controlled by the
+  parameter "annotationType", with possible options being "borders"
+  (the default) or "circles".
+
+* There is a new function getMetadata() that loads the header and WCS
+  data, but no pixel information. This is only of interest if you are
+  doing code development with the Duchamp library -- it does not
+  affect the running of Duchamp itself.
 
 Duchamp version 1.1.4 (2008/02/15)
 ----------------------------------

@@ -90,6 +90,15 @@ end of each axis).
 
 All types of subsections can be combined \eg \texttt{[5,2:98,*]}. 
 
+Typically, the units of pixel brightness are given by the FITS file's
+BUNIT keyword. However, this may often be unwieldy (for instance, the
+units are Jy/beam, but the values are around a few mJy/beam). It is
+therefore possible to nominate new units, to which the pixel values
+will be converted, by using the \texttt{newFluxUnits} input
+parameter. The units must be directly translatable from the existing
+ones -- for instance, if BUNIT is Jy/beam, you cannot specify mJy, it
+must be mJy/beam. If an incompatible unit is given, the BUNIT value is
+used instead.
 
 \secB{Image modification}
 \label{sec-modify}

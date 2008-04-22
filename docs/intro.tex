@@ -43,6 +43,16 @@ connected voxels (or pixels) that are all above some flux
 threshold. No assumption is made as to the shape of detections, and
 the only size constraints applied are those specified by the user.
 
+\duchamp has been written as a three-dimensional finder, but it is
+possible to run it on a two-dimensional image (\ie one with no
+frequency or velocity information), or indeed a one-dimensional array,
+and many of the features of the program will work fine. The focus,
+however, is on object detection in three dimensions, one of which is a
+spectral dimension. Note, in particular, that it does not do any
+fitting of source profiles, a feature common (and desirable) for many
+two-dimensional source finders. This is beyond the current scope of
+\duchamp, whose aim is reliable detection of spectral-line objects.
+
 \secB{What to do}
 
 So, you have a FITS cube, and you want to find the sources in it. What
@@ -142,13 +152,6 @@ user-selected minimum size criteria. Features that are detected are
 assumed to be positive. The user can choose to search for negative
 features by setting an input parameter -- this inverts the cube prior
 to the search (see \S\ref{sec-detection} for details).
-
-Finally, note that it is possible to run \duchamp on a
-two-dimensional image (\ie one with no frequency or velocity
-information), or indeed a one-dimensional array, and many of the
-features of the program will work fine. The focus, however, is on
-object detection in three dimensions, one of which is a spectral
-dimension.
 
 \secB{A summary of the execution steps}
 

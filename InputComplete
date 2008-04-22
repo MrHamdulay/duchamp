@@ -17,15 +17,19 @@
 # reconFile -- the location of the FITS file containing the reconstructed cube
 # flagSmoothExists -- set to true if the smoothed cube exists as a FITS 
 #                    file (ie. it has been saved from a previous Duchamp run)
-# smoothFile -- the location of the FITS file containing the smoothed cube
+# smoothFile -- the location of the FITS file containing the smoothed
+#               cube
+# beamsize -- the size of the beam in pixels. This value is overridden
+#             by the BMAJ, BMIN, BPA header parameters if present.
 
 imageFile       your-file-here
 flagSubsection  0
 subsection      [*,*,*]
 flagReconExists	0
 reconFile	your-reconstructed-file-here
-flagReconExists	1
-reconFile	your-smoothed-file-here
+flagSmoothExists 1
+smoothFile	your-smoothed-file-here
+beamsize        10.
 
 # OUTPUT RELATED
 # flagLog -- log the intermediate results?   
@@ -52,6 +56,11 @@ reconFile	your-smoothed-file-here
 # flagMaps -- save postscript versions of the detection and 0th moment maps?
 # detectionMap, momentMap -- the postscript files produced.
 # flagXOutput -- display the moment map in a pgplot window
+# newFluxUnits -- brightness units to convert the array values to
+#                 (eg. from Jy/beam to mJy/beam)   
+# precFlux -- Desired precision for Flux value in outputs.
+# precVel -- Desired precision for Velocity/Frequency value in outputs.
+# precSNR -- Desired precision for peak SNR value in ouputs.
 
 flagLog         0
 logFile		duchamp-Logfile.txt
@@ -73,17 +82,18 @@ flagMaps        1
 detectionMap    duchamp-DetectionMap.ps
 momentMap       duchamp-MomentMap.ps
 flagXOutput     1
+newFluxUnits    no-default
+precFlux        3
+precVel         3
+precSNR         2
 
 # FIXING UP THE CUBE
 # flagTrim -- whether to trim blank pixels from the edges of the cube.
-# blankPixValue -- what value they should take. This is overridden by 
-#                  FITS header information.
 # flagBaseline -- whether to subtract spectral baselines before searching
 # flagMW -- ignore a range of channels (to remove Milky Way emission)?
 # minMW, maxMW -- the first and last channels to be ignored
 
 flagTrim        0
-blankPixValue	-8.00061
 flagMW		0
 minMW		75
 maxMW		112

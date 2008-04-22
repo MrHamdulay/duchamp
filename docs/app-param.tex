@@ -122,7 +122,12 @@ not matter, they are grouped here in logical sections.
   \texttt{outfile}. This can be used as an overlay in Karma
   programs such as \texttt{kvis}.
 \item[{karmaFile [duchamp-\\Results.ann]}] The Karma annotation
-  file showing the list of final detections.  
+  file showing the list of final detections.
+\item[{annotationType [borders]}] Which type of annotation plot to
+  use. Specifying ``borders'' gives an outline around the detected
+  spatial pixels, while ``circles'' gives a circle centred on the
+  centre of the object with radius large enough to encompass all
+  spatial pixels.
 \item[{flagMaps [true]}] A flag to say whether to save
   postscript files showing the 0th moment map of the whole cube
   (parameter \texttt{momentMap}) and the detection image
@@ -139,6 +144,16 @@ not matter, they are grouped here in logical sections.
   that are saved to a file. This parameter can be overridden by the
   use of the \texttt{-x} command-line option, which disables the
   X-windows output.
+\item[{newFluxUnits [no default]}] Flux units that the pixel values
+  should be converted into. These should be directly compatible with
+  the existing units, given by the BUNIT keyword.
+\item[{precFlux [3]}] The desired precision (\ie number of decimal
+  places) for flux values given in the output files and tables.
+\item[{precVel [3]}] The desired precision (\ie number of decimal
+  places) for velocity/frequency values given in the output files and
+  tables.
+\item[{precSNR [2]}] The desired precision (\ie number of decimal
+  places) for the peak SNR value given in the output files and tables.
 \end{Lentry}
 
 \secB*{Modifying the cube}

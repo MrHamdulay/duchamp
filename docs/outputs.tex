@@ -148,6 +148,12 @@ Equatorial and Galactic projection cases).
 \item[{Flag}] Whether the detection has any warning flags (see below).
 \end{Lentry}
 
+The user can specify the precision used to display the flux, velocity
+and S/Nmax values, by using the input parameters \texttt{precFlux},
+\texttt{precVel} and \texttt{precSNR} respectively. These values apply
+to the tables written to the screen and to the output file, as well as
+for the VOTable (see below).
+
 Note that the \texttt{X, Y, Z} columns depend on the \texttt{pixelCentre}
 parameter. This is because there are three alternative ways of
 expressing the centre of a detection, which are all listed in the list
@@ -220,13 +226,19 @@ or TOPCAT\footnote{%Tool for OPerations on Catalogues And Tables:
 {http://www.star.bristol.ac.uk/~mbt/topcat/}}). 
 
 A second option is an annotation file for use with the Karma toolkit
-of visualisation tools (in particular, with \texttt{kvis}). This will
-draw a circle at the position of each detection, scaled by the spatial
-size of the detection, and number it according to the Obj\# given
-above. To make use of this option, the user should set
-\texttt{flagKarma = true}, and put the desired filename in the
-parameter \texttt{karmaFile} -- again, the default is for it not to be
-produced.
+of visualisation tools (in particular, with \texttt{kvis}). There are
+two options on how objects are represented, governed by the
+\texttt{annotationType} parameter. Setting this to \texttt{borders}
+results in a border being drawn around the spatial pixels of the
+object, in a manner similar to that seen in Fig.~\ref{fig-spect}. Note
+that Karma/\texttt{kvis} does not always do this perfectly, so the
+lines may not be directly lined up with pixel borders. The other
+option is \texttt{annotationType = circles}. This will draw a circle
+at the position of each detection, scaled by the spatial size of the
+detection, and number it according to the Obj\# given above. To make
+use of this option, the user should set \texttt{flagKarma = true}, and
+put the desired filename in the parameter \texttt{karmaFile} -- again,
+the default is for it not to be produced.
 
 The final optional results file produced is a simple text file that
 contains the spectra for each detected object. The format of the file
@@ -278,6 +290,32 @@ this log file can be prevented by setting \texttt{flagLog = false}
 
 \secB{Graphical output}
 
+\begin{figure}[t]
+  \begin{center}
+    \includegraphics[width=\textwidth]{example_spectrum}
+  \end{center}
+  \caption{\footnotesize An example of the spectral output. Note several
+    of the features discussed in the text: the red lines indicating the
+    reconstructed spectrum; the blue dashed lines indicating the
+    spectral extent of the detection; the green hashed area indicating
+    the Milky Way channels that are ignored by the searching algorithm;
+    the blue border showing its spatial extent on the 0th moment map;
+    and the 15~arcmin-long scale bar.}
+  \label{fig-spect}
+\end{figure}
+
+\begin{figure}[!t]
+  \begin{center}
+    \includegraphics[width=\textwidth]{example_moment_map}
+  \end{center}
+  \caption{\footnotesize An example of the moment map created by
+    \duchamp. The full extent of the cube is covered, and the 0th moment
+    of each object is shown (integrated individually over all the
+    detected channels). The purple line indicates the limit of the
+    non-BLANK pixels.}
+  \label{fig-moment}
+\end{figure}
+
 \secC{Mask image}
 \label{sec-maskOut}
 
@@ -301,21 +339,7 @@ reconstruction is shown in red, over the top of the original
 spectrum. The spectral extent of the detected object is indicated by
 two dashed blue lines, and the region covered by the ``Milky Way''
 channels is shown by a green hashed box. An example detection can be
-seen below in Fig.~\ref{fig-spect}.
-
-\begin{figure}[t]
-\begin{center}
-\includegraphics[width=\textwidth]{example_spectrum}
-\end{center}
-\caption{\footnotesize An example of the spectral output. Note several
-  of the features discussed in the text: the red lines indicating the
-  reconstructed spectrum; the blue dashed lines indicating the
-  spectral extent of the detection; the green hashed area indicating
-  the Milky Way channels that are ignored by the searching algorithm;
-  the blue border showing its spatial extent on the 0th moment map;
-  and the 15~arcmin-long scale bar.}
-\label{fig-spect}
-\end{figure}
+seen in Fig.~\ref{fig-spect}.
 
 The spectrum that is plotted is governed by the
 \texttt{spectralMethod} parameter. It can be either \texttt{peak} (the
@@ -352,18 +376,6 @@ normal spectral case, this file will be written to the filename given
 by the \texttt{spectralFile} parameter.
 
 \secC{Spatial maps}
-
-\begin{figure}[!t]
-\begin{center}
-\includegraphics[width=\textwidth]{example_moment_map}
-\end{center}
-\caption{\footnotesize An example of the moment map created by
-  \duchamp. The full extent of the cube is covered, and the 0th moment
-  of each object is shown (integrated individually over all the
-  detected channels). The purple line indicates the limit of the
-  non-BLANK pixels.}
-\label{fig-moment}
-\end{figure}
 
 Finally, a couple of images are optionally produced: a 0th moment map
 of the cube, combining just the detected channels in each object,
