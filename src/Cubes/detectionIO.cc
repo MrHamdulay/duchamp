@@ -114,12 +114,12 @@ namespace duchamp
 	}
       }
       else if(this->par.getAnnotationType()=="circles"){
-        float radius = this->objectList->at(i).getRAWidth()/120.;
-        if(this->objectList->at(i).getDecWidth()/120.>radius)
-          radius = this->objectList->at(i).getDecWidth()/120.;
+        float radius = obj->getRAWidth()/120.;
+        if(obj->getDecWidth()/120.>radius)
+          radius = obj->getDecWidth()/120.;
         stream << "CIRCLE " 
-               << this->objectList->at(i).getRA() << " " 
-               << this->objectList->at(i).getDec() << " " 
+               << obj->getRA() << " " 
+               << obj->getDec() << " " 
                << radius << "\n";
       }
 
