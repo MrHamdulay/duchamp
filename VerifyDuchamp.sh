@@ -37,11 +37,11 @@ else
     numErrors=$numErrors+1
 fi
 #Test the log files.
-if [ `diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log1.txt verification/stdLog1.txt | wc -l` == 0 ]; then
+if [ `diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log1.txt verification/stdLog1.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
-    diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log1.txt verification/stdLog1.txt
+    diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log1.txt verification/stdLog1.txt
     numErrors=$numErrors+1
 fi
 
@@ -73,11 +73,11 @@ else
     numErrors=$numErrors+1
 fi
 #Test the log files.
-if [ `diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log2.txt verification/stdLog2.txt | wc -l` == 0 ]; then
+if [ `diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log2.txt verification/stdLog2.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
-    diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log2.txt verification/stdLog2.txt
+    diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log2.txt verification/stdLog2.txt
     numErrors=$numErrors+1
 fi
 
@@ -110,11 +110,11 @@ else
     numErrors=$numErrors+1
 fi
 #Test the log files.
-if [ `diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log3.txt verification/stdLog3.txt | wc -l` == 0 ]; then
+if [ `diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log3.txt verification/stdLog3.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
-    diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log3.txt verification/stdLog3.txt
+    diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log3.txt verification/stdLog3.txt
     numErrors=$numErrors+1
 fi
 
@@ -147,11 +147,11 @@ else
     numErrors=$numErrors+1
 fi
 #Test the log files.
-if [ `diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log4.txt verification/stdLog4.txt | wc -l` == 0 ]; then
+if [ `diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log4.txt verification/stdLog4.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
-    diff -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log4.txt verification/stdLog4.txt
+    diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log4.txt verification/stdLog4.txt
     numErrors=$numErrors+1
 fi
 
