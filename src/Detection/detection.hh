@@ -269,7 +269,7 @@ namespace duchamp
     int         getSNRPrec(){return snrPrec;};
     void        setSNRPrec(int i){snrPrec=i;};
     //
-  private:
+  protected:
     PixelInfo::Object3D pixelArray;     ///< The pixel locations
     // Subsection offsets
     long           xSubOffset;     ///< The x-offset, from subsectioned cube
