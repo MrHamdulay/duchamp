@@ -594,98 +594,6 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Cube::setCubeStatsOld()
-  {
-    /**  
-     *   \deprecated
-     *
-     *   Calculates the full statistics for the cube:  mean, rms, median, madfm.
-     *   Only do this if the threshold has not been defined (ie. is still 0.,
-     *    its default). 
-     *   Also work out the threshold and store it in the Param set.
-     *   
-     *   For the stats calculations, we ignore BLANKs and MW channels.
-     */
-
-    if(!this->par.getFlagFDR() && this->par.getFlagUserThreshold() ){
-      // if the user has defined a threshold, set this in the StatsContainer
-      this->Stats.setThreshold( this->par.getThreshold() );
-    }
-    else{
-      // only work out the mean etc if we need to.
-      // the only reason we don't is if the user has specified a threshold.
-    
-      std::cout << "Calculating the cube statistics... " << std::flush;
-    
-      // get number of good pixels;
-      int goodSize = 0;
-      for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
-	for(int z=0;z<this->axisDim[2];z++){
-	  int vox = z * this->axisDim[0] * this->axisDim[1] + p;
-	  if(!this->isBlank(vox) && !this->par.isInMW(z)) goodSize++;
-	}
-      }
-
-      float *tempArray = new float[goodSize];
-
-      goodSize=0;
-      for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
-	for(int z=0;z<this->axisDim[2];z++){
-	  int vox = z * this->axisDim[0] * this->axisDim[1] + p;
-	  if(!this->isBlank(vox) && !this->par.isInMW(z))
-	    tempArray[goodSize++] = this->array[vox];
-	}
-      }
-      if(!this->reconExists){
-	// if there's no recon array, calculate everything from orig array
-	this->Stats.calculate(tempArray,goodSize);
-      }
-      else{
-	// just get mean & median from orig array, and rms & madfm from recon
-	StatsContainer<float> origStats,reconStats;
-	origStats.calculate(tempArray,goodSize);
-	goodSize=0;
-	for(int p=0;p<this->axisDim[0]*this->axisDim[1];p++){
-	  for(int z=0;z<this->axisDim[2];z++){
-	    int vox = z * this->axisDim[0] * this->axisDim[1] + p;
-	    if(!this->isBlank(vox) && !this->par.isInMW(z))
-	      tempArray[goodSize++] = this->array[vox] - this->recon[vox];
-	  }
-	}
-	reconStats.calculate(tempArray,goodSize);
-
-	// Get the "middle" estimators from the original array.
-	this->Stats.setMean(origStats.getMean());
-	this->Stats.setMedian(origStats.getMedian());
-	// Get the "spread" estimators from the residual (orig-recon) array
-	this->Stats.setStddev(reconStats.getStddev());
-	this->Stats.setMadfm(reconStats.getMadfm());
-      }
-
-      delete [] tempArray;
-
-      this->Stats.setUseFDR( this->par.getFlagFDR() );
-      // If the FDR method has been requested
-      if(this->par.getFlagFDR())  this->setupFDR();
-      else{
-	// otherwise, calculate one based on the requested SNR cut level, and 
-	//   then set the threshold parameter in the Par set.
-	this->Stats.setThresholdSNR( this->par.getCut() );
-	this->par.setThreshold( this->Stats.getThreshold() );
-      }
-    
-    
-    }
-    std::cout << "Using ";
-    if(this->par.getFlagFDR()) std::cout << "effective ";
-    std::cout << "flux threshold of: ";
-    float thresh = this->Stats.getThreshold();
-    if(this->par.getFlagNegative()) thresh *= -1.;
-    std::cout << thresh << std::endl;
-
-  }
-  //--------------------------------------------------------------------
-
   void Cube::setCubeStats()
   {
     /**  
@@ -710,9 +618,7 @@ namespace duchamp
      *  </ul>
      */
 
-    this->Stats.setRobust(this->par.getFlagRobustStats());
-
-    if(!this->par.getFlagFDR() && this->par.getFlagUserThreshold() ){
+    if(this->par.getFlagUserThreshold() ){
       // if the user has defined a threshold, set this in the StatsContainer
       this->Stats.setThreshold( this->par.getThreshold() );
     }
@@ -720,6 +626,8 @@ namespace duchamp
       // only work out the stats if we need to.
       // the only reason we don't is if the user has specified a threshold.
     
+      this->Stats.setRobust(this->par.getFlagRobustStats());
+
       if(this->par.isVerbose())
 	std::cout << "Calculating the cube statistics... " << std::flush;
     
@@ -1072,19 +980,20 @@ namespace duchamp
      *  Each object gets an ID number assigned to it (which is simply its order 
      *   in the list), and if the WCS is good, the WCS paramters are calculated.
      */
-  
-    for(int i=0;i<this->objectList->size();i++){
-      this->objectList->at(i).setID(i+1);
-      this->objectList->at(i).setCentreType(this->par.getPixelCentre());
-      this->objectList->at(i).calcFluxes(this->array,this->axisDim);
-      //      this->objectList->at(i).calcWCSparams(this->array,this->axisDim,this->head);
-      this->objectList->at(i).calcWCSparams(this->head);
-      this->objectList->at(i).calcIntegFlux(this->array,this->axisDim,this->head);
+
+    std::vector<Detection>::iterator obj;
+    for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
+      obj->setID(i+1);
+      obj->setCentreType(this->par.getPixelCentre());
+      obj->calcFluxes(this->array,this->axisDim);
+      //      obj->calcWCSparams(this->array,this->axisDim,this->head);
+      obj->calcWCSparams(this->head);
+      obj->calcIntegFlux(this->array,this->axisDim,this->head);
     
       if(this->par.getFlagUserThreshold())
-	this->objectList->at(i).setPeakSNR( this->objectList->at(i).getPeakFlux() / this->Stats.getThreshold() );
+	obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
       else
-	this->objectList->at(i).setPeakSNR( (this->objectList->at(i).getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+	obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
 
     }  
 
@@ -1095,7 +1004,7 @@ namespace duchamp
       for(int i=0;i<this->objectList->size();i++){
 	ss.str("");
 	ss << "Obj" << std::setfill('0') << std::setw(numspaces) << i+1;
-	this->objectList->at(i).setName(ss.str());
+	obj->setName(ss.str());
       }
     }
   
@@ -1118,17 +1027,18 @@ namespace duchamp
      * detection and indicating the flux of each voxel.
      */
   
-    for(int i=0;i<this->objectList->size();i++){
-      this->objectList->at(i).setID(i+1);
-      this->objectList->at(i).setCentreType(this->par.getPixelCentre());
-      this->objectList->at(i).calcFluxes(bigVoxList[i]);
-      this->objectList->at(i).calcWCSparams(this->head);
-      this->objectList->at(i).calcIntegFlux(bigVoxList[i],this->head);
+    std::vector<Detection>::iterator obj;
+    for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
+      obj->setID(i+1);
+      obj->setCentreType(this->par.getPixelCentre());
+      obj->calcFluxes(bigVoxList[i]);
+      obj->calcWCSparams(this->head);
+      obj->calcIntegFlux(bigVoxList[i],this->head);
     
       if(this->par.getFlagUserThreshold())
-	this->objectList->at(i).setPeakSNR( this->objectList->at(i).getPeakFlux() / this->Stats.getThreshold() );
+	obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
       else
-	this->objectList->at(i).setPeakSNR( (this->objectList->at(i).getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+	obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
     }  
 
     if(!this->head.isWCS()){ 
@@ -1138,7 +1048,7 @@ namespace duchamp
       for(int i=0;i<this->objectList->size();i++){
 	ss.str("");
 	ss << "Obj" << std::setfill('0') << std::setw(numspaces) << i+1;
-	this->objectList->at(i).setName(ss.str());
+	obj->setName(ss.str());
       }
     }
   
@@ -1366,17 +1276,17 @@ namespace duchamp
      *    </ul>
      */
 
-    for(int i=0;i<this->objectList->size();i++){
+    std::vector<Detection>::iterator obj;
+    for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
 
-      if( this->enclosedFlux(this->objectList->at(i)) < 0. )  
-	this->objectList->at(i).addToFlagText("N");
+      if( this->enclosedFlux(*obj) < 0. )  
+	obj->addToFlagText("N");
 
-      if( this->objAtSpatialEdge(this->objectList->at(i)) ) 
-	this->objectList->at(i).addToFlagText("E");
+      if( this->objAtSpatialEdge(*obj) ) 
+	obj->addToFlagText("E");
 
-      if( this->objAtSpectralEdge(this->objectList->at(i)) &&
-	  (this->axisDim[2] > 2)) 
-	this->objectList->at(i).addToFlagText("S");
+      if( this->objAtSpectralEdge(*obj) && (this->axisDim[2] > 2)) 
+	obj->addToFlagText("S");
 
     }
 
