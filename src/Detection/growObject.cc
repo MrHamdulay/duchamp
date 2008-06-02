@@ -60,75 +60,87 @@ namespace duchamp
      */
 
 
-    vector <bool> isInObj(cube.getSize(),false);
-    bool flagAdj = cube.pars().getFlagAdjacent();
-    int threshS = int(cube.pars().getThreshS());
-    if(flagAdj) threshS = 1;
-    int threshV = int(cube.pars().getThreshV());
+    if(cube.pars().getFlagGrowth() && (cube.pars().getGrowthCut()<cube.pars().getCut())) {
 
-    for(int i=0;i<object.getSize();i++) {
-      Voxel vox = object.getPixel(i);
-      long pos = vox.getX() + vox.getY()*cube.getDimX() + 
-	vox.getZ()*cube.getDimX()*cube.getDimY();
-      isInObj[pos] = true;
-    }
+      vector <bool> isInObj(cube.getSize(),false);
+      bool flagAdj = cube.pars().getFlagAdjacent();
+      int threshS = int(cube.pars().getThreshS());
+      if(flagAdj) threshS = 1;
+      int threshV = int(cube.pars().getThreshV());
+
+      vector<Voxel> voxlist = object.getPixelSet();
+      int origSize = voxlist.size();
+      long zero = 0;
+
+      for(int i=0;i<voxlist.size();i++) {
+	long pos = voxlist[i].getX() + voxlist[i].getY()*cube.getDimX() + 
+	  voxlist[i].getZ()*cube.getDimX()*cube.getDimY();
+	isInObj[pos] = true;
+      }
   
-    StatsContainer<float> growthStats = cube.getStats();
+      StatsContainer<float> growthStats(cube.stats());
 
-    growthStats.setThresholdSNR(cube.pars().getGrowthCut());
-    growthStats.setUseFDR(false);
-  
-    for(int pix=0; pix<object.getSize(); pix++){ // for each pixel in the object
+      growthStats.setThresholdSNR(cube.pars().getGrowthCut());
+      growthStats.setUseFDR(false);
 
-      for(int xnbr=-1*threshS; xnbr<=1*threshS; xnbr++){
-	for(int ynbr=-1*threshS; ynbr<=1*threshS; ynbr++){
-	  for(int znbr=-1*threshV; znbr<=1*threshV; znbr++){
+      //    for(int pix=0; pix<object.getSize(); pix++){ // for each pixel in the object
+      for(int pix=0; pix<voxlist.size(); pix++){ // for each pixel in the object
 
-	    if((xnbr!=0)||(ynbr!=0)||(znbr!=0)){ 
-	      // ignore when all=0 ie. the current object pixel
+	int xmin = std::max(voxlist[pix].getX() - threshS, zero);
+	int xmax = std::min(voxlist[pix].getX() + threshS, cube.getDimX()-1);
+	int ymin = std::max(voxlist[pix].getY() - threshS, zero);
+	int ymax = std::min(voxlist[pix].getY() + threshS, cube.getDimY()-1);
+	int zmin = std::max(voxlist[pix].getZ() - threshV, zero);
+	int zmax = std::min(voxlist[pix].getZ() + threshV, cube.getDimZ()-1);
 
-	      Voxel pixnew = object.getPixel(pix);
-	      long newx = pixnew.getX() + xnbr;
-	      long newy = pixnew.getY() + ynbr;
-	      long newz = pixnew.getZ() + znbr;
-	  
-	      if((newx<cube.getDimX())&&(newx>=0)&&   // x in cube?
-		 (newy<cube.getDimY())&&(newy>=0)&&   // y in cube?
-		 (newz<cube.getDimZ())&&(newz>=0)&&   // z in cube?
-		 !cube.isBlank(newx,newy,newz)   &&   // pixel not BLANK?
-		 !cube.pars().isInMW(newz)       &&   // pixel not MW?
-		 (flagAdj || hypot(xnbr,ynbr))     ){ // pixel not too far?
+	//loop over surrounding pixels.
+	for(int x=xmin; x<=xmax; x++){
+	  for(int y=ymin; y<=ymax; y++){
+	    for(int z=zmin; z<=zmax; z++){
+
+	      if((x!=voxlist[pix].getX())||(y!=voxlist[pix].getY())||(z!=voxlist[pix].getZ())){ 
+		// ignore when the current object pixel
+
+		long pos = x + y * cube.getDimX() + z * cube.getDimX() * cube.getDimY();
+
+		if(!isInObj[pos] && // pixel not already in object?
+		   !cube.isBlank(x,y,z)   &&   // pixel not BLANK?
+		   !cube.pars().isInMW(z)       &&   // pixel not MW?
+		   (flagAdj || hypot(x,y)<threshS)   ){ // pixel not too far away?
 	    
-		pixnew.setX(newx);
-		pixnew.setY(newy);
-		pixnew.setZ(newz);
+		  float flux;
+		  if(cube.isRecon()) flux = cube.getReconValue(x,y,z);
+		  else               flux = cube.getPixValue(x,y,z);
 
-		float flux;
-		if(cube.isRecon()) flux = cube.getReconValue(newx,newy,newz);
-		else               flux = cube.getPixValue(newx,newy,newz);
-		pixnew.setF(flux);
+		  Voxel pixnew(x,y,z,flux);
 
-		long pos = newx + newy * cube.getDimX() + 
-		  newz * cube.getDimX() * cube.getDimY();
-		if( (!isInObj[pos]) && growthStats.isDetection(flux) ){
-		  isInObj[pos] = true;
-		  object.addPixel(pixnew);
-		} // end of if
+		  if(  growthStats.isDetection(flux) ){
+		    isInObj[pos] = true;
+		    voxlist.push_back(pixnew);
+		  } // end of if
 
-	      } // end of if clause regarding newx, newy, newz
+		} // end of if clause regarding position OK
 
-	    } // end of if clause regarding xnbr, ynbr, znbr
+	      } // end of if clause regarding position not same
 
-	  } // end of znbr loop
-	} // end of ynbr loop
-      } // end of xnbr loop
+	    } // end of z loop
+	  } // end of y loop
+	} // end of x loop
       
-    } // end of pix loop
+      } // end of pix loop
 
-    object.calcFluxes(cube.getArray(), cube.getDimArray());
 
-    isInObj.clear();
+      // Add in new pixels to the Detection
+      for(int i=origSize; i<voxlist.size(); i++){
+	object.addPixel(voxlist[i]);
+      }
+      
+      
+      object.calcFluxes(cube.getArray(), cube.getDimArray());
+
+      isInObj.clear();
+
+    }
 
   }
-
 }

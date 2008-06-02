@@ -135,7 +135,7 @@ namespace duchamp
     this->flagNegative      = false;
     // Object growth        
     this->flagGrowth        = false;
-    this->growthCut         = 2.;
+    this->growthCut         = 3.;
     // FDR analysis         
     this->flagFDR           = false;
     this->alphaFDR          = 0.01;
