@@ -32,6 +32,7 @@
 #include <string>
 #include <vector>
 
+#include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/Detection/detection.hh>
@@ -529,7 +530,8 @@ namespace duchamp
     void        plotMomentMap(std::vector<std::string> pgDestination);
 
     /** Draw WCS axes over a PGPLOT map. */
-    void        plotWCSaxes();
+    void        plotWCSaxes(int textColour=DUCHAMP_ID_TEXT_COLOUR,
+			    int axisColour=DUCHAMP_WCS_AXIS_COLOUR);
 
     //  in Cubes/outputSpectra.cc
     /** Print spectra of each detected object. */
