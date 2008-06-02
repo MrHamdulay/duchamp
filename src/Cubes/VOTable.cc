@@ -331,6 +331,9 @@ namespace duchamp
     }    
 
 
+    if(this->fullCols.size()==0) this->setupColumns(); 
+    // in case cols haven't been set -- need the column names
+
     std::string posUCD[4];
     if(makelower(this->fullCols[Column::RAJD].getName())=="ra"){
       posUCD[0] = "pos.eq.ra;meta.main";

@@ -212,9 +212,17 @@ namespace duchamp
       std::vector<Col> newset;
 
       // desired precisions for fluxes, velocities and SNR value
-      int precVel=objectList[0].getVelPrec(),
-	precFlux=objectList[0].getFpeakPrec(), // same as FintPrec at this point.
+      int precVel,precFlux,precSNR;
+      if(objectList.size()>0){
+	precVel=objectList[0].getVelPrec();
+	precFlux=objectList[0].getFpeakPrec(); // same as FintPrec at this point.
 	precSNR=objectList[0].getSNRPrec();
+      }
+      else {
+	precVel = prVEL;
+	precFlux = prFLUX;
+	precSNR = prSNR;
+      }
 
       // set up the default columns 
       newset.push_back( Col(NUM) );

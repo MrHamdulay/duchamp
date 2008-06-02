@@ -195,21 +195,24 @@ namespace duchamp
      
     if(!this->par.getFlagUserThreshold())
       output<<"\nNoise level = " << this->Stats.getMiddle()
-	    <<", Noise spread = " << this->Stats.getSpread()
-	    <<"\n";
+	    <<", Noise spread = " << this->Stats.getSpread();
 
     if(this->par.getFlagGrowth()){
       StatsContainer<float> growthStats = this->Stats;
-      growthStats.setThresholdSNR(this->par.getGrowthCut());
+      if(this->par.getFlagUserGrowthThreshold())
+	growthStats.setThreshold(this->par.getGrowthThreshold());
+      else
+	growthStats.setThresholdSNR(this->par.getGrowthCut());
       growthStats.setUseFDR(false);
-      output<<"  Detections grown down to threshold of " 
-	    << growthStats.getThreshold() << ".\n";
+      output<<"\nDetections grown down to threshold of " 
+	    << growthStats.getThreshold() << " " 
+	    << this->head.getFluxUnits();
     }
 
     if(!this->par.getFlagUserThreshold())
       output << "\nFull stats:\n" << this->Stats;
     else
-      output << "\n\nNot calculating full stats since threshold given.\n";
+      output << "\n\nNot calculating full stats since threshold was provided directly.\n";
 
     output<<"--------------------\n";
     output.close();

@@ -252,6 +252,10 @@ namespace duchamp
     void   setFlagGrowth(bool flag){flagGrowth=flag;};
     float  getGrowthCut(){return growthCut;};
     void   setGrowthCut(float c){growthCut=c;};
+    float  getGrowthThreshold(){return growthThreshold;};
+    void   setGrowthThreshold(float f){growthThreshold=f;};
+    bool   getFlagUserGrowthThreshold(){return flagUserGrowthThreshold;};
+    void   setFlagUserGrowthThreshold(bool b){flagUserGrowthThreshold=b;};
     //	 
     bool   getFlagFDR(){return flagFDR;};
     void   setFlagFDR(bool flag){flagFDR=flag;};
@@ -430,6 +434,8 @@ namespace duchamp
                             ///   found?
     float  growthCut;       ///< The SNR that we are growing objects
                             ///   down to.
+    bool   flagUserGrowthThreshold; ///< Whether the user has manually defined a growth threshold
+    float  growthThreshold; ///< The threshold for growing objects down to
     // FDR analysis
     bool   flagFDR;         ///< Should the FDR method be used? 
     float  alphaFDR;        ///< Alpha value for FDR detection algorithm

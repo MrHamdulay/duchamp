@@ -72,7 +72,7 @@ namespace duchamp
     this->ySubOffset   = d.ySubOffset;
     this->zSubOffset   = d.zSubOffset;
     this->totalFlux    = d.totalFlux;
-    this->intFlux	     = d.intFlux;
+    this->intFlux      = d.intFlux;
     this->peakFlux     = d.peakFlux;
     this->xpeak        = d.xpeak;
     this->ypeak        = d.ypeak;
@@ -91,14 +91,14 @@ namespace duchamp
     this->raS          = d.raS;
     this->decS         = d.decS;
     this->ra           = d.ra;
-    this->dec	     = d.dec;
-    this->raWidth	     = d.raWidth;
+    this->dec	       = d.dec;
+    this->raWidth      = d.raWidth;
     this->decWidth     = d.decWidth;
     this->specUnits    = d.specUnits;
     this->fluxUnits    = d.fluxUnits;
     this->intFluxUnits = d.intFluxUnits;
-    this->lngtype	     = d.lngtype;
-    this->lattype	     = d.lattype;
+    this->lngtype      = d.lngtype;
+    this->lattype      = d.lattype;
     this->vel          = d.vel;
     this->velWidth     = d.velWidth;
     this->velMin       = d.velMin;
@@ -107,7 +107,7 @@ namespace duchamp
     this->xyzPrec      = d.xyzPrec;
     this->fintPrec     = d.fintPrec;
     this->fpeakPrec    = d.fpeakPrec;
-    this->velPrec	     = d.velPrec;
+    this->velPrec      = d.velPrec;
     this->snrPrec      = d.snrPrec;
     return *this;
   }

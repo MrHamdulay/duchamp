@@ -136,6 +136,8 @@ namespace duchamp
     // Object growth        
     this->flagGrowth        = false;
     this->growthCut         = 3.;
+    this->flagUserGrowthThreshold = false;
+    this->growthThreshold   = 0.;
     // FDR analysis         
     this->flagFDR           = false;
     this->alphaFDR          = 0.01;
@@ -244,6 +246,8 @@ namespace duchamp
     this->flagNegative      = p.flagNegative;
     this->flagGrowth        = p.flagGrowth;
     this->growthCut         = p.growthCut;
+    this->growthThreshold   = p.threshold;
+    this->flagUserGrowthThreshold = p.flagUserThreshold;
     this->flagFDR           = p.flagFDR;
     this->alphaFDR          = p.alphaFDR;
     this->flagStatSec       = p.flagStatSec; 
@@ -531,6 +535,10 @@ namespace duchamp
 	if(arg=="minpix")          this->minPix = readIval(ss); 
 	if(arg=="flaggrowth")      this->flagGrowth = readFlag(ss); 
 	if(arg=="growthcut")       this->growthCut = readFval(ss); 
+	if(arg=="growththreshold"){
+	  this->growthThreshold = readFval(ss);
+	  this->flagUserGrowthThreshold = true;
+	}
 
 	if(arg=="flagfdr")         this->flagFDR = readFlag(ss); 
 	if(arg=="alphafdr")        this->alphaFDR = readFval(ss); 
@@ -602,6 +610,31 @@ namespace duchamp
 
     // The wavelet reconstruction takes precendence over the smoothing.
     if(this->flagATrous) this->flagSmooth = false;
+
+    if(this->flagUserThreshold){
+
+      // If we specify a manual threshold, need to also specify a manual growth threshold
+      // If we haven't done so, turn growing off
+      if(this->flagGrowth && !this->flagUserGrowthThreshold){
+	std::stringstream errmsg;
+	errmsg << "You have specified a manual search threshold, but not a manual growth threshold.\n"
+	       << "You need to do so using the \"growthThreshold\" parameter.\n"
+	       << "The growth function is being turned off.\n";
+	duchampWarning("Reading parameters",errmsg.str());
+	this->flagGrowth = false;
+      }
+
+      // If we specify a manual threshold, we don't need the FDR method, so turn it off if requested.
+      if(this->flagFDR){
+	std::stringstream errmsg;
+	errmsg << "You have specified a manual search threshold, so we don't need to use the FDR method.\n"
+	       << "Setting \"flagFDR=false\".\n";
+	duchampWarning("Reading parameters",errmsg.str());
+	this->flagFDR = false;
+      }
+
+    }	
+
 
     // Make sure the annnotationType is an acceptable option -- default is "borders"
     if((this->annotationType != "borders") && (this->annotationType!="circles")){

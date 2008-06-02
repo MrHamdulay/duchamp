@@ -982,8 +982,9 @@ namespace duchamp
      */
 
     std::vector<Detection>::iterator obj;
+    int ct=0;
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
-      obj->setID(i+1);
+      obj->setID(ct++);
       obj->setCentreType(this->par.getPixelCentre());
       obj->calcFluxes(this->array,this->axisDim);
       //      obj->calcWCSparams(this->array,this->axisDim,this->head);
@@ -1028,17 +1029,20 @@ namespace duchamp
      */
   
     std::vector<Detection>::iterator obj;
+    int ct=0;
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
-      obj->setID(i+1);
+      obj->setID(ct+1);
       obj->setCentreType(this->par.getPixelCentre());
-      obj->calcFluxes(bigVoxList[i]);
+      obj->calcFluxes(bigVoxList[ct]);
       obj->calcWCSparams(this->head);
-      obj->calcIntegFlux(bigVoxList[i],this->head);
+      obj->calcIntegFlux(bigVoxList[ct],this->head);
     
       if(this->par.getFlagUserThreshold())
 	obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
       else
 	obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+
+      ct++;
     }  
 
     if(!this->head.isWCS()){ 

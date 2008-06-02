@@ -80,7 +80,11 @@ namespace duchamp
   
       StatsContainer<float> growthStats(cube.stats());
 
-      growthStats.setThresholdSNR(cube.pars().getGrowthCut());
+      if(cube.pars().getFlagUserGrowthThreshold())
+	growthStats.setThreshold(cube.pars().getGrowthThreshold());
+      else
+	growthStats.setThresholdSNR(cube.pars().getGrowthCut());
+
       growthStats.setUseFDR(false);
 
       //    for(int pix=0; pix<object.getSize(); pix++){ // for each pixel in the object
