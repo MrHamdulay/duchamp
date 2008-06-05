@@ -200,13 +200,18 @@ not matter, they are grouped here in logical sections.
   threshold. Normally the threshold is calculated from the cube's
   statistics, but the user can manually specify a value to be used
   that overrides the calculated value. If this is not specified, the
-  calculated value is used. Also, when the FDR method is requested
-  (see below), the value of the \texttt{threshold} parameter is
-  ignored.
+  calculated value is used, but this value will take precedence over
+  other means of calculating the threshold (\ie via \texttt{snrCut} or
+  the FDR method).
 \item[{flagGrowth [false]}] A flag indicating whether or not to
   grow the detected objects to a smaller threshold.
-\item[{growthCut [2.]}] The smaller threshold using in growing
+\item[{growthCut [3.]}] The smaller threshold using in growing
   detections. In units of $\sigma$ above the mean.
+\item[{growthThreshold [no default]}] Alternatively, the threshold to
+  which detections are grown can be specified in flux units (in the
+  same manner as the \texttt{threshold} parameter). When the
+  \texttt{threshold} parameter is given, this option \textbf{must} be
+  used instead of \texttt{growthCut}.
 \item[{beamSize [10.]}] The size of the beam in pixels. If the
   header keywords BMAJ and BMIN are present, then these will be used
   to calculate the beam size, and this parameter will be ignored. 

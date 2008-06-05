@@ -453,9 +453,8 @@ One threshold is calculated for the entire cube, enabling calculation
 of signal-to-noise ratios for each source (see
 Section~\ref{sec-output} for details). The user can manually specify a
 value (using the parameter \texttt{threshold}) for the threshold,
-which will override the calculated value. Note that this only applies
-for the first of the two cases discussed below -- the FDR case ignores
-any manually-set threshold value.
+which will override the calculated value. Note that this option
+overrides any settings of \texttt{snrCut} or FDR options (see below). 
 
 The cube is searched one channel map at a time, using the
 2-dimensional raster-scanning algorithm of \citet{lutz80} that
@@ -636,11 +635,15 @@ Once the detections have been merged, they may be ``grown''. This is a
 process of increasing the size of the detection by adding nearby
 pixels (according to the \texttt{threshSpatial} and
 \texttt{threshVelocity} parameters) that are above some secondary
-threshold. This threshold is lower than the one used for the initial
-detection, but above the noise level, so that faint pixels are only
-detected when they are close to a bright pixel. The value of this
-threshold is a possible input parameter (\texttt{growthCut}), with a
-default value of $2\sigma$.
+threshold. This threshold should be lower than the one used for the
+initial detection, but above the noise level, so that faint pixels are
+only detected when they are close to a bright pixel. This
+threshold is specified via one of two input parameters. It can be
+given in terms of the noise statistics via \texttt{growthCut} (which
+has a default value of $3\sigma$), or it can be directly given via
+\texttt{growthThreshold}. Note that if you have given the detection
+threshold with the \texttt{threshold} parameter, the growth threshold
+\textbf{must} be given with \texttt{growthThreshold}.
 
 The use of the growth algorithm is controlled by the
 \texttt{flagGrowth} parameter -- the default value of which is
@@ -653,6 +656,6 @@ minimum number of channels (enabling the removal of any spurious
 single-channel spikes that may be present), and a minimum number of
 spatial pixels. These numbers, as for the original detection step, are
 set with the \texttt{minChannels} and \texttt{minPix} parameters. The
-channel requirement means there must be at least one set of
-\texttt{minChannels} consecutive channels in the source for it to be
+channel requirement means a source must have at least one set of
+\texttt{minChannels} consecutive channels to be
 accepted.
