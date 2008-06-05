@@ -38,6 +38,7 @@
 #include <duchamp/PixelMap/Voxel.hh>
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Detection/detection.hh>
+#include <duchamp/Cubes/cubeUtils.hh>
 
 using std::setw;
 using std::setprecision;
@@ -103,6 +104,12 @@ namespace duchamp
     this->velWidth     = d.velWidth;
     this->velMin       = d.velMin;
     this->velMax       = d.velMax;
+    this->w20          = d.w20;
+    this->v20min       = d.v20min;
+    this->v20max       = d.v20max;
+    this->w50          = d.w50;
+    this->v50min       = d.v50min;
+    this->v50max       = d.v50max;
     this->posPrec      = d.posPrec;
     this->xyzPrec      = d.xyzPrec;
     this->fintPrec     = d.fintPrec;
@@ -130,9 +137,33 @@ namespace duchamp
     listsMatch = listsMatch && (voxelList.size() == this->getSize());
     if(!listsMatch) return listsMatch;
 
+    // make sure all Detection pixels are in voxel list
+    listsMatch = listsMatch && this->voxelListCovered(voxelList);
+
     // make sure all voxels are in Detection
     for(int i=0;i<voxelList.size();i++)
       listsMatch = listsMatch && this->pixelArray.isInObject(voxelList[i]);
+
+    return listsMatch;
+
+  }
+  //--------------------------------------------------------------------
+
+  //--------------------------------------------------------------------
+
+  bool Detection::voxelListCovered(std::vector<Voxel> voxelList)
+  {
+    /**
+     *  A test to see whether the given list of Voxels contains each
+     *  position in this Detection's pixel list. It does not look for
+     *  a 1-1 correspondence: the given list can be a super-set of the
+     *  Detection. No testing of the fluxes of the Voxels is done.
+     *
+     * \param voxelList The std::vector list of Voxels to be tested.
+     */
+
+    bool listsMatch = true;
+
     // make sure all Detection pixels are in voxel list
     int v1=0, mysize=this->getSize();
     while(listsMatch && v1<mysize){
@@ -150,7 +181,6 @@ namespace duchamp
     return listsMatch;
 
   }
-
   //--------------------------------------------------------------------
 
   void Detection::calcFluxes(std::vector<Voxel> voxelList)
@@ -170,29 +200,31 @@ namespace duchamp
     // first check that the voxel list and the Detection's pixel list
     // have a 1-1 correspondence
 
-    if(!this->voxelListsMatch(voxelList)){
+    if(!this->voxelListCovered(voxelList)){
       duchampError("Detection::calcFluxes","Voxel list provided does not match");
       return;
     }
 
     for(int i=0;i<voxelList.size();i++) {
-      long x = voxelList[i].getX();
-      long y = voxelList[i].getY();
-      long z = voxelList[i].getZ();
-      float f = voxelList[i].getF();
-      this->totalFlux += f;
-      this->xCentroid += x*f;
-      this->yCentroid += y*f;
-      this->zCentroid += z*f;
-      if( (i==0) ||  //first time round
-	  (this->negSource&&(f<this->peakFlux)) || 
-	  (!this->negSource&&(f>this->peakFlux))   )
-	{
-	  this->peakFlux = f;
-	  this->xpeak =    x;
-	  this->ypeak =    y;
-	  this->zpeak =    z;
-	}
+      if(this->pixelArray.isInObject(voxelList[i])){
+	long x = voxelList[i].getX();
+	long y = voxelList[i].getY();
+	long z = voxelList[i].getZ();
+	float f = voxelList[i].getF();
+	this->totalFlux += f;
+	this->xCentroid += x*f;
+	this->yCentroid += y*f;
+	this->zCentroid += z*f;
+	if( (i==0) ||  //first time round
+	    (this->negSource&&(f<this->peakFlux)) || 
+	    (!this->negSource&&(f>this->peakFlux))   )
+	  {
+	    this->peakFlux = f;
+	    this->xpeak =    x;
+	    this->ypeak =    y;
+	    this->zpeak =    z;
+	  }
+      }
     }
 
     this->xCentroid /= this->totalFlux;
@@ -351,7 +383,9 @@ namespace duchamp
      *  \param head FitsHeader object that contains the WCS information.
      */
 
-    if(!voxelListsMatch(voxelList)){
+    const int border = 1;
+
+    if(!this->voxelListCovered(voxelList)){
       duchampError("Detection::calcIntegFlux","Voxel list provided does not match");
       return;
     }
@@ -359,30 +393,33 @@ namespace duchamp
     if(head.getNumAxes() > 2) {
 
       // include one pixel either side in each direction
-      long xsize = (this->getXmax()-this->getXmin()+3);
-      long ysize = (this->getYmax()-this->getYmin()+3);
-      long zsize = (this->getZmax()-this->getZmin()+3); 
-      vector <bool> isObj(xsize*ysize*zsize,false);
-      double *localFlux = new double[xsize*ysize*zsize];
-      for(int i=0;i<xsize*ysize*zsize;i++) localFlux[i]=0.;
+      long xsize = (this->getXmax()-this->getXmin()+border*2+1);
+      long ysize = (this->getYmax()-this->getYmin()+border*2+1);
+      long zsize = (this->getZmax()-this->getZmin()+border*2+1); 
+      long size = xsize*ysize*zsize;
+      vector <bool> isObj(size,false);
+      double *localFlux = new double[size];
+      for(int i=0;i<size;i++) localFlux[i]=0.;
 
       for(int i=0;i<voxelList.size();i++){
-	long x = voxelList[i].getX();
-	long y = voxelList[i].getY();
-	long z = voxelList[i].getZ();
-	long pos = (x-this->getXmin()+1) + (y-this->getYmin()+1)*xsize
-	  + (z-this->getZmin()+1)*xsize*ysize;
-	localFlux[pos] = voxelList[i].getF();
-	isObj[pos] = true;
+	if(this->pixelArray.isInObject(voxelList[i])){
+	  long x = voxelList[i].getX();
+	  long y = voxelList[i].getY();
+	  long z = voxelList[i].getZ();
+	  long pos = (x-this->getXmin()+border) + (y-this->getYmin()+border)*xsize
+	    + (z-this->getZmin()+border)*xsize*ysize;
+	  localFlux[pos] = voxelList[i].getF();
+	  isObj[pos] = true;
+	}
       }
   
       // work out the WCS coords for each pixel
-      double *world  = new double[xsize*ysize*zsize];
+      double *world  = new double[size];
       double xpt,ypt,zpt;
       for(int i=0;i<xsize*ysize*zsize;i++){
-	xpt = double( this->getXmin() -1 + i%xsize );
-	ypt = double( this->getYmin() -1 + (i/xsize)%ysize );
-	zpt = double( this->getZmin() -1 + i/(xsize*ysize) );
+	xpt = double( this->getXmin() - border + i%xsize );
+	ypt = double( this->getYmin() - border + (i/xsize)%ysize );
+	zpt = double( this->getZmin() - border + i/(xsize*ysize) );
 	world[i] = head.pixToVel(xpt,ypt,zpt);
       }
 
@@ -403,6 +440,102 @@ namespace duchamp
 	}
       }
       this->intFlux = integrated;
+
+
+      // Now calculate the widths at 20% and 50% of the peak integrated intensity.
+      float *intSpec = new float[zsize];
+      for(int i=0;i<zsize;i++) intSpec[i]=0;
+       
+      Object2D spatMap = this->pixelArray.getSpatialMap();
+      for(int s=0;s<spatMap.getNumScan();s++){
+	for(int i=0;i<voxelList.size();i++){
+	  if(spatMap.isInObject(voxelList[i])){
+	    if(voxelList[i].getZ()>=this->getZmin()-border && 
+	       voxelList[i].getZ()<=this->getZmax()+border)
+	      intSpec[voxelList[i].getZ()-this->getZmin()+1] += voxelList[i].getF();
+	  }
+	}
+      }
+      xpt = double(this->getXcentre()); ypt = double(this->getYcentre());
+
+      std::vector<std::pair<int,float> > goodPix;
+      float peak;
+      int peakLoc;
+      for(int z=0;z<zsize;z++) {
+	if(z==0 || peak<intSpec[z]){
+	  peak = intSpec[z];
+	  peakLoc = z;
+	}
+	goodPix.push_back(std::pair<int,float>(z,intSpec[z]));
+      }
+
+      // finding the 20% & 50% points.  Start at the velmin & velmax
+      //  points. Then, if the int flux there is above the 20%/50%
+      //  limit, go out, otherwise go in. This is to deal with the
+      //  problems from double peaked sources.
+
+      int z;
+      bool goLeft;
+      std::cerr << peakLoc << " (" << zsize << ")\t"
+		<<  this->getVelMin() << " " << this->getVelMax() << "\t";
+      z=border;
+      goLeft = intSpec[z]>peak*0.5;
+      if(goLeft) while(z>0 && intSpec[z]>peak*0.5) z--;
+      else       while(z<peakLoc && intSpec[z]<peak*0.5) z++;
+      std::cerr << z;
+      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
+      if(z==0) this->v50min = this->velMin;
+      else{
+	if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]) + this->getZmin() - border;
+	else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]) + this->getZmin() - border;
+	this->v50min = head.pixToVel(xpt,ypt,zpt);
+      }
+      z=this->getZmax()-this->getZmin();
+      goLeft = intSpec[z]<peak*0.5;
+      if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.5) z--;
+      else       while(z<zsize && intSpec[z]>peak*0.5) z++;
+      std::cerr << z;
+      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
+      if(z==zsize) this->v50max = this->velMax;
+      else{
+	if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]) + this->getZmin() - border;
+	else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]) + this->getZmin() - border;
+	this->v50max = head.pixToVel(xpt,ypt,zpt);
+      }
+      z=border;
+      goLeft = intSpec[z]>peak*0.5;
+      if(goLeft) while(z>0 && intSpec[z]>peak*0.2) z--;
+      else       while(z<peakLoc && intSpec[z]<peak*0.2) z++;
+      std::cerr << z;
+      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
+      if(z==0) this->v20min = this->velMin;
+      else{
+	if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]) + this->getZmin() - border;
+	else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]) + this->getZmin() - border;
+	this->v20min = head.pixToVel(xpt,ypt,zpt);
+      }
+      z=this->getZmax()-this->getZmin();
+      goLeft = intSpec[z]<peak*0.5;
+      if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.2) z--;
+      else       while(z<zsize && intSpec[z]>peak*0.2) z++;
+      std::cerr << z;
+      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
+      if(z==zsize) this->v20max = this->velMax;
+      else{
+	if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]) + this->getZmin() - border;
+	else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]) + this->getZmin() - border;
+	this->v20max = head.pixToVel(xpt,ypt,zpt);
+      }
+
+      this->w20 = fabs(this->v20min - this->v20max);
+      this->w50 = fabs(this->v50min - this->v50max);
+
+      std::cerr << "\t"
+		<< this->v50min << " " << this->v50max << "   "
+		<< this->v20min << " " << this->v20max << "  --  "
+		<< this->w50 << " " << this->w20 << "\n";
+
+      delete [] intSpec;
 
       delete [] world;
       delete [] localFlux;
@@ -444,9 +577,10 @@ namespace duchamp
       long xsize = (this->getXmax()-this->getXmin()+3);
       long ysize = (this->getYmax()-this->getYmin()+3);
       long zsize = (this->getZmax()-this->getZmin()+3); 
-      vector <bool> isObj(xsize*ysize*zsize,false);
-      double *localFlux = new double[xsize*ysize*zsize];
-      for(int i=0;i<xsize*ysize*zsize;i++) localFlux[i]=0.;
+      long size = xsize*ysize*zsize;
+      vector <bool> isObj(size,false);
+      double *localFlux = new double[size];
+      for(int i=0;i<size;i++) localFlux[i]=0.;
       // work out which pixels are object pixels
       for(int m=0; m<this->pixelArray.getNumChanMap(); m++){
 	ChanMap tempmap = this->pixelArray.getChanMap(m);
@@ -465,7 +599,7 @@ namespace duchamp
       }
   
       // work out the WCS coords for each pixel
-      double *world  = new double[xsize*ysize*zsize];
+      double *world  = new double[size];
       double xpt,ypt,zpt;
       for(int i=0;i<xsize*ysize*zsize;i++){
 	xpt = double( this->getXmin() -1 + i%xsize );
@@ -491,6 +625,93 @@ namespace duchamp
 	}
       }
       this->intFlux = integrated;
+
+      // Now calculate the widths at 20% and 50% of the peak integrated intensity.
+      float *intSpec = new float[dim[2]];
+      bool *mask = new bool[dim[0]*dim[1]*dim[2]]; for(int i=0;i<dim[0]*dim[1]*dim[2];i++) mask[i] = true;
+      getIntSpec(*this,fluxArray,dim,mask,1.,intSpec);
+
+      xpt = double(this->getXcentre()); ypt = double(this->getYcentre());
+
+      std::vector<std::pair<int,float> > goodPix;
+      float peak;
+      int peakLoc;
+      for(int z=this->getZmin();z<=this->getZmax();z++) {
+	if(z==this->getZmin() || peak<intSpec[z]){
+	  peak = intSpec[z];
+	  peakLoc = z;
+	}
+	goodPix.push_back(std::pair<int,float>(z,intSpec[z]));
+      }
+
+      // finding the 20% & 50% points.  Start at the velmin & velmax
+      //  points. Then, if the int flux there is above the 20%/50%
+      //  limit, go out, otherwise go in. This is to deal with the
+      //  problems from double peaked sources.
+
+      int z;
+      bool goLeft;
+      std::cerr << peakLoc << " " <<  this->getZmin() << " " << this->getZmax() << "\t"
+		<<  this->getVelMin() << " " << this->getVelMax() << "\t";
+      z=this->getZmin();
+      goLeft = intSpec[z]>peak*0.5;
+      if(goLeft) while(z>0 && intSpec[z]>peak*0.5) z--;
+      else       while(z<peakLoc && intSpec[z]<peak*0.5) z++;
+      std::cerr << z;
+      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
+      if(z==0) this->v50min = this->velMin;
+      else{
+	if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]);
+	else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]);
+	this->v50min = head.pixToVel(xpt,ypt,zpt);
+      }
+      z=this->getZmax();
+      goLeft = intSpec[z]<peak*0.5;
+      if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.5) z--;
+      else       while(z<dim[2] && intSpec[z]>peak*0.5) z++;
+      std::cerr << z;
+      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
+      if(z==dim[2]) this->v50max = this->velMax;
+      else{
+	if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]);
+	else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]);
+	this->v50max = head.pixToVel(xpt,ypt,zpt);
+      }
+      z=this->getZmin();
+      goLeft = intSpec[z]>peak*0.5;
+      if(goLeft) while(z>0 && intSpec[z]>peak*0.2) z--;
+      else       while(z<peakLoc && intSpec[z]<peak*0.2) z++;
+      std::cerr << z;
+      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
+      if(z==0) this->v20min = this->velMin;
+      else{
+	if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]);
+	else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]);
+	this->v20min = head.pixToVel(xpt,ypt,zpt);
+      }
+      z=this->getZmax();
+      goLeft = intSpec[z]<peak*0.5;
+      if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.2) z--;
+      else       while(z<dim[2] && intSpec[z]>peak*0.2) z++;
+      std::cerr << z;
+      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
+      if(z==dim[2]) this->v20max = this->velMax;
+      else{
+	if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]);
+	else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]);
+	this->v20max = head.pixToVel(xpt,ypt,zpt);
+      }
+
+      this->w20 = fabs(this->v20min - this->v20max);
+      this->w50 = fabs(this->v50min - this->v50max);
+
+      std::cerr << "\t"
+		<< this->v50min << " " << this->v50max << "   "
+		<< this->v20min << " " << this->v20max << "  --  "
+		<< this->w50 << " " << this->w20 << "\n";
+
+      delete [] intSpec;
+      delete [] mask;
 
       delete [] world;
       delete [] localFlux;

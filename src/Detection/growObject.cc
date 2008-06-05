@@ -28,6 +28,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <duchamp/Cubes/cubeUtils.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/Statistics.hh>

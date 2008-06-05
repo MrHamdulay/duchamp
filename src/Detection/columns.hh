@@ -50,11 +50,11 @@ namespace duchamp
     //  the precision of different types of columns.
 
     /** Total number of columns being considered.*/
-    const int numColumns=34;    
+    const int numColumns=36;    
     /** Enumerated column titles */
     enum COLNAME {NUM=0, NAME, X, Y, Z,
 		  RA, DEC, RAJD, DECJD, VEL, 
-		  WRA, WDEC, WVEL,
+		  WRA, WDEC, W50, W20, WVEL,
 		  FINT, FTOT, FPEAK, SNRPEAK,
 		  X1, X2, Y1, Y2, Z1, Z2, NPIX, FLAG,
 		  XAV, YAV, ZAV, XCENT, YCENT, ZCENT, 
@@ -65,7 +65,7 @@ namespace duchamp
     const bool isFile[numColumns+1]=
       {true,true,true,true,true,
        true,true,false,false,true,
-       true,true,true,
+       true,true,true,true,true,
        true,true,true,true,
        true,true,true,true,true,true,true,true,
        true,true,true,true,true,true,
@@ -76,7 +76,7 @@ namespace duchamp
     const bool isScreen[numColumns+1]=
       {true,true,true,true,true,
        true,true,false,false,true,
-       true,true,true,
+       true,true,true,false,false,
        true,true,true,true,
        true,true,true,true,true,true,true,true,
        false,false,false,false,false,false,
@@ -87,7 +87,7 @@ namespace duchamp
     const bool isLog[numColumns+1]=
       {true,false,true,true,true,
        false,false,false,false,false,
-       false,false,false,
+       false,false,false,false,false,
        false,true,true,true,
        true,true,true,true,true,true,true,false,
        false,false,false,false,false,false,
@@ -98,7 +98,7 @@ namespace duchamp
     const bool isVOTable[numColumns+1]=
       {true,true,false,false,false,
        false,false,true,true,true,
-       true,true,true,
+       true,true,true,true,true,
        true,true,true,true,
        false,false,false,false,false,false,false,true,
        true,true,true,true,true,true,
@@ -120,21 +120,22 @@ namespace duchamp
     /** Default widths of all columns.*/
     const int defaultWidth[numColumns+1]=
       {5, 8, 6, 6, 6,
-       13, 13, 11, 11, 7, 9, 9, 7,
+       13, 13, 11, 11, 7, 
+       9, 9, 7, 7, 7,
        10, 10, 9, 7,
        4, 4, 4, 4, 4, 4, 6, 5,
-       6, 6, 6, 7, 7, 7, 7, 7, 7,
+       6, 6, 6, 7, 7, 7, 
+       7, 7, 7,
        1};
 
     /** Default precisions for all columns.*/
     const int defaultPrec[numColumns+1]=
       {0, 0, prXYZ, prXYZ, prXYZ,
        0, 0, prPOS, prPOS, prVEL, 
-       prWPOS, prWPOS, prVEL,
+       prWPOS, prWPOS, prVEL, prVEL, prVEL,
        prFLUX, prFLUX, prFLUX, 
        prSNR, 0, 0, 0, 0, 0, 0, 0, 0,
-       prXYZ, prXYZ, prXYZ, 
-       prXYZ, prXYZ, prXYZ, 
+       prXYZ, prXYZ, prXYZ, prXYZ, prXYZ, prXYZ, 
        prXYZ, prXYZ, prXYZ,
        0}; 
 
@@ -142,7 +143,7 @@ namespace duchamp
     const std::string defaultName[numColumns+1]=
       {"Obj#","Name","X","Y","Z",
        "RA","DEC","RAJD","DECJD","VEL",
-       "w_RA","w_DEC","w_VEL",
+       "w_RA","w_DEC","w_50","w_20","w_VEL",
        "F_int","F_tot","F_peak", "S/Nmax",
        "X1","X2","Y1","Y2","Z1","Z2","Npix","Flag",
        "X_av", "Y_av", "Z_av", "X_cent", "Y_cent", "Z_cent",
@@ -153,7 +154,7 @@ namespace duchamp
     const std::string defaultUnits[numColumns+1]=
       {"","","","","",
        "","","[deg]","[deg]","",
-       "[arcmin]","[arcmin]","",
+       "[arcmin]","[arcmin]","","","",
        "","","", "",
        "","","","","","","[pix]","",
        "","","","","","","","","",

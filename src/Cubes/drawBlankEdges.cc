@@ -27,6 +27,7 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <cpgplot.h>
+#include <duchamp/Cubes/cubeUtils.hh>
 #include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>
 #include <duchamp/Utils/mycpgplot.hh>

@@ -217,6 +217,9 @@ namespace duchamp
     bool        isBlank(long x, long y, long z){ 
       return par.isBlank(array[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x]); };
 
+    /** Return a bool array masking blank pixels: 1=good, 0=blank */
+    bool *      makeBlankMask(){return par.makeBlankMask(array, numPixels);};
+
     /** Does the Cube::recon array exist? */
     bool        isRecon(){ return reconExists; }; 
 
@@ -710,17 +713,6 @@ namespace duchamp
     ///   detection to be accepted.
   };
 
-
-  /****************************************************************/
-  //////////////////////////////////////////////////////
-  // Prototypes for functions that use above classes
-  //////////////////////////////////////////////////////
-
-  /** Grow an object to a lower threshold */
-  void growObject(Detection &object, Cube &cube);
-
-  /** Draw the edge of the BLANK region on a map.*/
-  void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par);
 
 }
 

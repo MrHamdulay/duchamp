@@ -78,6 +78,9 @@ namespace duchamp
     /** Test whether voxel lists match */
     bool voxelListsMatch(std::vector<PixelInfo::Voxel> voxelList);
 
+    /** Test whether a voxel list contains all detected voxels */
+    bool voxelListCovered(std::vector<PixelInfo::Voxel> voxelList);
+
     /** Calculate flux-related parameters of the Detection. */
     void   calcFluxes(float *fluxArray, long *dim); 
     /** Calculate flux-related parameters of the Detection. */
@@ -253,6 +256,12 @@ namespace duchamp
     float       getVelWidth(){return velWidth;};
     float       getVelMin(){return velMin;};
     float       getVelMax(){return velMax;};
+    float       getW20(){return w20;};
+    float       getV20Min(){return v20min;};
+    float       getV20Max(){return v20max;};
+    float       getW50(){return w50;};
+    float       getV50Min(){return v50min;};
+    float       getV50Max(){return v50max;};
     int         getID(){return id;};
     void        setID(int i){id = i;};
     //
@@ -318,6 +327,12 @@ namespace duchamp
     float          velWidth;       ///< Full velocity width
     float          velMin;         ///< Minimum velocity
     float          velMax;         ///< Maximum velocity
+    float          v20min;
+    float          v20max;
+    float          w20;
+    float          v50min;
+    float          v50max;
+    float          w50;
     //  The next six are the precision of values printed in the headers
     //  of the spectral plots
     int            posPrec;        ///< Precision of WCS positional values 

@@ -133,7 +133,7 @@ namespace duchamp
       float *specx = new float[zdim];
       float *recon = new float[zdim];
       float *base = new float[zdim];
-      getSpectralArrays(obj, specx, temp, recon, base);
+      this->getSpectralArrays(obj, specx, temp, recon, base);
       for(int z=0;z<zdim;z++) spectra[obj*zdim+z] = temp[z];
       if(obj==0) for(int z=0;z<zdim;z++) specxOut[z] = specx[z];
       delete [] specx;
@@ -159,89 +159,6 @@ namespace duchamp
 
     delete [] spectra;
     delete [] specxOut;
-
-  }
-  //--------------------------------------------------------------------
-
-  void Cube::getSpectralArrays(int objNum, float *specx, float *specy, 
-			       float *specRecon, float *specBase)
-  {
-    /**
-     *  A utility function that goes and calculates, for a given
-     *  Detection, the spectral arrays, according to whether we want
-     *  the peak or integrated flux. The arrays can be used by
-     *  Cube::plotSpectrum() and Cube::writeSpectralData(). The arrays
-     *  calculated are listed below. Their length is given by the
-     *  length of the Cube's spectral dimension.
-     *
-     *  Note that 'new' is used to allocate the array space, so the
-     *  array parameters need to be suitably defined
-     *
-     *  \param objNum The number of the object under consideration
-     *  \param specx The array of frequency/velocity/channel/etc
-     *         values (the x-axis on the spectral plot).
-     *  \param specy The array of flux values, matching the specx
-     *         array.
-     *  \param specRecon The reconstructed or smoothed array, done in
-     *         the same way as specy.
-     *  \param specBase The fitted baseline values, done in the same
-     *         way as specy.
-     */
-
-    long xdim = this->axisDim[0];
-    long ydim = this->axisDim[1];
-    long zdim = this->axisDim[2];
-
-    for(int i=0;i<zdim;i++) specy[i]     = 0.;
-    for(int i=0;i<zdim;i++) specRecon[i] = 0.;
-    for(int i=0;i<zdim;i++) specBase[i]  = 0.;
-
-    if(this->head.isWCS()){
-      double xval = double(this->objectList->at(objNum).getXcentre());
-      double yval = double(this->objectList->at(objNum).getYcentre());
-      for(double zval=0;zval<zdim;zval++) 
-	specx[int(zval)] = this->head.pixToVel(xval,yval,zval);
-    }
-    else 
-      for(double zval=0;zval<zdim;zval++) specx[int(zval)] = zval;
-
-    float beamCorrection;
-    if(this->header().needBeamSize())
-      beamCorrection = this->par.getBeamSize();
-    else beamCorrection = 1.;
-
-    if(this->par.getSpectralMethod()=="sum"){
-      bool *done = new bool[xdim*ydim]; 
-      for(int i=0;i<xdim*ydim;i++) done[i]=false;
-      std::vector<Voxel> voxlist = this->objectList->at(objNum).pixels().getPixelSet();
-      for(int pix=0;pix<voxlist.size();pix++){
-	int pos = voxlist[pix].getX() + xdim * voxlist[pix].getY();
-	if(!done[pos]){
-	  done[pos] = true;
-	  for(int z=0;z<zdim;z++){
-	    if(!(this->isBlank(pos+z*xdim*ydim))){
-	      specy[z] += this->array[pos + z*xdim*ydim] / beamCorrection;
-	      if(this->reconExists)
-		specRecon[z] += this->recon[pos + z*xdim*ydim] / beamCorrection;
-	      if(this->par.getFlagBaseline())
-		specBase[z] += this->baseline[pos + z*xdim*ydim] / beamCorrection;
-	    }	    
-	  }
-	}
-      }
-      delete [] done;
-    }
-    else {// if(par.getSpectralMethod()=="peak"){
-      int pos = this->objectList->at(objNum).getXPeak() +
-	xdim*this->objectList->at(objNum).getYPeak();
-      for(int z=0;z<zdim;z++){
-	specy[z] = this->array[pos + z*xdim*ydim];
-	if(this->reconExists) 
-	  specRecon[z] = this->recon[pos + z*xdim*ydim];
-	if(this->par.getFlagBaseline()) 
-	  specBase[z] = this->baseline[pos + z*xdim*ydim];
-      }
-    }
 
   }
   //--------------------------------------------------------------------
@@ -287,6 +204,7 @@ namespace duchamp
     float *specy  = new float[zdim];
     float *specy2 = new float[zdim];
     float *base   = new float[zdim];
+//     float *specx, *specy, *specy2, *base;
 
     this->getSpectralArrays(objNum,specx,specy,specy2,base);
 
@@ -323,7 +241,7 @@ namespace duchamp
     float max,min;
     int loc=0;
     if(this->par.getMinMW()>0) max = min = specy[0];
-    else max = min = specx[this->par.getMaxMW()+1];
+    else max = min = specy[this->par.getMaxMW()+1];
     for(int i=0;i<zdim;i++){
       if(!this->par.isInMW(i)){
 	if(specy[i]>max) max=specy[i];
@@ -338,7 +256,7 @@ namespace duchamp
     width = max - min;
     max += width * 0.05;
     min -= width * 0.05;
-    width = vmax -vmin;
+    width = vmax - vmin;
     vmax += width * 0.01;
     vmin -= width * 0.01;
 

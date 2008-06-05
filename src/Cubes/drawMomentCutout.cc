@@ -34,6 +34,7 @@
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Cubes/cubeUtils.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/mycpgplot.hh>
 #include <duchamp/PixelMap/Voxel.hh>
