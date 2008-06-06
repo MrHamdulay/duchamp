@@ -95,6 +95,11 @@ namespace duchamp
     /** Calculate the integrated flux over the entire Detection. */
     void   calcIntegFlux(std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head); 
 
+    /** Calculate the 20%/50% peak flux widths */
+    void calcVelWidths(float *fluxArray, long *dim, FitsHeader &head);
+    /** Calculate the 20%/50% peak flux widths */
+    void calcVelWidths(std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head);
+
     /** Set the values of the axis offsets from the cube. */
     void   setOffsets(Param &par); 
 

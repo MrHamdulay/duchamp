@@ -285,7 +285,6 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  //  void Detection::calcWCSparams(float *fluxArray, long *dim, FitsHeader &head)
   void Detection::calcWCSparams(FitsHeader &head)
   {
     /**
@@ -441,104 +440,10 @@ namespace duchamp
       }
       this->intFlux = integrated;
 
-
-      // Now calculate the widths at 20% and 50% of the peak integrated intensity.
-      float *intSpec = new float[zsize];
-      for(int i=0;i<zsize;i++) intSpec[i]=0;
-       
-      Object2D spatMap = this->pixelArray.getSpatialMap();
-      for(int s=0;s<spatMap.getNumScan();s++){
-	for(int i=0;i<voxelList.size();i++){
-	  if(spatMap.isInObject(voxelList[i])){
-	    if(voxelList[i].getZ()>=this->getZmin()-border && 
-	       voxelList[i].getZ()<=this->getZmax()+border)
-	      intSpec[voxelList[i].getZ()-this->getZmin()+1] += voxelList[i].getF();
-	  }
-	}
-      }
-      xpt = double(this->getXcentre()); ypt = double(this->getYcentre());
-
-      std::vector<std::pair<int,float> > goodPix;
-      float peak;
-      int peakLoc;
-      for(int z=0;z<zsize;z++) {
-	if(z==0 || peak<intSpec[z]){
-	  peak = intSpec[z];
-	  peakLoc = z;
-	}
-	goodPix.push_back(std::pair<int,float>(z,intSpec[z]));
-      }
-
-      // finding the 20% & 50% points.  Start at the velmin & velmax
-      //  points. Then, if the int flux there is above the 20%/50%
-      //  limit, go out, otherwise go in. This is to deal with the
-      //  problems from double peaked sources.
-
-      int z;
-      bool goLeft;
-      std::cerr << peakLoc << " (" << zsize << ")\t"
-		<<  this->getVelMin() << " " << this->getVelMax() << "\t";
-      z=border;
-      goLeft = intSpec[z]>peak*0.5;
-      if(goLeft) while(z>0 && intSpec[z]>peak*0.5) z--;
-      else       while(z<peakLoc && intSpec[z]<peak*0.5) z++;
-      std::cerr << z;
-      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
-      if(z==0) this->v50min = this->velMin;
-      else{
-	if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]) + this->getZmin() - border;
-	else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]) + this->getZmin() - border;
-	this->v50min = head.pixToVel(xpt,ypt,zpt);
-      }
-      z=this->getZmax()-this->getZmin();
-      goLeft = intSpec[z]<peak*0.5;
-      if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.5) z--;
-      else       while(z<zsize && intSpec[z]>peak*0.5) z++;
-      std::cerr << z;
-      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
-      if(z==zsize) this->v50max = this->velMax;
-      else{
-	if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]) + this->getZmin() - border;
-	else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]) + this->getZmin() - border;
-	this->v50max = head.pixToVel(xpt,ypt,zpt);
-      }
-      z=border;
-      goLeft = intSpec[z]>peak*0.5;
-      if(goLeft) while(z>0 && intSpec[z]>peak*0.2) z--;
-      else       while(z<peakLoc && intSpec[z]<peak*0.2) z++;
-      std::cerr << z;
-      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
-      if(z==0) this->v20min = this->velMin;
-      else{
-	if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]) + this->getZmin() - border;
-	else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]) + this->getZmin() - border;
-	this->v20min = head.pixToVel(xpt,ypt,zpt);
-      }
-      z=this->getZmax()-this->getZmin();
-      goLeft = intSpec[z]<peak*0.5;
-      if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.2) z--;
-      else       while(z<zsize && intSpec[z]>peak*0.2) z++;
-      std::cerr << z;
-      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
-      if(z==zsize) this->v20max = this->velMax;
-      else{
-	if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]) + this->getZmin() - border;
-	else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]) + this->getZmin() - border;
-	this->v20max = head.pixToVel(xpt,ypt,zpt);
-      }
-
-      this->w20 = fabs(this->v20min - this->v20max);
-      this->w50 = fabs(this->v50min - this->v50max);
-
-      std::cerr << "\t"
-		<< this->v50min << " " << this->v50max << "   "
-		<< this->v20min << " " << this->v20max << "  --  "
-		<< this->w50 << " " << this->w20 << "\n";
-
-      delete [] intSpec;
-
       delete [] world;
       delete [] localFlux;
+
+      calcVelWidths(voxelList,head);
 
     }
     else // in this case there is just a 2D image.
@@ -626,95 +531,10 @@ namespace duchamp
       }
       this->intFlux = integrated;
 
-      // Now calculate the widths at 20% and 50% of the peak integrated intensity.
-      float *intSpec = new float[dim[2]];
-      bool *mask = new bool[dim[0]*dim[1]*dim[2]]; for(int i=0;i<dim[0]*dim[1]*dim[2];i++) mask[i] = true;
-      getIntSpec(*this,fluxArray,dim,mask,1.,intSpec);
-
-      xpt = double(this->getXcentre()); ypt = double(this->getYcentre());
-
-      std::vector<std::pair<int,float> > goodPix;
-      float peak;
-      int peakLoc;
-      for(int z=this->getZmin();z<=this->getZmax();z++) {
-	if(z==this->getZmin() || peak<intSpec[z]){
-	  peak = intSpec[z];
-	  peakLoc = z;
-	}
-	goodPix.push_back(std::pair<int,float>(z,intSpec[z]));
-      }
-
-      // finding the 20% & 50% points.  Start at the velmin & velmax
-      //  points. Then, if the int flux there is above the 20%/50%
-      //  limit, go out, otherwise go in. This is to deal with the
-      //  problems from double peaked sources.
-
-      int z;
-      bool goLeft;
-      std::cerr << peakLoc << " " <<  this->getZmin() << " " << this->getZmax() << "\t"
-		<<  this->getVelMin() << " " << this->getVelMax() << "\t";
-      z=this->getZmin();
-      goLeft = intSpec[z]>peak*0.5;
-      if(goLeft) while(z>0 && intSpec[z]>peak*0.5) z--;
-      else       while(z<peakLoc && intSpec[z]<peak*0.5) z++;
-      std::cerr << z;
-      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
-      if(z==0) this->v50min = this->velMin;
-      else{
-	if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]);
-	else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]);
-	this->v50min = head.pixToVel(xpt,ypt,zpt);
-      }
-      z=this->getZmax();
-      goLeft = intSpec[z]<peak*0.5;
-      if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.5) z--;
-      else       while(z<dim[2] && intSpec[z]>peak*0.5) z++;
-      std::cerr << z;
-      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
-      if(z==dim[2]) this->v50max = this->velMax;
-      else{
-	if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]);
-	else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]);
-	this->v50max = head.pixToVel(xpt,ypt,zpt);
-      }
-      z=this->getZmin();
-      goLeft = intSpec[z]>peak*0.5;
-      if(goLeft) while(z>0 && intSpec[z]>peak*0.2) z--;
-      else       while(z<peakLoc && intSpec[z]<peak*0.2) z++;
-      std::cerr << z;
-      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
-      if(z==0) this->v20min = this->velMin;
-      else{
-	if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]);
-	else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]);
-	this->v20min = head.pixToVel(xpt,ypt,zpt);
-      }
-      z=this->getZmax();
-      goLeft = intSpec[z]<peak*0.5;
-      if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.2) z--;
-      else       while(z<dim[2] && intSpec[z]>peak*0.2) z++;
-      std::cerr << z;
-      if(goLeft) std::cerr << "< "; else std::cerr << "> ";
-      if(z==dim[2]) this->v20max = this->velMax;
-      else{
-	if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]);
-	else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]);
-	this->v20max = head.pixToVel(xpt,ypt,zpt);
-      }
-
-      this->w20 = fabs(this->v20min - this->v20max);
-      this->w50 = fabs(this->v50min - this->v50max);
-
-      std::cerr << "\t"
-		<< this->v50min << " " << this->v50max << "   "
-		<< this->v20min << " " << this->v20max << "  --  "
-		<< this->w50 << " " << this->w20 << "\n";
-
-      delete [] intSpec;
-      delete [] mask;
-
       delete [] world;
       delete [] localFlux;
+
+      calcVelWidths(fluxArray, dim, head);
 
     }
     else // in this case there is just a 2D image.
@@ -725,6 +545,201 @@ namespace duchamp
       if(head.needBeamSize()) this->intFlux  /= head.getBeamSize();
     }
 
+  }
+  //--------------------------------------------------------------------
+
+  void Detection::calcVelWidths(std::vector<Voxel> voxelList, FitsHeader &head)
+  {
+    /**
+     * Calculates the widths of the detection at 20% and 50% of the
+     * peak integrated flux. The procedure is as follows: first
+     * generate an integrated flux spectrum (using all given voxels
+     * that lie in the object's spatial map); find the peak; starting
+     * at the spectral edges of the detection, move in or out until
+     * you reach the 20% or 50% peak flux level. Linear interpolation
+     * between points is done.
+     *
+     *  \param voxelList The list of Voxels with flux information
+     *  \param head FitsHeader object that contains the WCS information.
+     */
+
+    const int border = 1;
+    long zsize = (this->getZmax()-this->getZmin()+border*2+1); 
+    double xpt = double(this->getXcentre()); 
+    double ypt = double(this->getYcentre());
+    double zpt;
+
+    float *intSpec = new float[zsize];
+    for(int i=0;i<zsize;i++) intSpec[i]=0;
+       
+    Object2D spatMap = this->pixelArray.getSpatialMap();
+    for(int s=0;s<spatMap.getNumScan();s++){
+      for(int i=0;i<voxelList.size();i++){
+	if(spatMap.isInObject(voxelList[i])){
+	  if(voxelList[i].getZ()>=this->getZmin()-border && 
+	     voxelList[i].getZ()<=this->getZmax()+border)
+	    intSpec[voxelList[i].getZ()-this->getZmin()+1] += voxelList[i].getF();
+	}
+      }
+    }
+    
+    std::vector<std::pair<int,float> > goodPix;
+    float peak;
+    int peakLoc;
+    for(int z=0;z<zsize;z++) {
+      if(z==0 || peak<intSpec[z]){
+	peak = intSpec[z];
+	peakLoc = z;
+      }
+      goodPix.push_back(std::pair<int,float>(z,intSpec[z]));
+    }
+
+    // finding the 20% & 50% points.  Start at the velmin & velmax
+    //  points. Then, if the int flux there is above the 20%/50%
+    //  limit, go out, otherwise go in. This is to deal with the
+    //  problems from double peaked sources.
+
+    int z;
+    bool goLeft;
+    z=border;
+    goLeft = intSpec[z]>peak*0.5;
+    if(goLeft) while(z>0 && intSpec[z]>peak*0.5) z--;
+    else       while(z<peakLoc && intSpec[z]<peak*0.5) z++;
+    if(z==0) this->v50min = this->velMin;
+    else{
+      if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]) + this->getZmin() - border;
+      else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]) + this->getZmin() - border;
+      this->v50min = head.pixToVel(xpt,ypt,zpt);
+    }
+    z=this->getZmax()-this->getZmin();
+    goLeft = intSpec[z]<peak*0.5;
+    if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.5) z--;
+    else       while(z<zsize && intSpec[z]>peak*0.5) z++;
+    if(z==zsize) this->v50max = this->velMax;
+    else{
+      if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]) + this->getZmin() - border;
+      else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]) + this->getZmin() - border;
+      this->v50max = head.pixToVel(xpt,ypt,zpt);
+    }
+    z=border;
+    goLeft = intSpec[z]>peak*0.5;
+    if(goLeft) while(z>0 && intSpec[z]>peak*0.2) z--;
+    else       while(z<peakLoc && intSpec[z]<peak*0.2) z++;
+    if(z==0) this->v20min = this->velMin;
+    else{
+      if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]) + this->getZmin() - border;
+      else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]) + this->getZmin() - border;
+      this->v20min = head.pixToVel(xpt,ypt,zpt);
+    }
+    z=this->getZmax()-this->getZmin();
+    goLeft = intSpec[z]<peak*0.5;
+    if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.2) z--;
+    else       while(z<zsize && intSpec[z]>peak*0.2) z++;
+    if(z==zsize) this->v20max = this->velMax;
+    else{
+      if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]) + this->getZmin() - border;
+      else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]) + this->getZmin() - border;
+      this->v20max = head.pixToVel(xpt,ypt,zpt);
+    }
+
+    this->w20 = fabs(this->v20min - this->v20max);
+    this->w50 = fabs(this->v50min - this->v50max);
+
+    delete [] intSpec;
+
+  }
+
+  //--------------------------------------------------------------------
+
+  void Detection::calcVelWidths(float *fluxArray, long *dim, FitsHeader &head)
+  {
+    /**
+     * Calculates the widths of the detection at 20% and 50% of the
+     * peak integrated flux. The procedure is as follows: first
+     * generate an integrated flux spectrum (summing each spatial
+     * pixel's spectrum); find the peak; starting at the spectral
+     * edges of the detection, move in or out until you reach the 20%
+     * or 50% peak flux level. Linear interpolation between points is
+     * done. 
+     *
+     *  \param fluxArray The array of flux values.
+     *  \param dim The dimensions of the flux array.
+     *  \param head FitsHeader object that contains the WCS information.
+     */
+
+    double xpt = double(this->getXcentre()); 
+    double ypt = double(this->getYcentre());
+    double zpt;
+
+    float *intSpec = new float[dim[2]];
+    bool *mask = new bool[dim[0]*dim[1]*dim[2]]; 
+    for(int i=0;i<dim[0]*dim[1]*dim[2];i++) mask[i] = true;
+    getIntSpec(*this,fluxArray,dim,mask,1.,intSpec);
+
+    std::vector<std::pair<int,float> > goodPix;
+    float peak;
+    int peakLoc;
+    for(int z=this->getZmin();z<=this->getZmax();z++) {
+      if(z==this->getZmin() || peak<intSpec[z]){
+	peak = intSpec[z];
+	peakLoc = z;
+      }
+      goodPix.push_back(std::pair<int,float>(z,intSpec[z]));
+    }
+
+    // finding the 20% & 50% points.  Start at the velmin & velmax
+    //  points. Then, if the int flux there is above the 20%/50%
+    //  limit, go out, otherwise go in. This is to deal with the
+    //  problems from double- (or multi-) peaked sources.
+
+    int z;
+    bool goLeft;
+    z=this->getZmin();
+    goLeft = intSpec[z]>peak*0.5;
+    if(goLeft) while(z>0 && intSpec[z]>peak*0.5) z--;
+    else       while(z<peakLoc && intSpec[z]<peak*0.5) z++;
+    if(z==0) this->v50min = this->velMin;
+    else{
+      if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]);
+      else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]);
+      this->v50min = head.pixToVel(xpt,ypt,zpt);
+    }
+    z=this->getZmax();
+    goLeft = intSpec[z]<peak*0.5;
+    if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.5) z--;
+    else       while(z<dim[2] && intSpec[z]>peak*0.5) z++;
+    if(z==dim[2]) this->v50max = this->velMax;
+    else{
+      if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]);
+      else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]);
+      this->v50max = head.pixToVel(xpt,ypt,zpt);
+    }
+    z=this->getZmin();
+    goLeft = intSpec[z]>peak*0.5;
+    if(goLeft) while(z>0 && intSpec[z]>peak*0.2) z--;
+    else       while(z<peakLoc && intSpec[z]<peak*0.2) z++;
+    if(z==0) this->v20min = this->velMin;
+    else{
+      if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]);
+      else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]);
+      this->v20min = head.pixToVel(xpt,ypt,zpt);
+    }
+    z=this->getZmax();
+    goLeft = intSpec[z]<peak*0.5;
+    if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.2) z--;
+    else       while(z<dim[2] && intSpec[z]>peak*0.2) z++;
+    if(z==dim[2]) this->v20max = this->velMax;
+    else{
+      if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]);
+      else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]);
+      this->v20max = head.pixToVel(xpt,ypt,zpt);
+    }
+
+    this->w20 = fabs(this->v20min - this->v20max);
+    this->w50 = fabs(this->v50min - this->v50max);
+
+    delete [] intSpec;
+    delete [] mask;
   }
   //--------------------------------------------------------------------
 

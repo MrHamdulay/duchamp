@@ -334,11 +334,13 @@ namespace duchamp
       std::stringstream ss;
       ss.setf(std::ios::fixed);
       ss << std::setprecision(this->posPrec);
-      ss << "w_"          << this->lngtype  <<"="    << this->raWidth;
-      ss << ", w_"        << this->lattype  <<"="    << this->decWidth;
+      ss << "W\\d"              << this->lngtype  <<"\\u=" << this->raWidth;
+      ss << ", W\\d"            << this->lattype  <<"\\u=" << this->decWidth;
       if(this->specOK){
 	ss << std::setprecision(this->velPrec);
-	ss << ", w_Vel="    << this->velWidth << " " << this->specUnits;
+	ss << ", W\\d50\\u="    << this->w50      << " "   << this->specUnits;
+	ss << ", W\\d20\\u="    << this->w20      << " "   << this->specUnits;
+	ss << ", W\\dVel\\u="   << this->velWidth << " "   << this->specUnits;
       }
       output = ss.str();
     }
