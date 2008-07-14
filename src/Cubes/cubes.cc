@@ -436,7 +436,9 @@ namespace duchamp
 
     int lng,lat,spc,size,imsize;
   
-    if(this->head.isWCS() && (this->head.getNumAxes()>=3)){
+    int numAxes = this->head.getNumAxes();
+
+    if(this->head.isWCS() && (numAxes>=3)){
       // if there is a WCS and there is at least 3 axes
       lng = this->head.WCS().lng;
       lat = this->head.WCS().lat;
@@ -450,11 +452,11 @@ namespace duchamp
     }
 
     size   = dimensions[lng];
-    if(this->head.getNumAxes()>1) size *= dimensions[lat];
-    //   if(this->head.isSpecOK()) size *= dimensions[spc];
-    if(this->head.canUseThirdAxis()) size *= dimensions[spc];
+    if(numAxes>1) size *= dimensions[lat];
+    if(this->head.canUseThirdAxis() && numAxes>spc) size *= dimensions[spc];
+
     imsize = dimensions[lng];
-    if(this->head.getNumAxes()>1) imsize *= dimensions[lat];
+    if(numAxes>1) imsize *= dimensions[lat];
 
     this->reconAllocated = false;
     this->baselineAllocated = false;
@@ -491,10 +493,9 @@ namespace duchamp
       this->axisDim = new long[this->numDim];
       this->axisDimAllocated = true;
       this->axisDim[0] = dimensions[lng];
-      if(this->head.getNumAxes()>1) this->axisDim[1] = dimensions[lat];
+      if(numAxes>1) this->axisDim[1] = dimensions[lat];
       else this->axisDim[1] = 1;
-      //     if(this->head.isSpecOK()) this->axisDim[2] = dimensions[spc];
-      if(this->head.canUseThirdAxis()) this->axisDim[2] = dimensions[spc];
+      if(this->head.canUseThirdAxis() && numAxes>spc) this->axisDim[2] = dimensions[spc];
       else this->axisDim[2] = 1;
       for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
       this->reconExists = false;

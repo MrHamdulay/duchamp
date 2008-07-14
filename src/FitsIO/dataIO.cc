@@ -89,11 +89,10 @@ namespace duchamp
       spc = 2;
     }
     
-
     int anynul;
     int npix = dimAxes[lng];
     if(numAxes>1) npix *= dimAxes[lat];
-    if(spc>=0) npix *= dimAxes[spc];
+    if((spc>=0)&&(numAxes>spc)) npix *= dimAxes[spc];
 
     float *pixarray = new float[npix];// the array of pixel values
     char *nullarray = new char[npix]; // the array of null pixels
@@ -109,7 +108,7 @@ namespace duchamp
     }
     lpixel[lng] = dimAxes[lng];
     if(numAxes>1) lpixel[lat] = dimAxes[lat];
-    if(spc>=0) lpixel[spc] = dimAxes[spc];
+    if((spc>=0)&&(numAxes>spc)) lpixel[spc] = dimAxes[spc];
 
     
     int colnum = 0;  // want the first dataset in the FITS file
