@@ -58,6 +58,7 @@ namespace duchamp
     this->flagText="";
     this->totalFlux = peakFlux = 0.;
     this->centreType="centroid";
+    this->w20 = this->w50 = this->velWidth = 0.;
   }
 
   Detection::Detection(const Detection& d)
@@ -667,79 +668,88 @@ namespace duchamp
      *  \param head FitsHeader object that contains the WCS information.
      */
 
-    double xpt = double(this->getXcentre()); 
-    double ypt = double(this->getYcentre());
-    double zpt;
+    if(dim[2] > 2){
 
-    float *intSpec = new float[dim[2]];
-    bool *mask = new bool[dim[0]*dim[1]*dim[2]]; 
-    for(int i=0;i<dim[0]*dim[1]*dim[2];i++) mask[i] = true;
-    getIntSpec(*this,fluxArray,dim,mask,1.,intSpec);
+      double xpt = double(this->getXcentre()); 
+      double ypt = double(this->getYcentre());
+      double zpt;
 
-    std::vector<std::pair<int,float> > goodPix;
-    float peak;
-    int peakLoc;
-    for(int z=this->getZmin();z<=this->getZmax();z++) {
-      if(z==this->getZmin() || peak<intSpec[z]){
-	peak = intSpec[z];
-	peakLoc = z;
+      float *intSpec = new float[dim[2]];
+      bool *mask = new bool[dim[0]*dim[1]*dim[2]]; 
+      for(int i=0;i<dim[0]*dim[1]*dim[2];i++) mask[i] = true;
+      getIntSpec(*this,fluxArray,dim,mask,1.,intSpec);
+
+      std::vector<std::pair<int,float> > goodPix;
+      float peak;
+      int peakLoc;
+      for(int z=this->getZmin();z<=this->getZmax();z++) {
+	if(z==this->getZmin() || peak<intSpec[z]){
+	  peak = intSpec[z];
+	  peakLoc = z;
+	}
+	goodPix.push_back(std::pair<int,float>(z,intSpec[z]));
       }
-      goodPix.push_back(std::pair<int,float>(z,intSpec[z]));
-    }
 
-    // finding the 20% & 50% points.  Start at the velmin & velmax
-    //  points. Then, if the int flux there is above the 20%/50%
-    //  limit, go out, otherwise go in. This is to deal with the
-    //  problems from double- (or multi-) peaked sources.
+      // finding the 20% & 50% points.  Start at the velmin & velmax
+      //  points. Then, if the int flux there is above the 20%/50%
+      //  limit, go out, otherwise go in. This is to deal with the
+      //  problems from double- (or multi-) peaked sources.
 
-    int z;
-    bool goLeft;
-    z=this->getZmin();
-    goLeft = intSpec[z]>peak*0.5;
-    if(goLeft) while(z>0 && intSpec[z]>peak*0.5) z--;
-    else       while(z<peakLoc && intSpec[z]<peak*0.5) z++;
-    if(z==0) this->v50min = this->velMin;
-    else{
-      if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]);
-      else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]);
-      this->v50min = head.pixToVel(xpt,ypt,zpt);
+      int z;
+      bool goLeft;
+      z=this->getZmin();
+      goLeft = intSpec[z]>peak*0.5;
+      if(goLeft) while(z>0 && intSpec[z]>peak*0.5) z--;
+      else       while(z<peakLoc && intSpec[z]<peak*0.5) z++;
+      if(z==0) this->v50min = this->velMin;
+      else{
+	if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]);
+	else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]);
+	this->v50min = head.pixToVel(xpt,ypt,zpt);
+      }
+      z=this->getZmax();
+      goLeft = intSpec[z]<peak*0.5;
+      if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.5) z--;
+      else       while(z<dim[2] && intSpec[z]>peak*0.5) z++;
+      if(z==dim[2]) this->v50max = this->velMax;
+      else{
+	if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]);
+	else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]);
+	this->v50max = head.pixToVel(xpt,ypt,zpt);
+      }
+      z=this->getZmin();
+      goLeft = intSpec[z]>peak*0.5;
+      if(goLeft) while(z>0 && intSpec[z]>peak*0.2) z--;
+      else       while(z<peakLoc && intSpec[z]<peak*0.2) z++;
+      if(z==0) this->v20min = this->velMin;
+      else{
+	if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]);
+	else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]);
+	this->v20min = head.pixToVel(xpt,ypt,zpt);
+      }
+      z=this->getZmax();
+      goLeft = intSpec[z]<peak*0.5;
+      if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.2) z--;
+      else       while(z<dim[2] && intSpec[z]>peak*0.2) z++;
+      if(z==dim[2]) this->v20max = this->velMax;
+      else{
+	if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]);
+	else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]);
+	this->v20max = head.pixToVel(xpt,ypt,zpt);
+      }
+
+      delete [] intSpec;
+      delete [] mask;
+
     }
-    z=this->getZmax();
-    goLeft = intSpec[z]<peak*0.5;
-    if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.5) z--;
-    else       while(z<dim[2] && intSpec[z]>peak*0.5) z++;
-    if(z==dim[2]) this->v50max = this->velMax;
     else{
-      if(goLeft) zpt = z + (peak*0.5-intSpec[z])/(intSpec[z+1]-intSpec[z]);
-      else       zpt = z - (peak*0.5-intSpec[z])/(intSpec[z-1]-intSpec[z]);
-      this->v50max = head.pixToVel(xpt,ypt,zpt);
-    }
-    z=this->getZmin();
-    goLeft = intSpec[z]>peak*0.5;
-    if(goLeft) while(z>0 && intSpec[z]>peak*0.2) z--;
-    else       while(z<peakLoc && intSpec[z]<peak*0.2) z++;
-    if(z==0) this->v20min = this->velMin;
-    else{
-      if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]);
-      else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]);
-      this->v20min = head.pixToVel(xpt,ypt,zpt);
-    }
-    z=this->getZmax();
-    goLeft = intSpec[z]<peak*0.5;
-    if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.2) z--;
-    else       while(z<dim[2] && intSpec[z]>peak*0.2) z++;
-    if(z==dim[2]) this->v20max = this->velMax;
-    else{
-      if(goLeft) zpt = z + (peak*0.2-intSpec[z])/(intSpec[z+1]-intSpec[z]);
-      else       zpt = z - (peak*0.2-intSpec[z])/(intSpec[z-1]-intSpec[z]);
-      this->v20max = head.pixToVel(xpt,ypt,zpt);
+      this->v50min = this->v20min = this->velMin;
+      this->v50max = this->v20max = this->velMax;
     }
 
     this->w20 = fabs(this->v20min - this->v20max);
     this->w50 = fabs(this->v50min - this->v50max);
 
-    delete [] intSpec;
-    delete [] mask;
   }
   //--------------------------------------------------------------------
 

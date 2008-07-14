@@ -123,8 +123,7 @@ namespace duchamp
       if(dimAxes[i]>1) this->naxis++;
 
     int relax=1; // for wcspih -- admit all recognised informal WCS extensions
-    int ctrl=2;  // for wcspih -- report each rejected card and its reason for
-    //               rejection
+    int ctrl=2;  // for wcspih -- report each rejected card and its reason for rejection
     int localnwcs, nreject;
     // Parse the FITS header to fill in the wcsprm structure
     status=wcspih(hdr, nkeys, relax, ctrl, &nreject, &localnwcs, &localwcs);

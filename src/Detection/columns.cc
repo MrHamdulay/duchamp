@@ -378,7 +378,7 @@ namespace duchamp
 	    if(head.getSpectralUnits().size()>0)
 	      newset[W50].setUnits("[" + head.getSpectralUnits() + "]");
 	    tempwidth = newset[W50].getUnits().size() + 1;
-	    for(int i=newset[W50].getWidth();i<tempwidth;i++)newset[W50].widen();
+	    for(int i=newset[W50].getWidth();i<tempwidth;i++) newset[W50].widen();
 	    val = objectList[obj].getW50();
 	    if((fabs(val) < 1.)&&(val>0.)){
 	      minval = pow(10, -1. * (newset[W50].getPrecision()+1)); 
