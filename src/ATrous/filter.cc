@@ -61,10 +61,15 @@ namespace duchamp
 
   Filter::~Filter()
   {
-    filter1D.clear();
-    maxNumScales.clear();
+    this->filter1D.clear();
+    this->maxNumScales.clear();
     //for(int i=0;i<3;i++) delete this->sigmaFactors[i];
-    sigmaFactors.clear();
+    //for(int i=0;i<3;i++) this->sigmaFactors[i]->clear();
+//     for(int i=0;i<3;i++){
+//       std::vector<double>* p = this->sigmaFactors[i];
+//       delete p;
+//     }
+    this->sigmaFactors.clear();
   }
   //-----------------------------------------------------------------------
 

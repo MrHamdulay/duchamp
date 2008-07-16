@@ -128,6 +128,10 @@ namespace duchamp
 	     << obj->getDec() << " " 
 	     << obj->getID() << "\n\n";
     }
+
+    delete [] pix;
+    delete [] wld;
+
   }
 
   void Cube::prepareOutputFile()

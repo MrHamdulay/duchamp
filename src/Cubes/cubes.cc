@@ -185,7 +185,7 @@ namespace duchamp
     }
     if(this->numDim>0 && this->axisDimAllocated){
       delete [] this->axisDim;
-    this->axisDimAllocated = false;
+      this->axisDimAllocated = false;
     }
     delete this->objectList;
   }
@@ -1336,6 +1336,7 @@ namespace duchamp
       }
       this->numDim=2;
       this->axisDim = new long[2];
+      this->axisDimAllocated = true;
       for(int i=0;i<2;i++) this->axisDim[i] = dimensions[i];
     }
   }

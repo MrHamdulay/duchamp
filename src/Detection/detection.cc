@@ -56,8 +56,12 @@ namespace duchamp
     this->flagWCS=false; 
     this->negSource = false; 
     this->flagText="";
-    this->totalFlux = peakFlux = 0.;
+    this->totalFlux = this->peakFlux = this->intFlux = 0.;
     this->centreType="centroid";
+    this->id = -1;
+    this->raS = this->decS = "";
+    this->ra = this->dec = this->vel = 0.;
+    this->raWidth = this->decWidth = 0.;
     this->w20 = this->w50 = this->velWidth = 0.;
   }
 
