@@ -122,6 +122,9 @@ namespace PixelInfo
     /** Return the number of distinct x-values.*/
     long  getNumDistinctX();
   
+    double getPositionAngle();
+    std::pair<double,double> getPrincipleAxes();
+
     /** A stream output operator. */
     friend std::ostream& operator<< ( std::ostream& theStream, Object2D& obj);
 

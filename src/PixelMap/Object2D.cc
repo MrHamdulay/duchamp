@@ -30,6 +30,8 @@
 #include <duchamp/PixelMap/Voxel.hh>
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <math.h>
 
 namespace PixelInfo
 {
@@ -430,6 +432,63 @@ namespace PixelInfo
     this->xmin += xoff; xmax += xoff;
     this->ySum += yoff*numPix;
     this->ymin += yoff; ymax += yoff;
+  }
+
+  //------------------------------------------------------
+
+  double Object2D::getPositionAngle()
+  {
+
+    int sumxx=0;
+    int sumyy=0;
+    int sumxy=0;
+    std::vector<Scan>::iterator scn=this->scanlist.begin();
+    for(;scn<this->scanlist.end();scn++){
+      sumyy += (scn->itsY*scn->itsY)*scn->itsXLen;
+      for(int x=scn->itsX;x<=scn->getXmax();x++){
+	sumxx += x*x;
+	sumxy += x*scn->itsY;
+      }
+    }
+
+    // Calculate net moments
+    double mxx = sumxx - this->xSum*this->xSum / double(this->numPix);
+    double myy = sumyy - this->ySum*this->ySum / double(this->numPix);
+    double mxy = sumxy - this->xSum*this->ySum / double(this->numPix);
+
+    if(mxy==0) return M_PI/2.;
+
+    // Angle of the minimum moment
+    double tantheta = (mxx - myy + sqrt( (mxx-myy)*(mxx-myy) + 4.*mxy*mxy))/(2.*mxy);
+
+    return atan(tantheta);
+  }
+
+  //------------------------------------------------------
+
+  std::pair<double,double> Object2D::getPrincipleAxes()
+  {
+
+    double theta = this->positionAngle();
+    double x0 = this->getXcentre();
+    double y0 = this->getYcentre();
+    std::vector<double> majorAxes, minorAxes;
+    std::vector<Scan>::iterator scn=this->scanlist.begin();
+    for(;scn<this->scanlist.end();scn++){
+      for(int x=scn->itsX;x<=scn->getXmax();x++){
+	majorAxes.push_back((x-x0)*cos(theta) + (scn->itsY-y0)*sin(theta));
+	minorAxes.push_back((x-x0)*sin(theta) + (scn->itsY-y0)*cos(theta));
+      }
+    }
+
+    std::sort(majorAxes.begin(),majorAxes.end());
+    std::sort(minorAxes.begin(),minorAxes.end());
+    int size = majorAxes.size();
+    std::pair<double,double> axes;
+    axes.first = fabs(majorAxes[0]-majorAxes[size-1]);
+    axes.second = fabs(minorAxes[0]-minorAxes[size-1]);
+    return axes;
+
   }
 
 }
