@@ -469,7 +469,7 @@ namespace PixelInfo
   std::pair<double,double> Object2D::getPrincipleAxes()
   {
 
-    double theta = this->positionAngle();
+    double theta = this->getPositionAngle();
     double x0 = this->getXcentre();
     double y0 = this->getYcentre();
     std::vector<double> majorAxes, minorAxes;
