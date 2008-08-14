@@ -260,7 +260,7 @@ namespace duchamp
 
     /** Read in command-line options. */
     //   int         getopts(int argc, char ** argv);
-    int         getopts(int argc, char ** argv){return par.getopts(argc,argv);};
+    int         getopts(int argc, char ** argv, std::string progname="Duchamp"){return par.getopts(argc,argv,progname);};
 
     /** Read in reconstructed & smoothed arrays from FITS files on disk. */
     void        readSavedArrays();

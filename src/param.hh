@@ -74,7 +74,7 @@ namespace duchamp
     // Functions in param.cc
     //
     /** Parse the command line parameters correctly. */
-    int    getopts(int argc, char ** argv);
+    int    getopts(int argc, char ** argv, std::string progname="Duchamp");
 
     /** Read in parameters from a disk file. */
     int    readParams(std::string paramfile);

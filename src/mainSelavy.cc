@@ -1,5 +1,6 @@
 // -----------------------------------------------------------------------
-// mainRrose: A program to re-analyse detected objects from a Duchamp run.
+// mainSelavy: Selavy is a program to re-analyse detected objects from
+//             a Duchamp run.
 // -----------------------------------------------------------------------
 // Copyright (C) 2006, Matthew Whiting, ATNF
 //
@@ -42,6 +43,7 @@
 #include <duchamp/ATrous/atrous.hh>
 
 using namespace PixelInfo;
+using namespace duchamp;
 
 int main(int argc, char * argv[])
 {
@@ -49,21 +51,23 @@ int main(int argc, char * argv[])
   std::string paramFile,fitsfile,temp;
   Cube *cube = new Cube;
 
-  if(cube->getopts(argc,argv)==FAILURE) return FAILURE;
+  if(cube->getopts(argc,argv,"Selavy")==FAILURE) return FAILURE;
+
+  std::vector<int> plotObject = getObjectRequest(argc,argv);
 
   if(cube->pars().getImageFile().empty()){
     std::stringstream errmsg;
     errmsg << "No input image has been given!\n"
 	   << "Use the imageFile parameter in " 
 	   << paramFile << " to specify the FITS file.\nExiting...\n";
-    duchampError("Duchamp", errmsg.str());
+    duchampError("Selavy", errmsg.str());
     return FAILURE;
   }
 
   if(cube->pars().getFlagSubsection()){
     // make sure the subsection is OK.
     if(cube->pars().verifySubsection() == FAILURE){
-      duchampError("Duchamp", 
+      duchampError("Selavy", 
 		   "Unable to use the subsection provided.\nExiting...\n");
       return FAILURE;
     }
@@ -77,7 +81,7 @@ int main(int argc, char * argv[])
     errmsg << "Unable to open image file "
 	   << cube->pars().getFullImageFile() 
 	   << "\nExiting...\n";
-    duchampError("Duchamp", errmsg.str());
+    duchampError("Selavy", errmsg.str());
     return FAILURE;
   }
   else std::cout << "Opened successfully." << std::endl; 
@@ -98,28 +102,39 @@ int main(int argc, char * argv[])
   cube->setCubeStats();
   std::cerr << "Reading from logfile : " << cube->pars().getLogFile() << "\n";
   while(getline(logfile,temp), temp.substr(0,11)!="Detection #"){ }
-  int xpix, ypix, zpix;
-  float fpix;
+  int x1,x2, ypix, zpix;
   while(!logfile.eof()){
     Detection obj;
     while(getline(logfile,temp), temp.substr(0,3)!="---"){
+      for(int i=0;i<temp.size();i++)
+	if(temp[i]=='-' || temp[i]==',') temp[i] = ' ';
       std::stringstream ss;
       ss.str(temp);
-      ss >> xpix >> ypix >> zpix >> fpix;
-      Voxel vox(xpix,ypix,zpix,fpix);
-      obj.addPixel(vox);
+      ss >> x1 >> x2 >> ypix >> zpix;
+      Scan scn(ypix,x1,x2-x1+1);
+      obj.pixels().addScan(scn,zpix);
     }
     obj.setOffsets(cube->pars());
     obj.calcParams();
+    std::cerr << obj << "\n";
     if(obj.getSize()>0) cube->addObject(obj);
     getline(logfile,temp); // reads next line -- should be Detection #...
-    if(temp.substr(0,4)=="----") getline(logfile,temp);
+    if(temp.substr(0,11)!="Detection #"){
+      // if it is, then read two lines to finish off the file. This should trigger the eof flag above.
+      getline(logfile,temp);
+      getline(logfile,temp);
+    }
   }
 
   std::cout<<"Final object count = "<<cube->getNumObj()<<std::endl; 
+  
+  cube->prepareOutputFile();
 
   cube->calcObjectWCSparams();
   cube->setObjectFlags();
+  cube->sortDetections();
+
+  cube->outputDetectionList();
 
   if((cube->getDimZ()>1) && (cube->getNumObj()>0)){
     std::cout << "Plotting the individual spectra... " << std::flush;

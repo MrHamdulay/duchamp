@@ -283,7 +283,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  int Param::getopts(int argc, char ** argv)
+  int Param::getopts(int argc, char ** argv, std::string progname)
   {
     /**  
      *   A function that reads in the command-line options, in a manner 
@@ -295,7 +295,9 @@ namespace duchamp
 
     int returnValue = FAILURE;
     if(argc==1){
-      std::cout << ERR_USAGE_MSG;
+      if(progname=="Selavy") std::cout << SELAVY_ERR_USAGE_MSG;
+      else if(progname=="Duchamp") std::cout << ERR_USAGE_MSG;
+      else std::cout << ERR_USAGE_MSG;
       returnValue = FAILURE;
     }
     else {
@@ -310,7 +312,7 @@ namespace duchamp
 	  if(this->readParams(file)==FAILURE){
 	    std::stringstream errmsg;
 	    errmsg << "Could not open parameter file " << file << ".\n";
-	    duchampError("Duchamp",errmsg.str());
+	    duchampError(progname,errmsg.str());
 	  }
 	  else returnValue = SUCCESS;
 	  break;
@@ -327,14 +329,16 @@ namespace duchamp
 	  break;
 	case 'h':
 	default :
-	  std::cout << ERR_USAGE_MSG;
+	  if(progname=="Selavy") std::cout << SELAVY_ERR_USAGE_MSG;
+	  else if(progname=="Duchamp") std::cout << ERR_USAGE_MSG;
+	  else std::cout << ERR_USAGE_MSG;
 	  break;
 	}
       }
       if(changeX){
 	if(returnValue == SUCCESS) this->setFlagXOutput(false);
 	else {
-	  duchampError("Duchamp",
+	  duchampError(progname,
 		       "You need to specify either a parameter file or FITS image.\n");
 	  std::cout << "\n" << ERR_USAGE_MSG;
 	}
