@@ -133,11 +133,11 @@ Equatorial and Galactic projection cases).
   Galactic Longitude (depending on FITS coordinates) [arcmin].
 \item[{w\_DEC/w\_GLAT}] The width of the object in Declination Galactic
   Latitude [arcmin].
-\item[{w\_VEL}] The full velocity width of the detection (max channel
-  $-$ min channel, in velocity units [see note below]).
+\item[{w\_50}] The velocity width of the detection at 50\% of the peak
+  flux (the measured full-width at half-maximum, FWHM), in velocity
+  units [see note below].
 \item[{F\_int}] The integrated flux over the object, in the units of
   flux times velocity, corrected for the beam if necessary.
-\item[{F\_tot}] The sum of the flux values of all detected voxels.
 \item[{F\_peak}] The peak flux over the object, in the units of flux.
 \item[{S/Nmax}] The signal-to-noise ratio at the peak pixel.
 \item[{X1, X2}] The minimum and maximum X-pixel coordinates.
@@ -148,17 +148,16 @@ Equatorial and Galactic projection cases).
 \item[{Flag}] Whether the detection has any warning flags (see below).
 \end{Lentry}
 
-The user can specify the precision used to display the flux, velocity
-and S/Nmax values, by using the input parameters \texttt{precFlux},
-\texttt{precVel} and \texttt{precSNR} respectively. These values apply
-to the tables written to the screen and to the output file, as well as
-for the VOTable (see below).
-
-Note that the \texttt{X, Y, Z} columns depend on the \texttt{pixelCentre}
-parameter. This is because there are three alternative ways of
-expressing the centre of a detection, which are all listed in the list
-of detections written to the output file. These alternatives are:
+These parameters are written to the screen during execution. There are
+alternative ways of calculating the total flux, the position and
+velocity width, however, and so additional parameters are written to
+the output file:
 \begin{Lentry}
+\item[{w\_20}] The velocity width of the detection at 20\% of the peak
+  flux, in velocity units [see note below].
+\item[{w\_VEL}] The full velocity width of the detection (max channel
+  $-$ min channel, in velocity units).
+\item[{F\_tot}] The sum of the flux values of all detected voxels.
 \item[{X\_av, Y\_av, Z\_av}] The average pixel value in each
   axis direction \ie X\_av is the average of the $x$-values of all
   pixels in the detection.
@@ -167,10 +166,19 @@ of detections written to the output file. These alternatives are:
 \item[{X\_peak, Y\_peak, Z\_peak}] The location of the pixel
   containing the peak flux value.
 \end{Lentry}
-These are also written to the table in the output file, although not
-to the screen (as it would make the width of the table
-unwieldy). Similarly, the \texttt{F\_tot} column is only written to the output
-file, and not at run-time.
+The velocity width of the detection is calculated at 50\% and 20\% of
+the peak flux, as well as the full detected width (if the detection
+threshold is greater than 20\% or 50\% of the peak, then these values
+will be the same as \texttt{w\_VEL}. The type of position value given
+in the \texttt{X, Y, Z} columns in the screen output is determined by
+the \texttt{pixelCentre} parameter. All three alternatives are shown
+in the output file.
+
+The user can specify the precision used to display the flux, velocity
+and S/Nmax values, by using the input parameters \texttt{precFlux},
+\texttt{precVel} and \texttt{precSNR} respectively. These values apply
+to the tables written to the screen and to the output file, as well as
+for the VOTable (see below).
 
 The \texttt{Name} is derived from the WCS position. For instance, a
 source that is centred on the RA,Dec position 12$^h$53$^m$45$^s$,
