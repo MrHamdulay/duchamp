@@ -98,6 +98,20 @@ namespace PixelInfo
       (this->itsZ == other.itsZ);
   }
   //--------------------------------------------------------------------
+
+  long Voxel::arrayIndex(long *dim)
+  {
+    /**
+     *  Return the index value corresponding to the Voxel for an array with dimensions given by dim.
+     *  \param dim Array of dimension values (ie. lengths of x, y and z dimensions)
+     *  \return Index value for an array with dimensions of dim
+     */
+    long ind = itsX + dim[0]*itsY + dim[0]*dim[1]*itsZ;
+    return ind;
+
+  }
+
+  //--------------------------------------------------------------------
   //--------------------------------------------------------------------
 
   Pixel::Pixel(long x, long y, float f)

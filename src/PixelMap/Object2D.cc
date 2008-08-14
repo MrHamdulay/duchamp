@@ -456,7 +456,10 @@ namespace PixelInfo
     double myy = sumyy - this->ySum*this->ySum / double(this->numPix);
     double mxy = sumxy - this->xSum*this->ySum / double(this->numPix);
 
-    if(mxy==0) return M_PI/2.;
+    if(mxy==0){
+      if(mxx>myy) return M_PI/2.;
+      else return 0.;
+    }
 
     // Angle of the minimum moment
     double tantheta = (mxx - myy + sqrt( (mxx-myy)*(mxx-myy) + 4.*mxy*mxy))/(2.*mxy);
@@ -476,8 +479,8 @@ namespace PixelInfo
     std::vector<Scan>::iterator scn=this->scanlist.begin();
     for(;scn<this->scanlist.end();scn++){
       for(int x=scn->itsX;x<=scn->getXmax();x++){
-	majorAxes.push_back((x-x0)*cos(theta) + (scn->itsY-y0)*sin(theta));
-	minorAxes.push_back((x-x0)*sin(theta) + (scn->itsY-y0)*cos(theta));
+	majorAxes.push_back((x-x0+0.5)*cos(theta) + (scn->itsY-y0+0.5)*sin(theta));
+	minorAxes.push_back((x-x0+0.5)*sin(theta) + (scn->itsY-y0+0.5)*cos(theta));
       }
     }
 
@@ -487,6 +490,8 @@ namespace PixelInfo
     std::pair<double,double> axes;
     axes.first = fabs(majorAxes[0]-majorAxes[size-1]);
     axes.second = fabs(minorAxes[0]-minorAxes[size-1]);
+    if(axes.first<0.5) axes.first=0.5;
+    if(axes.second<0.5) axes.second=0.5;
     return axes;
 
   }

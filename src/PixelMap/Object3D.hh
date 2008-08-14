@@ -133,6 +133,8 @@ namespace PixelInfo
     void     addPixel(long x, long y, long z);
     /** Add a single 3-D voxel to the Object. */
     void     addPixel(Voxel v){this->addPixel(v.getX(),v.getY(),v.getZ());};
+    /** Add a scan to the object */
+    void     addScan(Scan s, long z);
     /** Add a full channel map to the Object. */
     void     addChannel(ChanMap channel);
     /** Add a full channel map to the Object. */

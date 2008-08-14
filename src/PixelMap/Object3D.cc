@@ -168,6 +168,15 @@ namespace PixelInfo
   }
   //--------------------------------------------
 
+  void Object3D::addScan(Scan s, long z)
+  {
+    long y=s.getY();
+    for(int x=s.getX(); x<=s.getXmax(); x++) 
+      this->addPixel(x,y,z);
+  }
+
+  //--------------------------------------------
+
   void Object3D::addChannel(ChanMap channel)
   {
     // first test to see if we have a chanmap of same z

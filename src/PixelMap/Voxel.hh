@@ -58,19 +58,22 @@ namespace PixelInfo
     void   setY(long y){itsY = y;};
     void   setZ(long z){itsZ = z;};
     void   setF(float f){itsF = f;};
-    /* Define an (x,y) coordinate */
+    /** Define an (x,y) coordinate */
     void   setXY(long x, long y){itsX = x; itsY = y;};
-    /* Define an (x,y,z) coordinate */
+    /** Define an (x,y,z) coordinate */
     void   setXYZ(long x, long y, long z){itsX = x; itsY = y; itsZ = z;};
-    /* Define an (x,y) coordinate with a flux f */
+    /** Define an (x,y) coordinate with a flux f */
     void   setXYF(long x, long y, float f){itsX = x; itsY = y; itsF = f;};
-    /* Define an (x,y,z) coordinate with a flux f */
+    /** Define an (x,y,z) coordinate with a flux f */
     void   setXYZF(long x, long y, long z, float f){itsX = x; itsY = y; itsZ = z; itsF = f;};
     long   getX(){return itsX;};
     long   getY(){return itsY;};
     long   getZ(){return itsZ;};
     float  getF(){return itsF;};
-    //
+    
+    /** Return an index value for an array */
+    long   arrayIndex(long *dim);
+
     /** Operator to print information of voxel. */
     friend std::ostream& operator<< ( std::ostream& theStream, Voxel& vox);
 
