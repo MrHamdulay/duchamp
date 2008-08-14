@@ -257,6 +257,9 @@ namespace duchamp
     float       getDec(){return dec;};
     float       getRAWidth(){return raWidth;};
     float       getDecWidth(){return decWidth;};
+    float       getMajorAxis(){return majorAxis;};
+    float       getMinorAxis(){return minorAxis;};
+    float       getPositionAngle(){return posang;};
     float       getVel(){return vel;};
     float       getVelWidth(){return velWidth;};
     float       getVelMin(){return velMin;};
@@ -291,8 +294,7 @@ namespace duchamp
     long           zSubOffset;     ///< The z-offset, from subsectioned cube
     // Flux related
     float          totalFlux;      ///< sum of the fluxes of all the pixels
-    double         intFlux;        ///< integrated flux : involves
-    ///    integration over velocity.
+    double         intFlux;        ///< integrated flux : involves integration over velocity.
     float          peakFlux;       ///< maximum flux over all the pixels
     long           xpeak;          ///< x-pixel location of peak flux
     long           ypeak;          ///< y-pixel location of peak flux
@@ -301,53 +303,48 @@ namespace duchamp
     float          xCentroid;      ///< x-pixel location of centroid
     float          yCentroid;      ///< y-pixel location of centroid
     float          zCentroid;      ///< z-pixel location of centroid
-    std::string    centreType;     ///< which type of pixel centre to
-    ///   report: "average", "centroid", or
-    ///   "peak" (flux)
+    std::string    centreType;     ///< which type of pixel centre to report: "average", "centroid", or "peak" (flux)
     bool           negSource;      ///< is the source a negative feature?
-    std::string    flagText;       ///< any warning flags about the
-    ///    quality of the detection.
+    std::string    flagText;       ///< any warning flags about the quality of the detection.
     // WCS related
     int            id;             ///< ID -- generally number in list
-    std::string    name;	         ///< IAU-style name (based on position)
-    bool           flagWCS;        ///< A flag indicating whether the
-    ///    WCS parameters have been set.
-    std::string    raS;	         ///< Central Right Ascension (or
-				 ///    Longitude) in form 12:34:23
-    std::string    decS;	         ///< Central Declination(or
-    ///    Latitude), in form -12:23:34
-    float          ra;	         ///< Central Right Ascension in degrees
-    float          dec;	         ///< Central Declination in degrees
-    float          raWidth;        ///< Width of detection in RA
-    ///   direction in arcmin
-    float          decWidth;       ///< Width of detection in Dec
-    ///   direction in arcmin
+    std::string    name;	   ///< IAU-style name (based on position)
+    bool           flagWCS;        ///< A flag indicating whether the WCS parameters have been set.
+    std::string    raS;	           ///< Right Ascension (or Longitude) of pixel centre in form 12:34:23
+    std::string    decS;	   ///< Declination (or Latitude) of pixel centre, in form -12:23:34
+    float          ra;	           ///< Central Right Ascension in degrees
+    float          dec;	           ///< Central Declination in degrees
+    float          raWidth;        ///< Width of detection in RA direction in arcmin
+    float          decWidth;       ///< Width of detection in Dec direction in arcmin
+    float          majorAxis;      ///< Major axis length in arcmin
+    float          minorAxis;      ///< Minor axis length in arcmin
+    float          posang;         ///< Position angle of the major axis, in degrees
     bool           specOK;         ///< Is the spectral dimension valid?
     std::string    specUnits;      ///< Units of the spectral dimension
     std::string    fluxUnits;      ///< Units of flux
     std::string    intFluxUnits;   ///< Units of integrated flux
     std::string    lngtype;        ///< Type of longitude axis (RA/GLON)
     std::string    lattype;        ///< Type of latitude axis (DEC/GLAT)
-    float          vel;	         ///< Central velocity (from zCentre)
+    float          vel;	           ///< Central velocity (from zCentre)
     float          velWidth;       ///< Full velocity width
     float          velMin;         ///< Minimum velocity
     float          velMax;         ///< Maximum velocity
-    float          v20min;
-    float          v20max;
-    float          w20;
-    float          v50min;
-    float          v50max;
-    float          w50;
-    //  The next six are the precision of values printed in the headers
-    //  of the spectral plots
+    float          v20min;         ///< Minimum velocity at 20% of peak flux
+    float          v20max;         ///< Maximum velocity at 20% of peak flux
+    float          w20;            ///< Velocity width at 20% of peak flux  
+    float          v50min;         ///< Minimum velocity at 50% of peak flux
+    float          v50max;         ///< Maximum velocity at 50% of peak flux
+    float          w50;            ///< Velocity width at 50% of peak flux  
+    /** @brief  The next six are the precision of values printed in the headers of the spectral plots
+	@name 
+	@{ */
     int            posPrec;        ///< Precision of WCS positional values 
-    int            xyzPrec;        ///< Precision of pixel positional
-    ///   values
+    int            xyzPrec;        ///< Precision of pixel positional values
     int            fintPrec;       ///< Precision of F_int/F_tot values
     int            fpeakPrec;      ///< Precision of F_peak values
     int            velPrec;        ///< Precision of velocity values.
     int            snrPrec;        ///< Precision of S/N_max values.
-
+    /**@} */
   };
 
   //==========================================================================

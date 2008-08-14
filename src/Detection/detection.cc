@@ -40,11 +40,6 @@
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Cubes/cubeUtils.hh>
 
-using std::setw;
-using std::setprecision;
-using std::endl;
-using std::vector;
-
 using namespace PixelInfo;
 
 namespace duchamp
@@ -62,6 +57,7 @@ namespace duchamp
     this->raS = this->decS = "";
     this->ra = this->dec = this->vel = 0.;
     this->raWidth = this->decWidth = 0.;
+    this->majorAxis = this->minorAxis = this->posang = 0.;
     this->w20 = this->w50 = this->velWidth = 0.;
   }
 
@@ -100,6 +96,9 @@ namespace duchamp
     this->dec	       = d.dec;
     this->raWidth      = d.raWidth;
     this->decWidth     = d.decWidth;
+    this->majorAxis    = d.majorAxis;
+    this->minorAxis    = d.minorAxis;
+    this->posang       = d.posang;
     this->specUnits    = d.specUnits;
     this->fluxUnits    = d.fluxUnits;
     this->intFluxUnits = d.intFluxUnits;
@@ -251,37 +250,30 @@ namespace duchamp
 
     this->totalFlux = this->peakFlux = 0;
     this->xCentroid = this->yCentroid = this->zCentroid = 0.;
-    long y,z,count=0;
 
-    for(int m=0; m<this->pixelArray.getNumChanMap(); m++){
-      ChanMap *tempmap = new ChanMap;
-      *tempmap = this->pixelArray.getChanMap(m);
-      z = tempmap->getZ();
-      for(int s=0; s<tempmap->getNumScan(); s++){
-	Scan *tempscan = new Scan;
-	*tempscan = tempmap->getScan(s);
-	y = tempscan->getY();
-	for(long x=tempscan->getX(); x<=tempscan->getXmax(); x++){
+    std::vector<Voxel> voxList = this->pixelArray.getPixelSet();
+    std::vector<Voxel>::iterator vox=voxList.begin();
+    for(;vox<voxList.end();vox++){
 
-	  float f = fluxArray[x + y*dim[0] + z*dim[0]*dim[1]];
-	  this->totalFlux += f;
-	  this->xCentroid += x*f;
-	  this->yCentroid += y*f;
-	  this->zCentroid += z*f;
-	  if( (count==0) ||  //first time round
-	      (this->negSource&&(f<this->peakFlux)) || 
-	      (!this->negSource&&(f>this->peakFlux))   )
-	    {
-	      this->peakFlux = f;
-	      this->xpeak =    x;
-	      this->ypeak =    y;
-	      this->zpeak =    z;
-	    }
-	  count++;
+      long x=vox->getX();
+      long y=vox->getY();
+      long z=vox->getZ();
+      long ind = vox->arrayIndex(dim);
+      float f = fluxArray[ind];
+      this->totalFlux += f;
+      this->xCentroid += x*f;
+      this->yCentroid += y*f;
+      this->zCentroid += z*f;
+      if( (vox==voxList.begin()) ||
+	  (this->negSource&&(f<this->peakFlux)) || 
+	  (!this->negSource&&(f>this->peakFlux))   )
+	{
+	  this->peakFlux = f;
+	  this->xpeak = x;
+	  this->ypeak = y;
+	  this->zpeak = z;
 	}
-	delete tempscan;
-      }
-      delete tempmap;
+ 
     }
 
     this->xCentroid /= this->totalFlux;
@@ -351,6 +343,13 @@ namespace duchamp
 					  world[12],world[1]) * 60.;
 	this->decWidth  = angularSeparation(world[0],world[10],
 					    world[0],world[13]) * 60.;
+
+	Object2D spatMap = this->pixelArray.getSpatialMap();
+	std::pair<double,double> axes = spatMap.getPrincipleAxes();
+	this->majorAxis = std::max(axes.first,axes.second) * head.getAvPixScale();
+	this->minorAxis = std::min(axes.first,axes.second) * head.getAvPixScale();
+	this->posang = spatMap.getPositionAngle() * 180. / M_PI;
+
 	this->name = head.getIAUName(this->ra, this->dec);
 	this->vel    = head.specToVel(world[2]);
 	this->velMin = head.specToVel(world[5]);
@@ -401,7 +400,7 @@ namespace duchamp
       long ysize = (this->getYmax()-this->getYmin()+border*2+1);
       long zsize = (this->getZmax()-this->getZmin()+border*2+1); 
       long size = xsize*ysize*zsize;
-      vector <bool> isObj(size,false);
+      std::vector <bool> isObj(size,false);
       double *localFlux = new double[size];
       for(int i=0;i<size;i++) localFlux[i]=0.;
 
@@ -488,7 +487,7 @@ namespace duchamp
       long ysize = (this->getYmax()-this->getYmin()+3);
       long zsize = (this->getZmax()-this->getZmin()+3); 
       long size = xsize*ysize*zsize;
-      vector <bool> isObj(size,false);
+      std::vector <bool> isObj(size,false);
       double *localFlux = new double[size];
       for(int i=0;i<size;i++) localFlux[i]=0.;
       // work out which pixels are object pixels
