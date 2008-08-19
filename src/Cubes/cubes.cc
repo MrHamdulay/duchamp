@@ -305,6 +305,14 @@ namespace duchamp
       theStream<<array.axisDim[i];
     }
     theStream<<std::endl;
+
+    theStream<<"Threshold\tmiddle\tspread\trobust\n" << array.stats().getThreshold() << "\t";
+    if(array.pars().getFlagUserThreshold())
+      theStream << "0.0000\t" << array.stats().getThreshold() << "\t"; 
+    else
+      theStream << array.stats().getMiddle() << " " << array.stats().getSpread() << "\t";
+    theStream << array.stats().getRobust()<<"\n";
+
     theStream<<array.objectList->size()<<" detections:\n--------------\n";
     for(int i=0;i<array.objectList->size();i++){
       theStream << "Detection #" << array.objectList->at(i).getID()<<std::endl;

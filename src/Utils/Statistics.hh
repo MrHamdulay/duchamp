@@ -107,9 +107,11 @@ namespace Statistics
     
     /** Return the estimator of the middle value of the data. */
     float getMiddle();
+    void  setMiddle(float middle);
     
     /** Return the estimator of the amount of spread of the data.*/
     float getSpread();
+    void  setSpread(float spread);
 
     /** Scale the noise by a given factor. */
     void  scaleNoise(float scale);

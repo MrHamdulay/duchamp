@@ -95,6 +95,7 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(CUBESDIR)/baseline.o\
 	$(CUBESDIR)/CubicSearch.o\
 	$(CUBESDIR)/detectionIO.o\
+	$(CUBESDIR)/existingDetections.o\
 	$(CUBESDIR)/getImage.o\
 	$(CUBESDIR)/invertCube.o\
 	$(CUBESDIR)/Merger.o\

@@ -79,6 +79,8 @@ namespace duchamp
     this->reconFile         = "";
     this->flagSmoothExists  = false;
     this->smoothFile        = "";
+    this->usePrevious       = false;
+    this->objectList        = "";
     // Output files
     this->flagLog           = false;
     this->logFile           = "duchamp-Logfile.txt";
@@ -192,7 +194,9 @@ namespace duchamp
     this->flagReconExists   = p.flagReconExists;
     this->reconFile         = p.reconFile;      
     this->flagSmoothExists  = p.flagSmoothExists;
-    this->smoothFile        = p.smoothFile;      
+    this->smoothFile        = p.smoothFile;     
+    this->usePrevious       = p.usePrevious;
+    this->objectList        = p.objectList;
     this->flagLog           = p.flagLog;        
     this->logFile           = p.logFile;       
     this->outFile           = p.outFile;        
@@ -408,6 +412,73 @@ namespace duchamp
     return !flagStatSec || statSec.isInside(xval,yval,zval);
   }
 
+  std::vector<int> Param::getObjectRequest()
+  {
+    /**
+     *  Returns a list of the object numbers requested via the objectList parameter. 
+     * \return a vector of integers, one for each number in the objectList set.
+     */
+    std::stringstream ss1;
+    std::string tmp;
+    std::vector<int> tmplist;
+    ss1.str(this->objectList);
+    while(!ss1.eof()){
+      getline(ss1,tmp,',');
+      for(int i=0;i<tmp.size();i++) if(tmp[i]=='-') tmp[i]=' ';
+      int a,b;
+      std::stringstream ss2;
+      ss2.str(tmp);
+      ss2 >>a;
+      if(!ss2.eof()) ss2 >> b;
+      else b=a;
+      for(int n=a;n<=b;n++){
+	tmplist.push_back(n);
+      }      
+    }
+    return tmplist;
+  }
+
+  std::vector<bool> Param::getObjectChoices()
+  {
+    /**
+     *  Returns a list of bool values, indicating whether a given
+     *  object was requested or not. The size of the vector is
+     *  determined by the maximum value in objectList. For instance,
+     *  if objectList="2,3,5-8", then the returned vector will be
+     *  [0,1,1,0,1,1,1,1].
+     *  \return Vector of bool values.
+     */
+    std::vector<int> objectChoices = this->getObjectRequest();
+    int maxNum = *std::max_element(objectChoices.begin(), objectChoices.end());
+    std::vector<bool> choices(maxNum,false);
+    for(int i=0;i<objectChoices.size();i++) choices[objectChoices[i]-1] = true;
+    return choices;
+  }
+
+  std::vector<bool> Param::getObjectChoices(int numObjects)
+  {
+    /**
+     *  Returns a list of bool values, indicating whether a given
+     *  object was requested or not. The size of the vector is given
+     *  by the numObjects parameter. So, if objectList="2,3,5-8", then
+     *  the returned vector from a getObjectChoices(10) call will be
+     *  [0,1,1,0,1,1,1,1,0,0].
+     *  \param numObjects How many objects there are in total.
+     *  \return Vector of bool values.
+     */
+    if(this->objectList==""){
+      std::vector<bool> choices(numObjects,true);
+      return choices;
+    }
+    else{
+      std::vector<int> objectChoices = this->getObjectRequest();
+      std::vector<bool> choices(numObjects,false);
+      for(int i=0;i<objectChoices.size();i++)
+	if(objectChoices[i]<=numObjects) choices[objectChoices[i]-1] = true;
+      return choices;
+    }
+  }
+
   /****************************************************************/
   ///////////////////////////////////////////////////
   //// Other Functions using the  Parameter class:
@@ -502,6 +573,8 @@ namespace duchamp
 	if(arg=="flagsmoothexists")this->flagSmoothExists = readFlag(ss); 
 	if(arg=="smoothfile")      this->smoothFile = readSval(ss); 
 	if(arg=="beamsize")        this->numPixBeam = readFval(ss); 
+	if(arg=="useprevious")     this->usePrevious = readFlag(ss);
+	if(arg=="objectlist")      this->objectList = readSval(ss);
 
 	if(arg=="flaglog")         this->flagLog = readFlag(ss); 
 	if(arg=="logfile")         this->logFile = readSval(ss); 
@@ -603,6 +676,9 @@ namespace duchamp
 
       }
     }
+
+    // If we have usePrevious=false, set the objectlist to blank so that we use all of them
+    if(!this->usePrevious) this->objectList = "";
 
     // If pgplot was not included in the compilation, need to set flagXOutput to false
     if(!USE_PGPLOT) this->flagXOutput = false;

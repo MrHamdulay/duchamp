@@ -488,6 +488,10 @@ namespace duchamp
 	ones are left. */
     void        ObjectMerger();
   
+    // in Cubes/existingDetections.cc
+    /** Read a previously-created log file to get the detections without searching */
+    int getExistingDetections();
+
     //-------------------------------------
     // Text outputting of detected objects.
     //   in Cubes/detectionIO.cc

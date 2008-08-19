@@ -82,7 +82,8 @@ int main(int argc, char * argv[])
   else std::cout << "Opened successfully." << std::endl; 
 
   // Read in any saved arrays that are in FITS files on disk.
-  cube->readSavedArrays();
+  if(!cube->pars().getFlagUsePrevious()) 
+    cube->readSavedArrays();
 
   // special case for 2D images -- ignore the minChannels requirement
   if(cube->getDimZ()==1) cube->pars().setMinChannels(0);  
@@ -90,78 +91,91 @@ int main(int argc, char * argv[])
   // Write the parameters to screen.
   std::cout << cube->pars();
 
-  if(cube->pars().getFlagLog()){
-    // Prepare the log file.
-    cube->prepareLogFile(argc, argv);
+  if(cube->pars().getFlagUsePrevious()){
+    std::cout << "Reading detections from existing log file... \n";
+    if(cube->getExistingDetections() == FAILURE){
+      duchampError("Duchamp", 
+		   "Could not read detections from log file\nExiting...\n");
+      return FAILURE;
+    }
+    else std::cout << "Done.\n";
   }
+  else {
 
-  //if(cube->pars().getFlagBlankPix()){
-  if(cube->pars().getFlagTrim()){
-    // Trim any blank pixels from the edges, and report the new size
-    // of the cube
-    std::cout<<"Trimming the Blank Pixels from the edges...  "<<std::flush;
-    cube->trimCube();
-    std::cout<<"Done."<<std::endl;
-    std::cout << "New dimensions:  " << cube->getDimX();
-    if(cube->getNumDim()>1) std::cout << "x" << cube->getDimY();
-    if(cube->getNumDim()>2) std::cout << "x" << cube->getDimZ();
-    std::cout << std::endl;
-  }
+    if(cube->pars().getFlagLog()){
+      // Prepare the log file.
+      cube->prepareLogFile(argc, argv);
+    }
 
-  if(cube->pars().getFlagBaseline()){
-    std::cout<<"Removing the baselines... "<<std::flush;
-    cube->removeBaseline();
-    std::cout<<" Done.                 "<<std::endl;
-  }
+    //if(cube->pars().getFlagBlankPix()){
+    if(cube->pars().getFlagTrim()){
+      // Trim any blank pixels from the edges, and report the new size
+      // of the cube
+      std::cout<<"Trimming the Blank Pixels from the edges...  "<<std::flush;
+      cube->trimCube();
+      std::cout<<"Done."<<std::endl;
+      std::cout << "New dimensions:  " << cube->getDimX();
+      if(cube->getNumDim()>1) std::cout << "x" << cube->getDimY();
+      if(cube->getNumDim()>2) std::cout << "x" << cube->getDimZ();
+      std::cout << std::endl;
+    }
 
-  if(cube->pars().getFlagNegative()){
-    std::cout<<"Inverting the Cube... "<<std::flush;
-    cube->invert();
-    std::cout<<" Done."<<std::endl;
-  }
+    if(cube->pars().getFlagBaseline()){
+      std::cout<<"Removing the baselines... "<<std::flush;
+      cube->removeBaseline();
+      std::cout<<" Done.                 \n";
+    }
 
-  if(cube->pars().getFlagATrous()){
-    std::cout<<"Commencing search in reconstructed cube..."<<std::endl;
-    cube->ReconSearch();
-  }  
-  else if(cube->pars().getFlagSmooth()){
-    std::cout<<"Commencing search in smoothed cube..."<<std::endl;
-    cube->SmoothSearch();
-  }
-  else{
-    std::cout<<"Commencing search in cube..."<<std::endl;
-    cube->CubicSearch();
-  }
-  std::cout << "Done. Intermediate list has " << cube->getNumObj();
-  if(cube->getNumObj()==1) std::cout << " object.\n";
-  else std::cout << " objects.\n";
+    if(cube->pars().getFlagNegative()){
+      std::cout<<"Inverting the Cube... "<<std::flush;
+      cube->invert();
+      std::cout<<" Done.\n";
+    }
 
-  if(cube->getNumObj() > 1){
-    if(cube->pars().getFlagGrowth())
-      std::cout<<"Merging, Growing and Rejecting...  "<<std::flush;
-    else
-      std::cout<<"Merging and Rejecting...  "<<std::flush;
-    cube->ObjectMerger();
-    std::cout<<"Done.                      "<<std::endl;
-  }
-  std::cout<<"Final object count = "<<cube->getNumObj()<<std::endl; 
+    if(cube->pars().getFlagATrous()){
+      std::cout<<"Commencing search in reconstructed cube..."<<std::endl;
+      cube->ReconSearch();
+    }  
+    else if(cube->pars().getFlagSmooth()){
+      std::cout<<"Commencing search in smoothed cube..."<<std::endl;
+      cube->SmoothSearch();
+    }
+    else{
+      std::cout<<"Commencing search in cube..."<<std::endl;
+      cube->CubicSearch();
+    }
+    std::cout << "Done. Intermediate list has " << cube->getNumObj();
+    if(cube->getNumObj()==1) std::cout << " object.\n";
+    else std::cout << " objects.\n";
 
-  if(cube->pars().getFlagNegative()){
-    std::cout<<"Un-Inverting the Cube... "<<std::flush;
-    cube->reInvert();
-    std::cout<<" Done."<<std::endl;
-  }
+    if(cube->getNumObj() > 1){
+      if(cube->pars().getFlagGrowth())
+	std::cout<<"Merging, Growing and Rejecting...  "<<std::flush;
+      else
+	std::cout<<"Merging and Rejecting...  "<<std::flush;
+      cube->ObjectMerger();
+      std::cout<<"Done.                      "<<std::endl;
+    }
+    std::cout<<"Final object count = "<<cube->getNumObj()<<std::endl; 
 
-  if(cube->pars().getFlagBaseline()){
-    std::cout<<"Replacing the baselines...  "<<std::flush;
-    cube->replaceBaseline();
-    std::cout<<"Done."<<std::endl;
-  }
+    if(cube->pars().getFlagNegative()){
+      std::cout<<"Un-Inverting the Cube... "<<std::flush;
+      cube->reInvert();
+      std::cout<<" Done."<<std::endl;
+    }
 
-  if(cube->pars().getFlagCubeTrimmed()){
-    std::cout<<"Replacing the trimmed pixels on the edges...  "<<std::flush;
-    cube->unTrimCube();
-    std::cout<<"Done."<<std::endl;
+    if(cube->pars().getFlagBaseline()){
+      std::cout<<"Replacing the baselines...  "<<std::flush;
+      cube->replaceBaseline();
+      std::cout<<"Done."<<std::endl;
+    }
+
+    if(cube->pars().getFlagCubeTrimmed()){
+      std::cout<<"Replacing the trimmed pixels on the edges...  "<<std::flush;
+      cube->unTrimCube();
+      std::cout<<"Done."<<std::endl;
+    }
+
   }
 
   cube->prepareOutputFile();
@@ -173,6 +187,7 @@ int main(int argc, char * argv[])
     cube->setObjectFlags();
     
     cube->sortDetections();
+
   }
   
   cube->outputDetectionList();
@@ -188,45 +203,45 @@ int main(int argc, char * argv[])
       cube->plotDetectionMap(cube->pars().getDetectionMap()+"/vcps");
     std::cout << "Done.\n";
     
-//     if((cube->getDimZ()>1) && (cube->getNumObj()>0)){
     if(cube->getNumObj()>0){
       std::cout << "Plotting the individual spectra... " << std::flush;
       cube->outputSpectra();
       std::cout << "Done.\n";
     }
-//     else if(cube->getDimZ()<=1) 
-//       duchampWarning("Duchamp",
-// 		     "Not plotting any spectra : no third dimension.\n");
   }
   else{
     std::cout << "PGPLOT has not been enabled, so no graphical output.\n";
   }
 
-  if(cube->pars().getFlagATrous()&&
-     (cube->pars().getFlagOutputRecon()||cube->pars().getFlagOutputResid()) ){
-    std::cout << "Saving reconstructed cube to "
-	      << cube->pars().outputReconFile() << "... "<<std::flush;
-    cube->saveReconstructedCube();
-    std::cout << "done.\n";
-  }
-  if(cube->pars().getFlagSmooth()&& cube->pars().getFlagOutputSmooth()){
-    std::cout << "Saving smoothed cube to "
-	      << cube->pars().outputSmoothFile() << "... " <<std::flush;
-    cube->saveSmoothedCube();
-    std::cout << "done.\n";
-  }
-  if(cube->pars().getFlagOutputMask()){
-    std::cout << "Saving mask cube to "
-	      << cube->pars().outputMaskFile() << "... " <<std::flush;
-    cube->saveMaskCube();
-    std::cout << "done.\n";
-  }
+  if(!cube->pars().getFlagUsePrevious()){
 
-  if(cube->pars().getFlagLog() && (cube->getNumObj()>0)){
-    std::ofstream logfile(cube->pars().getLogFile().c_str(),std::ios::app);
-    logfile << "=-=-=-=-=-=-=-\nCube summary\n=-=-=-=-=-=-=-\n";
-    logfile << *cube;
-    logfile.close();
+    if(cube->pars().getFlagATrous()&&
+       (cube->pars().getFlagOutputRecon()||cube->pars().getFlagOutputResid()) ){
+      std::cout << "Saving reconstructed cube to "
+		<< cube->pars().outputReconFile() << "... "<<std::flush;
+      cube->saveReconstructedCube();
+      std::cout << "done.\n";
+    }
+    if(cube->pars().getFlagSmooth()&& cube->pars().getFlagOutputSmooth()){
+      std::cout << "Saving smoothed cube to "
+		<< cube->pars().outputSmoothFile() << "... " <<std::flush;
+      cube->saveSmoothedCube();
+      std::cout << "done.\n";
+    }
+    if(cube->pars().getFlagOutputMask()){
+      std::cout << "Saving mask cube to "
+		<< cube->pars().outputMaskFile() << "... " <<std::flush;
+      cube->saveMaskCube();
+      std::cout << "done.\n";
+    }
+
+    if(cube->pars().getFlagLog() && (cube->getNumObj()>0)){
+      std::ofstream logfile(cube->pars().getLogFile().c_str(),std::ios::app);
+      logfile << "=-=-=-=-=-=-=-\nCube summary\n=-=-=-=-=-=-=-\n";
+      logfile << *cube;
+      logfile.close();
+    }
+
   }
 
   if(cube->pars().getFlagVOT()){
@@ -241,7 +256,7 @@ int main(int argc, char * argv[])
     karmafile.close();
   }
 
-  if(cube->pars().getFlagLog()){
+  if(!cube->pars().getFlagUsePrevious() && cube->pars().getFlagLog()){
     // Open the logfile and write the time on the first line
     std::ofstream logfile(cube->pars().getLogFile().c_str(),std::ios::app);
     logfile << "Duchamp completed: ";

@@ -43,7 +43,6 @@ namespace Statistics
   template float madfmToSigma<double>(double madfm);
 
   //--------------------------------------------------------------------
-  template <class T> 
   float sigmaToMADFM(float sigma){
     return float(sigma)*correctionFactor;
   }
@@ -137,6 +136,23 @@ namespace Statistics
   //--------------------------------------------------------------------
     
   template <class Type> 
+  void StatsContainer<Type>::setMiddle(float middle)
+  {
+    /** 
+     * The middle value is determined by the StatsContainer::useRobust
+     * flag -- it will be either the median (if true), or the mean (if
+     * false).
+     */
+    if(useRobust) this->median = Type(middle); 
+    else this->mean = middle;
+  }
+  template void StatsContainer<int>::setMiddle(float middle);
+  template void StatsContainer<long>::setMiddle(float middle);
+  template void StatsContainer<float>::setMiddle(float middle);
+  template void StatsContainer<double>::setMiddle(float middle);
+  //--------------------------------------------------------------------
+    
+  template <class Type> 
   float StatsContainer<Type>::getMiddle()
   {
     /** 
@@ -151,6 +167,24 @@ namespace Statistics
   template float StatsContainer<long>::getMiddle();
   template float StatsContainer<float>::getMiddle();
   template float StatsContainer<double>::getMiddle();
+  //--------------------------------------------------------------------
+    
+  template <class Type> 
+  void StatsContainer<Type>::setSpread(float spread){
+    /** 
+     * The spread value is set according to the
+     * StatsContainer::useRobust flag -- it will be either the madfm
+     * (if true), or the rms (if false). If robust, the spread value will be
+     * converted to a madfm from an equivalent rms under the assumption of
+     * Gaussianity, using the Statistics::sigmaToMADFM function.
+     */
+    if(useRobust) this->madfm = Type(sigmaToMADFM(spread)); 
+    else this->stddev = spread;
+  }
+  template void StatsContainer<int>::setSpread(float spread);
+  template void StatsContainer<long>::setSpread(float spread);
+  template void StatsContainer<float>::setSpread(float spread);
+  template void StatsContainer<double>::setSpread(float spread);
   //--------------------------------------------------------------------
     
   template <class Type> 

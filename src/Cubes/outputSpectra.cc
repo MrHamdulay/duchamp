@@ -51,6 +51,25 @@ namespace duchamp
   void getSmallVelRange(Detection &obj, FitsHeader head, float *minvel, float *maxvel);
   void getSmallZRange(Detection &obj, float *minz, float *maxz);
 
+  std::string getIndivPlotName(std::string baseName, int objNum, int maxNumObj)
+  {
+    int width = int(floor(log10(float(maxNumObj))))+1;
+    if(baseName.substr(baseName.size()-3,baseName.size())==".ps"){
+      std::stringstream ss;
+      ss << baseName.substr(0,baseName.size()-3) 
+	 << "-" << std::setw(width) << std::setfill('0') << objNum
+	 << ".ps";
+      return ss.str();
+    }
+    else{
+      std::stringstream ss;
+      ss << baseName
+	 << "-" << std::setw(width) << std::setfill('0') << objNum
+	 << ".ps";
+      return ss.str();
+    }
+  }
+
   void Cube::outputSpectra()
   {
     /** 
@@ -75,18 +94,29 @@ namespace duchamp
     if(this->fullCols.size()==0) this->setupColumns(); 
     // in case cols haven't been set -- need the precisions for printing values.
 
+    std::vector<bool> objectChoice = this->par.getObjectChoices(this->objectList->size());
+
     std::string spectrafile = this->par.getSpectraFile() + "/vcps";
     if(this->getDimZ()<=1){
       Plot::CutoutPlot newplot;
       if(newplot.setUpPlot(spectrafile.c_str())>0) {
 
 	for(int nobj=0;nobj<this->objectList->size();nobj++){
-	  // for each object in the cube:
-	  this->plotSource(this->objectList->at(nobj),newplot);
-      
+	  // for each object in the cube, assuming it is wanted:
+	  if(objectChoice[nobj]) this->plotSource(this->objectList->at(nobj),newplot);
 	}// end of loop over objects.
-
 	cpgclos();
+
+	for(int nobj=0;nobj<this->objectList->size();nobj++){
+	  if(objectChoice[nobj] && this->par.getFlagUsePrevious()){
+	    std::cerr << "Will output individual plot to "
+		      << getIndivPlotName(this->par.getSpectraFile(),nobj+1,this->objectList->size()) << "\n";
+	    Plot::CutoutPlot indivplot;
+	    indivplot.setUpPlot(getIndivPlotName(this->par.getSpectraFile(),nobj+1,this->objectList->size())+"/vcps");
+	    this->plotSource(this->objectList->at(nobj),indivplot);
+	    cpgclos();
+	  }
+	}	        
       }
     }
     else{
@@ -94,14 +124,24 @@ namespace duchamp
       if(newplot.setUpPlot(spectrafile.c_str())>0) {
 
 	for(int nobj=0;nobj<this->objectList->size();nobj++){
-	  // for each object in the cube:
-	  this->plotSpectrum(nobj,newplot);
-      
+	  // for each object in the cube, assuming it is wanted:
+	  if(objectChoice[nobj])  this->plotSpectrum(nobj,newplot);
 	}// end of loop over objects.
-
 	cpgclos();
-      }
 
+	for(int nobj=0;nobj<this->objectList->size();nobj++){
+	  if(objectChoice[nobj] && this->par.getFlagUsePrevious()){
+	    std::cerr << "Will output individual plot to "
+		      << getIndivPlotName(this->par.getSpectraFile(),nobj+1,this->objectList->size()) << "\n";
+	    Plot::SpectralPlot indivplot;
+	    indivplot.setUpPlot(getIndivPlotName(this->par.getSpectraFile(),nobj+1,this->objectList->size())+"/vcps");
+	    this->plotSpectrum(nobj,indivplot);
+	    cpgclos();
+	  }
+	}	        
+
+      }
+      
       if(this->par.getFlagTextSpectra()){
 	if(this->par.isVerbose()) std::cout << "Saving spectra in text file ... ";
 	this->writeSpectralData();
