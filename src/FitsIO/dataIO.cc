@@ -78,7 +78,7 @@ namespace duchamp
 
     // Identify which axes are the "interesting" ones 
     int lng,lat,spc;
-    if(this->head.isWCS()){
+    if(this->head.isWCS() && (this->head.WCS().spec>=0)){
       lng = this->head.WCS().lng;
       lat = this->head.WCS().lat;
       spc = this->head.WCS().spec;

@@ -446,7 +446,7 @@ namespace duchamp
   
     int numAxes = this->head.getNumAxes();
 
-    if(this->head.isWCS() && (numAxes>=3)){
+    if(this->head.isWCS() && (numAxes>=3) && (this->head.WCS().spec>=0)){
       // if there is a WCS and there is at least 3 axes
       lng = this->head.WCS().lng;
       lat = this->head.WCS().lat;
