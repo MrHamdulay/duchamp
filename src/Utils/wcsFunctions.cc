@@ -52,13 +52,15 @@ int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
    */
 
   int naxis=wcs->naxis,npts=1,status;
+  int specAxis = wcs->spec;
+  if(specAxis<0) specAxis=2;
 
   double *newpix = new double[naxis*npts];
   // correct from 0-indexed to 1-indexed pixel array
   for(int i=0;i<naxis;i++) newpix[i] = 1.;
   newpix[wcs->lng] += pix[0];
   newpix[wcs->lat] += pix[1];
-  newpix[wcs->spec]+= pix[2];
+  newpix[specAxis]+= pix[2];
 
   int    *stat      = new int[npts];
   double *imgcrd    = new double[naxis*npts];
@@ -77,7 +79,7 @@ int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
   //return just the spatial/velocity information
   world[0] = tempworld[wcs->lng];
   world[1] = tempworld[wcs->lat];
-  world[2] = tempworld[wcs->spec];
+  world[2] = tempworld[specAxis];
 
   delete [] stat;
   delete [] imgcrd;
@@ -104,12 +106,14 @@ int wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix)
    */
 
   int naxis=wcs->naxis,npts=1,status;
+  int specAxis = wcs->spec;
+  if(specAxis<0) specAxis=2;
 
   double *tempworld = new double[naxis*npts];
   for(int i=0;i<naxis;i++) tempworld[i] = wcs->crval[i];
   tempworld[wcs->lng]  = world[0];
   tempworld[wcs->lat]  = world[1];
-  tempworld[wcs->spec] = world[2];
+  tempworld[specAxis] = world[2];
 
   int    *stat    = new int[npts];
   double *temppix = new double[naxis*npts];
@@ -129,7 +133,7 @@ int wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix)
 
   pix[0] = temppix[wcs->lng] - 1.;
   pix[1] = temppix[wcs->lat] - 1.;
-  pix[2] = temppix[wcs->spec] - 1.;
+  pix[2] = temppix[specAxis] - 1.;
   // correct from 1-indexed to 0-indexed pixel array
   //  and only return the spatial & frequency information
 
@@ -159,6 +163,8 @@ int pixToWCSMulti(struct wcsprm *wcs, const double *pix,
    */
 
   int naxis=wcs->naxis,status;
+  int specAxis = wcs->spec;
+  if(specAxis<0) specAxis=2;
 
   // correct from 0-indexed to 1-indexed pixel array
   // Add entries for any other axes that are present, keeping the 
@@ -168,7 +174,7 @@ int pixToWCSMulti(struct wcsprm *wcs, const double *pix,
     for(int i=0;i<naxis;i++) newpix[pt*naxis+i] = 1.;
     newpix[pt*naxis+wcs->lng]  += pix[pt*3+0];
     newpix[pt*naxis+wcs->lat]  += pix[pt*3+1];
-    newpix[pt*naxis+wcs->spec] += pix[pt*3+2];
+    newpix[pt*naxis+specAxis] += pix[pt*3+2];
   }
 
   int    *stat      = new int[npts];
@@ -190,7 +196,7 @@ int pixToWCSMulti(struct wcsprm *wcs, const double *pix,
     for(int pt=0;pt<npts;pt++){
       world[pt*3+0] = tempworld[pt*naxis + wcs->lng];
       world[pt*3+1] = tempworld[pt*naxis + wcs->lat];
-      world[pt*3+2] = tempworld[pt*naxis + wcs->spec];
+      world[pt*3+2] = tempworld[pt*naxis + specAxis];
     }
     
   }
@@ -222,6 +228,9 @@ int wcsToPixMulti(struct wcsprm *wcs, const double *world,
    */
 
   int naxis=wcs->naxis,status=0;
+  int specAxis = wcs->spec;
+  if(specAxis<0) specAxis=2;
+
   // Test to see if there are other axes present, eg. stokes
   if(wcs->naxis>naxis) naxis = wcs->naxis;
 
@@ -233,7 +242,7 @@ int wcsToPixMulti(struct wcsprm *wcs, const double *world,
       tempworld[pt*naxis+axis] = wcs->crval[axis];
     tempworld[pt*naxis + wcs->lng]  = world[pt*3+0];
     tempworld[pt*naxis + wcs->lat]  = world[pt*3+1];
-    tempworld[pt*naxis + wcs->spec] = world[pt*3+2];
+    tempworld[pt*naxis + specAxis] = world[pt*3+2];
   }
 
   int    *stat   = new int[npts];
@@ -256,7 +265,7 @@ int wcsToPixMulti(struct wcsprm *wcs, const double *world,
     for(int pt=0;pt<npts;pt++){
       pix[pt*naxis + 0] = temppix[pt*naxis + wcs->lng] - 1.;
       pix[pt*naxis + 1] = temppix[pt*naxis + wcs->lat] - 1.;
-      pix[pt*naxis + 2] = temppix[pt*naxis + wcs->spec] - 1.;
+      pix[pt*naxis + 2] = temppix[pt*naxis + specAxis] - 1.;
     }
   }
 
@@ -292,12 +301,16 @@ double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z,
   double *world  = new double[naxis];
   double *phi    = new double[1];
   double *theta  = new double[1];
+
+  int specAxis = wcs->spec;
+  if(specAxis<0) specAxis=2;
+
   // correct from 0-indexed to 1-indexed pixel array by adding 1 to
   // pixel values.
   for(int i=0;i<naxis;i++) pixcrd[i] = 1.;
   pixcrd[wcs->lng] += x;
   pixcrd[wcs->lat] += y;
-  pixcrd[wcs->spec]+= z;
+  pixcrd[specAxis]+= z;
   status=wcsp2s(wcs, 1, naxis, pixcrd, imgcrd, 
 		phi, theta, world, stat);
   if(status>0){
@@ -307,7 +320,7 @@ double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z,
     duchamp::duchampError("pixelToVelocity",errmsg.str());
   }
 
-  double vel = coordToVel(wcs, world[wcs->spec], velUnits);
+  double vel = coordToVel(wcs, world[specAxis], velUnits);
 
   delete [] stat;
   delete [] pixcrd;
@@ -336,6 +349,7 @@ double coordToVel(struct wcsprm *wcs, const double coord,
   static int errflag = 0;
   double scale, offset, power;
   int specIndex = wcs->spec;
+  if(specIndex<0) specIndex = 2;
   int status = wcsunits( wcs->cunit[specIndex], outputUnits.c_str(), 
 			 &scale, &offset, &power);
 
@@ -373,6 +387,7 @@ double velToCoord(struct wcsprm *wcs, const float velocity,
 
   double scale, offset, power;
   int specIndex = wcs->spec;
+  if(specIndex<0) specIndex = 2;
   int status = wcsunits( outputUnits.c_str(), wcs->cunit[specIndex], 
 			 &scale, &offset, &power);
 

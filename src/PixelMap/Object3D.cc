@@ -264,17 +264,6 @@ namespace PixelInfo
     for(map=maplist.begin();map<maplist.end();map++) map->itsObject.order();
     std::stable_sort(maplist.begin(),maplist.end());
   }
-  
-
-  //--------------------------------------------
-
-  // long Object3D::getSize()
-  // {
-  //   long size=0;
-  //   for(int i=0;i<this->maplist.size();i++) 
-  //     size+=this->maplist[i].itsObject.getSize();
-  //   return size;
-  // }
   //--------------------------------------------
 
   long Object3D::getNumDistinctZ()
@@ -390,7 +379,6 @@ namespace PixelInfo
 
   std::vector<Voxel> Object3D::getPixelSet()
   {
-    //   long size = this->getSize();
     std::vector<Voxel> voxList(this->numVox);
     long count = 0;
     for(int m=0;m<this->maplist.size();m++){
