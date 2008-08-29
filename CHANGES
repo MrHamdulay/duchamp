@@ -1,3 +1,28 @@
+Duchamp version 1.1.6 (2008/08/31)
+----------------------------------
+
+New features:
+
+* The velocity widths can now be quoted in two additional ways: the
+  full width at 50% of the peak flux (ie. the FWHM) and the full width
+  at 20% of the peak flux (w_50 and w_20 respectively). The w_50
+  parameter is now quoted in the results printed to the screen
+  (instead of w_VEL), but all three are written to the results file.
+
+* The facility now exists to bypass the searching step and go straight
+  to the output stage using a list of previously detected objects. The
+  list is extracted from a previously-created log file. The user can
+  change the way the spectra are plotted (e.g. choose to plot
+  integrated rather than peak spectra), and select a subset of the
+  detected objects to be printed to individual postscript files. Use
+  the input parameter usePrevious (set to true) to use this facility,
+  and provide a list of objects using the objectList parameter
+  (eg. 1,2,4,7-10,15)
+
+Bug fixes:
+
+* Cubes that do not have a spectral axis (such as Stokes cubes) were causing memory leaks and crashing, due to some assumptions of the existence of the spectral axis. These bugs have been fixed, so that Duchamp will run on such cubes, although the 
+
 Duchamp version 1.1.5 (2008/03/20)
 ----------------------------------
 

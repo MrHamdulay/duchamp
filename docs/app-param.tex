@@ -61,6 +61,18 @@ not matter, they are grouped here in logical sections.
   is true and this parameter is not defined, the default file that is
   looked for will be determined by the smoothing parameters (see
   \S\ref{sec-smoothing}).
+\item[{usePrevious [false]}] A flag to indicate that \duchamp should
+  read the list of objects from a previously-created log file, rather
+  than doing the searching itself. The set of outputs will be created
+  according to the flags in the following section.
+\item[{objectList [no default]}] When \texttt{usePrevious=true}, this
+  list is used to output individual spectral plots, as well as a
+  postscript file for all spectral plots as given by
+  \texttt{SpectraFile}. The filenames of the plots will be the same as
+  \texttt{SpectraFile}, but with -XX at the end, where XX is the
+  object number (\eg \texttt{duchamp-Spectra-07.ps}). The format of
+  the parameter value should be a string listing individual objects or
+  object ranges: \eg 1,2,4-7,8,14.
 \end{Lentry}
 
 \secB*{Output related}
