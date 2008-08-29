@@ -235,7 +235,13 @@ namespace duchamp
 	  }
     
 	} // end of if(localwcs->spec>=0)
+	else if(localwcs->naxis>2){
 
+	  par.setSpectralUnits( wcs->cunit[2] );
+	  this->spectralDescription = wcs->ctype[2];
+
+	}
+	  
 	// Save the wcs to the FitsHeader class that is running this function
 	this->setWCS(localwcs);
 	this->setNWCS(localnwcs);

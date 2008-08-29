@@ -332,7 +332,9 @@ namespace duchamp
 	  // Vel -- check width, title and units.
 	  //if(head.isSpecOK()){
 	  if(head.canUseThirdAxis()){
-	    if(head.WCS().restfrq == 0) // using frequency, not velocity
+	    if(head.WCS().spec < 0)  // if it's not a spectral axis
+	      newset[VEL].setName( head.WCS().ctype[2] );
+	    else if(head.WCS().restfrq == 0) // using frequency, not velocity
 	      newset[VEL].setName("FREQ");
 	    if(head.getSpectralUnits().size()>0)
 	      newset[VEL].setUnits("[" + head.getSpectralUnits() + "]");
@@ -407,12 +409,16 @@ namespace duchamp
 
 	  // w_Vel -- check width, title and units.
 	  if(head.canUseThirdAxis()){
-	    if(head.WCS().restfrq == 0) // using frequency, not velocity
+	    if(head.WCS().spec < 0) // if it's not a spectral axis
+	      newset[WVEL].setName( std::string("w_") + head.WCS().ctype[2] );
+	    else if(head.WCS().restfrq == 0) // using frequency, not velocity
 	      newset[WVEL].setName("w_FREQ");
 	    if(head.getSpectralUnits().size()>0)
 	      newset[WVEL].setUnits("[" + head.getSpectralUnits() + "]");
 	    tempwidth = newset[WVEL].getUnits().size() + 1;
 	    for(int i=newset[WVEL].getWidth();i<tempwidth;i++)newset[WVEL].widen();
+	    tempwidth = newset[WVEL].getName().size() + 1;
+	    for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
 	    val = objectList[obj].getVelWidth();
 	    if((fabs(val) < 1.)&&(val>0.)){
 	      minval = pow(10, -1. * (newset[WVEL].getPrecision()+1)); 
