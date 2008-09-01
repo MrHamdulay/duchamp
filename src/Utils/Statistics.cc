@@ -121,7 +121,7 @@ namespace Statistics
   //--------------------------------------------------------------------
   
   template <class Type> 
-  float StatsContainer<Type>::getSNR(float value)
+  float StatsContainer<Type>::valueToSNR(float value)
   {
     /** 
      * The SNR is defined in terms of excess over the middle estimator
@@ -129,10 +129,25 @@ namespace Statistics
      */
     return (value - this->getMiddle())/this->getSpread();
   }
-  template float StatsContainer<int>::getSNR(float value);
-  template float StatsContainer<long>::getSNR(float value);
-  template float StatsContainer<float>::getSNR(float value);
-  template float StatsContainer<double>::getSNR(float value);
+  template float StatsContainer<int>::valueToSNR(float value);
+  template float StatsContainer<long>::valueToSNR(float value);
+  template float StatsContainer<float>::valueToSNR(float value);
+  template float StatsContainer<double>::valueToSNR(float value);
+  //--------------------------------------------------------------------
+  
+  template <class Type> 
+  float StatsContainer<Type>::snrToValue(float snr)
+  {
+    /** 
+     * The SNR is defined in terms of excess over the middle estimator
+     * in units of the spread estimator.
+     */
+    return snr * this->getSpread() + this->getMiddle();
+  }
+  template float StatsContainer<int>::snrToValue(float value);
+  template float StatsContainer<long>::snrToValue(float value);
+  template float StatsContainer<float>::snrToValue(float value);
+  template float StatsContainer<double>::snrToValue(float value);
   //--------------------------------------------------------------------
     
   template <class Type> 

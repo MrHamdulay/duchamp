@@ -103,7 +103,10 @@ namespace Statistics
     void  setThresholdSNR(float snr);
 
     /** Convert a value to a signal-to-noise ratio. */
-    float getSNR(float value);
+    float valueToSNR(float value);
+
+    /** Convert a signal-to-noise ratio to a flux value */
+    float snrToValue(float snr);
     
     /** Return the estimator of the middle value of the data. */
     float getMiddle();
