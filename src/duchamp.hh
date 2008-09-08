@@ -37,7 +37,7 @@
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
 #undef HAVE_PGPLOT
-#include "config.h"
+#include <duchamp/config.h>
 
 #ifdef HAVE_PGPLOT
 #include <duchamp/Utils/mycpgplot.hh>
@@ -100,26 +100,6 @@ Selavy re-analyses and re-plots objects found by Duchamp.\n\
   /** Human-readable descriptions of the various spectral axis types */
   const std::string duchampSpectralDescription[3]=
     {"Frequency", "Velocity", "Wavelength"};
-
-  // Colours used in graphical output
-  /** The colour for the Blank edges */
-  const int DUCHAMP_BLANK_EDGE_COLOUR = mycpgplot::MAGENTA;
-  /** The colour for the edge of the cube */
-  const int DUCHAMP_CUBE_EDGE_COLOUR = mycpgplot::YELLOW;
-  /** The colour for the reconstructed spectra */
-  const int DUCHAMP_RECON_SPECTRA_COLOUR = mycpgplot::RED;
-  /** The colour for the baseline spectra */
-  const int DUCHAMP_BASELINE_SPECTRA_COLOUR = mycpgplot::YELLOW;
-  /** The colour for the object outline */
-  const int DUCHAMP_OBJECT_OUTLINE_COLOUR = mycpgplot::BLUE;
-  /** The colour for the Milky-way region spectral boundaries */
-  const int DUCHAMP_MILKY_WAY_COLOUR = mycpgplot::DARKGREEN;
-  /** The colour for the tick marks in the image cutouts */
-  const int DUCHAMP_TICKMARK_COLOUR = mycpgplot::RED;
-  /** The colour for the text identifying objects on the maps */
-  const int DUCHAMP_ID_TEXT_COLOUR = mycpgplot::RED;
-  /** The colour for the WCS axes on the maps */
-  const int DUCHAMP_WCS_AXIS_COLOUR = mycpgplot::WCSGREEN;
 
   // The following are the FITS Header Keywords corresponding to the
   // parameters related to the atrous reconstruction.
@@ -205,5 +185,43 @@ Selavy re-analyses and re-plots objects found by Duchamp.\n\
 
 }
 
+#ifdef HAVE_PGPLOT
+namespace duchamp
+{
+
+  // Colours used in graphical output
+  /** The colour for the Blank edges */
+  const int DUCHAMP_BLANK_EDGE_COLOUR = mycpgplot::MAGENTA;
+  /** The colour for the edge of the cube */
+  const int DUCHAMP_CUBE_EDGE_COLOUR = mycpgplot::YELLOW;
+  /** The colour for the reconstructed spectra */
+  const int DUCHAMP_RECON_SPECTRA_COLOUR = mycpgplot::RED;
+  /** The colour for the baseline spectra */
+  const int DUCHAMP_BASELINE_SPECTRA_COLOUR = mycpgplot::YELLOW;
+  /** The colour for the object outline */
+  const int DUCHAMP_OBJECT_OUTLINE_COLOUR = mycpgplot::BLUE;
+  /** The colour for the Milky-way region spectral boundaries */
+  const int DUCHAMP_MILKY_WAY_COLOUR = mycpgplot::DARKGREEN;
+  /** The colour for the tick marks in the image cutouts */
+  const int DUCHAMP_TICKMARK_COLOUR = mycpgplot::RED;
+  /** The colour for the text identifying objects on the maps */
+  const int DUCHAMP_ID_TEXT_COLOUR = mycpgplot::RED;
+  /** The colour for the WCS axes on the maps */
+  const int DUCHAMP_WCS_AXIS_COLOUR = mycpgplot::WCSGREEN;
+
+}
+
+#else
+namespace duchamp
+{
+  /** The colour for the text identifying objects on the maps */
+  const int DUCHAMP_ID_TEXT_COLOUR = 2;
+  /** The colour for the WCS axes on the maps */
+  const int DUCHAMP_WCS_AXIS_COLOUR = 3;
+
+}
+
 #endif
 
+
+#endif

@@ -30,7 +30,6 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-#include <cpgplot.h>
 #include <math.h>
 #include <wcslib/wcs.h>
 #include <duchamp/Cubes/cubeUtils.hh>
