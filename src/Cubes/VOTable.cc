@@ -58,6 +58,9 @@ namespace duchamp
      * Specifically, it removes any square brackets [] from the
      * start/end of the string, and replaces blank spaces (representing
      * multiplication) with a '.' (full stop).
+     *
+     * \param oldstring Input unit string to be fixed
+     * \return String with fixed units
      */
 
     std::string newstring;
@@ -74,7 +77,15 @@ namespace duchamp
   void VOField::define(std::string i, std::string n, std::string U, std::string u, std::string d, std::string r, int w, int p)
   {
     /**
-     * A basic definition function, defining each parameter individually.
+     * A basic definition function, defining each parameter individually. 
+     * \param i The ID parameter
+     * \param n The name parameter
+     * \param U The UCD
+     * \param u The units (fixed by fixUnits())
+     * \param d The datatype
+     * \param r The ref
+     * \param w The width
+     * \param p The precision
      */
     this->ID = i;
     this->name = n;
@@ -90,6 +101,11 @@ namespace duchamp
   {
     /**
      * Another definition function, using the information in a Column::Col object for some parameters.
+     * \param column A Column::Col object, used for name, unit, width & precision
+     * \param i The ID parameter
+     * \param U The UCD
+     * \param d The datatype
+     * \param r The ref
      */
     this->ID = i;
     this->name = column.getName();
@@ -107,6 +123,10 @@ namespace duchamp
      * A more useful definition function, using the Column::COLNAME
      * key to specify particular values for each of the parameters for
      * different columns.
+     * \param column A Column::Col object of a particular type. The
+     * column.getType() function is used to decide which call to
+     * VOField::define(Column::Col column, std::string i, std::string
+     * U, std::string d, std::string r) to use
      */
     switch(column.getType())
       {
@@ -191,6 +211,7 @@ namespace duchamp
   {
     /**
      * Print the Field entry with appropriate formatting.
+     * \param stream The output stream to send the text to.
      */
     stream << "<FIELD name=\"" <<this->name
 	   << "\" ID=\"" << this->ID
@@ -220,6 +241,11 @@ namespace duchamp
      * A basic definition function, defining each parameter
      * individually. The value (v) is written to a stringstream, and
      * from there stored as a string.
+     * \param n The name
+     * \param U The UCD
+     * \param d The datatype
+     * \param v The value
+     * \param w The width
      */
     this->name = n;
     this->UCD = U;
@@ -239,6 +265,7 @@ namespace duchamp
   {
     /**
      * Print the Param entry with appropriate formatting.
+     * \param stream The output stream to send the text to.
      */
     stream << "<PARAM name=\"" <<this->name
 	   << "\" ucd=\"" << this->UCD
@@ -264,6 +291,7 @@ namespace duchamp
      *   in a VOTable format.
      *  Uses WCS information and assumes WCS parameters have been calculated for each
      *   detected object. 
+     * \param stream The output stream to send the text to.
      */
     
     stream<<"<?xml version=\"1.0\"?>\n";

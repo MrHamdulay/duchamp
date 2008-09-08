@@ -54,11 +54,16 @@ namespace duchamp
   class VOField
   {
   public:
+    /** Define a FIELD by individual parameters */
     void define(std::string i, std::string n, std::string U, std::string u, std::string d, std::string r, int w, int p);
+    /** Define a FIELD by individual parameters, using a Column::Col object */
     void define(Column::Col column, std::string i, std::string U, std::string d, std::string r);
+    /** Define a FIELD for a particular Column::Col object */
     void define(Column::Col);
+
     void setUCD(std::string u){UCD=u;};
 
+    /** Print the FIELD entry */
     void printField(std::ostream &stream);
     
   private:
@@ -81,8 +86,10 @@ namespace duchamp
   class VOParam
   {
   public:
+    /** Define a PARAM by individual parameters */
     template <class T> void define(std::string n, std::string U, std::string d, T v, int w);
  
+    /** Print the PARAM entry */
     void printParam(std::ostream &stream);
     
   private:
