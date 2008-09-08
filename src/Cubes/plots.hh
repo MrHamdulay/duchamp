@@ -45,14 +45,11 @@ namespace duchamp
 
   namespace Plot
   {
-    const float inchToCm=2.54;        ///< Conversion factor from inches
-    ///   to centimetres.
+    const float inchToCm=2.54;        ///< Conversion factor from inches to centimetres.
     const float a4width=21.0;         ///< A4 width in cm
     const float a4height=29.7;        ///< A4 height in cm
-    const float psHoffset=0.35;       ///< The default horizontal pgplot
-    ///   offset applied to ps files
-    const float psVoffset=0.25;       ///< The default vertical pgplot
-    ///   offset applied to ps files
+    const float psHoffset=0.35;       ///< The default horizontal pgplot offset applied to ps files
+    const float psVoffset=0.25;       ///< The default vertical pgplot offset applied to ps files
 
     // These are the constants used for spacing out elements in SpectralPlot.
     const float spMainX1 =  2.0;      ///< min X-value of main box [cm]
@@ -60,10 +57,8 @@ namespace duchamp
     const float spZoomX1 = 15.0;      ///< min X-value of zoom box [cm]
     const float spZoomX2 = 16.8;      ///< max X-value of zoom box [cm]
     const float spMapX1  = 17.0;      ///< min X-value of map box [cm]
-    const float spMainY1 =  1.5;      ///< min Y-value of box wrt base
-    ///   of current spectrum [cm]
-    const float spMainY2 =  3.4;      ///< max Y-value of box wrt base
-    ///   of current spectrum [cm]
+    const float spMainY1 =  1.5;      ///< min Y-value of box wrt base of current spectrum [cm]
+    const float spMainY2 =  3.4;      ///< max Y-value of box wrt base of current spectrum [cm]
     const float spXlabelOffset = 3.0; ///< Offset for X-axis label.
     const float spYlabelOffset = 4.0; ///< Offset for Y-axis label.
     const float spTitleOffset1 = 5.1; ///< Offset for first title line.
@@ -71,12 +66,9 @@ namespace duchamp
     const float spTitleOffset3 = 2.1; ///< Offset for third title line.
     const float spTitleOffset4 = 0.6; ///< Offset for fourth title line.
 
-    const float spIndexSize = 0.6;    ///< PGPlot character height for
-    ///   tick mark labels
-    const float spLabelSize = 0.7;    ///< PGPlot character height for
-    ///   axis labels
-    const float spTitleSize = 0.8;    ///< PGPlot character height for
-    ///   plot title line
+    const float spIndexSize = 0.6;    ///< PGPlot character height for tick mark labels
+    const float spLabelSize = 0.7;    ///< PGPlot character height for axis labels
+    const float spTitleSize = 0.8;    ///< PGPlot character height for plot title line
 
     // These are the constants used for spacing out elements in ImagePlot.
     const float imTitleOffset = 2.7;  ///< Offset for title of map.
@@ -212,27 +204,20 @@ namespace duchamp
       /** Write plot title.*/
       void  makeTitle(std::string title);
 
-      float cmToCoord(float cm);///< Converts distance in cm to
-      ///   coordinate distance on the plot.
+      float cmToCoord(float cm);///< Converts distance in cm to coordinate distance on the plot.
       float getMargin();        ///< Returns width of margin.
       float getPaperWidth();    ///< Returns width of paper.
-      float imageWidth();       ///< Returns the calculated total width
-      ///   of the image part of the plot
-      ///   [inches]
+      float imageWidth();       ///< Returns the calculated total width of the image part of the plot [inches]
       float getImageHeight();   ///< Returns height of image [inches]
       float getAspectRatio();   ///< Returns the aspect ratio of the image.
-      void  goToPlot();         ///< Goes to the plot when more than one
-      ///   are open
+      void  goToPlot();         ///< Goes to the plot when more than one are open
 
     private:
       float paperWidth;     ///< Default (maximum) width of "paper" [inches]
       float maxPaperHeight; ///< Maximum allowed height of paper [inches]
-      float marginWidth;    ///< Width allowed for margins around main
-      ///   plot (ie. label & numbers) [inches]
-      float wedgeWidth;     ///< Width allowed for placement of wedge on
-      ///   right-hand side of plot. [inches]
-      float imageRatio;     ///< Aspect ratio of the image only
-      ///   (ie. y-value range / x-value range).
+      float marginWidth;    ///< Width allowed for margins around main plot (ie. label & numbers) [inches]
+      float wedgeWidth;     ///< Width allowed for placement of wedge on right-hand side of plot. [inches]
+      float imageRatio;     ///< Aspect ratio of the image only (ie. y-value range / x-value range).
       float aspectRatio;    ///< Aspect ratio of whole plot.
       float xdim;           ///< Width of main plot, in display units.
       float ydim;           ///< Height of main plot, in display units.

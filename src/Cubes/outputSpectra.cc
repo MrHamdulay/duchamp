@@ -106,10 +106,11 @@ namespace duchamp
 	  if(objectChoice[nobj]) this->plotSource(this->objectList->at(nobj),newplot);
 	}// end of loop over objects.
 	cpgclos();
-
+	
+	if(this->par.getFlagUsePrevious()) std::cout << "\n";
 	for(int nobj=0;nobj<this->objectList->size();nobj++){
 	  if(objectChoice[nobj] && this->par.getFlagUsePrevious()){
-	    std::cerr << "Will output individual plot to "
+	    std::cout << "  Will output individual plot to "
 		      << getIndivPlotName(this->par.getSpectraFile(),nobj+1,this->objectList->size()) << "\n";
 	    Plot::CutoutPlot indivplot;
 	    indivplot.setUpPlot(getIndivPlotName(this->par.getSpectraFile(),nobj+1,this->objectList->size())+"/vcps");
@@ -129,9 +130,10 @@ namespace duchamp
 	}// end of loop over objects.
 	cpgclos();
 
+	if(this->par.getFlagUsePrevious()) std::cout << "\n";
 	for(int nobj=0;nobj<this->objectList->size();nobj++){
 	  if(objectChoice[nobj] && this->par.getFlagUsePrevious()){
-	    std::cerr << "Will output individual plot to "
+	    std::cout << "  Will output individual plot to "
 		      << getIndivPlotName(this->par.getSpectraFile(),nobj+1,this->objectList->size()) << "\n";
 	    Plot::SpectralPlot indivplot;
 	    indivplot.setUpPlot(getIndivPlotName(this->par.getSpectraFile(),nobj+1,this->objectList->size())+"/vcps");
@@ -143,9 +145,9 @@ namespace duchamp
       }
       
       if(this->par.getFlagTextSpectra()){
-	if(this->par.isVerbose()) std::cout << "Saving spectra in text file ... ";
+	if(this->par.isVerbose()) std::cout << "  Saving spectra to text file ... ";
 	this->writeSpectralData();
-	if(this->par.isVerbose()) std::cout << "Done. ";
+	if(this->par.isVerbose()) std::cout << "Done.\n";
       }
     }
   }

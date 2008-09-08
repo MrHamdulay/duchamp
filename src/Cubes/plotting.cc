@@ -199,7 +199,7 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 
   for(int i=0;i<numPlots;i++){
     
-    plotFlag[i] = plotList[i].setUpPlot(pgDestination[i].c_str(),
+    plotFlag[i] = plotList[i].setUpPlot(pgDestination[i],
 					float(xdim),float(ydim));
        
     if(plotFlag[i]<=0) duchampError("Plot Moment Map", 
@@ -209,6 +209,7 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
       doPlot[i] = true;
       plotNeeded = true;
     }
+
   }
 
   if(plotNeeded){

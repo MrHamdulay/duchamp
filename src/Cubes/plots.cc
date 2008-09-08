@@ -368,7 +368,7 @@ namespace duchamp
        * \param ylabel The label to be put on the Y-axis.
        */
       cpgvsiz(this->marginWidth, this->marginWidth + this->imageWidth(),
-	      this->marginWidth, this->marginWidth + (this->imageWidth()*this->imageRatio));
+	      this->marginWidth, this->marginWidth + (this->imageWidth()*this->imageRatio) );
       cpgslw(2);
       cpgswin(x1,x2,y1,y2);
       cpgbox("bcst",0.,0,"bcst",0.,0);
