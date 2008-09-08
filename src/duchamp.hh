@@ -30,7 +30,6 @@
 
 #include <iostream>
 #include <string>
-#include <duchamp/Utils/mycpgplot.hh>
 
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_NAME
@@ -39,6 +38,10 @@
 #undef PACKAGE_VERSION
 #undef HAVE_PGPLOT
 #include "config.h"
+
+#ifdef HAVE_PGPLOT
+#include <duchamp/Utils/mycpgplot.hh>
+#endif 
 
 namespace duchamp
 {
