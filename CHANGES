@@ -1,4 +1,4 @@
-Duchamp version 1.1.6 (2008/08/31)
+Duchamp version 1.1.6 (2008/09/08)
 ----------------------------------
 
 New features:
@@ -19,9 +19,35 @@ New features:
   and provide a list of objects using the objectList parameter
   (eg. 1,2,4,7-10,15)
 
+* A new parameter "growthThreshold" has been created, that goes with
+  "threshold". If you manually specify a threshold, and you wish to
+  grow detections, you need to manually specify a growthThreshold (in
+  flux units).
+
 Bug fixes:
 
-* Cubes that do not have a spectral axis (such as Stokes cubes) were causing memory leaks and crashing, due to some assumptions of the existence of the spectral axis. These bugs have been fixed, so that Duchamp will run on such cubes, although the 
+* Cubes that do not have a spectral axis (such as Stokes cubes) were
+  causing memory leaks and crashing, due to some assumptions of the
+  existence of the spectral axis. These bugs have been fixed, so that
+  Duchamp will run on such cubes, although the WCS transforms may not
+  always work appropriately. Please let me know via bug reports of
+  difficulties you encounter!
+
+* The growing function has had a few bugs fixed and is now more
+  efficient.
+
+* The FDR method was previously overriding any manually-specified
+  threshold. This has been fixed so that if the user specifies
+  threshold=X, then the FDR method is not called.
+
+* Some undefined things were happening with textual output when no
+  objects were detected. This has been fixed.
+
+* Memory leaks caused by FITS WCS irregularities have been fixed
+  (specifically, if a FITS header had NAXIS=2 but more than two WCS
+  axes were defined).
+
+
 
 Duchamp version 1.1.5 (2008/03/20)
 ----------------------------------

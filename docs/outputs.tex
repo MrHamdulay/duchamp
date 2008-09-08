@@ -413,3 +413,36 @@ are saved as postscript files (given by the parameters
 \texttt{momentMap} and \texttt{detectionMap} respectively), with the
 latter also displayed in a \textsc{pgplot} window (regardless of the
 state of \texttt{flagMaps}).
+
+
+
+\secB{Re-using previous detections}
+\label{sec-reuse}
+
+It may be the case that, once you have run \duchamp with a set of
+parameters, you are unsatisfied with the output spectra -- perhaps you
+would have preferred integrated rather than peak flux to be
+plotted. However, the searching might have taken a while to run, and
+the thought of doing it again just for different plots may be a bit
+off-putting.
+
+Well, provided you have made a log file when running \duchamp (with
+the \texttt{flagLog=true} setting), it is possible to do this easily
+without having to go through the process of detecting your sources a
+second time. By using the same input file, with the additional
+parameter \texttt{usePrevious=true}, the log file that was created
+with a previous \duchamp run can be read to extract each of the
+individual detections. The output stage is then run again, with the
+parameters (in particular \texttt{pixelCentre} and
+\texttt{spectralMethod}) as given in the input file. 
+
+Perhaps you would also like to extract a single source's
+spectral plot (\eg for use in a journal paper). The use-previous
+method allows you to specify particular sources to re-plot. Only these
+sources will be plotted in the \texttt{SpectraFile} file, and
+individual files will be created for each of the listed sources. Their
+filenames will follow the format of \texttt{SpectraFile}: if,
+\texttt{SpectraFile=file.ps}, source \#3 will appear in
+\texttt{file-03.ps}. To give a list of sources, use the
+\texttt{objectList} parameter, and provide a string with individual
+object numbers or object ranges: \eg 1,2,4-7,8,11.

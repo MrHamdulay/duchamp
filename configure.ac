@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT([Duchamp], [1.1.5], [Matthew.Whiting@csiro.au])
+AC_INIT([Duchamp], [1.1.6], [Matthew.Whiting@csiro.au])
 AC_CONFIG_SRCDIR([src/duchamp.hh])
 AC_CONFIG_HEADER([src/config.h])
 AC_PREFIX_DEFAULT(/usr/local)
