@@ -17,10 +17,10 @@
 # reconFile -- the location of the FITS file containing the reconstructed cube
 # flagSmoothExists -- set to true if the smoothed cube exists as a FITS 
 #                    file (ie. it has been saved from a previous Duchamp run)
-# smoothFile -- the location of the FITS file containing the smoothed
-#               cube
-# beamsize -- the size of the beam in pixels. This value is overridden
-#             by the BMAJ, BMIN, BPA header parameters if present.
+# smoothFile -- the location of the FITS file containing the smoothed cube
+# usePrevious -- whether to read the list of detected objects from a previously-
+#                created log file
+# objectList -- the list of objects to plot in individual plots: used with usePrevious=true
 
 imageFile       your-file-here
 flagSubsection  0
@@ -29,7 +29,8 @@ flagReconExists	0
 reconFile	your-reconstructed-file-here
 flagSmoothExists 1
 smoothFile	your-smoothed-file-here
-beamsize        10.
+usePrevious     false
+objectList      *
 
 # OUTPUT RELATED
 # flagLog -- log the intermediate results?   
@@ -114,6 +115,9 @@ flagBaseline    0
 #              it will be calculated.
 # flagGrowth -- Should the detections be "grown" to a lower significance value?
 # growthCut -- The lower threshold used when growing detections
+# growthThreshold -- The lower threshold, used in conjunction with "threshold"
+# beamsize -- the size of the beam in pixels. This value is overridden
+#             by the BMAJ, BMIN, BPA header parameters if present.
 
 flagStatSec     0
 StatSec         [*,*,*]
@@ -123,6 +127,8 @@ snrCut		3.
 threshold	0.
 flagGrowth	0
 growthCut	2.
+growthThreshold 0.
+beamsize        10.
 
 # RECONSTRUCTION RELATED
 # flagATrous -- Whether or not to do the reconstruction before searching
