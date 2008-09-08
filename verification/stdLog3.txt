@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Tue Mar 18 10:09:22 2008
+New run of the Duchamp sourcefinder: Mon Sep  8 14:50:17 2008
 Executing statement : ./Duchamp -p verification/input3 
 
 ---- Parameters ----
@@ -1511,6 +1511,8 @@ Type of object centre used in results......[pixelCentre]  =  centroid
 Cube summary
 =-=-=-=-=-=-=-
 100x100x128
+Threshold	middle	spread	robust
+3.0426	0.0148019 1.00927	1
 5 detections:
 --------------
 Detection #1
@@ -2599,4 +2601,4 @@ Detection #5
 
 ---
 --------------
-Duchamp completed: Tue Mar 18 10:09:34 2008
+Duchamp completed: Mon Sep  8 14:50:28 2008

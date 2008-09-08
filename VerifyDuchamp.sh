@@ -168,6 +168,6 @@ if [ $numErrors == 0 ]; then
 else
     echo "There were some differences in the results compared to the standards."
     echo "Have a look at the diffs to see if they are trivial or not (eg. precision errors)."
-    echo "If they are more serious (wrong number of sources found), submit a bug report"
+    echo "If they are more serious (e.g. wrong number of sources found), submit a bug report"
     echo "  at http://svn.atnf.csiro.au/trac/duchamp/newticket"
 fi
