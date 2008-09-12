@@ -268,6 +268,9 @@ namespace duchamp
     /** Save an external array to the Cube's pixel array */
     void        saveArray(float *input, long size);
 
+    /** Save an external array to the Cube's pixel array */
+    void        saveArray(std::vector<float> &input);
+
     /** Save an external array to the Cube's reconstructed array. */
     void        saveRecon(float *input, long size);
 

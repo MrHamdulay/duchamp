@@ -54,6 +54,7 @@ int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
   int naxis=wcs->naxis,npts=1,status;
   int specAxis = wcs->spec;
   if(specAxis<0) specAxis=2;
+  if(specAxis>=naxis) specAxis = naxis-1;
 
   double *newpix = new double[naxis*npts];
   // correct from 0-indexed to 1-indexed pixel array
@@ -108,6 +109,7 @@ int wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix)
   int naxis=wcs->naxis,npts=1,status;
   int specAxis = wcs->spec;
   if(specAxis<0) specAxis=2;
+  if(specAxis>=naxis) specAxis = naxis-1;
 
   double *tempworld = new double[naxis*npts];
   for(int i=0;i<naxis;i++) tempworld[i] = wcs->crval[i];
@@ -165,6 +167,7 @@ int pixToWCSMulti(struct wcsprm *wcs, const double *pix,
   int naxis=wcs->naxis,status;
   int specAxis = wcs->spec;
   if(specAxis<0) specAxis=2;
+  if(specAxis>=naxis) specAxis = naxis-1;
 
   // correct from 0-indexed to 1-indexed pixel array
   // Add entries for any other axes that are present, keeping the 
@@ -230,6 +233,7 @@ int wcsToPixMulti(struct wcsprm *wcs, const double *world,
   int naxis=wcs->naxis,status=0;
   int specAxis = wcs->spec;
   if(specAxis<0) specAxis=2;
+  if(specAxis>=naxis) specAxis = naxis-1;
 
   // Test to see if there are other axes present, eg. stokes
   if(wcs->naxis>naxis) naxis = wcs->naxis;
@@ -304,6 +308,7 @@ double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z,
 
   int specAxis = wcs->spec;
   if(specAxis<0) specAxis=2;
+  if(specAxis>=naxis) specAxis = naxis-1;
 
   // correct from 0-indexed to 1-indexed pixel array by adding 1 to
   // pixel values.
@@ -350,6 +355,7 @@ double coordToVel(struct wcsprm *wcs, const double coord,
   double scale, offset, power;
   int specIndex = wcs->spec;
   if(specIndex<0) specIndex = 2;
+  if(specIndex>=naxis) specIndex = naxis-1;
   int status = wcsunits( wcs->cunit[specIndex], outputUnits.c_str(), 
 			 &scale, &offset, &power);
 
@@ -388,6 +394,7 @@ double velToCoord(struct wcsprm *wcs, const float velocity,
   double scale, offset, power;
   int specIndex = wcs->spec;
   if(specIndex<0) specIndex = 2;
+  if(specIndex>=naxis) specIndex = naxis-1;
   int status = wcsunits( outputUnits.c_str(), wcs->cunit[specIndex], 
 			 &scale, &offset, &power);
 

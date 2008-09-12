@@ -540,6 +540,29 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
+  void Cube::saveArray(std::vector<float> &input){
+    /**
+     * Saves the array in input to the pixel array Cube::array.
+     * The size of the array given must be the same as the current number of
+     * pixels, else an error message is returned and nothing is done.
+     * \param input The array of values to be saved.
+     */
+    if(input.size() != this->numPixels){
+      std::stringstream errmsg;
+      errmsg << "Input array different size to existing array ("
+	     << input.size() << " cf. " << this->numPixels << "). Cannot save.\n";
+      duchampError("Cube::saveArray",errmsg.str());
+    }
+    else {
+      if(this->numPixels>0 && this->arrayAllocated) delete [] this->array;
+      this->numPixels = input.size();
+      this->array = new float[input.size()];
+      this->arrayAllocated = true;
+      for(int i=0;i<input.size();i++) this->array[i] = input[i];
+    }
+  }
+  //--------------------------------------------------------------------
+
   void Cube::saveRecon(float *input, long size){
     /**
      * Saves the array in input to the reconstructed array Cube::recon
