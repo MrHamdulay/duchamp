@@ -355,7 +355,7 @@ double coordToVel(struct wcsprm *wcs, const double coord,
   double scale, offset, power;
   int specIndex = wcs->spec;
   if(specIndex<0) specIndex = 2;
-  if(specIndex>=naxis) specIndex = naxis-1;
+  if(specIndex>=wcs->naxis) specIndex = wcs->naxis-1;
   int status = wcsunits( wcs->cunit[specIndex], outputUnits.c_str(), 
 			 &scale, &offset, &power);
 
@@ -394,7 +394,7 @@ double velToCoord(struct wcsprm *wcs, const float velocity,
   double scale, offset, power;
   int specIndex = wcs->spec;
   if(specIndex<0) specIndex = 2;
-  if(specIndex>=naxis) specIndex = naxis-1;
+  if(specIndex>=wcs->naxis) specIndex = wcs->naxis-1;
   int status = wcsunits( outputUnits.c_str(), wcs->cunit[specIndex], 
 			 &scale, &offset, &power);
 

@@ -304,10 +304,10 @@ WCSLIBDIRS=$LIBDIRS
 
 if test "x$WCSINCDIR" = x; then
   for INCBASE in $WCSINCDIRS ; do
-    AC_CHECK_FILE([$INCBASE/wcslib/wcs.h], [WCSINC="-I$INCBASE $WCSINC"; break])
+    AC_CHECK_FILE([$INCBASE/wcslib/wcs.h], [WCSINC="-I$INCBASE -I$INCBASE/wcslib $WCSINC"; break])
   done
 else
-  AC_CHECK_FILE([$WCSINCDIR/wcslib/wcs.h], [WCSINC="-I$WCSINCDIR $WCSINC"])
+  AC_CHECK_FILE([$WCSINCDIR/wcslib/wcs.h], [WCSINC="-I$WCSINCDIR -I$WCSINCDIR/wcslib $WCSINC"])
 fi
 
 

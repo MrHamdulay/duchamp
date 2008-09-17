@@ -5976,7 +5976,7 @@ fi
 echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
 echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
 if test `eval echo '${'$as_ac_File'}'` = yes; then
-  WCSINC="-I$INCBASE $WCSINC"; break
+  WCSINC="-I$INCBASE -I$INCBASE/wcslib $WCSINC"; break
 fi
 
   done
@@ -6000,7 +6000,7 @@ fi
 echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_File'}'`" >&5
 echo "${ECHO_T}`eval echo '${'$as_ac_File'}'`" >&6
 if test `eval echo '${'$as_ac_File'}'` = yes; then
-  WCSINC="-I$WCSINCDIR $WCSINC"
+  WCSINC="-I$WCSINCDIR -I$WCSINCDIR/wcslib $WCSINC"
 fi
 
 fi
