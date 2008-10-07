@@ -75,6 +75,7 @@ namespace duchamp
     wcsset(this->wcs);
     this->nwcs          = h.nwcs;
     this->wcsIsGood     = h.wcsIsGood;
+    this->naxis         = h.naxis;
     this->spectralUnits = h.spectralUnits;
     this->fluxUnits     = h.fluxUnits;
     this->intFluxUnits  = h.intFluxUnits;
@@ -294,7 +295,7 @@ namespace duchamp
       }
       else this->intFluxUnits = this->fluxUnits;
 
-      if(this->naxis>2) this->intFluxUnits += " " + this->spectralUnits;
+      if(this->wcs->naxis>2) this->intFluxUnits += " " + this->spectralUnits;
     }
 
   }

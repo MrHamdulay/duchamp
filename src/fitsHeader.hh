@@ -127,11 +127,11 @@ namespace duchamp
     bool    isWCS(){return wcsIsGood;};
     /** Is the spectral axis OK to be used? */
     bool    isSpecOK(){return (wcs->spec >= 0);};
-    bool    canUseThirdAxis(){return ((wcs->spec >= 0)||(naxis>2));};
+    bool    canUseThirdAxis(){return ((wcs->spec >= 0)||(wcs->naxis>2));};
     int     getNWCS(){return nwcs;};
     void    setNWCS(int i){nwcs=i;};
-    int     getNumAxes(){return naxis;};
-    void    setNumAxes(int i){naxis=i;};
+    int     getNumAxes(){if(wcs->flag==-1) return 0; else return wcs->naxis;};
+    void    setNumAxes(int i){wcs->naxis=i;};
     std::string  getSpectralUnits(){return spectralUnits;};
     void    setSpectralUnits(std::string s){spectralUnits=s;};
     std::string  getSpectralDescription(){return spectralDescription;};
