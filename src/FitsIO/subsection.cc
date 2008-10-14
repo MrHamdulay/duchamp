@@ -51,9 +51,12 @@ namespace duchamp
      * \param wcs The WCSLIB wcsprm struct that defines which axis is which.
      */
     if(this->flagSubsection){ // if so, then the offsets array is defined.
+      int specAxis = wcs->spec;
+      if(specAxis<0) specAxis=2;
+      if(specAxis>=wcs->naxis) specAxis = wcs->naxis-1;
       this->xSubOffset = this->pixelSec.getStart(wcs->lng);
       this->ySubOffset = this->pixelSec.getStart(wcs->lat);
-      this->zSubOffset = this->pixelSec.getStart(wcs->spec);
+      this->zSubOffset = this->pixelSec.getStart(specAxis);
     }
     else{// else they should be 0
       this->xSubOffset = this->ySubOffset = this->zSubOffset = 0;
@@ -69,9 +72,12 @@ namespace duchamp
      * \param wcs The WCSLIB wcsprm struct that defines which axis is which.
      */
     if(this->flagSubsection){ // if so, then the offsets array is defined.
+      int specAxis = wcs.spec;
+      if(specAxis<0) specAxis=2;
+      if(specAxis>=wcs.naxis) specAxis = wcs.naxis-1;
       this->xSubOffset = this->pixelSec.getStart(wcs.lng);
       this->ySubOffset = this->pixelSec.getStart(wcs.lat);
-      this->zSubOffset = this->pixelSec.getStart(wcs.spec);
+      this->zSubOffset = this->pixelSec.getStart(specAxis);
     }
     else{// else they should be 0
       this->xSubOffset = this->ySubOffset = this->zSubOffset = 0;
