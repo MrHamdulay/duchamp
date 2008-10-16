@@ -58,6 +58,13 @@ namespace duchamp
   }
   //--------------------------------------------
 
+  int Section::parse(long *dimAxes, int size)
+  {
+    std::vector<long> vecDim(size);
+    for(int i=0;i<size;i++) vecDim[i] = dimAxes[i];
+    return this->parse(vecDim);
+  }
+
   int Section::parse(std::vector<long> dimAxes)
   {
     /**
