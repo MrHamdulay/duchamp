@@ -255,7 +255,9 @@ namespace duchamp
     std::string intFluxUnits;// = this->head.getIntFluxUnits();
     // Rather than use the intFluxUnits from the header, which will be like Jy MHz, 
     // we just use the pixel units, removing the /beam if necessary.
-    if(makelower(fluxUnits.substr(fluxUnits.size()-5,
+
+    if(fluxUnits.size()>5 && 
+       makelower(fluxUnits.substr(fluxUnits.size()-5,
 				  fluxUnits.size()   )) == "/beam"){
       intFluxUnits = fluxUnits.substr(0,fluxUnits.size()-5);
     }

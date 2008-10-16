@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 version=`grep VERSION src/config.h | sed '/\"/s///' | sed '/\"/s///' | awk '{print $3}'`
 

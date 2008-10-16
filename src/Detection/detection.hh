@@ -106,6 +106,8 @@ namespace duchamp
     /** Add the offset values to the pixel locations */
     void   addOffsets(){
       pixelArray.addOffsets(xSubOffset,ySubOffset,zSubOffset);
+      xpeak+=xSubOffset; ypeak+=ySubOffset; zpeak+=zSubOffset;
+      xCentroid+=xSubOffset; yCentroid+=ySubOffset; zCentroid+=zSubOffset;
     };
 
     //
