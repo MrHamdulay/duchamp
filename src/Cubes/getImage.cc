@@ -236,8 +236,10 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
 	  this->head.setFluxUnits( newUnit );
 	  this->head.setIntFluxUnits();
 
-	  for(int i=0;i<this->numPixels;i++)
-	    if(!this->isBlank(i)) this->array[i] = pow(scale * array[i] + offset, power);
+	  if(this->arrayAllocated){
+	    for(int i=0;i<this->numPixels;i++)
+	      if(!this->isBlank(i)) this->array[i] = pow(scale * array[i] + offset, power);
+	  }
 	  if(this->par.isVerbose()) {
 	    std::cout << " Done.\n";
 	  }

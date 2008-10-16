@@ -429,7 +429,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Cube::initialiseCube(long *dimensions)
+  void Cube::initialiseCube(long *dimensions, bool allocateArrays)
   {
     /**
      *  This function will set the sizes of all arrays that will be used by Cube.
@@ -440,6 +440,7 @@ namespace duchamp
      *
      *  \param dimensions An array of values giving the dimensions (sizes) for 
      *  all axes.  
+     *  \param allocateArrays A flag indicating whether to allocate the memory for the data arrays: the default is true. The dimension arrays will be allocated and filled.
      */ 
 
     int lng,lat,spc,size,imsize;
@@ -484,10 +485,20 @@ namespace duchamp
 		   "Negative size -- could not define Cube.\n");
     else{
       this->numPixels = size;
-      if(size>0){
+      this->numDim  = 3;
+      this->axisDim = new long[this->numDim];
+      this->axisDimAllocated = true;
+      this->axisDim[0] = dimensions[lng];
+      if(numAxes>1) this->axisDim[1] = dimensions[lat];
+      else this->axisDim[1] = 1;
+      if(this->head.canUseThirdAxis() && numAxes>spc) this->axisDim[2] = dimensions[spc];
+      else this->axisDim[2] = 1;
+      this->reconExists = false;
+      if(size>0 && allocateArrays){
 	this->array      = new float[size];
 	this->arrayAllocated = true;
 	this->detectMap  = new short[imsize];
+	for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
 	if(this->par.getFlagATrous() || this->par.getFlagSmooth()){
 	  this->recon    = new float[size];
 	  this->reconAllocated = true;
@@ -497,16 +508,6 @@ namespace duchamp
 	  this->baselineAllocated = true;
 	}
       }
-      this->numDim  = 3;
-      this->axisDim = new long[this->numDim];
-      this->axisDimAllocated = true;
-      this->axisDim[0] = dimensions[lng];
-      if(numAxes>1) this->axisDim[1] = dimensions[lat];
-      else this->axisDim[1] = 1;
-      if(this->head.canUseThirdAxis() && numAxes>spc) this->axisDim[2] = dimensions[spc];
-      else this->axisDim[2] = 1;
-      for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
-      this->reconExists = false;
     }
   }
   //--------------------------------------------------------------------
