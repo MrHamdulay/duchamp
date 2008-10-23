@@ -130,10 +130,11 @@ else
                [], [$EXTRAPGLIB $LIBS])
   
   # Search for X11 includes and libraries.
-  AC_PATH_X
-  if test "x$ac_x_libraries" != x; then
-    LDFLAGS="$LDFLAGS -L$ac_x_libraries"
-    EXTRAPGLIB="-L$ac_x_libraries -lX11 $EXTRAPGLIB"
+  AC_PATH_XTRA
+  # returns C compiler flags needed for X to X_CFLAGS and the X linker flags to X_LIBS
+  if test "x$X_LIBS" != x; then
+    LDFLAGS="$LDFLAGS $X_LIBS"
+    EXTRAPGLIB="$X_LIBS -lX11 $EXTRAPGLIB"
   fi
 
 #  # Add pgplot libraries, if they exist to the lib path
