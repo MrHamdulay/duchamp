@@ -396,7 +396,7 @@ namespace duchamp
       this->numPixels = size;
       if(size>0){
 	this->array      = new float[size];
-	this->arrayAllocated = false;
+	this->arrayAllocated = true;
 	this->detectMap  = new short[imsize];
 	if(this->par.getFlagATrous()||this->par.getFlagSmooth()){
 	  this->recon    = new float[size];
@@ -423,7 +423,7 @@ namespace duchamp
      *  The destructor deletes the memory allocated for Cube::detectMap, and,
      *  if these have been allocated, Cube::recon and Cube::baseline.
      */
-    delete [] this->detectMap;
+    if(this->numPixels>0 && this->arrayAllocated) delete [] this->detectMap;
     if(this->reconAllocated)    delete [] this->recon;
     if(this->baselineAllocated) delete [] this->baseline;
   }
