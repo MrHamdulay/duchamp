@@ -61,91 +61,100 @@ namespace duchamp
      */
 
 
-    if(cube.pars().getFlagGrowth() && (cube.pars().getGrowthCut()<cube.pars().getCut())) {
+    if(cube.pars().getFlagGrowth()){
 
-      vector <bool> isInObj(cube.getSize(),false);
-      bool flagAdj = cube.pars().getFlagAdjacent();
-      int threshS = int(cube.pars().getThreshS());
-      if(flagAdj) threshS = 1;
-      int threshV = int(cube.pars().getThreshV());
-
-      vector<Voxel> voxlist = object.getPixelSet();
-      int origSize = voxlist.size();
-      long zero = 0;
-
-      for(int i=0;i<voxlist.size();i++) {
-	long pos = voxlist[i].getX() + voxlist[i].getY()*cube.getDimX() + 
-	  voxlist[i].getZ()*cube.getDimX()*cube.getDimY();
-	isInObj[pos] = true;
-      }
-  
-      StatsContainer<float> growthStats(cube.stats());
-
-      if(cube.pars().getFlagUserGrowthThreshold())
-	growthStats.setThreshold(cube.pars().getGrowthThreshold());
+      bool doGrowing;
+      if(cube.pars().getFlagUserGrowthThreshold()) 
+	doGrowing = cube.pars().getThreshold()<cube.pars().getThreshold();
       else
-	growthStats.setThresholdSNR(cube.pars().getGrowthCut());
+	doGrowing = cube.pars().getGrowthCut()<cube.pars().getCut();
 
-      growthStats.setUseFDR(false);
+      if(doGrowing){
 
-      //    for(int pix=0; pix<object.getSize(); pix++){ // for each pixel in the object
-      for(int pix=0; pix<voxlist.size(); pix++){ // for each pixel in the object
+	vector <bool> isInObj(cube.getSize(),false);
+	bool flagAdj = cube.pars().getFlagAdjacent();
+	int threshS = int(cube.pars().getThreshS());
+	if(flagAdj) threshS = 1;
+	int threshV = int(cube.pars().getThreshV());
 
-	int xmin = std::max(voxlist[pix].getX() - threshS, zero);
-	int xmax = std::min(voxlist[pix].getX() + threshS, cube.getDimX()-1);
-	int ymin = std::max(voxlist[pix].getY() - threshS, zero);
-	int ymax = std::min(voxlist[pix].getY() + threshS, cube.getDimY()-1);
-	int zmin = std::max(voxlist[pix].getZ() - threshV, zero);
-	int zmax = std::min(voxlist[pix].getZ() + threshV, cube.getDimZ()-1);
+	vector<Voxel> voxlist = object.getPixelSet();
+	int origSize = voxlist.size();
+	long zero = 0;
 
-	//loop over surrounding pixels.
-	for(int x=xmin; x<=xmax; x++){
-	  for(int y=ymin; y<=ymax; y++){
-	    for(int z=zmin; z<=zmax; z++){
+	for(int i=0;i<voxlist.size();i++) {
+	  long pos = voxlist[i].getX() + voxlist[i].getY()*cube.getDimX() + 
+	    voxlist[i].getZ()*cube.getDimX()*cube.getDimY();
+	  isInObj[pos] = true;
+	}
+  
+	StatsContainer<float> growthStats(cube.stats());
 
-	      if((x!=voxlist[pix].getX())||(y!=voxlist[pix].getY())||(z!=voxlist[pix].getZ())){ 
-		// ignore when the current object pixel
+	if(cube.pars().getFlagUserGrowthThreshold())
+	  growthStats.setThreshold(cube.pars().getGrowthThreshold());
+	else
+	  growthStats.setThresholdSNR(cube.pars().getGrowthCut());
 
-		long pos = x + y * cube.getDimX() + z * cube.getDimX() * cube.getDimY();
+	growthStats.setUseFDR(false);
 
-		if(!isInObj[pos] && // pixel not already in object?
-		   !cube.isBlank(x,y,z)   &&   // pixel not BLANK?
-		   !cube.pars().isInMW(z)       &&   // pixel not MW?
-		   (flagAdj || hypot(x,y)<threshS)   ){ // pixel not too far away?
+	//    for(int pix=0; pix<object.getSize(); pix++){ // for each pixel in the object
+	for(int pix=0; pix<voxlist.size(); pix++){ // for each pixel in the object
+
+	  int xmin = std::max(voxlist[pix].getX() - threshS, zero);
+	  int xmax = std::min(voxlist[pix].getX() + threshS, cube.getDimX()-1);
+	  int ymin = std::max(voxlist[pix].getY() - threshS, zero);
+	  int ymax = std::min(voxlist[pix].getY() + threshS, cube.getDimY()-1);
+	  int zmin = std::max(voxlist[pix].getZ() - threshV, zero);
+	  int zmax = std::min(voxlist[pix].getZ() + threshV, cube.getDimZ()-1);
+
+	  //loop over surrounding pixels.
+	  for(int x=xmin; x<=xmax; x++){
+	    for(int y=ymin; y<=ymax; y++){
+	      for(int z=zmin; z<=zmax; z++){
+
+		if((x!=voxlist[pix].getX())||(y!=voxlist[pix].getY())||(z!=voxlist[pix].getZ())){ 
+		  // ignore when the current object pixel
+
+		  long pos = x + y * cube.getDimX() + z * cube.getDimX() * cube.getDimY();
+
+		  if(!isInObj[pos] && // pixel not already in object?
+		     !cube.isBlank(x,y,z)   &&   // pixel not BLANK?
+		     !cube.pars().isInMW(z)       &&   // pixel not MW?
+		     (flagAdj || hypot(x,y)<threshS)   ){ // pixel not too far away?
 	    
-		  float flux;
-		  if(cube.isRecon()) flux = cube.getReconValue(x,y,z);
-		  else               flux = cube.getPixValue(x,y,z);
+		    float flux;
+		    if(cube.isRecon()) flux = cube.getReconValue(x,y,z);
+		    else               flux = cube.getPixValue(x,y,z);
 
-		  Voxel pixnew(x,y,z,flux);
+		    Voxel pixnew(x,y,z,flux);
 
-		  if(  growthStats.isDetection(flux) ){
-		    isInObj[pos] = true;
-		    voxlist.push_back(pixnew);
-		  } // end of if
+		    if(  growthStats.isDetection(flux) ){
+		      isInObj[pos] = true;
+		      voxlist.push_back(pixnew);
+		    } // end of if
 
-		} // end of if clause regarding position OK
+		  } // end of if clause regarding position OK
 
-	      } // end of if clause regarding position not same
+		} // end of if clause regarding position not same
 
-	    } // end of z loop
-	  } // end of y loop
-	} // end of x loop
+	      } // end of z loop
+	    } // end of y loop
+	  } // end of x loop
       
-      } // end of pix loop
+	} // end of pix loop
 
 
-      // Add in new pixels to the Detection
-      for(int i=origSize; i<voxlist.size(); i++){
-	object.addPixel(voxlist[i]);
+	// Add in new pixels to the Detection
+	for(int i=origSize; i<voxlist.size(); i++){
+	  object.addPixel(voxlist[i]);
+	}
+      
+      
+	object.calcFluxes(cube.getArray(), cube.getDimArray());
+
+	isInObj.clear();
+
       }
-      
-      
-      object.calcFluxes(cube.getArray(), cube.getDimArray());
-
-      isInObj.clear();
 
     }
-
   }
 }
