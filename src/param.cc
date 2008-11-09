@@ -250,8 +250,8 @@ namespace duchamp
     this->flagNegative      = p.flagNegative;
     this->flagGrowth        = p.flagGrowth;
     this->growthCut         = p.growthCut;
-    this->growthThreshold   = p.threshold;
-    this->flagUserGrowthThreshold = p.flagUserThreshold;
+    this->growthThreshold   = p.growthThreshold;
+    this->flagUserGrowthThreshold = p.flagUserGrowthThreshold;
     this->flagFDR           = p.flagFDR;
     this->alphaFDR          = p.alphaFDR;
     this->flagStatSec       = p.flagStatSec; 
@@ -715,6 +715,14 @@ namespace duchamp
 
     }	
 
+    this->checkPars();
+
+    return SUCCESS;
+
+  }
+  
+  void Param::checkPars()
+  {
 
     // Make sure the annnotationType is an acceptable option -- default is "borders"
     if((this->annotationType != "borders") && (this->annotationType!="circles")){
@@ -762,7 +770,6 @@ namespace duchamp
       this->pixelCentre = "centroid";
     }
 
-    return SUCCESS;
   }
 
 
@@ -1026,10 +1033,18 @@ namespace duchamp
 	       <<"  =  " <<resetiosflags(std::ios::right)
 	       <<stringize(par.getFlagGrowth())     <<std::endl;
     if(par.getFlagGrowth()) {			       
-      theStream<<std::setw(widthText)<<"SNR Threshold for growth"             
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[growthCut]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getGrowthCut()      <<std::endl;
+      if(par.getFlagUserGrowthThreshold()){
+	theStream<<std::setw(widthText)<<"Threshold for growth"                        
+		 <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[growthThreshold]"
+		 <<"  =  " <<resetiosflags(std::ios::right)
+		 <<par.getGrowthThreshold()        <<std::endl;
+      }
+      else{
+	theStream<<std::setw(widthText)<<"SNR Threshold for growth"             
+		 <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[growthCut]"
+		 <<"  =  " <<resetiosflags(std::ios::right)
+		 <<par.getGrowthCut()      <<std::endl;
+      }
     }
     theStream  <<std::setw(widthText)<<"Using Adjacent-pixel criterion?"      
 	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagAdjacent]"

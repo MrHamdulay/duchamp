@@ -79,6 +79,9 @@ namespace duchamp
     /** Read in parameters from a disk file. */
     int    readParams(std::string paramfile);
 
+    /** Check the parameter list for inconsistencies */
+    void   checkPars();
+
     /** Copy certain necessary FITS header parameters from a FitsHeader
 	object */
     void   copyHeaderInfo(FitsHeader &head);
