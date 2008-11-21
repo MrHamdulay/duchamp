@@ -27,6 +27,7 @@
 // -----------------------------------------------------------------------
 #include <duchamp/PixelMap/Scan.hh>
 #include <iostream>
+#include <math.h>
 
 namespace PixelInfo
 {
@@ -229,6 +230,17 @@ namespace PixelInfo
   }
   //------------------------------------------------------
 
+  float minSep(Scan &s1, Scan &s2)
+  {
+ 
+    if(s1.getX() > s2.getXmax()) return hypot(s1.getX()-s2.getXmax(),s1.getY()-s2.getY());
+    else if(s2.getX() > s1.getXmax()) return hypot(s2.getX()-s1.getXmax(),s1.getY()-s2.getY());
+    else return fabsf(s1.getY()-s2.getY());
+   
+  }
+  //------------------------------------------------------
+  
+  
   void mergeList(std::vector<Scan> scanlist)
   {
     std::vector<Scan>::iterator iter;

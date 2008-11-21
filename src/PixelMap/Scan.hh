@@ -129,6 +129,9 @@ namespace PixelInfo
   /** Examine a vector list of Scans and merge any that are touching. */
   void mergeList(std::vector<Scan> scanlist);
 
+  /** Get the minimum separation, in pixels, between two scans. */
+  float minSep(Scan &s1, Scan &s2);
+
 }
 
 #endif //SCAN_H

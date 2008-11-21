@@ -110,6 +110,8 @@ namespace duchamp
 	      
 	    Object2D temp1 = map1.getObject();
 	    Object2D temp2 = map2.getObject();
+
+// 	    std::cerr << "Obj1:\n" << temp1 << "Obj2:\n" << temp2;
 	      
 	    if(flagAdj) gap = 1;
 	    else gap = long( ceil(threshS) );
@@ -118,16 +120,19 @@ namespace duchamp
 	    test2.define(0, temp2.getXmin(),
 			 temp2.getXmax()-temp2.getXmin()+1);
 	    areNear = overlap(test1,test2);
+// 	    std::cerr << areNear;
 	    test1.define(0, temp1.getYmin()-gap,
 			 temp1.getYmax()-temp1.getYmin()+2*gap+1);
 	    test2.define(0, temp2.getYmin(),
 			 temp2.getYmax()-temp2.getYmin()+1);
 	    areNear = areNear && overlap(test1,test2);
+// 	    std::cerr << areNear;
 	      
 	    if(areNear){
 	      if(flagAdj) close = close || areAdj(temp1,temp2);
 	      else close = close || areClose(temp1,temp2,threshS);
 	    }
+	    
 	  }
 	  // 	  }
 
@@ -142,7 +147,6 @@ namespace duchamp
 
   }
 
-
   bool areClose(Object2D &obj1, Object2D &obj2, float threshold)
   {
     bool close = false;
@@ -153,41 +157,107 @@ namespace duchamp
     Scan temp1(0, obj1.getYmin()-int(threshold),
 	       obj1.getYmax()-obj1.getYmin()+1+2*int(threshold));
     Scan temp2(0, obj2.getYmin(),obj2.getYmax()-obj2.getYmin()+1);
-    Scan overlap = intersect(temp1,temp2);
+    Scan Yoverlap = intersect(temp1,temp2);
+//       std::cerr << "\n"<<temp1 <<"\t" << temp2 << "\t" << Yoverlap<<"\n";
+      
+      // Xoverlap has the scans that overlap with a padding of width threshold
+      // If two pixels are separated in Y by threshold, but have the same X, then they match.
+      // This is the furthest apart they can be in Y.
 
-    if(overlap.getXlen()>0){
-      overlap.growLeft();
-      overlap.growRight();
 
-      for(int scanct1=0; (!close && (scanct1<nscan1)); scanct1++){
-	temp1 = obj1.getScan(scanct1);
-	if(overlap.isInScan(temp1.getY(),0)){
-	  long y1 = temp1.getY();
+    if(Yoverlap.getXlen()>0){
+      // Grow by a pixel in each direction, to take into account the possibility of fractional thresholds (eg. 7.5)
+      Yoverlap.growLeft();
+      Yoverlap.growRight();
+    
+      // Now look at just these scans pixel by pixel
 
-	  for(int scanct2=0; (!close && (scanct2<nscan2)); scanct2++){
-	    temp2 = obj2.getScan(scanct2);
-	    if(overlap.isInScan(temp2.getY(),0)){
-	      long dy = abs(y1 - temp2.getY());
+      // Get the scans from object 2 that lie in the overlap region (these haven't been affected by the threshold gap)
+       for(int scanct2=0; (!close && (scanct2<nscan2)); scanct2++){
+	temp2 = obj2.getScan(scanct2);
+// 	std::cerr << temp2.getY() << ":\n";
+	if(Yoverlap.isInScan(temp2.getY(),0)){ // if the scan is in the allowed Y range
 
-	      if(dy<=threshold){
+	  for(int scanct1=0; (!close && (scanct1<nscan1)); scanct1++){
+	    temp1 = obj1.getScan(scanct1);
+	    long y = temp1.getY();
+// 	    std::cerr << temp1.getY() << " ";
+	    if(abs(y-temp2.getY())<threshold){
+// 	      std::cerr << "("<<minSep(temp1,temp2)<<")";
 
-		int gap = int(sqrt(threshold*threshold - dy*dy));
-		Scan temp3(temp2.getY(),temp1.getX()-gap,temp1.getXlen()+2*gap);
-		if(touching(temp3,temp2)) close = true;
+	      close = (minSep(temp1,temp2) < threshold);
 
-	      } // end of if(dy<thresh)
+	    }
 
-	    }// if overlap.isIn(temp2)
-	  } // end of scanct2 loop
+	  }
+// 	  std::cerr << "\n";
 
-	} // if overlap.isIn(temp1)
+	}
 
-      } // end of scanct1 loop
-
-    } //end of if(overlap.getXlen()>0)
-
+       }
+      
+    }
     return close;
+
   }
+
+
+//   bool areClose(Object2D &obj1, Object2D &obj2, float threshold)
+//   {
+//     bool close = false;
+
+//     long nscan1 = obj1.getNumScan();
+//     long nscan2 = obj2.getNumScan();
+
+//     Scan temp1(0, obj1.getYmin()-int(threshold),
+// 	       obj1.getYmax()-obj1.getYmin()+1+2*int(threshold));
+//     Scan temp2(0, obj2.getYmin(),obj2.getYmax()-obj2.getYmin()+1);
+//     Scan overlap = intersect(temp1,temp2);
+//       std::cerr << "\n"<<temp1 <<"\t" << temp2 << "\t" << overlap<<"\n";
+
+//     if(overlap.getXlen()>0){
+//       overlap.growLeft();
+//       overlap.growRight();
+
+//       std::cerr << nscan1 << " " << nscan2 << "    " << close << "\n";
+
+//       for(int scanct1=0; (!close && (scanct1<nscan1)); scanct1++){
+// 	temp1 = obj1.getScan(scanct1);
+// 	std::cerr << temp1.getY() << ":\n";
+// // 	if(overlap.isInScan(temp1.getY(),0)){
+// 	if(overlap.isInScan(temp1.getY()-threshold,0) || overlap.isInScan(temp1.getY()+threshold,0) ){
+// 	  long y1 = temp1.getY();
+
+
+// 	  for(int scanct2=0; (!close && (scanct2<nscan2)); scanct2++){
+// 	    temp2 = obj2.getScan(scanct2);
+// 	    if(overlap.isInScan(temp2.getY(),0)){
+// 	      long dy = abs(y1 - temp2.getY());
+
+// 	      std::cerr <<  temp2.getY() <<"  " << dy << "   ";
+      
+// 	      if(dy<=threshold){
+
+// 		int gap = int(sqrt(threshold*threshold - dy*dy));
+// 		Scan temp3(temp2.getY(),temp1.getX()-gap,temp1.getXlen()+2*gap);
+// 		std::cerr << gap << "   " << temp3 << " <--> " << temp2;
+// 		if(touching(temp3,temp2)) close = true;
+
+// 	      } // end of if(dy<thresh)
+
+// 	      std::cerr << "\n";
+
+// 	    }// if overlap.isIn(temp2)
+// 	  } // end of scanct2 loop
+
+// 	} // if overlap.isIn(temp1)
+
+//       } // end of scanct1 loop
+
+//     } //end of if(overlap.getXlen()>0)
+
+//     return close;
+//   }
 
   bool areAdj(Object2D &obj1, Object2D &obj2)
   {
