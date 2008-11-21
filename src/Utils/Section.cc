@@ -118,8 +118,9 @@ namespace duchamp
 
     this->starts.resize(this->numSections);
     this->dims.resize(this->numSections);
+    this->sections.resize(this->numSections);
 
-    std::vector<std::string> sections(numSections); 
+    std::vector<std::string> tempsections(numSections); 
     // this will hold the section strings for each dimension
     std::stringstream ss;
     ss.str(this->subsection);
@@ -130,32 +131,35 @@ namespace duchamp
     getline(ss,temp,'[');
     for(int i=0;i<numSections-1;i++){
       getline(ss,temp,',');
-      sections[i]=temp;
+      tempsections[i]=temp;
     }
     getline(ss,temp,']');
-    sections[numSections-1]=temp;
+    tempsections[numSections-1]=temp;
 
     for(int str=0;str<numSections;str++){
-      if(sections[str]=="*"){
+      if(tempsections[str]=="*"){
 	this->starts[str] = 0;
 	this->dims[str]= dimAxes[str];
+	this->sections[str] = tempsections[str];
       }
       else{
 	int numColon=0;
-	for(int i=0;i<sections[str].size();i++){
-	  if(sections[str][i]==':'){
-	    sections[str][i]=' ';
+	for(int i=0;i<tempsections[str].size();i++){
+	  if(tempsections[str][i]==':'){
+	    tempsections[str][i]=' ';
 	    numColon++;
 	  }
 	}
 	int a,b,c;
 	std::stringstream readString,fixedString;
-	readString.str(sections[str]);
+	readString.str(tempsections[str]);
 	switch(numColon){
 	case 1: // usual case
 	  readString >> a >> b;
 	  this->starts[str] = a-1;
 	  this->dims[str] = b-a+1;
+	  fixedString << a << ":" << b;
+	  this->sections[str] = fixedString.str();
 	  break;
 	case 0: // borders case -- so many off each border
 	  readString >> a;
@@ -172,7 +176,7 @@ namespace duchamp
 	  this->dims[str] = dimAxes[str]-2*a;
 	  fixedString << this->starts[str]+1 << ":" 
 		      << this->getEnd(str)+1;
-	  sections[str] = fixedString.str();
+	  this->sections[str] = fixedString.str();
 	  doingBorders=true;
 	  break;
 	case 2: // subsection involves a step
@@ -181,7 +185,7 @@ namespace duchamp
 	  this->starts[str] = a-1;
 	  this->dims[str] = b-a+1;
 	  fixedString << a << ":" << b;
-	  sections[str] = fixedString.str();
+	  this->sections[str] = fixedString.str();
 	  removeStep=true;
 	  break;
 	}
@@ -199,9 +203,9 @@ namespace duchamp
 
     if(removeStep || doingBorders){
       // rewrite subsection without any step sizes and with correct borders.
-      this->subsection = "[" + sections[0];
+      this->subsection = "[" + this->sections[0];
       for(int str=1;str<numSections;str++) 
-	this->subsection += ',' + sections[str];
+	this->subsection += ',' + this->sections[str];
       this->subsection += "]";
     }
 
@@ -212,6 +216,15 @@ namespace duchamp
 
     return SUCCESS;
   
+  }
+
+  std::string nullSection(int ndim)
+  {
+    std::stringstream ss;
+    ss << "[";
+    for(int i=0;i<ndim-1;i++) ss << "*,";
+    ss << "*]";
+    return ss.str();
   }
 
 }

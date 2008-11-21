@@ -67,18 +67,23 @@ namespace duchamp
     /** Return the subsection string */
     std::string getSection(){return subsection;};
 
+    /** Save a single dimension's subsection string */
+    void setSection(int i, std::string s){sections[i] = s;};
+    /** Return a particular dimension's subsection string */
+    std::string getSection(int i){if(i>=numSections) return "*"; else return sections[i];};
+
     /** Return a particular starting value */
-    int getStart(int i){return starts[i];};
+    int getStart(int i){if(i>=numSections) return 0; else return starts[i];};
     /** Set a particular starting value */
     void setStart(int i, int val){starts[i]=val;};
 
     /** Return a particular dimension length */
-    int getDim(int i){return dims[i];};
+    int getDim(int i){if(i>=numSections) return 1; else return dims[i];};
     /** Set a particular dimension length */
     void setDim(int i, int val){dims[i]=val;};
 
     /** Return a particular ending value */
-    int getEnd(int i){return starts[i]+dims[i]-1;};
+    int getEnd(int i){if(i>=numSections) return 0; else return starts[i]+dims[i]-1;};
     /** Set a particular ending value, using the current starting value */
     void setEnd(int i, int val){dims[i]=val-starts[i]+1;};
 
@@ -88,13 +93,14 @@ namespace duchamp
     std::vector<int> getDimList(){return dims;};
 
   private:
-    std::string subsection;   ///< The string indicating the subsection,
-    ///   of the format [a:b,c:d,e:f] etc.
+    std::string subsection;   ///< The string indicating the subsection, of the format [a:b,c:d,e:f] etc.
+    std::vector<std::string> sections; // The individual section strings for each dimension
     int numSections;          ///< The number of sections in the string.
     std::vector<int> starts;  ///< The list of starting values (a,c,e)
-    std::vector<int> dims;    ///< The list of lengths of each dimension
-    ///   (b-a+1,d-c+1,f-e+1)
+    std::vector<int> dims;    ///< The list of lengths of each dimension (b-a+1,d-c+1,f-e+1)
   };
+
+  std::string nullSection(int ndim);
 
 }
 
