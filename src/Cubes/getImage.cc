@@ -123,11 +123,6 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
       return FAILURE;
     }
 
-    // allocate the dimension array in the Cube.
-    this->axisDim = new long[numAxes];
-    this->axisDimAllocated = true;
-    for(int i=0;i<numAxes;i++) this->axisDim[i] = dimAxes[i];
-  
     // Close the FITS file.
     status = 0;
     fits_close_file(fptr, &status);
@@ -145,16 +140,19 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
       std::cout << std::endl;
     }
 
-    delete [] dimAxes;
-
     // Get the WCS information
     this->head.defineWCS(fname, this->par);
 
     if(!this->head.isWCS()) 
       duchampWarning("Cube Reader","WCS is not good enough to be used.\n");
 
+    // allocate the dimension array in the Cube.
+    this->initialiseCube(dimAxes,false);
+
     // Read the necessary header information, and copy some of it into the Param.
     this->head.readHeaderInfo(fname, this->par);
+
+    delete [] dimAxes;
 
     return SUCCESS;
 

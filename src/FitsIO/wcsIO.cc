@@ -245,7 +245,11 @@ namespace duchamp
 	// Save the wcs to the FitsHeader class that is running this function
 	this->setWCS(localwcs);
 	this->setNWCS(localnwcs);
-      }
+ 
+	// Now that the WCS is defined, use it to set the offsets in the Param set
+	par.setOffsets(localwcs);
+
+     }
     }
 
     // clean up allocated memory

@@ -146,7 +146,6 @@ namespace duchamp
     this->saveArray(pixarray,npix);
     delete [] pixarray;
     delete [] dimAxes;
-    this->par.setOffsets(this->head.WCS());
 
     //------------------------------------------------------------- 
     // Once the array is saved, change the value of the blank pixels
