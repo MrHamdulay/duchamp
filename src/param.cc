@@ -377,6 +377,27 @@ namespace duchamp
   }
 
 
+  bool *Param::makeStatMask(float *array, long *dim)
+  {
+    /**
+     *  This returns an array of bools, saying whether each pixel in
+     *  the given array is suitable for a stats calculation. It needs
+     *  to be in the StatSec (if defined), not blank and not a MW
+     *  channel. The array is allocated by the function with a 'new' call. 
+     */ 
+    bool *mask = new bool[dim[0]*dim[1]*dim[2]];
+    for(int x=0;x<dim[0];x++) {
+      for(int y=0;y<dim[1];y++) {
+	for(int z=0;z<dim[2];z++) {
+	  int i = x+y*dim[0]+z*dim[0]*dim[1];
+	  mask[i] = !this->isBlank(array[i]) && !this->isInMW(z) && this->isStatOK(x,y,z);
+	}
+      }
+    }
+    return mask;
+  }
+
+
   bool Param::isInMW(int z)
   {
     /** 
@@ -677,6 +698,15 @@ namespace duchamp
       }
     }
 
+    this->checkPars();
+
+    return SUCCESS;
+
+  }
+  
+  void Param::checkPars()
+  {
+
     // If we have usePrevious=false, set the objectlist to blank so that we use all of them
     if(!this->usePrevious) this->objectList = "";
 
@@ -714,15 +744,6 @@ namespace duchamp
       }
 
     }	
-
-    this->checkPars();
-
-    return SUCCESS;
-
-  }
-  
-  void Param::checkPars()
-  {
 
     // Make sure the annnotationType is an acceptable option -- default is "borders"
     if((this->annotationType != "borders") && (this->annotationType!="circles")){

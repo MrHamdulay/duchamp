@@ -130,6 +130,7 @@ namespace duchamp
 	or not*/
     bool  *makeBlankMask(float *array, int size);
 
+    bool *makeStatMask(float *array, long *dim);
 
     //--------------------
     // Basic inline accessor functions
