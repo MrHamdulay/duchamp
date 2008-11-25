@@ -1325,6 +1325,8 @@ namespace duchamp
       if( this->objAtSpectralEdge(*obj) && (this->axisDim[2] > 2)) 
 	obj->addToFlagText("S");
 
+      if(obj->getFlagText()=="") obj->addToFlagText("-");
+
     }
 
   }
