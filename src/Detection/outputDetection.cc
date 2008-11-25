@@ -265,7 +265,7 @@ namespace duchamp
     std::stringstream ss;
     ss << "#" << std::setfill('0') << std::setw(3) << this->id << ": ";
     ss << this->name ;
-    if(this->getFlagText()!="") 
+    if(this->getFlagText()!="-") 
       ss << " [" << this->getFlagText() << "]   ";
     else ss<< "   ";
     ss << std::setfill(' ');
