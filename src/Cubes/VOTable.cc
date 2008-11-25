@@ -151,56 +151,62 @@ namespace duchamp
       case WDEC:
 	this->define(column,"col07","","float","J2000");
 	break;
-      case WVEL:
+      case W50:
 	this->define(column,"col08","phys.veloc;src.dopplerVeloc;spect.line.width","float","");
 	break;
+      case W20:
+	this->define(column,"col09","phys.veloc;src.dopplerVeloc;spect.line.width","float","");
+	break;
+      case WVEL:
+	this->define(column,"col10","phys.veloc;src.dopplerVeloc;spect.line.width","float","");
+	break;
       case FINT:
-	this->define(column,"col09","phot.flux;spect.line.intensity","float","");
+	this->define(column,"col11","phot.flux;spect.line.intensity","float","");
 	this->name = "Integrated_Flux";
 	break;
       case FTOT:
-	this->define(column,"col09","phot.flux;spect.line.intensity","float","");
+	this->define(column,"col11","phot.flux;spect.line.intensity","float","");
 	this->name = "Total_Flux";
 	break;
       case FPEAK:
-	this->define(column,"col10","phot.flux;spect.line.intensity","float","");
+	this->define(column,"col12","phot.flux;spect.line.intensity","float","");
 	this->name = "Peak_Flux";
 	break;
       case SNRPEAK:
-	this->define(column,"col11","phot.flux;stat.snr","float","");
+	this->define(column,"col13","phot.flux;stat.snr","float","");
 	break;
       case FLAG:
-	this->define(column,"col12","meta.code.qual","char","");
+	this->define(column,"col14","meta.code.qual","char","");
 	break;
       case XAV:
-	this->define(column,"col13","pos.cartesian.x","float","");
+	this->define(column,"col15","pos.cartesian.x","float","");
 	break;
       case YAV:
-	this->define(column,"col14","pos.cartesian.y","float","");
+	this->define(column,"col16","pos.cartesian.y","float","");
 	break;
       case ZAV:
-	this->define(column,"col15","pos.cartesian.z","float","");
+	this->define(column,"col17","pos.cartesian.z","float","");
 	break;
       case XCENT:
-	this->define(column,"col16","pos.cartesian.x","float","");
+	this->define(column,"col18","pos.cartesian.x","float","");
 	this->name = "X_Centroid";
 	break;
       case YCENT:
-	this->define(column,"col17","pos.cartesian.y","float","");
+	this->define(column,"col19","pos.cartesian.y","float","");
 	this->name = "Y_Centroid";
 	break;
       case ZCENT:
-	this->define(column,"col18","pos.cartesian.z","float","");
+	this->define(column,"col20","pos.cartesian.z","float","");
 	this->name = "Z_Centroid";
 	break;
       case XPEAK:
-	this->define(column,"col19","pos.cartesian.x","int","");
+	this->define(column,"col21","pos.cartesian.x","int","");
 	break;
       case YPEAK:
-	this->define(column,"col20","pos.cartesian.y","int","");
+	this->define(column,"col22","pos.cartesian.y","int","");
 	break;
       case ZPEAK:
-	this->define(column,"col21","pos.cartesian.z","int","");
+	this->define(column,"col23","pos.cartesian.z","int","");
 	break;
       default:
 	break;
@@ -235,7 +241,7 @@ namespace duchamp
   //------------------------------------------------
 
 
-  template <class T> void VOParam::define(std::string n, std::string U, std::string d, T v, int w)
+  template <class T> void VOParam::define(std::string n, std::string U, std::string d, T v, int w, std::string u)
   {
     /**
      * A basic definition function, defining each parameter
@@ -246,6 +252,7 @@ namespace duchamp
      * \param d The datatype
      * \param v The value
      * \param w The width
+     * \param u The units
      */
     this->name = n;
     this->UCD = U;
@@ -254,12 +261,13 @@ namespace duchamp
     std::stringstream ss;
     ss << v;
     this->value = ss.str();
+    this->units = u;
   }
-  template void VOParam::define<int>(std::string n, std::string U, std::string d, int v, int w);
-  template void VOParam::define<long>(std::string n, std::string U, std::string d, long v, int w);
-  template void VOParam::define<float>(std::string n, std::string U, std::string d, float v, int w);
-  template void VOParam::define<double>(std::string n, std::string U, std::string d, double v, int w);
-  template void VOParam::define<std::string>(std::string n, std::string U, std::string d, std::string v, int w);
+  template void VOParam::define<int>(std::string n, std::string U, std::string d, int v, int w, std::string u);
+  template void VOParam::define<long>(std::string n, std::string U, std::string d, long v, int w, std::string u);
+  template void VOParam::define<float>(std::string n, std::string U, std::string d, float v, int w, std::string u);
+  template void VOParam::define<double>(std::string n, std::string U, std::string d, double v, int w, std::string u);
+  template void VOParam::define<std::string>(std::string n, std::string U, std::string d, std::string v, int w, std::string u);
 
   void VOParam::printParam(std::ostream &stream)
   {
@@ -270,6 +278,8 @@ namespace duchamp
     stream << "<PARAM name=\"" <<this->name
 	   << "\" ucd=\"" << this->UCD
 	   << "\" datatype=\"" << this->datatype;
+    if(this->units!="")
+      stream << "\" units=\"" << this->units;
     if(this->width!=0){
       if(datatype=="char")
 	stream << "\" arraysize=\"" << this->width;
@@ -311,44 +321,46 @@ namespace duchamp
     std::string fname = this->par.getImageFile();
     if(this->par.getFlagSubsection()) fname+=this->par.getSubsection();
     
-    singleParam.define("FITS file","meta.file;meta.fits","char",fname,fname.size());
+    singleParam.define("FITS file","meta.file;meta.fits","char",fname,fname.size(),"");
     paramList.push_back(singleParam);
     if(this->par.getFlagFDR())
-      singleParam.define("FDR Significance","stat.param","float",this->par.getAlpha(),0);
+      singleParam.define("FDR Significance","stat.param","float",this->par.getAlpha(),0,"");
     else
-      singleParam.define("Threshold","stat.snr","float",this->par.getCut(),0);
+      singleParam.define("Threshold (SNR)","stat.snr","float",this->par.getCut(),0,"");
+    paramList.push_back(singleParam);
+    singleParam.define("Flux Threshold","phot.flux;stat.min","float",this->Stats.getThreshold(),0,this->head.getFluxUnits());
     paramList.push_back(singleParam);
     
     if(this->par.getFlagATrous()){
       std::string note = "The a trous reconstruction method was used, with the following parameters.";
-      singleParam.define("ATrous note","meta.note","char",note,note.size());
+      singleParam.define("ATrous note","meta.note","char",note,note.size(),"");
       paramList.push_back(singleParam);
-      singleParam.define("ATrous Dimension","meta.code;stat","int",this->par.getReconDim(),0);
+      singleParam.define("ATrous Dimension","meta.code;stat","int",this->par.getReconDim(),0,"");
       paramList.push_back(singleParam);
-      singleParam.define("ATrous Threshold","stat.snr","float",this->par.getAtrousCut(),0);
+      singleParam.define("ATrous Threshold","stat.snr","float",this->par.getAtrousCut(),0,"");
       paramList.push_back(singleParam);
-      singleParam.define("ATrous Minimum Scale","stat.param","int",this->par.getMinScale(),0);
+      singleParam.define("ATrous Minimum Scale","stat.param","int",this->par.getMinScale(),0,"");
       paramList.push_back(singleParam);
-      singleParam.define("ATrous Filter","meta.code;stat","char",this->par.getFilterName(),this->par.getFilterName().size());
+      singleParam.define("ATrous Filter","meta.code;stat","char",this->par.getFilterName(),this->par.getFilterName().size(),"");
       paramList.push_back(singleParam);
     }
     if(this->par.getFlagSmooth()){
       if(this->par.getSmoothType()=="spectral"){
 	std::string note = "The cube was smoothed spectrally with a Hanning filter, with the following parameters.";
-	singleParam.define("Smoothing note","meta.note","char",note,note.size());
+	singleParam.define("Smoothing note","meta.note","char",note,note.size(),"");
 	paramList.push_back(singleParam);
-	singleParam.define("Hanning filter width","meta.code;stat","int",this->par.getHanningWidth(),0);
+	singleParam.define("Hanning filter width","meta.code;stat","int",this->par.getHanningWidth(),0,"");
 	paramList.push_back(singleParam);
       }
       else if(this->par.getSmoothType()=="spatial"){
 	std::string note = "The cube was smoothed spatially with a Gaussian kernel, with the following parameters.";
-	singleParam.define("Smoothing note","meta.note","char",note,note.size());
+	singleParam.define("Smoothing note","meta.note","char",note,note.size(),"");
 	paramList.push_back(singleParam);
-	singleParam.define("Gaussian kernel major-axis FWHM","meta.code;stat","int",this->par.getKernMaj(),0);
+	singleParam.define("Gaussian kernel major-axis FWHM","meta.code;stat","int",this->par.getKernMaj(),0,"");
 	paramList.push_back(singleParam);
-	singleParam.define("Gaussian kernel minor-axis FWHM","meta.code;stat","int",this->par.getKernMin(),0);
+	singleParam.define("Gaussian kernel minor-axis FWHM","meta.code;stat","int",this->par.getKernMin(),0,"");
 	paramList.push_back(singleParam);
-	singleParam.define("Gaussian kernel position angle","meta.code;stat","int",this->par.getKernPA(),0);
+	singleParam.define("Gaussian kernel position angle","meta.code;stat","int",this->par.getKernPA(),0,"");
 	paramList.push_back(singleParam);
       }    
     }

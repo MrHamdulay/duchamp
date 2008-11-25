@@ -87,7 +87,7 @@ namespace duchamp
   {
   public:
     /** Define a PARAM by individual parameters */
-    template <class T> void define(std::string n, std::string U, std::string d, T v, int w);
+    template <class T> void define(std::string n, std::string U, std::string d, T v, int w, std::string u);
  
     /** Print the PARAM entry */
     void printParam(std::ostream &stream);
@@ -98,6 +98,7 @@ namespace duchamp
     std::string datatype;
     std::string value;
     int width;
+    std::string units;
     
   };
 
