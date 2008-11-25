@@ -393,7 +393,8 @@ namespace duchamp
       return;
     }
 
-    if(head.getNumAxes() > 2) {
+//     if(head.getNumAxes() > 2) {
+    if(!head.is2D()){
 
       // include one pixel either side in each direction
       long xsize = (this->getXmax()-this->getXmin()+border*2+1);
@@ -480,7 +481,11 @@ namespace duchamp
      *  \param head FitsHeader object that contains the WCS information.
      */
 
-    if(head.getNumAxes() > 2) {
+//       int numDim=0;
+//       for(int i=0;i<3;i++) if(dim[i]>1) numDim++;
+      //      if(head.getNumAxes() > 2) {
+//       if(numDim > 2) {
+    if(!head.is2D()){
 
       // include one pixel either side in each direction
       long xsize = (this->getXmax()-this->getXmin()+3);

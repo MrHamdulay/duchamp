@@ -191,6 +191,8 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
       std::cout << "\n";
     }   
 
+    // Check for 2D images
+    this->checkDim();
     // Convert the flux Units if the user has so requested
     this->convertFluxUnits();
 

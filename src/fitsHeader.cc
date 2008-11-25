@@ -295,8 +295,10 @@ namespace duchamp
       }
       else this->intFluxUnits = this->fluxUnits;
 
-      if(this->wcs->naxis>2) this->intFluxUnits += " " + this->spectralUnits;
     }
+
+//     if(this->wcs->naxis>2) this->intFluxUnits += " " + this->spectralUnits;
+    if(!this->flag2D) this->intFluxUnits += " " + this->spectralUnits;
 
   }
 

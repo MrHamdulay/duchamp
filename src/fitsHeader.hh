@@ -128,6 +128,8 @@ namespace duchamp
     /** Is the spectral axis OK to be used? */
     bool    isSpecOK(){return (wcs->spec >= 0);};
     bool    canUseThirdAxis(){return ((wcs->spec >= 0)||(wcs->naxis>2));};
+    void    set2D(bool b){flag2D = b;};
+    bool    is2D(){return flag2D;};
     int     getNWCS(){return nwcs;};
     void    setNWCS(int i){nwcs=i;};
     int     getNumAxes(){if(wcs->flag==-1) return 0; else return wcs->naxis;};
@@ -172,6 +174,7 @@ namespace duchamp
     bool    wcsIsGood;            ///< A flag indicating whether there
     ///   is a valid WCS present.
     int     naxis;                ///< How many axes are in the header?
+    bool    flag2D;              ///< Is the image only a 2D one (leaving out redundant dimensions of size 1)?
     std::string  spectralUnits;        ///< The units of the spectral dimension
     std::string  spectralDescription;  ///< The description of the
     ///   spectral dimension (Frequency,

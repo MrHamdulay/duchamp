@@ -209,6 +209,9 @@ namespace duchamp
     Cube(long *dimensions); ///< Alternative Cube constructor.
     virtual ~Cube();        ///< Basic Cube destructor.
 
+    bool        is2D();
+    void        checkDim(){head.set2D(is2D());};
+
     // INLINE functions -- definitions included after class declaration.
     /** Is the voxel number given by vox a BLANK value? */
     bool        isBlank(int vox){ return par.isBlank(array[vox]); };

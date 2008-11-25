@@ -512,6 +512,22 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
+  bool Cube::is2D()
+  {
+    /*
+     *   Check whether the image is 2-dimensional, by counting
+     *   the number of dimensions that are greater than 1
+     */
+    if(this->head.WCS().naxis==2) return true;
+    else{
+      int numDim=0;
+      for(int i=0;i<this->numDim;i++) if(axisDim[i]>1) numDim++;
+      return numDim<=2;
+    }
+
+  }
+  //--------------------------------------------------------------------
+
   int Cube::getCube(){  
     /** 
      * A front-end to the Cube::getCube() function, that does 
