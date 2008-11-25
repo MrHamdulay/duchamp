@@ -92,6 +92,7 @@ namespace duchamp
     stream << "#\n";
     stream << "COLOR RED" << endl;
     stream << "COORD W" << endl;
+    stream << "FONT lucidasans-12" << endl;
     stream << std::setprecision(6);
     stream.setf(std::ios::fixed);
     double *pix = new double[3];
