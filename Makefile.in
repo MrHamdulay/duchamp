@@ -150,7 +150,7 @@ install :
 	$(INSTALL) -d -m 2755 $(INSTALLDIR)
 	$(INSTALL) -m 755 $(EXEC) $(INSTALLDIR)
 	$(RM) $(INSTALLDIR)/$(EXEC-STUB)
-	$(LN_S) $(INSTALLDIR)/$(EXEC) $(INSTALLDIR)/$(EXEC-STUB)
+	cd $(INSTALLDIR) && $(LN_S) $(EXEC) $(EXEC-STUB)
 	-test ! -f $(LIB) || $(INSTALL) -d -m 2755 $(LIBDIR)
 	-test ! -f $(LIB) || $(INSTALL) -m 644 $(LIB) $(LIBDIR)
 	$(INSTALL) -d -m 2755 $(INCDIR)
