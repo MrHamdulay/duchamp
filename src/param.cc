@@ -947,7 +947,7 @@ namespace duchamp
 	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagBaseline]"
 	       <<"  =  " <<resetiosflags(std::ios::right)
 	       <<stringize(par.getFlagBaseline())   <<std::endl;
-    theStream  <<std::setw(widthText)<<"Smoothing each spectrum first?"        
+    theStream  <<std::setw(widthText)<<"Smoothing data prior to searching?"        
 	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagSmooth]"
 	       <<"  =  " <<resetiosflags(std::ios::right)
 	       <<stringize(par.getFlagSmooth())     <<std::endl;
