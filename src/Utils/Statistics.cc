@@ -331,7 +331,7 @@ namespace Statistics
     theStream << "Mean   = "   << s.mean   << "\t"
 	      << "Std.Dev. = " << s.stddev << "\n"
 	      << "Median = "   << s.median << "\t"
-	      << "MADFM    = " << s.madfm  << "\n";
+	      << "MADFM    = " << s.madfm  << " (= " << madfmToSigma(s.madfm) << " as std.dev.)\n";
     return theStream;
   }
   template std::ostream& operator<<<int> (std::ostream& theStream, StatsContainer<int> &s);
