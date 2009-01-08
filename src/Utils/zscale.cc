@@ -34,7 +34,8 @@ const int nsample=1000;
 const int width=150;
 const float contrast=0.25;
 
-void zscale(long imagesize, float *image, float &z1, float &z2)
+template <class Type>
+void zscale(long imagesize, Type *image, Type &z1, Type &z2)
 {
 
   float *smallarray = new float[nsample];
@@ -92,9 +93,11 @@ void zscale(long imagesize, float *image, float &z1, float &z2)
   delete [] ct;
 	   
 }
+template void zscale<float>(long imagesize, float *image, float &z1, float &z2);
+template void zscale<double>(long imagesize, double *image, double &z1, double &z2);
 
-
-void zscale(long imagesize, float *image, float &z1, float &z2, float blankVal)
+template <class Type>
+void zscale(long imagesize, Type *image, Type &z1, Type &z2, Type blankVal)
 {
   float *newimage = new float[imagesize];
   int newsize=0;
@@ -157,5 +160,7 @@ void zscale(long imagesize, float *image, float &z1, float &z2, float blankVal)
 
 	   
 }
+template void zscale<float>(long imagesize, float *image, float &z1, float &z2, float blankVal);
+template void zscale<double>(long imagesize, double *image, double &z1, double &z2, double blankVal);
 
 
