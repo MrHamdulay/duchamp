@@ -186,9 +186,9 @@ void Cube::SpatialSmooth()
       if(this->par.getKernMin() < 0) 
 	this->par.setKernMin(this->par.getKernMaj());
 
-      GaussSmooth gauss(this->par.getKernMaj(),
-			this->par.getKernMin(),
-			this->par.getKernPA());
+      GaussSmooth<float> gauss(this->par.getKernMaj(),
+			       this->par.getKernMin(),
+			       this->par.getKernPA());
 
       if(this->par.isVerbose()) {
 	std::cout<<"  Smoothing spatially... " << std::flush;
@@ -242,9 +242,9 @@ void Cube::SpatialSmoothNSearch()
   int numFound=0;
   ProgressBar bar;
 
-  GaussSmooth gauss(this->par.getKernMaj(),
-		    this->par.getKernMin(),
-		    this->par.getKernPA());
+  GaussSmooth<float> gauss(this->par.getKernMaj(),
+			   this->par.getKernMin(),
+			   this->par.getKernPA());
 
   this->Stats.scaleNoise(1./gauss.getStddevScale());
   if(this->par.getFlagFDR()) this->setupFDR();

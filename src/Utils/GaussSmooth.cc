@@ -29,22 +29,32 @@
 #include <math.h>
 #include <duchamp/Utils/GaussSmooth.hh>
 
-GaussSmooth::GaussSmooth()
+template <class Type>
+GaussSmooth<Type>::GaussSmooth()
 {
   allocated=false;
 }
+template GaussSmooth<float>::GaussSmooth();
+template GaussSmooth<double>::GaussSmooth();
 
-GaussSmooth::~GaussSmooth()
+template <class Type>
+GaussSmooth<Type>::~GaussSmooth()
 {
   if(allocated) delete [] kernel;
 }
+template GaussSmooth<float>::~GaussSmooth();
+template GaussSmooth<double>::~GaussSmooth();
 
-GaussSmooth::GaussSmooth(const GaussSmooth& g)
+template <class Type>
+GaussSmooth<Type>::GaussSmooth(const GaussSmooth& g)
 {
   operator=(g);
 }
+template GaussSmooth<float>::GaussSmooth(const GaussSmooth& g);
+template GaussSmooth<double>::GaussSmooth(const GaussSmooth& g);
 
-GaussSmooth& GaussSmooth::operator=(const GaussSmooth& g)
+template <class Type>
+GaussSmooth<Type>& GaussSmooth<Type>::operator=(const GaussSmooth& g)
 {
   if(this==&g) return *this;
   this->kernMaj   = g.kernMaj;
@@ -54,26 +64,35 @@ GaussSmooth& GaussSmooth::operator=(const GaussSmooth& g)
   this->stddevScale = g.stddevScale;
   this->allocated = g.allocated;
   if(this->allocated){
-    this->kernel = new float[this->kernWidth*this->kernWidth];
+    this->kernel = new Type[this->kernWidth*this->kernWidth];
     for(int i=0;i<this->kernWidth*this->kernWidth;i++)
       this->kernel[i] = g.kernel[i];
   }
   return *this;
 }
+template GaussSmooth<float>& GaussSmooth<float>::operator=(const GaussSmooth& g);
+template GaussSmooth<double>& GaussSmooth<double>::operator=(const GaussSmooth& g);
 
-GaussSmooth::GaussSmooth(float maj, float min, float pa)
+template <class Type>
+GaussSmooth<Type>::GaussSmooth(float maj, float min, float pa)
 {
   this->allocated=false;
   this->define(maj, min, pa);
 }
+template GaussSmooth<float>::GaussSmooth(float maj, float min, float pa);
+template GaussSmooth<double>::GaussSmooth(float maj, float min, float pa);
 
-GaussSmooth::GaussSmooth(float maj)
+template <class Type>
+GaussSmooth<Type>::GaussSmooth(float maj)
 {
   this->allocated=false;
   this->define(maj, maj, 0);
 }
+template GaussSmooth<float>::GaussSmooth(float maj);
+template GaussSmooth<double>::GaussSmooth(float maj);
 
-void GaussSmooth::define(float maj, float min, float pa)
+template <class Type>
+void GaussSmooth<Type>::define(float maj, float min, float pa)
 {
 
   this->kernMaj = maj;
@@ -99,7 +118,7 @@ void GaussSmooth::define(float maj, float min, float pa)
 //   std::cerr << "Making a kernel of width " << this->kernWidth << "\n";
 
   if(this->allocated) delete [] this->kernel;
-  this->kernel = new float[this->kernWidth*this->kernWidth];
+  this->kernel = new Type[this->kernWidth*this->kernWidth];
   this->allocated = true;
   this->stddevScale=0.;
   float posang = this->kernPA * M_PI/180.;
@@ -119,8 +138,11 @@ void GaussSmooth::define(float maj, float min, float pa)
   this->stddevScale = sqrt(this->stddevScale);
 //   std::cerr << "Stddev scaling factor = " << this->stddevScale << "\n";
 }
+template void GaussSmooth<float>::define(float maj, float min, float pa);
+template void GaussSmooth<double>::define(float maj, float min, float pa);
 
-float *GaussSmooth::smooth(float *input, int xdim, int ydim)
+template <class Type>
+Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim)
 {
   /**
    * Smooth a given two-dimensional array, of dimensions xdim
@@ -133,15 +155,18 @@ float *GaussSmooth::smooth(float *input, int xdim, int ydim)
    *  \param ydim  The size of the y-dimension of the array.
    *  \return The smoothed array.
    */
-  float *smoothed;
+  Type *smoothed;
   bool *mask = new bool[xdim*ydim];
   for(int i=0;i<xdim*ydim;i++) mask[i]=true;
   smoothed = this->smooth(input,xdim,ydim,mask);
   delete [] mask;
   return smoothed;
 }
+template float *GaussSmooth<float>::smooth(float *input, int xdim, int ydim);
+template double *GaussSmooth<double>::smooth(double *input, int xdim, int ydim);
 
-float *GaussSmooth::smooth(float *input, int xdim, int ydim, bool *mask)
+template <class Type>
+Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim, bool *mask)
 {
   /**
    *  Smooth a given two-dimensional array, of dimensions xdim
@@ -170,11 +195,15 @@ float *GaussSmooth::smooth(float *input, int xdim, int ydim, bool *mask)
   if(!this->allocated) return input;
   else{
 
-    float *output = new float[xdim*ydim];
+    Type *output = new Type[xdim*ydim];
 
     int pos,comp,xcomp,ycomp,fpos,ct;
-    float fsum;
+    float fsum,kernsum=0;
     int kernelHW = this->kernWidth/2;
+
+    for(int i=0;i<this->kernWidth;i++)
+      for(int j=0;j<this->kernWidth;j++)
+	kernsum += this->kernel[i*this->kernWidth+j];
 
     for(int ypos = 0; ypos<ydim; ypos++){
       for(int xpos = 0; xpos<xdim; xpos++){
@@ -208,8 +237,9 @@ float *GaussSmooth::smooth(float *input, int xdim, int ydim, bool *mask)
 
 	    }
 	  }// yoff loop
-	  if(ct>0) output[pos] /= fsum;
-
+// 	  if(ct>0) output[pos] /= fsum;
+// 	  if(ct>0) output[pos] *= kernsum/fsum;
+ 
 	} // else{
 
       } //xpos loop
@@ -219,3 +249,5 @@ float *GaussSmooth::smooth(float *input, int xdim, int ydim, bool *mask)
   }
 
 }
+template float *GaussSmooth<float>::smooth(float *input, int xdim, int ydim, bool *mask);
+template double *GaussSmooth<double>::smooth(double *input, int xdim, int ydim, bool *mask);

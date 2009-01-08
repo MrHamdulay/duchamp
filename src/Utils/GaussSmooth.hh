@@ -36,6 +36,7 @@
  *  smooth a two-dimensional array.
  */
 
+template <class Type>
 class GaussSmooth
 {
 public:
@@ -54,14 +55,17 @@ public:
   void   define(float maj, float min, float pa); 
 
   /** Smooth an array with the Gaussian kernel*/
-  float *smooth(float *input, int xdim, int ydim);  
+  Type *smooth(Type *input, int xdim, int ydim);  
   /** Smooth an array with the Gaussian kernel, using a mask to define
       blank pixels*/
-  float *smooth(float *input, int xdim, int ydim, bool *mask);  
+  Type *smooth(Type *input, int xdim, int ydim, bool *mask);  
   
   void   setKernMaj(float f){kernMaj=f;};
   void   setKernMin(float f){kernMin=f;};
   void   setKernPA(float f){kernPA=f;};
+
+  Type   getKernelPt(int i){return kernel[i];};
+  Type  *getKernel(){return kernel;};
 
   int    getKernWidth(){return kernWidth;};
   float  getStddevScale(){return stddevScale;};
@@ -77,7 +81,7 @@ private:
   float  stddevScale;  ///< The factor by which the rms of the input
 		       ///   array gets scaled by (assuming iid
 		       ///   normally)
-  float *kernel;       ///< The coefficients of the smoothing kernel
+  Type  *kernel;       ///< The coefficients of the smoothing kernel
   bool   allocated;    ///< Have the coefficients been allocated in memory?
 
 };
