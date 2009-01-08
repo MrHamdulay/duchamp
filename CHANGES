@@ -1,3 +1,61 @@
+Duchamp version 1.1.7 (2008/11/28)
+----------------------------------
+
+Improvements:
+
+* The configure script is somewhat more robust to non-standard
+  systems, particularly when the X11 libraries are in unusual
+  places. It can also deal with the slightly different way that
+  wcslib-4.3 installs itself.
+
+* The Karma annotation file now specifies a font - previously it did
+  not and so was at the mercy of whatever was specified in other
+  annotation files being viewed at the same time. Please let me know
+  if the font I've chosen (lucidasans-12) is not suitable.
+
+* The default flag, used in the absence of 'E', 'S' or 'N', is now '-'
+  rather than blank. This will ensure that each column in the results
+  file has something in it.
+
+* The installation part of the Makefile was altered so that the
+  symbolic link Duchamp that points to Duchamp-1.1.7 does not have the
+  absolute path encoded in it. This will enable the files to be moved
+  around at a later date.
+
+Bug Fixes:
+
+* Fixed a bug that caused problems when the flux units were less than
+  5 characters long (e.g. 'K')
+
+* The new velocity width values were not getting proper headers in the
+  VOTable output. This has been remedied.
+
+* Minor improvements to help non-pgplot use
+
+* Minor fix in WCS functionality.
+
+* Minor fixes to the FitsHeader class.
+
+* Improved FITS data reading, that doesn't require a nullarray
+  array. This will reduce memory usage.
+
+* Improved subsection parsing, particularly for non-standard WCS
+  systems.
+
+* Improving the memory allocation of the Cube class.
+
+* Fixed a bug that meant the growthThreshold values were sometimes
+  being lost.
+
+* Improving the way the growing and merging is done, particularly in
+  the case of non-adjacent merging.
+
+Other:
+
+* Numerous changes to the code that do not affect how Duchamp itself
+  runs, but were necessary for code development with the Duchamp
+  libraries (primarily as a part of the ASKAP code development).
+
 Duchamp version 1.1.6 (2008/09/08)
 ----------------------------------
 
