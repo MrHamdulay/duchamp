@@ -181,6 +181,8 @@ namespace duchamp
     void   setSpectraTextFile(std::string fname){spectraTextFile = fname;};
     bool   getFlagOutputMask(){return flagOutputMask;};
     void   setFlagOutputMask(bool flag){flagOutputMask=flag;};
+    bool   getFlagMaskWithObjectNum(){return flagMaskWithObjectNum;};
+    void   setFlagMaskWithObjectNum(bool flag){flagMaskWithObjectNum=flag;};
     bool   getFlagOutputSmooth(){return flagOutputSmooth;};
     void   setFlagOutputSmooth(bool flag){flagOutputSmooth=flag;};
     bool   getFlagOutputRecon(){return flagOutputRecon;};
@@ -365,6 +367,7 @@ namespace duchamp
     bool   flagTextSpectra; ///< Should a text file with all spectra be written?
     std::string spectraTextFile;///< Where the text spectra are written.
     bool   flagOutputMask;  ///< Should the mask image be written?
+    bool   flagMaskWithObjectNum;///< Should the mask values be labeled with the object ID (or just 1)?
     bool   flagOutputSmooth;///< Should the smoothed cube be written?
     bool   flagOutputRecon; ///< Should the reconstructed cube be written to a FITS file?
     bool   flagOutputResid; ///< Should the residuals from the reconstruction be written to a FITS file?

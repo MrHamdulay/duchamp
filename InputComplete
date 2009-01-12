@@ -47,6 +47,8 @@ objectList      *
 # spectraTextFile -- the file in which to save the text-formatted spectra
 # flagOutputMask -- whether to save a FITS file containing a mask
 #                   array, showing the locations of detected objects
+# flagMaskWithObjectNum -- if true, the detected pixels in the mask array have 
+#                          the object ID number, else they all have the value 1.
 # flagOutputSmooth -- whether to save the smoothed arrays as a FITS file
 # flagOutputRecon/Resid -- whether to save the reconstruction & residual arrays
 #                          as FITS files
@@ -72,6 +74,7 @@ spectraFile	duchamp-Spectra.ps
 flagTextSpectra 0
 spectraTextFile duchamp-Spectra.txt
 flagOutputMask  0
+flagMaskWithObjectNum 0
 flagOutputSmooth 0
 flagOutputRecon	0
 flagOutputResid	0

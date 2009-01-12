@@ -91,6 +91,7 @@ namespace duchamp
     this->flagTextSpectra   = false;
     this->spectraTextFile   = "duchamp-Spectra.txt";
     this->flagOutputMask    = false;
+    this->flagMaskWithObjectNum = false;
     this->flagOutputSmooth  = false;
     this->flagOutputRecon   = false;
     this->flagOutputResid   = false;
@@ -206,6 +207,7 @@ namespace duchamp
     this->flagTextSpectra   = p.flagTextSpectra;    
     this->spectraTextFile   = p.spectraTextFile;    
     this->flagOutputMask    = p.flagOutputMask;
+    this->flagMaskWithObjectNum = p.flagMaskWithObjectNum;
     this->flagOutputSmooth  = p.flagOutputSmooth;
     this->flagOutputRecon   = p.flagOutputRecon;
     this->flagOutputResid   = p.flagOutputResid;
@@ -606,6 +608,7 @@ namespace duchamp
 	if(arg=="flagtextspectra") this->flagTextSpectra = readFlag(ss); 
 	if(arg=="spectraTextfile") this->spectraTextFile = readSval(ss); 
 	if(arg=="flagoutputmask")  this->flagOutputMask = readFlag(ss); 
+	if(arg=="flagmaskwithobjectnum") this->flagMaskWithObjectNum = readFlag(ss);
 	if(arg=="flagoutputsmooth")this->flagOutputSmooth = readFlag(ss); 
 	if(arg=="flagoutputrecon") this->flagOutputRecon = readFlag(ss); 
 	if(arg=="flagoutputresid") this->flagOutputResid = readFlag(ss); 

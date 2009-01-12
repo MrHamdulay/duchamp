@@ -58,11 +58,11 @@ namespace duchamp
   {
     /**
      *  A function to save a mask to a FITS file, indicating where the
-     *  detections where made. The mask cube consists of pixels with a
-     *  value of 1 if they are part of a detected object, and 0 if
-     *  they are not.
-     *
-     *
+     *  detections where made. The value of the detected pixels is
+     *  determined by the flagMaskWithObjectNum parameter: if true,
+     *  the value of the pixels is given by the corresponding object
+     *  ID number; if false, they take the value 1 for all
+     *  objects. Pixels not in a detected object have the value 0.
      */
 
     int newbitpix = SHORT_IMG;
@@ -113,6 +113,16 @@ namespace duchamp
 	duchampError("saveMask","Fits Error 6:");
 	fits_report_error(stderr, status);
       }
+      std::string newunits;
+      if(this->par.getFlagMaskWithObjectNum())
+	newunits = "Object ID";
+      else
+	newunits = "Detection flag";
+      fits_update_key(fptrNew, TSTRING, "BUNIT", (char *)newunits.c_str(), "", &status);
+      if (status){
+	duchampError("saveMask","Fits Error 7:");
+	fits_report_error(stderr, status);
+      }
       char *comment = new char[80];
       long dud;
       // Need to correct the dimensions, if we have subsectioned the image
@@ -145,19 +155,20 @@ namespace duchamp
         for(int p=0;p<voxlist.size();p++){
           int pixelpos = voxlist[p].getX() + this->axisDim[0]*voxlist[p].getY() + 
             this->axisDim[0]*this->axisDim[1]*voxlist[p].getZ();
-          mask[pixelpos] = 1;
+          if(this->par.getFlagMaskWithObjectNum()) mask[pixelpos] = this->objectList->at(o).getID();
+	  else mask[pixelpos] = 1;
         }
       }
       status=0;
       fits_write_pix(fptrNew, TSHORT, fpixel, this->numPixels, mask, &status);
       if(status){
-	duchampError("saveMask","Fits Error 7:");
+	duchampError("saveMask","Fits Error 8:");
 	fits_report_error(stderr,status);
       }
       status = 0;
       fits_close_file(fptrNew, &status);
       if (status){
-	duchampError("saveMask","Fits Error 8:");
+	duchampError("saveMask","Fits Error 9:");
 	fits_report_error(stderr, status);
       }
 
