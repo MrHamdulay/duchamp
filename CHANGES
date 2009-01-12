@@ -1,12 +1,13 @@
-Duchamp version 1.1.7 (2008/11/28)
+Duchamp version 1.1.7 (2009/01/12)
 ----------------------------------
 
 Improvements:
 
-* The configure script is somewhat more robust to non-standard
-  systems, particularly when the X11 libraries are in unusual
-  places. It can also deal with the slightly different way that
-  wcslib-4.3 installs itself.
+* The mask file that can be created with flagMask can now specify
+  which object a given detected pixel belongs to, by taking the object
+  ID as its value. This applies if you set flagMaskWithObjectNum=true
+  (it defaults to false, which means each detected pixel has the value
+  1). Non-detected pixels still have the value 0.
 
 * The Karma annotation file now specifies a font - previously it did
   not and so was at the mercy of whatever was specified in other
@@ -16,6 +17,11 @@ Improvements:
 * The default flag, used in the absence of 'E', 'S' or 'N', is now '-'
   rather than blank. This will ensure that each column in the results
   file has something in it.
+
+* The configure script is somewhat more robust to non-standard
+  systems, particularly when the X11 libraries are in unusual
+  places. It can also deal with the slightly different way that
+  wcslib-4.3 installs itself.
 
 * The installation part of the Makefile was altered so that the
   symbolic link Duchamp that points to Duchamp-1.1.7 does not have the
@@ -55,6 +61,7 @@ Other:
 * Numerous changes to the code that do not affect how Duchamp itself
   runs, but were necessary for code development with the Duchamp
   libraries (primarily as a part of the ASKAP code development).
+
 
 Duchamp version 1.1.6 (2008/09/08)
 ----------------------------------
