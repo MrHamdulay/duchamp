@@ -181,14 +181,22 @@ namespace duchamp
     void   setSpectraTextFile(std::string fname){spectraTextFile = fname;};
     bool   getFlagOutputMask(){return flagOutputMask;};
     void   setFlagOutputMask(bool flag){flagOutputMask=flag;};
+    std::string getFileOutputMask(){return fileOutputMask;};
+    void   setFileOutputMask(std::string s){fileOutputMask=s;};
     bool   getFlagMaskWithObjectNum(){return flagMaskWithObjectNum;};
     void   setFlagMaskWithObjectNum(bool flag){flagMaskWithObjectNum=flag;};
     bool   getFlagOutputSmooth(){return flagOutputSmooth;};
     void   setFlagOutputSmooth(bool flag){flagOutputSmooth=flag;};
+    std::string getFileOutputSmooth(){return fileOutputSmooth;};
+    void   setFileOutputSmooth(std::string s){fileOutputSmooth=s;};
     bool   getFlagOutputRecon(){return flagOutputRecon;};
     void   setFlagOutputRecon(bool flag){flagOutputRecon=flag;};
+    std::string getFileOutputRecon(){return fileOutputRecon;};
+    void   setFileOutputRecon(std::string s){fileOutputRecon=s;};
     bool   getFlagOutputResid(){return flagOutputResid;};
     void   setFlagOutputResid(bool flag){flagOutputResid=flag;};
+    std::string getFileOutputResid(){return fileOutputResid;};
+    void   setFileOutputResid(std::string s){fileOutputResid=s;};
     bool   getFlagVOT(){return flagVOT;};
     void   setFlagVOT(bool flag){flagVOT=flag;};
     std::string getVOTFile(){return votFile;};
@@ -367,10 +375,14 @@ namespace duchamp
     bool   flagTextSpectra; ///< Should a text file with all spectra be written?
     std::string spectraTextFile;///< Where the text spectra are written.
     bool   flagOutputMask;  ///< Should the mask image be written?
+    std::string fileOutputMask; ///< The name of the mask image.
     bool   flagMaskWithObjectNum;///< Should the mask values be labeled with the object ID (or just 1)?
     bool   flagOutputSmooth;///< Should the smoothed cube be written?
+    std::string fileOutputSmooth; ///< The name of the smoothed cube file
     bool   flagOutputRecon; ///< Should the reconstructed cube be written to a FITS file?
+    std::string fileOutputRecon; ///< The name of the reconstructed cube file
     bool   flagOutputResid; ///< Should the residuals from the reconstruction be written to a FITS file?
+    std::string fileOutputResid; ///< The name of the residual cube file
     bool   flagVOT;         ///< Should we save results in VOTable format?
     std::string votFile;    ///< Where the VOTable goes.
     bool   flagKarma;       ///< Should we save results in Karma annotation format?

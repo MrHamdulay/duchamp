@@ -336,8 +336,9 @@ value of the detected pixels is determined by the
 of the pixels is given by the corresponding object ID number; if
 \texttt{false}, they take the value 1 for all objects. Pixels not in a
 detected object have the value 0. To create this FITS file, set the
-input parameter \texttt{flagOutputMask=true}. The file will be given
-the name \texttt{image.MASK.fits} (where the input image is called
+input parameter \texttt{flagOutputMask=true}. The file will be named
+according to the \texttt{fileOutputMask} parameter, or, if this is not
+given, \texttt{image.MASK.fits} (where the input image is called
 \texttt{image.fits}).
 
 \secC{Spectral plots}

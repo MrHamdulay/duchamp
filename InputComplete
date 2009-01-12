@@ -8,7 +8,7 @@
 #
 #
 # INPUT RELATED
-# imageFile -- the FITS image.
+# imageFile -- the FITS image.  THERE IS NO DEFAULT FOR THIS.
 # flagSubsection -- whether to get a subsection of that image. 
 # subsection -- the subsection to read in, in format [x1:x2,y1:y2,z1:z2],
 #               or * to indicate the full range 
@@ -47,11 +47,19 @@ objectList      *
 # spectraTextFile -- the file in which to save the text-formatted spectra
 # flagOutputMask -- whether to save a FITS file containing a mask
 #                   array, showing the locations of detected objects
+# fileOutputMask -- the filename for the mask file. If not given, it defaults 
+#                   to the format shown (for input file image.fits)
 # flagMaskWithObjectNum -- if true, the detected pixels in the mask array have 
 #                          the object ID number, else they all have the value 1.
 # flagOutputSmooth -- whether to save the smoothed arrays as a FITS file
+# fileOutputMask -- the filename for the smoothed array file. If not given, it defaults 
+#                   to the format shown (for input file image.fits). See documentation for 
+#                   explanation of format.
 # flagOutputRecon/Resid -- whether to save the reconstruction & residual arrays
 #                          as FITS files
+# fileOutputRecon/Resid -- the filename for the reconstruction or residual files. 
+#                          If not given, it defaults to the format shown (for input 
+#			   file image.fits). See documentation for explanation of format.
 # flagVOT -- make a VOTable file of the results?  
 # votFile -- the file to put it in
 # flagKarma -- make a Karma annotation file of the results?  
@@ -74,10 +82,14 @@ spectraFile	duchamp-Spectra.ps
 flagTextSpectra 0
 spectraTextFile duchamp-Spectra.txt
 flagOutputMask  0
+fileOutputMask  image.MASK.fits
 flagMaskWithObjectNum 0
 flagOutputSmooth 0
+fileOutputSmooth image.SMOOTH-ND-X.fits
 flagOutputRecon	0
+fileOutputRecon image.RECON-A-B-C-D.fits
 flagOutputResid	0
+fileOutputResid image.RESID-A-B-C-D.fits
 flagVOT         0
 votFile         duchamp-Results.xml
 flagKarma       0

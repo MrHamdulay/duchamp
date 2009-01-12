@@ -108,25 +108,30 @@ not matter, they are grouped here in logical sections.
   require it.
 \item[{flagOutputMask [false]}] A flag to say whether or not to save a
   FITS file containing a mask array, with values 1 where there is a
-  detected object and 0 elsewhere. The filename will be derived
-  according to the naming scheme detailed in Section~\ref{sec-maskOut}.
+  detected object and 0 elsewhere. 
+\item[fileOutputMask{ [see text]}] The file to which the mask array is
+  written. If left blank (the default), the naming scheme detailed in
+  Section~\ref{sec-maskOut} is used.
 \item[{flagMaskWithObjectNum [false]}] If this flag is true, the
   detected pixels in the mask image have the corresponding object ID
   as their value. If false, they have the value 1. All non-detected
   pixels have the value 0.
 \item[{flagOutputRecon [false]}] A flag to say whether or not
-  to save the reconstructed cube as a FITS file. The filename will be
-  derived according to the naming scheme detailed in
-  Section~\ref{sec-reconIO}.
+  to save the reconstructed cube as a FITS file. 
+\item[fileOutputRecon{ [see text]}] The file to which the reconstructed array
+  is written. If left blank (the default), the naming scheme detailed
+  in Section~\ref{sec-reconIO} is used.
 \item[{flagOutputResid [false]}] As for
   \texttt{flagOutputRecon}, but for the residual array -- the
-  difference between the original cube and the reconstructed cube. The
-  filename will be derived according to the naming scheme detailed in
-  Section~\ref{sec-reconIO}.
+  difference between the original cube and the reconstructed cube. 
+\item[fileOutputResid{ [see text]}] The file to which the residual array
+  is written. If left blank (the default), the naming scheme detailed
+  in Section~\ref{sec-reconIO} is used.
 \item[{flagOutputSmooth [false]}] A flag to say whether or not
-  to save the smoothed cube as a FITS file. The filename will be
-  derived according to the naming scheme detailed in
-  Section~\ref{sec-smoothing}.
+  to save the smoothed cube as a FITS file. 
+\item[fileOutputSmooth{ [see text]}] The file to which the smoothed array
+  is written. If left blank (the default), the naming scheme detailed
+  in Section~\ref{sec-reconIO} is used.
 \item[{flagVOT [false]}] A flag to say whether to create a
   VOTable file with the detection information. This will be an XML
   file in the Virtual Observatory VOTable format.

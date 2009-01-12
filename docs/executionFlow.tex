@@ -399,11 +399,14 @@ To save the reconstructed array as a FITS file, set
 directory as the input image, so the user needs to have write
 permissions for that directory.
 
-The filename will be derived from the input filename, with extra
-information detailing the reconstruction that has been done. For
-example, suppose \texttt{image.fits} has been reconstructed using a
-3-dimensional reconstruction with filter \#2, thresholded at $4\sigma$
-using all scales. The output filename will then be
+The name of the file can given by the \texttt{fileOutputRecon}
+parameter, but this can be ignored and \duchamp will present a name
+based on the reconstruction parameters. The filename will be derived
+from the input filename, with extra information detailing the
+reconstruction that has been done. For example, suppose
+\texttt{image.fits} has been reconstructed using a 3-dimensional
+reconstruction with filter \#2, thresholded at $4\sigma$ using all
+scales. The output filename will then be
 \texttt{image.RECON-3-2-4-1.fits} (\ie it uses the four parameters
 relevant for the \atrous reconstruction as listed in
 Appendix~\ref{app-param}). The new FITS file will also have these
@@ -427,15 +430,18 @@ reconstruction is performed as normal. Note that to do this, the user
 needs to set \texttt{flagAtrous = true} (obviously, if this is
 \texttt{false}, the reconstruction is not needed).
 
-To save the smoothed array, set \texttt{flagOutputSmooth = true}. The
-name of the saved file will depend on the method of smoothing used. It
-will be either \texttt{image.SMOOTH-1D-a.fits}, where a is replaced by
-the Hanning width used, or \texttt{image.SMOOTH-2D-a-b-c.fits}, where
-the Gaussian kernel parameters are a,b,c. Similarly to the
-reconstruction case, a saved file can be read in by setting
-\texttt{flagSmoothExists = true} and either specifying a file to be
-read with the \texttt{smoothFile} parameter or relying on \duchamp to
-find the file with the name as given above.
+To save the smoothed array, set \texttt{flagOutputSmooth = true}. As
+for the reconstructed/residual arrays, the
+name of the file can given by the \texttt{fileOutputSmooth} parameter,
+but this can be ignored and \duchamp will present a name based on the
+method of smoothing used. It will be either
+\texttt{image.SMOOTH-1D-a.fits}, where a is replaced by the Hanning
+width used, or \texttt{image.SMOOTH-2D-a-b-c.fits}, where the Gaussian
+kernel parameters are a,b,c. Similarly to the reconstruction case, a
+saved file can be read in by setting \texttt{flagSmoothExists = true}
+and either specifying a file to be read with the \texttt{smoothFile}
+parameter or relying on \duchamp to find the file with the name as
+given above.
 
 
 \secB{Searching the image}

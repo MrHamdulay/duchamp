@@ -91,10 +91,14 @@ namespace duchamp
     this->flagTextSpectra   = false;
     this->spectraTextFile   = "duchamp-Spectra.txt";
     this->flagOutputMask    = false;
+    this->fileOutputMask    = "";
     this->flagMaskWithObjectNum = false;
     this->flagOutputSmooth  = false;
+    this->fileOutputSmooth  = "";
     this->flagOutputRecon   = false;
+    this->fileOutputRecon   = "";
     this->flagOutputResid   = false;
+    this->fileOutputResid   = "";
     this->flagVOT           = false;
     this->votFile           = "duchamp-Results.xml";
     this->flagKarma         = false;
@@ -207,10 +211,14 @@ namespace duchamp
     this->flagTextSpectra   = p.flagTextSpectra;    
     this->spectraTextFile   = p.spectraTextFile;    
     this->flagOutputMask    = p.flagOutputMask;
+    this->fileOutputMask    = p.fileOutputMask;
     this->flagMaskWithObjectNum = p.flagMaskWithObjectNum;
     this->flagOutputSmooth  = p.flagOutputSmooth;
+    this->fileOutputSmooth  = p.fileOutputSmooth;
     this->flagOutputRecon   = p.flagOutputRecon;
+    this->fileOutputRecon   = p.fileOutputRecon;
     this->flagOutputResid   = p.flagOutputResid;
+    this->fileOutputResid   = p.fileOutputResid;
     this->flagVOT           = p.flagVOT;         
     this->votFile           = p.votFile;        
     this->flagKarma         = p.flagKarma;      
@@ -608,10 +616,14 @@ namespace duchamp
 	if(arg=="flagtextspectra") this->flagTextSpectra = readFlag(ss); 
 	if(arg=="spectraTextfile") this->spectraTextFile = readSval(ss); 
 	if(arg=="flagoutputmask")  this->flagOutputMask = readFlag(ss); 
+	if(arg=="fileoutputmask")  this->fileOutputMask = readSval(ss);
 	if(arg=="flagmaskwithobjectnum") this->flagMaskWithObjectNum = readFlag(ss);
 	if(arg=="flagoutputsmooth")this->flagOutputSmooth = readFlag(ss); 
+	if(arg=="fileoutputsmooth")this->fileOutputSmooth = readSval(ss);
 	if(arg=="flagoutputrecon") this->flagOutputRecon = readFlag(ss); 
+	if(arg=="fileoutputrecon") this->fileOutputRecon = readSval(ss);
 	if(arg=="flagoutputresid") this->flagOutputResid = readFlag(ss); 
+	if(arg=="fileoutputresid") this->fileOutputResid = readSval(ss);
 	if(arg=="flagvot")         this->flagVOT = readFlag(ss); 
 	if(arg=="votfile")         this->votFile = readSval(ss); 
 	if(arg=="flagkarma")       this->flagKarma = readFlag(ss); 
@@ -879,7 +891,6 @@ namespace duchamp
       theStream<<std::setw(widthText)<<"Karma annotation file"                
 	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[karmaFile]"
 	       <<"  =  " <<resetiosflags(std::ios::right)
-	     
 	       <<par.getKarmaFile()      <<std::endl;
     }
     if(par.getFlagMaps()){
@@ -900,22 +911,30 @@ namespace duchamp
       theStream<<std::setw(widthText)<<"Saving reconstructed cube?"           
 	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagOutputRecon]"
 	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagOutputRecon())<<std::endl;
+	       <<stringize(par.getFlagOutputRecon());
+      if(par.getFlagOutputRecon()) theStream << " --> " << par.outputReconFile();
+      theStream<<std::endl;
       theStream<<std::setw(widthText)<<"Saving residuals from reconstruction?"
 	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagOutputResid]"
 	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagOutputResid())<<std::endl;
+	       <<stringize(par.getFlagOutputResid());
+      if(par.getFlagOutputResid()) theStream << " --> " << par.outputResidFile();
+      theStream<<std::endl;
     }						       
     if(par.getFlagSmooth()){			       
       theStream<<std::setw(widthText)<<"Saving smoothed cube?"           
 	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagOutputSmooth]"
 	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagOutputSmooth())<<std::endl;
+	       <<stringize(par.getFlagOutputSmooth());
+      if(par.getFlagOutputSmooth()) theStream << " --> " << par.outputSmoothFile();
+      theStream<<std::endl;
     }						       
     theStream<<std::setw(widthText)<<"Saving mask cube?"           
 	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagOutputMask]"
 	     <<"  =  " <<resetiosflags(std::ios::right)
-	     <<stringize(par.getFlagOutputMask())<<std::endl;
+	     <<stringize(par.getFlagOutputMask());
+    if(par.getFlagOutputMask()) theStream << " --> " << par.outputMaskFile();
+    theStream<<std::endl;
     theStream  <<"------"<<std::endl;
     if(par.getFlagBlankPix()){
       theStream<<std::setw(widthText)<<"Blank Pixel Value"                    
@@ -1126,12 +1145,15 @@ namespace duchamp
      *  part of an object. If the input image is image.fits, then the
      *  output will be image.MASK.fits.
      */
-    std::string inputName = this->imageFile;
-    std::stringstream ss;
-    ss << inputName.substr(0,inputName.size()-5);  
-    // remove the ".fits" on the end.
-    ss << ".MASK.fits";
-    return ss.str();
+    if(this->fileOutputMask==""){
+      std::string inputName = this->imageFile;
+      std::stringstream ss;
+      ss << inputName.substr(0,inputName.size()-5);  
+      // remove the ".fits" on the end.
+      ss << ".MASK.fits";
+      return ss.str();
+    }
+    else return this->fileOutputMask;
   }
 
   std::string Param::outputSmoothFile()
@@ -1146,19 +1168,22 @@ namespace duchamp
      *            kernMaj=3, kernMin=2 and kernPA=20 degrees.
      *   </ul>
      */
-    std::string inputName = this->imageFile;
-    std::stringstream ss;
-    ss << inputName.substr(0,inputName.size()-5);  
-    // remove the ".fits" on the end.
-    if(this->flagSubsection) ss<<".sub";
-    if(this->smoothType=="spectral")
-      ss << ".SMOOTH-1D-" << this->hanningWidth << ".fits";
-    else if(this->smoothType=="spatial")
-      ss << ".SMOOTH-2D-" 
-	 << this->kernMaj << "-"
-	 << this->kernMin << "-"
-	 << this->kernPA  << ".fits";
-    return ss.str();
+    if(this->fileOutputSmooth==""){
+      std::string inputName = this->imageFile;
+      std::stringstream ss;
+      ss << inputName.substr(0,inputName.size()-5);  
+      // remove the ".fits" on the end.
+      if(this->flagSubsection) ss<<".sub";
+      if(this->smoothType=="spectral")
+	ss << ".SMOOTH-1D-" << this->hanningWidth << ".fits";
+      else if(this->smoothType=="spatial")
+	ss << ".SMOOTH-2D-" 
+	   << this->kernMaj << "-"
+	   << this->kernMin << "-"
+	   << this->kernPA  << ".fits";
+      return ss.str();
+    }
+    else return this->fileOutputSmooth;
   }
 
   std::string Param::outputReconFile()
@@ -1169,17 +1194,20 @@ namespace duchamp
      *  the output will be eg. image.RECON-3-2-4-1.fits, where the numbers are
      *  3=reconDim, 2=filterCode, 4=snrRecon, 1=minScale
      */
-    std::string inputName = this->imageFile;
-    std::stringstream ss;
-    // First we remove the ".fits" from the end of the filename.
-    ss << inputName.substr(0,inputName.size()-5);  
-    if(this->flagSubsection) ss<<".sub";
-    ss << ".RECON-" << this->reconDim 
-       << "-"       << this->filterCode
-       << "-"       << this->snrRecon
-       << "-"       << this->scaleMin
-       << ".fits";
-    return ss.str();
+    if(this->fileOutputRecon==""){
+      std::string inputName = this->imageFile;
+      std::stringstream ss;
+      // First we remove the ".fits" from the end of the filename.
+      ss << inputName.substr(0,inputName.size()-5);  
+      if(this->flagSubsection) ss<<".sub";
+      ss << ".RECON-" << this->reconDim 
+	 << "-"       << this->filterCode
+	 << "-"       << this->snrRecon
+	 << "-"       << this->scaleMin
+	 << ".fits";
+      return ss.str();
+    }
+    else return this->fileOutputRecon;
   }
 
   std::string Param::outputResidFile()
@@ -1190,17 +1218,20 @@ namespace duchamp
      *  the output will be eg. image.RESID-3-2-4-1.fits, where the numbers are
      *  3=reconDim, 2=filterCode, 4=snrRecon, 1=scaleMin
      */
-    std::string inputName = this->imageFile;
-    std::stringstream ss;
-    // First we remove the ".fits" from the end of the filename.
-    ss << inputName.substr(0,inputName.size()-5);
-    if(this->flagSubsection) ss<<".sub";
-    ss << ".RESID-" << this->reconDim 
-       << "-"       << this->filterCode
-       << "-"       << this->snrRecon
-       << "-"       << this->scaleMin
-       << ".fits";
-    return ss.str();
+    if(this->fileOutputResid==""){
+      std::string inputName = this->imageFile;
+      std::stringstream ss;
+      // First we remove the ".fits" from the end of the filename.
+      ss << inputName.substr(0,inputName.size()-5);
+      if(this->flagSubsection) ss<<".sub";
+      ss << ".RESID-" << this->reconDim 
+	 << "-"       << this->filterCode
+	 << "-"       << this->snrRecon
+	 << "-"       << this->scaleMin
+	 << ".fits";
+      return ss.str();
+    }
+    else return this->fileOutputResid;
   }
 
 }
