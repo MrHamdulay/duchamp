@@ -31,6 +31,7 @@
 #include <iostream>
 #include <string>
 
+// need to undef these in case other packages have them defined.
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_NAME
 #undef PACKAGE_STRING
@@ -157,31 +158,31 @@ Selavy re-analyses and re-plots objects found by Duchamp.\n\
   const std::string header_reconHistory1 = 
     "Reconstructed with a trous wavelet technique";
   const std::string header_reconHistory2 = 
-    "Reconstruction by Duchamp v." + VERSION;
+    "Reconstruction by " + PROGNAME + " v." + VERSION;
   const std::string header_reconHistory_input = 
-    "Original (input) image used by Duchamp follows";
+    "Original (input) image used by " + PROGNAME + " follows";
   const std::string header_reconSubsection_comment  = 
-    "A subsection of the original was reconstructed by Duchamp";
+    "A subsection of the original was reconstructed by " + PROGNAME;
   const std::string header_atrous_comment  = 
     "The following are the Duchamp parameters used in reconstruction";
 
   // Descriptive Headers: for the Smoothing case
   const std::string header_smoothHistory = 
-    "Smoothed by Duchamp v." + VERSION;
+    "Smoothed by " + PROGNAME + " v." + VERSION;
   const std::string header_smoothHistory_input = 
-    "Original (input) image used by Duchamp follows";
+    "Original (input) image used by " + PROGNAME + " follows";
   const std::string header_smoothSubsection_comment  = 
-    "A subsection of the original was smoothed by Duchamp";
+    "A subsection of the original was smoothed by " + PROGNAME;
   const std::string header_smoothSpatial = "Spatial, gaussian kernel";
   const std::string header_smoothSpectral= "Spectral, hanning filter";
 
   // Descriptive Headers: for the output Mask image
   const std::string header_maskHistory =
-    "Results of searching by Duchamp v." + VERSION;
+    "Results of searching by " + PROGNAME + " v." + VERSION;
   const std::string header_maskHistory_input = 
-    "Input image used by Duchamp follows";
+    "Input image used by " + PROGNAME + " follows";
   const std::string header_maskSubsection_comment = 
-    "A subsection of the original was searched by Duchamp";
+    "A subsection of the original was searched by " + PROGNAME;
 
 }
 

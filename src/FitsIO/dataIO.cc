@@ -95,7 +95,6 @@ namespace duchamp
     if((spc>=0)&&(numAxes>spc)) npix *= dimAxes[spc];
 
     float *pixarray = new float[npix];// the array of pixel values
-//     char *nullarray = new char[npix]; // the array of null pixels
     long *inc = new long[numAxes];    // the data-sampling increment
 
     // define the first and last pixels for each axis.
@@ -114,10 +113,6 @@ namespace duchamp
 
     // read the relevant subset, defined by the first & last pixel ranges
     status = 0;
- //    if(fits_read_subsetnull_flt(fptr, colnum, numAxes, dimAxes,
-// 				fpixel, lpixel, inc, 
-// 				pixarray, nullarray, &anynul, &status)){
-    float blank=this->par.getBlankPixVal();
     if(fits_read_subset_flt(fptr, colnum, numAxes, dimAxes,
 			    fpixel, lpixel, inc, 
 			    this->par.getBlankPixVal(), pixarray, &anynul, &status)){
@@ -147,20 +142,6 @@ namespace duchamp
     delete [] pixarray;
     delete [] dimAxes;
 
-    //------------------------------------------------------------- 
-    // Once the array is saved, change the value of the blank pixels
-    // from 0 (as they are set by fits_read_subsetnull_flt) to the
-    // correct blank value as determined by the above code.
-//     if(anynul){
-//       int ct=0;
-//       for(int i=0; i<npix;i++) if(nullarray[i]) ct++;
-      
-//       for(int i=0; i<npix;i++){
-// 	if(nullarray[i]) this->array[i] = this->par.getBlankPixVal();  
-//       }
-//     }
-
-//     delete [] nullarray;
     // Close the FITS file -- not needed any more in this function.
     status = 0;
     fits_close_file(fptr, &status);
