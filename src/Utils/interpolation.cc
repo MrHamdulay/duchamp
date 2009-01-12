@@ -36,7 +36,6 @@ float interpolateToFindX(float yval, float *x, float *y, int size, int min, int 
   if(max<0) max=size-1;
 
   int i=min+1;
-  bool foundIt=false;
   while( ((y[i]-yval)*(y[min]-yval) > 0) && i<max) i++;
   if(i==max){
     if(y[min]>y[max]){ if(y[min]>yval) i=max; else i=min; }
