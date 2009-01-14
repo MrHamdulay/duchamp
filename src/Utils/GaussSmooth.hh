@@ -55,10 +55,10 @@ public:
   void   define(float maj, float min, float pa); 
 
   /** Smooth an array with the Gaussian kernel*/
-  Type *smooth(Type *input, int xdim, int ydim);  
+  Type *smooth(Type *input, int xdim, int ydim, bool scaleByCoverage=false);  
   /** Smooth an array with the Gaussian kernel, using a mask to define
       blank pixels*/
-  Type *smooth(Type *input, int xdim, int ydim, bool *mask);  
+  Type *smooth(Type *input, int xdim, int ydim, bool *mask, bool scaleByCoverage=false);  
   
   void   setKernMaj(float f){kernMaj=f;};
   void   setKernMin(float f){kernMin=f;};

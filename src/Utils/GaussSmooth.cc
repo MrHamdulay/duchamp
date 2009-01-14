@@ -62,6 +62,7 @@ GaussSmooth<Type>& GaussSmooth<Type>::operator=(const GaussSmooth& g)
   this->kernPA    = g.kernPA;
   this->kernWidth = g.kernWidth;
   this->stddevScale = g.stddevScale;
+  if(this->allocated) delete [] this->kernel;
   this->allocated = g.allocated;
   if(this->allocated){
     this->kernel = new Type[this->kernWidth*this->kernWidth];
@@ -142,7 +143,7 @@ template void GaussSmooth<float>::define(float maj, float min, float pa);
 template void GaussSmooth<double>::define(float maj, float min, float pa);
 
 template <class Type>
-Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim)
+Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim, bool scaleByCoverage)
 {
   /**
    * Smooth a given two-dimensional array, of dimensions xdim
@@ -158,15 +159,15 @@ Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim)
   Type *smoothed;
   bool *mask = new bool[xdim*ydim];
   for(int i=0;i<xdim*ydim;i++) mask[i]=true;
-  smoothed = this->smooth(input,xdim,ydim,mask);
+  smoothed = this->smooth(input,xdim,ydim,mask,scaleByCoverage);
   delete [] mask;
   return smoothed;
 }
-template float *GaussSmooth<float>::smooth(float *input, int xdim, int ydim);
-template double *GaussSmooth<double>::smooth(double *input, int xdim, int ydim);
+template float *GaussSmooth<float>::smooth(float *input, int xdim, int ydim, bool scaleByCoverage);
+template double *GaussSmooth<double>::smooth(double *input, int xdim, int ydim, bool scaleByCoverage);
 
 template <class Type>
-Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim, bool *mask)
+Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, bool scaleByCoverage)
 {
   /**
    *  Smooth a given two-dimensional array, of dimensions xdim
@@ -237,8 +238,8 @@ Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim, bool *mask)
 
 	    }
 	  }// yoff loop
-// 	  if(ct>0) output[pos] /= fsum;
-// 	  if(ct>0) output[pos] *= kernsum/fsum;
+// 	  if(ct>0 && scaleByCoverage) output[pos] /= fsum;
+ 	  if(ct>0 && scaleByCoverage) output[pos] *= kernsum/fsum;
  
 	} // else{
 
@@ -249,5 +250,5 @@ Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim, bool *mask)
   }
 
 }
-template float *GaussSmooth<float>::smooth(float *input, int xdim, int ydim, bool *mask);
-template double *GaussSmooth<double>::smooth(double *input, int xdim, int ydim, bool *mask);
+template float *GaussSmooth<float>::smooth(float *input, int xdim, int ydim, bool *mask, bool scaleByCoverage);
+template double *GaussSmooth<double>::smooth(double *input, int xdim, int ydim, bool *mask, bool scaleByCoverage);
