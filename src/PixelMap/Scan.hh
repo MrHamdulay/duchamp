@@ -62,6 +62,7 @@ namespace PixelInfo
 
     /** Set the Scan to the null values, with the length=0. */
     void clear(){itsY=-1;itsX=-1;itsXLen=0;};
+    bool isNull();
 
     // Accessor functions -- obvious.
     long getY(){return itsY;};

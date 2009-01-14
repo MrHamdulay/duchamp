@@ -63,6 +63,12 @@ namespace PixelInfo
     Scan null(-1,-1,0); 
     return null;
   }
+
+  bool Scan::isNull()
+  {
+    return (itsY==-1 && itsX==-1 && itsXLen==0);
+  }
+
   //------------------------------------------------------
 
   Scan unite(Scan &scan1, Scan &scan2)
@@ -73,25 +79,16 @@ namespace PixelInfo
      *
      */
 
-    // TEST FOR FAILURES:
-    bool fail = false;
-    fail = fail || (scan1.getY()!=scan2.getY());
-    fail = fail || ( (scan1.getX() < scan2.getX()) && 
-		     (scan2.getX() > scan1.getXmax()+1) );
-    fail = fail || ( (scan2.getX() < scan1.getX()) && 
-		     (scan1.getX() > scan2.getXmax()+1) );
     Scan joined;
-    if(fail){
+    if(!touching(scan1,scan2)){
       //     std::cerr << "Joining scans failed! (" 
       // 	      << scan1 <<"),("<<scan2<<") don't overlap\n";
       joined = nullScan();
     }
     else{
       long y = scan1.getY();
-      long x = scan1.getX();
-      if(scan2.getX()<x) x=scan2.getX();
-      long xmax=scan1.getXmax();
-      if(scan2.getXmax()>xmax) xmax=scan2.getXmax();
+      long x = std::min(scan1.getX(),scan2.getX());
+      long xmax = std::max(scan1.getXmax(),scan2.getXmax());
       joined.define(y,x,xmax-x+1);
     }
     return joined;
@@ -108,25 +105,16 @@ namespace PixelInfo
      *
      */
 
-    bool fail = false;
-    fail = fail || (scan1.getY()!=scan2.getY());
-    fail = fail || ( (scan1.getX() < scan2.getX()) && 
-		     (scan2.getX() > scan1.getXmax()+1) );
-    fail = fail || ( (scan2.getX() < scan1.getX()) && 
-		     (scan1.getX() > scan2.getXmax()+1) );
-
     Scan intersection;
-    if(fail){
+    if(!overlap(scan1,scan2)){
       //     std::cerr << "Intersecting scans failed! (" 
       // 	      << scan1 <<"),("<<scan2<<") don't overlap.\n";
       intersection = nullScan();
     }
     else{
       long y = scan1.getY();
-      long x = scan1.getX();
-      if(scan2.getX()>x) x=scan2.getX();
-      long xmax=scan1.getXmax();
-      if(scan2.getXmax()<xmax) xmax=scan2.getXmax();
+      long x = std::max(scan1.getX(),scan2.getX());
+      long xmax = std::min(scan1.getXmax(),scan2.getXmax());
       intersection.define(y,x,xmax-x+1);
     }
     return intersection;
@@ -140,11 +128,12 @@ namespace PixelInfo
      *  (ie. there are no pixels lying between the two scans).
      * \return A bool value.
      */
-    if(scan1.getY()!=scan2.getY()) return false;
-    else if(scan1.getX() <= scan2.getX())
-      return (scan2.getX() <= scan1.getXmax()+1);
-    else
-      return (scan1.getX() <= scan2.getXmax()+1);
+//     if(scan1.getY()!=scan2.getY()) return false;
+//     else if(scan1.getX() <= scan2.getX())
+//       return (scan2.getX() <= scan1.getXmax()+1);
+//     else
+//       return (scan1.getX() <= scan2.getXmax()+1);
+    return overlap(scan1,scan2) || adjacent(scan1,scan2);
   
   }
   //------------------------------------------------------
@@ -189,9 +178,12 @@ namespace PixelInfo
 //     theStream << scan.itsY;
 //     theStream << " " << scan.itsX;
 //     theStream << " " << scan.itsXLen;
-    theStream << scan.itsX;
-    theStream << "-" << scan.getXmax();
-    theStream << ", " << scan.itsY;
+    if(scan.isNull()) theStream << "NULL";
+    else{
+      theStream << scan.itsX;
+      theStream << "-" << scan.getXmax();
+      theStream << ", " << scan.itsY;
+    }
     return theStream;
   }
   //------------------------------------------------------
