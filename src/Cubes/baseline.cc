@@ -37,14 +37,13 @@ namespace duchamp
 
   void Cube::removeBaseline()
   {
-    /**
-     *  A front-end to the getBaseline routine, specialised for the 
-     *  Cube data structure. Calls getBaseline on each spectrum individually.
-     *  Upon exit, the original array minus its spectral baseline is stored
-     *   in this->array and the baseline is in this->baseline.
-     *  If the reconstructed array exists, the baseline is subtracted from 
-     *   it as well.
-     */
+    /// @details
+    ///  A front-end to the getBaseline routine, specialised for the 
+    ///  Cube data structure. Calls getBaseline on each spectrum individually.
+    ///  Upon exit, the original array minus its spectral baseline is stored
+    ///   in this->array and the baseline is in this->baseline.
+    ///  If the reconstructed array exists, the baseline is subtracted from 
+    ///   it as well.
 
     float *spec     = new float[this->axisDim[2]];
     float *thisBaseline = new float[this->axisDim[2]];
@@ -81,10 +80,9 @@ namespace duchamp
 
   void Cube::replaceBaseline()
   {
-    /**
-     *  A routine to replace the baseline flux on the reconstructed array 
-     *   (if it exists) and the fluxes of each of the detected objects (if any).
-     */
+    /// @details
+    ///  A routine to replace the baseline flux on the reconstructed array 
+    ///   (if it exists) and the fluxes of each of the detected objects (if any).
 
     if(this->par.getFlagBaseline()){
 

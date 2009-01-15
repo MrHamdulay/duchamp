@@ -63,21 +63,19 @@ namespace PixelInfo
 
   void Object2D::addPixel(long x, long y)
   {
-    /**
-     *  This function has three parts to it:
-     *  <ul><li> First, it searches through the existing scans to see if 
-     *            a) there is a scan of the same y-value present, and 
-     *            b) whether the (x,y) pixel lies in or next to an existing 
-     *            Scan. If so, it is added and the Scan is grown if need be.
-     *            If this isn't the case, a new Scan of length 1 is added to 
-     *            the list. 
-     *      <li> If the Scan list was altered, all are checked to see whether 
-     *            there is now a case of Scans touching. If so, they are 
-     *            combined and added to the end of the list.
-     *      <li> If the pixel was added, the parameters are updated and the 
-     *           pixel counter incremented.
-     *  </ul>
-     */ 
+    ///  This function has three parts to it:
+    ///  <ul><li> First, it searches through the existing scans to see if 
+    ///            a) there is a scan of the same y-value present, and 
+    ///            b) whether the (x,y) pixel lies in or next to an existing 
+    ///            Scan. If so, it is added and the Scan is grown if need be.
+    ///            If this isn't the case, a new Scan of length 1 is added to 
+    ///            the list. 
+    ///      <li> If the Scan list was altered, all are checked to see whether 
+    ///            there is now a case of Scans touching. If so, they are 
+    ///            combined and added to the end of the list.
+    ///      <li> If the pixel was added, the parameters are updated and the 
+    ///           pixel counter incremented.
+    ///  </ul>
 
 
     bool flagDone=false,flagChanged=false, isNew=false;

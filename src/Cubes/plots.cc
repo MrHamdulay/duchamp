@@ -76,18 +76,19 @@ namespace duchamp
     }
 
     //----------------------------------------------------------
-    int SpectralPlot::setUpPlot(std::string pgDestination){
-      /** 
-       * Opens the designated pgplot device.  Scales the paper so that
-       * it fits on an A4 sheet (using known values of the default
-       * pgplot offsets).  
-       *
-       * \param pgDestination The std::string indicating the PGPLOT device to
-       * be written to.
-       *
-       * \return The value returned by mycpgopen. If <= 0, then an error
-       * has occurred.
-       */
+    int SpectralPlot::setUpPlot(std::string pgDestination)
+    {
+      ///  @details
+      /// Opens the designated pgplot device.  Scales the paper so that
+      /// it fits on an A4 sheet (using known values of the default
+      /// pgplot offsets).  
+      /// 
+      /// \param pgDestination The std::string indicating the PGPLOT device to
+      /// be written to.
+      /// 
+      /// \return The value returned by mycpgopen. If <= 0, then an error
+      /// has occurred.
+
       this->paperHeight = this->paperWidth*M_SQRT2; 
       if(this->paperHeight+2*Plot::psVoffset > Plot::a4height){
 	this->paperHeight = Plot::a4height - 2*Plot::psVoffset;
@@ -99,14 +100,15 @@ namespace duchamp
       return this->identifier;
     }
     //----------------------------------------------------------
-    void SpectralPlot::calcCoords(){
-      /**
-       * Calculates the boundaries for the various boxes, in inches measured
-       *  from the lower left corner.
-       * Based on the fact that there are numOnPage spectra shown on each 
-       *  page, going down the page in increasing number (given by 
-       *  SpectralPlot::spectraCount).
-       */
+    void SpectralPlot::calcCoords()
+    {
+      /// @details
+      /// Calculates the boundaries for the various boxes, in inches measured
+      ///  from the lower left corner.
+      /// Based on the fact that there are numOnPage spectra shown on each 
+      ///  page, going down the page in increasing number (given by 
+      ///  SpectralPlot::spectraCount).
+
       int posOnPage = (this->numOnPage - 
 		       (this->spectraCount%this->numOnPage))
 	%this->numOnPage;
@@ -122,14 +124,15 @@ namespace duchamp
       this->mapCoords[1]  = this->mapCoords[0] + (this->mapCoords[3]-this->mapCoords[2]);
     }
     //----------------------------------------------------------
-    void SpectralPlot::gotoHeader(std::string xlabel){
-      /** 
-       * Calls calcCoords, to calculate correct coordinates for this spectrum.
-       * Defines the region for the header information, making it centred
-       *  on the page.
-       * Also writes the velocity (x axis) label, given by the string argument.
-       * \param xlabel Label to go on the velocity/spectral axis.
-       */
+    void SpectralPlot::gotoHeader(std::string xlabel)
+    {
+      /// @details 
+      /// Calls calcCoords, to calculate correct coordinates for this spectrum.
+      /// Defines the region for the header information, making it centred
+      ///  on the page.
+      /// Also writes the velocity (x axis) label, given by the string argument.
+      /// \param xlabel Label to go on the velocity/spectral axis.
+
       if(spectraCount%numOnPage==0) cpgpage();
       spectraCount++;
       this->calcCoords();
@@ -138,17 +141,18 @@ namespace duchamp
       cpgmtxt("b",Plot::spXlabelOffset,0.5,0.5,xlabel.c_str());
     }
     //----------------------------------------------------------
-    void SpectralPlot::gotoMainSpectrum(float x1, float x2, float y1, float y2, std::string ylabel){
-      /**
-       *  Defines the region for the main spectrum.
-       *  Draws the box, with tick marks, and 
-       *   writes the flux (y axis) label, given by the string argument.
-       * \param x1 Minimum X-coordinate of box.
-       * \param x2 Maximum X-coordinate of box.
-       * \param y1 Minimum Y-coordinate of box.
-       * \param y2 Maximum Y-coordinate of box.
-       * \param ylabel Label for the flux (Y) axis.
-       */
+    void SpectralPlot::gotoMainSpectrum(float x1, float x2, float y1, float y2, std::string ylabel)
+    {
+      /// @details
+      ///  Defines the region for the main spectrum.
+      ///  Draws the box, with tick marks, and 
+      ///   writes the flux (y axis) label, given by the string argument.
+      /// \param x1 Minimum X-coordinate of box.
+      /// \param x2 Maximum X-coordinate of box.
+      /// \param y1 Minimum Y-coordinate of box.
+      /// \param y2 Maximum Y-coordinate of box.
+      /// \param ylabel Label for the flux (Y) axis.
+
       cpgvsiz(this->mainCoords[0],this->mainCoords[1],
 	      this->mainCoords[2],this->mainCoords[3]);
       cpgsch(Plot::spIndexSize);
@@ -158,15 +162,16 @@ namespace duchamp
       cpgmtxt("l",Plot::spYlabelOffset,0.5,0.5,ylabel.c_str());
     }
     //----------------------------------------------------------
-    void SpectralPlot::gotoZoomSpectrum(float x1, float x2, float y1, float y2){
-      /**
-       *   Defines the region for the zoomed-in part of the spectrum.
-       *   Draws the box, with special tick marks on the bottom axis.
-       * \param x1 Minimum X-coordinate of box.
-       * \param x2 Maximum X-coordinate of box.
-       * \param y1 Minimum Y-coordinate of box.
-       * \param y2 Maximum Y-coordinate of box.
-       */
+    void SpectralPlot::gotoZoomSpectrum(float x1, float x2, float y1, float y2)
+    {
+      /// @details
+      ///   Defines the region for the zoomed-in part of the spectrum.
+      ///   Draws the box, with special tick marks on the bottom axis.
+      /// \param x1 Minimum X-coordinate of box.
+      /// \param x2 Maximum X-coordinate of box.
+      /// \param y1 Minimum Y-coordinate of box.
+      /// \param y2 Maximum Y-coordinate of box.
+
       cpgvsiz(this->zoomCoords[0],this->zoomCoords[1],
 	      this->zoomCoords[2],this->zoomCoords[3]);
       cpgsch(Plot::spIndexSize);
@@ -208,19 +213,21 @@ namespace duchamp
       }
     }
     //----------------------------------------------------------
-    void SpectralPlot::gotoMap(){
+    void SpectralPlot::gotoMap()
+    {
       cpgvsiz(this->mapCoords[0],this->mapCoords[1],
 	      this->mapCoords[2],this->mapCoords[3]);
       cpgsch(Plot::spIndexSize);
     }
     //----------------------------------------------------------
-    void SpectralPlot::drawVelRange(float v1, float v2){
-      /**
-       * Draws two vertical lines at the limits of velocity 
-       *  given by the arguments.
-       * \param v1 Minimum velocity. 
-       * \param v2 Maximum velocity.
-       */
+    void SpectralPlot::drawVelRange(float v1, float v2)
+    {
+      /// @details
+      /// Draws two vertical lines at the limits of velocity 
+      ///  given by the arguments.
+      /// \param v1 Minimum velocity. 
+      /// \param v2 Maximum velocity.
+
       int ci,ls;
       float dud,min,max;
       cpgqwin(&dud,&dud,&min,&max);
@@ -234,13 +241,14 @@ namespace duchamp
       cpgsls(ls);
     }
     //----------------------------------------------------------
-    void SpectralPlot::drawMWRange(float v1, float v2){
-      /** 
-       * Draws a box showing the extent of channels masked by the 
-       *  Milky Way parameters
-       * \param v1 Minimum velocity of the Milky Way range.
-       * \param v2 Maximum velocity of the Milky Way range.
-       */
+    void SpectralPlot::drawMWRange(float v1, float v2)
+    {
+      ///  @details
+      /// Draws a box showing the extent of channels masked by the 
+      ///  Milky Way parameters
+      /// \param v1 Minimum velocity of the Milky Way range.
+      /// \param v2 Maximum velocity of the Milky Way range.
+
       int ci,fs;
       float dud,min,max,height;
       cpgqwin(&dud,&dud,&min,&max);
@@ -320,21 +328,22 @@ namespace duchamp
 
     //----------------------------------------------------------
 
-    int ImagePlot::setUpPlot(std::string pgDestination, float x, float y){
-      /**
-       *  Opens a pgplot device and scales it to the correct shape.
-       *  In doing so, the dimensions for the image are set, and the required 
-       *   aspect ratios of the image and of the plot are calculated.
-       *  If the resulting image is going to be tall enough to exceed the 
-       *   maximum height (given the default width), then scale everything 
-       *   down by enough to make the height equal to maxPaperHeight.
-       * \param pgDestination  The string indicating the PGPLOT device to be 
-       *   written to.
-       * \param x The length of the X-axis.
-       * \param y The length of the Y-axis.
-       * \return The value returned by mycpgopen: if <= 0, then an error 
-       *  has occurred.
-       */
+    int ImagePlot::setUpPlot(std::string pgDestination, float x, float y)
+    {
+      /// @details
+      ///  Opens a pgplot device and scales it to the correct shape.
+      ///  In doing so, the dimensions for the image are set, and the required 
+      ///   aspect ratios of the image and of the plot are calculated.
+      ///  If the resulting image is going to be tall enough to exceed the 
+      ///   maximum height (given the default width), then scale everything 
+      ///   down by enough to make the height equal to maxPaperHeight.
+      /// \param pgDestination  The string indicating the PGPLOT device to be 
+      ///   written to.
+      /// \param x The length of the X-axis.
+      /// \param y The length of the Y-axis.
+      /// \return The value returned by mycpgopen: if <= 0, then an error 
+      ///  has occurred.
+
       this->xdim = x;
       this->ydim = y;
       this->imageRatio= this->ydim / this->xdim; 
@@ -355,18 +364,19 @@ namespace duchamp
     }
     //----------------------------------------------------------
     void ImagePlot::drawMapBox(float x1, float x2, float y1, float y2, 
-			       std::string xlabel, std::string ylabel){
-      /**
-       *  Defines the region that the box containing the map is to go in,
-       *  and draws the box with limits given by the arguments. 
-       *  Also writes labels on both X- and Y-axes.
-       * \param x1 Minimum X-axis value.
-       * \param x2 Maximum X-axis value.
-       * \param y1 Minimum Y-axis value.
-       * \param y2 Maximum Y-axis value.
-       * \param xlabel The label to be put on the X-axis.
-       * \param ylabel The label to be put on the Y-axis.
-       */
+			       std::string xlabel, std::string ylabel)
+    {
+      /// @details
+      ///  Defines the region that the box containing the map is to go in,
+      ///  and draws the box with limits given by the arguments. 
+      ///  Also writes labels on both X- and Y-axes.
+      /// \param x1 Minimum X-axis value.
+      /// \param x2 Maximum X-axis value.
+      /// \param y1 Minimum Y-axis value.
+      /// \param y2 Maximum Y-axis value.
+      /// \param xlabel The label to be put on the X-axis.
+      /// \param ylabel The label to be put on the Y-axis.
+
       cpgvsiz(this->marginWidth, this->marginWidth + this->imageWidth(),
 	      this->marginWidth, this->marginWidth + (this->imageWidth()*this->imageRatio) );
       cpgslw(2);
@@ -377,12 +387,14 @@ namespace duchamp
       cpglab(xlabel.c_str(), ylabel.c_str(), "");
     }
     //----------------------------------------------------------
-    void ImagePlot::makeTitle(std::string title){
-      /**
-       *    Writes the title for the plot, making it centred for the entire 
-       *     plot and not just the map.
-       *   \param title String with title for plot.
-       */ 
+    
+    void ImagePlot::makeTitle(std::string title)
+    {
+      /// @details
+      ///   Writes the title for the plot, making it centred for the entire 
+      ///    plot and not just the map.
+      ///  \param title String with title for plot.
+
       cpgvstd();
       cpgmtxt("t", Plot::imTitleOffset, 0.5, 0.5, title.c_str());
     }
@@ -432,18 +444,19 @@ namespace duchamp
     }
 
     //----------------------------------------------------------
-    int CutoutPlot::setUpPlot(std::string pgDestination){
-      /** 
-       * Opens the designated pgplot device.  Scales the paper so that
-       * it fits on an A4 sheet (using known values of the default
-       * pgplot offsets).  
-       *
-       * \param pgDestination The std::string indicating the PGPLOT device to
-       * be written to.
-       *
-       * \return The value returned by mycpgopen. If <= 0, then an error
-       * has occurred.
-       */
+    int CutoutPlot::setUpPlot(std::string pgDestination)
+    {
+      ///  @details
+      /// Opens the designated pgplot device.  Scales the paper so that
+      /// it fits on an A4 sheet (using known values of the default
+      /// pgplot offsets).  
+      /// 
+      /// \param pgDestination The std::string indicating the PGPLOT device to
+      /// be written to.
+      /// 
+      /// \return The value returned by mycpgopen. If <= 0, then an error
+      /// has occurred.
+
       this->paperHeight = this->paperWidth*M_SQRT2; 
       if(this->paperHeight+2*Plot::psVoffset > Plot::a4height){
 	this->paperHeight = Plot::a4height - 2*Plot::psVoffset;
@@ -455,14 +468,15 @@ namespace duchamp
       return this->identifier;
     }
     //----------------------------------------------------------
-    void CutoutPlot::calcCoords(){
-      /**
-       * Calculates the boundaries for the various boxes, in inches measured
-       *  from the lower left corner.
-       * Based on the fact that there are numOnPage spectra shown on each 
-       *  page, going down the page in increasing number (given by 
-       *  CutoutPlot::spectraCount).
-       */
+    void CutoutPlot::calcCoords()
+    {
+      /// @details
+      /// Calculates the boundaries for the various boxes, in inches measured
+      ///  from the lower left corner.
+      /// Based on the fact that there are numOnPage spectra shown on each 
+      ///  page, going down the page in increasing number (given by 
+      ///  CutoutPlot::spectraCount).
+
       int posOnPage = (this->numOnPage - 
 		       (this->sourceCount%this->numOnPage))
 	%this->numOnPage;
@@ -476,14 +490,15 @@ namespace duchamp
       this->mapCoords[1]  = this->mapCoords[0] + (this->mapCoords[3]-this->mapCoords[2]);
     }
     //----------------------------------------------------------
-    void CutoutPlot::gotoHeader(){
-      /** 
-       * Calls calcCoords, to calculate correct coordinates for this spectrum.
-       * Defines the region for the header information, making it centred
-       *  on the page.
-       * Also writes the velocity (x axis) label, given by the string argument.
-       * \param xlabel Label to go on the velocity/spectral axis.
-       */
+    void CutoutPlot::gotoHeader()
+    {
+      ///  @details
+      /// Calls calcCoords, to calculate correct coordinates for this spectrum.
+      /// Defines the region for the header information, making it centred
+      ///  on the page.
+      /// Also writes the velocity (x axis) label, given by the string argument.
+      /// \param xlabel Label to go on the velocity/spectral axis.
+
       if(sourceCount%numOnPage==0) cpgpage();
       sourceCount++;
       this->calcCoords();

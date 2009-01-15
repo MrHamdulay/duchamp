@@ -38,12 +38,12 @@ namespace duchamp
 
   class Param;
 
-  /**
-   *  Class to store FITS header information.
-   *
-   *   Stores information from a FITS header, including WCS information
-   *    in the form of a wcsprm struct, as well as various keywords.
-   */
+  /// 
+  /// @brief Class to store FITS header information.
+  /// 
+  /// @details  Stores information from a FITS header, including WCS information
+  ///    in the form of a wcsprm struct, as well as various keywords.
+  /// 
   class FitsHeader
   {
 
@@ -56,76 +56,76 @@ namespace duchamp
     //--------------------
     // Functions in param.cc
     //
-    /** Assign correct WCS parameters.  */
+    /// @brief Assign correct WCS parameters.  
     void    setWCS(struct wcsprm *w);
 
-    /** Return the WCS parameters in a WCSLIB wcsprm struct. */
+    /// @brief Return the WCS parameters in a WCSLIB wcsprm struct. 
     struct wcsprm *getWCS();
 
-    /** Provides a reference to the WCS parameters*/
+    /// @brief Provides a reference to the WCS parameters
     struct wcsprm& WCS(){ struct wcsprm &rwcs = *wcs; return rwcs; }; 
 
     // front ends to WCS functions
-    /** Convert pixel coords to world coords for a single point. */
+    /// @brief Convert pixel coords to world coords for a single point. 
     int     wcsToPix(const double *world, double *pix);
 
-    /** Convert pixel coords to world coords for many points. */
+    /// @brief Convert pixel coords to world coords for many points. 
     int     wcsToPix(const double *world, double *pix, const int npts);
 
-    /** Convert world coords to pixel coords for a single point. */
+    /// @brief Convert world coords to pixel coords for a single point. 
     int     pixToWCS(const double *pix, double *world);
 
-    /** Convert world coords to pixel coords for many points. */
+    /// @brief Convert world coords to pixel coords for many points. 
     int     pixToWCS(const double *pix, double *world, const int npts);
 
-    /** Convert a (x,y,z) position to a velocity. */
+    /// @brief Convert a (x,y,z) position to a velocity. 
     double  pixToVel(double &x, double &y, double &z);
 
-    /** Convert a set of  (x,y,z) positions to a set of velocities. */
+    /// @brief Convert a set of  (x,y,z) positions to a set of velocities. 
     double *pixToVel(double &x, double &y, double *zarray, int size);
 
-    /** Convert a spectral coordinate to a velocity coordinate.*/
+    /// @brief Convert a spectral coordinate to a velocity coordinate.
     double  specToVel(const double &z);
 
-    /** Convert a velocity coordinate to a spectral coordinate.*/
+    /// @brief Convert a velocity coordinate to a spectral coordinate.
     double  velToSpec(const float &vel);
 
-    /** Get an IAU-style name for an equatorial or galactic coordinates. */
+    /// @brief Get an IAU-style name for an equatorial or galactic coordinates. 
     std::string  getIAUName(double ra, double dec);
 
-    /** Correct the units for the spectral axis */
+    /// @brief Correct the units for the spectral axis 
     void    fixUnits(Param &par);
     
-    /** Define the units for integrated flux */
+    /// @brief Define the units for integrated flux 
     void    setIntFluxUnits();
 
     //--------------------
     // Functions in FitsIO/headerIO.cc
     //
-    /** Read all header info. */
+    /// @brief Read all header info. 
     int     readHeaderInfo(std::string fname, Param &par);
 
-    /** Read BUNIT keyword */
+    /// @brief Read BUNIT keyword 
     int     readBUNIT(std::string fname);
 
-    /** Read BLANK & related keywords */
+    /// @brief Read BLANK & related keywords 
     int     readBLANKinfo(std::string fname, Param &par);
 
-    /** Read beam-related keywords */
+    /// @brief Read beam-related keywords 
     int     readBeamInfo(std::string fname, Param &par);
  
     //--------------------
     // Function in FitsIO/wcsIO.cc
     //
-    /** Read the WCS information from a file. */
+    /// @brief Read the WCS information from a file. 
     int     defineWCS(std::string fname, Param &par);
 
     //--------------------
     // Basic inline accessor functions
     //
-    /** Is the WCS good enough to be used? */
+    /// @brief Is the WCS good enough to be used? 
     bool    isWCS(){return wcsIsGood;};
-    /** Is the spectral axis OK to be used? */
+    /// @brief Is the spectral axis OK to be used? 
     bool    isSpecOK(){return (wcs->spec >= 0);};
     bool    canUseThirdAxis(){return ((wcs->spec >= 0)||(wcs->naxis>2));};
     void    set2D(bool b){flag2D = b;};
@@ -157,8 +157,7 @@ namespace duchamp
     float   getBscaleKeyword(){return bscaleKeyword;};
     void    setBscaleKeyword(float f){bscaleKeyword=f;};
 
-    /** Average the pixel scale (eg arcmin/pix) between the two
-	spatial axes, and return. */
+    /// @brief Return the average pixel scale (eg arcmin/pix) of the two spatial axes. 
     float   getAvPixScale(){
       return sqrt( fabs ( (wcs->pc[0]*wcs->cdelt[0])*
 			  (wcs->pc[wcs->naxis+1]*wcs->cdelt[1])));
@@ -167,33 +166,25 @@ namespace duchamp
     bool    needBeamSize();
 
   private:
-    struct wcsprm *wcs;           ///< The WCS parameters for the cube
-    ///   in a struct from the wcslib
-    ///   library.
-    int     nwcs;                 ///< The number of WCS parameters
-    bool    wcsIsGood;            ///< A flag indicating whether there
-    ///   is a valid WCS present.
-    int     naxis;                ///< How many axes are in the header?
-    bool    flag2D;              ///< Is the image only a 2D one (leaving out redundant dimensions of size 1)?
-    std::string  spectralUnits;        ///< The units of the spectral dimension
-    std::string  spectralDescription;  ///< The description of the
-    ///   spectral dimension (Frequency,
-    ///   Velocity, ...)
-    std::string  fluxUnits;       ///< The units of pixel flux (from header)
-    std::string  intFluxUnits;    ///< The units of integrated flux (from header)
-    float   beamSize;             ///< The calculated beam size in pixels.
-    float   bmajKeyword;          ///< The FITS header keyword BMAJ.
-    float   bminKeyword;          ///< The FITS header keyword BMIN.
-    float   bpaKeyword;           ///< The FITS header keyword BPA.
-    int     blankKeyword;         ///< The FITS header keyword BLANK.
-    float   bzeroKeyword;         ///< The FITS header keyword BZERO.
-    float   bscaleKeyword;        ///< The FITS header keyword BSCALE.
-    double  scale;                ///< scale parameter for converting
-    ///   spectral coords
-    double  offset;               ///< offset parameter for converting
-    ///   spectral coords
-    double  power;                ///< power parameter for converting
-    ///   spectral coords
+    struct wcsprm *wcs;                 ///< The WCS parameters for the cube in a struct from the wcslib library.
+    int            nwcs;                ///< The number of WCS parameters
+    bool           wcsIsGood;           ///< A flag indicating whether there is a valid WCS present.
+    int            naxis;               ///< How many axes are in the header?
+    bool           flag2D;              ///< Is the image only a 2D one (leaving out redundant dimensions of size 1)?
+    std::string    spectralUnits;       ///< The units of the spectral dimension
+    std::string    spectralDescription; ///< The description of the spectral dimension (Frequency, Velocity, ...)
+    std::string    fluxUnits;           ///< The units of pixel flux (from header)
+    std::string    intFluxUnits;        ///< The units of integrated flux (from header)
+    float          beamSize;            ///< The calculated beam size in pixels.
+    float          bmajKeyword;         ///< The FITS header keyword BMAJ.
+    float          bminKeyword;         ///< The FITS header keyword BMIN.
+    float          bpaKeyword;          ///< The FITS header keyword BPA.
+    int            blankKeyword;        ///< The FITS header keyword BLANK.
+    float          bzeroKeyword;        ///< The FITS header keyword BZERO.
+    float          bscaleKeyword;       ///< The FITS header keyword BSCALE.
+    double         scale;               ///< scale parameter for converting spectral coords
+    double         offset;              ///< offset parameter for converting spectral coords
+    double         power;               ///< power parameter for converting spectral coords
   };
 
 }

@@ -38,10 +38,8 @@
 namespace duchamp
 {
 
-  /**
-   * A namespace to control plotting of the spectral output and the
-   * spatial image output.
-   */
+  /// @brief A namespace to control plotting of the spectral output and the
+  /// spatial image output.
 
   namespace Plot
   {
@@ -83,17 +81,15 @@ namespace duchamp
     //***************************************************************************
     //***************************************************************************
 
-    /** 
-     *  A class for plotting spectra of detections.
-     *  This class is designed to hold the dimensions and set up for the
-     *  plotting of the spectra (including the full spectra, the zoomed
-     *  in part, and the moment map).
-     *  The physical dimensions (in inches) of the plot and the elements 
-     *   within it are stored, on the assumption that the plot will go on 
-     *   an A4 page.
-     *  Simple accessor functions are provided to enable access to quantities
-     *   needed for pgplot routines.
-     */
+    ///  @brief A class for plotting spectra of detections.
+    ///  @details This class is designed to hold the dimensions and
+    ///  set up for the plotting of the spectra (including the full
+    ///  spectra, the zoomed in part, and the moment map).  The
+    ///  physical dimensions (in inches) of the plot and the elements
+    ///  within it are stored, on the assumption that the plot will go
+    ///  on an A4 page.  Simple accessor functions are provided to
+    ///  enable access to quantities needed for pgplot routines.
+
     class SpectralPlot
     {
     public:
@@ -102,57 +98,52 @@ namespace duchamp
       SpectralPlot(const SpectralPlot& p);
       SpectralPlot& operator=(const SpectralPlot& p);
 
-      /** Set up PGPLOT output.*/
+      /// @brief Set up PGPLOT output.
       int setUpPlot(std::string pgDestination); 
 
-      /** Calculate boundaries for boxes.*/
+      /// @brief Calculate boundaries for boxes.
       void calcCoords();
-      /** Set up the header & write the X-label.*/
+      /// @brief Set up the header & write the X-label.
       void gotoHeader(std::string xlabel);
 
-      /** Write first line of header information (position/velocity
-	  info) in correct place.*/
+      /// @brief Write first line of header information (position/velocity info) in correct place.
       void firstHeaderLine(std::string line);   
     
-      /** Write second line of header information (fluxes) in
-	  correct place.*/
+      /// @brief Write second line of header information (fluxes) in correct place.
       void secondHeaderLine(std::string line);  
 
-      /** Write third line of header information (WCS widths) in
-	  correct place. */
+      /// @brief Write third line of header information (WCS widths) in correct place. 
       void thirdHeaderLine(std::string line);   
 
-      /** Write fourth line of header information (pixel coordinates) in
-	  correct place. */
+      /// @brief Write fourth line of header information (pixel coordinates) in correct place. 
       void fourthHeaderLine(std::string line);   
 
-      /** Set up main spectral plotting region.*/
+      /// @brief Set up main spectral plotting region.
       void gotoMainSpectrum(float x1, float x2, float y1, float y2,
 			    std::string ylabel);
     
-      /** Set up zoomed-in spectral plotting region.*/
+      /// @brief Set up zoomed-in spectral plotting region.
       void gotoZoomSpectrum(float x1, float x2, float y1, float y2);    
     
-      /** Defines the region for the moment map.*/
+      /// @brief Defines the region for the moment map.
       void gotoMap();
 
-      /** Draw lines indicating velocity range.*/
+      /// @brief Draw lines indicating velocity range.
       void drawVelRange(float v1, float v2); 
 
-      /** Draw box showing excluded range due to Milky Way.*/
+      /// @brief Draw box showing excluded range due to Milky Way.
       void drawMWRange(float v1, float v2);
     
-      /** Return number of spectra that go on a page.*/
+      /// @brief Return number of spectra that go on a page.
       int   getNumOnPage();
 
-      /** Set number of spectra that go on a page.*/
+      /// @brief Set number of spectra that go on a page.
       void  setNumOnPage(int i);
       float getPaperWidth();         ///< Return width of plottable region.
       void  setPaperWidth(float f);  ///< Set width of plottable region.
       float getPaperHeight();        ///< Return height of plottable region.
       void  setPaperHeight(float f); ///< Set height of plottable region.
-      void  goToPlot();              ///< Goes to the plot when more
-      ///   than one are open.
+      void  goToPlot();              ///< Goes to the plot when more than one are open.
 
     private:
       int numOnPage;       ///< Number of spectra to put on one page.
@@ -176,16 +167,15 @@ namespace duchamp
     //***************************************************************************
     //***************************************************************************
 
-    /** 
-     *  A class for plotting 2-dimensional maps.
-     *    A class to hold the dimensions and set up for the plots used by the 
-     *     two functions below.
-     *    The physical dimensions (in inches) of the plot and the elements 
-     *     within it are stored, including maximum widths and heights 
-     *     (so that the plot will fit on an A4 page).
-     *    Simple accessor functions are provided to enable access to quantities
-     *     needed for pgplot routines.
-     */
+    ///  @brief A class for plotting 2-dimensional maps.
+    ///  @details A class to hold the dimensions and set up for the
+    ///  plotting of maps in Duchamp.
+    ///    The physical dimensions (in inches) of the plot and the elements 
+    ///     within it are stored, including maximum widths and heights 
+    ///     (so that the plot will fit on an A4 page).
+    ///    Simple accessor functions are provided to enable access to quantities
+    ///     needed for pgplot routines.
+
     class ImagePlot
     {
     public:
@@ -194,14 +184,14 @@ namespace duchamp
       ImagePlot(const ImagePlot& p);
       ImagePlot& operator=(const ImagePlot& p);
   
-      /** Set up PGPLOT output.*/
+      /// @brief Set up PGPLOT output.
       int   setUpPlot(std::string pgDestination, float x, float y); 
 
-      /** Defines and draws box.*/
+      /// @brief Defines and draws box.
       void  drawMapBox(float x1, float x2, float y1, float y2, 
 		       std::string xlabel, std::string ylabel);
 
-      /** Write plot title.*/
+      /// @brief Write plot title.
       void  makeTitle(std::string title);
 
       float cmToCoord(float cm);///< Converts distance in cm to coordinate distance on the plot.
@@ -235,16 +225,15 @@ namespace duchamp
     //***************************************************************************
     //***************************************************************************
 
-    /** 
-     *  A class for plotting just the image cutouts of individual sources.
-     *  This class is designed to hold the dimensions and set up for the
-     *  plotting of the cutouts, plus the textual information for each source.
-     *  The physical dimensions (in inches) of the plot and the elements 
-     *   within it are stored, on the assumption that the plot will go on 
-     *   an A4 page.
-     *  Simple accessor functions are provided to enable access to quantities
-     *   needed for pgplot routines.
-     */
+    ///  @brief A class for plotting just the image cutouts of individual sources.
+    ///  @details This class is designed to hold the dimensions and set up for the
+    ///  plotting of the cutouts, plus the textual information for each source.
+    ///  The physical dimensions (in inches) of the plot and the elements 
+    ///   within it are stored, on the assumption that the plot will go on 
+    ///   an A4 page.
+    ///  Simple accessor functions are provided to enable access to quantities
+    ///   needed for pgplot routines.
+
     class CutoutPlot
     {
     public:
@@ -253,48 +242,44 @@ namespace duchamp
       CutoutPlot(const CutoutPlot& p);
       CutoutPlot& operator=(const CutoutPlot& p);
 
-      /** Set up PGPLOT output.*/
+      /// @brief Set up PGPLOT output.
       int setUpPlot(std::string pgDestination); 
 
-      /** Calculate boundaries for boxes.*/
+      /// @brief Calculate boundaries for boxes.
       void calcCoords();
-      /** Set up the header box */
+      /// @brief Set up the header box 
       void gotoHeader();
 
-      /** Write first line of header information (position/velocity
-	  info) in correct place.*/
+      /// @brief Write first line of header information (position/velocity info) in correct place.
       void firstHeaderLine(std::string line);   
     
-      /** Write second line of header information (fluxes) in
-	  correct place.*/
+      /// @brief Write second line of header information (fluxes) in correct place.
       void secondHeaderLine(std::string line);  
 
-      /** Write third line of header information (WCS widths) in
-	  correct place. */
+      /// @brief Write third line of header information (WCS widths) in correct place. 
       void thirdHeaderLine(std::string line);   
 
-      /** Write fourth line of header information (pixel coordinates) in
-	  correct place. */
+      /// @brief Write fourth line of header information (pixel coordinates) in correct place. 
       void fourthHeaderLine(std::string line);   
 
-      /** Defines the region for the moment map.*/
+      /// @brief Defines the region for the moment map.
       void gotoMap();
 
-      /** Goes to the plot when more than one are open.*/ 
+      /// @brief Goes to the plot when more than one are open. 
       void  goToPlot();   
 
-      /** Return the number of objects that go on a page. */           
+      /// @brief Return the number of objects that go on a page.
       int   getNumOnPage(){return numOnPage;}
-      /** Set number of objects that go on a page.*/
+      /// @brief Set number of objects that go on a page.
       void  setNumOnPage(int i){numOnPage=i;}
 
-      /** Return width of plottable region.*/
+      /// @brief Return width of plottable region.
       float getPaperWidth(){return paperWidth;}
-      /** Set width of plottable region.*/
+      /// @brief Set width of plottable region.
       void  setPaperWidth(float f){paperWidth=f;}
-      /** Return height of plottable region.*/
+      /// @brief Return height of plottable region.
       float getPaperHeight(){return paperHeight;}
-      /** Set height of plottable region.*/
+      /// @brief Set height of plottable region.
       void  setPaperHeight(float f){paperHeight=f;}
 
     private:

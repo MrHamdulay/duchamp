@@ -46,20 +46,19 @@ namespace duchamp
 
   void outputTableHeader(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType, bool flagWCS)
   {
-    /**
-     *  Prints the header row for a table of detections. The columns
-     *  that are included depend on the value of tableType, according
-     *  to the Column::doCol() function. The format is a row of
-     *  dashes, a row with column names, a row with column units, and
-     *  another row of dashes.
-     * \param stream Where the output is written
-     * \param columns The vector list of Column objects
-     * \param tableType A string saying what format to use: one of
-     * "file", "log", "screen" or "votable" (although the latter
-     * shouldn't be used with this function).
-     * \param flagWCS A flag for use with Column::doCol(), specifying
-     * whether to use FINT or FTOT.
-     */
+    /// @details
+    ///  Prints the header row for a table of detections. The columns
+    ///  that are included depend on the value of tableType, according
+    ///  to the Column::doCol() function. The format is a row of
+    ///  dashes, a row with column names, a row with column units, and
+    ///  another row of dashes.
+    /// \param stream Where the output is written
+    /// \param columns The vector list of Column objects
+    /// \param tableType A string saying what format to use: one of
+    /// "file", "log", "screen" or "votable" (although the latter
+    /// shouldn't be used with this function).
+    /// \param flagWCS A flag for use with Column::doCol(), specifying
+    /// whether to use FINT or FTOT.
 
     std::vector<Column::Col>::iterator col;
     for(col=columns.begin();col<columns.end();col++)
@@ -80,16 +79,15 @@ namespace duchamp
 
   void Detection::printTableRow(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType)
   {
-    /**
-     *  Print a row of values for the current Detection into an output
-     *  table. Columns are printed according to the tableType string,
-     *  using the Column::doCol() function as a determinant.
-     * \param stream Where the output is written
-     * \param columns The vector list of Column objects
-     * \param tableType A string saying what format to use: one of
-     * "file", "log", "screen" or "votable" (although the latter
-     * shouldn't be used with this function).
-     */
+    /// @details
+    ///  Print a row of values for the current Detection into an output
+    ///  table. Columns are printed according to the tableType string,
+    ///  using the Column::doCol() function as a determinant.
+    /// \param stream Where the output is written
+    /// \param columns The vector list of Column objects
+    /// \param tableType A string saying what format to use: one of
+    /// "file", "log", "screen" or "votable" (although the latter
+    /// shouldn't be used with this function).
 
     stream.setf(std::ios::fixed);  
     std::vector<Column::Col>::iterator col;
@@ -103,14 +101,12 @@ namespace duchamp
 
   void Detection::printTableEntry(std::ostream &stream, Column::Col column)
   {
-    /**
-     *  Print a single value into an output table. The Detection's
-     *  correct value is extracted according to the Column::COLNAME
-     *  key in the column given.
-     * \param stream Where the output is written
-     * \param column The Column object defining the formatting.
-     */
-
+    /// @details
+    ///  Print a single value into an output table. The Detection's
+    ///  correct value is extracted according to the Column::COLNAME
+    ///  key in the column given.
+    /// \param stream Where the output is written
+    /// \param column The Column object defining the formatting.
 
     switch(column.getType())
       {
@@ -253,15 +249,15 @@ namespace duchamp
 
   std::string Detection::outputLabelWCS()
   {
-    /**
-     *  Prints to a std::string the WCS position and velocity
-     *  information of the Detection, as well as the ID number and any
-     *  flags.
-     *  Assumes the WCS parameters of the object have been calculated.
-     *  If they have not (given by the isWCS() function), then the
-     *  WCS-related outputs are left blank.
-     *  Returns the string.
-     */
+    /// @details
+    ///  Prints to a std::string the WCS position and velocity
+    ///  information of the Detection, as well as the ID number and any
+    ///  flags.
+    ///  Assumes the WCS parameters of the object have been calculated.
+    ///  If they have not (given by the isWCS() function), then the
+    ///  WCS-related outputs are left blank.
+    ///  Returns the string.
+
     std::stringstream ss;
     ss << "#" << std::setfill('0') << std::setw(3) << this->id << ": ";
     ss << this->name ;
@@ -284,14 +280,13 @@ namespace duchamp
 
   std::string Detection::outputLabelFluxes()
   {
-    /**
-     *  Prints to a std::string the fluxes of the object, both
-     *  integrated/total and peak, as well as the peak S/N value.
-     *  Assumes the WCS parameters of the object have been calculated.
-     *  If they have not (given by the isWCS() function), then the ID
-     *  number and the total/peak/SNR values are returned.
-     *  /return The string.
-     */
+    /// @details
+    ///  Prints to a std::string the fluxes of the object, both
+    ///  integrated/total and peak, as well as the peak S/N value.
+    ///  Assumes the WCS parameters of the object have been calculated.
+    ///  If they have not (given by the isWCS() function), then the ID
+    ///  number and the total/peak/SNR values are returned.
+    ///  /return The string.
 
     std::stringstream ss;
     ss.setf(std::ios::fixed);
@@ -320,14 +315,13 @@ namespace duchamp
 
   std::string Detection::outputLabelWidths()
   {
-    /**
-     *  Prints to a std::string the widths of the object in position
-     *  and velocity.
-     *  Assumes the WCS parameters of the object have been calculated.
-     *  If they have not (given by the isWCS() function), then a string of 
-     *   length 0 is returned.
-     *  \returns The string.
-     */
+    /// @details
+    ///  Prints to a std::string the widths of the object in position
+    ///  and velocity.
+    ///  Assumes the WCS parameters of the object have been calculated.
+    ///  If they have not (given by the isWCS() function), then a string of 
+    ///   length 0 is returned.
+    ///  \returns The string.
 
     std::string output;
     if(this->flagWCS){
@@ -352,10 +346,9 @@ namespace duchamp
 
   std::string Detection::outputLabelPix()
   {
-    /**
-     *  Prints to a std::string the pixel centres and extents of a
-     *  detected object.  Returns the string.
-     */
+    /// @details
+    ///  Prints to a std::string the pixel centres and extents of a
+    ///  detected object.  Returns the string.
 
     std::stringstream ss;
     ss.setf(std::ios::fixed);

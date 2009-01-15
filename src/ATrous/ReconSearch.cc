@@ -46,13 +46,11 @@ namespace duchamp
 
   void Cube::ReconSearch()
   {
-    /**
-     * The Cube is first reconstructed, using Cube::ReconCube().
-     * The statistics of the cube are calculated next.
-     * It is then searched, using searchReconArray.
-     * The resulting object list is stored in the Cube, and outputted
-     *  to the log file if the user so requests.
-     */
+    /// The Cube is first reconstructed, using Cube::ReconCube().
+    /// The statistics of the cube are calculated next.
+    /// It is then searched, using searchReconArray.
+    /// The resulting object list is stored in the Cube, and outputted
+    ///  to the log file if the user so requests.
 
     if(!this->par.getFlagATrous()){
       duchampWarning("ReconSearch",
@@ -93,11 +91,10 @@ namespace duchamp
   /////////////////////////////////////////////////////////////////////////////
   void Cube::ReconCube()
   {
-    /**
-     * A front-end to the various reconstruction functions, the choice of 
-     *  which is determined by the use of the reconDim parameter.
-     * Differs from ReconSearch only in that no searching is done.
-     */
+    /// A front-end to the various reconstruction functions, the choice of 
+    ///  which is determined by the use of the reconDim parameter.
+    /// Differs from ReconSearch only in that no searching is done.
+
     int dimRecon = this->par.getReconDim();
     // Test whether we have eg. an image, but have requested a 3-d 
     //  reconstruction.
@@ -144,10 +141,9 @@ namespace duchamp
   /////////////////////////////////////////////////////////////////////////////
   void Cube::ReconCube1D()
   {
-    /**
-     * This reconstructs a cube by performing a 1D a trous reconstruction
-     *  in the spectrum of each spatial pixel.
-     */
+    /// This reconstructs a cube by performing a 1D a trous reconstruction
+    ///  in the spectrum of each spatial pixel.
+
     long xySize = this->axisDim[0] * this->axisDim[1];
 
     long zdim = this->axisDim[2];
@@ -182,10 +178,9 @@ namespace duchamp
   /////////////////////////////////////////////////////////////////////////////
   void Cube::ReconCube2D()
   {
-    /**
-     * This reconstructs a cube by performing a 2D a trous reconstruction
-     *  in each spatial image (ie. each channel map) of the cube.
-     */
+    /// This reconstructs a cube by performing a 2D a trous reconstruction
+    ///  in each spatial image (ie. each channel map) of the cube.
+
     long xySize = this->axisDim[0] * this->axisDim[1];
     ProgressBar bar;
     bool useBar = (this->axisDim[2]>1);
@@ -227,9 +222,8 @@ namespace duchamp
   /////////////////////////////////////////////////////////////////////////////
   void Cube::ReconCube3D()
   {
-    /**
-     * This performs a full 3D a trous reconstruction of the cube
-     */
+    /// This performs a full 3D a trous reconstruction of the cube
+
     if(this->axisDim[2]==1) this->ReconCube2D();
     else {
 
@@ -251,23 +245,22 @@ namespace duchamp
 					   float *reconArray, Param &par,
 					   StatsContainer<float> &stats)
   {
-    /**
-     *  This searches for objects in a cube that has been reconstructed.
-     *
-     *  The search is conducted first in each spatial pixel (xdim*ydim 1D 
-     *   searches), then in each channel image (zdim 2D searches).
-     *  The searches are done on the reconstructed array, although the detected
-     *   objects have fluxes drawn from the corresponding pixels of the original
-     *   array.
-     *
-     *  \param dim Array of dimension sizes
-     *  \param originalArray Original, un-reconstructed image array.
-     *  \param reconArray Reconstructed image array
-     *  \param par The Param set.
-     *  \param stats The StatsContainer that defines what a detection is.
-     *
-     *  \return A vector of Detections resulting from the search.
-     */
+    ///  This searches for objects in a cube that has been reconstructed.
+    /// 
+    ///  The search is conducted first in each spatial pixel (xdim*ydim 1D 
+    ///   searches), then in each channel image (zdim 2D searches).
+    ///  The searches are done on the reconstructed array, although the detected
+    ///   objects have fluxes drawn from the corresponding pixels of the original
+    ///   array.
+    /// 
+    ///  \param dim Array of dimension sizes
+    ///  \param originalArray Original, un-reconstructed image array.
+    ///  \param reconArray Reconstructed image array
+    ///  \param par The Param set.
+    ///  \param stats The StatsContainer that defines what a detection is.
+    /// 
+    ///  \return A vector of Detections resulting from the search.
+
     std::vector <Detection> outputList;
     long zdim = dim[2];
     long xySize = dim[0] * dim[1];
@@ -392,24 +385,23 @@ namespace duchamp
 			 float *reconArray, Param &par,
 			 StatsContainer<float> &stats)
   {
-    /**
-     *  This searches for objects in a cube that has been reconstructed.
-     *
-     *  The search is conducted only in each channel image (zdim 2D
-     *  searches) -- no searches in 1D are done.
-     *
-     *  The searches are done on the reconstructed array, although the detected
-     *   objects have fluxes drawn from the corresponding pixels of the original
-     *   array.
-     *
-     *  \param dim Array of dimension sizes
-     *  \param originalArray Original, un-reconstructed image array.
-     *  \param reconArray Reconstructed image array
-     *  \param par The Param set.
-     *  \param stats The StatsContainer that defines what a detection is.
-     *
-     *  \return A vector of Detections resulting from the search.
-     */
+    ///  This searches for objects in a cube that has been reconstructed.
+    /// 
+    ///  The search is conducted only in each channel image (zdim 2D
+    ///  searches) -- no searches in 1D are done.
+    /// 
+    ///  The searches are done on the reconstructed array, although the detected
+    ///   objects have fluxes drawn from the corresponding pixels of the original
+    ///   array.
+    /// 
+    ///  \param dim Array of dimension sizes
+    ///  \param originalArray Original, un-reconstructed image array.
+    ///  \param reconArray Reconstructed image array
+    ///  \param par The Param set.
+    ///  \param stats The StatsContainer that defines what a detection is.
+    /// 
+    ///  \return A vector of Detections resulting from the search.
+
     std::vector <Detection> outputList;
     long zdim = dim[2];
     int num=0;

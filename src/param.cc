@@ -52,10 +52,8 @@ namespace duchamp
   ///////////////////////////////////////////////////
   Param::~Param()
   {
-    /**
-     * Deletes the offsets array if the sizeOffsets parameter is
-     * positive.
-     */
+    /// Deletes the offsets array if the sizeOffsets parameter is
+    /// positive.
     if(this->sizeOffsets>0) delete [] this->offsets;
   }
 
@@ -66,10 +64,9 @@ namespace duchamp
 
   void Param::defaultValues()
   {
-    /** 
-     * Provides default intial values for the parameters. Note that
-     * imageFile has no default value!
-     */
+    /// Provides default intial values for the parameters. Note that
+    /// imageFile has no default value!
+
     std::string baseSection = "[*,*,*]";
     // Input files
     this->imageFile         = "";
@@ -299,13 +296,11 @@ namespace duchamp
 
   int Param::getopts(int argc, char ** argv, std::string progname)
   {
-    /**  
-     *   A function that reads in the command-line options, in a manner 
-     *    tailored for use with the main Duchamp program.
-     *
-     *   \param argc The number of command line arguments.
-     *   \param argv The array of command line arguments.
-     */
+    ///   A function that reads in the command-line options, in a manner 
+    ///    tailored for use with the main Duchamp program.
+    /// 
+    ///   \param argc The number of command line arguments.
+    ///   \param argv The array of command line arguments.
 
     int returnValue = FAILURE;
     if(argc==1){
@@ -364,23 +359,21 @@ namespace duchamp
 
   bool Param::isBlank(float &value)
   {
-    /** 
-     *  Tests whether the value passed as the argument is BLANK or not.
-     *  \param value Pixel value to be tested.
-     *  \return False if flagBlankPix is false. Else, compare to the
-     *  relevant FITS keywords, using integer comparison.
-     */
+    ///  Tests whether the value passed as the argument is BLANK or not.
+    ///  \param value Pixel value to be tested.
+    ///  \return False if flagBlankPix is false. Else, compare to the
+    ///  relevant FITS keywords, using integer comparison.
+
     return this->flagBlankPix &&
       (this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword));
   }
 
   bool *Param::makeBlankMask(float *array, int size)
   {
-    /**
-     *  This returns an array of bools, saying whether each pixel in the
-     *  given array is BLANK or not. If the pixel is BLANK, set mask to
-     *  false, else set to true. The array is allocated by the function.
-     */ 
+    ///  This returns an array of bools, saying whether each pixel in the
+    ///  given array is BLANK or not. If the pixel is BLANK, set mask to
+    ///  false, else set to true. The array is allocated by the function.
+
     bool *mask = new bool[size];
     for(int i=0;i<size;i++) mask[i] = !this->isBlank(array[i]);
     return mask;
@@ -389,12 +382,11 @@ namespace duchamp
 
   bool *Param::makeStatMask(float *array, long *dim)
   {
-    /**
-     *  This returns an array of bools, saying whether each pixel in
-     *  the given array is suitable for a stats calculation. It needs
-     *  to be in the StatSec (if defined), not blank and not a MW
-     *  channel. The array is allocated by the function with a 'new' call. 
-     */ 
+    ///  This returns an array of bools, saying whether each pixel in
+    ///  the given array is suitable for a stats calculation. It needs
+    ///  to be in the StatSec (if defined), not blank and not a MW
+    ///  channel. The array is allocated by the function with a 'new' call. 
+
     bool *mask = new bool[dim[0]*dim[1]*dim[2]];
     for(int x=0;x<dim[0];x++) {
       for(int y=0;y<dim[1];y++) {
@@ -410,30 +402,28 @@ namespace duchamp
 
   bool Param::isInMW(int z)
   {
-    /** 
-     *  Tests whether we are flagging Milky Way channels, and if so
-     * whether the given channel number is in the Milky Way range. The
-     * channels are assumed to start at number 0.  
-     * \param z The channel number 
-     * \return True if we are flagging Milky Way channels and z is in
-     *  the range.
-     */
+    ///  Tests whether we are flagging Milky Way channels, and if so
+    /// whether the given channel number is in the Milky Way range. The
+    /// channels are assumed to start at number 0.  
+    /// \param z The channel number 
+    /// \return True if we are flagging Milky Way channels and z is in
+    ///  the range.
+
     return ( flagMW && (z>=minMW) && (z<=maxMW) );
   }
 
   bool Param::isStatOK(int x, int y, int z)
   {
-    /** 
-     * Test whether a given pixel position lies within the subsection
-     * given by the statSec parameter. Only tested if the flagSubsection
-     * parameter is true -- if it isn't, we just return true since all
-     * pixels are therefore available for statstical calculations.
-     * \param x X-value of pixel being tested.
-     * \param y Y-value of pixel being tested.
-     * \param z Z-value of pixel being tested.
-     * \return True if pixel is able to be used for statistical
-     * calculations. False otherwise.
-     */
+   /// Test whether a given pixel position lies within the subsection
+   /// given by the statSec parameter. Only tested if the flagSubsection
+   /// parameter is true -- if it isn't, we just return true since all
+   /// pixels are therefore available for statstical calculations.
+   /// \param x X-value of pixel being tested.
+   /// \param y Y-value of pixel being tested.
+   /// \param z Z-value of pixel being tested.
+   /// \return True if pixel is able to be used for statistical
+   /// calculations. False otherwise.
+
     int xval=x,yval=y,zval=z;
     if(flagSubsection){
       xval += pixelSec.getStart(0);
@@ -445,10 +435,9 @@ namespace duchamp
 
   std::vector<int> Param::getObjectRequest()
   {
-    /**
-     *  Returns a list of the object numbers requested via the objectList parameter. 
-     * \return a vector of integers, one for each number in the objectList set.
-     */
+    ///  Returns a list of the object numbers requested via the objectList parameter. 
+    /// \return a vector of integers, one for each number in the objectList set.
+
     std::stringstream ss1;
     std::string tmp;
     std::vector<int> tmplist;
@@ -471,14 +460,13 @@ namespace duchamp
 
   std::vector<bool> Param::getObjectChoices()
   {
-    /**
-     *  Returns a list of bool values, indicating whether a given
-     *  object was requested or not. The size of the vector is
-     *  determined by the maximum value in objectList. For instance,
-     *  if objectList="2,3,5-8", then the returned vector will be
-     *  [0,1,1,0,1,1,1,1].
-     *  \return Vector of bool values.
-     */
+    ///  Returns a list of bool values, indicating whether a given
+    ///  object was requested or not. The size of the vector is
+    ///  determined by the maximum value in objectList. For instance,
+    ///  if objectList="2,3,5-8", then the returned vector will be
+    ///  [0,1,1,0,1,1,1,1].
+    ///  \return Vector of bool values.
+
     std::vector<int> objectChoices = this->getObjectRequest();
     int maxNum = *std::max_element(objectChoices.begin(), objectChoices.end());
     std::vector<bool> choices(maxNum,false);
@@ -488,15 +476,14 @@ namespace duchamp
 
   std::vector<bool> Param::getObjectChoices(int numObjects)
   {
-    /**
-     *  Returns a list of bool values, indicating whether a given
-     *  object was requested or not. The size of the vector is given
-     *  by the numObjects parameter. So, if objectList="2,3,5-8", then
-     *  the returned vector from a getObjectChoices(10) call will be
-     *  [0,1,1,0,1,1,1,1,0,0].
-     *  \param numObjects How many objects there are in total.
-     *  \return Vector of bool values.
-     */
+    ///  Returns a list of bool values, indicating whether a given
+    ///  object was requested or not. The size of the vector is given
+    ///  by the numObjects parameter. So, if objectList="2,3,5-8", then
+    ///  the returned vector from a getObjectChoices(10) call will be
+    ///  [0,1,1,0,1,1,1,1,0,0].
+    ///  \param numObjects How many objects there are in total.
+    ///  \return Vector of bool values.
+
     if(this->objectList==""){
       std::vector<bool> choices(numObjects,true);
       return choices;
@@ -511,9 +498,9 @@ namespace duchamp
   }
 
   /****************************************************************/
-  ///////////////////////////////////////////////////
-  //// Other Functions using the  Parameter class:
-  ///////////////////////////////////////////////////
+  /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// 
+  /// / Other Functions using the  Parameter class:
+  /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// 
 
   std::string makelower( std::string s )
   {
@@ -527,10 +514,9 @@ namespace duchamp
 
   inline std::string stringize(bool b)
   {
-    /** 
-     * Convert a bool variable to the textual equivalent. 
-     * \return A std::string with the english equivalent of the bool.
-     */
+   /// Convert a bool variable to the textual equivalent. 
+   /// \return A std::string with the english equivalent of the bool.
+
     std::string output;
     if(b) output="true";
     else output="false";
@@ -539,12 +525,11 @@ namespace duchamp
 
   inline bool boolify( std::string s )
   {
-    /**
-     *  Convert a std::string to a bool variable: 
-     *  "1" and "true" get converted to true;
-     *  "0" and "false" (and anything else) get converted to false.
-     * \return The bool equivalent of the string.
-     */
+    ///  Convert a std::string to a bool variable: 
+    ///  "1" and "true" get converted to true;
+    ///  "0" and "false" (and anything else) get converted to false.
+    /// \return The bool equivalent of the string.
+
     if((s=="1") || (makelower(s)=="true")) return true;
     else if((s=="0") || (makelower(s)=="false")) return false;
     else return false;
@@ -572,19 +557,18 @@ namespace duchamp
 
   int Param::readParams(std::string paramfile)
   {
-    /**
-     * The parameters are read in from a disk file, on the assumption that each
-     *  line of the file has the format "parameter value" (eg. alphafdr 0.1)
-     * 
-     * The case of the parameter name does not matter, nor does the
-     * formatting of the spaces (it can be any amount of whitespace or
-     * tabs). 
-     *
-     * \param paramfile A std::string containing the parameter filename.
-     *
-     * \return FAILURE if the parameter file does not exist. SUCCESS if
-     * it is able to read it.
-     */
+    /// The parameters are read in from a disk file, on the assumption that each
+    ///  line of the file has the format "parameter value" (eg. alphafdr 0.1)
+    /// 
+    /// The case of the parameter name does not matter, nor does the
+    /// formatting of the spaces (it can be any amount of whitespace or
+    /// tabs). 
+    /// 
+    /// \param paramfile A std::string containing the parameter filename.
+    /// 
+    /// \return FAILURE if the parameter file does not exist. SUCCESS if
+    /// it is able to read it.
+
     std::ifstream fin(paramfile.c_str());
     if(!fin.is_open()) return FAILURE;
     std::string line;
@@ -811,10 +795,8 @@ namespace duchamp
 
   std::ostream& operator<< ( std::ostream& theStream, Param& par)
   {
-    /**
-     * Print out the parameter set in a formatted, easy to read style.
-     * Lists the parameters, a description of them, and their value.
-     */
+    /// Print out the parameter set in a formatted, easy to read style.
+    /// Lists the parameters, a description of them, and their value.
 
     // Only show the [beamSize] bit if we are using the parameter
     // otherwise we have read it from the FITS header.
@@ -1121,12 +1103,10 @@ namespace duchamp
 
   void Param::copyHeaderInfo(FitsHeader &head)
   {
-    /**
-     * A function to copy across relevant header keywords from the 
-     *  FitsHeader class to the Param class, as they are needed by
-     *  functions in the Param class.
-     * The parameters are the keywords BLANK, BSCALE, BZERO, and the beam size. 
-     */
+    ///  A function to copy across relevant header keywords from the 
+    ///  FitsHeader class to the Param class, as they are needed by
+    ///  functions in the Param class.
+    ///  The parameters are the keywords BLANK, BSCALE, BZERO, and the beam size. 
 
     this->blankKeyword  = head.getBlankKeyword();
     this->bscaleKeyword = head.getBscaleKeyword();
@@ -1139,12 +1119,11 @@ namespace duchamp
 
   std::string Param::outputMaskFile()
   {
-    /**
-     *  This function produces the required filename in which to save
-     *  the mask image, indicating which pixels have been detected as
-     *  part of an object. If the input image is image.fits, then the
-     *  output will be image.MASK.fits.
-     */
+    ///  This function produces the required filename in which to save
+    ///  the mask image, indicating which pixels have been detected as
+    ///  part of an object. If the input image is image.fits, then the
+    ///  output will be image.MASK.fits.
+
     if(this->fileOutputMask==""){
       std::string inputName = this->imageFile;
       std::stringstream ss;
@@ -1158,16 +1137,15 @@ namespace duchamp
 
   std::string Param::outputSmoothFile()
   {
-    /** 
-     * This function produces the required filename in which to save
-     *  the smoothed array. If the input image is image.fits, then
-     *  the output will be:
-     *   <ul><li> Spectral smoothing: image.SMOOTH-1D-3.fits, where the
-     *            width of the Hanning filter was 3 pixels.
-     *       <li> Spatial smoothing : image.SMOOTH-2D-3-2-20.fits, where
-     *            kernMaj=3, kernMin=2 and kernPA=20 degrees.
-     *   </ul>
-     */
+    ///  This function produces the required filename in which to save
+    ///   the smoothed array. If the input image is image.fits, then
+    ///   the output will be:
+    ///    <ul><li> Spectral smoothing: image.SMOOTH-1D-3.fits, where the
+    ///             width of the Hanning filter was 3 pixels.
+    ///        <li> Spatial smoothing : image.SMOOTH-2D-3-2-20.fits, where
+    ///             kernMaj=3, kernMin=2 and kernPA=20 degrees.
+    ///    </ul>
+
     if(this->fileOutputSmooth==""){
       std::string inputName = this->imageFile;
       std::stringstream ss;
@@ -1188,12 +1166,11 @@ namespace duchamp
 
   std::string Param::outputReconFile()
   {
-    /** 
-     * This function produces the required filename in which to save
-     *  the reconstructed array. If the input image is image.fits, then
-     *  the output will be eg. image.RECON-3-2-4-1.fits, where the numbers are
-     *  3=reconDim, 2=filterCode, 4=snrRecon, 1=minScale
-     */
+    /// This function produces the required filename in which to save
+    ///  the reconstructed array. If the input image is image.fits, then
+    ///  the output will be eg. image.RECON-3-2-4-1.fits, where the numbers are
+    ///  3=reconDim, 2=filterCode, 4=snrRecon, 1=minScale
+
     if(this->fileOutputRecon==""){
       std::string inputName = this->imageFile;
       std::stringstream ss;
@@ -1212,12 +1189,11 @@ namespace duchamp
 
   std::string Param::outputResidFile()
   {
-    /** 
-     * This function produces the required filename in which to save
-     *  the reconstructed array. If the input image is image.fits, then
-     *  the output will be eg. image.RESID-3-2-4-1.fits, where the numbers are
-     *  3=reconDim, 2=filterCode, 4=snrRecon, 1=scaleMin
-     */
+    /// This function produces the required filename in which to save
+    ///  the reconstructed array. If the input image is image.fits, then
+    ///  the output will be eg. image.RESID-3-2-4-1.fits, where the numbers are
+    ///  3=reconDim, 2=filterCode, 4=snrRecon, 1=scaleMin
+
     if(this->fileOutputResid==""){
       std::string inputName = this->imageFile;
       std::stringstream ss;

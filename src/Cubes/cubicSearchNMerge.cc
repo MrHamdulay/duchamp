@@ -37,14 +37,12 @@ using std::setw;
 
 vector <Detection> cubicSearchNMerge(long *dim, float *Array, Param &par)
 {
-  /**
-   * cubicSearch
-   *  Takes a dimension array and data array as input (and Parameter set)
-   *  and searches for detections in a combination of 1D and 2D searches.
-   *  Returns a vector list of Detections.
-   *  No reconstruction is assumed to have taken place, so statistics are
-   *  calculated (using robust methods) from the data array itself.
-   */
+  /// @details
+  ///  Takes a dimension array and data array as input (and Parameter set)
+  ///  and searches for detections in a combination of 1D and 2D searches.
+  ///  Returns a vector list of Detections.
+  ///  No reconstruction is assumed to have taken place, so statistics are
+  ///  calculated (using robust methods) from the data array itself.
 
   vector <Detection> outputList;
   int zdim = dim[2];

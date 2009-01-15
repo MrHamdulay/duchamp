@@ -45,10 +45,10 @@ namespace duchamp
   // Prototypes for functions that use assorted Duchamp classes
   //////////////////////////////////////////////////////////////
 
-  /** Grow an object to a lower threshold */
+  /// @brief Grow an object to a lower threshold 
   void growObject(Detection &object, Cube &cube);
 
-  /** Draw the edge of the BLANK region on a map.*/
+  /// @brief Draw the edge of the BLANK region on a map.
   void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par);
 
   // In Cubes/spectraUtils.cc

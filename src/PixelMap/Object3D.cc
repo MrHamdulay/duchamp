@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// Object3D.cc: Member functions for Object3D and ChanMap classes.
+// Object3D.cc: Member functions for Object3D class.
 // -----------------------------------------------------------------------
 // Copyright (C) 2006, Matthew Whiting, ATNF
 //
@@ -29,32 +29,12 @@
 #include <duchamp/PixelMap/Voxel.hh>
 #include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Object2D.hh>
+#include <duchamp/PixelMap/ChanMap.hh>
 #include <duchamp/PixelMap/Object3D.hh>
 #include <vector>
 
 namespace PixelInfo
 {
-
-  ChanMap::ChanMap()
-  {
-    this->itsZ = -1;
-  }
-
-  ChanMap::ChanMap(const ChanMap& m){
-    operator=(m);
-  }
-
-  ChanMap& ChanMap::operator= (const ChanMap& m)
-  {
-    if(this == &m) return *this;
-    this->itsZ=m.itsZ; 
-    this->itsObject=m.itsObject;
-    return *this;
-  }
-  //--------------------------------------------
-  //============================================
-  //--------------------------------------------
-
   Object3D::Object3D()
   {
     this->numVox=0;

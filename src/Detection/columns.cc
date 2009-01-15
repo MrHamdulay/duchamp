@@ -45,7 +45,7 @@ namespace duchamp
 
     Col::Col()
     {
-      /** Set the default values for the parameters. */
+      /// @brief Set the default values for the parameters. 
       this->width=1; 
       this->precision=0; 
       this->name=" "; 
@@ -73,15 +73,14 @@ namespace duchamp
 
     Col::Col(int num, int prec)
     {
-      /**
-       * A specialised constructor that defines one of the default 
-       *  columns, as defined in the Column namespace
-       * \param num The number of the column to be constructed. 
-       *            Corresponds to the order of the columns in the const 
-       *            arrays in the Column namespace.
-       * \param prec The precision to use, if not the default. A value
-       * <0 or no value given results in the default being used.
-       */ 
+      /// A specialised constructor that defines one of the default 
+      ///  columns, as defined in the Column namespace
+      /// \param num The number of the column to be constructed. 
+      ///            Corresponds to the order of the columns in the const 
+      ///            arrays in the Column namespace.
+      /// \param prec The precision to use, if not the default. A value
+      /// <0 or no value given results in the default being used.
+
       if((num>=0)&&(num<numColumns)){
 	this->width     = defaultWidth[num];
 	if(prec<0) this->precision = defaultPrec[num];
@@ -135,10 +134,9 @@ namespace duchamp
   
     template <class T> void Col::printEntry(std::ostream &stream, T value)
     {
-      /**
-       *  \param stream Where the printing is done.
-       *  \param value  The value to be printed.
-       */
+      ///  \param stream Where the printing is done.
+      ///  \param value  The value to be printed.
+
       stream << std::setprecision(this->precision)
 	     << std::setw(this->width) 
 	     << std::setfill(' ')
@@ -154,18 +152,16 @@ namespace duchamp
  
     bool Col::doCol(std::string tableType, bool flagFint)
     {
-      /** 
-       *  Uses the info in the isFile etc arrays to determine whether
-       *  a given column, referenced by the enumeration COLNAME, is
-       *  used for a given table type.
-       * \param tableType The type of table: one of file, screen, log, votable.
-       * \param flagFint Whether to use FINT (true) or FTOT
-       * (false). This defaults to true, so need not be given. It only
-       * applies to the screen and votable cases -- both are written for the
-       * results file case.
-       * \return True if column is used for given table type. False
-       * otherwise. False if tableType not one of four listed.
-       */
+      ///  @details Uses the info in the isFile etc arrays to
+      ///  determine whether a given column, referenced by the
+      ///  enumeration COLNAME, is used for a given table type.
+      /// \param tableType The type of table: one of file, screen, log, votable.
+      /// \param flagFint Whether to use FINT (true) or FTOT
+      /// (false). This defaults to true, so need not be given. It only
+      /// applies to the screen and votable cases -- both are written for the
+      /// results file case.
+      /// \return True if column is used for given table type. False
+      /// otherwise. False if tableType not one of four listed.
       
       if(tableType == "file") return isFile[this->type];
       else if(tableType == "screen"){
@@ -187,27 +183,25 @@ namespace duchamp
     std::vector<Col> getFullColSet(std::vector<Detection> &objectList, 
 				   FitsHeader &head)
     {
-      /**
-       *  A function that returns a std::vector of Col objects containing
-       *  information on the columns necessary for output to the results
-       *  file:
-       *    Obj#,NAME,X,Y,Z,RA,DEC,VEL,w_RA,w_DEC,w_VEL,F_tot,F_int,F_peak,
-       *                X1,X2,Y1,Y2,Z1,Z2,Npix,Flag,
-       *                XAV,YAV,ZAV,XCENT,YCENT,ZCENT,XPEAK,YPEAK,ZPEAK
-       *
-       *   Each object in the provided objectList is checked to see if it
-       *   requires any column to be widened, or for that column to have
-       *   its precision increased.
-       *
-       *   Both Ftot and Fint are provided -- it is up to the calling
-       *   function to determine which to use.
-       *
-       * \param objectList A std::vector list of Detection objects that the
-       * columns need to fit.
-       * \param head The FitsHeader object defining the World Coordinate
-       * System.
-       * \return A std::vector list of Col definitions.
-       */
+      ///  @details A function that returns a std::vector of Col
+      ///  objects containing information on the columns necessary for
+      ///  output to the results file:
+      ///    Obj#,NAME,X,Y,Z,RA,DEC,VEL,w_RA,w_DEC,w_VEL,F_tot,F_int,F_peak,
+      ///                X1,X2,Y1,Y2,Z1,Z2,Npix,Flag,
+      ///                XAV,YAV,ZAV,XCENT,YCENT,ZCENT,XPEAK,YPEAK,ZPEAK
+      /// 
+      ///   Each object in the provided objectList is checked to see if it
+      ///   requires any column to be widened, or for that column to have
+      ///   its precision increased.
+      /// 
+      ///   Both Ftot and Fint are provided -- it is up to the calling
+      ///   function to determine which to use.
+      /// 
+      /// \param objectList A std::vector list of Detection objects that the
+      /// columns need to fit.
+      /// \param head The FitsHeader object defining the World Coordinate
+      /// System.
+      /// \return A std::vector list of Col definitions.
 
       std::vector<Col> newset;
 
@@ -600,19 +594,18 @@ namespace duchamp
     std::vector<Col> getLogColSet(std::vector<Detection> &objectList, 
 				  FitsHeader &head)
     {
-      /**
-       *  A function that returns a std::vector of Col objects containing
-       *    information on the columns necessary for logfile output:
-       *    Obj#,X,Y,Z,F_tot,F_peak,X1,X2,Y1,Y2,Z1,Z2,Npix
-       *
-       *   Each object in the provided objectList is checked to see if 
-       *    it requires any column to be widened, or for that column to
-       *    have its precision increased.
-       *
-       * \param objectList A std::vector list of Detection objects that the columns need to fit.
-       * \param head The FitsHeader object defining the World Coordinate System.
-       * \return A std::vector list of Col definitions.
-       */
+      ///  @details A function that returns a std::vector of Col
+      ///    objects containing information on the columns necessary
+      ///    for logfile output:
+      ///    Obj#,X,Y,Z,F_tot,F_peak,X1,X2,Y1,Y2,Z1,Z2,Npix
+      /// 
+      ///   Each object in the provided objectList is checked to see if 
+      ///    it requires any column to be widened, or for that column to
+      ///    have its precision increased.
+      /// 
+      /// \param objectList A std::vector list of Detection objects that the columns need to fit.
+      /// \param head The FitsHeader object defining the World Coordinate System.
+      /// \return A std::vector list of Col definitions.
 
       std::vector<Col> newset,tempset;
   

@@ -47,12 +47,13 @@ namespace duchamp
 
   std::string imageType[4] = {"point", "spectrum", "image", "cube"};
 
-  int Cube::getMetadata(){  
-    /** 
-     * A front-end to the Cube::getMetadata() function, that does
-     *  subsection checks. Does the flux unit conversion if the user
-     *  has requested it. Assumes the Param is set up properly.
-     */
+  int Cube::getMetadata()
+  {  
+    ///  @details
+    /// A front-end to the Cube::getMetadata() function, that does
+    ///  subsection checks. Does the flux unit conversion if the user
+    ///  has requested it. Assumes the Param is set up properly.
+
     std::string fname = par.getImageFile();
     if(par.getFlagSubsection()) fname+=par.getSubsection();
 
@@ -69,19 +70,18 @@ namespace duchamp
 
   int Cube::getMetadata(std::string fname)
   {
-    /**
-     * Read in the metadata associated with the cube from the file
-     *  fname (assumed to be in FITS format).  Function is a front end
-     *  to the I/O functions in the FitsIO/ directory.  This function
-     *  will check that the file exists, report the dimensions and
-     *  then get other functions to read the WCS and necessary header
-     *  keywords. This function does not read in the data array --
-     *  that is done by Cube::getCube(). Note that no conversion of
-     *  flux units is done -- you need to call Cube::getMetadata() or
-     *  do it separately.
-     *  \param fname A std::string with name of FITS file.
-     *  \return SUCCESS or FAILURE.
-     */
+    /// @details
+    /// Read in the metadata associated with the cube from the file
+    ///  fname (assumed to be in FITS format).  Function is a front end
+    ///  to the I/O functions in the FitsIO/ directory.  This function
+    ///  will check that the file exists, report the dimensions and
+    ///  then get other functions to read the WCS and necessary header
+    ///  keywords. This function does not read in the data array --
+    ///  that is done by Cube::getCube(). Note that no conversion of
+    ///  flux units is done -- you need to call Cube::getMetadata() or
+    ///  do it separately.
+    ///  \param fname A std::string with name of FITS file.
+    ///  \return SUCCESS or FAILURE.
 
     int numAxes, status = 0;  /* MUST initialize status */
     fitsfile *fptr;         
@@ -162,14 +162,13 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
 
   int Cube::getCube(std::string fname)
   {
-    /**
-     * Read in a cube from the file fname (assumed to be in FITS
-     *  format).  Function is a front end to the data I/O function in
-     *  the FitsIO/ directory.  This function calls the getMetadata()
-     *  function, then reads in the actual data array.
-     *  \param fname A std::string with name of FITS file.
-     *  \return SUCCESS or FAILURE.
-     */
+    /// @details
+    /// Read in a cube from the file fname (assumed to be in FITS
+    ///  format).  Function is a front end to the data I/O function in
+    ///  the FitsIO/ directory.  This function calls the getMetadata()
+    ///  function, then reads in the actual data array.
+    ///  \param fname A std::string with name of FITS file.
+    ///  \return SUCCESS or FAILURE.
 
     this->getMetadata(fname);
 
@@ -204,17 +203,14 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
 
   void Cube::convertFluxUnits()
   {
-    /**
-     *  If the user has requested new flux units (via the input
-     *  parameter newFluxUnits), this function converts the units
-     *  given by BUNIT to those given by newFluxUnits. If no simple
-     *  conversion can be found (by using wcsunits()) then nothing is
-     *  done and the user is informed, otherwise the
-     *  FitsHeader::fluxUnits parameter is updated and the pixel array
-     *  is converted accordingly.
-     *
-     */
-
+    /// @details
+    ///  If the user has requested new flux units (via the input
+    ///  parameter newFluxUnits), this function converts the units
+    ///  given by BUNIT to those given by newFluxUnits. If no simple
+    ///  conversion can be found (by using wcsunits()) then nothing is
+    ///  done and the user is informed, otherwise the
+    ///  FitsHeader::fluxUnits parameter is updated and the pixel array
+    ///  is converted accordingly.
 
     if(this->par.getNewFluxUnits()!=""){
 

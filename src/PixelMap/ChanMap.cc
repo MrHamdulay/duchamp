@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// atrous.hh: Definitions for wavelet reconstruction.
+// ChanMap.cc: Member functions for ChanMap class.
 // -----------------------------------------------------------------------
 // Copyright (C) 2006, Matthew Whiting, ATNF
 //
@@ -25,41 +25,51 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
-#ifndef ATROUS_H
-#define ATROUS_H
+#include <iostream>
+#include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Scan.hh>
+#include <duchamp/PixelMap/Object2D.hh>
+#include <duchamp/PixelMap/Object3D.hh>
+#include <vector>
 
-namespace duchamp
+namespace PixelInfo
 {
 
-  class Param;
+  ChanMap::ChanMap()
+  {
+    this->itsZ = -1;
+  }
 
-  const float reconTolerance = 0.005; ///< The tolerance in the reconstruction.
+  ChanMap::ChanMap(const ChanMap& m){
+    operator=(m);
+  }
 
+  ChanMap& ChanMap::operator= (const ChanMap& m)
+  {
+    if(this == &m) return *this;
+    this->itsZ=m.itsZ; 
+    this->itsObject=m.itsObject;
+    return *this;
+  }
 
-  /////////////////////////////////////////////////////////////////////////
+  bool operator< (ChanMap lhs, ChanMap rhs)
+  {
+    /// @details This only acts on the channel number. 
+    return (lhs.itsZ<rhs.itsZ);
+  }
 
-  /// @brief Perform a 1-dimensional a trous wavelet reconstruction. 
-  void atrous1DReconstruct(long &size, float *&input, 
-			   float *&output, Param &par);
-
-  /// @brief Perform a 2-dimensional a trous wavelet reconstruction. 
-  void atrous2DReconstruct(long &xdim, long &ydim, float *&input,
-			   float *&output, Param &par);
-
-  /// @brief Perform a 3-dimensional a trous wavelet reconstruction. 
-  void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, 
-			   float *&input,float *&output, Param &par);
-
-  /// @brief Subtract a baseline from a set of spectra in a cube. 
-  void baselineSubtract(long numSpec, long specLength, 
-			float *originalCube, float *baseline, Param &par);
-
-  /// @brief Find the baseline of a 1-D spectrum. 
-  void getBaseline(long size, float *input, float *baseline, Param &par);
-
-  /// @brief Find the baseline of a 1-D spectrum. 
-  void getBaseline(long size, float *input, float *baseline);
+  ChanMap operator+ (ChanMap lhs, ChanMap rhs)
+  {
+    ///  @details If they are the same channel, add the Objects,
+    ///  otherwise return a blank ChanMap.
+    
+    ChanMap newmap;
+    if(lhs.itsZ==rhs.itsZ){
+      newmap.itsZ = lhs.itsZ;
+      newmap.itsObject = lhs.itsObject + rhs.itsObject;
+    }
+    return newmap;
+  }
+  
 
 }
-
-#endif

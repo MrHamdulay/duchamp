@@ -43,93 +43,89 @@ namespace duchamp
 
   class FitsHeader; // foreshadow this so that Param knows it exists
 
-  /**
-   * Class to store general parameters.
-   *
-   * This is a general repository for parameters that are used by all
-   * functions. This is how the user interacts with the program, as
-   * parameters are read in from disk files through functions in this
-   * class.
-   */
+  /// @brief Class to store general parameters.
+  /// 
+  /// @details This is a general repository for parameters that are used by all
+  /// functions. This is how the user interacts with the program, as
+  /// parameters are read in from disk files through functions in this
+  /// class.
 
   class Param
   {
   public:
-    /** Default constructor. */
+    /// @brief Default constructor. 
     Param();
 
-    /** Copy constructor for Param. */
+    /// @brief Copy constructor for Param. 
     Param(const Param& p);
 
-    /** Assignment operator for Param.*/
+    /// @brief Assignment operator for Param.
     Param& operator= (const Param& p);
 
-    /** Destructor function.  */
+    /// @brief Destructor function.  
     virtual ~Param();
 
-    /** Define the default values of each parameter.*/
+    /// @brief Define the default values of each parameter.
     void  defaultValues();
 
     //-----------------
     // Functions in param.cc
     //
-    /** Parse the command line parameters correctly. */
+    /// @brief Parse the command line parameters correctly. 
     int    getopts(int argc, char ** argv, std::string progname="Duchamp");
 
-    /** Read in parameters from a disk file. */
+    /// @brief Read in parameters from a disk file. 
     int    readParams(std::string paramfile);
 
-    /** Check the parameter list for inconsistencies */
+    /// @brief Check the parameter list for inconsistencies 
     void   checkPars();
 
-    /** Copy certain necessary FITS header parameters from a FitsHeader
-	object */
+    /// @brief Copy certain necessary FITS header parameters from a FitsHeader object 
     void   copyHeaderInfo(FitsHeader &head);
 
-    /** Determine filename in which to save the mask array. */
+    /// @brief Determine filename in which to save the mask array. 
     std::string outputMaskFile();
 
-    /** Determine filename in which to save the smoothed array. */
+    /// @brief Determine filename in which to save the smoothed array. 
     std::string outputSmoothFile();
 
-    /** Determine filename in which to save the reconstructed array. */
+    /// @brief Determine filename in which to save the reconstructed array. 
     std::string outputReconFile(); 
 
-    /** Determine filename in which to save the residual array from the
-	atrous reconstruction. */
+    /// @brief Determine filename in which to save the residual array from the atrous reconstruction. 
     std::string outputResidFile(); 
 
-    /** Print the parameter set in a readable fashion. */
+    /// @brief Print the parameter set in a readable fashion. 
     friend std::ostream& operator<< ( std::ostream& theStream, Param& par);
     friend class Image;
 
     //------------------
     // Functions in FitsIO/subsection.cc
     //
-    /** Make sure the subsection strings are OK. */
+    /// @brief Make sure the subsection strings are OK. 
     int    verifySubsection();
 
-    /** Set the correct offset values for each axis */
+    /// @brief Set the correct offset values for each axis 
     void   setOffsets(struct wcsprm *wcs);
 
-    /** Set the correct offset values for each axis */
+    /// @brief Set the correct offset values for each axis 
     void   setOffsets(struct wcsprm &wcs);
 
     //------------------
     // These are in param.cc
-    /** Is a pixel value a BLANK? */
+    /// @brief Is a pixel value a BLANK? 
     bool   isBlank(float &value);
 
-    /** Is a given channel flagged as being in the Milky Way?*/           
+    /// @brief Is a given channel flagged as being in the Milky Way?           
     bool   isInMW(int z);
 
-    /** Is a given pixel position OK for use with stats calculations? */
+    /// @brief Is a given pixel position OK for use with stats calculations? 
     bool   isStatOK(int x, int y, int z);
 
-    /** Make a mask array -- an array saying whether each pixel is BLANK
-	or not*/
+    /// @brief Make a mask array -- an array saying whether each pixel is BLANK or not
     bool  *makeBlankMask(float *array, int size);
 
+    /// @brief Make a mask array -- an array saying whether each pixel is able to be used for statistics calculations
     bool *makeStatMask(float *array, long *dim);
 
     //--------------------
@@ -348,116 +344,116 @@ namespace duchamp
     bool   drawBlankEdge(){return blankEdge;};
     void   setDrawBlankEdge(bool f){blankEdge=f;};
 
-    /** Are we in verbose mode? */
+    /// @brief Are we in verbose mode? 
     bool   isVerbose(){return verbose;};
     void   setVerbosity(bool f){verbose=f;};
   
   private:
     // Input files
-    std::string imageFile;  ///< The image to be analysed.
-    bool   flagSubsection;  ///< Whether we just want a subsection of the image
-    Section pixelSec;       ///< The Section object storing the pixel subsection information.
-    bool   flagReconExists; ///< The reconstructed array is in a FITS file on disk.
-    std::string reconFile;  ///< The FITS file containing the reconstructed array.
-    bool   flagSmoothExists;///< The smoothed array is in a FITS file.
-    std::string smoothFile; ///< The FITS file containing the smoothed array.
+    std::string imageFile;       ///< The image to be analysed.
+    bool        flagSubsection;  ///< Whether we just want a subsection of the image
+    Section pixelSec;            ///< The Section object storing the pixel subsection information.
+    bool        flagReconExists; ///< The reconstructed array is in a FITS file on disk.
+    std::string reconFile;       ///< The FITS file containing the reconstructed array.
+    bool        flagSmoothExists;///< The smoothed array is in a FITS file.
+    std::string smoothFile;      ///< The FITS file containing the smoothed array.
 
-    bool  usePrevious;      ///< Whether to read the detections from a previously-created log file
-    std::string objectList; ///< List of objects to re-plot
+    bool       usePrevious;      ///< Whether to read the detections from a previously-created log file
+    std::string objectList;      ///< List of objects to re-plot
 
     // Output files
-    bool   flagLog;         ///< Should we do the intermediate logging?
-    std::string logFile;    ///< Where the intermediate logging goes.
-    std::string outFile;    ///< Where the final results get put.
-    bool   flagSeparateHeader;///< Should the header information(parameters & statistics) be written to a separate file to the table ofresults?
-    std::string headerFile; ///< Where the header information to go with the results table should be written.
-    std::string spectraFile;///< Where the spectra are displayed
-    bool   flagTextSpectra; ///< Should a text file with all spectra be written?
-    std::string spectraTextFile;///< Where the text spectra are written.
-    bool   flagOutputMask;  ///< Should the mask image be written?
-    std::string fileOutputMask; ///< The name of the mask image.
-    bool   flagMaskWithObjectNum;///< Should the mask values be labeled with the object ID (or just 1)?
-    bool   flagOutputSmooth;///< Should the smoothed cube be written?
-    std::string fileOutputSmooth; ///< The name of the smoothed cube file
-    bool   flagOutputRecon; ///< Should the reconstructed cube be written to a FITS file?
+    bool        flagLog;         ///< Should we do the intermediate logging?
+    std::string logFile;         ///< Where the intermediate logging goes.
+    std::string outFile;         ///< Where the final results get put.
+    bool        flagSeparateHeader;///< Should the header information(parameters & statistics) be written to a separate file to the table ofresults?
+    std::string headerFile;      ///< Where the header information to go with the results table should be written.
+    std::string spectraFile;     ///< Where the spectra are displayed
+    bool        flagTextSpectra; ///< Should a text file with all spectra be written?
+    std::string spectraTextFile; ///< Where the text spectra are written.
+    bool        flagOutputMask;  ///< Should the mask image be written?
+    std::string fileOutputMask;  ///< The name of the mask image.
+    bool        flagMaskWithObjectNum;///< Should the mask values be labeled with the object ID (or just 1)?
+    bool        flagOutputSmooth;///< Should the smoothed cube be written?
+    std::string fileOutputSmooth;///< The name of the smoothed cube file
+    bool        flagOutputRecon; ///< Should the reconstructed cube be written to a FITS file?
     std::string fileOutputRecon; ///< The name of the reconstructed cube file
-    bool   flagOutputResid; ///< Should the residuals from the reconstruction be written to a FITS file?
+    bool        flagOutputResid; ///< Should the residuals from the reconstruction be written to a FITS file?
     std::string fileOutputResid; ///< The name of the residual cube file
-    bool   flagVOT;         ///< Should we save results in VOTable format?
-    std::string votFile;    ///< Where the VOTable goes.
-    bool   flagKarma;       ///< Should we save results in Karma annotation format?
-    std::string karmaFile;  ///< Where the Karma annotation file goes.
-    std::string annotationType; ///< Should the annoations be circles or borders?
-    bool   flagMaps;        ///< Should we produce detection and moment maps in postscript form?
-    std::string detectionMap;///< The name of the detection map (postscript file).
-    std::string momentMap;  ///< The name of the 0th moment map (ps file).
-    bool   flagXOutput;     ///< Should there be an xwindows output of the detection map?
-    int    precFlux;        ///< The desired precision for flux values.
-    int    precVel;         ///< The desired precision for velocity/frequency values.
-    int    precSNR;         ///< The desired precision for the SNR values.
+    bool        flagVOT;         ///< Should we save results in VOTable format?
+    std::string votFile;         ///< Where the VOTable goes.
+    bool        flagKarma;       ///< Should we save results in Karma annotation format?
+    std::string karmaFile;       ///< Where the Karma annotation file goes.
+    std::string annotationType;  ///< Should the annoations be circles or borders?
+    bool        flagMaps;        ///< Should we produce detection and moment maps in postscript form?
+    std::string detectionMap;    ///< The name of the detection map (postscript file).
+    std::string momentMap;       ///< The name of the 0th moment map (ps file).
+    bool        flagXOutput;     ///< Should there be an xwindows output of the detection map?
+    int         precFlux;        ///< The desired precision for flux values.
+    int         precVel;         ///< The desired precision for velocity/frequency values.
+    int         precSNR;         ///< The desired precision for the SNR values.
 
     // Cube related parameters
-    bool   flagNegative;    ///< Are we going to search for negative features?
-    bool   flagBlankPix;    ///< A flag that indicates whether there are pixels defined as BLANK and whether we need to remove & ignore them in processing.
-    float  blankPixValue;   ///< Pixel value that is considered BLANK.
-    int    blankKeyword;    ///< The FITS header keyword BLANK.
-    float  bscaleKeyword;   ///< The FITS header keyword BSCALE.
-    float  bzeroKeyword;    ///< The FITS header keyword BZERO.
-    std::string  newFluxUnits;    ///< The user-requested flux units, to replace BUNIT.
+    bool        flagNegative;    ///< Are we going to search for negative features?
+    bool        flagBlankPix;    ///< A flag that indicates whether there are pixels defined as BLANK and whether we need to remove & ignore them in processing.
+    float       blankPixValue;   ///< Pixel value that is considered BLANK.
+    int         blankKeyword;    ///< The FITS header keyword BLANK.
+    float       bscaleKeyword;   ///< The FITS header keyword BSCALE.
+    float       bzeroKeyword;    ///< The FITS header keyword BZERO.
+    std::string newFluxUnits;    ///< The user-requested flux units, to replace BUNIT.
 
     // Milky-Way parameters
-    bool   flagMW;          ///< A flag that indicates whether to ignore the Milky Way channels.
-    int    maxMW;           ///< Last  Milky Way channel
-    int    minMW;           ///< First Milky Way channel
+    bool        flagMW;          ///< A flag that indicates whether to ignore the Milky Way channels.
+    int         maxMW;           ///< Last  Milky Way channel
+    int         minMW;           ///< First Milky Way channel
 
     // Trim-related
-    bool   flagTrim;        ///< Does the user want the cube trimmed?
-    bool   hasBeenTrimmed;  ///< Has the cube been trimmed of excess BLANKs around the edge?
-    long   borderLeft;      ///< The number of BLANK pixels trimmed from the left of the cube;
-    long   borderRight;     ///< The number trimmed from the Right of the cube;
-    long   borderBottom;    ///< The number trimmed from the Bottom of the cube;
-    long   borderTop;       ///< The number trimmed from the Top of the cube;
+    bool        flagTrim;        ///< Does the user want the cube trimmed?
+    bool        hasBeenTrimmed;  ///< Has the cube been trimmed of excess BLANKs around the edge?
+    long        borderLeft;      ///< The number of BLANK pixels trimmed from the left of the cube;
+    long        borderRight;     ///< The number trimmed from the Right of the cube;
+    long        borderBottom;    ///< The number trimmed from the Bottom of the cube;
+    long        borderTop;       ///< The number trimmed from the Top of the cube;
 
     // Subsection offsets
-    long  *offsets;         ///< The array of offsets for each FITS axis.
-    long   sizeOffsets;     ///< The size of the offsets array.
-    long   xSubOffset;      ///< The subsection's x-axis offset
-    long   ySubOffset;      ///< The subsection's y-axis offset
-    long   zSubOffset;      ///< The subsection's z-axis offset
+    long       *offsets;         ///< The array of offsets for each FITS axis.
+    long        sizeOffsets;     ///< The size of the offsets array.
+    long        xSubOffset;      ///< The subsection's x-axis offset
+    long        ySubOffset;      ///< The subsection's y-axis offset
+    long        zSubOffset;      ///< The subsection's z-axis offset
 
     // Baseline related
-    bool   flagBaseline;    ///< Whether to do baseline subtraction before reconstruction and/or searching.
+    bool        flagBaseline;    ///< Whether to do baseline subtraction before reconstruction and/or searching.
 
     // Detection-related
-    int    minPix;          ///< Minimum number of pixels for a detected object to be counted
-    float  numPixBeam;      ///< Size (area) of the beam in pixels.
-    bool   flagUsingBeam;   ///< If true, we are using the numPixBeam parameter, otherwise we use the value in the FITS header.
+    int         minPix;          ///< Minimum number of pixels for a detected object to be counted
+    float       numPixBeam;      ///< Size (area) of the beam in pixels.
+    bool        flagUsingBeam;   ///< If true, we are using the numPixBeam parameter, otherwise we use the value in the FITS header.
 
     // Object growth
-    bool   flagGrowth;      ///< Are we growing objects once they are found?
-    float  growthCut;       ///< The SNR that we are growing objects down to.
-    bool   flagUserGrowthThreshold; ///< Whether the user has manually defined a growth threshold
-    float  growthThreshold; ///< The threshold for growing objects down to
+    bool        flagGrowth;      ///< Are we growing objects once they are found?
+    float       growthCut;       ///< The SNR that we are growing objects down to.
+    bool        flagUserGrowthThreshold; ///< Whether the user has manually defined a growth threshold
+    float       growthThreshold; ///< The threshold for growing objects down to
 
     // FDR analysis
-    bool   flagFDR;         ///< Should the FDR method be used? 
-    float  alphaFDR;        ///< Alpha value for FDR detection algorithm
+    bool        flagFDR;         ///< Should the FDR method be used? 
+    float       alphaFDR;        ///< Alpha value for FDR detection algorithm
 
     // Basic detection
-    bool   flagStatSec;     ///< Whether we just want to use a subsection of the image to calculate the statistics.
-    Section statSec;        ///< The Section object storing the statistics subsection information.
-    bool   flagRobustStats; ///< Whether to use robust statistics.
-    float  snrCut;          ///< How many sigma above mean is a detection when sigma-clipping
-    float  threshold;       ///< What the threshold is (when sigma-clipping).
-    bool   flagUserThreshold;///< Whether the user has defined a threshold of their own.
+    bool        flagStatSec;     ///< Whether we just want to use a subsection of the image to calculate the statistics.
+    Section     statSec;         ///< The Section object storing the statistics subsection information.
+    bool        flagRobustStats; ///< Whether to use robust statistics.
+    float       snrCut;          ///< How many sigma above mean is a detection when sigma-clipping
+    float       threshold;       ///< What the threshold is (when sigma-clipping).
+    bool        flagUserThreshold;///< Whether the user has defined a threshold of their own.
 
     // Smoothing of the cube
-    bool   flagSmooth;      ///< Should the cube be smoothed before searching?
-    std::string smoothType; ///< The type of smoothing to be done.
-    int    hanningWidth;    ///< Width for hanning smoothing.
-    float  kernMaj;         ///< Semi-Major axis of gaussian smoothing kernel
-    float  kernMin;         ///< Semi-Minor axis of gaussian smoothing kernel
-    float  kernPA;          ///< Position angle of gaussian smoothing kernel, in degrees east of north (i.e. anticlockwise).
+    bool        flagSmooth;      ///< Should the cube be smoothed before searching?
+    std::string smoothType;      ///< The type of smoothing to be done.
+    int         hanningWidth;    ///< Width for hanning smoothing.
+    float       kernMaj;         ///< Semi-Major axis of gaussian smoothing kernel
+    float       kernMin;         ///< Semi-Minor axis of gaussian smoothing kernel
+    float       kernPA;          ///< Position angle of gaussian smoothing kernel, in degrees east of north (i.e. anticlockwise).
 
     // A trous reconstruction parameters
     bool   flagATrous;      ///< Are we using the a trous reconstruction?
@@ -488,6 +484,7 @@ namespace duchamp
   //===========================================================================
 
 
+  /// @brief Convert a string to lowercase.
   std::string makelower( std::string s );
 
 }

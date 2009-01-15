@@ -46,15 +46,14 @@ namespace duchamp
 
   void Cube::ObjectMerger()
   {
-    /**
-     * A Function that takes a Cube's list of Detections and
-     * combines those that are close (according to the 
-     * thresholds specified in the parameter list par).
-     * It also excludes those that do not make the minimum
-     * number of channels requirement.
-     * A front end to simpler functions mergeList and finaliseList,
-     *  with code to cover the option of growing objects.
-     */
+    /// @details
+    /// A Function that takes a Cube's list of Detections and
+    /// combines those that are close (according to the 
+    /// thresholds specified in the parameter list par).
+    /// It also excludes those that do not make the minimum
+    /// number of channels requirement.
+    /// A front end to simpler functions mergeList and finaliseList,
+    ///  with code to cover the option of growing objects.
 
     int startSize = this->objectList->size();
 
@@ -108,23 +107,22 @@ namespace duchamp
 
   void ObjectMerger(vector<Detection> &objList, Param &par)
   {
-    /**
-     *   A simple front-end to the mergeList() and finaliseList() functions,
-     *    so that if you want to merge a single list, it will
-     *    do both the merging and the cleaning up afterwards.
-     */
+    /// @details
+    ///   A simple front-end to the mergeList() and finaliseList() functions,
+    ///    so that if you want to merge a single list, it will
+    ///    do both the merging and the cleaning up afterwards.
+
     mergeList(objList, par);
     finaliseList(objList, par);
   }
 
   void mergeList(vector<Detection> &objList, Param &par)
   {
-    /**
-     *   A function that merges any objects in the list of 
-     *    Detections that are within stated threshold distances.
-     *   Determination of whether objects are close is done by
-     *    the function areClose. 
-     */
+    /// @details
+    ///   A function that merges any objects in the list of 
+    ///    Detections that are within stated threshold distances.
+    ///   Determination of whether objects are close is done by
+    ///    the function areClose. 
 
     if(objList.size() > 0){
 
@@ -189,15 +187,14 @@ namespace duchamp
 
   void finaliseList(vector<Detection> &objList, Param &par)
   {
-    /**
-     *  A function that looks at each object in the Detection vector
-     *    and determines whether is passes the requirements for the
-     *    minimum number of channels and spatial pixels, as provided by
-     *    the Param set par.
-     *   If it does not pass, it is removed from the list.
-     *   In the process, the object parameters are calculated and offsets
-     *    are added.
-     */
+    /// @details
+    ///  A function that looks at each object in the Detection vector
+    ///    and determines whether is passes the requirements for the
+    ///    minimum number of channels and spatial pixels, as provided by
+    ///    the Param set par.
+    ///   If it does not pass, it is removed from the list.
+    ///   In the process, the object parameters are calculated and offsets
+    ///    are added.
 
     int listCounter = 0;
 

@@ -47,31 +47,30 @@ namespace duchamp
 
   void getSpecAbscissae(Detection &object, FitsHeader &head, long zdim, float *abscissae)
   {
-    /**
-     *  A function that returns an array of
-     *  frequency/velocity/channel/etc values (that can be used as the
-     *  abscissae on the spectral plot).
-     *  \param object The object on which our spectrum is centered (in
-     *  case the spectral value changes with x & y
-     *  \param head The FitsHeader set of parameters that determine the coordinate transformation. 
-     *  \param zdim The length of the spectral axis
-     *  \param abscissae The array of spectral values -- must be allocated first
-     */
+    /// @details
+    ///  A function that returns an array of
+    ///  frequency/velocity/channel/etc values (that can be used as the
+    ///  abscissae on the spectral plot).
+    ///  \param object The object on which our spectrum is centered (in
+    ///  case the spectral value changes with x & y
+    ///  \param head The FitsHeader set of parameters that determine the coordinate transformation. 
+    ///  \param zdim The length of the spectral axis
+    ///  \param abscissae The array of spectral values -- must be allocated first
+
     getSpecAbscissae(head,object.getXcentre(),object.getYcentre(),zdim, abscissae);
   }
 
   void getSpecAbscissae(FitsHeader &head, float xpt, float ypt, long zdim, float *abscissae)
   {
-    /**
-     *  A function that returns an array of
-     *  frequency/velocity/channel/etc values (that can be used as the
-     *  horizontal axis on the spectral plot).
-     *  \param head The FitsHeader set of parameters that determine the coordinate transformation. 
-     *  \param xpt The x-value of the spatial position on which our spectrum is centred.
-     *  \param ypt The y-value of the spatial position on which our spectrum is centred.
-     *  \param zdim The length of the spectral axis
-     *  \param abscissae The array of spectral values -- must be allocated first.
-     */
+    /// @details
+    ///  A function that returns an array of
+    ///  frequency/velocity/channel/etc values (that can be used as the
+    ///  horizontal axis on the spectral plot).
+    ///  \param head The FitsHeader set of parameters that determine the coordinate transformation. 
+    ///  \param xpt The x-value of the spatial position on which our spectrum is centred.
+    ///  \param ypt The y-value of the spatial position on which our spectrum is centred.
+    ///  \param zdim The length of the spectral axis
+    ///  \param abscissae The array of spectral values -- must be allocated first.
 
     if(head.isWCS()){
       double xval = double(xpt);
@@ -88,19 +87,18 @@ namespace duchamp
   void getIntSpec(Detection &object, float *fluxArray, long *dimArray, bool *mask, 
 		  float beamCorrection, float *spec)
   {
-    /**
-     *  The base function that extracts an integrated spectrum for a
-     *  given object from a pixel array. The spectrum is returned as
-     *  the integrated flux, corrected for the beam using the given
-     *  correction factor.
-     *   \param object The Detection in question
-     *   \param fluxArray The full array of pixel values.
-     *   \param dimArray The axis dimensions for the fluxArray
-     *   \param mask A mask array indicating whether given pixels are valid
-     *   \param beamCorrection How much to divide the summed spectrum
-     *   by to return the integrated flux.
-     *   \param spec The integrated spectrum for the object -- must be allocated first.
-     */
+    /// @details
+    ///  The base function that extracts an integrated spectrum for a
+    ///  given object from a pixel array. The spectrum is returned as
+    ///  the integrated flux, corrected for the beam using the given
+    ///  correction factor.
+    ///   \param object The Detection in question
+    ///   \param fluxArray The full array of pixel values.
+    ///   \param dimArray The axis dimensions for the fluxArray
+    ///   \param mask A mask array indicating whether given pixels are valid
+    ///   \param beamCorrection How much to divide the summed spectrum
+    ///   by to return the integrated flux.
+    ///   \param spec The integrated spectrum for the object -- must be allocated first.
 
     for(int i=0;i<dimArray[2];i++) spec[i] = 0.;
     long xySize = dimArray[0]*dimArray[1];
@@ -125,17 +123,16 @@ namespace duchamp
 
   void getPeakSpec(Detection &object, float *fluxArray, long *dimArray, bool *mask, float *spec)
   {
-    /**
-     *  The base function that extracts an peak spectrum for a
-     *  given object from a pixel array. The spectrum is returned as
-     *  the integrated flux, corrected for the beam using the given
-     *  correction factor.
-     *   \param object The Detection in question
-     *   \param fluxArray The full array of pixel values.
-     *   \param dimArray The axis dimensions for the fluxArray
-     *   \param mask A mask array indicating whether given pixels are valid
-     *   \param spec The peak spectrum for the object -- must be allocated first
-     */
+    /// @details
+    ///  The base function that extracts an peak spectrum for a
+    ///  given object from a pixel array. The spectrum is returned as
+    ///  the integrated flux, corrected for the beam using the given
+    ///  correction factor.
+    ///   \param object The Detection in question
+    ///   \param fluxArray The full array of pixel values.
+    ///   \param dimArray The axis dimensions for the fluxArray
+    ///   \param mask A mask array indicating whether given pixels are valid
+    ///   \param spec The peak spectrum for the object -- must be allocated first
 
     long xySize = dimArray[0]*dimArray[1];
     int pos = object.getXPeak() + dimArray[0]*object.getYPeak();
@@ -150,27 +147,26 @@ namespace duchamp
   void Cube::getSpectralArrays(int objNum, float *specx, float *specy, 
 			       float *specRecon, float *specBase)
   {
-    /**
-     *  A utility function that goes and calculates, for a given
-     *  Detection, the spectral arrays, according to whether we want
-     *  the peak or integrated flux. The arrays can be used by
-     *  Cube::plotSpectrum() and Cube::writeSpectralData(). The arrays
-     *  calculated are listed below. Their length is given by the
-     *  length of the Cube's spectral dimension.
-     *
-     *  Note that the arrays need to be allocated prior to calling
-     *  this function.
-     *
-     *  \param objNum The number of the object under consideration
-     *  \param specx The array of frequency/velocity/channel/etc
-     *         values (the x-axis on the spectral plot).
-     *  \param specy The array of flux values, matching the specx
-     *         array.
-     *  \param specRecon The reconstructed or smoothed array, done in
-     *         the same way as specy.
-     *  \param specBase The fitted baseline values, done in the same
-     *         way as specy.
-     */
+    /// @details
+    ///  A utility function that goes and calculates, for a given
+    ///  Detection, the spectral arrays, according to whether we want
+    ///  the peak or integrated flux. The arrays can be used by
+    ///  Cube::plotSpectrum() and Cube::writeSpectralData(). The arrays
+    ///  calculated are listed below. Their length is given by the
+    ///  length of the Cube's spectral dimension.
+    /// 
+    ///  Note that the arrays need to be allocated prior to calling
+    ///  this function.
+    /// 
+    ///  \param objNum The number of the object under consideration
+    ///  \param specx The array of frequency/velocity/channel/etc
+    ///         values (the x-axis on the spectral plot).
+    ///  \param specy The array of flux values, matching the specx
+    ///         array.
+    ///  \param specRecon The reconstructed or smoothed array, done in
+    ///         the same way as specy.
+    ///  \param specBase The fitted baseline values, done in the same
+    ///         way as specy.
 
     long xdim = this->axisDim[0];
     long ydim = this->axisDim[1];

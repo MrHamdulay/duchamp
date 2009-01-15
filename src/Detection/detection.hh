@@ -40,14 +40,12 @@ namespace duchamp
 {
 
 
-  /**
-   * Class to represent a contiguous set of detected voxels.
-   *  This is a detected object, which features:
-   *   a vector of voxels, average and centroid positions, total & peak fluxes,
-   *   the possibility of WCS-calculated parameters (RA, Dec, velocity, 
-   *     related widths).
-   *  Also many functions with which to manipulate the Detections.
-   */
+  /// Class to represent a contiguous set of detected voxels.
+  ///  This is a detected object, which features:
+  ///   a vector of voxels, average and centroid positions, total & peak fluxes,
+  ///   the possibility of WCS-calculated parameters (RA, Dec, velocity, 
+  ///     related widths).
+  ///  Also many functions with which to manipulate the Detections.
 
   class Detection
   {
@@ -59,51 +57,51 @@ namespace duchamp
     //------------------------------
     // These are functions in detection.cc. 
     //
-    /** Add all voxels of one object to another. */
+    /// @brief Add all voxels of one object to another. 
     friend Detection operator+ (Detection lhs, Detection rhs);
     friend Detection operator+= (Detection lhs, Detection rhs){
       lhs = lhs + rhs;
       return lhs;
     }
 
-    /** Provides a reference to the pixel array. */
+    /// @brief Provides a reference to the pixel array. 
     PixelInfo::Object3D& pixels(){ 
       PixelInfo::Object3D &rpix = this->pixelArray; 
       return rpix;
     }; 
 
-    /** Calculate basic parameters of the Detection. */
+    /// @brief Calculate basic parameters of the Detection. 
     void   calcParams(){pixelArray.calcParams();}; 
 
-    /** Test whether voxel lists match */
+    /// @brief Test whether voxel lists match 
     bool voxelListsMatch(std::vector<PixelInfo::Voxel> voxelList);
 
-    /** Test whether a voxel list contains all detected voxels */
+    /// @brief Test whether a voxel list contains all detected voxels 
     bool voxelListCovered(std::vector<PixelInfo::Voxel> voxelList);
 
-    /** Calculate flux-related parameters of the Detection. */
+    /// @brief Calculate flux-related parameters of the Detection. 
     void   calcFluxes(float *fluxArray, long *dim); 
-    /** Calculate flux-related parameters of the Detection. */
+    /// @brief Calculate flux-related parameters of the Detection. 
     void   calcFluxes(std::vector<PixelInfo::Voxel> voxelList); 
 
-    /** Calculate parameters related to the World Coordinate System. */
+    /// @brief Calculate parameters related to the World Coordinate System. 
     //    void   calcWCSparams(float *fluxArray, long *dim, FitsHeader &head); 
     void   calcWCSparams(FitsHeader &head); 
 
-    /** Calculate the integrated flux over the entire Detection. */
+    /// @brief Calculate the integrated flux over the entire Detection. 
     void   calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head); 
-    /** Calculate the integrated flux over the entire Detection. */
+    /// @brief Calculate the integrated flux over the entire Detection. 
     void   calcIntegFlux(std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head); 
 
-    /** Calculate the 20%/50% peak flux widths */
+    /// @brief Calculate the 20%/50% peak flux widths 
     void calcVelWidths(float *fluxArray, long *dim, FitsHeader &head);
-    /** Calculate the 20%/50% peak flux widths */
+    /// @brief Calculate the 20%/50% peak flux widths 
     void calcVelWidths(std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head);
 
-    /** Set the values of the axis offsets from the cube. */
+    /// @brief Set the values of the axis offsets from the cube. 
     void   setOffsets(Param &par); 
 
-    /** Add the offset values to the pixel locations */
+    /// @brief Add the offset values to the pixel locations 
     void   addOffsets(){
       pixelArray.addOffsets(xSubOffset,ySubOffset,zSubOffset);
       xpeak+=xSubOffset; ypeak+=ySubOffset; zpeak+=zSubOffset;
@@ -115,53 +113,47 @@ namespace duchamp
     //---------------------------------
     // Text Output -- all in Detection/outputDetection.cc
     //
-    /** The spectral output label that contains info on the WCS position
-	& velocity.*/
+    /// @brief The spectral output label that contains info on the WCS position & velocity.
     std::string outputLabelWCS();  
 
-    /** The spectral output label that contains info on the pixel
-	location. */
+    /// @brief The spectral output label that contains info on the pixel location. 
     std::string outputLabelPix(); 
 
-    /** The spectral output label that contains info on fluxes of the
-	Detection. */
+    /// @brief The spectral output label that contains info on fluxes of the Detection. 
     std::string outputLabelFluxes(); 
 
-    /** The spectral output label that contains info on widths of the
-	Detection. */
+    /// @brief The spectral output label that contains info on widths of the Detection. 
     std::string outputLabelWidths(); 
 
-    /** Print all required values for the Detection to a table.*/
+    /// @brief Print all required values for the Detection to a table.
     void printTableRow(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType);
 
-    /** Print a particular value for the Detection to a table.*/
+    /// @brief Print a particular value for the Detection to a table.
     void printTableEntry(std::ostream &stream, Column::Col column);
 
     //---------------------------------- 
     // For plotting routines... in Cubes/drawMomentCutout.cc
     //
-    /** Get the location of the spatial borders. */
+    /// @brief Get the location of the spatial borders. 
     std::vector<int> getVertexSet();
     //
-    /** Draw spatial borders for a particular Detection. */
+    /// @brief Draw spatial borders for a particular Detection. 
     void   drawBorders(int xoffset, int yoffset); 
     //
-    /** Sort the pixels by central z-value. */
+    /// @brief Sort the pixels by central z-value. 
     void   SortByZ(){pixelArray.order();};
     //
     //----------------------------------
     // Basic functions
     //
-    /** Delete all pixel information from Detection. Does not clear
-	other parameters. */
+    /// @brief Delete all pixel information from Detection. Does not clear other parameters. 
     //  void   clearDetection(){this->pix.clear();};
 
-    /** Add a single voxel to the pixel list.*/
+    /// @brief Add a single voxel to the pixel list.
     void   addPixel(long x, long y, long z){pixelArray.addPixel(x,y,z);};
-    /** Add a single voxel to the pixel list.*/
+    /// @brief Add a single voxel to the pixel list.
     void   addPixel(PixelInfo::Voxel point){
-      /** This one adds the pixel to the pixelArray, and updates the
-	  fluxes according to the Voxel's flux information */
+      /// @brief This one adds the pixel to the pixelArray, and updates the fluxes according to the Voxel's flux information 
       pixelArray.addPixel(point);
       totalFlux += point.getF();
       if(point.getF()>peakFlux){
@@ -170,23 +162,22 @@ namespace duchamp
       }
     };
 
-    /** Return a single voxel. */
+    /// @brief Return a single voxel. 
     PixelInfo::Voxel getPixel(int i){return pixelArray.getPixel(i);};
 
-    /** Return the set of voxels. */
+    /// @brief Return the set of voxels. 
     std::vector<PixelInfo::Voxel> getPixelSet(){return pixelArray.getPixelSet();};
 
-    /** How many voxels are in the Detection? */
+    /// @brief How many voxels are in the Detection? 
     int    getSize(){return pixelArray.getSize();};
 
-    /** How many distinct spatial pixels are there? */
+    /// @brief How many distinct spatial pixels are there? 
     int    getSpatialSize(){return pixelArray.getSpatialSize();};
 
-    /** How many channels does the Detection have? */
+    /// @brief How many channels does the Detection have? 
     long   getNumChannels(){return pixelArray.getNumDistinctZ();};
 
-    /** Is there at least the acceptable minimum number of channels in
-	the Detection?  */
+    /// @brief Is there at least the acceptable minimum number of channels in the Detection?  
     bool   hasEnoughChannels(int minNumber);
  
     //-----------------------------------
@@ -246,8 +237,8 @@ namespace duchamp
     long        getYmax(){return pixelArray.getYmax();};
     long        getZmax(){return pixelArray.getZmax();};
     //
-    /** Is the WCS good enough to be used? 
-	\return Detection::flagWCS =  True/False */
+    /// @brief Is the WCS good enough to be used? 
+    ///	\return Detection::flagWCS =  True/False 
     bool        isWCS(){return flagWCS;};
     bool        isSpecOK(){return specOK;};
     void        setSpecOK(bool b){specOK=b;};
@@ -337,16 +328,16 @@ namespace duchamp
     float          v50min;         ///< Minimum velocity at 50% of peak flux
     float          v50max;         ///< Maximum velocity at 50% of peak flux
     float          w50;            ///< Velocity width at 50% of peak flux  
-    /** @brief  The next six are the precision of values printed in the headers of the spectral plots
+    /// @brief @brief  The next six are the precision of values printed in the headers of the spectral plots
 	@name 
-	@{ */
+	@{ 
     int            posPrec;        ///< Precision of WCS positional values 
     int            xyzPrec;        ///< Precision of pixel positional values
     int            fintPrec;       ///< Precision of F_int/F_tot values
     int            fpeakPrec;      ///< Precision of F_peak values
     int            velPrec;        ///< Precision of velocity values.
     int            snrPrec;        ///< Precision of S/N_max values.
-    /**@} */
+    /// @} 
   };
 
   //==========================================================================
@@ -358,36 +349,36 @@ namespace duchamp
   //----------------
   // These are in sorting.cc
   //
-  /** Sort a list of Detections by Z-pixel value. */
+  /// @brief Sort a list of Detections by Z-pixel value. 
   void SortByZ(std::vector <Detection> &inputList);
 
-  /** Sort a list of Detections by Velocity.*/
+  /// @brief Sort a list of Detections by Velocity.
   void SortByVel(std::vector <Detection> &inputList);
 
   //----------------
   // This is in areClose.cc
   //
-  /** Determine whether two objects are close according to set parameters.*/
+  /// @brief Determine whether two objects are close according to set parameters.
   bool areClose(Detection &object1, Detection &object2, Param &par);
 
   //----------------
   // This is in mergeIntoList.cc
   //
-  /** Add an object into a list, combining with adjacent objects if need be. */
+  /// @brief Add an object into a list, combining with adjacent objects if need be. 
   void mergeIntoList(Detection &object, std::vector <Detection> &objList, 
 		     Param &par);
 
   //----------------
   // These are in Cubes/Merger.cc
   //
-  /** Merge a list of Detections so that all adjacent voxels are in the same Detection. */
+  /// @brief Merge a list of Detections so that all adjacent voxels are in the same Detection. 
   void mergeList(std::vector<Detection> &objList, Param &par);   
-  /** Culls a list of Detections that do not meet minimum requirements. */
+  /// @brief Culls a list of Detections that do not meet minimum requirements. 
   void finaliseList(std::vector<Detection> &objList, Param &par);
-  /** Manage both the merging and the cleaning up of the list. */
+  /// @brief Manage both the merging and the cleaning up of the list. 
   void ObjectMerger(std::vector<Detection> &objList, Param &par);
 
-  /** Print the header information to a particular table */
+  /// @brief Print the header information to a particular table 
   void outputTableHeader(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType, bool flagWCS);
 
 }

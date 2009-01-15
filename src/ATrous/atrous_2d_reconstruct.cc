@@ -42,22 +42,20 @@ namespace duchamp
 
   void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, Param &par)
   {
-    /**
-     *  A routine that uses the a trous wavelet method to reconstruct a 
-     *   2-dimensional image.
-     *
-     *  If there are no non-BLANK pixels (and we are testing for
-     *  BLANKs), the reconstruction cannot be done, so we return the
-     *  input array as the output array and give a warning message.
-     *
-     *  \param xdim The length of the x-axis of the image.
-     *  \param ydim The length of the y-axis of the image.
-     *  \param input The input spectrum.
-     *  \param output The returned reconstructed spectrum. This array
-     *  needs to be declared beforehand.
-     *  \param par The Param set:contains all necessary info about the
-     *  filter and reconstruction parameters.
-     */
+    ///  A routine that uses the a trous wavelet method to reconstruct a 
+    ///   2-dimensional image.
+    /// 
+    ///  If there are no non-BLANK pixels (and we are testing for
+    ///  BLANKs), the reconstruction cannot be done, so we return the
+    ///  input array as the output array and give a warning message.
+    /// 
+    ///  \param xdim The length of the x-axis of the image.
+    ///  \param ydim The length of the y-axis of the image.
+    ///  \param input The input spectrum.
+    ///  \param output The returned reconstructed spectrum. This array
+    ///  needs to be declared beforehand.
+    ///  \param par The Param set:contains all necessary info about the
+    ///  filter and reconstruction parameters.
 
     long size = xdim * ydim;
     long mindim = xdim;

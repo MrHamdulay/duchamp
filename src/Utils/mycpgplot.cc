@@ -34,10 +34,9 @@ namespace mycpgplot
   
   int cpgIsPS()
   {
-    /** 
-     *     A front-end to cpgqinf, that tests whether the device is using a 
-     *     postscript (by which we mean "hardcopy") device
-     */
+    ///  @details
+    ///     A front-end to cpgqinf, that tests whether the device is using a 
+    ///     postscript (by which we mean "hardcopy") device
     char answer[50];
     int answer_len = sizeof(answer);
     cpgqinf("TYPE", answer, &answer_len);
@@ -54,15 +53,14 @@ namespace mycpgplot
 
   int mycpgopen(std::string device)
   {
-    /** 
-     * This function opens the requested device using cpgopen.
-     *
-     * It also defines both the new colours DARKGREEN and WCSGREEN,
-     * for later use so that they don't have to be defined manually.
-     *
-     * \param device The PGPLOT device to be opened.
-     * \return The return value of cpgopen.
-     */
+    ///  @details
+    /// This function opens the requested device using cpgopen.
+    /// 
+    /// It also defines both the new colours DARKGREEN and WCSGREEN,
+    /// for later use so that they don't have to be defined manually.
+    /// 
+    /// \param device The PGPLOT device to be opened.
+    /// \return The return value of cpgopen.
     int status = cpgopen(device.c_str());
     if(status>0){
       setDarkGreen();
@@ -71,23 +69,23 @@ namespace mycpgplot
     return status;
   }
 
-  void setWhite(){
-  /**
-   * Uses cpgIsPS() to determine whether a device is a postscript
-   * one. If so, we use the BACKGND colour (ie. 0), otherwise use
-   * FOREGND (1).
-   */
+  void setWhite()
+  {
+  /// @details
+  /// Uses cpgIsPS() to determine whether a device is a postscript
+  /// one. If so, we use the BACKGND colour (ie. 0), otherwise use
+  /// FOREGND (1).
     if(cpgIsPS()) cpgsci(BACKGND);
     else cpgsci(FOREGND);
   }
 
   
-  void setBlack(){
-  /**
-   * Uses cpgIsPS() to determine whether a device is a postscript
-   * one. If so, we use the FOREGND colour (ie. 1), otherwise use
-   * BACKGND (0).
-   */
+  void setBlack()
+  {
+  /// @details
+  /// Uses cpgIsPS() to determine whether a device is a postscript
+  /// one. If so, we use the FOREGND colour (ie. 1), otherwise use
+  /// BACKGND (0).
     if(cpgIsPS()) cpgsci(FOREGND);
     else cpgsci(BACKGND);
   }

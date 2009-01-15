@@ -35,21 +35,19 @@ namespace PixelInfo
 {
   //==========================================================================
 
-  /**
-   * Voxel class.
-   *  A 3-dimensional pixel, with x,y,z position + flux
-   */
+  /// Voxel class.
+  ///  A 3-dimensional pixel, with x,y,z position + flux
 
   class Voxel
   {
   public:
-    /** Default constructor. */
+    /// @brief Default constructor. 
     Voxel(){};
-    /** Specific constructor, defining an (x,y,z) location and flux f. */
+    /// @brief Specific constructor, defining an (x,y,z) location and flux f. 
     Voxel(long x, long y, long z, float f);
-    /** Copy constructor. */
+    /// @brief Copy constructor. 
     Voxel(const Voxel& v);
-    /** Assignment operator. */
+    /// @brief Assignment operator. 
     Voxel& operator= (const Voxel& v);
     virtual ~Voxel(){};
 
@@ -58,29 +56,29 @@ namespace PixelInfo
     void   setY(long y){itsY = y;};
     void   setZ(long z){itsZ = z;};
     void   setF(float f){itsF = f;};
-    /** Define an (x,y) coordinate */
+    /// @brief Define an (x,y) coordinate 
     void   setXY(long x, long y){itsX = x; itsY = y;};
-    /** Define an (x,y,z) coordinate */
+    /// @brief Define an (x,y,z) coordinate 
     void   setXYZ(long x, long y, long z){itsX = x; itsY = y; itsZ = z;};
-    /** Define an (x,y) coordinate with a flux f */
+    /// @brief Define an (x,y) coordinate with a flux f 
     void   setXYF(long x, long y, float f){itsX = x; itsY = y; itsF = f;};
-    /** Define an (x,y,z) coordinate with a flux f */
+    /// @brief Define an (x,y,z) coordinate with a flux f 
     void   setXYZF(long x, long y, long z, float f){itsX = x; itsY = y; itsZ = z; itsF = f;};
     long   getX(){return itsX;};
     long   getY(){return itsY;};
     long   getZ(){return itsZ;};
     float  getF(){return itsF;};
     
-    /** Return an index value for an array */
+    /// @brief Return an index value for an array 
     long   arrayIndex(long *dim);
 
-    /** Operator to print information of voxel. */
+    /// @brief Operator to print information of voxel. 
     friend std::ostream& operator<< ( std::ostream& theStream, Voxel& vox);
 
-    /** Operator to test for equality.*/
+    /// @brief Operator to test for equality.
     friend bool operator== (Voxel lhs, Voxel rhs);
     
-    /** Function to test for equality of positions only.*/
+    /// @brief Function to test for equality of positions only.
     bool match(Voxel other);
     
 
@@ -93,11 +91,8 @@ namespace PixelInfo
 
   //==========================================================================
 
-  /**
-   * Pixel class.
-   *  A 2-dimensional type of voxel, with just x & y position + flux
-   */
-
+  /// Pixel class.
+  ///  A 2-dimensional type of voxel, with just x & y position + flux
 
   class Pixel : public Voxel
   {

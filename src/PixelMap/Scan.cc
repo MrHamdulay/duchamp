@@ -57,9 +57,7 @@ namespace PixelInfo
 
   Scan nullScan()
   {
-    /** 
-     * A simple way of returning a scan with zero length.
-     */ 
+    /// A simple way of returning a scan with zero length.
     Scan null(-1,-1,0); 
     return null;
   }
@@ -73,11 +71,8 @@ namespace PixelInfo
 
   Scan unite(Scan &scan1, Scan &scan2)
   {
-    /**
-     * Return a scan that includes all pixels from both scans, but
-     * only if they overlap. If they do not, return the null scan.
-     *
-     */
+    /// Return a scan that includes all pixels from both scans, but
+    /// only if they overlap. If they do not, return the null scan.
 
     Scan joined;
     if(!touching(scan1,scan2)){
@@ -98,12 +93,9 @@ namespace PixelInfo
 
   Scan intersect(Scan &scan1, Scan &scan2)
   {
-    /**
-     * Return a scan that includes all pixels that lie in both scans.
-     * 
-     * If they do not overlap, return the null scan.
-     *
-     */
+    /// Return a scan that includes all pixels that lie in both scans.
+    /// 
+    /// If they do not overlap, return the null scan.
 
     Scan intersection;
     if(!overlap(scan1,scan2)){
@@ -123,16 +115,10 @@ namespace PixelInfo
 
   bool touching(Scan &scan1, Scan &scan2)
   {
-    /**
-     *  Test whether two scans either overlap, or lie adjacent
-     *  (ie. there are no pixels lying between the two scans).
-     * \return A bool value.
-     */
-//     if(scan1.getY()!=scan2.getY()) return false;
-//     else if(scan1.getX() <= scan2.getX())
-//       return (scan2.getX() <= scan1.getXmax()+1);
-//     else
-//       return (scan1.getX() <= scan2.getXmax()+1);
+    ///  Test whether two scans either overlap, or lie adjacent
+    ///  (ie. there are no pixels lying between the two scans).
+    /// \return A bool value.
+
     return overlap(scan1,scan2) || adjacent(scan1,scan2);
   
   }
@@ -140,11 +126,10 @@ namespace PixelInfo
 
   bool overlap(Scan &scan1, Scan &scan2)
   {
-    /**
-     *  Test whether two scans overlap, ie. they have pixels in
-     *  common.
-     * \return A bool value.
-     */
+    ///  Test whether two scans overlap, ie. they have pixels in
+    ///  common.
+    /// \return A bool value.
+
     if(scan1.getY()!=scan2.getY()) return false;
     else if(scan1.getX() <= scan2.getX())
       return (scan2.getX() <= scan1.getXmax());
@@ -156,11 +141,10 @@ namespace PixelInfo
 
   bool adjacent(Scan &scan1, Scan &scan2)
   {
-     /**
-     *  Test whether two scans lie adjacent (ie. there are no pixels
-     *  lying between the two scans).  If they overlap, return false.
-     *  \return A bool value.
-     */
+     /// Test whether two scans lie adjacent (ie. there are no pixels
+     /// lying between the two scans).  If they overlap, return false.
+     /// \return A bool value.
+
     if(scan1.getY()!=scan2.getY()) return false;
     else if(scan1.getX() <= scan2.getX())
       return (scan2.getX() == scan1.getXmax()+1);
@@ -172,12 +156,8 @@ namespace PixelInfo
 
   std::ostream& operator<< ( std::ostream& theStream, Scan& scan)
   {
-    /**
-     *  Output the three key parameters of the scan.
-     */
-//     theStream << scan.itsY;
-//     theStream << " " << scan.itsX;
-//     theStream << " " << scan.itsXLen;
+    ///  Output the three key parameters of the scan.
+
     if(scan.isNull()) theStream << "NULL";
     else{
       theStream << scan.itsX;
@@ -190,14 +170,13 @@ namespace PixelInfo
 
   bool operator< (Scan lhs, Scan rhs)
   {
-    /**
-     * Test for less-than first on the y-values, and if they are
-     * equal, test on the starting x-value, and then finally on the
-     * length.
-     *
-     * This is necessary for sorting functions on lists of Scans (used
-     * by the Object2D class).
-     */
+    /// Test for less-than first on the y-values, and if they are
+    /// equal, test on the starting x-value, and then finally on the
+    /// length.
+    /// 
+    /// This is necessary for sorting functions on lists of Scans (used
+    /// by the Object2D class).
+
     if(lhs.itsY != rhs.itsY)      return (lhs.itsY    < rhs.itsY);
     else if(lhs.itsX != rhs.itsX) return (lhs.itsX    < rhs.itsX);
     else                          return (lhs.itsXLen < rhs.itsXLen);
@@ -206,9 +185,8 @@ namespace PixelInfo
 
   bool operator== (Scan lhs, Scan rhs)
   {
-    /**
-     * For two scans to be equal, all three parameters must be equal.
-     */ 
+    /// For two scans to be equal, all three parameters must be equal.
+
     return (lhs.itsY == rhs.itsY) &&
       (lhs.itsX == rhs.itsX) &&
       (lhs.itsXLen == rhs.itsXLen);

@@ -41,15 +41,13 @@ namespace duchamp
 
   int Cube::getFITSdata(std::string fname)
   {
-    /**
-     * This function retrieves the data array from the FITS file at the 
-     *   location given by the string argument.
-     *  Only the two spatial axes and the one spectral axis are stored in the
-     *   data array. These axes are given by the wcsprm variables wcs->lng, 
-     *   wcs->lat and wcs->spec. 
-     *  All other axes are just read by their first pixel, using the 
-     *   fits_read_subsetnull_flt function
-     */
+    /// This function retrieves the data array from the FITS file at the 
+    ///   location given by the string argument.
+    ///  Only the two spatial axes and the one spectral axis are stored in the
+    ///   data array. These axes are given by the wcsprm variables wcs->lng, 
+    ///   wcs->lat and wcs->spec. 
+    ///  All other axes are just read by their first pixel, using the 
+    ///   fits_read_subsetnull_flt function
 
     int numAxes, status = 0;  /* MUST initialize status */
     fitsfile *fptr;  

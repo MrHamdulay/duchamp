@@ -38,19 +38,18 @@ namespace duchamp
 
   void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par)
   {
-    /**    
-     *   A subroutine that is designed to draw the edges of the blank
-     *   region of the cube on a moment/detection map. Uses the same
-     *   procedure as used in the reconstruction subroutines.
-     *
-     *   Note that it needs a PGPLOT device open. The colour used is the current
-     *    PGPLOT colour.
-     *
-     *   \param dataArray The array of pixel values
-     *   \param xdim      The size of the array in the x-direction.
-     *   \param ydim      The size of the array in the y-direction.
-     *   \param par       The Param set telling us what a BLANK pixel is.
-     */ 
+    ///  @details
+    ///  A subroutine that is designed to draw the edges of the blank
+    ///  region of the cube on a moment/detection map. Uses the same
+    ///  procedure as used in the reconstruction subroutines.
+    /// 
+    ///  Note that it needs a PGPLOT device open. The colour used is the current
+    ///   PGPLOT colour.
+    /// 
+    ///  \param dataArray The array of pixel values
+    ///  \param xdim      The size of the array in the x-direction.
+    ///  \param ydim      The size of the array in the y-direction.
+    ///  \param par       The Param set telling us what a BLANK pixel is.
 
     if(par.getFlagBlankPix()){
 

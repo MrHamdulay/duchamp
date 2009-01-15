@@ -46,23 +46,21 @@ namespace duchamp
   void atrous3DReconstruct(long &xdim, long &ydim, long &zdim, float *&input, 
 			   float *&output, Param &par)
   {
-    /**
-     *  A routine that uses the a trous wavelet method to reconstruct a 
-     *   3-dimensional image cube.
-     *  The Param object "par" contains all necessary info about the filter and 
-     *   reconstruction parameters.
-     *
-     *  If there are no non-BLANK pixels (and we are testing for
-     *  BLANKs), the reconstruction cannot be done, so we return the
-     *  input array as the output array and give a warning message.
-     *
-     *  \param xdim The length of the x-axis.
-     *  \param ydim The length of the y-axis.
-     *  \param zdim The length of the z-axis.
-     *  \param input The input spectrum.
-     *  \param output The returned reconstructed spectrum. This array needs to be declared beforehand.
-     *  \param par The Param set.
-     */
+    ///  A routine that uses the a trous wavelet method to reconstruct a 
+    ///   3-dimensional image cube.
+    ///  The Param object "par" contains all necessary info about the filter and 
+    ///   reconstruction parameters.
+    /// 
+    ///  If there are no non-BLANK pixels (and we are testing for
+    ///  BLANKs), the reconstruction cannot be done, so we return the
+    ///  input array as the output array and give a warning message.
+    /// 
+    ///  \param xdim The length of the x-axis.
+    ///  \param ydim The length of the y-axis.
+    ///  \param zdim The length of the z-axis.
+    ///  \param input The input spectrum.
+    ///  \param output The returned reconstructed spectrum. This array needs to be declared beforehand.
+    ///  \param par The Param set.
 
     long size = xdim * ydim * zdim;
     long spatialSize = xdim * ydim;

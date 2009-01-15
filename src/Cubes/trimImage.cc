@@ -37,15 +37,14 @@ namespace duchamp
 
   void Cube::trimCube()
   {
-    /**
-     *  If the blankPix flag has been set, this routine trims excess blank 
-     *    pixels from the edges of the spatial image.
-     *   It uses as its template the first channel, assuming that its non-BLANK 
-     *    size is representative of the rest of the channels.
-     *   The edges are moved in until the first non-BLANK pixel is encountered.
-     *   All other arrays are similarly edited, and the amount of trimming is 
-     *    recorded.
-     */
+    /// @details
+    ///  If the blankPix flag has been set, this routine trims excess blank 
+    ///    pixels from the edges of the spatial image.
+    ///   It uses as its template the first channel, assuming that its non-BLANK 
+    ///    size is representative of the rest of the channels.
+    ///   The edges are moved in until the first non-BLANK pixel is encountered.
+    ///   All other arrays are similarly edited, and the amount of trimming is 
+    ///    recorded.
 
     //   if(this->par.getFlagBlankPix()) {
     if(this->par.getFlagTrim()) {
@@ -185,11 +184,10 @@ namespace duchamp
 
   void Cube::unTrimCube()
   {
-    /**
-     *  If the cube has been trimmed by trimCube(), this task adds back the 
-     *   BLANK pixels on the edges, so that it returns to its original size.
-     *   All arrays are similarly edited.
-     */
+    /// @details
+    ///  If the cube has been trimmed by trimCube(), this task adds back the 
+    ///   BLANK pixels on the edges, so that it returns to its original size.
+    ///   All arrays are similarly edited.
 
     if(this->par.getFlagCubeTrimmed()){
 

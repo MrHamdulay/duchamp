@@ -50,16 +50,15 @@ namespace duchamp
 
   void Cube::drawMomentCutout(Detection &object)
   {
-    /** 
-     *   A routine to draw the 0th moment for the given detection
-     *    using the flux given by the pixel array in the Cube.
-     *   The 0th moment is constructed by adding the flux of each
-     *    pixel within the full extent of the object (this may be more
-     *    pixels than were actually detected in the object)
-     *   A tick mark is also drawn to indicate angular scale (but only
-     *    if the WCS for the Cube is valid).
-     * \param object The Detection to be drawn.
-     */
+    ///  @details
+    ///   A routine to draw the 0th moment for the given detection
+    ///    using the flux given by the pixel array in the Cube.
+    ///   The 0th moment is constructed by adding the flux of each
+    ///    pixel within the full extent of the object (this may be more
+    ///    pixels than were actually detected in the object)
+    ///   A tick mark is also drawn to indicate angular scale (but only
+    ///    if the WCS for the Cube is valid).
+    /// \param object The Detection to be drawn.
 
     if(!cpgtest())
       duchampError("Draw Cutout","There is no PGPlot device open!\n");
@@ -180,18 +179,17 @@ namespace duchamp
 
   void Cube::drawScale(float xstart, float ystart, float channel)
   {
-    /** 
-     *   A routine to draw a scale bar on a (pre-existing) PGPlot image.
-     *   It uses an iterative technique to move from the given start position 
-     *    (xstart,ystart) along the positive x-direction so that the length is
-     *    within 1% of the scaleLength (length in degrees), calculated 
-     *    according to the pixel scale of the cube.
-     *  \param xstart X-coordinate of the start position (left-hand edge
-     *  of tick mark typically).
-     *  \param ystart Y-coordinate of the start position
-     *  \param channel Which channel to base WCS calculations on: needed
-     *  as the positions could theoretically change with channel.
-     */
+    ///  @details
+    ///   A routine to draw a scale bar on a (pre-existing) PGPlot image.
+    ///   It uses an iterative technique to move from the given start position 
+    ///    (xstart,ystart) along the positive x-direction so that the length is
+    ///    within 1% of the scaleLength (length in degrees), calculated 
+    ///    according to the pixel scale of the cube.
+    ///  \param xstart X-coordinate of the start position (left-hand edge
+    ///  of tick mark typically).
+    ///  \param ystart Y-coordinate of the start position
+    ///  \param channel Which channel to base WCS calculations on: needed
+    ///  as the positions could theoretically change with channel.
 
     if(!cpgtest())
       duchampError("Draw Cutout","There is no PGPlot device open!\n");
@@ -296,11 +294,11 @@ namespace duchamp
   
   void Detection::drawBorders(int xoffset, int yoffset)
   {
-    /** 
-     * For a given object, draw borders around the spatial extent of the object.
-     * \param xoffset The offset from 0 of the x-axis of the plotting window
-     * \param yoffset The offset from 0 of the y-axis of the plotting window
-     */ 
+    ///  @details
+    /// For a given object, draw borders around the spatial extent of the object.
+    /// \param xoffset The offset from 0 of the x-axis of the plotting window
+    /// \param yoffset The offset from 0 of the y-axis of the plotting window
+
     if(!cpgtest())
       duchampError("Draw Borders","There is no PGPlot device open!\n");
     else{
@@ -330,11 +328,11 @@ namespace duchamp
 
   void Cube::drawFieldEdge()
   {
-    /**
-     * Draw a border around the spatial edge of the data. Lines are
-     * drawn in yellow at 0 and the values of xdim & ydim.  There must
-     * be a PGPLOT window open, else an error message is returned.
-     */
+    /// @details
+    /// Draw a border around the spatial edge of the data. Lines are
+    /// drawn in yellow at 0 and the values of xdim & ydim.  There must
+    /// be a PGPLOT window open, else an error message is returned.
+
     if(!cpgtest())
       duchampError("Draw Cutout","There is no PGPlot device open!\n");
     else{

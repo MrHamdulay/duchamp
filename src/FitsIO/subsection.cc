@@ -44,12 +44,11 @@ namespace duchamp
 
   void Param::setOffsets(struct wcsprm *wcs)
   {
-    /** 
-     * If there is a subsection being used, set the offset values
-     * according to the correct dimensions given by the WCS struct.  
-     * If not, set the offsets to zero.
-     * \param wcs The WCSLIB wcsprm struct that defines which axis is which.
-     */
+    /// If there is a subsection being used, set the offset values
+    /// according to the correct dimensions given by the WCS struct.  
+    /// If not, set the offsets to zero.
+    /// \param wcs The WCSLIB wcsprm struct that defines which axis is which.
+
     if(this->flagSubsection){ // if so, then the offsets array is defined.
       int specAxis = wcs->spec;
       if(specAxis<0) specAxis=2;
@@ -65,12 +64,11 @@ namespace duchamp
 
   void Param::setOffsets(struct wcsprm &wcs)
   {
-    /** 
-     * If there is a subsection being used, set the offset values
-     * according to the correct dimensions given by the WCS struct.  
-     * If not, set the offsets to zero.
-     * \param wcs The WCSLIB wcsprm struct that defines which axis is which.
-     */
+    /// If there is a subsection being used, set the offset values
+    /// according to the correct dimensions given by the WCS struct.  
+    /// If not, set the offsets to zero.
+    /// \param wcs The WCSLIB wcsprm struct that defines which axis is which.
+    
     if(this->flagSubsection){ // if so, then the offsets array is defined.
       int specAxis = wcs.spec;
       if(specAxis<0) specAxis=2;
@@ -86,19 +84,17 @@ namespace duchamp
 
   int Param::verifySubsection()
   {
-    /**
-     * Checks that the subsection strings (the pixel and stats
-     * subsections) are in the appropriate format, with the correct
-     * number of entries (one for each axis).
-     *
-     * This reads the dimensional information from the FITS file, and
-     * uses this with the Section::parse() function to make sure each
-     * section is OK.
-     *
-     * \return SUCCESS/FAILURE depending on outcome of the
-     * Section::parse() calls. Also FAILURE if something goes wrong with
-     * the FITS access.
-     */
+    /// Checks that the subsection strings (the pixel and stats
+    /// subsections) are in the appropriate format, with the correct
+    /// number of entries (one for each axis).
+    /// 
+    /// This reads the dimensional information from the FITS file, and
+    /// uses this with the Section::parse() function to make sure each
+    /// section is OK.
+    /// 
+    /// \return SUCCESS/FAILURE depending on outcome of the
+    /// Section::parse() calls. Also FAILURE if something goes wrong with
+    /// the FITS access.
 
     if(!this->flagSubsection && !this->flagStatSec){
       // if we get here, we are using neither subsection

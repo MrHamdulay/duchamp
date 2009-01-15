@@ -70,10 +70,9 @@ namespace duchamp
   ///////////////////////////////////////////////////
 
   DataArray::DataArray(){
-    /**
-     * Fundamental constructor for DataArray.
-     * Number of dimensions and pixels are set to 0. Nothing else allocated.
-     */
+    /// Fundamental constructor for DataArray.
+    /// Number of dimensions and pixels are set to 0. Nothing else allocated.
+
     this->numDim=0; 
     this->numPixels=0;
     this->objectList = new std::vector<Detection>;
@@ -83,12 +82,12 @@ namespace duchamp
   //--------------------------------------------------------------------
 
   DataArray::DataArray(short int nDim){
-    /**
-     * N-dimensional constructor for DataArray.
-     * Number of dimensions defined, and dimension array allocated.
-     * Number of pixels are set to 0. 
-     * \param nDim Number of dimensions.
-     */
+    /// @details
+    /// N-dimensional constructor for DataArray.
+    /// Number of dimensions defined, and dimension array allocated.
+    /// Number of pixels are set to 0. 
+    /// \param nDim Number of dimensions.
+
     this->axisDimAllocated = false;
     this->arrayAllocated = false;
     if(nDim>0){
@@ -102,15 +101,14 @@ namespace duchamp
   //--------------------------------------------------------------------
 
   DataArray::DataArray(short int nDim, long size){
-    /**
-     * N-dimensional constructor for DataArray.
-     * Number of dimensions and number of pixels defined. 
-     * Arrays allocated based on these values.
-     * \param nDim Number of dimensions. 
-     * \param size Number of pixels. 
-     *
-     * Note that we can assign values to the dimension array.
-     */
+    /// @details
+    /// N-dimensional constructor for DataArray.
+    /// Number of dimensions and number of pixels defined. 
+    /// Arrays allocated based on these values.
+    /// \param nDim Number of dimensions. 
+    /// \param size Number of pixels. 
+    /// 
+    /// Note that we can assign values to the dimension array.
 
     this->axisDimAllocated = false;
     this->arrayAllocated = false;
@@ -138,13 +136,13 @@ namespace duchamp
 
   DataArray::DataArray(short int nDim, long *dimensions)
   {
-    /**
-     * Most robust constructor for DataArray.
-     * Number and sizes of dimensions are defined, and hence the number of 
-     * pixels. Arrays allocated based on these values.
-     * \param nDim Number of dimensions. 
-     * \param dimensions Array giving sizes of dimensions.
-     */
+    /// @details
+    /// Most robust constructor for DataArray.
+    /// Number and sizes of dimensions are defined, and hence the number of 
+    /// pixels. Arrays allocated based on these values.
+    /// \param nDim Number of dimensions. 
+    /// \param dimensions Array giving sizes of dimensions.
+
     this->axisDimAllocated = false;
     this->arrayAllocated = false;
     if(nDim<0)
@@ -175,10 +173,10 @@ namespace duchamp
 
   DataArray::~DataArray()
   {
-    /** 
-     *  Destructor -- arrays deleted if they have been allocated, and the 
-     *   object list is deleted.
-     */
+    ///  @details
+    ///  Destructor -- arrays deleted if they have been allocated, and the 
+    ///   object list is deleted.
+
     if(this->numPixels>0 && this->arrayAllocated){
       delete [] this->array;
       this->arrayAllocated = false;
@@ -192,13 +190,14 @@ namespace duchamp
   //--------------------------------------------------------------------
   //--------------------------------------------------------------------
 
-  void DataArray::getDim(long &x, long &y, long &z){
-    /**
-     * The sizes of the first three dimensions (if they exist) are returned.
-     * \param x The first dimension. Defaults to 0 if numDim \f$\le\f$ 0.
-     * \param y The second dimension. Defaults to 1 if numDim \f$\le\f$ 1.
-     * \param z The third dimension. Defaults to 1 if numDim \f$\le\f$ 2.
-     */
+  void DataArray::getDim(long &x, long &y, long &z)
+  {
+    /// @details
+    /// The sizes of the first three dimensions (if they exist) are returned.
+    /// \param x The first dimension. Defaults to 0 if numDim \f$\le\f$ 0.
+    /// \param y The second dimension. Defaults to 1 if numDim \f$\le\f$ 1.
+    /// \param z The third dimension. Defaults to 1 if numDim \f$\le\f$ 2.
+
     if(this->numDim>0) x=this->axisDim[0]; 
     else x=0;
     if(this->numDim>1) y=this->axisDim[1]; 
@@ -208,34 +207,37 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void DataArray::getDimArray(long *output){
-    /**
-     * The axisDim array is written to output. This needs to be defined 
-     *  beforehand: no checking is done on the memory.
-     * \param output The array that is written to.
-     */
+  void DataArray::getDimArray(long *output)
+  {
+    /// @details
+    /// The axisDim array is written to output. This needs to be defined 
+    ///  beforehand: no checking is done on the memory.
+    /// \param output The array that is written to.
+
     for(int i=0;i<this->numDim;i++) output[i] = this->axisDim[i];
   }
   //--------------------------------------------------------------------
 
-  void DataArray::getArray(float *output){
-    /**
-     * The pixel value array is written to output. This needs to be defined 
-     *  beforehand: no checking is done on the memory.
-     * \param output The array that is written to.
-     */
+  void DataArray::getArray(float *output)
+  {
+    /// @details
+    /// The pixel value array is written to output. This needs to be defined 
+    ///  beforehand: no checking is done on the memory.
+    /// \param output The array that is written to.
+
     for(int i=0;i<this->numPixels;i++) output[i] = this->array[i];
   }
   //--------------------------------------------------------------------
 
-  void DataArray::saveArray(float *input, long size){
-    /**
-     * Saves the array in input to the pixel array DataArray::array.
-     * The size of the array given must be the same as the current number of
-     * pixels, else an error message is returned and nothing is done.
-     * \param input The array of values to be saved.
-     * \param size The size of input.
-     */
+  void DataArray::saveArray(float *input, long size)
+  {
+    /// @details
+    /// Saves the array in input to the pixel array DataArray::array.
+    /// The size of the array given must be the same as the current number of
+    /// pixels, else an error message is returned and nothing is done.
+    /// \param input The array of values to be saved.
+    /// \param size The size of input.
+
     if(size != this->numPixels)
       duchampError("DataArray::saveArray",
 		   "Input array different size to existing array. Cannot save.");
@@ -249,41 +251,43 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void DataArray::addObject(Detection object){ 
-    /**
-     * \param object The object to be added to the object list.
-     */
+  void DataArray::addObject(Detection object)
+  { 
+    /// \param object The object to be added to the object list.
+
     // objectList is a vector, so just use push_back()
     this->objectList->push_back(object);
   }
   //--------------------------------------------------------------------
 
-  void DataArray::addObjectList(std::vector <Detection> newlist) {
-    /**
-     * \param newlist The list of objects to be added to the object list.
-     */
+  void DataArray::addObjectList(std::vector <Detection> newlist) 
+  {
+    /// \param newlist The list of objects to be added to the object list.
+
     for(int i=0;i<newlist.size();i++) this->objectList->push_back(newlist[i]);
   }
   //--------------------------------------------------------------------
 
-  bool DataArray::isDetection(float value){
-    /** 
-     * Is a given value a detection, based on the statistics in the 
-     * DataArray's StatsContainer? 
-     * \param value The pixel value to test.
-     */
+  bool DataArray::isDetection(float value)
+  {
+    ///  @details
+    /// Is a given value a detection, based on the statistics in the 
+    /// DataArray's StatsContainer? 
+    /// \param value The pixel value to test.
+
     if(par.isBlank(value)) return false;
     else return Stats.isDetection(value);
   }
   //--------------------------------------------------------------------
 
-  bool DataArray::isDetection(long voxel){
-    /** 
-     * Is a given pixel a detection, based on the statistics in the 
-     * DataArray's StatsContainer? 
-     * If the pixel lies outside the valid range for the data array, return false.
-     * \param voxel Location of the DataArray's pixel to be tested.
-     */
+  bool DataArray::isDetection(long voxel)
+  {
+    ///  @details
+    /// Is a given pixel a detection, based on the statistics in the 
+    /// DataArray's StatsContainer? 
+    /// If the pixel lies outside the valid range for the data array, return false.
+    /// \param voxel Location of the DataArray's pixel to be tested.
+
     if((voxel<0)||(voxel>this->numPixels)) return false;
     else if(par.isBlank(this->array[voxel])) return false;
     else return Stats.isDetection(this->array[voxel]);
@@ -292,14 +296,14 @@ namespace duchamp
 
   std::ostream& operator<< ( std::ostream& theStream, DataArray &array)
   {
-    /**
-     * A way to print out the pixel coordinates & flux values of the 
-     * list of detected objects belonging to the DataArray.
-     * These are formatted nicely according to the << operator for Detection,
-     *  with a line indicating the number of detections at the start.
-     * \param theStream The ostream object to which the output should be sent.
-     * \param array The DataArray containing the list of objects.
-     */
+    /// @details
+    /// A way to print out the pixel coordinates & flux values of the 
+    /// list of detected objects belonging to the DataArray.
+    /// These are formatted nicely according to the << operator for Detection,
+    ///  with a line indicating the number of detections at the start.
+    /// \param theStream The ostream object to which the output should be sent.
+    /// \param array The DataArray containing the list of objects.
+
     for(int i=0;i<array.numDim;i++){
       if(i>0) theStream<<"x";
       theStream<<array.axisDim[i];
@@ -331,23 +335,25 @@ namespace duchamp
   //// Functions for Cube class
   /////////////////////////////////////////////////////////////
 
-  Cube::Cube(){
-    /**
-     * Basic Constructor for Cube class.
-     * numDim set to 3, but numPixels to 0 and all bool flags to false.
-     * No allocation done.
-     */
+  Cube::Cube()
+  {
+    /// @details
+    /// Basic Constructor for Cube class.
+    /// numDim set to 3, but numPixels to 0 and all bool flags to false.
+    /// No allocation done.
+
     numPixels=0; numDim=3; 
     reconExists = false; reconAllocated = false; baselineAllocated = false;
   }
   //--------------------------------------------------------------------
 
-  Cube::Cube(long size){
-    /**
-     * Alternative Cube constructor, where size is given but not individual
-     *  dimensions. Arrays are allocated as appropriate (according to the 
-     *  relevant flags in Param set), but the Cube::axisDim array is not.
-     */
+  Cube::Cube(long size)
+  {
+    /// @details
+    /// Alternative Cube constructor, where size is given but not individual
+    ///  dimensions. Arrays are allocated as appropriate (according to the 
+    ///  relevant flags in Param set), but the Cube::axisDim array is not.
+
     this->reconAllocated = false;
     this->baselineAllocated = false;
     this->axisDimAllocated = false;
@@ -377,12 +383,12 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  Cube::Cube(long *dimensions){
-    /**
-     * Alternative Cube constructor, where sizes of dimensions are given. 
-     * Arrays are allocated as appropriate (according to the 
-     *  relevant flags in Param set), as is the Cube::axisDim array.
-     */
+  Cube::Cube(long *dimensions)
+  {
+    /// Alternative Cube constructor, where sizes of dimensions are given. 
+    /// Arrays are allocated as appropriate (according to the 
+    ///  relevant flags in Param set), as is the Cube::axisDim array.
+
     int size   = dimensions[0] * dimensions[1] * dimensions[2];
     int imsize = dimensions[0] * dimensions[1];
     this->reconAllocated = false;
@@ -419,10 +425,10 @@ namespace duchamp
 
   Cube::~Cube()
   {
-    /**
-     *  The destructor deletes the memory allocated for Cube::detectMap, and,
-     *  if these have been allocated, Cube::recon and Cube::baseline.
-     */
+    /// @details
+    ///  The destructor deletes the memory allocated for Cube::detectMap, and,
+    ///  if these have been allocated, Cube::recon and Cube::baseline.
+
     if(this->numPixels>0 && this->arrayAllocated) delete [] this->detectMap;
     if(this->reconAllocated)    delete [] this->recon;
     if(this->baselineAllocated) delete [] this->baseline;
@@ -431,17 +437,18 @@ namespace duchamp
 
   void Cube::initialiseCube(long *dimensions, bool allocateArrays)
   {
-    /**
-     *  This function will set the sizes of all arrays that will be used by Cube.
-     *  It will also define the values of the axis dimensions: this will be done 
-     *   using the WCS in the FitsHeader class, so the WCS needs to be good and 
-     *   have three axes. If this is not the case, the axes are assumed to be 
-     *   ordered in the sense of lng,lat,spc.
-     *
-     *  \param dimensions An array of values giving the dimensions (sizes) for 
-     *  all axes.  
-     *  \param allocateArrays A flag indicating whether to allocate the memory for the data arrays: the default is true. The dimension arrays will be allocated and filled.
-     */ 
+    /// @details
+    ///  This function will set the sizes of all arrays that will be used by Cube.
+    ///  It will also define the values of the axis dimensions: this will be done 
+    ///   using the WCS in the FitsHeader class, so the WCS needs to be good and 
+    ///   have three axes. If this is not the case, the axes are assumed to be 
+    ///   ordered in the sense of lng,lat,spc.
+    /// 
+    ///  \param dimensions An array of values giving the dimensions (sizes) for 
+    ///  all axes.  
+    ///  \param allocateArrays A flag indicating whether to allocate
+    ///  the memory for the data arrays: the default is true. The
+    ///  dimension arrays will be allocated and filled.
 
     int lng,lat,spc,size,imsize;
   
@@ -515,10 +522,10 @@ namespace duchamp
 
   bool Cube::is2D()
   {
-    /*
-     *   Check whether the image is 2-dimensional, by counting
-     *   the number of dimensions that are greater than 1
-     */
+    /// @details
+    ///   Check whether the image is 2-dimensional, by counting
+    ///   the number of dimensions that are greater than 1
+
     if(this->head.WCS().naxis==2) return true;
     else{
       int numDim=0;
@@ -529,19 +536,21 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  int Cube::getCube(){  
-    /** 
-     * A front-end to the Cube::getCube() function, that does 
-     *  subsection checks.
-     * Assumes the Param is set up properly.
-     */
+  int Cube::getCube()
+  {  
+    ///  @details
+    /// A front-end to the Cube::getCube() function, that does 
+    ///  subsection checks.
+    /// Assumes the Param is set up properly.
+
     std::string fname = par.getImageFile();
     if(par.getFlagSubsection()) fname+=par.getSubsection();
     return getCube(fname);
   }
   //--------------------------------------------------------------------
 
-  void Cube::saveArray(float *input, long size){
+  void Cube::saveArray(float *input, long size)
+  {
     if(size != this->numPixels){
       std::stringstream errmsg;
       errmsg << "Input array different size to existing array ("
@@ -558,13 +567,14 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Cube::saveArray(std::vector<float> &input){
-    /**
-     * Saves the array in input to the pixel array Cube::array.
-     * The size of the array given must be the same as the current number of
-     * pixels, else an error message is returned and nothing is done.
-     * \param input The array of values to be saved.
-     */
+  void Cube::saveArray(std::vector<float> &input)
+  {
+    /// @details
+    /// Saves the array in input to the pixel array Cube::array.
+    /// The size of the array given must be the same as the current number of
+    /// pixels, else an error message is returned and nothing is done.
+    /// \param input The array of values to be saved.
+
     if(input.size() != this->numPixels){
       std::stringstream errmsg;
       errmsg << "Input array different size to existing array ("
@@ -581,17 +591,18 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Cube::saveRecon(float *input, long size){
-    /**
-     * Saves the array in input to the reconstructed array Cube::recon
-     * The size of the array given must be the same as the current number of
-     * pixels, else an error message is returned and nothing is done.
-     * If the recon array has already been allocated, it is deleted first, and 
-     * then the space is allocated.
-     * Afterwards, the appropriate flags are set.
-     * \param input The array of values to be saved.
-     * \param size The size of input.
-     */
+  void Cube::saveRecon(float *input, long size)
+  {
+    /// @details
+    /// Saves the array in input to the reconstructed array Cube::recon
+    /// The size of the array given must be the same as the current number of
+    /// pixels, else an error message is returned and nothing is done.
+    /// If the recon array has already been allocated, it is deleted first, and 
+    /// then the space is allocated.
+    /// Afterwards, the appropriate flags are set.
+    /// \param input The array of values to be saved.
+    /// \param size The size of input.
+
     if(size != this->numPixels){
       std::stringstream errmsg;
       errmsg << "Input array different size to existing array ("
@@ -611,12 +622,13 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Cube::getRecon(float *output){
-    /**
-     * The reconstructed array is written to output. The output array needs to 
-     *  be defined beforehand: no checking is done on the memory.
-     * \param output The array that is written to.
-     */
+  void Cube::getRecon(float *output)
+  {
+    /// @details
+    /// The reconstructed array is written to output. The output array needs to 
+    ///  be defined beforehand: no checking is done on the memory.
+    /// \param output The array that is written to.
+
     // Need check for change in number of pixels!
     for(int i=0;i<this->numPixels;i++){
       if(this->reconExists) output[i] = this->recon[i];
@@ -627,12 +639,12 @@ namespace duchamp
 
   void Cube::removeMW()
   {
-    /**
-     * The channels corresponding to the Milky Way range (as given by the Param
-     *  set) are all set to 0 in the pixel array.
-     * Only done if the appropriate flag is set, and the pixels are not BLANK.
-     * \deprecated
-     */ 
+    /// @details
+    /// The channels corresponding to the Milky Way range (as given by the Param
+    ///  set) are all set to 0 in the pixel array.
+    /// Only done if the appropriate flag is set, and the pixels are not BLANK.
+    /// \deprecated
+
     if(this->par.getFlagMW()){
       for(int pix=0;pix<this->axisDim[0]*this->axisDim[1];pix++){
 	for(int z=0;z<this->axisDim[2];z++){
@@ -646,27 +658,26 @@ namespace duchamp
 
   void Cube::setCubeStats()
   {
-    /**  
-     *   Calculates the full statistics for the cube:
-     *     mean, rms, median, madfm
-     *   Only do this if the threshold has not been defined (ie. is still 0.,
-     *    its default). 
-     *   Also work out the threshold and store it in the par set.
-     *   
-     *   Different from Cube::setCubeStatsOld() as it doesn't use the 
-     *    getStats functions but has own versions of them hardcoded to 
-     *    ignore BLANKs and MW channels. This saves on memory usage -- necessary
-     *    for dealing with very big files.
-     *
-     *   Three cases exist:
-     *  <ul><li>Simple case, with no reconstruction/smoothing: all stats 
-     *          calculated from the original array.
-     *      <li>Wavelet reconstruction: mean & median calculated from the 
-     *          original array, and stddev & madfm from the residual.
-     *      <li>Smoothing: all four stats calculated from the recon array 
-     *          (which holds the smoothed data).
-     *  </ul>
-     */
+    ///   @details
+    ///   Calculates the full statistics for the cube:
+    ///     mean, rms, median, madfm
+    ///   Only do this if the threshold has not been defined (ie. is still 0.,
+    ///    its default). 
+    ///   Also work out the threshold and store it in the par set.
+    ///   
+    ///   Different from Cube::setCubeStatsOld() as it doesn't use the 
+    ///    getStats functions but has own versions of them hardcoded to 
+    ///    ignore BLANKs and MW channels. This saves on memory usage -- necessary
+    ///    for dealing with very big files.
+    /// 
+    ///   Three cases exist:
+    ///  <ul><li>Simple case, with no reconstruction/smoothing: all stats 
+    ///          calculated from the original array.
+    ///      <li>Wavelet reconstruction: mean & median calculated from the 
+    ///          original array, and stddev & madfm from the residual.
+    ///      <li>Smoothing: all four stats calculated from the recon array 
+    ///          (which holds the smoothed data).
+    ///  </ul>
 
     if(this->par.getFlagUserThreshold() ){
       // if the user has defined a threshold, set this in the StatsContainer
@@ -820,15 +831,14 @@ namespace duchamp
 
   void Cube::setupFDR()
   {
-    /**
-     *  Call the setupFDR(float *) function on the pixel array of the
-     *  cube. This is the usual way of running it.
-     *
-     *  However, if we are in smoothing mode, we calculate the FDR
-     *  parameters using the recon array, which holds the smoothed
-     *  data. Gives an error message if the reconExists flag is not set.
-     *
-     */
+    /// @details
+    ///  Call the setupFDR(float *) function on the pixel array of the
+    ///  cube. This is the usual way of running it.
+    /// 
+    ///  However, if we are in smoothing mode, we calculate the FDR
+    ///  parameters using the recon array, which holds the smoothed
+    ///  data. Gives an error message if the reconExists flag is not set.
+
     if(this->par.getFlagSmooth()) 
       if(this->reconExists) this->setupFDR(this->recon);
       else{
@@ -847,23 +857,22 @@ namespace duchamp
 
   void Cube::setupFDR(float *input)
   {
-    /**  
-     *   Determines the critical Probability value for the False
-     *   Discovery Rate detection routine. All pixels in the given arry
-     *   with Prob less than this value will be considered detections.
-     *
-     *   Note that the Stats of the cube need to be calculated first.
-     *
-     *   The Prob here is the probability, assuming a Normal
-     *   distribution, of obtaining a value as high or higher than the
-     *   pixel value (ie. only the positive tail of the PDF).
-     *
-     *   The probabilities are calculated using the
-     *   StatsContainer::getPValue(), which calculates the z-statistic,
-     *   and then the probability via
-     *   \f$0.5\operatorname{erfc}(z/\sqrt{2})\f$ -- giving the positive
-     *   tail probability.
-     */
+    ///   @details
+    ///   Determines the critical Probability value for the False
+    ///   Discovery Rate detection routine. All pixels in the given arry
+    ///   with Prob less than this value will be considered detections.
+    /// 
+    ///   Note that the Stats of the cube need to be calculated first.
+    /// 
+    ///   The Prob here is the probability, assuming a Normal
+    ///   distribution, of obtaining a value as high or higher than the
+    ///   pixel value (ie. only the positive tail of the PDF).
+    /// 
+    ///   The probabilities are calculated using the
+    ///   StatsContainer::getPValue(), which calculates the z-statistic,
+    ///   and then the probability via
+    ///   \f$0.5\operatorname{erfc}(z/\sqrt{2})\f$ -- giving the positive
+    ///   tail probability.
 
     // first calculate p-value for each pixel -- assume Gaussian for now.
 
@@ -990,15 +999,15 @@ namespace duchamp
 
   bool Cube::isDetection(long x, long y, long z)
   {
-    /** 
-     * Is a given voxel at position (x,y,z) a detection, based on the statistics
-     *  in the Cube's StatsContainer? 
-     * If the pixel lies outside the valid range for the data array,
-     * return false.
-     * \param x X-value of the Cube's voxel to be tested.
-     * \param y Y-value of the Cube's voxel to be tested.
-     * \param z Z-value of the Cube's voxel to be tested.
-     */
+    ///  @details
+    /// Is a given voxel at position (x,y,z) a detection, based on the statistics
+    ///  in the Cube's StatsContainer? 
+    /// If the pixel lies outside the valid range for the data array,
+    /// return false.
+    /// \param x X-value of the Cube's voxel to be tested.
+    /// \param y Y-value of the Cube's voxel to be tested.
+    /// \param z Z-value of the Cube's voxel to be tested.
+
     long voxel = z*axisDim[0]*axisDim[1] + y*axisDim[0] + x;
     return DataArray::isDetection(array[voxel]);
   }
@@ -1006,11 +1015,11 @@ namespace duchamp
 
   void Cube::calcObjectFluxes()
   {
-    /**
-     *  A function to calculate the fluxes and centroids for each
-     *  object in the Cube's list of detections. Uses
-     *  Detection::calcFluxes() for each object.
-     */
+    /// @details
+    ///  A function to calculate the fluxes and centroids for each
+    ///  object in the Cube's list of detections. Uses
+    ///  Detection::calcFluxes() for each object.
+
     std::vector<Detection>::iterator obj;
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
       obj->calcFluxes(this->array, this->axisDim);
@@ -1024,12 +1033,11 @@ namespace duchamp
 
   void Cube::calcObjectWCSparams()
   {
-    /** 
-     *  A function that calculates the WCS parameters for each object in the 
-     *  Cube's list of detections.
-     *  Each object gets an ID number assigned to it (which is simply its order 
-     *   in the list), and if the WCS is good, the WCS paramters are calculated.
-     */
+    ///  @details
+    ///  A function that calculates the WCS parameters for each object in the 
+    ///  Cube's list of detections.
+    ///  Each object gets an ID number assigned to it (which is simply its order 
+    ///   in the list), and if the WCS is good, the WCS paramters are calculated.
 
     std::vector<Detection>::iterator obj;
     int ct=0;
@@ -1064,19 +1072,18 @@ namespace duchamp
 
   void Cube::calcObjectWCSparams(std::vector< std::vector<PixelInfo::Voxel> > bigVoxList)
   {
-    /** 
-     *  A function that calculates the WCS parameters for each object in the 
-     *  Cube's list of detections.
-     *  Each object gets an ID number assigned to it (which is simply its order 
-     *   in the list), and if the WCS is good, the WCS paramters are calculated.
-     *
-     *  This version uses vectors of Voxels to define the fluxes.
-     *
-     * \param bigVoxList A vector of vectors of Voxels, with the same
-     * number of elements as this->objectList, where each element is a
-     * vector of Voxels corresponding to the same voxels in each
-     * detection and indicating the flux of each voxel.
-     */
+    ///  @details
+    ///  A function that calculates the WCS parameters for each object in the 
+    ///  Cube's list of detections.
+    ///  Each object gets an ID number assigned to it (which is simply its order 
+    ///   in the list), and if the WCS is good, the WCS paramters are calculated.
+    /// 
+    ///  This version uses vectors of Voxels to define the fluxes.
+    /// 
+    /// \param bigVoxList A vector of vectors of Voxels, with the same
+    /// number of elements as this->objectList, where each element is a
+    /// vector of Voxels corresponding to the same voxels in each
+    /// detection and indicating the flux of each voxel.
   
     std::vector<Detection>::iterator obj;
     int ct=0;
@@ -1111,10 +1118,9 @@ namespace duchamp
 
   void Cube::updateDetectMap()
   {
-    /**
-     *  A function that, for each detected object in the cube's list, increments 
-     *   the cube's detection map by the required amount at each pixel.
-     */
+    /// @details
+    ///  A function that, for each detected object in the cube's list, increments 
+    ///   the cube's detection map by the required amount at each pixel.
 
     Scan temp;
     for(int obj=0;obj<this->objectList->size();obj++){
@@ -1136,12 +1142,11 @@ namespace duchamp
 
   void Cube::updateDetectMap(Detection obj)
   {
-    /** 
-     *  A function that, for the given object, increments the cube's
-     *  detection map by the required amount at each pixel.
-     * 
-     *  \param obj A Detection object that is being incorporated into the map.
-     */
+    ///  @details
+    ///  A function that, for the given object, increments the cube's
+    ///  detection map by the required amount at each pixel.
+    /// 
+    ///  \param obj A Detection object that is being incorporated into the map.
 
     Scan temp;
     long numZ=obj.pixels().getNumChanMap();
@@ -1159,13 +1164,13 @@ namespace duchamp
 
   float Cube::enclosedFlux(Detection obj)
   {
-    /** 
-     *   A function to calculate the flux enclosed by the range
-     *    of pixels detected in the object obj (not necessarily all
-     *    pixels will have been detected).
-     *
-     *   \param obj The Detection under consideration.
-     */
+    ///  @details
+    ///   A function to calculate the flux enclosed by the range
+    ///    of pixels detected in the object obj (not necessarily all
+    ///    pixels will have been detected).
+    /// 
+    ///   \param obj The Detection under consideration.
+
     obj.calcFluxes(this->array, this->axisDim);
     int xsize = obj.getXmax()-obj.getXmin()+1;
     int ysize = obj.getYmax()-obj.getYmin()+1;
@@ -1192,18 +1197,17 @@ namespace duchamp
 
   void Cube::setupColumns()
   {
-    /** 
-     *   A front-end to the two setup routines in columns.cc.  
-     *
-     *   This first gets the starting precisions, which may be from
-     *   the input parameters. It then sets up the columns (calculates
-     *   their widths and precisions and so on based on the values
-     *   within). The precisions are also stored in each Detection
-     *   object.
-     *
-     *   Need to have called calcObjectWCSparams() somewhere
-     *   beforehand.
-     */ 
+    /// @details
+    ///  A front-end to the two setup routines in columns.cc.  
+    /// 
+    ///  This first gets the starting precisions, which may be from
+    ///  the input parameters. It then sets up the columns (calculates
+    ///  their widths and precisions and so on based on the values
+    ///  within). The precisions are also stored in each Detection
+    ///  object.
+    /// 
+    ///  Need to have called calcObjectWCSparams() somewhere
+    ///  beforehand.
 
     std::vector<Detection>::iterator obj;
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
@@ -1247,13 +1251,12 @@ namespace duchamp
 
   bool Cube::objAtSpatialEdge(Detection obj)
   {
-    /** 
-     *   A function to test whether the object obj
-     *    lies at the edge of the cube's spatial field --
-     *    either at the boundary, or next to BLANKs.
-     *
-     *   \param obj The Detection under consideration.
-     */
+    ///  @details
+    ///   A function to test whether the object obj
+    ///    lies at the edge of the cube's spatial field --
+    ///    either at the boundary, or next to BLANKs.
+    /// 
+    ///   \param obj The Detection under consideration.
 
     bool atEdge = false;
 
@@ -1288,13 +1291,12 @@ namespace duchamp
 
   bool Cube::objAtSpectralEdge(Detection obj)
   {
-    /**  
-     *   A function to test whether the object obj
-     *    lies at the edge of the cube's spectral extent --
-     *    either at the boundary, or next to BLANKs.
-     *
-     *   /param obj The Detection under consideration.
-     */
+    ///   @details
+    ///   A function to test whether the object obj
+    ///    lies at the edge of the cube's spectral extent --
+    ///    either at the boundary, or next to BLANKs.
+    /// 
+    ///   /param obj The Detection under consideration.
 
     bool atEdge = false;
 
@@ -1320,15 +1322,14 @@ namespace duchamp
 
   void Cube::setObjectFlags()
   {
-    /**    
-     *   A function to set any warning flags for all the detected objects
-     *    associated with the cube.
-     *   Flags to be looked for:
-     *    <ul><li> Negative enclosed flux (N)
-     *        <li> Detection at edge of field (spatially) (E)
-     *        <li> Detection at edge of spectral region (S)
-     *    </ul>
-     */
+    /// @details
+    ///   A function to set any warning flags for all the detected objects
+    ///    associated with the cube.
+    ///   Flags to be looked for:
+    ///    <ul><li> Negative enclosed flux (N)
+    ///        <li> Detection at edge of field (spatially) (E)
+    ///        <li> Detection at edge of spectral region (S)
+    ///    </ul>
 
     std::vector<Detection>::iterator obj;
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
@@ -1356,7 +1357,8 @@ namespace duchamp
   //// Functions for Image class
   /////////////////////////////////////////////////////////////
 
-  Image::Image(long size){
+  Image::Image(long size)
+  {
     // need error handling in case size<0 !!!
     this->numPixels = this->numDim = 0;
     if(size<0)
@@ -1374,7 +1376,8 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  Image::Image(long *dimensions){
+  Image::Image(long *dimensions)
+  {
     this->numPixels = this->numDim = 0;
     int size = dimensions[0] * dimensions[1];
     if(size<0)
@@ -1396,13 +1399,13 @@ namespace duchamp
 
   void Image::saveArray(float *input, long size)
   {
-    /**
-     * Saves the array in input to the pixel array Image::array.
-     * The size of the array given must be the same as the current number of
-     * pixels, else an error message is returned and nothing is done.
-     * \param input The array of values to be saved.
-     * \param size The size of input.
-     */
+    /// @details
+    /// Saves the array in input to the pixel array Image::array.
+    /// The size of the array given must be the same as the current number of
+    /// pixels, else an error message is returned and nothing is done.
+    /// \param input The array of values to be saved.
+    /// \param size The size of input.
+
     if(size != this->numPixels)
       duchampError("Image::saveArray",
 		   "Input array different size to existing array. Cannot save.");
@@ -1420,17 +1423,17 @@ namespace duchamp
 
   void Image::extractSpectrum(float *Array, long *dim, long pixel)
   {
-    /**
-     *  A function to extract a 1-D spectrum from a 3-D array.
-     *  The array is assumed to be 3-D with the third dimension the spectral one.
-     *  The spectrum extracted is the one lying in the spatial pixel referenced
-     *    by the third argument.
-     *  The extracted spectrum is stored in the pixel array Image::array.
-     * \param Array The array containing the pixel values, from which
-     *               the spectrum is extracted.
-     * \param dim The array of dimension values.
-     * \param pixel The spatial pixel that contains the desired spectrum.
-     */ 
+    /// @details
+    ///  A function to extract a 1-D spectrum from a 3-D array.
+    ///  The array is assumed to be 3-D with the third dimension the spectral one.
+    ///  The spectrum extracted is the one lying in the spatial pixel referenced
+    ///    by the third argument.
+    ///  The extracted spectrum is stored in the pixel array Image::array.
+    /// \param Array The array containing the pixel values, from which
+    ///               the spectrum is extracted.
+    /// \param dim The array of dimension values.
+    /// \param pixel The spatial pixel that contains the desired spectrum.
+
     if((pixel<0)||(pixel>=dim[0]*dim[1]))
       duchampError("Image::extractSpectrum",
 		   "Requested spatial pixel outside allowed range. Cannot save.");
@@ -1451,14 +1454,14 @@ namespace duchamp
 
   void Image::extractSpectrum(Cube &cube, long pixel)
   {
-    /**
-     *  A function to extract a 1-D spectrum from a Cube class
-     *  The spectrum extracted is the one lying in the spatial pixel referenced
-     *    by the second argument.
-     *  The extracted spectrum is stored in the pixel array Image::array.
-     * \param cube The Cube containing the pixel values, from which the spectrum is extracted.
-     * \param pixel The spatial pixel that contains the desired spectrum.
-     */ 
+    /// @details
+    ///  A function to extract a 1-D spectrum from a Cube class
+    ///  The spectrum extracted is the one lying in the spatial pixel referenced
+    ///    by the second argument.
+    ///  The extracted spectrum is stored in the pixel array Image::array.
+    /// \param cube The Cube containing the pixel values, from which the spectrum is extracted.
+    /// \param pixel The spatial pixel that contains the desired spectrum.
+
     long zdim = cube.getDimZ();
     long spatSize = cube.getDimX()*cube.getDimY();
     if((pixel<0)||(pixel>=spatSize))
@@ -1482,17 +1485,16 @@ namespace duchamp
 
   void Image::extractImage(float *Array, long *dim, long channel)
   {
-    /**
-     *  A function to extract a 2-D image from a 3-D array.
-     *  The array is assumed to be 3-D with the third dimension the spectral one.
-     *  The dimensions of the array are in the dim[] array.
-     *  The image extracted is the one lying in the channel referenced
-     *    by the third argument.
-     *  The extracted image is stored in the pixel array Image::array.
-     * \param Array The array containing the pixel values, from which the image is extracted.
-     * \param dim The array of dimension values.
-     * \param channel The spectral channel that contains the desired image.
-     */ 
+    /// @details
+    ///  A function to extract a 2-D image from a 3-D array.
+    ///  The array is assumed to be 3-D with the third dimension the spectral one.
+    ///  The dimensions of the array are in the dim[] array.
+    ///  The image extracted is the one lying in the channel referenced
+    ///    by the third argument.
+    ///  The extracted image is stored in the pixel array Image::array.
+    /// \param Array The array containing the pixel values, from which the image is extracted.
+    /// \param dim The array of dimension values.
+    /// \param channel The spectral channel that contains the desired image.
 
     long spatSize = dim[0]*dim[1];
     if((channel<0)||(channel>=dim[2]))
@@ -1516,14 +1518,14 @@ namespace duchamp
 
   void Image::extractImage(Cube &cube, long channel)
   {
-    /**
-     *  A function to extract a 2-D image from Cube class.
-     *  The image extracted is the one lying in the channel referenced
-     *    by the second argument.
-     *  The extracted image is stored in the pixel array Image::array.
-     * \param cube The Cube containing the pixel values, from which the image is extracted.
-     * \param channel The spectral channel that contains the desired image.
-     */ 
+    /// @details
+    ///  A function to extract a 2-D image from Cube class.
+    ///  The image extracted is the one lying in the channel referenced
+    ///    by the second argument.
+    ///  The extracted image is stored in the pixel array Image::array.
+    /// \param cube The Cube containing the pixel values, from which the image is extracted.
+    /// \param channel The spectral channel that contains the desired image.
+
     long spatSize = cube.getDimX()*cube.getDimY();
     if((channel<0)||(channel>=cube.getDimZ()))
       duchampError("Image::extractImage",
@@ -1546,12 +1548,12 @@ namespace duchamp
 
   void Image::removeMW()
   {
-    /**
-     *  A function to remove the Milky Way range of channels from a 1-D spectrum.
-     *  The array in this Image is assumed to be 1-D, with only the first axisDim
-     *    equal to 1.
-     *  The values of the MW channels are set to 0, unless they are BLANK.
-     */ 
+    /// @details
+    ///  A function to remove the Milky Way range of channels from a 1-D spectrum.
+    ///  The array in this Image is assumed to be 1-D, with only the first axisDim
+    ///    equal to 1.
+    ///  The values of the MW channels are set to 0, unless they are BLANK.
+
     if(this->par.getFlagMW() && (this->axisDim[1]==1) ){
       for(int z=0;z<this->axisDim[0];z++){
 	if(!this->isBlank(z) && this->par.isInMW(z)) this->array[z]=0.;

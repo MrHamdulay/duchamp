@@ -37,15 +37,13 @@ namespace duchamp
 
   std::vector<Scan> Image::spectrumDetect() 
   {
-    /**
-     *  A detection algorithm that searches in a single 1-D spectrum.  It
-     *  simply scans along the spectrum, storing connected sets of
-     *  detected pixels as Scans, where "detected" means according to the
-     *  Image::isDetection(long,long) function.
-     *
-     *  When finished a vector of the detected scans is returned.
-     *
-     */
+    /// @details
+    ///  A detection algorithm that searches in a single 1-D spectrum.  It
+    ///  simply scans along the spectrum, storing connected sets of
+    ///  detected pixels as Scans, where "detected" means according to the
+    ///  Image::isDetection(long,long) function.
+    /// 
+    ///  When finished a vector of the detected scans is returned.
 
     STATUS status;
     Scan obj;

@@ -72,24 +72,23 @@ namespace duchamp
 
   void Cube::outputSpectra()
   {
-    /** 
-     * The way to display individual detected objects. The standard way
-     * is plot the full spectrum, plus a zoomed-in spectrum showing just
-     * the object, plus the 0th-moment map. If there is no spectral
-     * axis, just the 0th moment map is plotted (using
-     * Cube::plotSource() rather than Cube::plotSpectrum()).
-     *
-     * It makes use of the SpectralPlot or CutoutPlot classes from
-     * plots.h, which size everything correctly.
-     *
-     * The main choice for SpectralPlot() is whether to use the peak
-     * pixel, in which case the spectrum is just that of the peak pixel,
-     * or the sum, where the spectrum is summed over all spatial pixels
-     * that are in the object.  If a reconstruction has been done, that
-     * spectrum is plotted in red.  The limits of the detection are
-     * marked in blue.  A 0th moment map of the detection is also
-     * plotted, with a scale bar indicating the spatial scale.
-     */
+    ///  @details
+    /// The way to display individual detected objects. The standard way
+    /// is plot the full spectrum, plus a zoomed-in spectrum showing just
+    /// the object, plus the 0th-moment map. If there is no spectral
+    /// axis, just the 0th moment map is plotted (using
+    /// Cube::plotSource() rather than Cube::plotSpectrum()).
+    /// 
+    /// It makes use of the SpectralPlot or CutoutPlot classes from
+    /// plots.h, which size everything correctly.
+    /// 
+    /// The main choice for SpectralPlot() is whether to use the peak
+    /// pixel, in which case the spectrum is just that of the peak pixel,
+    /// or the sum, where the spectrum is summed over all spatial pixels
+    /// that are in the object.  If a reconstruction has been done, that
+    /// spectrum is plotted in red.  The limits of the detection are
+    /// marked in blue.  A 0th moment map of the detection is also
+    /// plotted, with a scale bar indicating the spatial scale.
 
     if(this->fullCols.size()==0) this->setupColumns(); 
     // in case cols haven't been set -- need the precisions for printing values.
@@ -155,15 +154,14 @@ namespace duchamp
 
   void Cube::writeSpectralData()
   {
-    /**
-     *  A function to write, in ascii form, the spectra of each
-     *  detected object to a file. The file consists of a column for
-     *  the spectral coordinates, and one column for each object
-     *  showing the flux at that spectral position. The units are the
-     *  same as those shown in the graphical output. The filename is
-     *  given by the Param::spectraTextFile parameter in the Cube::par
-     *  parameter set.
-     */
+    /// @details
+    ///  A function to write, in ascii form, the spectra of each
+    ///  detected object to a file. The file consists of a column for
+    ///  the spectral coordinates, and one column for each object
+    ///  showing the flux at that spectral position. The units are the
+    ///  same as those shown in the graphical output. The filename is
+    ///  given by the Param::spectraTextFile parameter in the Cube::par
+    ///  parameter set.
 
     const int zdim = this->axisDim[2];
     const int numObj = this->objectList->size();
@@ -207,26 +205,25 @@ namespace duchamp
 
   void Cube::plotSpectrum(int objNum, Plot::SpectralPlot &plot)
   {
-    /** 
-     * The way to print out the spectrum of a Detection.
-     * Makes use of the SpectralPlot class in plots.hh, which sizes 
-     *  everything correctly.
-     *
-     * The main choice for the user is whether to use the peak pixel, in
-     * which case the spectrum is just that of the peak pixel, or the
-     * sum, where the spectrum is summed over all spatial pixels that
-     * are in the object.
-     *
-     * If a reconstruction has been done, that spectrum is plotted in
-     * red, and if a baseline has been calculated that is also shown, in
-     * yellow.  The spectral limits of the detection are marked in blue.
-     * A 0th moment map of the detection is also plotted, with a scale
-     * bar indicating the spatial size.
-     *
-     * \param objNum The number of the Detection to be plotted.
-     * \param plot The SpectralPlot object defining the PGPLOT device
-     *        to plot the spectrum on.
-     */
+    ///  @details
+    /// The way to print out the spectrum of a Detection.
+    /// Makes use of the SpectralPlot class in plots.hh, which sizes 
+    ///  everything correctly.
+    /// 
+    /// The main choice for the user is whether to use the peak pixel, in
+    /// which case the spectrum is just that of the peak pixel, or the
+    /// sum, where the spectrum is summed over all spatial pixels that
+    /// are in the object.
+    /// 
+    /// If a reconstruction has been done, that spectrum is plotted in
+    /// red, and if a baseline has been calculated that is also shown, in
+    /// yellow.  The spectral limits of the detection are marked in blue.
+    /// A 0th moment map of the detection is also plotted, with a scale
+    /// bar indicating the spatial size.
+    /// 
+    /// \param objNum The number of the Detection to be plotted.
+    /// \param plot The SpectralPlot object defining the PGPLOT device
+    ///        to plot the spectrum on.
 
     long zdim = this->axisDim[2];
 
@@ -397,20 +394,19 @@ namespace duchamp
   void getSmallVelRange(Detection &obj, FitsHeader head, 
 			float *minvel, float *maxvel)
   {
-    /** 
-     *  Routine to calculate the velocity range for the zoomed-in region.
-     *  This range should be the maximum of 20 pixels, or 3x the wdith of 
-     *   the detection.
-     *  Need to :
-     *      Calculate pixel width of a 3x-detection-width region.
-     *      If smaller than 20, calculate velocities of central vel +- 10 pixels
-     *      If not, use the 3x-detection-width
-     *  Range returned via "minvel" and "maxvel" parameters.
-     *  \param obj Detection under examination.
-     *  \param head FitsHeader, containing the WCS information.
-     *  \param minvel Returned value of minimum velocity
-     *  \param maxvel Returned value of maximum velocity
-     */
+    ///  @details
+    ///  Routine to calculate the velocity range for the zoomed-in region.
+    ///  This range should be the maximum of 20 pixels, or 3x the wdith of 
+    ///   the detection.
+    ///  Need to :
+    ///      Calculate pixel width of a 3x-detection-width region.
+    ///      If smaller than 20, calculate velocities of central vel +- 10 pixels
+    ///      If not, use the 3x-detection-width
+    ///  Range returned via "minvel" and "maxvel" parameters.
+    ///  \param obj Detection under examination.
+    ///  \param head FitsHeader, containing the WCS information.
+    ///  \param minvel Returned value of minimum velocity
+    ///  \param maxvel Returned value of maximum velocity
 
     double *pixcrd = new double[3];
     double *world  = new double[3];
@@ -451,18 +447,17 @@ namespace duchamp
 
   void getSmallZRange(Detection &obj, float *minz, float *maxz)
   {
-    /** 
-     *  Routine to calculate the pixel range for the zoomed-in spectrum.
-     *  This range should be the maximum of 20 pixels, or 3x the width 
-     *   of the detection.
-     *  Need to :
-     *      Calculate pixel width of a 3x-detection-width region.
-     *       If smaller than 20, use central pixel +- 10 pixels
-     *  Range returned via "minz" and "maxz" parameters.
-     *  \param obj Detection under examination.
-     *  \param minz Returned value of minimum z-pixel coordinate
-     *  \param maxz Returned value of maximum z-pixel coordinate
-     */
+    ///  @details
+    ///  Routine to calculate the pixel range for the zoomed-in spectrum.
+    ///  This range should be the maximum of 20 pixels, or 3x the width 
+    ///   of the detection.
+    ///  Need to :
+    ///      Calculate pixel width of a 3x-detection-width region.
+    ///       If smaller than 20, use central pixel +- 10 pixels
+    ///  Range returned via "minz" and "maxz" parameters.
+    ///  \param obj Detection under examination.
+    ///  \param minz Returned value of minimum z-pixel coordinate
+    ///  \param maxz Returned value of maximum z-pixel coordinate
 
     *minz = 2.*obj.getZmin() - obj.getZmax();
     *maxz = 2.*obj.getZmax() - obj.getZmin();
@@ -477,19 +472,18 @@ namespace duchamp
 
   void Cube::plotSource(Detection obj, Plot::CutoutPlot &plot)
   {
-    /** 
-     * The way to print out the 2d image cutout of a Detection.
-     * Makes use of the CutoutPlot class in plots.hh, which sizes 
-     *  everything correctly.
-     *
-     * A 0th moment map of the detection is plotted, with a scale
-     * bar indicating the spatial size.
-     *
-     * Basic information on the source is printed next to it as well. 
-     *
-     * \param obj The Detection to be plotted.
-     * \param plot The PGPLOT device to plot the spectrum on.
-     */
+    ///  @details
+    /// The way to print out the 2d image cutout of a Detection.
+    /// Makes use of the CutoutPlot class in plots.hh, which sizes 
+    ///  everything correctly.
+    /// 
+    /// A 0th moment map of the detection is plotted, with a scale
+    /// bar indicating the spatial size.
+    /// 
+    /// Basic information on the source is printed next to it as well. 
+    /// 
+    /// \param obj The Detection to be plotted.
+    /// \param plot The PGPLOT device to plot the spectrum on.
 
     obj.calcFluxes(this->array, this->axisDim);
 

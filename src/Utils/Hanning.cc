@@ -54,14 +54,14 @@ Hanning& Hanning::operator=(const Hanning& h)
   return *this;
 }
 
-Hanning::Hanning(int size){
-  /**
-   * Constructor that sets the Hanning width and calculates the
-   * coefficients. Does this by simply calling the
-   * Hanning::define(int) function.
-   * \param size The full width of the filter. The parameter \f$a\f$
-   * is defined as (size+1)/2.
-   */ 
+Hanning::Hanning(int size)
+{
+  /// @details
+  /// Constructor that sets the Hanning width and calculates the
+  /// coefficients. Does this by simply calling the
+  /// Hanning::define(int) function.
+  /// \param size The full width of the filter. The parameter \f$a\f$
+  /// is defined as (size+1)/2.
 
   this->allocated=false;
   this->define(size);
@@ -69,11 +69,11 @@ Hanning::Hanning(int size){
 
 void Hanning::define(int size)
 {
-  /**
-   * Function that sets the Hanning width and calculates the coefficients.
-   * \param size The full width of the filter. The parameter \f$a\f$ is 
-   *  defined as (size+1)/2.
-   */ 
+  /// @details
+  /// Function that sets the Hanning width and calculates the coefficients.
+  /// \param size The full width of the filter. The parameter \f$a\f$ is 
+  ///  defined as (size+1)/2.
+
   if(size%2==0){ 
     std::cerr << "Hanning: need an odd number for the size. "
 	      << "Changing "<< size << " to " << size+1<<".\n";
@@ -92,20 +92,21 @@ void Hanning::define(int size)
 
 
 
-float *Hanning::smooth(float *array, int npts){
-  /**
-   * This smooths an array of float by doing a discrete convolution of
-   * the input array with the filter coefficients.
-   * 
-   * Currently only works for C arrays of floats, as that is all I
-   * need it for.  Could be made more general if needs be.
-   *
-   * \param array The input array. Needs to be defined -- no memory
-   * checks are done!  
-   * \param npts The size of the input array.
-   * \return Returns an array of the same size. If filter coefficients
-   * have not been allocated, the input array is returned.
-   */
+float *Hanning::smooth(float *array, int npts)
+{
+  /// @details
+  /// This smooths an array of float by doing a discrete convolution of
+  /// the input array with the filter coefficients.
+  /// 
+  /// Currently only works for C arrays of floats, as that is all I
+  /// need it for.  Could be made more general if needs be.
+  /// 
+  /// \param array The input array. Needs to be defined -- no memory
+  /// checks are done!  
+  /// \param npts The size of the input array.
+  /// \return Returns an array of the same size. If filter coefficients
+  /// have not been allocated, the input array is returned.
+
   if(!this->allocated) return array;
   else{
     float *newarray = new float[npts];

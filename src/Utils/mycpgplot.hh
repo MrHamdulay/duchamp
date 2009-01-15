@@ -38,30 +38,27 @@
 #undef HAVE_PGPLOT
 #include <duchamp/config.h>
 
-//--------------------
-/**
- * A namespace that holds definitions and basic functions to aid the
- * use of PGPLOT.
- */
+/// A namespace that holds definitions and basic functions to aid the
+/// use of PGPLOT.
 
 namespace mycpgplot
 {
-  /** Enumerated PGPLOT colour names. */
+  /// @brief Enumerated PGPLOT colour names. 
   enum COLOUR {BACKGND=0, FOREGND, RED, GREEN, BLUE, CYAN, 
 	       MAGENTA, YELLOW, ORANGE, GREENYELLOW, GREENCYAN, BLUECYAN, 
 	       BLUEMAGENTA, REDMAGENTA, DARKGREY, LIGHTGREY, DARKGREEN,
 	       WCSGREEN};
 
-  /** Enumerated colour names for the inverse case, such as for /xs devices.*/
+  /// @brief Enumerated colour names for the inverse case, such as for /xs devices.
   enum INVERSE {XS_BLACK, XS_WHITE};
 
-  /** Enumerated PGPLOT line styles. */
+  /// @brief Enumerated PGPLOT line styles. 
   enum LINESTYLE {FULL=1, DASHED, DASHDOT, DOTTED, DASHDOT3};
 
-  /** Enumerated PGPLOT area fill styles. */
+  /// @brief Enumerated PGPLOT area fill styles. 
   enum FILLSTYLE {SOLID=1, OUTLINE, HATCHED, CROSSHATCHED};
 
-  /** Enumerated PGPLOT plotting symbols. */
+  /// @brief Enumerated PGPLOT plotting symbols. 
   enum SYMBOLS {SOLIDPENT=-5, SOLIDDIAMOND, DOT=1, PLUS, ASTERISK, 
 		CIRCLE, CROSS, SQUARE, TRIANGLE, OPLUS, ODOT, FOURSTAR,
 		DIAMOND, STAR, SOLIDTRIANGLE, OPENPLUS, DAVID, 
@@ -88,39 +85,39 @@ namespace mycpgplot
 
 // The following are in pgplot_related.c
 //
-/** Is a PGPLOT device open? */
+/// @brief Is a PGPLOT device open? 
 extern "C" int  cpgtest();
 
-/** Do a logarithmic-scaled wedge, as in PGWEDG */
+/// @brief Do a logarithmic-scaled wedge, as in PGWEDG 
 extern "C" void cpgwedglog(const char* side, float disp, float width, 
 			   float fg, float bg, const char *label);
 
-/** Do CPGHIST but with the y-axis logarithmic */
+/// @brief Do CPGHIST but with the y-axis logarithmic 
 extern "C" void cpghistlog(int npts, float *data, float datamin, 
 			   float datamax, int nbin, int pgflag);
 
-/** Do a PGPLOT cumulative distribution */
+/// @brief Do a PGPLOT cumulative distribution 
 extern "C" void cpgcumul(int npts, float *data, float datamin, 
 			 float datamax, int pgflag);
 
 namespace mycpgplot {
 
-  /** Is a PGPLOT device a postscript (hardcopy) device? */ 
+  /// @brief Is a PGPLOT device a postscript (hardcopy) device?  
   int  cpgIsPS(); 
 
-  /** A front-end to the cpgopen function, with other necessary definitions.*/
+  /// @brief A front-end to the cpgopen function, with other necessary definitions.
   int mycpgopen(std::string device);
 
-  /** Define the DARKGREEN colour, with RGB value of (0,0.7,0).*/
+  /// @brief Define the DARKGREEN colour, with RGB value of (0,0.7,0).
   void setDarkGreen();
 
-  /** Define the WCSGREEN colour, with RGB value of (0.3,0.5,0.3). */
+  /// @brief Define the WCSGREEN colour, with RGB value of (0.3,0.5,0.3). 
   void setWCSGreen();
 
-  /** A device-independent way to set the colour to white. */
+  /// @brief A device-independent way to set the colour to white. 
   void setWhite();
 
-  /** A device-independent way to set the colour to black. */
+  /// @brief A device-independent way to set the colour to black. 
    void setBlack();
 
 }

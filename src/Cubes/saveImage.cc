@@ -44,26 +44,25 @@
 namespace duchamp
 {
 
-  /** Write FITS headers in correct format for reconstructed array output */
+  /// @brief Write FITS headers in correct format for reconstructed array output 
   void writeReconHeaderInfo(fitsfile *fptr, Param &par, std::string nature);
 
-  /** Write FITS headers in correct format for smoothed array output */
+  /// @brief Write FITS headers in correct format for smoothed array output 
   void writeSmoothHeaderInfo(fitsfile *fptr, Param &par);
 
-  /** Write FITS headers in correct format for mask array output */
+  /// @brief Write FITS headers in correct format for mask array output 
   void writeMaskHeaderInfo(fitsfile *fptr, Param &par);
   //---------------------------------------------------------------------------
 
   void Cube::saveMaskCube()
   {
-    /**
-     *  A function to save a mask to a FITS file, indicating where the
-     *  detections where made. The value of the detected pixels is
-     *  determined by the flagMaskWithObjectNum parameter: if true,
-     *  the value of the pixels is given by the corresponding object
-     *  ID number; if false, they take the value 1 for all
-     *  objects. Pixels not in a detected object have the value 0.
-     */
+    /// @details
+    ///  A function to save a mask to a FITS file, indicating where the
+    ///  detections where made. The value of the detected pixels is
+    ///  determined by the flagMaskWithObjectNum parameter: if true,
+    ///  the value of the pixels is given by the corresponding object
+    ///  ID number; if false, they take the value 1 for all
+    ///  objects. Pixels not in a detected object have the value 0.
 
     int newbitpix = SHORT_IMG;
     long *fpixel = new long[this->numDim];
@@ -184,14 +183,13 @@ namespace duchamp
 
   void Cube::saveSmoothedCube()
   {
-    /**
-     *   A function to save the smoothed arrays to a FITS file.
-     *   Additional header keywords are written as well, indicating the
-     *   width of the Hanning filter or the dimensions of the Gaussian
-     *   kernel.
-     *   The file is always written -- if the filename (as calculated 
-     *    based on the parameters) exists, then it is overwritten.
-     */
+    /// @brief
+    ///   A function to save the smoothed arrays to a FITS file.
+    ///   Additional header keywords are written as well, indicating the
+    ///   width of the Hanning filter or the dimensions of the Gaussian
+    ///   kernel.
+    ///   The file is always written -- if the filename (as calculated 
+    ///    based on the parameters) exists, then it is overwritten.
   
     int newbitpix = FLOAT_IMG;
 
@@ -270,13 +268,12 @@ namespace duchamp
 
   void Cube::saveReconstructedCube()
   {
-    /**
-     *  A function to save the reconstructed and/or residual arrays.
-     *   A number of header keywords are written as well, indicating the 
-     *    nature of the reconstruction that has been done.
-     *   The file is always written -- if the filename (as calculated 
-     *    based on the recon parameters) exists, then it is overwritten.
-     */
+    /// @details
+    ///  A function to save the reconstructed and/or residual arrays.
+    ///   A number of header keywords are written as well, indicating the 
+    ///    nature of the reconstruction that has been done.
+    ///   The file is always written -- if the filename (as calculated 
+    ///    based on the recon parameters) exists, then it is overwritten.
   
     int newbitpix = FLOAT_IMG;
 
@@ -417,14 +414,12 @@ namespace duchamp
 
   void writeReconHeaderInfo(fitsfile *fptr, Param &par, std::string nature)
   {
-    /**
-     *   A simple function that writes all the necessary keywords and comments
-     *    to the FITS header pointed to by fptr.
-     *   The keyword names and comments are taken from duchamp.hh
-     *   The parameter "nature" indicates what type of file is being written:
-     *    should be either "recon" or "resid".
-     */
-
+    /// @details
+    ///   A simple function that writes all the necessary keywords and comments
+    ///    to the FITS header pointed to by fptr.
+    ///   The keyword names and comments are taken from duchamp.hh
+    ///   The parameter "nature" indicates what type of file is being written:
+    ///    should be either "recon" or "resid".
 
     int status = 0;
     std::string explanation = "",ReconResid="";
@@ -483,12 +478,10 @@ namespace duchamp
 
   void writeSmoothHeaderInfo(fitsfile *fptr, Param &par)
   {
-    /**
-     *   A simple function that writes all the necessary keywords and comments
-     *    to the FITS header pointed to by fptr.
-     *   The keyword names and comments are taken from duchamp.hh
-     */
-
+    /// @details
+    ///   A simple function that writes all the necessary keywords and comments
+    ///    to the FITS header pointed to by fptr.
+    ///   The keyword names and comments are taken from duchamp.hh
 
     int status = 0;
 
@@ -539,12 +532,10 @@ namespace duchamp
 
   void writeMaskHeaderInfo(fitsfile *fptr, Param &par)
   {
-    /**
-     *   A simple function that writes all the necessary keywords and comments
-     *    to the FITS header pointed to by fptr.
-     *   The keyword names and comments are taken from duchamp.hh
-     */
-
+    /// @details
+    ///   A simple function that writes all the necessary keywords and comments
+    ///    to the FITS header pointed to by fptr.
+    ///   The keyword names and comments are taken from duchamp.hh
 
     int status = 0;
 

@@ -41,36 +41,34 @@ void printSpace(int num);
 void printHash(std::ostream &stream, int num);
 void printHash(int num);
 
-/**
- *  Controls printing out a progress bar.
- *
- *   A class that prints out a progress bar in the form 
- *    \f$|\#\#\#\ \ \ \ \ \ \ \ \ \ |\f$
- *    that shows how far through a function or loop you are.
- *   The length of it defaults to 20 hashes, but can be set when
- *   declaring the object.
- *   There are five functions: 
- *    <ul><li>init(int)   Prints an empty bar, and defines the increment
- *        <li>update(int) Prints the correct number of hashes, but only when
- *                         num is a multiple of the increment.
- *        <li>rewind()    Prints backspaces to cover the entire bar.
- *        <li>remove()    Does a rewind(), then prints spaces to overwrite
- *                         the bar area -- more clean.
- *        <li>fillSpace(std::string) Does a remove(), then writes
- *                                    the string into the same space.
- * </ul>
- */
+/// @brief
+///  Controls printing out a progress bar.
+/// @details
+///   A class that prints out a progress bar in the form 
+///    \f$|\#\#\#\ \ \ \ \ \ \ \ \ \ |\f$
+///    that shows how far through a function or loop you are.
+///   The length of it defaults to 20 hashes, but can be set when
+///   declaring the object.
+///   There are five functions: 
+///    <ul><li>init(int)   Prints an empty bar, and defines the increment
+///        <li>update(int) Prints the correct number of hashes, but only when
+///                         num is a multiple of the increment.
+///        <li>rewind()    Prints backspaces to cover the entire bar.
+///        <li>remove()    Does a rewind(), then prints spaces to overwrite
+///                         the bar area -- more clean.
+///        <li>fillSpace(std::string) Does a remove(), then writes
+///                                    the string into the same space.
+/// </ul>
+
 class ProgressBar
 {
 public:
   ProgressBar();                          ///< Default Constructor
   ProgressBar(int newlength);             ///< Alternative constructor
   virtual ~ProgressBar();                 ///< Destructor.
-  enum POS {BEG=0,END};                   ///< So that we can record
-					  ///   where we are.
+  enum POS {BEG=0,END};                   ///< So that we can record where we are.
 
-  void init(int size);                    ///< Prints empty bar,
-					  ///   defines increment.
+  void init(int size);                    ///< Prints empty bar, defines increment.
   void update(int num);                   ///< Prints correct number of hashes
   void rewind();                          ///< Prints backspaces over bar.
   void remove();                          ///< Overwrites bar with blanks
@@ -78,12 +76,9 @@ public:
 
 private:
   POS loc;                                ///< Are we at the start or end?
-  float stepSize;                         ///< What is the interval
-					  ///   between hashes?
-  int length;                             ///< What's the maximum
-					  ///   number of hashes?
-  int numVisible;                         ///< How many hashes are
-					  ///   there currently visible?
+  float stepSize;                         ///< What is the interval between hashes?
+  int length;                             ///< What's the maximum number of hashes?
+  int numVisible;                         ///< How many hashes are there currently visible?
 };
 
 

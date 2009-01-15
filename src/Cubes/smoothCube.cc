@@ -41,12 +41,11 @@ namespace duchamp
 
 void Cube::SmoothSearch()
 {
-  /**
-   * The Cube is first smoothed, using Cube::SmoothCube().
-   * It is then searched, using search3DArray()
-   * The resulting object list is stored in the Cube, and outputted
-   *  to the log file if the user so requests.
-   */
+  /// @details
+  /// The Cube is first smoothed, using Cube::SmoothCube().
+  /// It is then searched, using search3DArray()
+  /// The resulting object list is stored in the Cube, and outputted
+  ///  to the log file if the user so requests.
 
   if(!this->par.getFlagSmooth()){
     duchampWarning("SmoothSearch",
@@ -87,12 +86,11 @@ void Cube::SmoothSearch()
 
 void Cube::SmoothCube()
 {
-  /**
-   *  Switching function that chooses the appropriate function with
-   *  which to smooth the cube, based on the Param::smoothType
-   *  parameter.
-   *
-   */
+  /// @details
+  ///  Switching function that chooses the appropriate function with
+  ///  which to smooth the cube, based on the Param::smoothType
+  ///  parameter.
+
   if(this->par.getSmoothType()=="spectral"){
     
     this->SpectralSmooth();
@@ -108,11 +106,10 @@ void Cube::SmoothCube()
 
 void Cube::SpectralSmooth()
 {
-  /**
-   *   A function that smoothes each spectrum in the cube using the 
-   *    Hanning smoothing function. The degree of smoothing is given
-   *    by the parameter Param::hanningWidth.
-   */
+  /// @details
+  ///   A function that smoothes each spectrum in the cube using the 
+  ///    Hanning smoothing function. The degree of smoothing is given
+  ///    by the parameter Param::hanningWidth.
 
   long xySize = this->axisDim[0]*this->axisDim[1];
   long zdim = this->axisDim[2];

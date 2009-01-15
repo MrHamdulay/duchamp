@@ -42,11 +42,8 @@ namespace duchamp
 
   int FitsHeader::readHeaderInfo(std::string fname, Param &par)
   {
-    /** 
-     *  A simple front-end function to the three header access
-     *   functions defined below.
-     *
-     */
+    ///  A simple front-end function to the three header access
+    ///   functions defined below.
 
     int returnValue = SUCCESS;
 
@@ -65,10 +62,9 @@ namespace duchamp
 
   int FitsHeader::readBUNIT(std::string fname)
   {
-    /**
-     *   Read the BUNIT header keyword, to store the units of brightness (flux).
-     *  \param fname The name of the FITS file.
-     */
+    ///   Read the BUNIT header keyword, to store the units of brightness (flux).
+    ///  \param fname The name of the FITS file.
+
     fitsfile *fptr;         
     char *comment = new char[FLEN_COMMENT];
     char *unit = new char[FLEN_VALUE];
@@ -110,22 +106,21 @@ namespace duchamp
 
   int FitsHeader::readBLANKinfo(std::string fname, Param &par)
   {
-    /**
-     *    Reading in the Blank pixel value keywords, which is only done
-     *    if requested via the flagBlankPix parameter.
-     * 
-     *    If the BLANK keyword is in the header, use that and store the relevant 
-     *     values. Also copy them into the parameter set.
-     *    If not, use the default value (either the default from param.cc or 
-     *     from the param file) and assume simple values for the keywords:
-     *     <ul><li> The scale keyword is the same as the blank value, 
-     *         <li> The blank keyword (which is an int) is 1 and 
-     *         <li> The bzero (offset) is 0.
-     *    </ul>
-     * \param fname The name of the FITS file.
-     * \param par The Param set: to know the flagBlankPix value and to
-     * store the keywords.
-     */
+    ///    Reading in the Blank pixel value keywords, which is only done
+    ///    if requested via the flagBlankPix parameter.
+    /// 
+    ///    If the BLANK keyword is in the header, use that and store the relevant 
+    ///     values. Also copy them into the parameter set.
+    ///    If not, use the default value (either the default from param.cc or 
+    ///     from the param file) and assume simple values for the keywords:
+    ///     <ul><li> The scale keyword is the same as the blank value, 
+    ///         <li> The blank keyword (which is an int) is 1 and 
+    ///         <li> The bzero (offset) is 0.
+    ///    </ul>
+    /// \param fname The name of the FITS file.
+    /// \param par The Param set: to know the flagBlankPix value and to
+    /// store the keywords.
+
     int returnStatus = 0, status = 0;
 
     fitsfile *fptr;         
@@ -196,15 +191,14 @@ namespace duchamp
 
   int FitsHeader::readBeamInfo(std::string fname, Param &par)
   {
-    /**
-     *   Reading in the beam parameters from the header.
-     *   Use these, plus the basic WCS parameters to calculate the size of
-     *    the beam in pixels. Copy the beam size into the parameter set.
-     *   If information not present in FITS header, use the parameter
-     *    set to define the beam size.
-     * \param fname The name of the FITS file.
-     * \param par The Param set.
-     */
+    ///   Reading in the beam parameters from the header.
+    ///   Use these, plus the basic WCS parameters to calculate the size of
+    ///    the beam in pixels. Copy the beam size into the parameter set.
+    ///   If information not present in FITS header, use the parameter
+    ///    set to define the beam size.
+    /// \param fname The name of the FITS file.
+    /// \param par The Param set.
+
     char *comment = new char[80];
     std::string keyword[3]={"BMAJ","BMIN","BPA"};
     float bmaj,bmin,bpa;

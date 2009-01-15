@@ -60,11 +60,9 @@ namespace PixelInfo
 
   std::ostream& operator<< ( std::ostream& theStream, Voxel& vox)
   {
-    /**
-     * A convenient way of printing the coordinate and flux values of
-     * a voxel.  They are all printed to a single line (with no
-     * carriage-return), with the flux to precision of 4.
-     */  
+    /// A convenient way of printing the coordinate and flux values of
+    /// a voxel.  They are all printed to a single line (with no
+    /// carriage-return), with the flux to precision of 4.
 
     theStream << std::setw(4) << vox.itsX ;
     theStream << " " << std::setw(4) << vox.itsY;
@@ -78,9 +76,8 @@ namespace PixelInfo
 
   bool operator== (Voxel lhs, Voxel rhs)
   {
-    /**
-     * For two voxels to be equal, all four parameters must be equal.
-     */ 
+    /// For two voxels to be equal, all four parameters must be equal.
+
     return (lhs.itsX == rhs.itsX) &&
       (lhs.itsY == rhs.itsY) &&
       (lhs.itsZ == rhs.itsZ) &&
@@ -90,9 +87,8 @@ namespace PixelInfo
 
   bool Voxel::match(Voxel other)
   {
-    /**
-     * This function just tests for equality of position. The flux is ignored.
-     */ 
+    /// This function just tests for equality of position. The flux is ignored.
+
     return (this->itsX == other.itsX) &&
       (this->itsY == other.itsY) &&
       (this->itsZ == other.itsZ);
@@ -101,11 +97,10 @@ namespace PixelInfo
 
   long Voxel::arrayIndex(long *dim)
   {
-    /**
-     *  Return the index value corresponding to the Voxel for an array with dimensions given by dim.
-     *  \param dim Array of dimension values (ie. lengths of x, y and z dimensions)
-     *  \return Index value for an array with dimensions of dim
-     */
+    ///  Return the index value corresponding to the Voxel for an array with dimensions given by dim.
+    ///  \param dim Array of dimension values (ie. lengths of x, y and z dimensions)
+    ///  \return Index value for an array with dimensions of dim
+
     long ind = itsX + dim[0]*itsY + dim[0]*dim[1]*itsZ;
     return ind;
 

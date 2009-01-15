@@ -52,17 +52,16 @@ namespace duchamp
 
 void Cube::plotDetectionMap(std::string pgDestination)
 {
-  /** 
-   *  Creates a map of the spatial locations of the detections, which is 
-   *   written to the PGPlot device given by pgDestination.
-   *  The map is done in greyscale, where the scale indicates the number of 
-   *   velocity channels that each spatial pixel is detected in.
-   *  The boundaries of each detection are drawn, and each object is numbered
-   *   (to match the output list and spectra).
-   *  The primary grid scale is pixel coordinate, and if the WCS is valid, 
-   *   the correct WCS gridlines are also drawn.
-   * \param pgDestination The PGPLOT device to be opened, in the typical PGPLOT format.
-   */
+  ///  @details
+  ///  Creates a map of the spatial locations of the detections, which is 
+  ///   written to the PGPlot device given by pgDestination.
+  ///  The map is done in greyscale, where the scale indicates the number of 
+  ///   velocity channels that each spatial pixel is detected in.
+  ///  The boundaries of each detection are drawn, and each object is numbered
+  ///   (to match the output list and spectra).
+  ///  The primary grid scale is pixel coordinate, and if the WCS is valid, 
+  ///   the correct WCS gridlines are also drawn.
+  /// \param pgDestination The PGPLOT device to be opened, in the typical PGPLOT format.
 
   // These are the minimum values for the X and Y ranges of the box drawn by 
   //   pgplot (without the half-pixel difference).
@@ -153,12 +152,11 @@ void Cube::plotDetectionMap(std::string pgDestination)
 
 void Cube::plotMomentMap(std::string pgDestination)
 {
-  /** 
-   *  Uses the other function
-   *  Cube::plotMomentMap(std::vector<std::string>) to plot the moment
-   *  map.
-   * \param pgDestination The PGPLOT device that the map is to be written to.
-   */
+  ///  @details
+  ///  Uses the other function
+  ///  Cube::plotMomentMap(std::vector<std::string>) to plot the moment
+  ///  map.
+  /// \param pgDestination The PGPLOT device that the map is to be written to.
 
   std::vector<std::string> devicelist;
   devicelist.push_back(pgDestination);
@@ -169,20 +167,19 @@ void Cube::plotMomentMap(std::string pgDestination)
 
 void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 {
-  /** 
-   *  Creates a 0th moment map of the detections, which is written to each
-   *   of the PGPlot devices mentioned in pgDestination.
-   *  The advantage of this function is that the map is only calculated once,
-   *   even if multiple maps are required.
-   *  The map is done in greyscale, where the scale indicates the integrated 
-   *   flux at each spatial pixel.
-   *  The boundaries of each detection are drawn, and each object is numbered
-   *   (to match the output list and spectra).
-   *  The primary grid scale is pixel coordinate, and if the WCS is valid, 
-   *   the correct WCS gridlines are also drawn.
-   * \param pgDestination A set of PGPLOT devices that are to be
-   * opened, each in the typical PGPLOT format.
-   */
+  ///  @details
+  ///  Creates a 0th moment map of the detections, which is written to each
+  ///   of the PGPlot devices mentioned in pgDestination.
+  ///  The advantage of this function is that the map is only calculated once,
+  ///   even if multiple maps are required.
+  ///  The map is done in greyscale, where the scale indicates the integrated 
+  ///   flux at each spatial pixel.
+  ///  The boundaries of each detection are drawn, and each object is numbered
+  ///   (to match the output list and spectra).
+  ///  The primary grid scale is pixel coordinate, and if the WCS is valid, 
+  ///   the correct WCS gridlines are also drawn.
+  /// \param pgDestination A set of PGPLOT devices that are to be
+  /// opened, each in the typical PGPLOT format.
 
   float boxXmin = this->par.getXOffset() - 1;
   float boxYmin = this->par.getYOffset() - 1;
@@ -404,17 +401,16 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 
 void Cube::plotWCSaxes(int textColour, int axisColour)
 {
-  /**
-   *  A front-end to the cpgsbox command, to draw the gridlines for the WCS 
-   *    over the current plot.
-   *  Lines are drawn in dark green over the full plot area, and the axis 
-   *    labels are written on the top and on the right hand sides, so as not 
-   *    to conflict with other labels.
-   *  \param textColour The colour index to use for the text labels --
-   *  defaults to duchamp::DUCHAMP_ID_TEXT_COLOUR 
-   *  \param axisColour The colour index to use for the axes --
-   *  defaults to duchamp::DUCHAMP_WCS_AXIS_COLOUR
-   */
+  /// @details
+  ///  A front-end to the cpgsbox command, to draw the gridlines for the WCS 
+  ///    over the current plot.
+  ///  Lines are drawn in dark green over the full plot area, and the axis 
+  ///    labels are written on the top and on the right hand sides, so as not 
+  ///    to conflict with other labels.
+  ///  \param textColour The colour index to use for the text labels --
+  ///  defaults to duchamp::DUCHAMP_ID_TEXT_COLOUR 
+  ///  \param axisColour The colour index to use for the axes --
+  ///  defaults to duchamp::DUCHAMP_WCS_AXIS_COLOUR
 
   float boxXmin=0,boxYmin=0;
 

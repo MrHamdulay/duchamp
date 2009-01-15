@@ -46,24 +46,24 @@
 namespace duchamp
 {
 
-  /** 
-   *  A class that holds information for a <FIELD > entry in a
-   *  VOTable. It also provides useful functions to store and print
-   *  that information.
-   */
+  ///  @brief A class that holds information for a <FIELD > entry in a
+  ///  VOTable. 
+  ///  @details It also provides useful functions to store and print
+  ///  that information.
+
   class VOField
   {
   public:
-    /** Define a FIELD by individual parameters */
+    /// @brief Define a FIELD by individual parameters 
     void define(std::string i, std::string n, std::string U, std::string u, std::string d, std::string r, int w, int p);
-    /** Define a FIELD by individual parameters, using a Column::Col object */
+    /// @brief Define a FIELD by individual parameters, using a Column::Col object 
     void define(Column::Col column, std::string i, std::string U, std::string d, std::string r);
-    /** Define a FIELD for a particular Column::Col object */
+    /// @brief Define a FIELD for a particular Column::Col object 
     void define(Column::Col);
 
     void setUCD(std::string u){UCD=u;};
 
-    /** Print the FIELD entry */
+    /// @brief Print the FIELD entry 
     void printField(std::ostream &stream);
     
   private:
@@ -78,18 +78,16 @@ namespace duchamp
 
   };
 
-  /** 
-   *  A class that holds information for a <PARAM > entry in a
-   *  VOTable. It also provides useful functions to store and print
-   *  that information.
-   */
+  ///  @brief A class that holds information for a <PARAM > entry in a
+  ///  VOTable. @details It also provides useful functions to store
+  ///  and print that information.
   class VOParam
   {
   public:
-    /** Define a PARAM by individual parameters */
+    /// @brief Define a PARAM by individual parameters 
     template <class T> void define(std::string n, std::string U, std::string d, T v, int w, std::string u);
  
-    /** Print the PARAM entry */
+    /// @brief Print the PARAM entry 
     void printParam(std::ostream &stream);
     
   private:

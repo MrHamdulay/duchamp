@@ -145,17 +145,17 @@ template void GaussSmooth<double>::define(float maj, float min, float pa);
 template <class Type>
 Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim, bool scaleByCoverage)
 {
-  /**
-   * Smooth a given two-dimensional array, of dimensions xdim
-   * \f$\times\f$ ydim, with an elliptical gaussian. Simply runs as a
-   * front end to GaussSmooth::smooth(float *, int, int, bool *) by
-   * defining a mask that allows all pixels in the input array.
-   *
-   *  \param input The 2D array to be smoothed.
-   *  \param xdim  The size of the x-dimension of the array.
-   *  \param ydim  The size of the y-dimension of the array.
-   *  \return The smoothed array.
-   */
+  /// @details
+  /// Smooth a given two-dimensional array, of dimensions xdim
+  /// \f$\times\f$ ydim, with an elliptical gaussian. Simply runs as a
+  /// front end to GaussSmooth::smooth(float *, int, int, bool *) by
+  /// defining a mask that allows all pixels in the input array.
+  /// 
+  ///  \param input The 2D array to be smoothed.
+  ///  \param xdim  The size of the x-dimension of the array.
+  ///  \param ydim  The size of the y-dimension of the array.
+  ///  \return The smoothed array.
+
   Type *smoothed;
   bool *mask = new bool[xdim*ydim];
   for(int i=0;i<xdim*ydim;i++) mask[i]=true;
@@ -169,29 +169,27 @@ template double *GaussSmooth<double>::smooth(double *input, int xdim, int ydim, 
 template <class Type>
 Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, bool scaleByCoverage)
 {
-  /**
-   *  Smooth a given two-dimensional array, of dimensions xdim
-   *  \f$\times\f$ ydim, with an elliptical gaussian, where the
-   *  boolean array mask defines which values of the array are valid.
-   *
-   *  This function convolves the input array with the kernel that
-   *  needs to have been defined. If it has not, the input array is
-   *  returned unchanged.
-   *
-   *  The mask should be the same size as the input array, and have
-   *  values of true for entries that are considered valid, and false
-   *  for entries that are not. For instance, arrays from FITS files
-   *  should have the mask entries corresponding to BLANK pixels set
-   *  to false.
-   *
-   *  \param input The 2D array to be smoothed.
-   *  \param xdim  The size of the x-dimension of the array.
-   *  \param ydim  The size of the y-dimension of the array.
-   *  \param mask The array showing which pixels in the input array
-   *              are valid.
-   *  \return The smoothed array.
-   */
-
+  /// @details
+  ///  Smooth a given two-dimensional array, of dimensions xdim
+  ///  \f$\times\f$ ydim, with an elliptical gaussian, where the
+  ///  boolean array mask defines which values of the array are valid.
+  /// 
+  ///  This function convolves the input array with the kernel that
+  ///  needs to have been defined. If it has not, the input array is
+  ///  returned unchanged.
+  /// 
+  ///  The mask should be the same size as the input array, and have
+  ///  values of true for entries that are considered valid, and false
+  ///  for entries that are not. For instance, arrays from FITS files
+  ///  should have the mask entries corresponding to BLANK pixels set
+  ///  to false.
+  /// 
+  ///  \param input The 2D array to be smoothed.
+  ///  \param xdim  The size of the x-dimension of the array.
+  ///  \param ydim  The size of the y-dimension of the array.
+  ///  \param mask The array showing which pixels in the input array
+  ///              are valid.
+  ///  \return The smoothed array.
 
   if(!this->allocated) return input;
   else{

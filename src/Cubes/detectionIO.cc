@@ -52,12 +52,11 @@ namespace duchamp
 
   void Cube::outputDetectionsKarma(std::ostream &stream)
   {
-    /**
-     *  Prints to a stream (provided) the list of detected objects in the cube
-     *   in the format of an annotation file for the Karma suite of programs.
-     *  Annotation file draws a box enclosing the detection, and writes the 
-     *   ID number of the detection to the right of the box.
-     */
+    /// @details
+    ///  Prints to a stream (provided) the list of detected objects in the cube
+    ///   in the format of an annotation file for the Karma suite of programs.
+    ///  Annotation file draws a box enclosing the detection, and writes the 
+    ///   ID number of the detection to the right of the box.
 
     std::string fname = this->par.getImageFile();
     if(this->par.getFlagSubsection()) fname+=this->par.getSubsection();
@@ -137,10 +136,9 @@ namespace duchamp
 
   void Cube::prepareOutputFile()
   {
-    /** 
-     *  A function to write the paramters, time of execution, and
-     *  statistical information to the output file.
-     */
+    ///  @details
+    ///  A function to write the paramters, time of execution, and
+    ///  statistical information to the output file.
 
     std::string outfile;
     if(this->par.getFlagSeparateHeader()) outfile = this->par.getHeaderFile();
@@ -158,14 +156,13 @@ namespace duchamp
 
   void Cube::outputStats()
   {
-    /** 
-     *  A function to write the statistical information to the output
-     *  file. This writes the threshold, its equivalent S/N ratio, and
-     *  the noise level and spread.
-     *
-     *  If smoothing has been done, the noise level & spread for the
-     *  original array are calculated and printed as well.
-     */
+    ///  @details
+    ///  A function to write the statistical information to the output
+    ///  file. This writes the threshold, its equivalent S/N ratio, and
+    ///  the noise level and spread.
+    /// 
+    ///  If smoothing has been done, the noise level & spread for the
+    ///  original array are calculated and printed as well.
 
     std::string outfile;
     if(this->par.getFlagSeparateHeader()) outfile = this->par.getHeaderFile();
@@ -225,12 +222,11 @@ namespace duchamp
 
   void Cube::outputDetectionList()
   {
-    /** 
-     *  A front-end to writing the full list of detected objects to a results 
-     *   file and to cout.
-     *  Leaves the testing of whether the WCS parameters for each object 
-     *   have been calculated to the printing function.
-     */
+    ///  @details
+    ///  A front-end to writing the full list of detected objects to a results 
+    ///   file and to cout.
+    ///  Leaves the testing of whether the WCS parameters for each object 
+    ///   have been calculated to the printing function.
 
     std::string outfile;
     if(this->par.getFlagSeparateHeader()) outfile = this->par.getHeaderFile();
@@ -261,14 +257,14 @@ namespace duchamp
 
   void Cube::prepareLogFile(int argc, char *argv[])
   {
-    /**
-     *  Opens the log file so that it can be written to, and writes
-     *  the parameter summary as well as the time of execution to the
-     *  file.
-     *
-     *  It also writes the command-line statement, hence the need for
-     *  argv and argc.
-     */
+    /// @details
+    ///  Opens the log file so that it can be written to, and writes
+    ///  the parameter summary as well as the time of execution to the
+    ///  file.
+    /// 
+    ///  It also writes the command-line statement, hence the need for
+    ///  argv and argc.
+
     // Open the logfile and write the time on the first line
     std::ofstream logfile(this->par.getLogFile().c_str());
     logfile << "New run of the Duchamp sourcefinder: ";
@@ -286,12 +282,11 @@ namespace duchamp
 
   void Cube::logDetectionList()
   {
-    /**
-     *  A front-end to writing a list of detected objects to the log file.
-     *  Does not assume WCS is present.
-     *  Designed to be used by searching routines before returning their 
-     *   final list.
-     */
+    /// @details
+    ///  A front-end to writing a list of detected objects to the log file.
+    ///  Does not assume WCS is present.
+    ///  Designed to be used by searching routines before returning their 
+    ///   final list.
 
     if(this->objectList->size()>0){
 
@@ -333,18 +328,17 @@ namespace duchamp
 
   void Cube::logDetection(Detection obj, int counter)
   {
-    /**
-     *  A front-end to writing a detected object to the log file.
-     *  Does not assume WCS is present.
-     *  Corrects for changes to positions of pixels and removal of baselines.
-     *  Designed to be used by searching routines before returning their final 
-     *   list.
-     *  \param obj Detection object to be written : passed by value, as we want 
-     *    to potentially change positions etc, but not for the object in the 
-     *    calling function.
-     *  \param counter The number to assign to the object : ideally its number
-     *    in a list of some kind.
-     */
+    /// @details
+    ///  A front-end to writing a detected object to the log file.
+    ///  Does not assume WCS is present.
+    ///  Corrects for changes to positions of pixels and removal of baselines.
+    ///  Designed to be used by searching routines before returning their final 
+    ///   list.
+    ///  \param obj Detection object to be written : passed by value, as we want 
+    ///    to potentially change positions etc, but not for the object in the 
+    ///    calling function.
+    ///  \param counter The number to assign to the object : ideally its number
+    ///    in a list of some kind.
 
     std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
     // Need to deal with possibility of trimmed array

@@ -35,12 +35,11 @@
 namespace duchamp
 {
 
-  /**
-   * A class to store information on subsections of a cube. This keeps
-   * the subsection itself as a string, plus the parsed information in
-   * the format of vectors of starting positions and lengths of each
-   * dimension.
-   */
+  /// @brief A class to store information on subsections of a cube. 
+  ///
+  /// @details This keeps the subsection itself as a string, plus the
+  /// parsed information in the format of vectors of starting
+  /// positions and lengths of each dimension.
 
   class Section
   {
@@ -51,45 +50,45 @@ namespace duchamp
     Section& operator= (const Section& s);
     virtual ~Section(){};
 
-    /** Convert the subsection string into the lists of numerical values. */
+    /// @brief Convert the subsection string into the lists of numerical values. 
     int parse(std::vector<long> dimAxes);
     int parse(long *dim, int size);
 
-    /** Test whether a given voxel (x,y,z) lies within the subsection */
+    /// @brief Test whether a given voxel (x,y,z) lies within the subsection 
     bool isInside(int x, int y, int z){
       return (  ( (x>=starts[0])&&(x<starts[0]+dims[0])  ) &&
 		( (y>=starts[1])&&(y<starts[1]+dims[1])  ) &&
 		( (z>=starts[2])&&(z<starts[2]+dims[2])  )   );
     }
 
-    /** Save the subsection string */
+    /// @brief Save the subsection string 
     void setSection(std::string s){subsection=s;};
-    /** Return the subsection string */
+    /// @brief Return the subsection string 
     std::string getSection(){return subsection;};
 
-    /** Save a single dimension's subsection string */
+    /// @brief Save a single dimension's subsection string 
     void setSection(int i, std::string s){sections[i] = s;};
-    /** Return a particular dimension's subsection string */
+    /// @brief Return a particular dimension's subsection string 
     std::string getSection(int i){if(i>=numSections) return "*"; else return sections[i];};
 
-    /** Return a particular starting value */
+    /// @brief Return a particular starting value 
     int getStart(int i){if(i>=numSections) return 0; else return starts[i];};
-    /** Set a particular starting value */
+    /// @brief Set a particular starting value 
     void setStart(int i, int val){starts[i]=val;};
 
-    /** Return a particular dimension length */
+    /// @brief Return a particular dimension length 
     int getDim(int i){if(i>=numSections) return 1; else return dims[i];};
-    /** Set a particular dimension length */
+    /// @brief Set a particular dimension length 
     void setDim(int i, int val){dims[i]=val;};
 
-    /** Return a particular ending value */
+    /// @brief Return a particular ending value 
     int getEnd(int i){if(i>=numSections) return 0; else return starts[i]+dims[i]-1;};
-    /** Set a particular ending value, using the current starting value */
+    /// @brief Set a particular ending value, using the current starting value 
     void setEnd(int i, int val){dims[i]=val-starts[i]+1;};
 
-    /** Return the full list of start values */
+    /// @brief Return the full list of start values 
     std::vector<int> getStartList(){return starts;};
-    /** Return the full list of dimension lengths */
+    /// @brief Return the full list of dimension lengths 
     std::vector<int> getDimList(){return dims;};
 
   private:

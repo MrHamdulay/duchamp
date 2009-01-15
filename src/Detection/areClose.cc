@@ -43,13 +43,10 @@ namespace duchamp
   bool areClose(Detection &obj1, Detection &obj2, Param &par)
   {
 
-    /**
-     * A Function to test whether object1 and object2 are within the 
-     * spatial and velocity thresholds specified in the parameter set par.
-     * Returns true if at least one pixel of object1 is close to
-     * at least one pixel of object2.
-     */
-
+    /// A Function to test whether object1 and object2 are within the 
+    /// spatial and velocity thresholds specified in the parameter set par.
+    /// Returns true if at least one pixel of object1 is close to
+    /// at least one pixel of object2.
   
     bool close = false;   // this will be the value returned
 

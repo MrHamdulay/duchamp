@@ -127,14 +127,13 @@ namespace duchamp
 
   bool Detection::voxelListsMatch(std::vector<Voxel> voxelList)
   {
-    /**
-     *  A test to see whether there is a 1-1 correspondence between
-     *  the given list of Voxels and the voxel positions contained in
-     *  this Detection's pixel list. No testing of the fluxes of the
-     *  Voxels is done.
-     *
-     * \param voxelList The std::vector list of Voxels to be tested.
-     */
+    /// @details
+    ///  A test to see whether there is a 1-1 correspondence between
+    ///  the given list of Voxels and the voxel positions contained in
+    ///  this Detection's pixel list. No testing of the fluxes of the
+    ///  Voxels is done.
+    /// 
+    /// \param voxelList The std::vector list of Voxels to be tested.
 
     bool listsMatch = true;
     // compare sizes
@@ -157,14 +156,13 @@ namespace duchamp
 
   bool Detection::voxelListCovered(std::vector<Voxel> voxelList)
   {
-    /**
-     *  A test to see whether the given list of Voxels contains each
-     *  position in this Detection's pixel list. It does not look for
-     *  a 1-1 correspondence: the given list can be a super-set of the
-     *  Detection. No testing of the fluxes of the Voxels is done.
-     *
-     * \param voxelList The std::vector list of Voxels to be tested.
-     */
+    ///  @details
+    ///  A test to see whether the given list of Voxels contains each
+    ///  position in this Detection's pixel list. It does not look for
+    ///  a 1-1 correspondence: the given list can be a super-set of the
+    ///  Detection. No testing of the fluxes of the Voxels is done.
+    /// 
+    /// \param voxelList The std::vector list of Voxels to be tested.
 
     bool listsMatch = true;
 
@@ -189,14 +187,13 @@ namespace duchamp
 
   void Detection::calcFluxes(std::vector<Voxel> voxelList)
   {
-    /**
-     *  A function that calculates total & peak fluxes (and the location
-     *  of the peak flux) for a Detection.
-     *
-     *  \param fluxArray The array of flux values to calculate the
-     *  flux parameters from.
-     *  \param dim The dimensions of the flux array.
-     */
+    ///  @details
+    ///  A function that calculates total & peak fluxes (and the location
+    ///  of the peak flux) for a Detection.
+    /// 
+    ///  \param fluxArray The array of flux values to calculate the
+    ///  flux parameters from.
+    ///  \param dim The dimensions of the flux array.
 
     this->totalFlux = this->peakFlux = 0;
     this->xCentroid = this->yCentroid = this->zCentroid = 0.;
@@ -239,14 +236,13 @@ namespace duchamp
 
   void Detection::calcFluxes(float *fluxArray, long *dim)
   {
-    /**
-     *  A function that calculates total & peak fluxes (and the location
-     *  of the peak flux) for a Detection.
-     *
-     *  \param fluxArray The array of flux values to calculate the
-     *  flux parameters from.
-     *  \param dim The dimensions of the flux array.
-     */
+    ///  @details
+    ///  A function that calculates total & peak fluxes (and the location
+    ///  of the peak flux) for a Detection.
+    /// 
+    ///  \param fluxArray The array of flux values to calculate the
+    ///  flux parameters from.
+    ///  \param dim The dimensions of the flux array.
 
     this->totalFlux = this->peakFlux = 0;
     this->xCentroid = this->yCentroid = this->zCentroid = 0.;
@@ -284,21 +280,20 @@ namespace duchamp
 
   void Detection::calcWCSparams(FitsHeader &head)
   {
-    /**
-     *  Use the input wcs to calculate the position and velocity 
-     *    information for the Detection.
-     *  Quantities calculated:
-     *  <ul><li> RA: ra [deg], ra (string), ra width.
-     *      <li> Dec: dec [deg], dec (string), dec width.
-     *      <li> Vel: vel [km/s], min & max vel, vel width.
-     *      <li> coord type for all three axes, nuRest, 
-     *      <li> name (IAU-style, in equatorial or Galactic) 
-     *  </ul>
-     *
-     *  Note that the regular parameters are NOT recalculated!
-     *
-     *  \param head FitsHeader object that contains the WCS information.
-     */
+    ///  @details
+    ///  Use the input wcs to calculate the position and velocity 
+    ///    information for the Detection.
+    ///  Quantities calculated:
+    ///  <ul><li> RA: ra [deg], ra (string), ra width.
+    ///      <li> Dec: dec [deg], dec (string), dec width.
+    ///      <li> Vel: vel [km/s], min & max vel, vel width.
+    ///      <li> coord type for all three axes, nuRest, 
+    ///      <li> name (IAU-style, in equatorial or Galactic) 
+    ///  </ul>
+    /// 
+    ///  Note that the regular parameters are NOT recalculated!
+    /// 
+    ///  \param head FitsHeader object that contains the WCS information.
 
     if(head.isWCS()){
 
@@ -368,23 +363,22 @@ namespace duchamp
 
   void Detection::calcIntegFlux(std::vector<Voxel> voxelList, FitsHeader &head)
   {
-    /**
-     *  Uses the input WCS to calculate the velocity-integrated flux, 
-     *   putting velocity in units of km/s.
-     *  The fluxes used are taken from the Voxels, rather than an
-     *   array of flux values.
-     *  Integrates over full spatial and velocity range as given 
-     *   by the extrema calculated by calcWCSparams.
-     *
-     *  If the flux units end in "/beam" (eg. Jy/beam), then the flux is
-     *  corrected by the beam size (in pixels). This is done by
-     *  multiplying the integrated flux by the number of spatial pixels,
-     *  and dividing by the beam size in pixels (e.g. Jy/beam * pix /
-     *  pix/beam --> Jy)
-     *
-     *  \param voxelList The list of Voxels with flux information
-     *  \param head FitsHeader object that contains the WCS information.
-     */
+    ///  @details
+    ///  Uses the input WCS to calculate the velocity-integrated flux, 
+    ///   putting velocity in units of km/s.
+    ///  The fluxes used are taken from the Voxels, rather than an
+    ///   array of flux values.
+    ///  Integrates over full spatial and velocity range as given 
+    ///   by the extrema calculated by calcWCSparams.
+    /// 
+    ///  If the flux units end in "/beam" (eg. Jy/beam), then the flux is
+    ///  corrected by the beam size (in pixels). This is done by
+    ///  multiplying the integrated flux by the number of spatial pixels,
+    ///  and dividing by the beam size in pixels (e.g. Jy/beam * pix /
+    ///  pix/beam --> Jy)
+    /// 
+    ///  \param voxelList The list of Voxels with flux information
+    ///  \param head FitsHeader object that contains the WCS information.
 
     const int border = 1;
 
@@ -464,22 +458,21 @@ namespace duchamp
 
   void Detection::calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head)
   {
-    /**
-     *  Uses the input WCS to calculate the velocity-integrated flux, 
-     *   putting velocity in units of km/s.
-     *  Integrates over full spatial and velocity range as given 
-     *   by the extrema calculated by calcWCSparams.
-     *
-     *  If the flux units end in "/beam" (eg. Jy/beam), then the flux is
-     *  corrected by the beam size (in pixels). This is done by
-     *  multiplying the integrated flux by the number of spatial pixels,
-     *  and dividing by the beam size in pixels (e.g. Jy/beam * pix /
-     *  pix/beam --> Jy)
-     *
-     *  \param fluxArray The array of flux values.
-     *  \param dim The dimensions of the flux array.
-     *  \param head FitsHeader object that contains the WCS information.
-     */
+    ///  @details
+    ///  Uses the input WCS to calculate the velocity-integrated flux, 
+    ///   putting velocity in units of km/s.
+    ///  Integrates over full spatial and velocity range as given 
+    ///   by the extrema calculated by calcWCSparams.
+    /// 
+    ///  If the flux units end in "/beam" (eg. Jy/beam), then the flux is
+    ///  corrected by the beam size (in pixels). This is done by
+    ///  multiplying the integrated flux by the number of spatial pixels,
+    ///  and dividing by the beam size in pixels (e.g. Jy/beam * pix /
+    ///  pix/beam --> Jy)
+    /// 
+    ///  \param fluxArray The array of flux values.
+    ///  \param dim The dimensions of the flux array.
+    ///  \param head FitsHeader object that contains the WCS information.
 
 //       int numDim=0;
 //       for(int i=0;i<3;i++) if(dim[i]>1) numDim++;
@@ -559,18 +552,17 @@ namespace duchamp
 
   void Detection::calcVelWidths(std::vector<Voxel> voxelList, FitsHeader &head)
   {
-    /**
-     * Calculates the widths of the detection at 20% and 50% of the
-     * peak integrated flux. The procedure is as follows: first
-     * generate an integrated flux spectrum (using all given voxels
-     * that lie in the object's spatial map); find the peak; starting
-     * at the spectral edges of the detection, move in or out until
-     * you reach the 20% or 50% peak flux level. Linear interpolation
-     * between points is done.
-     *
-     *  \param voxelList The list of Voxels with flux information
-     *  \param head FitsHeader object that contains the WCS information.
-     */
+    ///  @details
+    /// Calculates the widths of the detection at 20% and 50% of the
+    /// peak integrated flux. The procedure is as follows: first
+    /// generate an integrated flux spectrum (using all given voxels
+    /// that lie in the object's spatial map); find the peak; starting
+    /// at the spectral edges of the detection, move in or out until
+    /// you reach the 20% or 50% peak flux level. Linear interpolation
+    /// between points is done.
+    /// 
+    ///  \param voxelList The list of Voxels with flux information
+    ///  \param head FitsHeader object that contains the WCS information.
 
     const int border = 1;
     long zsize = (this->getZmax()-this->getZmin()+border*2+1); 
@@ -662,19 +654,18 @@ namespace duchamp
 
   void Detection::calcVelWidths(float *fluxArray, long *dim, FitsHeader &head)
   {
-    /**
-     * Calculates the widths of the detection at 20% and 50% of the
-     * peak integrated flux. The procedure is as follows: first
-     * generate an integrated flux spectrum (summing each spatial
-     * pixel's spectrum); find the peak; starting at the spectral
-     * edges of the detection, move in or out until you reach the 20%
-     * or 50% peak flux level. Linear interpolation between points is
-     * done. 
-     *
-     *  \param fluxArray The array of flux values.
-     *  \param dim The dimensions of the flux array.
-     *  \param head FitsHeader object that contains the WCS information.
-     */
+    ///  @details
+    /// Calculates the widths of the detection at 20% and 50% of the
+    /// peak integrated flux. The procedure is as follows: first
+    /// generate an integrated flux spectrum (summing each spatial
+    /// pixel's spectrum); find the peak; starting at the spectral
+    /// edges of the detection, move in or out until you reach the 20%
+    /// or 50% peak flux level. Linear interpolation between points is
+    /// done. 
+    /// 
+    ///  \param fluxArray The array of flux values.
+    ///  \param dim The dimensions of the flux array.
+    ///  \param head FitsHeader object that contains the WCS information.
 
     if(dim[2] > 2){
 
@@ -763,13 +754,13 @@ namespace duchamp
 
   Detection operator+ (Detection lhs, Detection rhs)
   {
-    /**
-     *  Combines two objects by adding all the pixels using the Object3D
-     *  operator.
-     *
-     *  The pixel parameters are recalculated in the process (equivalent
-     *  to calling pixels().calcParams()), but WCS parameters are not.
-     */
+    ///  @details
+    ///  Combines two objects by adding all the pixels using the Object3D
+    ///  operator.
+    /// 
+    ///  The pixel parameters are recalculated in the process (equivalent
+    ///  to calling pixels().calcParams()), but WCS parameters are not.
+
     Detection output = lhs;
     output.pixelArray = lhs.pixelArray + rhs.pixelArray;
     return output;
@@ -778,12 +769,12 @@ namespace duchamp
 
   void Detection::setOffsets(Param &par)
   {
-    /**
-     * This function stores the values of the offsets for each cube axis.
-     * The offsets are the starting values of the cube axes that may differ from
-     *  the default value of 0 (for instance, if a subsection is being used).
-     * The values will be used when the detection is outputted.
-     */
+    ///  @details
+    /// This function stores the values of the offsets for each cube axis.
+    /// The offsets are the starting values of the cube axes that may differ from
+    ///  the default value of 0 (for instance, if a subsection is being used).
+    /// The values will be used when the detection is outputted.
+
     this->xSubOffset = par.getXOffset();
     this->ySubOffset = par.getYOffset();
     this->zSubOffset = par.getZOffset();
@@ -792,14 +783,13 @@ namespace duchamp
 
   bool Detection::hasEnoughChannels(int minNumber)
   {
-    /**
-     * A function to determine if the Detection has enough
-     * contiguous channels to meet the minimum requirement
-     * given as the argument. 
-     * \param minNumber How many channels is the minimum acceptable number?
-     * \return True if there is at least one occurence of minNumber consecutive
-     * channels present to return true. False otherwise.
-     */
+    ///  @details
+    /// A function to determine if the Detection has enough
+    /// contiguous channels to meet the minimum requirement
+    /// given as the argument. 
+    /// \param minNumber How many channels is the minimum acceptable number?
+    /// \return True if there is at least one occurence of minNumber consecutive
+    /// channels present to return true. False otherwise.
 
     // Preferred method -- need a set of minNumber consecutive channels present.
     this->pixelArray.order();
@@ -823,13 +813,13 @@ namespace duchamp
 
   std::vector<int> Detection::getVertexSet()
   {
-    /**
-     * Gets a list of points being the end-points of 1-pixel long
-     * segments drawing a border around the spatial extend of a
-     * detection. The vector is a series of 4 integers, being: x_0,
-     * y_0, x_1, y_1.
-     * \return The vector of vertex positions.
-     */
+    ///  @details
+    /// Gets a list of points being the end-points of 1-pixel long
+    /// segments drawing a border around the spatial extend of a
+    /// detection. The vector is a series of 4 integers, being: x_0,
+    /// y_0, x_1, y_1.
+    /// \return The vector of vertex positions.
+
     std::vector<int> vertexSet;
 
     int xmin = this->getXmin() - 1;
@@ -884,14 +874,13 @@ namespace duchamp
 
   std::ostream& operator<< ( std::ostream& theStream, Detection& obj)
   {
-    /**
-     *  A convenient way of printing the coordinate values for each
-     *  pixel in the Detection.  
-     *
-     *  NOTE THAT THERE IS CURRENTLY NO FLUX INFORMATION BEING PRINTED!
-     *
-     *  Use as front end to the Object3D::operator<< function.
-     */  
+    ///  @details
+    ///  A convenient way of printing the coordinate values for each
+    ///  pixel in the Detection.  
+    /// 
+    ///  NOTE THAT THERE IS CURRENTLY NO FLUX INFORMATION BEING PRINTED!
+    /// 
+    ///  Use as front end to the Object3D::operator<< function.
 
     theStream << obj.pixelArray << "---\n";
     return theStream;

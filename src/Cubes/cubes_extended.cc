@@ -55,12 +55,11 @@ namespace duchamp
 
   void Cube::sortDetections()
   {
-    /** 
-     *  A front end to the sort-by functions.
-     *  If there is a good WCS, the detection list is sorted by velocity.
-     *  Otherwise, it is sorted by increasing z-pixel value.
-     *  The ID numbers are then re-calculated.
-     */
+    ///  @details
+    ///  A front end to the sort-by functions.
+    ///  If there is a good WCS, the detection list is sorted by velocity.
+    ///  Otherwise, it is sorted by increasing z-pixel value.
+    ///  The ID numbers are then re-calculated.
   
     if(this->head.isWCS()) SortByVel(*this->objectList);
     else SortByZ(*this->objectList);
@@ -72,13 +71,12 @@ namespace duchamp
 
   void Cube::readSavedArrays()
   {
-    /**
-     *  This function reads in reconstructed and/or smoothed arrays that have 
-     *   been saved on disk in FITS files. 
-     *  To do this it calls the functions Cube::readReconCube() and 
-     *   Cube::readSmoothCube().
-     *  The Param set is consulted to determine which of these arrays are needed.
-     */
+    /// @details
+    ///  This function reads in reconstructed and/or smoothed arrays that have 
+    ///   been saved on disk in FITS files. 
+    ///  To do this it calls the functions Cube::readReconCube() and 
+    ///   Cube::readSmoothCube().
+    ///  The Param set is consulted to determine which of these arrays are needed.
 
     // If the reconstructed array is to be read in from disk
     if( this->par.getFlagReconExists() && this->par.getFlagATrous() ){

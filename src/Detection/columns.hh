@@ -39,9 +39,7 @@ namespace duchamp
   class Detection;
   class FitsHeader;
 
-  /**
-   * A namespace controlling the formatting of columns of output for Duchamp.
-   */
+  /// A namespace controlling the formatting of columns of output for Duchamp.
 
   namespace Column
   {
@@ -49,9 +47,9 @@ namespace duchamp
     // The default values for the columns, and default values for
     //  the precision of different types of columns.
 
-    /** Total number of columns being considered.*/
+    /// @brief Total number of columns being considered.
     const int numColumns=36;    
-    /** Enumerated column titles */
+    /// @brief Enumerated column titles 
     enum COLNAME {NUM=0, NAME, X, Y, Z,
 		  RA, DEC, RAJD, DECJD, VEL, 
 		  WRA, WDEC, W50, W20, WVEL,
@@ -61,7 +59,7 @@ namespace duchamp
 		  XPEAK, YPEAK, ZPEAK,
 		  UNKNOWN};  // the last is for unclassified columns
 
-    /** Guide for which columns are used for the results file */
+    /// @brief Guide for which columns are used for the results file 
     const bool isFile[numColumns+1]=
       {true,true,true,true,true,
        true,true,false,false,true,
@@ -72,7 +70,7 @@ namespace duchamp
        true,true,true,
        false};
 
-    /** Guide for which columns are used for the results printed to screen */
+    /// @brief Guide for which columns are used for the results printed to screen 
     const bool isScreen[numColumns+1]=
       {true,true,true,true,true,
        true,true,false,false,true,
@@ -83,7 +81,7 @@ namespace duchamp
        false,false,false,
        false};
 
-    /** Guide for which columns are used for the log file */
+    /// @brief Guide for which columns are used for the log file 
     const bool isLog[numColumns+1]=
       {true,false,true,true,true,
        false,false,false,false,false,
@@ -94,7 +92,7 @@ namespace duchamp
        false,false,false,
        false};
 
-     /** Guide for which columns are used for the VOTable file */
+     /// @brief Guide for which columns are used for the VOTable file 
     const bool isVOTable[numColumns+1]=
       {true,true,false,false,false,
        false,false,true,true,true,
@@ -105,19 +103,19 @@ namespace duchamp
        true,true,true,
        false};
 
-    /** Total number of columns used in logfile (no WCS ones). */
+    /// @brief Total number of columns used in logfile (no WCS ones). 
     const int numColumnsLog=14; 
-    /** Enumerated column titles for logfile*/
+    /// @brief Enumerated column titles for logfile
     enum LOGNAME {lNUM=0, lX, lY, lZ,
 		  lFTOT, lFPEAK, lSNRPEAK,
 		  lX1, lX2, lY1, lY2, lZ1, lZ2, lNPIX}; 
 
-    /** Number of types of precision. */
+    /// @brief Number of types of precision. 
     const int numPrec=6;        
-    /** Enumerated precision categories */
+    /// @brief Enumerated precision categories 
     enum PrecType {prFLUX=3, prVEL=3, prXYZ=1, prPOS=6, prWPOS=2, prSNR=2}; 
 
-    /** Default widths of all columns.*/
+    /// @brief Default widths of all columns.
     const int defaultWidth[numColumns+1]=
       {5, 8, 6, 6, 6,
        13, 13, 11, 11, 7, 
@@ -128,7 +126,7 @@ namespace duchamp
        7, 7, 7,
        1};
 
-    /** Default precisions for all columns.*/
+    /// @brief Default precisions for all columns.
     const int defaultPrec[numColumns+1]=
       {0, 0, prXYZ, prXYZ, prXYZ,
        0, 0, prPOS, prPOS, prVEL, 
@@ -139,7 +137,7 @@ namespace duchamp
        prXYZ, prXYZ, prXYZ,
        0}; 
 
-    /** Default Titles of all columns. */
+    /// @brief Default Titles of all columns. 
     const std::string defaultName[numColumns+1]=
       {"Obj#","Name","X","Y","Z",
        "RA","DEC","RAJD","DECJD","VEL",
@@ -150,7 +148,7 @@ namespace duchamp
        "X_peak", "Y_peak", "Z_peak",
        " "};
 
-    /** Default units of all columns. */
+    /// @brief Default units of all columns. 
     const std::string defaultUnits[numColumns+1]=
       {"","","","","",
        "","","[deg]","[deg]","",
@@ -161,11 +159,13 @@ namespace duchamp
        ""}; 
 
 
-    /** Class to store information about a single column.
-     * This contains information about a given column -- its width, the 
-     *  precision associated with it, its title and the units.
-     * Plus the usual array of accessor functions and so on.
-     */
+    ///  @brief Class to store information about a single column.
+    ///
+    ///  @details This contains information about a given column --
+    ///  its width, the precision associated with it, its title and
+    ///  the units.  Plus the usual array of accessor functions and so
+    ///  on.
+
     class Col{
     public:
       Col();          ///< Basic constructor
@@ -190,51 +190,48 @@ namespace duchamp
       //--------------
       // other functions
       //
-      /** Make the column one space wider. */
+      /// @brief Make the column one space wider. 
       void   widen(){width++;};
 
-      /** Increase the precision by one, widening the column if necessary. */
+      /// @brief Increase the precision by one, widening the column if necessary. 
       void   upPrec(){precision++; width++;};
 
       //--------------
       // Outputting functions -- all in columns.cc
       //
-      /** write the title of the column to the stream */
+      /// @brief write the title of the column to the stream 
       void   printTitle(std::ostream &stream);
 
-      /** write the units of the column to the stream */
+      /// @brief write the units of the column to the stream 
       void   printUnits(std::ostream &stream);
 
-      /** write dashes the full width of the column to the stream */
+      /// @brief write dashes the full width of the column to the stream 
       void   printDash (std::ostream &stream);
 
-      /** write blanks the full width of the column to the stream */
+      /// @brief write blanks the full width of the column to the stream 
       void   printBlank(std::ostream &stream);
 
-      /** Print a given value in a column with correct width & precision. */
+      /// @brief Print a given value in a column with correct width & precision. 
       template <class T> void printEntry(std::ostream &stream, T value);
 
-      /** Decides whether the column is used for a given table type */
+      /// @brief Decides whether the column is used for a given table type 
       bool   doCol(std::string type, bool flagFint=true);
 
 
     private:
       int width;          ///< How wide is the column (in ascii spaces)
-      int precision;      ///< What precision should be used to print
-                          ///   the values? (If 0, the setprecision command
-                          ///   is not used.)
+      int precision;      ///< What precision should be used to print the values? (If 0, the setprecision command is not used.)
       std::string name;   ///< The title of the column
-      std::string units;  ///< The units that the values in the column
-                          ///   are expressed in.
+      std::string units;  ///< The units that the values in the column are expressed in.
       COLNAME type;       ///< The type of the column
     };
 
   
-    /** Returns a vector of Col for results file output.*/
+    /// @brief Returns a vector of Col for results file output.
     std::vector<Column::Col> getFullColSet(std::vector<Detection> &objectList, 
 					   FitsHeader &head);
 
-    /** Returns a vector of Col for logfile output.*/
+    /// @brief Returns a vector of Col for logfile output.
     std::vector<Column::Col> getLogColSet(std::vector<Detection> &objectList, 
 					  FitsHeader &head);
 

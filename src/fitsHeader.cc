@@ -54,9 +54,7 @@ namespace duchamp
 
   FitsHeader::~FitsHeader()
   {
-    /**
-     *  Uses the WCSLIB function wcsvfree to clear the wcsprm struct.
-     */
+    /// @details Uses the WCSLIB function wcsvfree to clear the wcsprm struct.
     wcsvfree(&nwcs,&wcs);
   }
 
@@ -94,14 +92,13 @@ namespace duchamp
 
   void FitsHeader::setWCS(struct wcsprm *w)
   {
-    /** 
-     *  A function that assigns the wcs parameters, and runs
-     *   wcsset to set it up correctly.
-     *  Performs a check to see if the WCS is good (by looking at 
-     *   the lng and lat wcsprm parameters), and sets the wcsIsGood 
-     *   flag accordingly.
-     * \param w A WCSLIB wcsprm struct with the correct parameters.
-     */
+    ///  A function that assigns the wcs parameters, and runs
+    ///   wcsset to set it up correctly.
+    ///  Performs a check to see if the WCS is good (by looking at 
+    ///   the lng and lat wcsprm parameters), and sets the wcsIsGood 
+    ///   flag accordingly.
+    /// \param w A WCSLIB wcsprm struct with the correct parameters.
+
     wcscopy(true, w, this->wcs);
     wcsset(this->wcs);
     if( (w->lng!=-1) && (w->lat!=-1) ) this->wcsIsGood = true;
@@ -109,10 +106,9 @@ namespace duchamp
 
   struct wcsprm *FitsHeader::getWCS()
   {
-    /** 
-     *  A function that returns a properly initilized wcsprm object
-     *  corresponding to the WCS.
-     */
+    ///  A function that returns a properly initilized wcsprm object
+    ///  corresponding to the WCS.
+
     struct wcsprm *wNew = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
     wNew->flag=-1;
     wcsini(true, this->wcs->naxis, wNew); 
@@ -201,14 +197,13 @@ namespace duchamp
 
   bool FitsHeader::needBeamSize()
   {
-    /**
-     *  A function that tells you whether the beam correction is
-     *  needed. It checks to see whether the flux units string ends in
-     *  "/beam" (in which case the beam size etc is needed and
-     *  integrated fluxes need to be corrected).
-     *  /return True if FitsHeader::fluxUnits ends in "/beam". False
-     *  otherwise.
-     */
+    ///  A function that tells you whether the beam correction is
+    ///  needed. It checks to see whether the flux units string ends in
+    ///  "/beam" (in which case the beam size etc is needed and
+    ///  integrated fluxes need to be corrected).
+    ///  /return True if FitsHeader::fluxUnits ends in "/beam". False
+    ///  otherwise.
+
     int size = this->fluxUnits.size();
     if(size<6) return false;
     else {
@@ -219,23 +214,21 @@ namespace duchamp
 
   void FitsHeader::fixUnits(Param &par)
   {
-    /**
-     *  Put the units for the FITS header into some sort of standard form.
-     *
-     *  We first get the desired spectral units from the Parameter set,
-     *  and then transform the spectral units of the wcsprm struct to
-     *  those units. If this doesn't work, we leave them as they are. If
-     *  they are blank, we make them SPC and give an error message --
-     *  this should hopefully NOT happen.
-     *
-     *  We also work out the units for the integrated flux. If there are
-     *  three axes, we just append the spectral units to the flux units
-     *  (removing "/beam" if it is present). If there are just two, we
-     *  simply keep it the same, removing the "/beam".
-     *
-     *  \param par The parameter set telling us what the desired
-     *             spectral units are.
-     */
+    ///  Put the units for the FITS header into some sort of standard form.
+    /// 
+    ///  We first get the desired spectral units from the Parameter set,
+    ///  and then transform the spectral units of the wcsprm struct to
+    ///  those units. If this doesn't work, we leave them as they are. If
+    ///  they are blank, we make them SPC and give an error message --
+    ///  this should hopefully NOT happen.
+    /// 
+    ///  We also work out the units for the integrated flux. If there are
+    ///  three axes, we just append the spectral units to the flux units
+    ///  (removing "/beam" if it is present). If there are just two, we
+    ///  simply keep it the same, removing the "/beam".
+    /// 
+    ///  \param par The parameter set telling us what the desired
+    ///             spectral units are.
 
     // define spectral units from the param set
     this->spectralUnits = par.getSpectralUnits();
@@ -280,12 +273,10 @@ namespace duchamp
   void FitsHeader::setIntFluxUnits()
   {
 
-    /**
-     * Work out the integrated flux units, based on the spectral units.
-     * If flux is per beam, trim the /beam from the flux units and multiply 
-     *  by the spectral units.
-     * Otherwise, just muliply by the spectral units.
-     */
+    /// Work out the integrated flux units, based on the spectral
+    /// units. If flux is per beam, trim the /beam from the flux
+    /// units. Then, if as long as the image is 3D, multiply by the
+    /// spectral units.
 
     if(this->fluxUnits.size()>5){
     
@@ -297,7 +288,6 @@ namespace duchamp
 
     }
 
-//     if(this->wcs->naxis>2) this->intFluxUnits += " " + this->spectralUnits;
     if(!this->flag2D) this->intFluxUnits += " " + this->spectralUnits;
 
   }

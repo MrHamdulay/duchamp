@@ -52,10 +52,10 @@ namespace Statistics
   template <class Type> 
   StatsContainer<Type>::StatsContainer(const StatsContainer<Type>& s)
   {
-    /** 
-     *  The copy constructor for the StatsContainer class. Just uses
-     *  the assignment operator.
-     */
+    ///  @details
+    ///  The copy constructor for the StatsContainer class. Just uses
+    ///  the assignment operator.
+
     operator=(s);
   }
   template StatsContainer<int>::StatsContainer(const StatsContainer<int>& s);
@@ -68,9 +68,7 @@ namespace Statistics
   StatsContainer<Type>& 
   StatsContainer<Type>::operator= (const StatsContainer<Type>& s)
   {
-    /** 
-     *  The assignment operator for the StatsContainer class.
-     */
+    ///  The assignment operator for the StatsContainer class.
 
     if(this == &s) return *this;
     this->defined    = s.defined;
@@ -93,10 +91,9 @@ namespace Statistics
   template <class Type> 
   float StatsContainer<Type>::getThresholdSNR()
   {
-    /** 
-     * The SNR is defined in terms of excess over the middle estimator
-     * in units of the spread estimator.
-    */
+    ///  @details
+    /// The SNR is defined in terms of excess over the middle estimator
+    /// in units of the spread estimator.
     return (threshold - this->getMiddle())/this->getSpread();
   }
   template float StatsContainer<int>::getThresholdSNR();
@@ -108,10 +105,9 @@ namespace Statistics
   template <class Type> 
   void  StatsContainer<Type>::setThresholdSNR(float snr)
   {
-    /** 
-     * The SNR is defined in terms of excess over the middle estimator
-     * in units of the spread estimator.
-     */
+    ///  @details
+    /// The SNR is defined in terms of excess over the middle estimator
+    /// in units of the spread estimator.
     threshold=this->getMiddle() + snr*this->getSpread();
   }
   template void StatsContainer<int>::setThresholdSNR(float snr);
@@ -123,10 +119,9 @@ namespace Statistics
   template <class Type> 
   float StatsContainer<Type>::valueToSNR(float value)
   {
-    /** 
-     * The SNR is defined in terms of excess over the middle estimator
-     * in units of the spread estimator.
-     */
+    ///  @details
+    /// The SNR is defined in terms of excess over the middle estimator
+    /// in units of the spread estimator.
     return (value - this->getMiddle())/this->getSpread();
   }
   template float StatsContainer<int>::valueToSNR(float value);
@@ -138,10 +133,9 @@ namespace Statistics
   template <class Type> 
   float StatsContainer<Type>::snrToValue(float snr)
   {
-    /** 
-     * The SNR is defined in terms of excess over the middle estimator
-     * in units of the spread estimator.
-     */
+    ///  @details
+    /// The SNR is defined in terms of excess over the middle estimator
+    /// in units of the spread estimator.
     return snr * this->getSpread() + this->getMiddle();
   }
   template float StatsContainer<int>::snrToValue(float value);
@@ -153,11 +147,10 @@ namespace Statistics
   template <class Type> 
   void StatsContainer<Type>::setMiddle(float middle)
   {
-    /** 
-     * The middle value is determined by the StatsContainer::useRobust
-     * flag -- it will be either the median (if true), or the mean (if
-     * false).
-     */
+    ///  @details
+    /// The middle value is determined by the StatsContainer::useRobust
+    /// flag -- it will be either the median (if true), or the mean (if
+    /// false).
     if(useRobust) this->median = Type(middle); 
     else this->mean = middle;
   }
@@ -170,11 +163,10 @@ namespace Statistics
   template <class Type> 
   float StatsContainer<Type>::getMiddle()
   {
-    /** 
-     * The middle value is determined by the StatsContainer::useRobust
-     * flag -- it will be either the median (if true), or the mean (if
-     * false).
-     */
+    ///  @details
+    /// The middle value is determined by the StatsContainer::useRobust
+    /// flag -- it will be either the median (if true), or the mean (if
+    /// false).
     if(useRobust) return float(this->median); 
     else return this->mean;
   }
@@ -185,14 +177,14 @@ namespace Statistics
   //--------------------------------------------------------------------
     
   template <class Type> 
-  void StatsContainer<Type>::setSpread(float spread){
-    /** 
-     * The spread value is set according to the
-     * StatsContainer::useRobust flag -- it will be either the madfm
-     * (if true), or the rms (if false). If robust, the spread value will be
-     * converted to a madfm from an equivalent rms under the assumption of
-     * Gaussianity, using the Statistics::sigmaToMADFM function.
-     */
+  void StatsContainer<Type>::setSpread(float spread)
+  {
+    ///  @details
+    /// The spread value is set according to the
+    /// StatsContainer::useRobust flag -- it will be either the madfm
+    /// (if true), or the rms (if false). If robust, the spread value will be
+    /// converted to a madfm from an equivalent rms under the assumption of
+    /// Gaussianity, using the Statistics::sigmaToMADFM function.
     if(useRobust) this->madfm = Type(sigmaToMADFM(spread)); 
     else this->stddev = spread;
   }
@@ -203,14 +195,14 @@ namespace Statistics
   //--------------------------------------------------------------------
     
   template <class Type> 
-  float StatsContainer<Type>::getSpread(){
-    /** 
-     * The spread value returned is determined by the
-     * StatsContainer::useRobust flag -- it will be either the madfm
-     * (if true), or the rms (if false). If robust, the madfm will be
-     * converted to an equivalent rms under the assumption of
-     * Gaussianity, using the Statistics::madfmToSigma function.
-     */
+  float StatsContainer<Type>::getSpread()
+  {
+    ///  @details
+    /// The spread value returned is determined by the
+    /// StatsContainer::useRobust flag -- it will be either the madfm
+    /// (if true), or the rms (if false). If robust, the madfm will be
+    /// converted to an equivalent rms under the assumption of
+    /// Gaussianity, using the Statistics::madfmToSigma function.
     if(useRobust) return madfmToSigma(this->madfm); 
     else return this->stddev;
   }
@@ -223,10 +215,9 @@ namespace Statistics
   template <class Type> 
   void  StatsContainer<Type>::scaleNoise(float scale)
   {
-    /**
-     *  Multiply the noise parameters (stddev & madfm) by a given
-     *  factor, and adjust the threshold.
-     */
+    /// @details
+    ///  Multiply the noise parameters (stddev & madfm) by a given
+    ///  factor, and adjust the threshold.
     float snr = (threshold - this->getMiddle())/this->getSpread();    
     this->madfm  = Type(this->madfm*scale);
     this->stddev *= scale;
@@ -241,15 +232,14 @@ namespace Statistics
   template <class Type> 
   float StatsContainer<Type>::getPValue(float value)
   {
-    /** 
-     * Get the "probability", under the assumption of normality, of a
-     * value occuring.  
-     *
-     * It is defined by \f$0.5 \operatorname{erfc}(z/\sqrt{2})\f$, where
-     * \f$z=(x-\mu)/\sigma\f$. We need the factor of 0.5 here, as we are
-     * only considering the positive tail of the distribution -- we
-     * don't care about negative detections.
-     */
+    ///  @details
+    /// Get the "probability", under the assumption of normality, of a
+    /// value occuring.  
+    /// 
+    /// It is defined by \f$0.5 \operatorname{erfc}(z/\sqrt{2})\f$, where
+    /// \f$z=(x-\mu)/\sigma\f$. We need the factor of 0.5 here, as we are
+    /// only considering the positive tail of the distribution -- we
+    /// don't care about negative detections.
     
     float zStat = (value - this->getMiddle()) / this->getSpread();
     return 0.5 * erfc( zStat / M_SQRT2 );
@@ -261,11 +251,11 @@ namespace Statistics
   //--------------------------------------------------------------------
     
   template <class Type> 
-  bool StatsContainer<Type>::isDetection(float value){
-    /** 
-     * Compares the value given to the correct threshold, depending on
-     * the value of the StatsContainer::useFDR flag. 
-     */
+  bool StatsContainer<Type>::isDetection(float value)
+  {
+    ///  @details
+    /// Compares the value given to the correct threshold, depending on
+    /// the value of the StatsContainer::useFDR flag. 
     if(useFDR) return (this->getPValue(value) < this->pThreshold);
     else       return (value > this->threshold);
   }
@@ -278,13 +268,12 @@ namespace Statistics
   template <class Type> 
   void StatsContainer<Type>::calculate(Type *array, long size)
   {
-    /**
-     * Calculate all four statistics for all elements of a given
-     * array.
-     *
-     * \param array The input data array.
-     * \param size The length of the input array
-     */
+    /// @details
+    /// Calculate all four statistics for all elements of a given
+    /// array.
+    /// 
+    /// \param array The input data array.
+    /// \param size The length of the input array
 //     findNormalStats(array, size, this->mean, this->stddev);
 //     findMedianStats(array, size, this->median, this->madfm);
     findAllStats(array,size,this->mean,this->stddev,this->median,this->madfm);
@@ -299,17 +288,16 @@ namespace Statistics
   template <class Type> 
   void StatsContainer<Type>::calculate(Type *array, long size, bool *mask)
   {
-    /**
-     * Calculate all four statistics for a subset of a given
-     * array. The subset is defined by an array of bool 
-     * variables.  
-     *
-     * \param array The input data array.
-     * \param size The length of the input array
-     * \param mask An array of the same length that says whether to
-     * include each member of the array in the calculations. Use a
-     * value if mask=true.
-     */
+    /// @details
+    /// Calculate all four statistics for a subset of a given
+    /// array. The subset is defined by an array of bool 
+    /// variables.  
+    /// 
+    /// \param array The input data array.
+    /// \param size The length of the input array
+    /// \param mask An array of the same length that says whether to
+    /// include each member of the array in the calculations. Use a
+    /// value if mask=true.
 //     findNormalStats(array, size, mask, this->mean, this->stddev);
 //     findMedianStats(array, size, mask, this->median, this->madfm);
     findAllStats(array, size, mask, 
@@ -325,9 +313,7 @@ namespace Statistics
   template <class Type> 
   std::ostream& operator<< (std::ostream& theStream, StatsContainer<Type> &s)
   {
-    /**
-     * Prints out the four key statistics to the requested stream.
-     */
+    /// Prints out the four key statistics to the requested stream.
     theStream << "Mean   = "   << s.mean   << "\t"
 	      << "Std.Dev. = " << s.stddev << "\n"
 	      << "Median = "   << s.median << "\t"

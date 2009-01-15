@@ -43,22 +43,20 @@ namespace duchamp
 
   void atrous1DReconstruct(long &xdim, float *&input, float *&output, Param &par)
   {
-    /**
-     *  A routine that uses the a trous wavelet method to reconstruct a 
-     *   1-dimensional spectrum. 
-     *  The Param object "par" contains all necessary info about the filter and 
-     *   reconstruction parameters.
-     *
-     *  If all pixels are BLANK (and we are testing for BLANKs), the
-     *  reconstruction will simply give BLANKs back, so we return the
-     *  input array as the output array.
-     *
-     *  \param xdim The length of the spectrum.
-     *  \param input The input spectrum.
-     *  \param output The returned reconstructed spectrum. This array needs to 
-     *    be declared beforehand.
-     *  \param par The Param set.
-     */
+    ///  A routine that uses the a trous wavelet method to reconstruct a 
+    ///   1-dimensional spectrum. 
+    ///  The Param object "par" contains all necessary info about the filter and 
+    ///   reconstruction parameters.
+    /// 
+    ///  If all pixels are BLANK (and we are testing for BLANKs), the
+    ///  reconstruction will simply give BLANKs back, so we return the
+    ///  input array as the output array.
+    /// 
+    ///  \param xdim The length of the spectrum.
+    ///  \param input The input spectrum.
+    ///  \param output The returned reconstructed spectrum. This array needs to 
+    ///    be declared beforehand.
+    ///  \param par The Param set.
 
     const float SNR_THRESH=par.getAtrousCut();
     const int MIN_SCALE=par.getMinScale();

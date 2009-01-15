@@ -31,31 +31,28 @@
 
 using std::vector;
 
-/**
- * A class to match things pair-wise (useful for sorting).
- *
- * This class is deigned to match two quantities to each other.  It
- * was devised to find a way of taking a pair of lists that are
- * matched, and sorting one list while keeping the second matched
- * pair-wise.
- *
- * The elements are currently just assumed to be floats. This could be
- * extended by templating, but at this stage we don't need to...
- */
+/// @brief
+/// A class to match things pair-wise (useful for sorting).
+/// 
+/// @details This class is deigned to match two quantities to each
+/// other.  It was devised to find a way of taking a pair of lists
+/// that are matched, and sorting one list while keeping the second
+/// matched pair-wise.
+/// 
+/// The elements are currently just assumed to be floats. This could be
+/// extended by templating, but at this stage we don't need to...
 class Pair
 {
 public:
   Pair(){};
   virtual ~Pair(){};
   friend bool operator< (const Pair& lhs, const Pair& rhs){
-    /**
-     *  A comparison operator for pairs.  Compare the primary elements
-     *  of the two pairs, using the basic < operator.
-     */
+    ///  A comparison operator for pairs.  Compare the primary elements
+    ///  of the two pairs, using the basic < operator.
     return (lhs.primary < rhs.primary);
   };
   void define(float p, float m){
-    /** Basic assignment function. */
+    /// Basic assignment function.
     primary=p; matching=m;
   };
   float get1(){return primary;};
@@ -75,16 +72,14 @@ namespace duchamp
 
   void SortByZ(vector <Detection> &inputList)
   {
-    /**
-     * A Function that takes a list of Detections and sorts them in
-     * order of increasing z-pixel value.  Upon return, the inputList
-     * is sorted.
-     *
-     * We use the std::stable_sort function, so that the order of
-     * objects with the same z-value is preserved.
-     * \param inputList List of Detections to be sorted.
-     * \return The inputList is returned with the elements sorted.
-     */
+    /// A Function that takes a list of Detections and sorts them in
+    /// order of increasing z-pixel value.  Upon return, the inputList
+    /// is sorted.
+    /// 
+    /// We use the std::stable_sort function, so that the order of
+    /// objects with the same z-value is preserved.
+    /// \param inputList List of Detections to be sorted.
+    /// \return The inputList is returned with the elements sorted.
 
     long size = inputList.size();
     Pair *info = new Pair[size];
@@ -108,21 +103,20 @@ namespace duchamp
 
   void SortByVel(vector <Detection> &inputList)
   {
-    /**
-     * A Function that takes a list of Detections and sorts them in 
-     *  order of increasing velocity.
-     * Every member of the vector needs to have WCS defined, (and if so,
-     *   then vel is assumed to be defined for all), otherwise no sorting
-     *   is done.
-     *
-     * We use the std::stable_sort function, so that the order of
-     * objects with the same z-value is preserved.
-     *
-     * \param inputList List of Detections to be sorted.
-     * \return The inputList is returned with the elements sorted,
-     * unless the WCS is not good for at least one element, in which
-     * case it is returned unaltered.
-     */
+    /// @details
+    /// A Function that takes a list of Detections and sorts them in 
+    ///  order of increasing velocity.
+    /// Every member of the vector needs to have WCS defined, (and if so,
+    ///   then vel is assumed to be defined for all), otherwise no sorting
+    ///   is done.
+    /// 
+    /// We use the std::stable_sort function, so that the order of
+    /// objects with the same z-value is preserved.
+    /// 
+    /// \param inputList List of Detections to be sorted.
+    /// \return The inputList is returned with the elements sorted,
+    /// unless the WCS is not good for at least one element, in which
+    /// case it is returned unaltered.
 
     bool isGood = true;
     for(int i=0;i<inputList.size();i++) isGood = isGood && inputList[i].isWCS();

@@ -32,6 +32,7 @@
 #include <duchamp/PixelMap/Voxel.hh>
 #include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Object2D.hh>
+#include <duchamp/PixelMap/ChanMap.hh>
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -39,82 +40,12 @@
 namespace PixelInfo
 {
 
-  /**
-   * A class to store a channel+Object2D map.
-   * This represents a 2-dimensional set of pixels that has an
-   * associated channel number. Sets of these will form a three
-   * dimensional object.
-   */
-
-  class ChanMap
-  {
-  public:
-    ChanMap();
-    ChanMap(long z){itsZ=z;};
-    ChanMap(long z, Object2D obj){itsZ=z; itsObject=obj;};
-    ChanMap(const ChanMap& m);
-    ChanMap& operator= (const ChanMap& m);
-    virtual ~ChanMap(){};
-
-    /** Define the ChanMap using a channel number and Object2D. */
-    void     define(long z, Object2D obj){itsZ=z; itsObject=obj;};
-
-    /** Return the value of the channel number. */
-    long     getZ(){return itsZ;};
-
-    /** Set the value of the channel number. */
-    void     setZ(long l){itsZ=l;};
-
-    /** Return the Object2D set of scans. */
-    Object2D getObject(){return itsObject;};
-
-    /** Return the i-th scan of the Object2D .*/
-    Scan     getScan(int i){return itsObject.scanlist[i];};
-
-    /** The number of scans in the Object2D set. */
-    long     getNumScan(){return itsObject.scanlist.size();};
-
-    /** Add constant offsets to each of the coordinates.*/
-    void     addOffsets(long xoff, long yoff, long zoff);
-
-    friend bool operator< (ChanMap lhs, ChanMap rhs){
-      /** The less-than operator: only acting on the channel number. */
-      return (lhs.itsZ<rhs.itsZ);
-    };
-
-    friend ChanMap operator+ (ChanMap lhs, ChanMap rhs){
-      /**
-       *  Add two ChanMaps together.
-       *  If they are the same channel, add the Objects, otherwise
-       *  return a blank ChanMap.
-       */
-
-      ChanMap newmap;
-      if(lhs.itsZ==rhs.itsZ){
-	newmap.itsZ = lhs.itsZ;
-	newmap.itsObject = lhs.itsObject + rhs.itsObject;
-      }
-      return newmap;
-    };
-
-    friend class Object3D;
-
-  private:
-    long     itsZ;      ///< The channel number.
-    Object2D itsObject; ///< The set of scans of object pixels.
-
-  };
-
-
-  //=====================================
-
-  /**
-   * A set of pixels in 3D.
-   * This stores the pixels in a list of ChanMap objects -- ie. a set
-   * of Object2Ds, each with a different channel number.
-   * Also recorded are the average x-, y- and z-values (via their
-   * sums), as well as their extrema.
-   */
+  /// @brief A set of pixels in 3D.  
+  /// 
+  /// @details This stores the pixels in a list of ChanMap objects --
+  /// ie. a set of Object2Ds, each with a different channel number.
+  /// Also recorded are the average x-, y- and z-values (via their
+  /// sums), as well as their extrema.
 
   class Object3D
   {
@@ -124,87 +55,83 @@ namespace PixelInfo
     Object3D& operator= (const Object3D& o);  
     virtual ~Object3D(){};
 
-    /** Is a 3-D voxel in the Object? */
+    /// @brief Is a 3-D voxel in the Object? 
     bool     isInObject(long x, long y, long z);
-    /** Is a 3-D voxel in the Object? */
+    /// @brief Is a 3-D voxel in the Object? 
     bool     isInObject(Voxel v){return this->isInObject(v.getX(),v.getY(),v.getZ());};
  
-    /** Add a single 3-D voxel to the Object. */
+    /// @brief Add a single 3-D voxel to the Object. 
     void     addPixel(long x, long y, long z);
-    /** Add a single 3-D voxel to the Object. */
+    /// @brief Add a single 3-D voxel to the Object. 
     void     addPixel(Voxel v){this->addPixel(v.getX(),v.getY(),v.getZ());};
-    /** Add a scan to the object */
+    /// @brief Add a scan to the object 
     void     addScan(Scan s, long z);
-    /** Add a full channel map to the Object. */
+    /// @brief Add a full channel map to the Object. 
     void     addChannel(ChanMap channel);
-    /** Add a full channel map to the Object. */
+    /// @brief Add a full channel map to the Object. 
     void     addChannel(long z, Object2D obj){
       ChanMap channel(z,obj);
       this->addChannel(channel);
     }
 
-    /** Sort the list of channel maps by their channel number. */
+    /// @brief Sort the list of channel maps by their channel number. 
     void     order();
 
-    /** Calculate the averages and extrema of the three coordinates. */
+    /// @brief Calculate the averages and extrema of the three coordinates. 
     void     calcParams();
-    /** Return the average x-value.*/
+    /// @brief Return the average x-value.
     float    getXcentre(){return xSum/float(numVox);};
-    /** Return the average y-value.*/
+    /// @brief Return the average y-value.
     float    getYcentre(){return ySum/float(numVox);};
-    /** Return the average z-value.*/
+    /// @brief Return the average z-value.
     float    getZcentre(){return zSum/float(numVox);};
-    /** Return the minimum x-value.*/
+    /// @brief Return the minimum x-value.
     long     getXmin(){return xmin;}; 
-    /** Return the minimum y-value.*/
+    /// @brief Return the minimum y-value.
     long     getYmin(){return ymin;};
-    /** Return the minimum z-value.*/
+    /// @brief Return the minimum z-value.
     long     getZmin(){return zmin;};
-    /** Return the maximum x-value.*/
+    /// @brief Return the maximum x-value.
     long     getXmax(){return xmax;};
-    /** Return the maximum y-value.*/
+    /// @brief Return the maximum y-value.
     long     getYmax(){return ymax;};
-    /** Return the maximum z-value.*/
+    /// @brief Return the maximum z-value.
     long     getZmax(){return zmax;};
 
-    /** Return the number of distinct voxels in the Object. */
+    /// @brief Return the number of distinct voxels in the Object. 
     long     getSize(){return numVox;};
 
-    /** Return the number of distinct channels in the Object. */
+    /// @brief Return the number of distinct channels in the Object. 
     long     getNumDistinctZ();
 
-    /** Return the number of channels in the Object. */
+    /// @brief Return the number of channels in the Object. 
     long     getNumChanMap(){return this->maplist.size();};
 
-    /** Return the number of spatial pixels -- ie. the number of
-	distinct (x,y) sets in the Object. */
+    /// @brief Return the number of spatial pixels -- ie. the number of distinct (x,y) sets in the Object. 
     long     getSpatialSize();
  
-    /** Get the pixNum-th voxel */
+    /// @brief Get the pixNum-th voxel 
     Voxel    getPixel(int pixNum);
 
-    /** Return a vector set of all voxels in the Object. */
+    /// @brief Return a vector set of all voxels in the Object. 
     std::vector<Voxel> getPixelSet();
 
-    /** Get the i-th channel map. */
+    /// @brief Get the i-th channel map. 
     ChanMap  getChanMap(int i){return this->maplist[i];};
 
-    /** Get the channel number of the i-th channel map. */
+    /// @brief Get the channel number of the i-th channel map. 
     long     getZ(int i){return this->maplist[i].itsZ;};
 
-    /** Return an Object2D showing the spatial (x,y) distribution of
-	voxels in the Object */
+    /// @brief Return an Object2D showing the spatial (x,y) distribution of voxels in the Object 
     Object2D getSpatialMap();
 
-    /** Add constant offsets to each of the dimensions, changing the
-	parameters at the same time. */
+    /// @brief Add constant offsets to each of the dimensions, changing the parameters at the same time. 
     void     addOffsets(long xoff, long yoff, long zoff);
 
-    /** Output operator for the Object3D. */
+    /// @brief Output operator for the Object3D. 
     friend std::ostream& operator<< ( std::ostream& theStream, Object3D& obj);
 
-    /** Add two Object3Ds. 
-	Overlapping channels are combined using addChannel(). */
+    /// @brief Add two Object3Ds. Overlapping channels are combined using addChannel(). 
     friend Object3D operator+ (Object3D lhs, Object3D rhs){
       Object3D output = lhs;
       for(unsigned int m=0;m<rhs.maplist.size();m++) output.addChannel(rhs.maplist[m]);

@@ -41,15 +41,13 @@ namespace duchamp
 
   int Cube::readReconCube()
   {
-    /** 
-     *  A way to read in a previously reconstructed array, corresponding 
-     *    to the requested parameters, or in the filename given by reconFile.
-     *   Performs various tests to make sure there are no clashes between 
-     *    the requested parameters and those stored in the header of the 
-     *    FITS file. Also test to make sure that the size (and subsection, 
-     *    if applicable) of the array is the same.
-     */
-
+    ///  @details
+    ///  A way to read in a previously reconstructed array, corresponding 
+    ///    to the requested parameters, or in the filename given by reconFile.
+    ///   Performs various tests to make sure there are no clashes between 
+    ///    the requested parameters and those stored in the header of the 
+    ///    FITS file. Also test to make sure that the size (and subsection, 
+    ///    if applicable) of the array is the same.
 
     int status = 0;
 

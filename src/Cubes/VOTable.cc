@@ -46,22 +46,21 @@ namespace duchamp
   using namespace Column;
   std::string fixUnitsVOT(std::string oldstring)
   {
-    /** 
-     * Fix a string containing units to make it acceptable for a VOTable.
-     *
-     * This function makes the provided units string acceptable
-     * according to the standard found at
-     * http://vizier.u-strasbg.fr/doc/catstd-3.2.htx 
-     * This should then be able to convert the units used in the text
-     * table to units suitable for putting in a VOTable.
-     *
-     * Specifically, it removes any square brackets [] from the
-     * start/end of the string, and replaces blank spaces (representing
-     * multiplication) with a '.' (full stop).
-     *
-     * \param oldstring Input unit string to be fixed
-     * \return String with fixed units
-     */
+    ///  @details
+    /// Fix a string containing units to make it acceptable for a VOTable.
+    /// 
+    /// This function makes the provided units string acceptable
+    /// according to the standard found at
+    /// http://vizier.u-strasbg.fr/doc/catstd-3.2.htx 
+    /// This should then be able to convert the units used in the text
+    /// table to units suitable for putting in a VOTable.
+    /// 
+    /// Specifically, it removes any square brackets [] from the
+    /// start/end of the string, and replaces blank spaces (representing
+    /// multiplication) with a '.' (full stop).
+    /// 
+    /// \param oldstring Input unit string to be fixed
+    /// \return String with fixed units
 
     std::string newstring;
     for(int i=0;i<oldstring.size();i++){
@@ -76,17 +75,17 @@ namespace duchamp
 
   void VOField::define(std::string i, std::string n, std::string U, std::string u, std::string d, std::string r, int w, int p)
   {
-    /**
-     * A basic definition function, defining each parameter individually. 
-     * \param i The ID parameter
-     * \param n The name parameter
-     * \param U The UCD
-     * \param u The units (fixed by fixUnits())
-     * \param d The datatype
-     * \param r The ref
-     * \param w The width
-     * \param p The precision
-     */
+    /// @details
+    /// A basic definition function, defining each parameter individually. 
+    /// \param i The ID parameter
+    /// \param n The name parameter
+    /// \param U The UCD
+    /// \param u The units (fixed by fixUnits())
+    /// \param d The datatype
+    /// \param r The ref
+    /// \param w The width
+    /// \param p The precision
+
     this->ID = i;
     this->name = n;
     this->UCD = U;
@@ -99,14 +98,14 @@ namespace duchamp
 
   void VOField::define(Column::Col column, std::string i, std::string U, std::string d, std::string r)
   {
-    /**
-     * Another definition function, using the information in a Column::Col object for some parameters.
-     * \param column A Column::Col object, used for name, unit, width & precision
-     * \param i The ID parameter
-     * \param U The UCD
-     * \param d The datatype
-     * \param r The ref
-     */
+    /// @details
+    /// Another definition function, using the information in a Column::Col object for some parameters.
+    /// \param column A Column::Col object, used for name, unit, width & precision
+    /// \param i The ID parameter
+    /// \param U The UCD
+    /// \param d The datatype
+    /// \param r The ref
+
     this->ID = i;
     this->name = column.getName();
     this->UCD = U;
@@ -119,15 +118,15 @@ namespace duchamp
 
   void VOField::define(Column::Col column)
   {
-    /**
-     * A more useful definition function, using the Column::COLNAME
-     * key to specify particular values for each of the parameters for
-     * different columns.
-     * \param column A Column::Col object of a particular type. The
-     * column.getType() function is used to decide which call to
-     * VOField::define(Column::Col column, std::string i, std::string
-     * U, std::string d, std::string r) to use
-     */
+    /// @details
+    /// A more useful definition function, using the Column::COLNAME
+    /// key to specify particular values for each of the parameters for
+    /// different columns.
+    /// \param column A Column::Col object of a particular type. The
+    /// column.getType() function is used to decide which call to
+    /// VOField::define(Column::Col column, std::string i, std::string
+    /// U, std::string d, std::string r) to use
+
     switch(column.getType())
       {
       case NUM:
@@ -215,10 +214,10 @@ namespace duchamp
 
   void VOField::printField(std::ostream &stream)
   {
-    /**
-     * Print the Field entry with appropriate formatting.
-     * \param stream The output stream to send the text to.
-     */
+    /// @details
+    /// Print the Field entry with appropriate formatting.
+    /// \param stream The output stream to send the text to.
+
     stream << "<FIELD name=\"" <<this->name
 	   << "\" ID=\"" << this->ID
 	   << "\" ucd=\"" << this->UCD;
@@ -243,17 +242,17 @@ namespace duchamp
 
   template <class T> void VOParam::define(std::string n, std::string U, std::string d, T v, int w, std::string u)
   {
-    /**
-     * A basic definition function, defining each parameter
-     * individually. The value (v) is written to a stringstream, and
-     * from there stored as a string.
-     * \param n The name
-     * \param U The UCD
-     * \param d The datatype
-     * \param v The value
-     * \param w The width
-     * \param u The units
-     */
+    /// @details
+    /// A basic definition function, defining each parameter
+    /// individually. The value (v) is written to a stringstream, and
+    /// from there stored as a string.
+    /// \param n The name
+    /// \param U The UCD
+    /// \param d The datatype
+    /// \param v The value
+    /// \param w The width
+    /// \param u The units
+
     this->name = n;
     this->UCD = U;
     this->datatype = d;
@@ -271,10 +270,10 @@ namespace duchamp
 
   void VOParam::printParam(std::ostream &stream)
   {
-    /**
-     * Print the Param entry with appropriate formatting.
-     * \param stream The output stream to send the text to.
-     */
+    /// @details
+    /// Print the Param entry with appropriate formatting.
+    /// \param stream The output stream to send the text to.
+
     stream << "<PARAM name=\"" <<this->name
 	   << "\" ucd=\"" << this->UCD
 	   << "\" datatype=\"" << this->datatype;
@@ -296,13 +295,12 @@ namespace duchamp
   
   void Cube::outputDetectionsVOTable(std::ostream &stream)
   {
-    /**
-     *  Prints to a stream (provided) the list of detected objects in the cube
-     *   in a VOTable format.
-     *  Uses WCS information and assumes WCS parameters have been calculated for each
-     *   detected object. 
-     * \param stream The output stream to send the text to.
-     */
+    /// @details
+    ///  Prints to a stream (provided) the list of detected objects in the cube
+    ///   in a VOTable format.
+    ///  Uses WCS information and assumes WCS parameters have been calculated for each
+    ///   detected object. 
+    /// \param stream The output stream to send the text to.
     
     stream<<"<?xml version=\"1.0\"?>\n";
     stream<<"<VOTABLE version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n";

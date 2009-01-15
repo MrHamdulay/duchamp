@@ -33,9 +33,7 @@
 
 template <class T> T absval(T value)
 {
-  /**
-   * Type-independent way of getting the absolute value.
-   */
+  /// Type-independent way of getting the absolute value.
   if( value > 0) return value;
   else return 0-value;
 }
@@ -48,13 +46,12 @@ template double absval<double>(double value);
 template <class T> void findMinMax(const T *array, const int size, 
 				   T &min, T &max)
 {
-  /**
-   * A function to find the minimum and maximum values of a set of numbers.
-   * \param array The array of data values. Type independent.
-   * \param size The length of the array
-   * \param min The returned value of the minimum value in the array.
-   * \param max The returned value of the maximum value in the array.
-   */
+  /// @details
+  /// A function to find the minimum and maximum values of a set of numbers.
+  /// \param array The array of data values. Type independent.
+  /// \param size The length of the array
+  /// \param min The returned value of the minimum value in the array.
+  /// \param max The returned value of the maximum value in the array.
   min = max = array[0];
   for(int i=1;i<size;i++) {
     if(array[i]<min) min=array[i];
@@ -73,12 +70,11 @@ template void findMinMax<double>(const double *array, const int size,
 
 template <class T> float findMean(T *array, int size)
 {
-  /**
-   * Find the mean of an array of numbers. Type independent.
-   * \param array The array of numbers.
-   * \param size The length of the array.
-   * \return The mean value of the array, returned as a float
-   */
+  /// @details
+  /// Find the mean of an array of numbers. Type independent.
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \return The mean value of the array, returned as a float
   float mean = array[0];
   for(int i=1;i<size;i++) mean += array[i];
   mean /= float(size);
@@ -92,12 +88,11 @@ template float findMean<double>(double *array, int size);
 
 template <class T> float findStddev(T *array, int size)
 {
-  /**
-   * Find the rms or standard deviation of an array of numbers. Type independent.
-   * \param array The array of numbers.
-   * \param size The length of the array.
-   * \return The rms value of the array, returned as a float
-   */
+  /// @details
+  /// Find the rms or standard deviation of an array of numbers. Type independent.
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \return The rms value of the array, returned as a float
   float mean = findMean(array,size);
   float stddev = (array[0]-mean) * (array[0]-mean);
   for(int i=1;i<size;i++) stddev += (array[i]-mean)*(array[i]-mean);
@@ -112,12 +107,11 @@ template float findStddev<double>(double *array, int size);
 
 template <class T> T findMedian(T *array, int size)
 {
-  /**
-   * Find the median value of an array of numbers. Type independent.
-   * \param array The array of numbers.
-   * \param size The length of the array.
-   * \return The median value of the array, returned as the same type as the array.
-   */
+  /// @details
+  /// Find the median value of an array of numbers. Type independent.
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \return The median value of the array, returned as the same type as the array.
   T *newarray = new T[size];
   T median;
   for(int i=0;i<size;i++) newarray[i] = array[i];
@@ -135,15 +129,14 @@ template double findMedian<double>(double *array, int size);
 
 template <class T> T findMADFM(T *array, int size)
 {
-  /**
-   * Find the median absolute deviation from the median value of an
-   * array of numbers. Type independent.
-   *
-   * \param array The array of numbers.
-   * \param size The length of the array.
-   * \return The median absolute deviation from the median value of
-   * the array, returned as the same type as the array.
-   */
+  /// @details
+  /// Find the median absolute deviation from the median value of an
+  /// array of numbers. Type independent.
+  /// 
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \return The median absolute deviation from the median value of
+  /// the array, returned as the same type as the array.
   T *newarray = new T[size];
   T median = findMedian<T>(array,size);
   T madfm;
@@ -163,17 +156,16 @@ template double findMADFM<double>(double *array, int size);
 template <class T> void findMedianStats(T *array, int size, 
 					T &median, T &madfm)
 {
-  /**
-   * Find the median and the median absolute deviation from the median
-   * value of an array of numbers. Type independent.
-   *
-   * \param array The array of numbers.
-   * \param size The length of the array.
-   * \param median The median value of the array, returned as the same
-   * type as the array.
-   * \param madfm The median absolute deviation from the median value
-   * of the array, returned as the same type as the array.
-   */
+  /// @details
+  /// Find the median and the median absolute deviation from the median
+  /// value of an array of numbers. Type independent.
+  /// 
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param median The median value of the array, returned as the same
+  /// type as the array.
+  /// \param madfm The median absolute deviation from the median value
+  /// of the array, returned as the same type as the array.
   if(size==0){
     std::cerr << "Error in findMedianStats: zero sized array!\n";
     return;
@@ -205,21 +197,21 @@ template void findMedianStats<double>(double *array, int size,
 template <class T> void findMedianStats(T *array, int size, bool *mask, 
 					T &median, T &madfm)
 {
-  /**
-   * Find the median and the median absolute deviation from the median
-   * value of a subset of an array of numbers. The subset is defined
-   * by an array of bool variables. Type independent.
-   *
-   * \param array The array of numbers.
-   * \param size The length of the array.
-   * \param mask An array of the same length that says whether to
-   * include each member of the array in the calculations. Only use
-   * values where mask=true.
-   * \param median The median value of the array, returned as the same
-   * type as the array.
-   * \param madfm The median absolute deviation from the median value
-   * of the array, returned as the same type as the array.
-   */
+  /// @details
+  /// Find the median and the median absolute deviation from the median
+  /// value of a subset of an array of numbers. The subset is defined
+  /// by an array of bool variables. Type independent.
+  /// 
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param mask An array of the same length that says whether to
+  /// include each member of the array in the calculations. Only use
+  /// values where mask=true.
+  /// \param median The median value of the array, returned as the same
+  /// type as the array.
+  /// \param madfm The median absolute deviation from the median value
+  /// of the array, returned as the same type as the array.
+
   int goodSize=0;
   for(int i=0;i<size;i++) if(mask[i]) goodSize++;
   if(goodSize==0){
@@ -258,16 +250,16 @@ template void findMedianStats<double>(double *array, int size, bool *mask,
 template <class T> void findNormalStats(T *array, int size, 
 					float &mean, float &stddev)
 {
-  /**
-   * Find the mean and rms or standard deviation of an array of
-   * numbers. Type independent.
-   *
-   * \param array The array of numbers.
-   * \param size The length of the array.
-   * \param mean The mean value of the array, returned as a float.
-   * \param stddev The rms or standard deviation of the array,
-   * returned as a float.
-   */
+  /// @details
+  /// Find the mean and rms or standard deviation of an array of
+  /// numbers. Type independent.
+  /// 
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param mean The mean value of the array, returned as a float.
+  /// \param stddev The rms or standard deviation of the array,
+  /// returned as a float.
+
   if(size==0){
     std::cerr << "Error in findNormalStats: zero sized array!\n";
     return;
@@ -296,20 +288,20 @@ template void findNormalStats<double>(double *array, int size,
 template <class T> void findNormalStats(T *array, int size, bool *mask, 
 					float &mean, float &stddev)
 {
-  /**
-   * Find the mean and rms or standard deviation of a subset of an
-   * array of numbers. The subset is defined by an array of bool
-   * variables. Type independent.
-   *
-   * \param array The array of numbers.
-   * \param size The length of the array.
-   * \param mask An array of the same length that says whether to
-   * include each member of the array in the calculations. Only look
-   * at values where mask=true.
-   * \param mean The mean value of the array, returned as a float.
-   * \param stddev The rms or standard deviation of the array,
-   * returned as a float.
-   */
+  /// @details
+  /// Find the mean and rms or standard deviation of a subset of an
+  /// array of numbers. The subset is defined by an array of bool
+  /// variables. Type independent.
+  /// 
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param mask An array of the same length that says whether to
+  /// include each member of the array in the calculations. Only look
+  /// at values where mask=true.
+  /// \param mean The mean value of the array, returned as a float.
+  /// \param stddev The rms or standard deviation of the array,
+  /// returned as a float.
+
   int goodSize=0;
   for(int i=0;i<size;i++) if(mask[i]) goodSize++;
   if(goodSize==0){
@@ -347,20 +339,20 @@ template <class T> void findAllStats(T *array, int size,
 				     float &mean, float &stddev,
 				     T &median, T &madfm)
 {
-  /**
-   * Find the mean,rms (or standard deviation), median AND madfm of an
-   * array of numbers. Type independent.
-   *
-   * \param array The array of numbers.
-   * \param size The length of the array.
-   * \param mean The mean value of the array, returned as a float.
-   * \param stddev The rms or standard deviation of the array,
-   * returned as a float.
-   * \param median The median value of the array, returned as the same
-   * type as the array.
-   * \param madfm The median absolute deviation from the median value
-   * of the array, returned as the same type as the array.
-   */
+  /// @details
+  /// Find the mean,rms (or standard deviation), median AND madfm of an
+  /// array of numbers. Type independent.
+  /// 
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param mean The mean value of the array, returned as a float.
+  /// \param stddev The rms or standard deviation of the array,
+  /// returned as a float.
+  /// \param median The median value of the array, returned as the same
+  /// type as the array.
+  /// \param madfm The median absolute deviation from the median value
+  /// of the array, returned as the same type as the array.
+
   if(size==0){
     std::cerr << "Error in findAllStats: zero sized array!\n";
     return;
@@ -408,24 +400,24 @@ template <class T> void findAllStats(T *array, int size, bool *mask,
 				     float &mean, float &stddev,
 				     T &median, T &madfm)
 {
-  /**
-   * Find the mean,rms (or standard deviation), median AND madfm of a
-   * subset of an array of numbers. Type independent.The subset is
-   * defined by an array of bool variables. Type independent.
-   *
-   * \param array The array of numbers.
-   * \param size The length of the array.
-   * \param mask An array of the same length that says whether to
-   * include each member of the array in the calculations. Only look
-   * at values where mask=true.
-   * \param mean The mean value of the array, returned as a float.
-   * \param stddev The rms or standard deviation of the array,
-   * returned as a float.
-   * \param median The median value of the array, returned as the same
-   * type as the array.
-   * \param madfm The median absolute deviation from the median value
-   * of the array, returned as the same type as the array.
-   */
+  /// @details
+  /// Find the mean,rms (or standard deviation), median AND madfm of a
+  /// subset of an array of numbers. Type independent.The subset is
+  /// defined by an array of bool variables. Type independent.
+  /// 
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param mask An array of the same length that says whether to
+  /// include each member of the array in the calculations. Only look
+  /// at values where mask=true.
+  /// \param mean The mean value of the array, returned as a float.
+  /// \param stddev The rms or standard deviation of the array,
+  /// returned as a float.
+  /// \param median The median value of the array, returned as the same
+  /// type as the array.
+  /// \param madfm The median absolute deviation from the median value
+  /// of the array, returned as the same type as the array.
+
   int goodSize=0;
   for(int i=0;i<size;i++) if(mask[i]) goodSize++;
   if(goodSize==0){

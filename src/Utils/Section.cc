@@ -67,25 +67,24 @@ namespace duchamp
 
   int Section::parse(std::vector<long> dimAxes)
   {
-    /**
-     * This function reads the subsection string, and registers the
-     * starting values and lengths for each dimension. The array of axis
-     * dimensions is needed to know how long each axis really is, and
-     * whether we have strayed over the limit or not.
-     *
-     * Note that steps in the subsection string are not dealt with -- a
-     * warning message is written to the screen, and the step values are
-     * removed from the subsection string.
-     *
-     * The function also does basic checks to make sure it is of the
-     * correct format (ie. has square brackets delimiting it) and the
-     * correct number of sections, returning a FAILURE if either of
-     * these checks fail.
-     *
-     * \param dimAxes The array of axis dimensions, of which the
-     *                 Section is a subsection.
-     * \return SUCCESS/FAILURE (from duchamp.hh)
-     */
+    /// @details
+    /// This function reads the subsection string, and registers the
+    /// starting values and lengths for each dimension. The array of axis
+    /// dimensions is needed to know how long each axis really is, and
+    /// whether we have strayed over the limit or not.
+    /// 
+    /// Note that steps in the subsection string are not dealt with -- a
+    /// warning message is written to the screen, and the step values are
+    /// removed from the subsection string.
+    /// 
+    /// The function also does basic checks to make sure it is of the
+    /// correct format (ie. has square brackets delimiting it) and the
+    /// correct number of sections, returning a FAILURE if either of
+    /// these checks fail.
+    /// 
+    /// \param dimAxes The array of axis dimensions, of which the
+    ///                 Section is a subsection.
+    /// \return SUCCESS/FAILURE (from duchamp.hh)
 
     std::stringstream errmsg;
 
