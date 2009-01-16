@@ -29,6 +29,7 @@
 #include <math.h>
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/PixelMap/Scan.hh>
+#include <duchamp/PixelMap/ChanMap.hh>
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/param.hh>
 

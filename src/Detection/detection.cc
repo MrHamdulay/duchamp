@@ -36,6 +36,7 @@
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/ChanMap.hh>
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Cubes/cubeUtils.hh>
