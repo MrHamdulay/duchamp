@@ -106,8 +106,8 @@ namespace duchamp
     /// @brief Read a parameter set from file. 
     int                readParam(std::string paramfile){
       /// @brief 
-       *  Uses Param::readParams() to read parameters from a file.
-       *  \param paramfile The file to be read.
+      ///  Uses Param::readParams() to read parameters from a file.
+      ///  \param paramfile The file to be read.
        
       return par.readParams(paramfile); 
     };
@@ -293,8 +293,7 @@ namespace duchamp
 
     /// @brief Set up thresholds for the False Discovery Rate routine. 
     void        setupFDR();
-    /// @brief Set up thresholds for the False Discovery Rate routine using a
-	particular array. 
+    /// @brief Set up thresholds for the False Discovery Rate routine using a particular array. 
     void        setupFDR(float *input);
 
     /// @brief A detection test for a given voxel. 
@@ -329,8 +328,7 @@ namespace duchamp
     /// @brief Find the flux enclosed by a Detection. 
     float       enclosedFlux(Detection obj);
 
-    /// @brief Set up the output column definitions for the Cube and its
-	Detection list. 
+    /// @brief Set up the output column definitions for the Cube and its Detection list. 
     void        setupColumns();
 
     /// @brief Is the object at the edge of the image? 
@@ -484,8 +482,7 @@ namespace duchamp
     };
 
     // in Cubes/Merger.cc
-    /// @brief Merge all objects in the detection list so that only distinct
-	ones are left. 
+    /// @brief Merge all objects in the detection list so that only distinct ones are left. 
     void        ObjectMerger();
   
     // in Cubes/existingDetections.cc
@@ -524,16 +521,13 @@ namespace duchamp
     // Graphical plotting of the cube and the detections.
     //
     //  in Cubes/plotting.cc
-    /// @brief Plot a spatial map of detections based on number of detected
-	channels. 
+    /// @brief Plot a spatial map of detections based on number of detected channels. 
     void        plotDetectionMap(std::string pgDestination);
 
-    /// @brief Plot a spatial map of detections based on 0th moment map of each
-	object. 
+    /// @brief Plot a spatial map of detections based on 0th moment map of each object. 
     void        plotMomentMap(std::string pgDestination);
 
-    /// @brief Plot a spatial map of detections based on 0th moment map of each
-	object to a number of PGPLOT devices. 
+    /// @brief Plot a spatial map of detections based on 0th moment map of each object to a number of PGPLOT devices. 
     void        plotMomentMap(std::vector<std::string> pgDestination);
 
     /// @brief Draw WCS axes over a PGPLOT map. 
@@ -562,8 +556,7 @@ namespace duchamp
     /// @brief Draw a scale bar indicating angular size of the cutout. 
     void        drawScale(float xstart,float ystart,float channel);
 
-    /// @brief Draw a yellow line around the edge of the spatial extent of
-	pixels. 
+    /// @brief Draw a yellow line around the edge of the spatial extent of pixels. 
     void        drawFieldEdge();
 
   private: 

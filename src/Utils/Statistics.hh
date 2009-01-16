@@ -150,4 +150,4 @@ namespace Statistics
 
 }
 
-#endif /*STATS_H
+#endif // STATS_H

@@ -328,9 +328,9 @@ namespace duchamp
     float          v50min;         ///< Minimum velocity at 50% of peak flux
     float          v50max;         ///< Maximum velocity at 50% of peak flux
     float          w50;            ///< Velocity width at 50% of peak flux  
-    /// @brief @brief  The next six are the precision of values printed in the headers of the spectral plots
-	@name 
-	@{ 
+    /// @brief  The next six are the precision of values printed in the headers of the spectral plots
+    ///	@name 
+    /// @{ 
     int            posPrec;        ///< Precision of WCS positional values 
     int            xyzPrec;        ///< Precision of pixel positional values
     int            fintPrec;       ///< Precision of F_int/F_tot values
