@@ -1,4 +1,4 @@
-Duchamp version 1.1.7 (2009/01/12)
+Duchamp version 1.1.7 (2009/01/16)
 ----------------------------------
 
 Improvements:
@@ -55,6 +55,8 @@ Bug Fixes:
 
 * Improving the way the growing and merging is done, particularly in
   the case of non-adjacent merging.
+
+* Fixed a scaling bug in the GaussSmooth function.
 
 Other:
 

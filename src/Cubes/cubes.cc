@@ -1296,7 +1296,7 @@ namespace duchamp
     ///    lies at the edge of the cube's spectral extent --
     ///    either at the boundary, or next to BLANKs.
     /// 
-    ///   /param obj The Detection under consideration.
+    ///   \param obj The Detection under consideration.
 
     bool atEdge = false;
 
