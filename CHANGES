@@ -9,6 +9,10 @@ Improvements:
   (it defaults to false, which means each detected pixel has the value
   1). Non-detected pixels still have the value 0.
 
+* The names of the output FITS files are now able to be specified
+  directly by input parameters. These will override the default names
+  that Duchamp provides.
+
 * The Karma annotation file now specifies a font - previously it did
   not and so was at the mercy of whatever was specified in other
   annotation files being viewed at the same time. Please let me know
