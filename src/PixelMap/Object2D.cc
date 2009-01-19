@@ -80,7 +80,7 @@ namespace PixelInfo
 
     bool flagDone=false,flagChanged=false, isNew=false;
 
-    int scanCount = 0;
+    uint scanCount = 0;
     while(!flagDone && (scanCount<this->scanlist.size()) ){
       Scan scan = this->scanlist[scanCount];    
       if(y == scan.itsY){ // if the y value is already in the list
@@ -166,7 +166,7 @@ namespace PixelInfo
   {
     bool flagDone=false,flagChanged=false;;
     long y = scan.itsY;
-    int scanCount = 0;
+    uint scanCount = 0;
     std::vector <Scan>::iterator iter;
 
     while(!flagDone && (scanCount<this->scanlist.size()) ){
@@ -220,9 +220,9 @@ namespace PixelInfo
       // that more than one other scan could be affected. We therefore
       // need to look over all scans, not just stopping at the first
       // match we come across (as for addPixel() above).
-      int count1=0;
+      uint count1=0;
       while(count1<this->scanlist.size()-1){
-	int count2 = count1 + 1;
+	uint count2 = count1 + 1;
 	do {
 	  Scan first = this->scanlist[count1];
 	  Scan second = this->scanlist[count2];
@@ -261,7 +261,7 @@ namespace PixelInfo
   bool Object2D::isInObject(long x, long y)
   {
 
-    long scanCount = 0;
+    unsigned long scanCount = 0;
     do{
 
       if(y == this->scanlist[scanCount].itsY){
@@ -298,7 +298,7 @@ namespace PixelInfo
 
   std::ostream& operator<< ( std::ostream& theStream, Object2D& obj)
   {
-    for(int i=0;i<obj.scanlist.size();i++)
+    for(uint i=0;i<obj.scanlist.size();i++)
       theStream << obj.scanlist[i] << "\n";
     theStream<<"---\n";
     return theStream;
@@ -310,7 +310,7 @@ namespace PixelInfo
   {
     this->xSum = 0;
     this->ySum = 0;
-    for(int s=0;s<this->scanlist.size();s++){
+    for(uint s=0;s<this->scanlist.size();s++){
 
       if(s==0){
 	this->ymin = this->ymax = this->scanlist[s].itsY;
@@ -337,7 +337,7 @@ namespace PixelInfo
 
   void Object2D::cleanup()
   {
-    int counter=0, compCounter=1;
+    uint counter=0, compCounter=1;
     std::vector<Scan>::iterator iter;
     while(counter < this->scanlist.size())
       {
@@ -374,9 +374,9 @@ namespace PixelInfo
     if(this->scanlist.size()==0) return 0;
     if(this->scanlist.size()==1) return 1;
     ylist.push_back(this->scanlist[0].itsY);
-    for(int i=1;i<this->scanlist.size();i++){
+    for(uint i=1;i<this->scanlist.size();i++){
       bool inList = false;
-      int j=0;
+      uint j=0;
       long y = this->scanlist[i].itsY;
       while(!inList && j<ylist.size()){
 	if(y==ylist[j]) inList=true;
@@ -395,10 +395,10 @@ namespace PixelInfo
     if(this->scanlist.size()==1) return 1;
     for(int x=this->scanlist[0].itsX;x<this->scanlist[0].getXmax();x++)
       xlist.push_back(x);
-    for(int i=1;i<this->scanlist.size();i++){
+    for(uint i=1;i<this->scanlist.size();i++){
       for(int x=this->scanlist[0].itsX;x<this->scanlist[0].getXmax();x++){
 	bool inList = false;
-	int j=0;
+	uint j=0;
 	while(!inList && j<xlist.size()){
 	  if(x==xlist[j]) inList=true;
 	  j++;
@@ -413,7 +413,7 @@ namespace PixelInfo
   bool Object2D::scanOverlaps(Scan scan)
   {
     bool returnval = false;
-    int scanCount=0;
+    uint scanCount=0;
     while(!returnval && scanCount<this->scanlist.size()){
       returnval = returnval || overlap(scan,this->scanlist[scanCount++]);
     }

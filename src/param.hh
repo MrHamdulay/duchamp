@@ -263,7 +263,7 @@ namespace duchamp
     long   getZOffset(){return zSubOffset;};
     void   setZOffset(long o){zSubOffset = o;};
     //
-    int    getMinPix(){return minPix;};
+    uint   getMinPix(){return minPix;};
     void   setMinPix(int m){minPix=m;};
     //	 
     bool   getFlagGrowth(){return flagGrowth;};

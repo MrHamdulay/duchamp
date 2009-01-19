@@ -86,7 +86,7 @@ namespace duchamp
     while(!logfile.eof()){
       Detection obj;
       while(getline(logfile,temp), temp.substr(0,3)!="---"){
-	for(int i=0;i<temp.size();i++)
+	for(uint i=0;i<temp.size();i++)
 	  if(temp[i]=='-' || temp[i]==',') temp[i] = ' ';
 	std::stringstream ss;
 	ss.str(temp);

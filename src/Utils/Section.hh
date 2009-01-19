@@ -67,24 +67,24 @@ namespace duchamp
     std::string getSection(){return subsection;};
 
     /// @brief Save a single dimension's subsection string 
-    void setSection(int i, std::string s){sections[i] = s;};
+    void setSection(uint i, std::string s){sections[i] = s;};
     /// @brief Return a particular dimension's subsection string 
-    std::string getSection(int i){if(i>=numSections) return "*"; else return sections[i];};
+    std::string getSection(uint i){if(i>=numSections) return "*"; else return sections[i];};
 
     /// @brief Return a particular starting value 
-    int getStart(int i){if(i>=numSections) return 0; else return starts[i];};
+    int getStart(uint i){if(i>=numSections) return 0; else return starts[i];};
     /// @brief Set a particular starting value 
-    void setStart(int i, int val){starts[i]=val;};
+    void setStart(uint i, uint val){starts[i]=val;};
 
     /// @brief Return a particular dimension length 
-    int getDim(int i){if(i>=numSections) return 1; else return dims[i];};
+    int getDim(uint i){if(i>=numSections) return 1; else return dims[i];};
     /// @brief Set a particular dimension length 
-    void setDim(int i, int val){dims[i]=val;};
+    void setDim(uint i, uint val){dims[i]=val;};
 
     /// @brief Return a particular ending value 
-    int getEnd(int i){if(i>=numSections) return 0; else return starts[i]+dims[i]-1;};
+    int getEnd(uint i){if(i>=numSections) return 0; else return starts[i]+dims[i]-1;};
     /// @brief Set a particular ending value, using the current starting value 
-    void setEnd(int i, int val){dims[i]=val-starts[i]+1;};
+    void setEnd(uint i, uint val){dims[i]=val-starts[i]+1;};
 
     /// @brief Return the full list of start values 
     std::vector<int> getStartList(){return starts;};
@@ -94,7 +94,7 @@ namespace duchamp
   private:
     std::string subsection;   ///< The string indicating the subsection, of the format [a:b,c:d,e:f] etc.
     std::vector<std::string> sections; // The individual section strings for each dimension
-    int numSections;          ///< The number of sections in the string.
+    uint numSections;         ///< The number of sections in the string.
     std::vector<int> starts;  ///< The list of starting values (a,c,e)
     std::vector<int> dims;    ///< The list of lengths of each dimension (b-a+1,d-c+1,f-e+1)
   };

@@ -293,7 +293,7 @@ void Cube::SpatialSmoothNSearch()
 
       std::vector<PixelInfo::Object2D> objlist = channelImage->lutz_detect();
       numFound += objlist.size();
-      for(int obj=0;obj<objlist.size();obj++){
+      for(uint obj=0;obj<objlist.size();obj++){
 	Detection newObject;
 	newObject.pixels().addChannel(z,objlist[obj]);
 	newObject.setOffsets(this->par);

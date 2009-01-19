@@ -100,7 +100,7 @@ namespace duchamp
 	}
       }
  
-      for(int obj=0;obj<this->objectList->size();obj++){ 
+      for(uint obj=0;obj<this->objectList->size();obj++){ 
 	// for each detection, correct the flux calculations.
 	this->objectList->at(obj).calcFluxes(this->array, this->axisDim);
       

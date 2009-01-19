@@ -70,7 +70,7 @@ namespace duchamp
       // Do growth stuff
       if(this->par.getFlagGrowth()) {
 	vector <Detection> newList(currentList.size());
-	for(int i=0;i<currentList.size();i++){
+	for(uint i=0;i<currentList.size();i++){
 	  std::cout.setf(std::ios::right);
 	  std::cout << "Growing: " << std::setw(6) << i+1 << "/";	   
 	  std::cout.unsetf(std::ios::right);
@@ -97,7 +97,7 @@ namespace duchamp
 
       //     *this->objectList = currentList;
       this->objectList->resize(currentList.size());
-      for(int i=0;i<currentList.size();i++)
+      for(uint i=0;i<currentList.size();i++)
 	this->objectList->at(i) = currentList[i];
     
       currentList.clear();
@@ -129,7 +129,7 @@ namespace duchamp
       bool isVerb = par.isVerbose();
       vector <Detection>::iterator iter;
 
-      int counter=0, compCounter;
+      uint counter=0, compCounter;
       while( counter < (objList.size()-1) ){
 	if(isVerb){
 	  std::cout.setf(std::ios::right);
@@ -196,7 +196,7 @@ namespace duchamp
     ///   In the process, the object parameters are calculated and offsets
     ///    are added.
 
-    int listCounter = 0;
+    uint listCounter = 0;
 
     std::cout << "Rejecting:" << std::setw(6) << objList.size();
     printSpace(6);

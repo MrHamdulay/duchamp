@@ -67,7 +67,7 @@ namespace PixelInfo
   bool Object3D::isInObject(long x, long y, long z)
   {
     bool returnval = false;
-    int mapCount = 0;
+    uint mapCount = 0;
     while(!returnval && mapCount < this->maplist.size()){
       if(z == this->maplist[mapCount].itsZ){
 	returnval = returnval || 
@@ -83,7 +83,7 @@ namespace PixelInfo
   {
     // first test to see if we have a chanmap of same z
     bool haveZ = false;
-    int mapCount = 0;
+    uint mapCount = 0;
     while(!haveZ && mapCount < this->maplist.size()){
       haveZ = haveZ || (z==this->maplist[mapCount++].itsZ);
     }
@@ -161,7 +161,7 @@ namespace PixelInfo
   {
     // first test to see if we have a chanmap of same z
     bool haveZ = false;
-    int mapCount = 0;
+    uint mapCount = 0;
     while( !haveZ && (mapCount < this->maplist.size()) ){
       haveZ = haveZ || (channel.itsZ==this->maplist[mapCount].itsZ);
       mapCount++;
@@ -255,7 +255,7 @@ namespace PixelInfo
   long Object3D::getSpatialSize()
   {
     Object2D spatialMap;
-    for(int i=0;i<this->maplist.size();i++){
+    for(uint i=0;i<this->maplist.size();i++){
       for(int s=0;s<this->maplist[i].itsObject.getNumScan();s++){
 	spatialMap.addScan(this->maplist[i].itsObject.getScan(s));
       }
@@ -267,7 +267,7 @@ namespace PixelInfo
   Object2D Object3D::getSpatialMap()
   {
     Object2D spatialMap = this->maplist[0].itsObject;
-    for(int i=1;i<this->maplist.size();i++){
+    for(uint i=1;i<this->maplist.size();i++){
       spatialMap = spatialMap + this->maplist[i].itsObject;
     }
     return spatialMap;
@@ -279,7 +279,7 @@ namespace PixelInfo
     this->xSum = 0;
     this->ySum = 0;
     this->zSum = 0;
-    for(int m=0;m<this->maplist.size();m++){
+    for(uint m=0;m<this->maplist.size();m++){
 
       this->maplist[m].itsObject.calcParams();
 
@@ -333,7 +333,7 @@ namespace PixelInfo
     Voxel returnVox(-1,-1,-1,0.);
     if((pixNum<0)||(pixNum>=this->getSize())) return returnVox;
     int count1=0;
-    for(int m=0;m<this->maplist.size();m++)
+    for(uint m=0;m<this->maplist.size();m++)
       {
 	if(pixNum-count1<this->maplist[m].itsObject.getSize())
 	  {
@@ -361,7 +361,7 @@ namespace PixelInfo
   {
     std::vector<Voxel> voxList(this->numVox);
     long count = 0;
-    for(int m=0;m<this->maplist.size();m++){
+    for(uint m=0;m<this->maplist.size();m++){
       Object2D obj = this->maplist[m].itsObject;
       long z = this->maplist[m].itsZ;
       for(int s=0;s<obj.getNumScan();s++){

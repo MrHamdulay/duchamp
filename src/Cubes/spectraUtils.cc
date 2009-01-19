@@ -105,7 +105,7 @@ namespace duchamp
     bool *done = new bool[xySize]; 
     for(int i=0;i<xySize;i++) done[i]=false;
     std::vector<Voxel> voxlist = object.pixels().getPixelSet();
-    for(int pix=0;pix<voxlist.size();pix++){
+    for(uint pix=0;pix<voxlist.size();pix++){
       int pos = voxlist[pix].getX() + dimArray[0] * voxlist[pix].getY();
       if(!done[pos]){
 	done[pos] = true;
@@ -194,7 +194,7 @@ namespace duchamp
       bool *done = new bool[xdim*ydim];
       for(int i=0;i<xdim*ydim;i++) done[i]=false;
       std::vector<Voxel> voxlist = this->objectList->at(objNum).pixels().getPixelSet();
-      for(int pix=0;pix<voxlist.size();pix++){
+      for(uint pix=0;pix<voxlist.size();pix++){
 	int pos = voxlist[pix].getX() + xdim * voxlist[pix].getY();
 	if(!done[pos]){
 	  done[pos] = true;

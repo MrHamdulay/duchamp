@@ -258,7 +258,7 @@ namespace duchamp
 
 
       // Now test each object against each new column
-      for( int obj = 0; obj < objectList.size(); obj++){
+      for( uint obj = 0; obj < objectList.size(); obj++){
 	std::string tempstr;
 	int tempwidth;
 	float val,minval;

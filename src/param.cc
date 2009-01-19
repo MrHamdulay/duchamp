@@ -30,6 +30,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <algorithm>
 #include <stdlib.h>
 #include <ctype.h>
 #include <math.h>
@@ -444,7 +445,7 @@ namespace duchamp
     ss1.str(this->objectList);
     while(!ss1.eof()){
       getline(ss1,tmp,',');
-      for(int i=0;i<tmp.size();i++) if(tmp[i]=='-') tmp[i]=' ';
+      for(uint i=0;i<tmp.size();i++) if(tmp[i]=='-') tmp[i]=' ';
       int a,b;
       std::stringstream ss2;
       ss2.str(tmp);
@@ -470,7 +471,7 @@ namespace duchamp
     std::vector<int> objectChoices = this->getObjectRequest();
     int maxNum = *std::max_element(objectChoices.begin(), objectChoices.end());
     std::vector<bool> choices(maxNum,false);
-    for(int i=0;i<objectChoices.size();i++) choices[objectChoices[i]-1] = true;
+    for(uint i=0;i<objectChoices.size();i++) choices[objectChoices[i]-1] = true;
     return choices;
   }
 
@@ -491,7 +492,7 @@ namespace duchamp
     else{
       std::vector<int> objectChoices = this->getObjectRequest();
       std::vector<bool> choices(numObjects,false);
-      for(int i=0;i<objectChoices.size();i++)
+      for(uint i=0;i<objectChoices.size();i++)
 	if(objectChoices[i]<=numObjects) choices[objectChoices[i]-1] = true;
       return choices;
     }
@@ -506,7 +507,7 @@ namespace duchamp
   {
     // "borrowed" from Matt Howlett's 'fred'
     std::string out = "";
-    for( int i=0; i<s.size(); ++i ) {
+    for( uint i=0; i<s.size(); ++i ) {
       out += tolower(s[i]);
     }
     return out;

@@ -119,7 +119,7 @@ namespace duchamp
     /// case it is returned unaltered.
 
     bool isGood = true;
-    for(int i=0;i<inputList.size();i++) isGood = isGood && inputList[i].isWCS();
+    for(uint i=0;i<inputList.size();i++) isGood = isGood && inputList[i].isWCS();
 
     if(isGood){
 

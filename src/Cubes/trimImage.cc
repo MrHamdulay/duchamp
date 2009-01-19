@@ -286,7 +286,7 @@ namespace duchamp
   
       // Now update the positions for all the detections
   
-      for(int i=0;i<this->objectList->size();i++){
+      for(uint i=0;i<this->objectList->size();i++){
 	this->objectList->at(i).pixels().addOffsets(left,bottom,0);
 	//      objectList[i].calcParams(this->array,this->axisDim);
       }

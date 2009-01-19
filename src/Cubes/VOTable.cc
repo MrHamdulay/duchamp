@@ -63,7 +63,7 @@ namespace duchamp
     /// \return String with fixed units
 
     std::string newstring;
-    for(int i=0;i<oldstring.size();i++){
+    for(uint i=0;i<oldstring.size();i++){
       if((oldstring[i]!='[')&&(oldstring[i]!=']')){
 	if(oldstring[i]==' ') newstring += '.';
 	else newstring += oldstring[i];

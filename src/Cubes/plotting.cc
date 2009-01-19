@@ -125,13 +125,13 @@ void Cube::plotDetectionMap(std::string pgDestination)
       float yoff=newplot.cmToCoord(0.5);
       if(this->par.drawBorders()){
 	cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
-	for(int i=0;i<this->objectList->size();i++) 
+	for(uint i=0;i<this->objectList->size();i++) 
 	  this->objectList->at(i).drawBorders(0,0);
       }
       cpgsci(DUCHAMP_ID_TEXT_COLOUR);
       std::stringstream label;
       cpgslw(1);
-      for(int i=0;i<this->objectList->size();i++){
+      for(uint i=0;i<this->objectList->size();i++){
 	cpgpt1(this->par.getXOffset()+this->objectList->at(i).getXPeak(), 
 	       this->par.getYOffset()+this->objectList->at(i).getYPeak(), 
 	       CROSS);
@@ -249,10 +249,10 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 
       bool *isObj = new bool[xdim*ydim*zdim];
       for(int i=0;i<xdim*ydim*zdim;i++) isObj[i] = false;
-      for(int i=0;i<this->objectList->size();i++){
+      for(uint i=0;i<this->objectList->size();i++){
 	std::vector<Voxel> voxlist = 
 	  this->objectList->at(i).pixels().getPixelSet();
-	for(int p=0;p<voxlist.size();p++){
+	for(uint p=0;p<voxlist.size();p++){
 	  int pixelpos = voxlist[p].getX() + xdim*voxlist[p].getY() + 
 	    xdim*ydim*voxlist[p].getZ();
 	  isObj[pixelpos] = true;
@@ -363,13 +363,13 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 	float yoff=plotList[iplot].cmToCoord(0.5);
 	if(this->par.drawBorders()){
 	  cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
-	  for(int i=0;i<this->objectList->size();i++) 
+	  for(uint i=0;i<this->objectList->size();i++) 
 	    this->objectList->at(i).drawBorders(0,0);
 	}
 	cpgsci(DUCHAMP_ID_TEXT_COLOUR);
 	std::stringstream label;
 	cpgslw(1);
-	for(int i=0;i<this->objectList->size();i++){
+	for(uint i=0;i<this->objectList->size();i++){
 	  cpgpt1(this->par.getXOffset()+this->objectList->at(i).getXPeak(), 
 		 this->par.getYOffset()+this->objectList->at(i).getYPeak(),
 		 CROSS);
