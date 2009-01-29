@@ -169,10 +169,10 @@ namespace duchamp
     std::vector<PixelInfo::Voxel> getPixelSet(){return pixelArray.getPixelSet();};
 
     /// @brief How many voxels are in the Detection? 
-    uint   getSize(){return pixelArray.getSize();};
+    unsigned int   getSize(){return pixelArray.getSize();};
 
     /// @brief How many distinct spatial pixels are there? 
-    uint   getSpatialSize(){return pixelArray.getSpatialSize();};
+    unsigned int   getSpatialSize(){return pixelArray.getSpatialSize();};
 
     /// @brief How many channels does the Detection have? 
     long   getNumChannels(){return pixelArray.getNumDistinctZ();};

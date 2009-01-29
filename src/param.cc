@@ -745,6 +745,29 @@ namespace duchamp
 
     }	
 
+    // Make sure the growth level is less than the detection level. Else turn off growing.
+    if(this->flagGrowth){
+      std::stringstream errmsg;
+      bool doWarn = false;
+      if(this->flagUserThreshold &&
+	 ( (this->threshold < this->growthThreshold)
+	   || (this->snrCut < this->growthCut) ) ){
+	errmsg << "Your \"growthThreshold\" parameter is larger than your \"threshold\".\n"
+	       << "The growth function is being turned off.\n";
+	doWarn = true;
+      }
+      
+      if(!this->flagUserThreshold &&
+	 (this->snrCut < this->growthCut)) {
+	errmsg << "Your \"growthCut\" parameter is larger than your \"snrCut\".\n"
+	       << "The growth function is being turned off.\n";
+	doWarn = true;
+      }
+
+      if(doWarn) duchampWarning("Reading parameters",errmsg.str());
+
+    }
+
     // Make sure the annnotationType is an acceptable option -- default is "borders"
     if((this->annotationType != "borders") && (this->annotationType!="circles")){
       std::stringstream errmsg;
