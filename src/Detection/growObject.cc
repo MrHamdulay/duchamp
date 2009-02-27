@@ -63,7 +63,7 @@ namespace duchamp
 
       bool doGrowing;
       if(cube.pars().getFlagUserGrowthThreshold()) 
-	doGrowing = cube.pars().getThreshold()<cube.pars().getThreshold();
+	doGrowing = cube.pars().getGrowthThreshold()<cube.pars().getThreshold();
       else
 	doGrowing = cube.pars().getGrowthCut()<cube.pars().getCut();
 
@@ -117,14 +117,14 @@ namespace duchamp
 		  if(!isInObj[pos] && // pixel not already in object?
 		     !cube.isBlank(x,y,z)   &&   // pixel not BLANK?
 		     !cube.pars().isInMW(z)       &&   // pixel not MW?
-		     (flagAdj || hypot(x,y)<threshS)   ){ // pixel not too far away?
+		     (flagAdj || hypot(x-voxlist[pix].getX(),y-voxlist[pix].getY())<threshS)   ){ // pixel not too far away?
 	    
 		    float flux;
 		    if(cube.isRecon()) flux = cube.getReconValue(x,y,z);
 		    else               flux = cube.getPixValue(x,y,z);
 
 		    Voxel pixnew(x,y,z,flux);
-
+		    
 		    if(  growthStats.isDetection(flux) ){
 		      isInObj[pos] = true;
 		      voxlist.push_back(pixnew);

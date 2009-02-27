@@ -823,7 +823,13 @@ namespace duchamp
       std::cout << "flux threshold of: ";
       float thresh = this->Stats.getThreshold();
       if(this->par.getFlagNegative()) thresh *= -1.;
-      std::cout << thresh << std::endl;
+      std::cout << thresh;
+      if(this->par.getFlagGrowth()){
+	std::cout << " and growing to threshold of: ";
+	if(this->par.getFlagUserGrowthThreshold()) std::cout << this->par.getGrowthThreshold();
+	else std::cout << this->Stats.snrToValue(this->par.getGrowthCut());
+      }
+      std::cout << std::endl;
     }
 
   }
