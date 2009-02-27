@@ -102,6 +102,37 @@ namespace duchamp
       }
     }
 
+    Col::Col(std::string name, std::string units, int width, int prec)
+    {
+      /// A generic constructor designed to make a Column other than
+      /// the predefined ones listed in the Column namespace
+      /// \param name The title of the column
+      /// \param units What units the column takes
+      /// \param width The starting width
+      /// \param prec The starting precision
+
+      this->width = width;
+      this->precision = prec;
+      this->name = name;
+      this->units = units;
+      this->type = UNKNOWN;
+    }
+
+    //------------------------------------------------------------
+
+    void Col::changePrec(int p)
+    {
+      /// A direct way to alter the precision without having to use
+      /// Col::upPrec(). If the precision increases, the width will
+      /// increase by the same amount. If it decreases, no change is
+      /// made to the width.
+      /// \param p The new precision value.
+
+      if(p > this->precision) this->width += (p-this->precision);
+      this->precision = p;
+
+    }
+    
     //------------------------------------------------------------
     void Col::printTitle(std::ostream &stream)
     {

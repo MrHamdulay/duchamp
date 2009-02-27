@@ -170,6 +170,7 @@ namespace duchamp
     public:
       Col();          ///< Basic constructor
       Col(int num, int prec=-1);   ///< Specific constructor
+      Col(std::string name, std::string units, int width, int prec); ///< Generic constructor
       Col(const Col& c);///< Assignment constructor
       Col& operator=(const Col& c); ///< Copy constructor
       virtual ~Col(); ///< Default destructor;
@@ -195,6 +196,8 @@ namespace duchamp
 
       /// @brief Increase the precision by one, widening the column if necessary. 
       void   upPrec(){precision++; width++;};
+
+      void   changePrec(int p);
 
       //--------------
       // Outputting functions -- all in columns.cc
