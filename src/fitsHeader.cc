@@ -28,6 +28,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <stdlib.h>
 #include <wcslib/wcs.h>
 #include <wcslib/wcsunits.h>
 #include <duchamp/duchamp.hh>

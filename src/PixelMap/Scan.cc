@@ -214,7 +214,7 @@ namespace PixelInfo
   void mergeList(std::vector<Scan> scanlist)
   {
     std::vector<Scan>::iterator iter;
-    uint counter=0,compCounter;
+    unsigned int counter=0,compCounter;
     while(counter<(scanlist.size()-1)){
 
       

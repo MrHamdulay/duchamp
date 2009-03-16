@@ -79,7 +79,7 @@ namespace duchamp
 	int origSize = voxlist.size();
 	long zero = 0;
 
-	for(uint i=0;i<voxlist.size();i++) {
+	for(unsigned int i=0;i<voxlist.size();i++) {
 	  long pos = voxlist[i].getX() + voxlist[i].getY()*cube.getDimX() + 
 	    voxlist[i].getZ()*cube.getDimX()*cube.getDimY();
 	  isInObj[pos] = true;
@@ -95,7 +95,7 @@ namespace duchamp
 	growthStats.setUseFDR(false);
 
 	//    for(int pix=0; pix<object.getSize(); pix++){ // for each pixel in the object
-	for(uint pix=0; pix<voxlist.size(); pix++){ // for each pixel in the object
+	for(unsigned int pix=0; pix<voxlist.size(); pix++){ // for each pixel in the object
 
 	  int xmin = std::max(voxlist[pix].getX() - threshS, zero);
 	  int xmax = std::min(voxlist[pix].getX() + threshS, cube.getDimX()-1);
@@ -142,7 +142,7 @@ namespace duchamp
 
 
 	// Add in new pixels to the Detection
-	for(uint i=origSize; i<voxlist.size(); i++){
+	for(unsigned int i=origSize; i<voxlist.size(); i++){
 	  object.addPixel(voxlist[i]);
 	}
       

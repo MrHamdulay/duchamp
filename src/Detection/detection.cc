@@ -145,7 +145,7 @@ namespace duchamp
     listsMatch = listsMatch && this->voxelListCovered(voxelList);
 
     // make sure all voxels are in Detection
-    for(uint i=0;i<voxelList.size();i++)
+    for(unsigned int i=0;i<voxelList.size();i++)
       listsMatch = listsMatch && this->pixelArray.isInObject(voxelList[i]);
 
     return listsMatch;
@@ -171,7 +171,7 @@ namespace duchamp
     int v1=0, mysize=this->getSize();
     while(listsMatch && v1<mysize){
       bool inList = false;
-      uint v2=0;
+      unsigned int v2=0;
       Voxel test = this->getPixel(v1);
       while(!inList && v2<voxelList.size()){
 	inList = inList || test.match(voxelList[v2]);
@@ -207,7 +207,7 @@ namespace duchamp
       return;
     }
 
-    for(uint i=0;i<voxelList.size();i++) {
+    for(unsigned int i=0;i<voxelList.size();i++) {
       if(this->pixelArray.isInObject(voxelList[i])){
 	long x = voxelList[i].getX();
 	long y = voxelList[i].getY();
@@ -400,7 +400,7 @@ namespace duchamp
       double *localFlux = new double[size];
       for(int i=0;i<size;i++) localFlux[i]=0.;
 
-      for(uint i=0;i<voxelList.size();i++){
+      for(unsigned int i=0;i<voxelList.size();i++){
 	if(this->pixelArray.isInObject(voxelList[i])){
 	  long x = voxelList[i].getX();
 	  long y = voxelList[i].getY();
@@ -576,7 +576,7 @@ namespace duchamp
        
     Object2D spatMap = this->pixelArray.getSpatialMap();
     for(int s=0;s<spatMap.getNumScan();s++){
-      for(uint i=0;i<voxelList.size();i++){
+      for(unsigned int i=0;i<voxelList.size();i++){
 	if(spatMap.isInObject(voxelList[i])){
 	  if(voxelList[i].getZ()>=this->getZmin()-border && 
 	     voxelList[i].getZ()<=this->getZmax()+border)
@@ -832,7 +832,7 @@ namespace duchamp
 
     std::vector<Voxel> voxlist = this->pixelArray.getPixelSet();
     std::vector<bool> isObj(xsize*ysize,false);
-    for(uint i=0;i<voxlist.size();i++){
+    for(unsigned int i=0;i<voxlist.size();i++){
       int pos = (voxlist[i].getX()-xmin) + 
 	(voxlist[i].getY()-ymin)*xsize;
       isObj[pos] = true;

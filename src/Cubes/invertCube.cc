@@ -57,7 +57,7 @@ namespace duchamp
       }
     }
 
-    for(uint i=0; i<this->objectList->size(); i++){
+    for(unsigned int i=0; i<this->objectList->size(); i++){
       this->objectList->at(i).setNegative(true);
       this->objectList->at(i).setTotalFlux(-1. * this->objectList->at(i).getTotalFlux() );
       this->objectList->at(i).setIntegFlux(-1. * this->objectList->at(i).getIntegFlux() );

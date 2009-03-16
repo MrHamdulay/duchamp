@@ -315,7 +315,7 @@ namespace duchamp
       if(vertexSet.size()%4 != 0)
 	duchampError("drawBorders","Vertex set wrong size!");
       else{
-	for(uint i=0;i<vertexSet.size()/4;i++){
+	for(unsigned int i=0;i<vertexSet.size()/4;i++){
 	  cpgmove(vertexSet[i*4]-xoffset,vertexSet[i*4+1]-yoffset);
 	  cpgdraw(vertexSet[i*4+2]-xoffset,vertexSet[i*4+3]-yoffset);
 	}

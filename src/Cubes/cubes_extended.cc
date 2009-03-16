@@ -63,7 +63,7 @@ namespace duchamp
   
     if(this->head.isWCS()) SortByVel(*this->objectList);
     else SortByZ(*this->objectList);
-    for(uint i=0; i<this->objectList->size();i++) 
+    for(unsigned int i=0; i<this->objectList->size();i++) 
       this->objectList->at(i).setID(i+1);
 
   }

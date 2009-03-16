@@ -100,14 +100,14 @@ namespace duchamp
       Plot::CutoutPlot newplot;
       if(newplot.setUpPlot(spectrafile.c_str())>0) {
 
-	for(uint nobj=0;nobj<this->objectList->size();nobj++){
+	for(unsigned int nobj=0;nobj<this->objectList->size();nobj++){
 	  // for each object in the cube, assuming it is wanted:
 	  if(objectChoice[nobj]) this->plotSource(this->objectList->at(nobj),newplot);
 	}// end of loop over objects.
 	cpgclos();
 	
 	if(this->par.getFlagUsePrevious()) std::cout << "\n";
-	for(uint nobj=0;nobj<this->objectList->size();nobj++){
+	for(unsigned int nobj=0;nobj<this->objectList->size();nobj++){
 	  if(objectChoice[nobj] && this->par.getFlagUsePrevious()){
 	    std::cout << "  Will output individual plot to "
 		      << getIndivPlotName(this->par.getSpectraFile(),nobj+1,this->objectList->size()) << "\n";
@@ -123,14 +123,14 @@ namespace duchamp
       Plot::SpectralPlot newplot;
       if(newplot.setUpPlot(spectrafile.c_str())>0) {
 
-	for(uint nobj=0;nobj<this->objectList->size();nobj++){
+	for(unsigned int nobj=0;nobj<this->objectList->size();nobj++){
 	  // for each object in the cube, assuming it is wanted:
 	  if(objectChoice[nobj])  this->plotSpectrum(nobj,newplot);
 	}// end of loop over objects.
 	cpgclos();
 
 	if(this->par.getFlagUsePrevious()) std::cout << "\n";
-	for(uint nobj=0;nobj<this->objectList->size();nobj++){
+	for(unsigned int nobj=0;nobj<this->objectList->size();nobj++){
 	  if(objectChoice[nobj] && this->par.getFlagUsePrevious()){
 	    std::cout << "  Will output individual plot to "
 		      << getIndivPlotName(this->par.getSpectraFile(),nobj+1,this->objectList->size()) << "\n";

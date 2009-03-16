@@ -52,7 +52,7 @@ namespace duchamp
     bool haveMerged = false;
 
     std::vector<Detection>::iterator iter;
-    for(uint ctr=0; (!(haveMerged) && (ctr<objList.size())); ctr++){
+    for(unsigned int ctr=0; (!(haveMerged) && (ctr<objList.size())); ctr++){
     
       if(areClose(object, objList[ctr], par)){
 	Detection newobj = objList[ctr] + object;

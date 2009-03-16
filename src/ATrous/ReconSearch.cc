@@ -308,7 +308,7 @@ namespace duchamp
 	    spectrum->removeMW(); // only works if flagMW is true
 	    std::vector<Scan> objlist = spectrum->spectrumDetect();
 	    num += objlist.size();
-	    for(uint obj=0;obj<objlist.size();obj++){
+	    for(unsigned int obj=0;obj<objlist.size();obj++){
 	      Detection newObject;
 	      // Fix up coordinates of each pixel to match original array
 	      for(int z=objlist[obj].getX();z<=objlist[obj].getXmax();z++) {
@@ -358,7 +358,7 @@ namespace duchamp
 	channelImage->extractImage(reconArray,dim,z);
 	std::vector<Object2D> objlist = channelImage->lutz_detect();
 	num += objlist.size();
-	for(uint obj=0;obj<objlist.size();obj++){
+	for(unsigned int obj=0;obj<objlist.size();obj++){
 	  Detection newObject;
 	  newObject.pixels().addChannel(z,objlist[obj]);
 	  newObject.setOffsets(par);
@@ -428,7 +428,7 @@ namespace duchamp
 	channelImage->extractImage(reconArray,dim,z);
 	std::vector<Object2D> objlist = channelImage->lutz_detect();
 	num += objlist.size();
-	for(uint obj=0;obj<objlist.size();obj++){
+	for(unsigned int obj=0;obj<objlist.size();obj++){
 	  Detection newObject;
 	  newObject.pixels().addChannel(z,objlist[obj]);
 	  newObject.setOffsets(par);

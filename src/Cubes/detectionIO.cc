@@ -101,7 +101,7 @@ namespace duchamp
 
       if(this->par.getAnnotationType()=="borders"){
 	std::vector<int> vertexSet = obj->getVertexSet();
-	for(uint i=0;i<vertexSet.size()/4;i++){
+	for(unsigned int i=0;i<vertexSet.size()/4;i++){
 	  pix[0] = vertexSet[i*4]-0.5;
 	  pix[1] = vertexSet[i*4+1]-0.5;
 	  pix[2] = obj->getZcentre();
@@ -303,7 +303,7 @@ namespace duchamp
 	  this->array[i] += this->baseline[i];
       }
 
-      for(uint objCtr=0;objCtr<this->objectList->size();objCtr++){
+      for(unsigned int objCtr=0;objCtr<this->objectList->size();objCtr++){
 	Detection *obj = new Detection;
 	*obj = objectList->at(objCtr);
 	obj->setOffsets(par);
