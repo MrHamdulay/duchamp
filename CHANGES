@@ -1,3 +1,25 @@
+Duchamp version 1.1.8 (2009/??/??)
+----------------------------------
+
+Improvements:
+
+* Screen output now has more information on the growing threshold when
+  the cube statistics are printed.
+
+
+Bug fixes:
+
+* The function that grows objects had a major bug, that stopped it
+  working when flagAdjacent=false. This has been fixed and should work
+  fine.
+
+* All calls to uint were changed to unsigned int, as some compilers
+  had problems recognising that they were the same thing.
+
+* src/fitsHeader.cc was missing an include statement for stdlib.h,
+  again causing some compilers to fail.
+
+
 Duchamp version 1.1.7 (2009/01/16)
 ----------------------------------
 
