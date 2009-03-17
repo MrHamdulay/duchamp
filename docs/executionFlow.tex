@@ -582,12 +582,17 @@ uncorrelated, then $c_N=1$. If $N$ pixels are correlated, then their
 tests will be dependent on each other, and so $c_N = \sum_{i=1}^N
 i^{-1}$. \citet{hopkins02} consider real radio data, where the pixels
 are correlated over the beam. For the calculations done in \duchamp,
-$N=2B$, where $B$ is the beam size in pixels, calculated from the FITS
+$N=B\timesC$, where $B$ is the beam size in pixels, calculated from the FITS
 header (if the correct keywords -- BMAJ, BMIN -- are not present, the
-size of the beam is taken from the parameter \texttt{beamSize}). The
-factor of 2 comes about because we treat neighbouring channels as
-correlated. In the case of a two-dimensional image, we just have
-$N=B$. 
+size of the beam is taken from the parameter \texttt{beamSize}), and
+$C$ is the number of neighbouring channels that can be considered to
+be correlated. 
+
+The use of the FDR method is governed by the \texttt{flagFDR} flag,
+which is \texttt{false} by default. To set the relevant parameters,
+use \texttt{alphaFDR} to set the $\alpha$ value, and
+\texttt{FDRnumCorChan} to set the $C$ value discussed above. These
+have default values of 0.01 and 2 respectively.
 
 The theory behind the FDR method implies a direct connection between
 the choice of $\alpha$ and the fraction of detections that will be

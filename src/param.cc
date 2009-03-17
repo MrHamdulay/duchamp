@@ -146,6 +146,7 @@ namespace duchamp
     // FDR analysis         
     this->flagFDR           = false;
     this->alphaFDR          = 0.01;
+    this->FDRnumCorChan     = 2;
     // Other detection      
     this->flagStatSec       = false;
     this->statSec.setSection(baseSection);
@@ -262,6 +263,7 @@ namespace duchamp
     this->flagUserGrowthThreshold = p.flagUserGrowthThreshold;
     this->flagFDR           = p.flagFDR;
     this->alphaFDR          = p.alphaFDR;
+    this->FDRnumCorChan     = p.FDRnumCorChan;
     this->flagStatSec       = p.flagStatSec; 
     this->statSec           = p.statSec;
     this->flagRobustStats   = p.flagRobustStats;
@@ -640,7 +642,7 @@ namespace duchamp
 
 	if(arg=="flagfdr")         this->flagFDR = readFlag(ss); 
 	if(arg=="alphafdr")        this->alphaFDR = readFval(ss); 
-
+	if(arg=="fdrnumcorchan")   this->FDRnumCorChan = readIval(ss);
 	if(arg=="flagstatsec")     this->flagStatSec = readFlag(ss); 
 	if(arg=="statsec")         this->statSec.setSection(readSval(ss));
 	if(arg=="flagrobuststats") this->flagRobustStats = readFlag(ss); 
@@ -1054,6 +1056,10 @@ namespace duchamp
 	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[alphaFDR]"
 	       <<"  =  " <<resetiosflags(std::ios::right)
 	       <<par.getAlpha()          <<std::endl;
+      theStream<<std::setw(widthText)<<"Number of correlated channels for FDR"         
+	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[FDRnumCorChan]"
+	       <<"  =  " <<resetiosflags(std::ios::right)
+	       <<par.getFDRnumCorChan()          <<std::endl;
     }	     					       
     else {
       if(par.getFlagUserThreshold()){

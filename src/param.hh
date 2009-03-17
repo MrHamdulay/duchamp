@@ -279,6 +279,8 @@ namespace duchamp
     void   setFlagFDR(bool flag){flagFDR=flag;};
     float  getAlpha(){return alphaFDR;};
     void   setAlpha(float a){alphaFDR=a;};
+    int    getFDRnumCorChan(){return FDRnumCorChan;};
+    void   setFDRnumCorChan(int i){FDRnumCorChan=i;};
     //
     bool   getFlagBaseline(){return flagBaseline;};
     void   setFlagBaseline(bool flag){flagBaseline = flag;};
@@ -438,6 +440,7 @@ namespace duchamp
     // FDR analysis
     bool        flagFDR;         ///< Should the FDR method be used? 
     float       alphaFDR;        ///< Alpha value for FDR detection algorithm
+    int         FDRnumCorChan;   ///< Number of correlated channels, used in the FDR algorithm
 
     // Basic detection
     bool        flagStatSec;     ///< Whether we just want to use a subsection of the image to calculate the statistics.

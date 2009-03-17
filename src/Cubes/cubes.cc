@@ -905,12 +905,11 @@ namespace duchamp
     // now find the maximum P value.
     int max = 0;
     float cN = 0.;
+    // Calculate number of correlated pixels. Assume all spatial
+    // pixels within the beam are correlated, and multiply this by the
+    // number of correlated pixels as determined by the parameter set.
     int numVox = int(ceil(this->par.getBeamSize()));
-    //  if(this->head.isSpecOK()) numVox *= 2;
-    if(this->head.canUseThirdAxis()) numVox *= 2;
-    // why beamSize*2? we are doing this in 3D, so spectrally assume just the
-    //  neighbouring channels are correlated, but spatially all those within
-    //  the beam, so total number of voxels is 2*beamSize
+    if(this->head.canUseThirdAxis()) numVox *= this->par.getFDRnumCorChan();
     for(int psfCtr=1;psfCtr<=numVox;psfCtr++) cN += 1./float(psfCtr);
 
     double slope = this->par.getAlpha()/cN;

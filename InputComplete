@@ -187,9 +187,12 @@ kernPA          0.
 #   simple sigma clipping.
 # alphaFDR -- The "alpha" parameter for the FDR method -- what desired 
 #             percentage of discoveries will be false. Expressed as a decimal.
+# FDRnumCorChan -- The number of neighbouring channels that are
+#                  correlated. This is used in the FDR algorithm
 
 flagFDR 	0
 alphaFDR	0.01
+FDRnumCorChan   2
 
 # MERGING PARAMETERS
 # flagAdjacent -- Whether to use the "adjacent criterion" to judge if objects 

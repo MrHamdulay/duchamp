@@ -293,6 +293,10 @@ not matter, they are grouped here in logical sections.
 \item[{alphaFDR [0.01]}] The $\alpha$ parameter used in the FDR
   analysis. The average number of false detections, as a fraction of
   the total number, will be less than $\alpha$ (see
+  \S\ref{sec-detection}).
+\item[{FDRnumCorChan [2]}] The number of neighbouring spectral
+  channels that are assumed to be correlated. This is needed by the
+  FDR algorithm to calculate the normalisation constant $c_N$ (see
   \S\ref{sec-detection}). 
 \end{Lentry}
 
