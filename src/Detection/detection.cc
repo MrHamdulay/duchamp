@@ -36,41 +36,91 @@
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/PixelMap/Voxel.hh>
-#include <duchamp/PixelMap/ChanMap.hh>
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Cubes/cubeUtils.hh>
+#include <duchamp/Detection/columns.hh>
 
 using namespace PixelInfo;
 
 namespace duchamp
 {
 
-
-  Detection::Detection()
+  void Detection::defaultDetection()
   {
-    this->flagWCS=false; 
+    this->xSubOffset = 0;
+    this->ySubOffset = 0;
+    this->zSubOffset = 0;
+    this->totalFlux = 0.;
+    this->peakFlux = 0.;
+    this->intFlux = 0.;
+    this->xpeak = 0;
+    this->ypeak = 0;
+    this->zpeak = 0;
+    this->peakSNR = 0.;
+    this->xCentroid = 0.;
+    this->yCentroid = 0.;
+    this->zCentroid = 0.;
+    this->centreType="centroid";
     this->negSource = false; 
     this->flagText="";
-    this->totalFlux = this->peakFlux = this->intFlux = 0.;
-    this->centreType="centroid";
     this->id = -1;
-    this->raS = this->decS = "";
-    this->ra = this->dec = this->vel = 0.;
-    this->raWidth = this->decWidth = 0.;
-    this->majorAxis = this->minorAxis = this->posang = 0.;
-    this->w20 = this->w50 = this->velWidth = 0.;
+    this->name = "";
+    this->flagWCS=false; 
+    this->specOK = true;
+    this->raS = "";
+    this->decS = "";
+    this->ra = 0.;
+    this->dec = 0.;
+    this->raWidth = 0.;
+    this->decWidth = 0.;
+    this->majorAxis = 0.;
+    this->minorAxis = 0.;
+    this->posang = 0.;
+    this->specUnits = "";
+    this->fluxUnits = "";
+    this->intFluxUnits = "";
+    this->lngtype = "RA";
+    this->lattype = "DEC";
+    this->vel = 0.;
+    this->velWidth = 0.;
+    this->velMin = 0.;
+    this->velMax = 0.;
+    this->w20 = 0.;
+    this->v20min = 0.;
+    this->v20max = 0.;
+    this->w50 = 0.;
+    this->v50min = 0.;
+    this->v50max = 0.;
+    this->posPrec = Column::prPOS;
+    this->xyzPrec = Column::prXYZ;
+    this->fintPrec = Column::prFLUX;
+    this->fpeakPrec = Column::prFLUX;
+    this->velPrec = Column::prVEL;
+    this->snrPrec = Column::prSNR;
   }
 
-  Detection::Detection(const Detection& d)
+  Detection::Detection():
+    Object3D()
+  {
+    this->defaultDetection();
+  }
+
+  Detection::Detection(const Object3D& o):
+    Object3D(o)
+  {
+    this->defaultDetection();
+  }
+
+  Detection::Detection(const Detection& d):
+    Object3D(d)
   {
     operator=(d);
   }
 
   Detection& Detection::operator= (const Detection& d)
   {
-    if(this == &d) return *this;
-    this->pixelArray   = d.pixelArray;
+    ((Object3D &) *this) = d;
     this->xSubOffset   = d.xSubOffset;
     this->ySubOffset   = d.ySubOffset;
     this->zSubOffset   = d.zSubOffset;
@@ -125,6 +175,28 @@ namespace duchamp
   }
 
   //--------------------------------------------------------------------
+  float Detection::getXcentre()
+  {
+    if(this->centreType=="peak") return this->xpeak;
+    else if(this->centreType=="average") return this->getXaverage();
+    else return this->xCentroid;
+  }
+
+  float Detection::getYcentre()
+  {
+    if(this->centreType=="peak") return this->ypeak;
+    else if(this->centreType=="average") return this->getYaverage();
+    else return this->yCentroid;
+  }
+
+  float Detection::getZcentre()
+  {
+    if(this->centreType=="peak") return this->zpeak;
+    else if(this->centreType=="average") return this->getZaverage();
+    else return this->zCentroid;
+  }
+
+  //--------------------------------------------------------------------
 
   bool Detection::voxelListsMatch(std::vector<Voxel> voxelList)
   {
@@ -146,13 +218,11 @@ namespace duchamp
 
     // make sure all voxels are in Detection
     for(unsigned int i=0;i<voxelList.size();i++)
-      listsMatch = listsMatch && this->pixelArray.isInObject(voxelList[i]);
+      listsMatch = listsMatch && this->isInObject(voxelList[i]);
 
     return listsMatch;
 
   }
-  //--------------------------------------------------------------------
-
   //--------------------------------------------------------------------
 
   bool Detection::voxelListCovered(std::vector<Voxel> voxelList)
@@ -168,13 +238,13 @@ namespace duchamp
     bool listsMatch = true;
 
     // make sure all Detection pixels are in voxel list
-    int v1=0, mysize=this->getSize();
-    while(listsMatch && v1<mysize){
+    unsigned int v1=0;
+    std::vector<Voxel> detpixlist = this->getPixelSet();
+    while(listsMatch && v1<detpixlist.size()){
       bool inList = false;
       unsigned int v2=0;
-      Voxel test = this->getPixel(v1);
       while(!inList && v2<voxelList.size()){
-	inList = inList || test.match(voxelList[v2]);
+	inList = inList || detpixlist[v1].match(voxelList[v2]);
 	v2++;
       }
       listsMatch = listsMatch && inList;
@@ -208,7 +278,7 @@ namespace duchamp
     }
 
     for(unsigned int i=0;i<voxelList.size();i++) {
-      if(this->pixelArray.isInObject(voxelList[i])){
+      if(this->isInObject(voxelList[i])){
 	long x = voxelList[i].getX();
 	long y = voxelList[i].getY();
 	long z = voxelList[i].getZ();
@@ -248,7 +318,7 @@ namespace duchamp
     this->totalFlux = this->peakFlux = 0;
     this->xCentroid = this->yCentroid = this->zCentroid = 0.;
 
-    std::vector<Voxel> voxList = this->pixelArray.getPixelSet();
+    std::vector<Voxel> voxList = this->getPixelSet();
     std::vector<Voxel>::iterator vox=voxList.begin();
     for(;vox<voxList.end();vox++){
 
@@ -340,7 +410,7 @@ namespace duchamp
 	this->decWidth  = angularSeparation(world[0],world[10],
 					    world[0],world[13]) * 60.;
 
-	Object2D spatMap = this->pixelArray.getSpatialMap();
+	Object2D spatMap = this->getSpatialMap();
 	std::pair<double,double> axes = spatMap.getPrincipleAxes();
 	this->majorAxis = std::max(axes.first,axes.second) * head.getAvPixScale();
 	this->minorAxis = std::min(axes.first,axes.second) * head.getAvPixScale();
@@ -352,8 +422,6 @@ namespace duchamp
 	this->velMax = head.specToVel(world[8]);
 	this->velWidth = fabs(this->velMax - this->velMin);
 
-	//	this->calcIntegFlux(fluxArray,dim,head);
-    
 	this->flagWCS = true;
       }
       delete [] world;
@@ -388,7 +456,6 @@ namespace duchamp
       return;
     }
 
-//     if(head.getNumAxes() > 2) {
     if(!head.is2D()){
 
       // include one pixel either side in each direction
@@ -401,7 +468,7 @@ namespace duchamp
       for(int i=0;i<size;i++) localFlux[i]=0.;
 
       for(unsigned int i=0;i<voxelList.size();i++){
-	if(this->pixelArray.isInObject(voxelList[i])){
+	if(this->isInObject(voxelList[i])){
 	  long x = voxelList[i].getX();
 	  long y = voxelList[i].getY();
 	  long z = voxelList[i].getZ();
@@ -475,36 +542,33 @@ namespace duchamp
     ///  \param dim The dimensions of the flux array.
     ///  \param head FitsHeader object that contains the WCS information.
 
-//       int numDim=0;
-//       for(int i=0;i<3;i++) if(dim[i]>1) numDim++;
-      //      if(head.getNumAxes() > 2) {
-//       if(numDim > 2) {
     if(!head.is2D()){
 
       // include one pixel either side in each direction
-      long xsize = (this->getXmax()-this->getXmin()+3);
-      long ysize = (this->getYmax()-this->getYmin()+3);
-      long zsize = (this->getZmax()-this->getZmin()+3); 
+      long xsize = (this->xmax-this->xmin+3);
+      long ysize = (this->ymax-this->ymin+3);
+      long zsize = (this->zmax-this->zmin+3); 
       long size = xsize*ysize*zsize;
       std::vector <bool> isObj(size,false);
       double *localFlux = new double[size];
       for(int i=0;i<size;i++) localFlux[i]=0.;
       // work out which pixels are object pixels
-      for(int m=0; m<this->pixelArray.getNumChanMap(); m++){
-	ChanMap tempmap = this->pixelArray.getChanMap(m);
-	long z = this->pixelArray.getChanMap(m).getZ();
-	for(int s=0; s<this->pixelArray.getChanMap(m).getNumScan(); s++){
-	  long y = this->pixelArray.getChanMap(m).getScan(s).getY();
-	  for(long x=this->pixelArray.getChanMap(m).getScan(s).getX(); 
-	      x<=this->pixelArray.getChanMap(m).getScan(s).getXmax(); 
+      for(std::map<long,Object2D>::iterator it=this->chanlist.begin();
+	  it!=this->chanlist.end(); it++){
+	long z = it->first;
+	for(int s=0; s<it->second.getNumScan();s++){
+	  long y = it->second.getScan(s).getY();
+	  for(long x=it->second.getScan(s).getX(); 
+	      x<=it->second.getScan(s).getXmax(); 
 	      x++){
-	    long pos = (x-this->getXmin()+1) + (y-this->getYmin()+1)*xsize
-	      + (z-this->getZmin()+1)*xsize*ysize;
+	    long pos = (x-this->xmin+1) + (y-this->ymin+1)*xsize
+	      + (z-this->zmin+1)*xsize*ysize;
 	    localFlux[pos] = fluxArray[x + y*dim[0] + z*dim[0]*dim[1]];
 	    isObj[pos] = true;
 	  }
 	}
       }
+
   
       // work out the WCS coords for each pixel
       double *world  = new double[size];
@@ -574,7 +638,7 @@ namespace duchamp
     float *intSpec = new float[zsize];
     for(int i=0;i<zsize;i++) intSpec[i]=0;
        
-    Object2D spatMap = this->pixelArray.getSpatialMap();
+    Object2D spatMap = this->getSpatialMap();
     for(int s=0;s<spatMap.getNumScan();s++){
       for(unsigned int i=0;i<voxelList.size();i++){
 	if(spatMap.isInObject(voxelList[i])){
@@ -753,21 +817,6 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  Detection operator+ (Detection lhs, Detection rhs)
-  {
-    ///  @details
-    ///  Combines two objects by adding all the pixels using the Object3D
-    ///  operator.
-    /// 
-    ///  The pixel parameters are recalculated in the process (equivalent
-    ///  to calling pixels().calcParams()), but WCS parameters are not.
-
-    Detection output = lhs;
-    output.pixelArray = lhs.pixelArray + rhs.pixelArray;
-    return output;
-  }
-  //--------------------------------------------------------------------
-
   void Detection::setOffsets(Param &par)
   {
     ///  @details
@@ -793,20 +842,10 @@ namespace duchamp
     /// channels present to return true. False otherwise.
 
     // Preferred method -- need a set of minNumber consecutive channels present.
-    this->pixelArray.order();
-    int numChannels = 0;
-    bool result = false;
-    int size = this->pixelArray.getNumChanMap();
-    if(size>0) numChannels++;
-    if( numChannels >= minNumber) result = true;
-    for(int i=1;(i<size && !result);i++) {
-      if( (this->pixelArray.getZ(i) - this->pixelArray.getZ(i-1)) == 1) 
-	numChannels++;
-      else if( (this->pixelArray.getZ(i) - this->pixelArray.getZ(i-1)) >= 2) 
-	numChannels = 1;
 
-      if( numChannels >= minNumber) result = true;
-    }
+    int numChan = this->getMaxAdjacentChannels();
+    bool result = (numChan >= minNumber);
+
     return result;
   
   }
@@ -830,7 +869,7 @@ namespace duchamp
     int xsize = xmax - xmin + 1;
     int ysize = ymax - ymin + 1;
 
-    std::vector<Voxel> voxlist = this->pixelArray.getPixelSet();
+    std::vector<Voxel> voxlist = this->getPixelSet();
     std::vector<bool> isObj(xsize*ysize,false);
     for(unsigned int i=0;i<voxlist.size();i++){
       int pos = (voxlist[i].getX()-xmin) + 
@@ -871,21 +910,5 @@ namespace duchamp
     return vertexSet;
   
   }
-  //--------------------------------------------------------------------
-
-  std::ostream& operator<< ( std::ostream& theStream, Detection& obj)
-  {
-    ///  @details
-    ///  A convenient way of printing the coordinate values for each
-    ///  pixel in the Detection.  
-    /// 
-    ///  NOTE THAT THERE IS CURRENTLY NO FLUX INFORMATION BEING PRINTED!
-    /// 
-    ///  Use as front end to the Object3D::operator<< function.
-
-    theStream << obj.pixelArray << "---\n";
-    return theStream;
-  }
-  //--------------------------------------------------------------------
 
 }

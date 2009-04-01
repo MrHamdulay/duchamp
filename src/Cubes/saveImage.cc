@@ -150,7 +150,8 @@ namespace duchamp
       for(int i=0;i<this->numPixels;i++) mask[i]=0;
       for(unsigned int o=0;o<this->objectList->size();o++){
         std::vector<PixelInfo::Voxel> voxlist = 
-          this->objectList->at(o).pixels().getPixelSet();
+//           this->objectList->at(o).pixels().getPixelSet();
+          this->objectList->at(o).getPixelSet();
         for(unsigned int p=0;p<voxlist.size();p++){
           int pixelpos = voxlist[p].getX() + this->axisDim[0]*voxlist[p].getY() + 
             this->axisDim[0]*this->axisDim[1]*voxlist[p].getZ();

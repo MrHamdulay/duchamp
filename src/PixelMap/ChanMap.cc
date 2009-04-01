@@ -30,6 +30,7 @@
 #include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Object2D.hh>
 #include <duchamp/PixelMap/Object3D.hh>
+#include <duchamp/PixelMap/ChanMap.hh>
 #include <vector>
 
 namespace PixelInfo
@@ -38,6 +39,7 @@ namespace PixelInfo
   ChanMap::ChanMap()
   {
     this->itsZ = -1;
+    this->itsObject = Object2D();
   }
 
   ChanMap::ChanMap(const ChanMap& m){
@@ -52,6 +54,12 @@ namespace PixelInfo
     return *this;
   }
 
+  void ChanMap::addOffsets(long xoff, long yoff, long zoff)
+  {
+    this->itsZ += zoff;
+    this->itsObject.addOffsets(xoff,yoff);
+  }
+ 
   bool operator< (ChanMap lhs, ChanMap rhs)
   {
     /// @details This only acts on the channel number. 

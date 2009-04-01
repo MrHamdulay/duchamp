@@ -208,19 +208,23 @@ namespace duchamp
 	column.printEntry(stream,this->getZmax() + this->zSubOffset);
 	break;
       case NPIX:
-	column.printEntry(stream,int(this->pixelArray.getSize()));
+// 	column.printEntry(stream,int(this->pixelArray.getSize()));
+	column.printEntry(stream,int(this->getSize()));
 	break;
       case FLAG:
 	column.printEntry(stream,this->flagText);
 	break;
       case XAV:
-	column.printEntry(stream,this->getXAverage() + this->xSubOffset);
+// 	column.printEntry(stream,this->getXAverage() + this->xSubOffset);
+	column.printEntry(stream,this->getXaverage() + this->xSubOffset);
 	break;
       case YAV:
-	column.printEntry(stream,this->getYAverage() + this->ySubOffset);
+// 	column.printEntry(stream,this->getYAverage() + this->ySubOffset);
+	column.printEntry(stream,this->getYaverage() + this->ySubOffset);
 	break;
       case ZAV:
-	column.printEntry(stream,this->getZAverage() + this->zSubOffset);
+// 	column.printEntry(stream,this->getZAverage() + this->zSubOffset);
+	column.printEntry(stream,this->getZaverage() + this->zSubOffset);
 	break;
       case XCENT:
 	column.printEntry(stream,this->getXCentroid() + this->xSubOffset);
@@ -357,7 +361,8 @@ namespace duchamp
     ss <<"("       << this->getXcentre() + this->xSubOffset;
     ss <<", "      << this->getYcentre() + this->ySubOffset;
     ss <<", "      << this->getZcentre() + this->zSubOffset << ")";
-    ss <<", Size: "<< this->pixelArray.getSize() << " voxels,  ";
+//     ss <<", Size: "<< this->pixelArray.getSize() << " voxels,  ";
+    ss <<", Size: "<< this->getSize() << " voxels,  ";
     ss <<"Range: [";
     ss <<             this->getXmin() + this->xSubOffset 
        <<":"       << this->getXmax() + this->xSubOffset;

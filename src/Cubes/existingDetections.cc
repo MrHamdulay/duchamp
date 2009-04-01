@@ -92,7 +92,8 @@ namespace duchamp
 	ss.str(temp);
 	ss >> x1 >> x2 >> ypix >> zpix;
 	Scan scn(ypix,x1,x2-x1+1);
-	obj.pixels().addScan(scn,zpix);
+// 	obj.pixels().addScan(scn,zpix);
+	obj.addScan(scn,zpix);
       }
       obj.setOffsets(this->par);
       obj.calcParams();

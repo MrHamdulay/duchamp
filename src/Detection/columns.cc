@@ -303,7 +303,8 @@ namespace duchamp
 	for(int i=newset[NAME].getWidth();i<tempwidth;i++) newset[NAME].widen();
 
 	// X position
-	val = objectList[obj].getXcentre() + objectList[obj].getXOffset();
+	val = objectList[obj].getXcentre() 
+	  + objectList[obj].getXOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[X].getPrecision()+1)); 
 	  if(val < minval) newset[X].upPrec();
@@ -543,7 +544,8 @@ namespace duchamp
 	for(int i=newset[NPIX].getWidth();i<tempwidth;i++) newset[NPIX].widen();
     
 	// average X position
-	val = objectList[obj].getXAverage() + objectList[obj].getXOffset();
+// 	val = objectList[obj].getXAverage() + objectList[obj].getXOffset();
+	val = objectList[obj].getXaverage() + objectList[obj].getXOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[XAV].getPrecision()+1)); 
 	  if(val < minval) newset[XAV].upPrec();
@@ -551,7 +553,8 @@ namespace duchamp
 	tempwidth = int( log10(val) + 1) + newset[XAV].getPrecision() + 2;
 	for(int i=newset[XAV].getWidth();i<tempwidth;i++) newset[XAV].widen();
 	// average Y position
-	val = objectList[obj].getYAverage() + objectList[obj].getYOffset();
+// 	val = objectList[obj].getYAverage() + objectList[obj].getYOffset();
+	val = objectList[obj].getYaverage() + objectList[obj].getYOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[YAV].getPrecision()+1)); 
 	  if(val < minval) newset[YAV].upPrec();
@@ -559,7 +562,8 @@ namespace duchamp
 	tempwidth = int( log10(val) + 1) + newset[YAV].getPrecision() + 2;
 	for(int i=newset[YAV].getWidth();i<tempwidth;i++) newset[YAV].widen();
 	// average Z position
-	val = objectList[obj].getZAverage() + objectList[obj].getZOffset();
+// 	val = objectList[obj].getZAverage() + objectList[obj].getZOffset();
+	val = objectList[obj].getZaverage() + objectList[obj].getZOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[ZAV].getPrecision()+1)); 
 	  if((val>0.)&&(val < minval)) newset[ZAV].upPrec();

@@ -471,8 +471,8 @@ namespace PixelInfo
   {
 
     double theta = this->getPositionAngle();
-    double x0 = this->getXcentre();
-    double y0 = this->getYcentre();
+    double x0 = this->getXaverage();
+    double y0 = this->getYaverage();
     std::vector<double> majorAxes, minorAxes;
     std::vector<Scan>::iterator scn=this->scanlist.begin();
     for(;scn<this->scanlist.end();scn++){

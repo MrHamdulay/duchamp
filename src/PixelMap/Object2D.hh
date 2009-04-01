@@ -99,10 +99,10 @@ namespace PixelInfo
     void  calcParams();
 
     /// @brief Return the average x-value. 
-    float getXcentre(){return xSum/float(numPix);};
+    float getXaverage(){return xSum/float(numPix);};
 
     /// @brief Return the average y-value. 
-    float getYcentre(){return ySum/float(numPix);};
+    float getYaverage(){return ySum/float(numPix);};
 
     long  getXmin(){return xmin;};
     long  getYmin(){return ymin;};
@@ -129,8 +129,12 @@ namespace PixelInfo
       return output;
     }
 
+    friend Object2D operator+= (Object2D lhs, Object2D rhs){
+      lhs = lhs + rhs;
+      return lhs;
+    }
+
     friend class Object3D; 
-    friend class ChanMap;
 
   private:
     std::vector<Scan> scanlist;       ///< The list of Scans

@@ -140,6 +140,7 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
       std::cout << std::endl;
     }
 
+
     // Get the WCS information
     this->head.defineWCS(fname, this->par);
 
@@ -190,8 +191,6 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
       std::cout << "\n";
     }   
 
-    // Check for 2D images
-    this->checkDim();
     // Convert the flux Units if the user has so requested
     this->convertFluxUnits();
 

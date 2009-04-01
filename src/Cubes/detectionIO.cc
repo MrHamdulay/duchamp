@@ -304,16 +304,14 @@ namespace duchamp
       }
 
       for(unsigned int objCtr=0;objCtr<this->objectList->size();objCtr++){
-	Detection *obj = new Detection;
-	*obj = objectList->at(objCtr);
-	obj->setOffsets(par);
+	Detection obj = objectList->at(objCtr);
+	obj.setOffsets(par);
 	if(this->par.getFlagCubeTrimmed()){
-	  obj->pixels().addOffsets(left,bottom,0);
+	  obj.addOffsets(left,bottom,0);
 	}
-	obj->calcFluxes(this->array, this->axisDim);
-	obj->setID(objCtr+1);
-	obj->printTableRow(fout,this->fullCols,"log");
-	delete obj;
+	obj.calcFluxes(this->array, this->axisDim);
+	obj.setID(objCtr+1);
+	obj.printTableRow(fout,this->fullCols,"log");
       }
 
       if(this->par.getFlagBaseline()){
@@ -376,7 +374,7 @@ namespace duchamp
     }
 
     if(this->par.getFlagCubeTrimmed()){
-      obj.pixels().addOffsets(left,bottom,0);
+      obj.addOffsets(left,bottom,0);
     }
     obj.calcFluxes(temparray, this->axisDim);
     obj.printTableRow(fout,this->fullCols,"log");

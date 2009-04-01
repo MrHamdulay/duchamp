@@ -206,7 +206,7 @@ namespace duchamp
     while(listCounter < objList.size()){
 
       objList[listCounter].setOffsets(par);
-
+      
       if( (objList[listCounter].hasEnoughChannels(par.getMinChannels()))
 	  && (objList[listCounter].getSpatialSize() >= par.getMinPix()) ){
 

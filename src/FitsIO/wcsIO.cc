@@ -250,6 +250,14 @@ namespace duchamp
      }
     }
 
+    // work out whether the array is 2dimensional
+    if(localwcs->naxis==2) this->flag2D = true;
+    else{
+      int numDim=0;
+      for(int i=0;i<numAxes;i++) if(dimAxes[i]>1) numDim++;
+      this->flag2D = (numDim<=2);
+    }
+
     // clean up allocated memory
     wcsvfree(&localnwcs,&localwcs);
     wcsfree(localwcs);

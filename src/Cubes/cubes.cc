@@ -1123,24 +1123,15 @@ namespace duchamp
 
   void Cube::updateDetectMap()
   {
-    /// @details
-    ///  A function that, for each detected object in the cube's list, increments 
-    ///   the cube's detection map by the required amount at each pixel.
+    /// @details A function that, for each detected object in the
+    ///  cube's list, increments the cube's detection map by the
+    ///  required amount at each pixel. Uses
+    ///  updateDetectMap(Detection).
 
-    Scan temp;
-    for(unsigned int obj=0;obj<this->objectList->size();obj++){
-      long numZ=this->objectList->at(obj).pixels().getNumChanMap();
-      for(int iz=0;iz<numZ;iz++){ // for each channel map
-	Object2D *chanmap = new Object2D;
-	*chanmap = this->objectList->at(obj).pixels().getChanMap(iz).getObject();
-	for(int iscan=0;iscan<chanmap->getNumScan();iscan++){
-	  temp = chanmap->getScan(iscan);
-	  for(int x=temp.getX(); x <= temp.getXmax(); x++)
-	    this->detectMap[temp.getY()*this->axisDim[0] + x]++;
-	} // end of loop over scans
-	delete chanmap;
-      } // end of loop over channel maps
-    } // end of loop over objects.
+    std::vector<Detection>::iterator obj;
+    for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
+      this->updateDetectMap(*obj);
+    }
 
   }
   //--------------------------------------------------------------------
@@ -1153,16 +1144,9 @@ namespace duchamp
     /// 
     ///  \param obj A Detection object that is being incorporated into the map.
 
-    Scan temp;
-    long numZ=obj.pixels().getNumChanMap();
-    for(int iz=0;iz<numZ;iz++){ // for each channel map
-      Object2D chanmap = obj.pixels().getChanMap(iz).getObject();
-      for(int iscan=0;iscan<chanmap.getNumScan();iscan++){
-	temp = chanmap.getScan(iscan);
-	for(int x=temp.getX(); x <= temp.getXmax(); x++)
-	  this->detectMap[temp.getY()*this->axisDim[0] + x]++;
-      } // end of loop over scans
-    } // end of loop over channel maps
+    std::vector<Voxel> vlist = obj.getPixelSet();
+    for(std::vector<Voxel>::iterator vox=vlist.begin();vox<vlist.end();vox++) 
+      this->detectMap[vox->getX()+vox->getY()*this->axisDim[0]]++;
 
   }
   //--------------------------------------------------------------------
@@ -1266,7 +1250,7 @@ namespace duchamp
     bool atEdge = false;
 
     unsigned int pix = 0;
-    std::vector<Voxel> voxlist = obj.pixels().getPixelSet();
+    std::vector<Voxel> voxlist = obj.getPixelSet();
     while(!atEdge && pix<voxlist.size()){
       // loop over each pixel in the object, until we find an edge pixel.
       for(int dx=-1;dx<=1;dx+=2){
@@ -1306,7 +1290,7 @@ namespace duchamp
     bool atEdge = false;
 
     unsigned int pix = 0;
-    std::vector<Voxel> voxlist = obj.pixels().getPixelSet();
+    std::vector<Voxel> voxlist = obj.getPixelSet();
     while(!atEdge && pix<voxlist.size()){
       // loop over each pixel in the object, until we find an edge pixel.
       for(int dz=-1;dz<=1;dz+=2){

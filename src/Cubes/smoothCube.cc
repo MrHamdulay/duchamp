@@ -295,7 +295,8 @@ void Cube::SpatialSmoothNSearch()
       numFound += objlist.size();
       for(unsigned int obj=0;obj<objlist.size();obj++){
 	Detection newObject;
-	newObject.pixels().addChannel(z,objlist[obj]);
+// 	newObject.pixels().addChannel(z,objlist[obj]);
+	newObject.addChannel(z,objlist[obj]);
 	newObject.setOffsets(this->par);
 	mergeIntoList(newObject,outputList,this->par);
       }

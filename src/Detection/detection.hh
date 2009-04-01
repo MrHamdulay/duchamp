@@ -36,6 +36,8 @@
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Detection/columns.hh>
 
+using namespace PixelInfo;
+
 namespace duchamp
 {
 
@@ -47,31 +49,24 @@ namespace duchamp
   ///     related widths).
   ///  Also many functions with which to manipulate the Detections.
 
-  class Detection
+  class Detection : public Object3D
   {
   public:
     Detection();
+    Detection(const Object3D& o);
     Detection(const Detection& d);
     Detection& operator= (const Detection& d);
     virtual ~Detection(){};
+    void defaultDetection();
     //------------------------------
     // These are functions in detection.cc. 
     //
     /// @brief Add all voxels of one object to another. 
-    friend Detection operator+ (Detection lhs, Detection rhs);
+//     friend Detection operator+ (Detection lhs, Detection rhs);
     friend Detection operator+= (Detection lhs, Detection rhs){
       lhs = lhs + rhs;
       return lhs;
     }
-
-    /// @brief Provides a reference to the pixel array. 
-    PixelInfo::Object3D& pixels(){ 
-      PixelInfo::Object3D &rpix = this->pixelArray; 
-      return rpix;
-    }; 
-
-    /// @brief Calculate basic parameters of the Detection. 
-    void   calcParams(){pixelArray.calcParams();}; 
 
     /// @brief Test whether voxel lists match 
     bool voxelListsMatch(std::vector<PixelInfo::Voxel> voxelList);
@@ -102,14 +97,14 @@ namespace duchamp
     void   setOffsets(Param &par); 
 
     /// @brief Add the offset values to the pixel locations 
+    void   addOffsets(long xoff, long yoff, long zoff){Object3D::addOffsets(xoff,yoff,zoff);};
     void   addOffsets(){
-      pixelArray.addOffsets(xSubOffset,ySubOffset,zSubOffset);
+      Object3D::addOffsets(xSubOffset,ySubOffset,zSubOffset);
       xpeak+=xSubOffset; ypeak+=ySubOffset; zpeak+=zSubOffset;
       xCentroid+=xSubOffset; yCentroid+=ySubOffset; zCentroid+=zSubOffset;
     };
 
     //
-    friend std::ostream& operator<< ( std::ostream& theStream, Detection& obj);
     //---------------------------------
     // Text Output -- all in Detection/outputDetection.cc
     //
@@ -140,21 +135,19 @@ namespace duchamp
     /// @brief Draw spatial borders for a particular Detection. 
     void   drawBorders(int xoffset, int yoffset); 
     //
-    /// @brief Sort the pixels by central z-value. 
-    void   SortByZ(){pixelArray.order();};
+    
     //
     //----------------------------------
     // Basic functions
     //
-    /// @brief Delete all pixel information from Detection. Does not clear other parameters. 
-    //  void   clearDetection(){this->pix.clear();};
 
     /// @brief Add a single voxel to the pixel list.
-    void   addPixel(long x, long y, long z){pixelArray.addPixel(x,y,z);};
+    void   addPixel(long x, long y, long z){Object3D::addPixel(x,y,z);};
+    
     /// @brief Add a single voxel to the pixel list.
     void   addPixel(PixelInfo::Voxel point){
       /// @brief This one adds the pixel to the pixelArray, and updates the fluxes according to the Voxel's flux information 
-      pixelArray.addPixel(point);
+      Object3D::addPixel(point.getX(),point.getY(),point.getZ());
       totalFlux += point.getF();
       if(point.getF()>peakFlux){
 	peakFlux = point.getF();
@@ -162,20 +155,8 @@ namespace duchamp
       }
     };
 
-    /// @brief Return a single voxel. 
-    PixelInfo::Voxel getPixel(int i){return pixelArray.getPixel(i);};
-
-    /// @brief Return the set of voxels. 
-    std::vector<PixelInfo::Voxel> getPixelSet(){return pixelArray.getPixelSet();};
-
-    /// @brief How many voxels are in the Detection? 
-    unsigned int   getSize(){return pixelArray.getSize();};
-
-    /// @brief How many distinct spatial pixels are there? 
-    unsigned int   getSpatialSize(){return pixelArray.getSpatialSize();};
-
     /// @brief How many channels does the Detection have? 
-    long   getNumChannels(){return pixelArray.getNumDistinctZ();};
+    long   getNumChannels(){return Object3D::getNumDistinctZ();};
 
     /// @brief Is there at least the acceptable minimum number of channels in the Detection?  
     bool   hasEnoughChannels(int minNumber);
@@ -190,24 +171,9 @@ namespace duchamp
     long        getZOffset(){return zSubOffset;};
     void        setZOffset(long o){zSubOffset = o;};
     //	      
-    float       getXcentre(){
-      if(centreType=="peak") return xpeak;
-      else if(centreType=="average") return pixelArray.getXcentre();
-      else return xCentroid;
-    };
-    float       getYcentre(){
-      if(centreType=="peak") return ypeak;
-      else if(centreType=="average") return pixelArray.getYcentre();
-      else return yCentroid;
-    };
-    float       getZcentre(){
-      if(centreType=="peak") return zpeak;
-      else if(centreType=="average") return pixelArray.getZcentre();
-      else return zCentroid;
-    };
-    float       getXAverage(){return pixelArray.getXcentre();};
-    float       getYAverage(){return pixelArray.getYcentre();};
-    float       getZAverage(){return pixelArray.getZcentre();};
+    float       getXcentre();
+    float       getYcentre();
+    float       getZcentre();
     float       getTotalFlux(){return totalFlux;};
     void        setTotalFlux(float f){totalFlux=f;};
     double      getIntegFlux(){return intFlux;};
@@ -230,13 +196,6 @@ namespace duchamp
     void        setFlagText(std::string s){flagText = s;};
     void        addToFlagText(std::string s){flagText += s;};
     //	      
-    long        getXmin(){return pixelArray.getXmin();};
-    long        getYmin(){return pixelArray.getYmin();};
-    long        getZmin(){return pixelArray.getZmin();};
-    long        getXmax(){return pixelArray.getXmax();};
-    long        getYmax(){return pixelArray.getYmax();};
-    long        getZmax(){return pixelArray.getZmax();};
-    //
     /// @brief Is the WCS good enough to be used? 
     ///	\return Detection::flagWCS =  True/False 
     bool        isWCS(){return flagWCS;};
@@ -280,7 +239,6 @@ namespace duchamp
     void        setSNRPrec(int i){snrPrec=i;};
     //
   protected:
-    PixelInfo::Object3D pixelArray;     ///< The pixel locations
     // Subsection offsets
     long           xSubOffset;     ///< The x-offset, from subsectioned cube
     long           ySubOffset;     ///< The y-offset, from subsectioned cube

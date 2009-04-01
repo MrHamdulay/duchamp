@@ -51,7 +51,6 @@ HEADS = $(BASE)/duchamp.hh\
 	$(PIXELMAPDIR)/Voxel.hh\
 	$(PIXELMAPDIR)/Scan.hh\
 	$(PIXELMAPDIR)/Object2D.hh\
-	$(PIXELMAPDIR)/ChanMap.hh\
 	$(PIXELMAPDIR)/Object3D.hh\
 	$(ATROUSDIR)/atrous.hh\
 	$(ATROUSDIR)/filter.hh\
@@ -75,7 +74,6 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(PIXELMAPDIR)/Voxel.o\
 	$(PIXELMAPDIR)/Scan.o\
 	$(PIXELMAPDIR)/Object2D.o\
-	$(PIXELMAPDIR)/ChanMap.o\
 	$(PIXELMAPDIR)/Object3D.o\
 	$(ATROUSDIR)/filter.o\
 	$(ATROUSDIR)/atrous_1d_reconstruct.o\

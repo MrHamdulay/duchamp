@@ -144,8 +144,8 @@ std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 	  for(unsigned int obj=0;obj<objlist.size();obj++){
 	    Detection newObject;
 	    // Fix up coordinates of each pixel to match original array
-	    for(int z=objlist[obj].getX();z<=objlist[obj].getXmax();z++) {
-	      newObject.pixels().addPixel(x,y,z);
+ 	    for(int z=objlist[obj].getX();z<=objlist[obj].getXmax();z++) {
+	      newObject.addPixel(x,y,z);
 	    }
 	    newObject.setOffsets(par);
 	    mergeIntoList(newObject,outputList,par);
@@ -192,7 +192,7 @@ std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
       num += objlist.size();
       for(unsigned int obj=0;obj<objlist.size();obj++){
 	Detection newObject;
-	newObject.pixels().addChannel(z,objlist[obj]);
+	newObject.addChannel(z,objlist[obj]);
 	newObject.setOffsets(par);
 	mergeIntoList(newObject,outputList,par);
       }
@@ -258,7 +258,7 @@ std::vector <Detection> search3DArraySimple(long *dim, float *Array,
       num += objlist.size();
       for(unsigned int obj=0;obj<objlist.size();obj++){
 	Detection newObject;
-	newObject.pixels().addChannel(z,objlist[obj]);
+	newObject.addChannel(z,objlist[obj]);
 	newObject.setOffsets(par);
 	mergeIntoList(newObject,outputList,par);
       }

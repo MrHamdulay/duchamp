@@ -29,16 +29,21 @@
 #include <duchamp/PixelMap/Voxel.hh>
 #include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Object2D.hh>
-#include <duchamp/PixelMap/ChanMap.hh>
 #include <duchamp/PixelMap/Object3D.hh>
 #include <vector>
+#include <map>
 
 namespace PixelInfo
 {
   Object3D::Object3D()
   {
     this->numVox=0;
+    this->xSum = 0;
+    this->ySum = 0;
+    this->zSum = 0;
+    this->xmin = this->xmax = this->ymin = this->ymax = this->zmin = this->zmax = -1;
   }
+  //--------------------------------------------
 
   Object3D::Object3D(const Object3D& o)
   {
@@ -49,7 +54,7 @@ namespace PixelInfo
   Object3D& Object3D::operator= (const Object3D& o)
   {
     if(this == &o) return *this;
-    this->maplist = o.maplist;
+    this->chanlist = o.chanlist;
     this->numVox  = o.numVox;
     this->xSum    = o.xSum;
     this->ySum    = o.ySum;
@@ -63,36 +68,57 @@ namespace PixelInfo
     return *this;
   }
   //--------------------------------------------
+
+  Object3D operator+ (Object3D lhs, Object3D rhs)
+  {
+    Object3D output = lhs;
+    for(std::map<long, Object2D>::iterator it = rhs.chanlist.begin(); it!=rhs.chanlist.end();it++)
+      output.addChannel(it->first, it->second);
+    return output;
+  }
+
+  //--------------------------------------------
+  float Object3D::getXaverage()
+  {
+    if(numVox>0) return xSum/float(numVox); 
+    else return 0.;
+  }
+  //--------------------------------------------
+
+  float Object3D::getYaverage()
+  {
+    if(numVox>0) return ySum/float(numVox);
+    else return 0.;
+  }
+  //--------------------------------------------
+
+  float Object3D::getZaverage()
+  {
+    if(numVox>0) return zSum/float(numVox); 
+    else return 0.;
+  }
+  //--------------------------------------------
   
   bool Object3D::isInObject(long x, long y, long z)
   {
-    bool returnval = false;
-    unsigned int mapCount = 0;
-    while(!returnval && mapCount < this->maplist.size()){
-      if(z == this->maplist[mapCount].itsZ){
-	returnval = returnval || 
-	  this->maplist[mapCount].itsObject.isInObject(x,y);
-      }
-      mapCount++;
-    }
-    return returnval;
+    std::map<long,Object2D>::iterator it=this->chanlist.begin();
+    while(it!=this->chanlist.end() && it->first!=z) it++;
+
+    if(it==this->chanlist.end()) return false;
+    else                         return it->second.isInObject(x,y);
   }
   //--------------------------------------------
 
   void Object3D::addPixel(long x, long y, long z)
   {
-    // first test to see if we have a chanmap of same z
-    bool haveZ = false;
-    unsigned int mapCount = 0;
-    while(!haveZ && mapCount < this->maplist.size()){
-      haveZ = haveZ || (z==this->maplist[mapCount++].itsZ);
-    }
+ 
+    std::map<long,Object2D>::iterator it=this->chanlist.begin();
+    while(it!=this->chanlist.end() && it->first!=z) it++;
 
-    if(!haveZ){ // need to add a new ChanMap
-      ChanMap newMap(z);
-      newMap.itsObject.addPixel(x,y);
-      this->maplist.push_back(newMap);
-      this->order();
+    if(it==this->chanlist.end()){ //new channel
+      Object2D obj;
+      obj.addPixel(x,y);
+      chanlist.insert( std::pair<int,Object2D>(z,obj) );
       // update the centres, min & max, as well as the number of voxels
       if(this->numVox==0){
 	this->xSum = this->xmin = this->xmax = x;
@@ -107,35 +133,31 @@ namespace PixelInfo
 	if(x>this->xmax) this->xmax = x;
 	if(y<this->ymin) this->ymin = y;
 	if(y>this->ymax) this->ymax = y;
-	// since we've ordered the maplist, the min & max z fall out
-	// naturally
-	this->zmin = this->maplist[0].itsZ;
-	this->zmax = this->maplist[this->maplist.size()-1].itsZ;
+	// since we've ordered the maplist, the min & max z fall out naturally
+	this->zmin = this->chanlist.begin()->first;
+	this->zmax = this->chanlist.rbegin()->first;
       }
       this->numVox++;   
     }
-    else{ 
-      // there is a ChanMap of matching z. Find it..
-      mapCount=0;
-      while(this->maplist[mapCount].itsZ!=z) mapCount++;
-
-      // Remove that channel's information from the Object's information
-      long oldChanSize = this->maplist[mapCount].itsObject.numPix;
-      this->xSum -= this->maplist[mapCount].itsObject.xSum;
-      this->ySum -= this->maplist[mapCount].itsObject.ySum;
-      this->zSum -= z*oldChanSize;
-
-      // Add the channel
-      this->maplist[mapCount].itsObject.addPixel(x,y);
-    
-      // and update the information...
+    else{ // existing channel
       // This method deals with the case of a new pixel being added AND
       // with the new pixel already existing in the Object2D
-      long newChanSize = this->maplist[mapCount].itsObject.numPix;
+ 
+      // Remove that channel's information from the Object's information
+      long oldChanSize = it->second.numPix;
+      this->xSum -= it->second.xSum;
+      this->ySum -= it->second.ySum;
+      this->zSum -= z*oldChanSize;
+
+      // Add the pixel
+      it->second.addPixel(x,y);
+    
+      // and update the information...
+     long newChanSize = it->second.numPix;
     
       this->numVox += (newChanSize - oldChanSize);
-      this->xSum += this->maplist[mapCount].itsObject.xSum;
-      this->ySum += this->maplist[mapCount].itsObject.ySum;
+      this->xSum += it->second.xSum;
+      this->ySum += it->second.ySum;
       this->zSum += z*newChanSize;
       if(x<this->xmin) this->xmin = x;
       if(x>this->xmax) this->xmax = x;
@@ -157,118 +179,69 @@ namespace PixelInfo
 
   //--------------------------------------------
 
-  void Object3D::addChannel(ChanMap channel)
+  void Object3D::addChannel(const long &z, Object2D &obj)
   {
-    // first test to see if we have a chanmap of same z
-    bool haveZ = false;
-    unsigned int mapCount = 0;
-    while( !haveZ && (mapCount < this->maplist.size()) ){
-      haveZ = haveZ || (channel.itsZ==this->maplist[mapCount].itsZ);
-      mapCount++;
-    }
 
-    if(!haveZ){ // need to add a new ChanMap
-      this->maplist.push_back(channel);
-      this->order();
-      // update the centres, min & max, as well as the number of voxels
-      if(this->numVox==0){ // ie. if it is the only channel map
-	this->xSum = channel.itsObject.xSum;
-	this->xmin = channel.itsObject.xmin;
-	this->xmax = channel.itsObject.xmax;
-	this->ySum = channel.itsObject.ySum;
-	this->ymin = channel.itsObject.ymin;
-	this->ymax = channel.itsObject.ymax;
-	this->zSum = channel.itsObject.numPix*channel.itsZ;
-	this->zmin = this->zmax = channel.itsZ;
+    std::map<long,Object2D>::iterator it=this->chanlist.begin();
+    while(it!=this->chanlist.end() && it->first!=z) it++;
+
+    if(it == this->chanlist.end()){
+      this->chanlist.insert(std::pair<long,Object2D>(z,obj));
+      if(this->numVox == 0){
+	this->xmin = obj.xmin;
+	this->xmax = obj.xmax;
+	this->ymin = obj.ymin;
+	this->ymax = obj.ymax;
+	this->zmin = this->zmax = z;
+	this->xSum = obj.xSum;
+	this->ySum = obj.ySum;
+	this->zSum = z * obj.getSize();
       }
       else{
-	this->xSum += channel.itsObject.xSum;
-	this->ySum += channel.itsObject.ySum;
-	this->zSum += channel.itsZ*channel.itsObject.numPix;
-	if(channel.itsObject.xmin<this->xmin) 
-	  this->xmin = channel.itsObject.xmin;
-	if(channel.itsObject.xmax>this->xmax) 
-	  this->xmax = channel.itsObject.xmax;
-	if(channel.itsObject.ymin<this->ymin) 
-	  this->ymin = channel.itsObject.ymin;
-	if(channel.itsObject.ymax>this->ymax) 
-	  this->ymax = channel.itsObject.ymax;
-	// since we've ordered the maplist, the min & max z fall out
-	// naturally
-	this->zmin = this->maplist[0].itsZ;
-	this->zmax = this->maplist[this->maplist.size()-1].itsZ;
+	if(obj.xmin<this->xmin) this->xmin = obj.xmin;
+	if(obj.xmax>this->xmax) this->xmax = obj.xmax;
+	if(obj.ymin<this->ymin) this->ymin = obj.ymin;
+	if(obj.ymax>this->ymax) this->ymax = obj.ymax;
+	if(z<this->zmin) this->zmin = z;
+	if(z>this->zmax) this->zmax = z;
+	this->xSum += obj.xSum;
+	this->ySum += obj.ySum;
+	this->zSum += z * obj.getSize();
       }
-      this->numVox += channel.itsObject.numPix;
+      this->numVox += obj.getSize();
     }
-    else{ 
-      // there is a ChanMap of matching z. Find it and add the channel
-      // map to the correct existing channel map
-      mapCount=0;  
-      while(this->maplist[mapCount].itsZ!=channel.itsZ) mapCount++;
-
-      // Remove the new channel's information from the Object's information
-      long oldChanSize = this->maplist[mapCount].itsObject.numPix;
-      this->xSum -= this->maplist[mapCount].itsObject.xSum;
-      this->ySum -= this->maplist[mapCount].itsObject.ySum;
-      this->zSum -= this->maplist[mapCount].itsZ*oldChanSize;
-
-      // Delete the old map and add the new one on the end. Order the list.
-      ChanMap newMap = this->maplist[mapCount] + channel;
-      std::vector <ChanMap>::iterator iter;
-      iter = this->maplist.begin() + mapCount;
-      this->maplist.erase(iter);
-      this->maplist.push_back(newMap);
-      this->order();    
-
-      // and update the information...
-      // This method deals correctly with all cases of adding an object.
-      long newChanSize = newMap.itsObject.numPix;
-      this->numVox += (newChanSize - oldChanSize);
-      this->xSum += newMap.itsObject.xSum;
-      this->ySum += newMap.itsObject.ySum;
-      this->zSum += newMap.itsZ*newChanSize;
-      if(channel.itsObject.xmin<this->xmin) this->xmin = channel.itsObject.xmin;
-      if(channel.itsObject.xmax>this->xmax) this->xmax = channel.itsObject.xmax;
-      if(channel.itsObject.ymin<this->ymin) this->ymin = channel.itsObject.ymin;
-      if(channel.itsObject.ymax>this->ymax) this->ymax = channel.itsObject.ymax;
-      // don't need to do anything to zmin/zmax -- the z-value is
-      // already in the list
-
+    else{
+      this->xSum -= it->second.xSum;
+      this->ySum -= it->second.ySum;
+      this->zSum -= z*it->second.getSize();
+      this->numVox -= it->second.getSize();
+      it->second += obj;
+      this->xSum += it->second.xSum;
+      this->ySum += it->second.ySum;
+      this->zSum += z*it->second.getSize();
+      this->numVox += it->second.getSize();
+      if(obj.xmin<this->xmin) this->xmin = obj.xmin;
+      if(obj.xmax>this->xmax) this->xmax = obj.xmax;
+      if(obj.ymin<this->ymin) this->ymin = obj.ymin;
+      if(obj.ymax>this->ymax) this->ymax = obj.ymax;
     }
+  }
 
-  }
-  //--------------------------------------------
-  
-  void Object3D::order(){
-    std::vector<ChanMap>::iterator map;
-    for(map=maplist.begin();map<maplist.end();map++) map->itsObject.order();
-    std::stable_sort(maplist.begin(),maplist.end());
-  }
-  //--------------------------------------------
-
-  long Object3D::getNumDistinctZ()
-  {
-    return this->maplist.size();
-  }
   //--------------------------------------------
 
   long Object3D::getSpatialSize()
   {
-    Object2D spatialMap;
-    for(unsigned int i=0;i<this->maplist.size();i++){
-      for(int s=0;s<this->maplist[i].itsObject.getNumScan();s++){
-	spatialMap.addScan(this->maplist[i].itsObject.getScan(s));
-      }
-    }
+    Object2D spatialMap = this->getSpatialMap();
     return spatialMap.getSize();
   }
   //--------------------------------------------
 
   Object2D Object3D::getSpatialMap()
   {
-    Object2D spatialMap = this->maplist[0].itsObject;
-    for(unsigned int i=1;i<this->maplist.size();i++){
-      spatialMap = spatialMap + this->maplist[i].itsObject;
+    Object2D spatialMap;
+    for(std::map<long, Object2D>::iterator it = this->chanlist.begin(); 
+	it!=this->chanlist.end();it++){
+      spatialMap = spatialMap + it->second;
     }
     return spatialMap;
   }
@@ -279,34 +252,32 @@ namespace PixelInfo
     this->xSum = 0;
     this->ySum = 0;
     this->zSum = 0;
-    for(unsigned int m=0;m<this->maplist.size();m++){
+    this->numVox = 0;
 
-      this->maplist[m].itsObject.calcParams();
+    this->zmin = this->chanlist.begin()->first;
+    this->zmax = this->chanlist.rbegin()->first;
+    for(std::map<long, Object2D>::iterator it = this->chanlist.begin(); 
+	it!=this->chanlist.end();it++){
 
-      if(m==0){
-	this->xmin = this->maplist[m].itsObject.getXmin();
-	this->xmax = this->maplist[m].itsObject.getXmax();
-	this->ymin = this->maplist[m].itsObject.getYmin();
-	this->ymax = this->maplist[m].itsObject.getYmax();
-	this->zmin = this->zmax = this->maplist[m].itsZ;
+      it->second.calcParams();
+
+      if(it==this->chanlist.begin()){
+	this->xmin = it->second.getXmin();
+	this->xmax = it->second.getXmax();
+	this->ymin = it->second.getYmin();
+	this->ymax = it->second.getYmax();
       }
       else{
-	if(this->xmin>this->maplist[m].itsObject.getXmin()) 
-	  this->xmin = this->maplist[m].itsObject.getXmin();
-	if(this->xmax<this->maplist[m].itsObject.getXmax()) 
-	  this->xmax = this->maplist[m].itsObject.getXmax();
-	if(this->ymin>this->maplist[m].itsObject.getYmin())
-	  this->ymin = this->maplist[m].itsObject.getYmin();
-	if(this->ymax<this->maplist[m].itsObject.getYmax())
-	  this->ymax = this->maplist[m].itsObject.getYmax();
-	if(this->zmin>this->maplist[m].itsZ) this->zmin = this->maplist[m].itsZ;
-	if(this->zmax<this->maplist[m].itsZ) this->zmax = this->maplist[m].itsZ;
+	if(it->second.xmin<this->xmin) this->xmin = it->second.xmin;
+	if(it->second.xmax>this->xmax) this->xmax = it->second.xmax;
+	if(it->second.ymin<this->ymin) this->ymin = it->second.ymin;
+	if(it->second.ymax>this->ymax) this->ymax = it->second.ymax;
       }
 
-      long size = this->maplist[m].itsObject.getSize();
-      this->xSum += this->maplist[m].itsObject.xSum;
-      this->ySum += this->maplist[m].itsObject.ySum;
-      this->zSum += this->maplist[m].itsZ * size;
+      this->xSum += it->second.xSum;
+      this->ySum += it->second.ySum;
+      this->zSum += it->first * it->second.getSize();
+      this->numVox += it->second.getSize();
 
     }
 
@@ -315,12 +286,11 @@ namespace PixelInfo
 
   std::ostream& operator<< ( std::ostream& theStream, Object3D& obj)
   {
-    std::vector<ChanMap>::iterator map;
-    for(map=obj.maplist.begin();map<obj.maplist.end();map++){
-      Object2D tempObject = map->getObject();
-      for(int s=0;s<tempObject.getNumScan();s++){
-	Scan tempscan = tempObject.getScan(s);
-	theStream << tempscan << ", " << map->getZ() << "\n";
+    for(std::map<long, Object2D>::iterator it = obj.chanlist.begin(); 
+	it!=obj.chanlist.end();it++){
+      for(int s=0;s<it->second.getNumScan();s++){
+	Scan tempscan = it->second.getScan(s);
+	theStream << tempscan << ", " << it->first << "\n";
       }
     }  
     theStream << "\n";
@@ -328,44 +298,15 @@ namespace PixelInfo
   }
   //--------------------------------------------
 
-  Voxel Object3D::getPixel(int pixNum)
-  {
-    Voxel returnVox(-1,-1,-1,0.);
-    if((pixNum<0)||(pixNum>=this->getSize())) return returnVox;
-    int count1=0;
-    for(unsigned int m=0;m<this->maplist.size();m++)
-      {
-	if(pixNum-count1<this->maplist[m].itsObject.getSize())
-	  {
-	    returnVox.setZ(this->maplist[m].getZ());
-	    int count2=0;
-	    for(int s=0;s<this->maplist[m].getNumScan();s++)
-	      {
-		if(pixNum-count1-count2<this->maplist[m].getScan(s).getXlen())
-		  {
-		    returnVox.setY(this->maplist[m].getScan(s).getY());
-		    returnVox.setX(this->maplist[m].getScan(s).getX()
-				   + pixNum - count1 - count2);
-		    return returnVox;
-		  }
-		count2+=this->maplist[m].getScan(s).getXlen();
-	      }
-	  }
-	count1+=this->maplist[m].itsObject.getSize();      
-      }
-    return returnVox;
-  }
-  //--------------------------------------------------------------------
-
   std::vector<Voxel> Object3D::getPixelSet()
   {
     std::vector<Voxel> voxList(this->numVox);
     long count = 0;
-    for(unsigned int m=0;m<this->maplist.size();m++){
-      Object2D obj = this->maplist[m].itsObject;
-      long z = this->maplist[m].itsZ;
-      for(int s=0;s<obj.getNumScan();s++){
-	Scan scn = obj.getScan(s);
+    for(std::map<long, Object2D>::iterator it = this->chanlist.begin(); 
+	it!=this->chanlist.end();it++){
+      long z = it->first;
+      for(int s=0;s<it->second.getNumScan();s++){
+	Scan scn = it->second.getScan(s);
 	long y = scn.getY();
 	for(long x=scn.getX(); x<=scn.getXmax(); x++){
 	  voxList[count].setXYZF(x,y,z,0);
@@ -379,24 +320,69 @@ namespace PixelInfo
 
   //--------------------------------------------------------------------
 
-  void ChanMap::addOffsets(long xoff, long yoff, long zoff)
+  std::vector<long> Object3D::getChannelList()
   {
-    this->itsZ += zoff;
-    this->itsObject.addOffsets(xoff,yoff);
+
+    std::vector<long> chanlist;
+    for(std::map<long, Object2D>::iterator it = this->chanlist.begin();
+	it != this->chanlist.end(); it++){
+      chanlist.push_back(it->first);
+    }
+    return chanlist;
   }
- 
+
+  //--------------------------------------------------------------------
+
+  Object2D Object3D::getChanMap(long z)
+  {
+    Object2D obj;
+    std::map<long,Object2D>::iterator it=this->chanlist.begin();
+    while(it!=this->chanlist.end() && it->first!=z) it++;
+
+    if(it==this->chanlist.end()) obj = Object2D();
+    else obj = it->second;
+
+    return obj;
+  }
+
+  //--------------------------------------------------------------------
+
+  int Object3D::getMaxAdjacentChannels()
+  {
+    int maxnumchan=0;
+    int zcurrent, zprevious,zcount=0;
+    std::map<long, Object2D>::iterator it = this->chanlist.begin();
+    zcurrent = it->first;
+    zcount++;
+    it++;
+    for(; it!=this->chanlist.end();it++)
+      {
+	zprevious = zcurrent;
+	zcurrent = it->first;
+	if(zcurrent-zprevious>1){
+	  maxnumchan = std::max(maxnumchan, zcount);
+	  zcount=1;
+	}
+	else zcount++;
+      }
+    maxnumchan = std::max(maxnumchan,zcount);
+    return maxnumchan;
+  }
+
   //--------------------------------------------------------------------
 
   void Object3D::addOffsets(long xoff, long yoff, long zoff)
   {
-    for(unsigned int i=0;i<this->maplist.size();i++)
-      this->maplist[i].addOffsets(xoff,yoff,zoff);
-    this->xSum += xoff*numVox;
-    this->xmin += xoff; xmax += xoff;
-    this->ySum += yoff*numVox;
-    this->ymin += yoff; ymax += yoff;
-    this->zSum += zoff*numVox;
-    this->zmin += zoff; zmax += zoff;
+    for(std::map<long, Object2D>::iterator it = this->chanlist.begin(); it!=this->chanlist.end();it++)
+      it->second.addOffsets(xoff,yoff);
+    if(this->numVox>0){
+      this->xSum += xoff*numVox;
+      this->xmin += xoff; this->xmax += xoff;
+      this->ySum += yoff*numVox;
+      this->ymin += yoff; this->ymax += yoff;
+      this->zSum += zoff*numVox;
+      this->zmin += zoff; this->zmax += zoff;
+    }
   }
 
 }

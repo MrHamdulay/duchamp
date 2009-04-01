@@ -46,11 +46,14 @@ namespace duchamp
     wcsini(true, 3, this->wcs); 
     this->wcsIsGood = false;
     this->nwcs = 0;
+    this->flag2D=false;
+    this->spectralUnits="";
+    this->spectralDescription=duchamp::duchampSpectralDescription[FREQUENCY];
+    this->fluxUnits="counts";
+    this->intFluxUnits="counts";
     this->scale=1.;
     this->offset=0.;
     this->power=1.;
-    this->fluxUnits="counts";
-    this->intFluxUnits="counts";
   }
 
   FitsHeader::~FitsHeader()
@@ -75,7 +78,9 @@ namespace duchamp
     this->nwcs          = h.nwcs;
     this->wcsIsGood     = h.wcsIsGood;
     this->naxis         = h.naxis;
+    this->flag2D        = h.flag2D;
     this->spectralUnits = h.spectralUnits;
+    this->spectralDescription = h.spectralDescription;
     this->fluxUnits     = h.fluxUnits;
     this->intFluxUnits  = h.intFluxUnits;
     this->beamSize      = h.beamSize;
@@ -289,7 +294,7 @@ namespace duchamp
 
     }
 
-    if(!this->flag2D) this->intFluxUnits += " " + this->spectralUnits;
+    if(!this->flag2D) this->intFluxUnits += std::string(" ") + this->spectralUnits;
 
   }
 

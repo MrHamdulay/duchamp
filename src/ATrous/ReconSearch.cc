@@ -312,7 +312,8 @@ namespace duchamp
 	      Detection newObject;
 	      // Fix up coordinates of each pixel to match original array
 	      for(int z=objlist[obj].getX();z<=objlist[obj].getXmax();z++) {
-		newObject.pixels().addPixel(x,y,z);
+// 		newObject.pixels().addPixel(x,y,z);
+		newObject.addPixel(x,y,z);
 	      }
 	      newObject.setOffsets(par);
 	      mergeIntoList(newObject,outputList,par);
@@ -360,7 +361,8 @@ namespace duchamp
 	num += objlist.size();
 	for(unsigned int obj=0;obj<objlist.size();obj++){
 	  Detection newObject;
-	  newObject.pixels().addChannel(z,objlist[obj]);
+// 	  newObject.pixels().addChannel(z,objlist[obj]);
+	  newObject.addChannel(z,objlist[obj]);
 	  newObject.setOffsets(par);
 	  mergeIntoList(newObject,outputList,par);
 	}
@@ -430,7 +432,8 @@ namespace duchamp
 	num += objlist.size();
 	for(unsigned int obj=0;obj<objlist.size();obj++){
 	  Detection newObject;
-	  newObject.pixels().addChannel(z,objlist[obj]);
+// 	  newObject.pixels().addChannel(z,objlist[obj]);
+	  newObject.addChannel(z,objlist[obj]);
 	  newObject.setOffsets(par);
 	  mergeIntoList(newObject,outputList,par);
 	}
