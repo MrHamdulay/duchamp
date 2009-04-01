@@ -582,11 +582,11 @@ uncorrelated, then $c_N=1$. If $N$ pixels are correlated, then their
 tests will be dependent on each other, and so $c_N = \sum_{i=1}^N
 i^{-1}$. \citet{hopkins02} consider real radio data, where the pixels
 are correlated over the beam. For the calculations done in \duchamp,
-$N=B\timesC$, where $B$ is the beam size in pixels, calculated from the FITS
-header (if the correct keywords -- BMAJ, BMIN -- are not present, the
-size of the beam is taken from the parameter \texttt{beamSize}), and
-$C$ is the number of neighbouring channels that can be considered to
-be correlated. 
+$N = B \times C$, where $B$ is the beam size in pixels, calculated
+from the FITS header (if the correct keywords -- BMAJ, BMIN -- are not
+present, the size of the beam is taken from the parameter
+\texttt{beamSize}), and $C$ is the number of neighbouring channels
+that can be considered to be correlated.
 
 The use of the FDR method is governed by the \texttt{flagFDR} flag,
 which is \texttt{false} by default. To set the relevant parameters,

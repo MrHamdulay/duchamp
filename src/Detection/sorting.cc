@@ -25,11 +25,14 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
+#include <iostream>
+#include <sstream>
 #include <vector>
 #include <algorithm>
+#include <duchamp/duchamp.hh>
+#include <duchamp/param.hh>
 #include <duchamp/Detection/detection.hh>
 
-using std::vector;
 
 /// @brief
 /// A class to match things pair-wise (useful for sorting).
@@ -70,7 +73,7 @@ private:
 namespace duchamp
 {
 
-  void SortByZ(vector <Detection> &inputList)
+  void SortByZ(std::vector <Detection> &inputList)
   {
     /// A Function that takes a list of Detections and sorts them in
     /// order of increasing z-pixel value.  Upon return, the inputList
@@ -88,7 +91,7 @@ namespace duchamp
 
     std::stable_sort(info,info+size);
   
-    vector <Detection> sorted;
+    std::vector <Detection> sorted;
     for(int i=0;i<size;i++) sorted.push_back( inputList[int(info[i].get2())] );
 
     delete [] info;
@@ -101,7 +104,7 @@ namespace duchamp
 
   //======================================================================
 
-  void SortByVel(vector <Detection> &inputList)
+  void SortByVel(std::vector <Detection> &inputList)
   {
     /// @details
     /// A Function that takes a list of Detections and sorts them in 
@@ -130,7 +133,79 @@ namespace duchamp
 
       std::stable_sort(info, info+size);
   
-      vector <Detection> sorted;
+      std::vector <Detection> sorted;
+      for(int i=0;i<size;i++) sorted.push_back( inputList[int(info[i].get2())] );
+
+      delete [] info;
+
+      inputList.clear();
+      for(int i=0;i<size;i++) inputList.push_back( sorted[i] );
+      sorted.clear();
+  
+    }
+
+  }  
+
+  //======================================================================
+
+  void SortDetections(std::vector <Detection> &inputList, std::string parameter)
+  {
+    /// @details
+    /// A Function that takes a list of Detections and sorts them in 
+    ///  order of increasing value of the parameter given.
+    ///
+    /// Every member of the vector needs to have WCS defined, (and if
+    /// so, then parameter in question is assumed to be defined for
+    /// all), otherwise no sorting is done. The exception is the
+    /// z-value, in which case sorting is always done.
+    /// 
+    /// We use the std::stable_sort function, so that the order of
+    /// objects with the same parameter value is preserved.
+    /// 
+    /// \param inputList List of Detections to be sorted.
+    /// \param parameter The name of the parameter to be sorted
+    ///        on. Options are "zvalue", "vel", "ra", "dec", "iflux",
+    ///        "pflux".
+    /// \return The inputList is returned with the elements sorted,
+    ///         unless the WCS is not good for at least one element,
+    ///         in which case it is returned unaltered.
+
+    bool OK = false;
+    for(int i=0;i<numSortingParamOptions;i++) 
+      OK = OK || (parameter==sortingParamOptions[i]);
+    if(!OK){
+      std::stringstream errmsg;
+      errmsg << "Invalid sorting parameter: " << parameter << "\nNot doing any sorting.";
+      duchampError("SortDetections", errmsg.str());
+      return;
+    }
+
+    bool isGood = true;
+    if(parameter!="zvalue"){
+      for(unsigned int i=0;i<inputList.size();i++) isGood = isGood && inputList[i].isWCS();
+    }
+
+    if(isGood){
+
+      long size = inputList.size();
+      Pair *info = new Pair[size];
+    
+      for(int i=0;i<size;i++){
+	if(parameter=="xvalue")	     info[i].define(inputList[i].getXcentre(), float(i));	
+	else if(parameter=="yvalue") info[i].define(inputList[i].getYcentre(), float(i));	
+	else if(parameter=="zvalue") info[i].define(inputList[i].getZcentre(), float(i));	
+	else if(parameter=="ra")     info[i].define(inputList[i].getRA(), float(i));
+	else if(parameter=="dec")    info[i].define(inputList[i].getDec(), float(i));
+	else if(parameter=="vel")    info[i].define(inputList[i].getVel(), float(i));
+	else if(parameter=="w50")    info[i].define(inputList[i].getW50(), float(i));
+	else if(parameter=="iflux")  info[i].define(inputList[i].getIntegFlux(), float(i));
+	else if(parameter=="pflux")  info[i].define(inputList[i].getPeakFlux(), float(i));
+	else if(parameter=="SNR")    info[i].define(inputList[i].getPeakSNR(), float(i));
+      }
+
+      std::stable_sort(info, info+size);
+  
+      std::vector <Detection> sorted;
       for(int i=0;i<size;i++) sorted.push_back( inputList[int(info[i].get2())] );
 
       delete [] info;

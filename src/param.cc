@@ -179,6 +179,7 @@ namespace duchamp
     this->spectralMethod    = "peak";
     this->spectralUnits     = "km/s";
     this->pixelCentre       = "centroid";
+    this->sortingParam      = "vel";
     this->borders           = true;
     this->blankEdge         = true;
     this->verbose           = true;
@@ -291,7 +292,9 @@ namespace duchamp
     this->spectralMethod    = p.spectralMethod;
     this->spectralUnits     = p.spectralUnits;
     this->pixelCentre       = p.pixelCentre;
+    this->sortingParam      = p.sortingParam;
     this->borders           = p.borders;
+    this->blankEdge         = p.blankEdge;
     this->verbose           = p.verbose;
     return *this;
   }
@@ -677,6 +680,7 @@ namespace duchamp
 	if(arg=="spectralmethod")  this->spectralMethod=makelower(readSval(ss));
 	if(arg=="spectralunits")   this->spectralUnits = makelower(readSval(ss));
 	if(arg=="pixelcentre")     this->pixelCentre = makelower(readSval(ss));
+	if(arg=="sortingparam")    this->sortingParam = makelower(readSval(ss));
 	if(arg=="drawborders")     this->borders = readFlag(ss); 
 	if(arg=="drawblankedges")  this->blankEdge = readFlag(ss); 
 	if(arg=="verbose")         this->verbose = readFlag(ss); 
@@ -774,7 +778,7 @@ namespace duchamp
     if((this->annotationType != "borders") && (this->annotationType!="circles")){
       std::stringstream errmsg;
       errmsg << "The requested value of the parameter annotationType, \""
-	     << this->annotationType << "\" is invalid.\n"
+	     << this->annotationType << "\", is invalid.\n"
 	     << "Changing to \"borders\".\n";
       duchampWarning("Reading parameters",errmsg.str());
       this->annotationType = "borders";
@@ -785,7 +789,7 @@ namespace duchamp
        (this->smoothType!="spatial")){
       std::stringstream errmsg;
       errmsg << "The requested value of the parameter smoothType, \""
-	     << this->smoothType << "\" is invalid.\n"
+	     << this->smoothType << "\", is invalid.\n"
 	     << "Changing to \"spectral\".\n";
       duchampWarning("Reading parameters",errmsg.str());
       this->smoothType = "spectral";
@@ -798,7 +802,7 @@ namespace duchamp
        (this->spectralMethod!="sum")){
       std::stringstream errmsg;
       errmsg << "The requested value of the parameter spectralMethod, \""
-	     << this->spectralMethod << "\" is invalid.\n"
+	     << this->spectralMethod << "\", is invalid.\n"
 	     << "Changing to \"peak\".\n";
       duchampWarning("Reading parameters",errmsg.str());
       this->spectralMethod = "peak";
@@ -810,12 +814,25 @@ namespace duchamp
        (this->pixelCentre!="peak")       ){
       std::stringstream errmsg;
       errmsg << "The requested value of the parameter pixelCentre, \""
-	     << this->pixelCentre << "\" is invalid.\n"
+	     << this->pixelCentre << "\", is invalid.\n"
 	     << "Changing to \"centroid\".\n";
       duchampWarning("Reading parameters",errmsg.str());
       this->pixelCentre = "centroid";
     }
 
+    // Make sure sortingParam is an acceptable type -- default is "vel"
+    bool OK = false;
+    for(int i=0;i<numSortingParamOptions;i++) 
+      OK = OK || this->sortingParam==sortingParamOptions[i];
+    if(!OK){
+      std::stringstream errmsg;
+      errmsg << "The requested value of the parameter sortingParam, \""
+	     << this->sortingParam << "\", is invalid.\n"
+	     << "Changing to \"vel\".\n";
+      duchampWarning("Reading parameters",errmsg.str());
+      this->sortingParam = "vel";
+    }
+      
   }
 
 

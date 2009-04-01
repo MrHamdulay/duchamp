@@ -57,12 +57,27 @@ namespace duchamp
   {
     ///  @details
     ///  A front end to the sort-by functions.
-    ///  If there is a good WCS, the detection list is sorted by velocity.
+    ///  If there is a good WCS, the detection list is sorted by the requested parameter.
     ///  Otherwise, it is sorted by increasing z-pixel value.
     ///  The ID numbers are then re-calculated.
   
-    if(this->head.isWCS()) SortByVel(*this->objectList);
-    else SortByZ(*this->objectList);
+//     if(this->head.isWCS()) SortByVel(*this->objectList);
+//     else SortByZ(*this->objectList);
+    if(!this->head.isWCS()){
+      if(this->par.getSortingParam()=="ra"){
+	duchampWarning("sortDetections","No good WCS, so sorting by x-value");
+	SortDetections(*this->objectList, "x-value");
+      }
+      else if(this->par.getSortingParam()=="dec"){
+	duchampWarning("sortDetections","No good WCS, so sorting by y-value");
+	SortDetections(*this->objectList, "y-value");
+      }
+      else if(this->par.getSortingParam()=="vel" || this->par.getSortingParam()=="w50"){
+	duchampWarning("sortDetections","No good WCS, so sorting by z-value");
+	SortDetections(*this->objectList, "z-value");
+      }
+    }
+    else SortDetections(*this->objectList, this->par.getSortingParam());
     for(unsigned int i=0; i<this->objectList->size();i++) 
       this->objectList->at(i).setID(i+1);
 

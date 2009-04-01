@@ -313,6 +313,9 @@ namespace duchamp
   /// @brief Sort a list of Detections by Velocity.
   void SortByVel(std::vector <Detection> &inputList);
 
+  /// @brief Sort a list of Detections by a nominated parameter
+  void SortDetections(std::vector <Detection> &inputList, std::string parameter);
+
   //----------------
   // This is in areClose.cc
   //

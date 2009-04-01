@@ -43,6 +43,11 @@ namespace duchamp
 
   class FitsHeader; // foreshadow this so that Param knows it exists
 
+  const int numSortingParamOptions = 6;
+  const std::string sortingParamOptions[numSortingParamOptions]={"xvalue","yvalue","zvalue","ra","dec","vel","w50","iflux","pflux","SNR"};
+
+
+
   /// @brief Class to store general parameters.
   /// 
   /// @details This is a general repository for parameters that are used by all
@@ -341,6 +346,8 @@ namespace duchamp
     void   setSpectralUnits(std::string s){spectralUnits=s;};
     std::string getPixelCentre(){return pixelCentre;};
     void   setPixelCentre(std::string s){pixelCentre=s;};
+    std::string getSortingParam(){return sortingParam;};
+    void   setSortingParam(std::string s){sortingParam=s;};
     bool   drawBorders(){return borders;};
     void   setDrawBorders(bool f){borders=f;};
     bool   drawBlankEdge(){return blankEdge;};
@@ -478,6 +485,7 @@ namespace duchamp
     std::string spectralMethod; ///< A string indicating choice of spectral plotting method: choices are "peak" (default) or "sum"
     std::string spectralUnits;   ///< A string indicating what units the spectral axis should be quoted in.
     std::string pixelCentre;///< A string indicating which type of centre to give the results in: "average", "centroid", or "peak"(flux).
+    std::string sortingParam; ///< A string indicating the parameter to sort the detection list on.
     bool   borders;         ///< Whether to draw a border around the individual pixels of a detection in the spectral display
     bool   blankEdge;       ///< Whether to draw a border around the BLANK pixel region in the moment maps and cutout images
     bool   verbose;         ///< Whether to use maximum verbosity -- use progress indicators in the reconstruction & merging steps.
