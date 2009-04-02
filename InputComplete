@@ -228,7 +228,7 @@ minPix		2
 #                 Options are: centroid, average, peak.
 # sortingParam -- which parameter to sort the final detection list on.
 #                  Options are: x-value, y-value, z-value, ra, dec, vel, w50, 
-#                                iflux,  pflux, SNR. 
+#                                iflux,  pflux, snr. 
 
 verbose         1
 drawBorders	1

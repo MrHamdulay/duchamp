@@ -3,6 +3,12 @@ Duchamp version 1.1.8 (2009/??/??)
 
 Improvements:
 
+* The final source list can now be sorted on one of a range of object
+  parameters: x-value, y-value, z-value, ra, dec, vel, w50, iflux,
+  pflux (integrated and peak flux respectively), or snr. Simply use
+  the new input parameter sortingParam. Its default value is vel, so
+  the default behaviour stays the same.
+
 * The FDR method involves calculating how many pixels are
   correlated. This previously involved multiplying the beam area by 2,
   implying that 2 neighbouring channels were correlated. This factor

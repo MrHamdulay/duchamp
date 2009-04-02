@@ -200,7 +200,7 @@ namespace duchamp
 	else if(parameter=="w50")    info[i].define(inputList[i].getW50(), float(i));
 	else if(parameter=="iflux")  info[i].define(inputList[i].getIntegFlux(), float(i));
 	else if(parameter=="pflux")  info[i].define(inputList[i].getPeakFlux(), float(i));
-	else if(parameter=="SNR")    info[i].define(inputList[i].getPeakSNR(), float(i));
+	else if(parameter=="snr")    info[i].define(inputList[i].getPeakSNR(), float(i));
       }
 
       std::stable_sort(info, info+size);

@@ -43,8 +43,8 @@ namespace duchamp
 
   class FitsHeader; // foreshadow this so that Param knows it exists
 
-  const int numSortingParamOptions = 6;
-  const std::string sortingParamOptions[numSortingParamOptions]={"xvalue","yvalue","zvalue","ra","dec","vel","w50","iflux","pflux","SNR"};
+  const int numSortingParamOptions = 10;
+  const std::string sortingParamOptions[numSortingParamOptions]={"xvalue","yvalue","zvalue","ra","dec","vel","w50","iflux","pflux","snr"};
 
 
 
