@@ -1,5 +1,5 @@
-Duchamp version 1.1.8 (2009/??/??)
-----------------------------------
+Duchamp version 1.2-beta (2009/05/11)
+-------------------------------------
 
 Improvements:
 
@@ -21,6 +21,11 @@ Improvements:
 
 
 Bug fixes:
+
+* Using NCP projections near the equator could result in a large
+  stream of error messages, due to coordinate transformations being
+  done in blank regions outside of the acceptable range of world
+  coordinates. This has been fixed.
 
 * The function that grows objects had a major bug, that stopped it
   working when flagAdjacent=false. This has been fixed and should work
