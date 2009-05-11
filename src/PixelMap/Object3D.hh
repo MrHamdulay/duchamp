@@ -100,7 +100,7 @@ namespace PixelInfo
     long getNumChanMap(){return chanlist.size();};
 
     /// @brief Return the number of spatial pixels -- ie. the number of distinct (x,y) sets in the Object. 
-    long getSpatialSize();
+    unsigned long getSpatialSize();
 
     /// @brief Return a vector set of all voxels in the Object. 
     std::vector<Voxel> getPixelSet();

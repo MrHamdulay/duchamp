@@ -67,7 +67,7 @@ namespace duchamp
       }
       else{
 	if(status == OBJECT){ // if we were on an object and have left
-	  if(obj.getXlen() >= this->minSize){ // if it's big enough
+	  if(obj.getXlen() >= int(this->minSize)){ // if it's big enough
 	    outputlist.push_back(obj);  // add to list.
 	  }
 	  obj.clear();

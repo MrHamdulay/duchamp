@@ -61,12 +61,6 @@ namespace duchamp
     //------------------------------
     // These are functions in detection.cc. 
     //
-    /// @brief Add all voxels of one object to another. 
-//     friend Detection operator+ (Detection lhs, Detection rhs);
-    friend Detection operator+= (Detection lhs, Detection rhs){
-      lhs = lhs + rhs;
-      return lhs;
-    }
 
     /// @brief Test whether voxel lists match 
     bool voxelListsMatch(std::vector<PixelInfo::Voxel> voxelList);

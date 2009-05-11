@@ -148,16 +148,17 @@ namespace duchamp
 
 	  Detection obj1 = objList[counter];
 	  Detection obj2 = objList[compCounter];
+	  Detection newobj;
 
 	  bool close = areClose(obj1, obj2, par);
 
 	  if(close){
-	    obj1 = obj1 + obj2 ;
+	    newobj = obj1 + obj2 ;
 	    iter = objList.begin() + compCounter;
 	    objList.erase(iter);
 	    iter = objList.begin() + counter;
 	    objList.erase(iter);
-	    objList.push_back( obj1 );
+	    objList.push_back( newobj );
 
 	    if(isVerb){
 	      std::cout.setf(std::ios::right);
@@ -196,26 +197,26 @@ namespace duchamp
     ///   In the process, the object parameters are calculated and offsets
     ///    are added.
 
-    unsigned int listCounter = 0;
-
     std::cout << "Rejecting:" << std::setw(6) << objList.size();
     printSpace(6);
     printBackSpace(22);
     std::cout << std::flush;
   
-    while(listCounter < objList.size()){
+    std::vector<Detection>::iterator obj = objList.begin();
 
-      objList[listCounter].setOffsets(par);
+    while(obj < objList.end()){
+
+      obj->setOffsets(par);
       
-      if( (objList[listCounter].hasEnoughChannels(par.getMinChannels()))
-	  && (objList[listCounter].getSpatialSize() >= par.getMinPix()) ){
+      if( (obj->hasEnoughChannels(par.getMinChannels()))
+	  && (obj->getSpatialSize() >= par.getMinPix()) ){
 
-	listCounter++;
+	obj++;
 
       }      
       else{
       
-	objList.erase(objList.begin()+listCounter);
+	objList.erase(obj);
 	if(par.isVerbose()){
 	  std::cout << "Rejecting:" << std::setw(6) << objList.size();
 	  printSpace(6);

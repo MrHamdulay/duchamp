@@ -185,9 +185,9 @@ namespace PixelInfo
     std::map<long,Object2D>::iterator it=this->chanlist.begin();
     while(it!=this->chanlist.end() && it->first!=z) it++;
 
-    if(it == this->chanlist.end()){
+    if(it == this->chanlist.end()){ // channel z is not already in object, so add it.
       this->chanlist.insert(std::pair<long,Object2D>(z,obj));
-      if(this->numVox == 0){
+      if(this->numVox == 0){ // if there are no other pixels, so initialise mins,maxs,sums
 	this->xmin = obj.xmin;
 	this->xmax = obj.xmax;
 	this->ymin = obj.ymin;
@@ -197,7 +197,7 @@ namespace PixelInfo
 	this->ySum = obj.ySum;
 	this->zSum = z * obj.getSize();
       }
-      else{
+      else{ // there are other pixels in other channels, so update mins, maxs, sums
 	if(obj.xmin<this->xmin) this->xmin = obj.xmin;
 	if(obj.xmax>this->xmax) this->xmax = obj.xmax;
 	if(obj.ymin<this->ymin) this->ymin = obj.ymin;
@@ -210,12 +210,12 @@ namespace PixelInfo
       }
       this->numVox += obj.getSize();
     }
-    else{
+    else{ // channel is already present, so need to combine objects.
       this->xSum -= it->second.xSum;
       this->ySum -= it->second.ySum;
       this->zSum -= z*it->second.getSize();
       this->numVox -= it->second.getSize();
-      it->second += obj;
+      it->second = it->second + obj;
       this->xSum += it->second.xSum;
       this->ySum += it->second.ySum;
       this->zSum += z*it->second.getSize();
@@ -229,7 +229,7 @@ namespace PixelInfo
 
   //--------------------------------------------
 
-  long Object3D::getSpatialSize()
+  unsigned long Object3D::getSpatialSize()
   {
     Object2D spatialMap = this->getSpatialMap();
     return spatialMap.getSize();

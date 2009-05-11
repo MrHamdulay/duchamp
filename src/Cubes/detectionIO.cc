@@ -304,7 +304,7 @@ namespace duchamp
       }
 
       for(unsigned int objCtr=0;objCtr<this->objectList->size();objCtr++){
-	Detection obj = objectList->at(objCtr);
+	Detection obj = this->objectList->at(objCtr);
 	obj.setOffsets(par);
 	if(this->par.getFlagCubeTrimmed()){
 	  obj.addOffsets(left,bottom,0);

@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Mon Dec  1 14:09:29 2008
+New run of the Duchamp sourcefinder: Mon May 11 14:40:17 2009
 Executing statement : ./Duchamp -p verification/input2 
 
 ---- Parameters ----
@@ -19,6 +19,7 @@ Using A Trous reconstruction?...............[flagATrous]  =  false
 Using Robust statistics?...............[flagRobustStats]  =  true
 Using FDR analysis?............................[flagFDR]  =  true
 Alpha value for FDR analysis..................[alphaFDR]  =  0.05
+Number of correlated channels for FDR....[FDRnumCorChan]  =  2
 Minimum # Pixels in a detection.................[minPix]  =  2
 Minimum # Channels in a detection..........[minChannels]  =  2
 Growing objects after detection?............[flagGrowth]  =  false
@@ -234,7 +235,6 @@ Detection #1
 27-27, 24, 26
 27-27, 26, 26
 
----
 Detection #2
 74-74, 23, 36
 76-76, 25, 36
@@ -365,7 +365,6 @@ Detection #2
 77-77, 25, 47
 73-74, 26, 47
 
----
 Detection #3
 52-52, 50, 58
 50-50, 48, 59
@@ -500,7 +499,6 @@ Detection #3
 49-49, 49, 70
 50-50, 51, 70
 
----
 Detection #4
 24-24, 75, 81
 22-22, 76, 81
@@ -628,7 +626,6 @@ Detection #4
 23-23, 79, 91
 28-28, 75, 93
 
----
 Detection #5
 73-73, 73, 103
 73-73, 74, 103
@@ -764,6 +761,5 @@ Detection #5
 76-76, 76, 114
 77-77, 77, 114
 
----
 --------------
-Duchamp completed: Mon Dec  1 14:09:37 2008
+Duchamp completed: Mon May 11 14:40:20 2009

@@ -673,8 +673,8 @@ namespace duchamp
     /// @brief Detect objects in a 1-D spectrum 
     std::vector<PixelInfo::Scan> spectrumDetect();
 
-    int       getMinSize(){return minSize;};
-    void      setMinSize(int i){minSize=i;};
+    unsigned int getMinSize(){return minSize;};
+    void         setMinSize(int i){minSize=i;};
 
     /// @brief  A detection test for a pixel location.  
     bool      isDetection(long x, long y){
@@ -691,7 +691,7 @@ namespace duchamp
     void      removeMW();
 
   private: 
-    int       minSize;    ///< the minimum number of pixels for a detection to be accepted.
+    unsigned int minSize;    ///< the minimum number of pixels for a detection to be accepted.
   };
 
 

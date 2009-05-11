@@ -81,7 +81,7 @@ namespace PixelInfo
     bool  scanOverlaps(Scan scan);
 
     /// @brief Return the number of pixels in the Object. 
-    long  getSize(){return numPix;};
+    unsigned long  getSize(){return numPix;};
 
     /// @brief Return the number of Scans in the Object. 
     long  getNumScan(){return scanlist.size();};
@@ -123,22 +123,13 @@ namespace PixelInfo
     friend std::ostream& operator<< ( std::ostream& theStream, Object2D& obj);
 
     /// @brief Adding two Objects together. 
-    friend Object2D operator+ (Object2D lhs, Object2D rhs){
-      Object2D output = lhs;
-      for(unsigned int s=0;s<rhs.scanlist.size();s++) output.addScan(rhs.scanlist[s]);
-      return output;
-    }
-
-    friend Object2D operator+= (Object2D lhs, Object2D rhs){
-      lhs = lhs + rhs;
-      return lhs;
-    }
+    friend Object2D operator+ (Object2D lhs, Object2D rhs);
 
     friend class Object3D; 
 
   private:
     std::vector<Scan> scanlist;       ///< The list of Scans
-    long              numPix;         ///< Number of pixels in the Object
+    unsigned long     numPix;         ///< Number of pixels in the Object
     float             xSum;           ///< Sum of x values
     float             ySum;           ///< Sum of y values
     long              xmin,xmax;      ///< min and max x-values of object
