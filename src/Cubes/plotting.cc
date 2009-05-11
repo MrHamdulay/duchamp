@@ -281,23 +281,26 @@ void Cube::plotMomentMap(std::vector<std::string> pgDestination)
 	x = double(pix%xdim);
 	y = double(pix/xdim);
 
-	delete [] world;
-	world = this->head.pixToVel(x,y,zArray,zdim);
+	if(!this->isBlank(pix)){ // only do this for non-blank pixels. Judge this by the first pixel of the channel.
+
+	  delete [] world;
+	  world = this->head.pixToVel(x,y,zArray,zdim);
       
-	for(int z=0; z<zdim; z++){      
-	  int pos =  z*xdim*ydim + pix;  // the voxel in the cube
-	  if(isObj[pos]){ // if it's an object pixel...
-	    // delta-vel is half the distance between adjacent channels.
-	    // if at end, then just use 0-1 or (zdim-1)-(zdim-2) distance
-	    if(z==0){
-	      if(zdim==1) deltaVel=1.; // pathological case -- if 2D image.
-	      else deltaVel = world[z+1] - world[z];
+	  for(int z=0; z<zdim; z++){      
+	    int pos =  z*xdim*ydim + pix;  // the voxel in the cube
+	    if(isObj[pos]){ // if it's an object pixel...
+	      // delta-vel is half the distance between adjacent channels.
+	      // if at end, then just use 0-1 or (zdim-1)-(zdim-2) distance
+	      if(z==0){
+		if(zdim==1) deltaVel=1.; // pathological case -- if 2D image.
+		else deltaVel = world[z+1] - world[z];
+	      }
+	      else if(z==(zdim-1)) deltaVel = world[z-1] - world[z];
+	      else deltaVel = (world[z+1] - world[z-1]) / 2.;
+
+	      momentMap[pix] += sign * this->array[pos] * fabs(deltaVel);
+
 	    }
-	    else if(z==(zdim-1)) deltaVel = world[z-1] - world[z];
-	    else deltaVel = (world[z+1] - world[z-1]) / 2.;
-
-	    momentMap[pix] += sign * this->array[pos] * fabs(deltaVel);
-
 	  }
 	}
 

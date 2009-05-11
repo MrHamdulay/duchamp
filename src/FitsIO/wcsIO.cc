@@ -147,7 +147,6 @@ namespace duchamp
 		   << wcsfix_errmsg[stat[i]] << std::endl;
 	duchampWarning("Cube Reader", errmsg.str() );
       }
-
       // Set up the wcsprm struct. Report if something goes wrong.
       status = wcsset(localwcs);
       if(status){
@@ -158,6 +157,20 @@ namespace duchamp
 	duchampWarning("Cube Reader",errmsg.str());
       }
       else{
+
+	int stat[NWCSFIX];
+	// Re-do the corrections to account for things like NCP projections
+	status = wcsfix(1, (const int*)dimAxes, localwcs, stat);
+	if(status) {
+	  std::stringstream errmsg;
+	  errmsg << "wcsfix failed:\n";
+	  errmsg << "Function status returns are:\n";
+	  for(int i=0; i<NWCSFIX; i++)
+	    if (stat[i] > 0) 
+	      errmsg << i+1 << ": WCSFIX error code=" << stat[i] << ": "
+		     << wcsfix_errmsg[stat[i]] << std::endl;
+	  duchampWarning("Cube Reader", errmsg.str() );
+	}
 
 	if(localwcs->spec>=0){ //if there is a spectral axis
 
@@ -247,7 +260,7 @@ namespace duchamp
 	// Now that the WCS is defined, use it to set the offsets in the Param set
 	par.setOffsets(localwcs);
 
-     }
+      }
     }
 
     // work out whether the array is 2dimensional
