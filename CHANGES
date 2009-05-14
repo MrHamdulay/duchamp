@@ -22,6 +22,10 @@ Improvements:
 
 Bug fixes:
 
+* There was an apparent bug when writing out the reconstructed cubes
+  to a FITS file that caused the new file to be very large. Changing
+  the cfitsio function used has fixed this.
+
 * Using NCP projections near the equator could result in a large
   stream of error messages, due to coordinate transformations being
   done in blank regions outside of the acceptable range of world
