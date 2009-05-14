@@ -192,15 +192,11 @@ namespace duchamp
     ///   The file is always written -- if the filename (as calculated 
     ///    based on the parameters) exists, then it is overwritten.
   
-    int newbitpix = FLOAT_IMG;
-
     float blankval = this->par.getBlankPixVal();
 
-    long *fpixel = new long[this->numDim];
-    for(int i=0;i<this->numDim;i++) fpixel[i]=1;
     int status = 0;  /* MUST initialize status */
     fitsfile *fptrOld, *fptrNew;         
-    fits_open_file(&fptrOld,this->par.getImageFile().c_str(),READONLY,&status);
+    fits_open_file(&fptrOld,this->par.getFullImageFile().c_str(),READONLY,&status);
     if (status) fits_report_error(stderr, status);
   
     if(this->par.getFlagOutputSmooth()){
@@ -218,41 +214,13 @@ namespace duchamp
 	status = 0;
 	fits_copy_header(fptrOld, fptrNew, &status);
 	if (status) fits_report_error(stderr, status);
-	char *comment = new char[80];
-	long dud;
-	status = 0;
-	fits_update_key(fptrNew, TINT, "BITPIX", &newbitpix, 
-			"number of bits per data pixel", &status);
-	if (status) fits_report_error(stderr, status);
-	status = 0;
-	float bscale=1., bzero=0.;
-	fits_update_key(fptrNew, TFLOAT, "BSCALE", &bscale, 
-			"PHYSICAL = PIXEL*BSCALE + BZERO", &status);
-	fits_update_key(fptrNew, TFLOAT, "BZERO", &bzero, "", &status);
-	fits_set_bscale(fptrNew, 1., 0., &status);
-	if (status) fits_report_error(stderr, status);
-	// Need to correct the dimensions, if we have subsectioned the image
-	if(this->par.getFlagSubsection()){
-	  fits_read_key(fptrOld, TLONG, "NAXIS1", &dud, comment, &status);
-	  fits_update_key(fptrNew, TLONG, "NAXIS1", 
-			  &(this->axisDim[0]), comment, &status);
-	  fits_read_key(fptrOld, TLONG, "NAXIS2", &dud, comment, &status);
-	  fits_update_key(fptrNew, TLONG, "NAXIS2", 
-			  &(this->axisDim[1]), comment, &status);
-	  fits_read_key(fptrOld, TLONG, "NAXIS3", &dud, comment, &status);
-	  fits_update_key(fptrNew, TLONG, "NAXIS3", 
-			  &(this->axisDim[2]), comment, &status);
-	}
-
-	delete [] comment;
 
 	writeSmoothHeaderInfo(fptrNew, this->par);
 
 	if(this->par.getFlagBlankPix())
-	  fits_write_pixnull(fptrNew, TFLOAT, fpixel, this->numPixels, 
-			     this->recon, &blankval, &status);
-	else fits_write_pix(fptrNew, TFLOAT, fpixel, this->numPixels, 
-			    this->recon, &status);
+	  fits_write_imgnull(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &blankval, &status);
+	else 
+	  fits_write_img(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &status);
 
 	status = 0;
 	fits_close_file(fptrNew, &status);
@@ -260,8 +228,6 @@ namespace duchamp
 
       }
     }
-
-    delete [] fpixel;
 
   }
 
@@ -276,18 +242,11 @@ namespace duchamp
     ///   The file is always written -- if the filename (as calculated 
     ///    based on the recon parameters) exists, then it is overwritten.
   
-    int newbitpix = FLOAT_IMG;
-
-    float *resid = new float[this->numPixels];
-    for(int i=0;i<this->numPixels;i++) 
-      resid[i] = this->array[i] - this->recon[i];
     float blankval = this->par.getBlankPixVal();
 
-    long *fpixel = new long[this->numDim];
-    for(int i=0;i<this->numDim;i++) fpixel[i]=1;
     int status = 0;  /* MUST initialize status */
     fitsfile *fptrOld, *fptrNew;         
-    fits_open_file(&fptrOld,this->par.getImageFile().c_str(),READONLY,&status);
+    fits_open_file(&fptrOld,this->par.getFullImageFile().c_str(),READONLY,&status);
     if (status) fits_report_error(stderr, status);
   
     if(this->par.getFlagOutputRecon()){
@@ -306,41 +265,13 @@ namespace duchamp
 	  status = 0;
 	  fits_copy_header(fptrOld, fptrNew, &status);
 	  if (status) fits_report_error(stderr, status);
-	  char *comment = new char[80];
-	  long dud;
-	  status = 0;
-	  fits_update_key(fptrNew, TINT, "BITPIX", &newbitpix, 
-			  "number of bits per data pixel", &status);
-	  if (status) fits_report_error(stderr, status);
-	  status = 0;
-	  float bscale=1., bzero=0.;
-	  fits_update_key(fptrNew, TFLOAT, "BSCALE", &bscale, 
-			  "PHYSICAL = PIXEL*BSCALE + BZERO", &status);
-	  fits_update_key(fptrNew, TFLOAT, "BZERO", &bzero, "", &status);
-	  fits_set_bscale(fptrNew, 1., 0., &status);
-	  if (status) fits_report_error(stderr, status);
-	  // Need to correct the dimensions, if we have subsectioned the image
-	  if(this->par.getFlagSubsection()){
-	    fits_read_key(fptrOld, TLONG, "NAXIS1", &dud, comment, &status);
-	    fits_update_key(fptrNew, TLONG, "NAXIS1", 
-			    &(this->axisDim[0]), comment, &status);
-	    fits_read_key(fptrOld, TLONG, "NAXIS2", &dud, comment, &status);
-	    fits_update_key(fptrNew, TLONG, "NAXIS2", 
-			    &(this->axisDim[1]), comment, &status);
-	    fits_read_key(fptrOld, TLONG, "NAXIS3", &dud, comment, &status);
-	    fits_update_key(fptrNew, TLONG, "NAXIS3", 
-			    &(this->axisDim[2]), comment, &status);
-	  }
-
-	  delete [] comment;
 
 	  writeReconHeaderInfo(fptrNew, this->par, "recon");
 
 	  if(this->par.getFlagBlankPix())
-	    fits_write_pixnull(fptrNew, TFLOAT, fpixel, this->numPixels, 
-			       this->recon, &blankval, &status);
-	  else  fits_write_pix(fptrNew, TFLOAT, fpixel, this->numPixels, 
-			       this->recon, &status);
+	    fits_write_imgnull(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &blankval, &status);
+	  else  
+	    fits_write_img(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &status);
 
 	  status = 0;
 	  fits_close_file(fptrNew, &status);
@@ -350,6 +281,10 @@ namespace duchamp
 
 
     if(this->par.getFlagOutputResid()){
+      float *resid = new float[this->numPixels];
+      for(int i=0;i<this->numPixels;i++) 
+	resid[i] = this->array[i] - this->recon[i];
+
       std::string fileout = "!" + this->par.outputResidFile(); 
       // the ! is there so that it writes over an existing file.
       status = 0;
@@ -365,49 +300,18 @@ namespace duchamp
 	  fits_copy_header(fptrOld, fptrNew, &status);
 	  if (status) fits_report_error(stderr, status);
 
-	  status = 0;
-	  fits_update_key(fptrNew, TINT, "BITPIX", &newbitpix, 
-			  "number of bits per data pixel", &status);
-	  if (status) fits_report_error(stderr, status);
-	  status = 0;
-	  float bscale=1., bzero=0.;
-	  fits_update_key(fptrNew, TFLOAT, "BSCALE", &bscale, 
-			  "PHYSICAL = PIXEL*BSCALE + BZERO", &status);
-	  fits_update_key(fptrNew, TFLOAT, "BZERO", &bzero, "", &status);
-	  fits_set_bscale(fptrNew, 1., 0., &status);
-	  if (status) fits_report_error(stderr, status);
-
-	  // Need to correct the dimensions, if we have subsectioned the image...
-	  char *comment = new char[80];
-	  long dud;
-	  if(this->pars().getFlagSubsection()){
-	    fits_read_key(fptrOld, TLONG, "NAXIS1", &dud, comment, &status);
-	    fits_update_key(fptrNew, TLONG, "NAXIS1", 
-			    &(this->axisDim[0]), comment, &status);
-	    fits_read_key(fptrOld, TLONG, "NAXIS2", &dud, comment, &status);
-	    fits_update_key(fptrNew, TLONG, "NAXIS2", 
-			    &(this->axisDim[1]), comment, &status);
-	    fits_read_key(fptrOld, TLONG, "NAXIS3", &dud, comment, &status);
-	    fits_update_key(fptrNew, TLONG, "NAXIS3", 
-			    &(this->axisDim[2]), comment, &status);
-	  }
-
-	  delete [] comment;
-
 	  writeReconHeaderInfo(fptrNew, this->par, "resid");
 
 	  if(this->par.getFlagBlankPix())
-	    fits_write_pixnull(fptrNew, TFLOAT, fpixel, this->numPixels, 
-			       resid, &blankval, &status);
-	  else  fits_write_pix(fptrNew, TFLOAT, fpixel, this->numPixels, 
-			       resid, &status);
+	    fits_write_imgnull(fptrNew, TFLOAT, 1, this->numPixels, resid, &blankval, &status);
+	  else  
+	    fits_write_img(fptrNew, TFLOAT, 1, this->numPixels, resid, &status);
 
 	  fits_close_file(fptrNew, &status);
 	}
+      delete [] resid;
     }
 
-    delete [] resid;
-    delete [] fpixel;
 
   }
 
