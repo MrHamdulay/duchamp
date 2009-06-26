@@ -531,8 +531,7 @@ namespace duchamp
     void        plotMomentMap(std::vector<std::string> pgDestination);
 
     /// @brief Draw WCS axes over a PGPLOT map. 
-    void        plotWCSaxes(int textColour=DUCHAMP_ID_TEXT_COLOUR,
-			    int axisColour=DUCHAMP_WCS_AXIS_COLOUR);
+    void        plotWCSaxes(){duchamp::plotWCSaxes(head.getWCS(),axisDim);};
 
     //  in Cubes/outputSpectra.cc
     /// @brief Print spectra of each detected object. 
