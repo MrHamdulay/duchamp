@@ -306,7 +306,7 @@ namespace duchamp
 
 	    spectrum->extractSpectrum(reconArray,dim,npix);
 	    spectrum->removeMW(); // only works if flagMW is true
-	    std::vector<Scan> objlist = spectrum->spectrumDetect();
+	    std::vector<Scan> objlist = spectrum->findSources1D();
 	    num += objlist.size();
 	    for(unsigned int obj=0;obj<objlist.size();obj++){
 	      Detection newObject;
@@ -357,7 +357,7 @@ namespace duchamp
 	//  if we are flagging them
 
 	channelImage->extractImage(reconArray,dim,z);
-	std::vector<Object2D> objlist = channelImage->lutz_detect();
+	std::vector<Object2D> objlist = channelImage->findSources2D();
 	num += objlist.size();
 	for(unsigned int obj=0;obj<objlist.size();obj++){
 	  Detection newObject;
@@ -428,7 +428,7 @@ namespace duchamp
 	//  if we are flagging them
 
 	channelImage->extractImage(reconArray,dim,z);
-	std::vector<Object2D> objlist = channelImage->lutz_detect();
+	std::vector<Object2D> objlist = channelImage->findSources2D();
 	num += objlist.size();
 	for(unsigned int obj=0;obj<objlist.size();obj++){
 	  Detection newObject;

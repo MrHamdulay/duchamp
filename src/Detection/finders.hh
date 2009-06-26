@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// spectrumDetect.cc: Search a 1D Image for objects.
+// lutz_detect.hh: Header file for 2D source detection
 // -----------------------------------------------------------------------
 // Copyright (C) 2006, Matthew Whiting, ATNF
 //
@@ -25,60 +25,17 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
-#include <duchamp/Detection/finders.hh>
+#include <duchamp/PixelMap/Object2D.hh>
 #include <duchamp/PixelMap/Scan.hh>
+#include <vector>
 
-using namespace PixelInfo;
-
-enum STATUS { NONOBJECT, OBJECT };
-
-namespace duchamp
+namespace duchamp 
 {
 
-  std::vector<Scan> spectrumDetect(std::vector<bool> array, long dim, unsigned int minSize)
-  {
-    /// @details
-    ///  A detection algorithm that searches in a single 1-D spectrum.  It
-    ///  simply scans along the spectrum, storing connected sets of
-    ///  detected pixels as Scans, where "detected" means according to the
-    ///  Image::isDetection(long,long) function.
-    /// 
-    ///  When finished a vector of the detected scans is returned.
+  /// @brief The main 2D source-detection function
+  std::vector<PixelInfo::Object2D> lutz_detect(std::vector<bool> array, long xdim, long ydim, unsigned int minSize);
 
-    STATUS status;
-    Scan obj;
-    std::vector<Scan> outputlist;
-    bool isObject;
-
-    status = NONOBJECT;
-    for(int pos=0;pos<(dim+1);pos++){
-
-      if(pos<dim){
-	isObject = array[pos];
-      }
-      else isObject=false;
-
-      if(isObject){
-	if(status != OBJECT){
-	  status = OBJECT;
-	  obj.define(0, pos, 1);
-	}
-	else obj.growRight();
-      }
-      else{
-	if(status == OBJECT){ // if we were on an object and have left
-	  if(obj.getXlen() >= int(minSize)){ // if it's big enough
-	    outputlist.push_back(obj);  // add to list.
-	  }
-	  obj.clear();
-	}
-	status = NONOBJECT;
-      }
-
-    }
-
-    return outputlist;
-  
-  }
+  /// @brief A source detection function that operates on a 1D spectrum
+  std::vector<PixelInfo::Scan> spectrumDetect(std::vector<bool> array, long dim, unsigned int minSize);
 
 }

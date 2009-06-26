@@ -45,6 +45,7 @@
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Detection/columns.hh>
+#include <duchamp/Detection/finders.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/mycpgplot.hh>
 #include <duchamp/Utils/Statistics.hh>
@@ -1549,5 +1550,28 @@ namespace duchamp
       }
     }
   }
+  //--------------------------------------------------------------------
+
+  std::vector<Object2D> Image::findSources2D() 
+  {
+    std::vector<bool> thresholdedArray(this->axisDim[0]*this->axisDim[1]);
+    for(int posY=0;posY<this->axisDim[1];posY++){
+      for(int posX=0;posX<this->axisDim[0];posX++){
+	int loc = posX + this->axisDim[0]*posY;
+	thresholdedArray[loc] = this->isDetection(posX,posY);
+      }
+    }
+    return lutz_detect(thresholdedArray, this->axisDim[0], this->axisDim[1], this->minSize);
+  }
+
+  std::vector<Scan> Image::findSources1D() 
+  {
+    std::vector<bool> thresholdedArray(this->axisDim[0]);
+    for(int posX=0;posX<this->axisDim[0];posX++){
+      thresholdedArray[posX] = this->isDetection(posX,0);
+    }
+    return spectrumDetect(thresholdedArray, this->axisDim[0], this->minSize);
+  }
+
 
 }

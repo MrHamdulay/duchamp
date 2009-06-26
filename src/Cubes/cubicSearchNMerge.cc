@@ -104,7 +104,7 @@ vector <Detection> cubicSearchNMerge(long *dim, float *Array, Param &par)
       spectrum->saveArray(spec,zdim);
       spectrum->setStats(specMedian[npix],specSigma[npix],par.getCut());
       if(par.getFlagFDR()) spectrum->setupFDR();
-      spectrum->lutz_detect();
+      spectrum->findSources2D();
       for(int obj=0;obj<spectrum->getNumObj();obj++){
 	Detection *object = new Detection;
 	*object = spectrum->getObject(obj);
@@ -179,7 +179,7 @@ vector <Detection> cubicSearchNMerge(long *dim, float *Array, Param &par)
       channelImage->saveArray(image,xySize);
       channelImage->setStats(imageMedian[z],imageSigma[z],par.getCut());
       if(par.getFlagFDR()) channelImage->setupFDR();
-      channelImage->lutz_detect();
+      channelImage->findSources2D();
       for(int obj=0;obj<channelImage->getNumObj();obj++){
 	Detection *object = new Detection;
 	*object = channelImage->getObject(obj);

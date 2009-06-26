@@ -179,7 +179,7 @@ vector<Detection> readAndSearch(Param &par)
 	spectrum->setStats(median,sigma,par.getCut());
 	if(par.getFlagFDR()) spectrum->setupFDR();
 	spectrum->setMinSize(par.getMinChannels());
-	spectrum->spectrumDetect();
+	spectrum->findSources1D();
       }
       else{
 	sigma  = findMADFM(array,dimAxes[2])/correctionFactor;
@@ -188,7 +188,7 @@ vector<Detection> readAndSearch(Param &par)
 	spectrum->setStats(median,sigma,par.getCut());
 	if(par.getFlagFDR()) spectrum->setupFDR();
 	spectrum->setMinSize(par.getMinChannels());
-	spectrum->spectrumDetect();
+	spectrum->findSources1D();
       }
 
       numDetected += spectrum->getNumObj();

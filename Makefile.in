@@ -56,6 +56,7 @@ HEADS = $(BASE)/duchamp.hh\
 	$(ATROUSDIR)/filter.hh\
 	$(DETECTIONDIR)/detection.hh\
 	$(DETECTIONDIR)/columns.hh\
+	$(DETECTIONDIR)/finders.hh\
 	$(CUBESDIR)/cubes.hh\
 	$(CUBESDIR)/plots.hh\
 	$(CUBESDIR)/VOTable.hh\

@@ -139,7 +139,7 @@ std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 	if(doPixel[npix]){
 	  spectrum->extractSpectrum(Array,dim,npix);
 	  spectrum->removeMW(); // only works if flagMW is true
-	  std::vector<Scan> objlist = spectrum->spectrumDetect();
+	  std::vector<Scan> objlist = spectrum->findSources1D();
 	  num += objlist.size();
 	  for(unsigned int obj=0;obj<objlist.size();obj++){
 	    Detection newObject;
@@ -188,7 +188,7 @@ std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
     if(!par.isInMW(z)){
 
       channelImage->extractImage(Array,dim,z);
-      std::vector<Object2D> objlist = channelImage->lutz_detect();
+      std::vector<Object2D> objlist = channelImage->findSources2D();
       num += objlist.size();
       for(unsigned int obj=0;obj<objlist.size();obj++){
 	Detection newObject;
@@ -254,7 +254,7 @@ std::vector <Detection> search3DArraySimple(long *dim, float *Array,
     if(!par.isInMW(z)){
 
       channelImage->extractImage(Array,dim,z);
-      std::vector<Object2D> objlist = channelImage->lutz_detect();
+      std::vector<Object2D> objlist = channelImage->findSources2D();
       num += objlist.size();
       for(unsigned int obj=0;obj<objlist.size();obj++){
 	Detection newObject;

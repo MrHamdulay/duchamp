@@ -25,7 +25,7 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
-#include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Detection/finders.hh>
 #include <duchamp/PixelMap/Voxel.hh>
 #include <duchamp/PixelMap/Object2D.hh>
 #include <vector>
@@ -51,7 +51,7 @@ enum NULLS { NULLSTART=-1, ///< Default start/end value, obviously
 
 //---------------------------
 /// @brief
-/// A simple class local to lutz_detect.cc to help manage detected
+/// A simple class local to @file to help manage detected
 /// objects.
 /// 
 /// @details Keeps a track of a detection, as well as the start and finish
@@ -70,7 +70,7 @@ public:
 namespace duchamp
 {
 
-  std::vector<Object2D> Image::lutz_detect() 
+  std::vector<Object2D> lutz_detect(std::vector<bool> array, long xdim, long ydim, unsigned int minSize) 
   {
     /// @details
     ///  A detection algorithm for 2-dimensional images based on that of
@@ -80,39 +80,34 @@ namespace duchamp
     ///  detected in each row are compared to objects in subsequent rows,
     ///  and combined if they are connected (in an 8-fold sense).
     /// 
-    ///  Note that "detected" here means according to the
-    ///  Image::isDetection(long,long) function.
-    /// 
-    ///  Upon return, the detected objects are stored in the
-    ///  Image::objectList vector.
 
     // Allocate necessary arrays.
     std::vector<Object2D> outputlist;
     STATUS *status  = new STATUS[2];
-    Object2D *store = new Object2D[this->axisDim[0]+1];
-    char *marker    = new char[this->axisDim[0]+1];
-    for(int i=0; i<(this->axisDim[0]+1); i++) marker[i] = NULLMARKER;
+    Object2D *store = new Object2D[xdim+1];
+    char *marker    = new char[ydim+1];
+    for(int i=0; i<(xdim+1); i++) marker[i] = NULLMARKER;
     std::vector<FoundObject> oS;
     std::vector<STATUS>      psS;
 
     Pixel pix;
 
-    for(int posY=0;posY<(this->axisDim[1]+1);posY++){
+    for(int posY=0;posY<(ydim+1);posY++){
       // Loop over each row -- consider rows one at a time
     
       status[PRIOR] = COMPLETE;
       status[CURRENT] = NONOBJECT;
 
-      for(int posX=0;posX<(this->axisDim[0]+1);posX++){
+      for(int posX=0;posX<(xdim+1);posX++){
 	// Now the loop for a given row, looking at each column individually.
 
 	char currentMarker = marker[posX];
 	marker[posX] = NULLMARKER;
 
 	bool isObject;
-	if((posX<this->axisDim[0])&&(posY<this->axisDim[1])){ 
+	if((posX<xdim)&&(posY<ydim)){ 
 	  // if we are in the original image
-	  isObject = this->isDetection(posX,posY);
+	  isObject = array[posX+xdim*posY];
 	}
 	else isObject = false;
 	// else we're in the padding row/col and isObject=FALSE;
@@ -214,7 +209,7 @@ namespace duchamp
 	      if(oS.back().start == NULLSTART){ 
 		// The object is completed. If it is big enough, add to
 		// the end of the output list.	      
-		if(oS.back().info.getSize() >= this->minSize){ 
+		if(oS.back().info.getSize() >= minSize){ 
 		  //oS.back().info.calcParams(); // work out midpoints, fluxes etc
 		  outputlist.push_back(oS.back().info);
 		}

@@ -664,13 +664,11 @@ namespace duchamp
     //-----------------------
     // Detection-related
     //
-    // in Detection/lutz_detect.cc:
     /// @brief Detect objects in a 2-D image 
-    std::vector<PixelInfo::Object2D> lutz_detect();
+    std::vector<PixelInfo::Object2D> findSources2D();
 
-    // in Detection/spectrumDetect.cc:
     /// @brief Detect objects in a 1-D spectrum 
-    std::vector<PixelInfo::Scan> spectrumDetect();
+    std::vector<PixelInfo::Scan> findSources1D();
 
     unsigned int getMinSize(){return minSize;};
     void         setMinSize(int i){minSize=i;};
