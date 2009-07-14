@@ -22,6 +22,9 @@ Improvements:
 
 Bug fixes:
 
+* When reading in previous detections, there was a bug causing a
+  segmentation fault. This has been fixed and made more robust.
+
 * There was an apparent bug when writing out the reconstructed cubes
   to a FITS file that caused the new file to be very large. Changing
   the cfitsio function used has fixed this.
