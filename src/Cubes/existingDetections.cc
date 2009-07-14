@@ -53,13 +53,13 @@ namespace duchamp
       return FAILURE;
     }
 
-    std::cout << "Reading from logfile : " << this->par.getLogFile() << "\n";
+    std::cout << "  Reading from logfile : " << this->par.getLogFile() << "\n";
 
     std::string temp,filename;
     std::stringstream ss;
 
     // first check filename, just to be sure
-    while(getline(logfile,temp), temp.substr(0,11)!="Image to be"){}
+    while(getline(logfile,temp), (temp.size()<11 || temp.substr(0,11)!="Image to be")){}
     ss.str(temp);
     ss >> temp >> temp >> temp >> temp>> temp >> filename;
     if(filename != this->par.getFullImageFile()){
@@ -71,11 +71,15 @@ namespace duchamp
     }
 
     // read down until first Detection # line
-    while(getline(logfile,temp), temp.substr(0,9)!="Threshold"){}
+    while(getline(logfile,temp), (temp.size()<9 || temp.substr(0,9)!="Threshold")){
+    }
     float threshold,middle,spread;
     bool robust;
-    logfile >> threshold >> middle >> spread >> robust;
-    std::cout << "Detection threshold used was " << threshold << "\n";
+    getline(logfile,temp);
+    std::stringstream dataline;
+    dataline.str(temp);
+    dataline >> threshold >> middle >> spread >> robust;
+    std::cout << "  Detection threshold used was " << threshold << "\n";
     this->Stats.setRobust(robust);
     this->Stats.setThreshold(threshold);
     this->Stats.setMiddle(middle);
@@ -86,18 +90,21 @@ namespace duchamp
     while(!logfile.eof()){
       Detection obj;
       while(getline(logfile,temp), temp.substr(0,3)!="---"){
-	for(unsigned int i=0;i<temp.size();i++)
-	  if(temp[i]=='-' || temp[i]==',') temp[i] = ' ';
-	std::stringstream ss;
-	ss.str(temp);
-	ss >> x1 >> x2 >> ypix >> zpix;
-	Scan scn(ypix,x1,x2-x1+1);
-// 	obj.pixels().addScan(scn,zpix);
-	obj.addScan(scn,zpix);
+	if(temp.substr(0,9)!="Detection"){
+	  for(uint i=0;i<temp.size();i++)
+	    if(temp[i]=='-' || temp[i]==',') temp[i] = ' ';
+	  std::stringstream ss;
+	  ss.str(temp);
+	  ss >> x1 >> x2 >> ypix >> zpix;
+	  Scan scn(ypix,x1,x2-x1+1);
+	  obj.pixels().addScan(scn,zpix);
+	}
       }
       obj.setOffsets(this->par);
-      obj.calcParams();
-      if(obj.getSize()>0) this->addObject(obj);
+      if(obj.getSize()>0){
+	obj.calcParams();
+	this->addObject(obj);
+      }
       getline(logfile,temp); // reads next line -- should be Detection #...
       if(temp.substr(0,11)!="Detection #"){
 	// if it is, then read two lines to finish off the file. This should trigger the eof flag above.
@@ -106,7 +113,7 @@ namespace duchamp
       }
     }
 
-    std::cout<<"Final object count = "<<this->objectList->size()<<std::endl; 
+    std::cout<<"  Final object count = "<<this->objectList->size()<<std::endl; 
     
     return SUCCESS;
 
