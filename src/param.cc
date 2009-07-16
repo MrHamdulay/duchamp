@@ -604,7 +604,7 @@ namespace duchamp
 	if(arg=="headerfile")      this->headerFile = readSval(ss);
 	if(arg=="spectrafile")     this->spectraFile = readSval(ss); 
 	if(arg=="flagtextspectra") this->flagTextSpectra = readFlag(ss); 
-	if(arg=="spectraTextfile") this->spectraTextFile = readSval(ss); 
+	if(arg=="spectratextfile") this->spectraTextFile = readSval(ss); 
 	if(arg=="flagoutputmask")  this->flagOutputMask = readFlag(ss); 
 	if(arg=="fileoutputmask")  this->fileOutputMask = readSval(ss);
 	if(arg=="flagmaskwithobjectnum") this->flagMaskWithObjectNum = readFlag(ss);
