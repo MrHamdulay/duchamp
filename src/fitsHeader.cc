@@ -293,6 +293,7 @@ namespace duchamp
       else this->intFluxUnits = this->fluxUnits;
 
     }
+    else this->intFluxUnits = this->fluxUnits;
 
     if(!this->flag2D) this->intFluxUnits += std::string(" ") + this->spectralUnits;
 
