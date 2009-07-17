@@ -85,33 +85,35 @@ namespace duchamp
     this->Stats.setMiddle(middle);
     this->Stats.setSpread(spread);
     getline(logfile,temp);
+    std::stringstream numline;
+    numline.str(temp);
+    int numDets;
+    std::string null;
+    numline >> numDets >> null;
+    std::cout << "  Number of detections in logfile = " << numDets << "\n";
     getline(logfile,temp);
     int x1,x2, ypix, zpix;
-    while(!logfile.eof()){
+    for(int d=0; d<numDets; d++){
+      getline(logfile,temp);   // This should be Detection #X:
+      if(temp.substr(0,11)!="Detection #") duchampError("existingDetections","Format of Log file is wrong!");
       Detection obj;
-      while(getline(logfile,temp), temp.substr(0,3)!="---"){
-	if(temp.substr(0,9)!="Detection"){
+      while(getline(logfile,temp), temp.size()>0){
 	  for(uint i=0;i<temp.size();i++)
 	    if(temp[i]=='-' || temp[i]==',') temp[i] = ' ';
 	  std::stringstream ss;
 	  ss.str(temp);
 	  ss >> x1 >> x2 >> ypix >> zpix;
-	  Scan scn(ypix,x1,x2-x1+1);
-	  obj.addScan(scn,zpix);
-	}
+	  Scan scn(ypix-this->par.getYOffset(),x1-this->par.getXOffset(),x2-x1+1);
+	  obj.addScan(scn,zpix-this->par.getZOffset());
       }
       obj.setOffsets(this->par);
       if(obj.getSize()>0){
 	obj.calcParams();
 	this->addObject(obj);
       }
-      getline(logfile,temp); // reads next line -- should be Detection #...
-      if(temp.substr(0,11)!="Detection #"){
-	// if it is, then read two lines to finish off the file. This should trigger the eof flag above.
-	getline(logfile,temp);
-	getline(logfile,temp);
-      }
+      getline(logfile,temp);
     }
+    logfile.close();
 
     std::cout<<"  Final object count = "<<this->objectList->size()<<std::endl; 
     
