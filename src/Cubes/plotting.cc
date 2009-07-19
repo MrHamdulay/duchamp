@@ -425,9 +425,6 @@ namespace duchamp
 
     char idents[3][80], opt[2], nlcprm[1];
 
-//     struct wcsprm *tempwcs;
-//     tempwcs = this->head.getWCS();
-
     strcpy(idents[0], wcs->lngtyp);
     strcpy(idents[1], wcs->lattyp);
     strcpy(idents[2], "");
@@ -439,8 +436,6 @@ namespace duchamp
     //   float  scl; // --> unused here.
     blc[0] = boxXmin + 0.5;
     blc[1] = boxYmin + 0.5;
-//     trc[0] = boxXmin + this->axisDim[0]+0.5;
-//     trc[1] = boxYmin + this->axisDim[1]+0.5;
     trc[0] = boxXmin + axes[0]+0.5;
     trc[1] = boxYmin + axes[1]+0.5;
   
@@ -450,7 +445,6 @@ namespace duchamp
     cpgqci(&existingColour);
     float existingSize;
     cpgqch(&existingSize);
-    //  cpgsci(DUCHAMP_ID_TEXT_COLOUR);
     cpgsci(textColour);
     cpgsch(0.8);
     int    c0[7], ci[7], gcode[2], ic, ierr;
@@ -481,9 +475,6 @@ namespace duchamp
     cpgsbox(blc, trc, idents, opt, 2100, 0, ci, gcode, 0.0, 0, grid1, 0, grid2,
 	    0, pgwcsl_, 1, WCSLEN, 1, nlcprm, (int *)wcs, 
 	    nldprm, 256, &ic, cache, &ierr);
-
-//     wcsfree(wcs);
-//     free(wcs);
 
     cpgsci(existingColour);
     cpgsch(existingSize);
