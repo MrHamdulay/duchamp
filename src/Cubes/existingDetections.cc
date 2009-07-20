@@ -35,6 +35,7 @@
 #include <duchamp/param.hh>
 #include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/Detection/detection.hh>
+#include <duchamp/Utils/feedback.hh>
 
 using namespace PixelInfo;
 
@@ -53,7 +54,7 @@ namespace duchamp
       return FAILURE;
     }
 
-    std::cout << "  Reading from logfile : " << this->par.getLogFile() << "\n";
+    if(this->par.isVerbose()) std::cout << "  Reading from logfile : " << this->par.getLogFile() << "\n";
 
     std::string temp,filename;
     std::stringstream ss;
@@ -79,7 +80,7 @@ namespace duchamp
     std::stringstream dataline;
     dataline.str(temp);
     dataline >> threshold >> middle >> spread >> robust;
-    std::cout << "  Detection threshold used was " << threshold << "\n";
+    if(this->par.isVerbose()) std::cout << "  Detection threshold used was " << threshold << "\n";
     this->Stats.setRobust(robust);
     this->Stats.setThreshold(threshold);
     this->Stats.setMiddle(middle);
@@ -90,11 +91,17 @@ namespace duchamp
     int numDets;
     std::string null;
     numline >> numDets >> null;
-    std::cout << "  Number of detections in logfile = " << numDets << "\n";
+    if(this->par.isVerbose()) std::cout << "  Number of detections in logfile = " << numDets << "\n";
+    ProgressBar bar;
+    if(this->par.isVerbose()){
+      std::cout << "  Reading detections... ";// << std::flush;
+      bar.init(numDets);
+    }
     getline(logfile,temp);
     int x1,x2, ypix, zpix;
     for(int d=0; d<numDets; d++){
       getline(logfile,temp);   // This should be Detection #X:
+      if(this->par.isVerbose()) bar.update(d+1);
       if(temp.substr(0,11)!="Detection #") duchampError("existingDetections","Format of Log file is wrong!");
       Detection obj;
       while(getline(logfile,temp), temp.size()>0){
@@ -115,8 +122,11 @@ namespace duchamp
     }
     logfile.close();
 
-    std::cout<<"  Final object count = "<<this->objectList->size()<<std::endl; 
-    
+    if(this->par.isVerbose()){
+      bar.remove();
+      std::cout << "Done.\n";
+    }
+
     return SUCCESS;
 
   }
