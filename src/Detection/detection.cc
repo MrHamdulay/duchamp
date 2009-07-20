@@ -782,7 +782,7 @@ namespace duchamp
 	this->v50max = head.pixToVel(xpt,ypt,zpt);
       }
       z=this->getZmin();
-      goLeft = intSpec[z]>peak*0.5;
+      goLeft = intSpec[z]>peak*0.2;
       if(goLeft) while(z>0 && intSpec[z]>peak*0.2) z--;
       else       while(z<peakLoc && intSpec[z]<peak*0.2) z++;
       if(z==0) this->v20min = this->velMin;
@@ -792,7 +792,7 @@ namespace duchamp
 	this->v20min = head.pixToVel(xpt,ypt,zpt);
       }
       z=this->getZmax();
-      goLeft = intSpec[z]<peak*0.5;
+      goLeft = intSpec[z]<peak*0.2;
       if(goLeft) while(z>peakLoc && intSpec[z]<peak*0.2) z--;
       else       while(z<dim[2] && intSpec[z]>peak*0.2) z++;
       if(z==dim[2]) this->v20max = this->velMax;
