@@ -1,0 +1,13 @@
+imageFile	verification/verificationCube.fits
+flagSubsection  1
+subsection      [35:64,35:64,*]
+flagMW		false
+flagTrim	false
+flagAtrous	false
+snrCut		4
+minChannels     2
+flagMaps        false
+flagLog         true
+logFile         verification/log5.txt
+outFile         verification/results5.txt
+spectraFile     verification/spectra5.ps

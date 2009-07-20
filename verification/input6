@@ -1,0 +1,17 @@
+imageFile	verification/verificationCube.fits
+flagSubsection  1
+subsection      [35:64,35:64,*]
+flagMW		false
+flagTrim	false
+flagFDR		false
+flagAtrous	true
+snrRecon        3
+snrCut		3
+minChannels     2
+flagMaps        false
+flagLog         true
+logFile         verification/log6.txt
+outFile         verification/results6.txt
+spectraFile     verification/spectra6.ps
+snrCut          4
+
