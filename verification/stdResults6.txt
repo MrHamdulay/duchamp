@@ -1,0 +1,50 @@
+Results of the Duchamp source finder: Mon Jul 20 10:16:37 2009
+
+---- Parameters ----
+Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits[35:64,35:64,*]
+Intermediate Logfile...........................[logFile]  =  verification/log6.txt
+Final Results file.............................[outFile]  =  verification/results6.txt
+Spectrum file..............................[spectraFile]  =  verification/spectra6.ps
+Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
+Saving reconstructed cube?.............[flagOutputRecon]  =  false
+Saving residuals from reconstruction?..[flagOutputResid]  =  false
+Saving mask cube?.......................[flagOutputMask]  =  false
+------
+Trimming Blank Pixels?........................[flagTrim]  =  false
+Searching for Negative features?..........[flagNegative]  =  false
+Removing Milky Way channels?....................[flagMW]  =  false
+Beam Size (pixels)......................................  =  14.6848
+Removing baselines before search?.........[flagBaseline]  =  false
+Smoothing data prior to searching?..........[flagSmooth]  =  false
+Using A Trous reconstruction?...............[flagATrous]  =  true
+Number of dimensions in reconstruction........[reconDim]  =  1
+Minimum scale in reconstruction...............[scaleMin]  =  1
+SNR Threshold within reconstruction...........[snrRecon]  =  3
+Filter being used for reconstruction........[filterCode]  =  1 (B3 spline function)
+Using Robust statistics?...............[flagRobustStats]  =  true
+Using FDR analysis?............................[flagFDR]  =  false
+SNR Threshold (in sigma)........................[snrCut]  =  4
+Minimum # Pixels in a detection.................[minPix]  =  2
+Minimum # Channels in a detection..........[minChannels]  =  2
+Growing objects after detection?............[flagGrowth]  =  false
+Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
+Max. velocity separation for merging....[threshVelocity]  =  7
+Method of spectral plotting.............[spectralMethod]  =  peak
+Type of object centre used in results......[pixelCentre]  =  centroid
+--------------------
+
+--------------------
+Summary of statistics:
+Detection threshold = 3.94241 Jy/beam
+Noise level = 0.0343318, Noise spread = 0.97702
+Full stats:
+Mean   = 0.0629983	Std.Dev. = 0.960762
+Median = 0.0343318	MADFM    = 0.658989 (= 0.97702 as std.dev.)
+--------------------
+Total number of detections = 1
+--------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Obj#           Name     X     Y     Z           RA          DEC     VEL     w_RA    w_DEC    w_50    w_20   w_VEL     F_int     F_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2  Npix Flag  X_av  Y_av  Z_av X_cent Y_cent Z_cent X_peak Y_peak Z_peak
+                                                                  [km/s] [arcmin] [arcmin]  [km/s]  [km/s]  [km/s] [Jy km/s] [Jy/beam] [Jy/beam]                                [pix]                                                                 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    1 J060142-255610  50.0  50.0  64.1  06:01:42.90 -25:56:10.05 858.273    35.99    40.02 108.882 165.162 145.105  2219.058  2470.297    10.926  11.15  46  54  45  54  59  70   391    -  50.0  49.9  64.0   50.0   50.0   64.1     50     51     66

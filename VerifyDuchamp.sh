@@ -156,6 +156,79 @@ else
 fi
 
 ##################################################################
+# We now do two tests using the subsection functionality.
+# First just using the basic search
+
+echo " "
+echo "Running the fifth Duchamp test:"
+echo "  [This just uses a small subsection of the full cube, with simple searching]"
+rm -f /tmp/duchampRes /tmp/duchampComp /tmp/duchamptest
+$progname -p verification/input5 > /tmp/duchamptest
+echo "Done. Comparison to standard result:"
+set numDet = `grep "Total number" verification/results4.txt | cut -f 6 -d " "`
+if [ $numDet == 5 ]; then
+    tail -5 verification/results5.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
+    tail -5 verification/stdResults5.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
+    if [ `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ]; then
+	echo "  Found correct number of sources, but positions differ."
+	echo "  ERROR: Differences in positions of sources:"
+	diff  -I"Results of the Duchamp source finder:" verification/results4.txt verification/stdResults4.txt
+	numErrors=$numErrors+1
+    else
+	echo "  All detections correct."
+    fi
+else
+    echo "  ERROR. Wrong number of sources found."
+    echo "Differences in results:"
+    diff  -I"Results of the Duchamp source finder:" verification/results4.txt verification/stdResults4.txt
+    numErrors=$numErrors+1
+fi
+#Test the log files.
+if [ `diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log5.txt verification/stdLog5.txt | wc -l` == 0 ]; then
+    echo "  Logfiles correct."
+else
+    echo "  ERROR: Differences in the log files:"
+    diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log5.txt verification/stdLog5.txt
+    numErrors=$numErrors+1
+fi
+
+##################################################################
+# The last test uses the subsection, but does the reconstruction as well
+
+echo " "
+echo "Running the sixth Duchamp test:"
+echo "  [This reconstructs the subsection, then searches with simple sigma-clipping]"
+rm -f /tmp/duchampRes /tmp/duchampComp /tmp/duchamptest
+$progname -p verification/input6 > /tmp/duchamptest
+echo "Done. Comparison to standard result:"
+set numDet = `grep "Total number" verification/results6.txt | cut -f 6 -d " "`
+if [ $numDet == 5 ]; then
+    tail -5 verification/results6.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
+    tail -5 verification/stdResults6.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
+    if [ `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ]; then
+	echo "  Found correct number of sources, but positions differ."
+	echo "  ERROR: Differences in positions of sources:"
+	diff  -I"Results of the Duchamp source finder:" verification/results6.txt verification/stdResults6.txt
+	numErrors=$numErrors+1
+    else
+	echo "  All detections correct."
+    fi
+else
+    echo "  ERROR. Wrong number of sources found."
+    echo "Differences in results:"
+    diff  -I"Results of the Duchamp source finder:" verification/results6.txt verification/stdResults6.txt
+    numErrors=$numErrors+1
+fi
+#Test the log files.
+if [ `diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log6.txt verification/stdLog6.txt | wc -l` == 0 ]; then
+    echo "  Logfiles correct."
+else
+    echo "  ERROR: Differences in the log files:"
+    diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log6.txt verification/stdLog6.txt
+    numErrors=$numErrors+1
+fi
+
+##################################################################
 # Summarise the results
 # Either give the OK, or give some advice about what to do.
 

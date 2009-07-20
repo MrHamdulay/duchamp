@@ -1,0 +1,137 @@
+New run of the Duchamp sourcefinder: Mon Jul 20 10:16:36 2009
+Executing statement : ./Duchamp-1.1.8 -p verification/input6 
+
+---- Parameters ----
+Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits[35:64,35:64,*]
+Intermediate Logfile...........................[logFile]  =  verification/log6.txt
+Final Results file.............................[outFile]  =  verification/results6.txt
+Spectrum file..............................[spectraFile]  =  verification/spectra6.ps
+Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
+Saving reconstructed cube?.............[flagOutputRecon]  =  false
+Saving residuals from reconstruction?..[flagOutputResid]  =  false
+Saving mask cube?.......................[flagOutputMask]  =  false
+------
+Trimming Blank Pixels?........................[flagTrim]  =  false
+Searching for Negative features?..........[flagNegative]  =  false
+Removing Milky Way channels?....................[flagMW]  =  false
+Beam Size (pixels)......................................  =  14.6848
+Removing baselines before search?.........[flagBaseline]  =  false
+Smoothing data prior to searching?..........[flagSmooth]  =  false
+Using A Trous reconstruction?...............[flagATrous]  =  true
+Number of dimensions in reconstruction........[reconDim]  =  1
+Minimum scale in reconstruction...............[scaleMin]  =  1
+SNR Threshold within reconstruction...........[snrRecon]  =  3
+Filter being used for reconstruction........[filterCode]  =  1 (B3 spline function)
+Using Robust statistics?...............[flagRobustStats]  =  true
+Using FDR analysis?............................[flagFDR]  =  false
+SNR Threshold (in sigma)........................[snrCut]  =  4
+Minimum # Pixels in a detection.................[minPix]  =  2
+Minimum # Channels in a detection..........[minChannels]  =  2
+Growing objects after detection?............[flagGrowth]  =  false
+Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
+Max. velocity separation for merging....[threshVelocity]  =  7
+Method of spectral plotting.............[spectralMethod]  =  peak
+Type of object centre used in results......[pixelCentre]  =  centroid
+--------------------
+
+--------------------------------------------------------------------------------
+ Obj#     X     Y     Z     F_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2  Npix
+                        [Jy/beam] [Jy/beam]                                [pix]
+--------------------------------------------------------------------------------
+    1  50.0  50.0  64.1  2470.297    10.926  11.15  46  54  45  54  59  70   391
+=-=-=-=-=-=-=-
+Cube summary
+=-=-=-=-=-=-=-
+30x30x128
+Threshold	middle	spread	robust
+3.94241	0.0343318 0.97702	1
+1 detections:
+--------------
+Detection #1
+50-51, 49, 59
+49-51, 50, 59
+50-50, 51, 59
+50-50, 48, 60
+48-51, 49, 60
+48-52, 50, 60
+49-51, 51, 60
+50-51, 52, 60
+50-50, 53, 60
+49-49, 47, 61
+47-53, 48, 61
+47-53, 49, 61
+47-53, 50, 61
+47-52, 51, 61
+48-53, 52, 61
+50-51, 53, 61
+49-49, 45, 62
+49-49, 46, 62
+48-52, 47, 62
+47-53, 48, 62
+46-53, 49, 62
+47-53, 50, 62
+47-54, 51, 62
+47-53, 52, 62
+48-52, 53, 62
+50-51, 54, 62
+49-51, 46, 63
+47-52, 47, 63
+47-53, 48, 63
+46-53, 49, 63
+47-53, 50, 63
+47-54, 51, 63
+47-53, 52, 63
+48-53, 53, 63
+50-51, 54, 63
+47-47, 46, 64
+49-51, 46, 64
+47-53, 47, 64
+46-53, 48, 64
+46-53, 49, 64
+47-53, 50, 64
+46-54, 51, 64
+47-53, 52, 64
+47-53, 53, 64
+49-52, 54, 64
+48-48, 45, 65
+49-50, 46, 65
+47-52, 47, 65
+46-53, 48, 65
+46-53, 49, 65
+47-53, 50, 65
+47-54, 51, 65
+47-53, 52, 65
+47-53, 53, 65
+49-50, 54, 65
+48-48, 45, 66
+50-50, 46, 66
+48-52, 47, 66
+47-53, 48, 66
+47-53, 49, 66
+47-53, 50, 66
+47-54, 51, 66
+47-53, 52, 66
+49-51, 53, 66
+49-50, 54, 66
+49-51, 47, 67
+47-53, 48, 67
+47-53, 49, 67
+47-53, 50, 67
+47-53, 51, 67
+48-51, 52, 67
+49-51, 53, 67
+50-50, 48, 68
+52-52, 48, 68
+49-52, 49, 68
+48-52, 50, 68
+49-51, 51, 68
+53-53, 51, 68
+50-51, 52, 68
+50-51, 49, 69
+48-51, 50, 69
+50-50, 51, 69
+50-50, 50, 70
+
+---
+--------------
+Duchamp completed: Mon Jul 20 10:16:37 2009
