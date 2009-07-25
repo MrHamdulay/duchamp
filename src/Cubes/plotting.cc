@@ -81,6 +81,9 @@ namespace duchamp
     }
     else{
 
+      // get the list of objects that should be plotted. Only applies to outlines and labels.
+      std::vector<bool> objectChoice = this->par.getObjectChoices(this->objectList->size());
+
       newplot.makeTitle(this->pars().getImageFile());
 
       newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,
@@ -126,20 +129,22 @@ namespace duchamp
 	if(this->par.drawBorders()){
 	  cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
 	  for(unsigned int i=0;i<this->objectList->size();i++) 
-	    this->objectList->at(i).drawBorders(0,0);
+	    if(objectChoice[i]) this->objectList->at(i).drawBorders(0,0);
 	}
 	cpgsci(DUCHAMP_ID_TEXT_COLOUR);
 	std::stringstream label;
 	cpgslw(1);
 	for(unsigned int i=0;i<this->objectList->size();i++){
-	  cpgpt1(this->par.getXOffset()+this->objectList->at(i).getXPeak(), 
-		 this->par.getYOffset()+this->objectList->at(i).getYPeak(), 
-		 CROSS);
-	  label.str("");
-	  label << this->objectList->at(i).getID();
-	  cpgptxt(this->par.getXOffset()+this->objectList->at(i).getXPeak()-xoff, 
-		  this->par.getYOffset()+this->objectList->at(i).getYPeak()-yoff, 
-		  0, 0.5, label.str().c_str());
+	  if(objectChoice[i]) {
+	    cpgpt1(this->par.getXOffset()+this->objectList->at(i).getXPeak(), 
+		   this->par.getYOffset()+this->objectList->at(i).getYPeak(), 
+		   CROSS);
+	    label.str("");
+	    label << this->objectList->at(i).getID();
+	    cpgptxt(this->par.getXOffset()+this->objectList->at(i).getXPeak()-xoff, 
+		    this->par.getYOffset()+this->objectList->at(i).getYPeak()-yoff, 
+		    0, 0.5, label.str().c_str());
+	  }
 	}
 
       }
@@ -232,6 +237,9 @@ namespace duchamp
 	// if there are some detections, do the calculations first before
 	//  plotting anything.
   
+	// get the list of objects that should be plotted. Only applies to outlines and labels.
+	std::vector<bool> objectChoice = this->par.getObjectChoices(this->objectList->size());
+
 	for(int iplot=0; iplot<numPlots; iplot++){
 	  // Although plot the axes so that the user knows something is 
 	  //  being done (at least, they will if there is an /xs plot)
@@ -367,20 +375,22 @@ namespace duchamp
 	  if(this->par.drawBorders()){
 	    cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
 	    for(unsigned int i=0;i<this->objectList->size();i++) 
-	      this->objectList->at(i).drawBorders(0,0);
+	      if(objectChoice[i]) this->objectList->at(i).drawBorders(0,0);
 	  }
 	  cpgsci(DUCHAMP_ID_TEXT_COLOUR);
 	  std::stringstream label;
 	  cpgslw(1);
 	  for(unsigned int i=0;i<this->objectList->size();i++){
-	    cpgpt1(this->par.getXOffset()+this->objectList->at(i).getXPeak(), 
-		   this->par.getYOffset()+this->objectList->at(i).getYPeak(),
-		   CROSS);
-	    label.str("");
-	    label << this->objectList->at(i).getID();
-	    cpgptxt(this->par.getXOffset()+this->objectList->at(i).getXPeak()-xoff,
-		    this->par.getYOffset()+this->objectList->at(i).getYPeak()-yoff,
-		    0, 0.5, label.str().c_str());
+	    if(objectChoice[i]) {
+	      cpgpt1(this->par.getXOffset()+this->objectList->at(i).getXPeak(), 
+		     this->par.getYOffset()+this->objectList->at(i).getYPeak(),
+		     CROSS);
+	      label.str("");
+	      label << this->objectList->at(i).getID();
+	      cpgptxt(this->par.getXOffset()+this->objectList->at(i).getXPeak()-xoff,
+		      this->par.getYOffset()+this->objectList->at(i).getYPeak()-yoff,
+		      0, 0.5, label.str().c_str());
+	    }
 	  }
 
 	} // end of iplot loop over number of devices
