@@ -25,8 +25,8 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
-#include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Object2D.hh>
+#include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Voxel.hh>
 #include <iostream>
 #include <vector>
@@ -110,7 +110,7 @@ namespace PixelInfo
     if(!flagDone){
       Scan newOne(y,x,1);
       this->scanlist.push_back(newOne);
-      this->order();
+      if(this->scanlist.size()>1) this->order();
       isNew = true;
     }
   
