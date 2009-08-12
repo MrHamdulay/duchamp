@@ -108,13 +108,12 @@ void GaussSmooth<Type>::define(float maj, float min, float pa)
   float sigmaX2 = (this->kernMaj*this->kernMaj/4.) / (2.*M_LN2);
   float sigmaY2 = (this->kernMin*this->kernMin/4.) / (2.*M_LN2);
 
-  // First determine the size of the kernel.
-  // For the moment, just calculate the size based on the number of
-  // pixels needed to make the exponential drop to less than the
-  // stated precision. Use the major axis to get the largest square
-  // that includes the ellipse.
-  const float precision = 1.e-4;
-  int kernelHW = int(ceil(sqrt(-1.*log(precision)*sigmaX2)));
+  // First determine the size of the kernel.  Calculate the size based
+  // on the number of pixels needed to make the exponential drop to
+  // less than the minimum floating-point value. Use the major axis to
+  // get the largest square that includes the ellipse.
+  float majorSigma = this->kernMaj / (4.*M_LN2);
+  int kernelHW = int(ceil(majorSigma * sqrt(-2.*log(1. / MAXFLOAT))));
   this->kernWidth = 2*kernelHW + 1;
 //   std::cerr << "Making a kernel of width " << this->kernWidth << "\n";
 
