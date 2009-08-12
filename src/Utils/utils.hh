@@ -93,4 +93,7 @@ void waveletSmooth(int dim,float *array, int arraySize, float sigma);
 void hanningSmooth(float *array, int arraySize, int hanningSize);
 void tophatSmooth(float *array, int arraySize, int width);
 
+float *medianBaseline(float *inputArray, int dim, unsigned int boxWidth);
+
+
 #endif
