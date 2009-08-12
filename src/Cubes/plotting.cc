@@ -259,7 +259,7 @@ namespace duchamp
 	for(int i=0;i<xdim*ydim*zdim;i++) isObj[i] = false;
 	for(unsigned int i=0;i<this->objectList->size();i++){
 	  if(objectChoice[i]){
-	    std::vector<Voxel> this->objectList->at(i).pixels().getPixelSet();
+	    std::vector<Voxel> voxlist = this->objectList->at(i).getPixelSet();
 	    for(unsigned int p=0;p<voxlist.size();p++){
 	      int pixelpos = voxlist[p].getX() + xdim*voxlist[p].getY() + 
 		xdim*ydim*voxlist[p].getZ();
