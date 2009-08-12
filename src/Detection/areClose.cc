@@ -95,9 +95,9 @@ namespace duchamp
       std::vector<long> zlist1 = obj1.getChannelList();
       std::vector<long> zlist2 = obj2.getChannelList();
 
-      for(unsigned int ct1=0; (!close && (ct1<zlist1.size())); ct1++){
+      for(size_t ct1=0; (!close && (ct1<zlist1.size())); ct1++){
 	
-	for(unsigned int ct2=0; (!close && (ct2<zlist2.size())); ct2++){
+	for(size_t ct2=0; (!close && (ct2<zlist2.size())); ct2++){
 	
 	  if(abs(zlist1[ct1]-zlist2[ct2])<=threshV){
 	      

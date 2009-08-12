@@ -265,7 +265,8 @@ namespace duchamp
   {
     /// \param newlist The list of objects to be added to the object list.
 
-    for(unsigned int i=0;i<newlist.size();i++) this->objectList->push_back(newlist[i]);
+    std::vector<Detection>::iterator obj;
+    for(obj=newlist.begin();obj<newlist.end();obj++) this->objectList->push_back(*obj);
   }
   //--------------------------------------------------------------------
 
@@ -319,13 +320,14 @@ namespace duchamp
     theStream << array.stats().getRobust()<<"\n";
 
     theStream<<array.objectList->size()<<" detections:\n--------------\n";
-    for(unsigned int i=0;i<array.objectList->size();i++){
-      theStream << "Detection #" << array.objectList->at(i).getID()<<std::endl;
-      Detection *obj = new Detection;
-      *obj = array.objectList->at(i);
-      obj->addOffsets();
-      theStream<<*obj;
-      delete obj;
+    std::vector<Detection>::iterator obj;
+    for(obj=array.objectList->begin();obj<array.objectList->end();obj++){
+      theStream << "Detection #" << obj->getID()<<std::endl;
+      Detection *newobj = new Detection;
+      *newobj = *obj;
+      newobj->addOffsets();
+      theStream<<*newobj;
+      delete newobj;
     }
     theStream<<"--------------\n";
     return theStream;
@@ -587,7 +589,7 @@ namespace duchamp
       this->numPixels = input.size();
       this->array = new float[input.size()];
       this->arrayAllocated = true;
-      for(unsigned int i=0;i<input.size();i++) this->array[i] = input[i];
+      for(size_t i=0;i<input.size();i++) this->array[i] = input[i];
     }
   }
   //--------------------------------------------------------------------
@@ -1066,10 +1068,10 @@ namespace duchamp
       // if the WCS is bad, set the object names to Obj01 etc
       int numspaces = int(log10(this->objectList->size())) + 1;
       std::stringstream ss;
-      for(unsigned int i=0;i<this->objectList->size();i++){
+      for(size_t i=0;i<this->objectList->size();i++){
 	ss.str("");
 	ss << "Obj" << std::setfill('0') << std::setw(numspaces) << i+1;
-	obj->setName(ss.str());
+	this->objectList->at(i).setName(ss.str());
       }
     }
   
@@ -1112,10 +1114,10 @@ namespace duchamp
       // if the WCS is bad, set the object names to Obj01 etc
       int numspaces = int(log10(this->objectList->size())) + 1;
       std::stringstream ss;
-      for(unsigned int i=0;i<this->objectList->size();i++){
+      for(size_t i=0;i<this->objectList->size();i++){
 	ss.str("");
 	ss << "Obj" << std::setfill('0') << std::setw(numspaces) << i+1;
-	obj->setName(ss.str());
+	this->objectList->at(i).setName(ss.str());
       }
     }
   
@@ -1179,7 +1181,7 @@ namespace duchamp
       }
     }
     float sum = 0.;
-    for(unsigned int i=0;i<fluxArray.size();i++) 
+    for(size_t i=0;i<fluxArray.size();i++) 
       if(!this->par.isBlank(fluxArray[i])) sum+=fluxArray[i];
     return sum;
   }
@@ -1250,7 +1252,7 @@ namespace duchamp
 
     bool atEdge = false;
 
-    unsigned int pix = 0;
+    size_t pix = 0;
     std::vector<Voxel> voxlist = obj.getPixelSet();
     while(!atEdge && pix<voxlist.size()){
       // loop over each pixel in the object, until we find an edge pixel.
@@ -1290,7 +1292,7 @@ namespace duchamp
 
     bool atEdge = false;
 
-    unsigned int pix = 0;
+    size_t pix = 0;
     std::vector<Voxel> voxlist = obj.getPixelSet();
     while(!atEdge && pix<voxlist.size()){
       // loop over each pixel in the object, until we find an edge pixel.

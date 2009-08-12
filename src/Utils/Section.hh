@@ -94,7 +94,7 @@ namespace duchamp
   private:
     std::string subsection;   ///< The string indicating the subsection, of the format [a:b,c:d,e:f] etc.
     std::vector<std::string> sections; // The individual section strings for each dimension
-    unsigned int numSections;         ///< The number of sections in the string.
+    size_t numSections;         ///< The number of sections in the string.
     std::vector<int> starts;  ///< The list of starting values (a,c,e)
     std::vector<int> dims;    ///< The list of lengths of each dimension (b-a+1,d-c+1,f-e+1)
   };

@@ -148,14 +148,14 @@ namespace duchamp
 	
       short *mask = new short[this->numPixels];
       for(int i=0;i<this->numPixels;i++) mask[i]=0;
-      for(unsigned int o=0;o<this->objectList->size();o++){
-        std::vector<PixelInfo::Voxel> voxlist = 
-//           this->objectList->at(o).pixels().getPixelSet();
-          this->objectList->at(o).getPixelSet();
-        for(unsigned int p=0;p<voxlist.size();p++){
-          int pixelpos = voxlist[p].getX() + this->axisDim[0]*voxlist[p].getY() + 
-            this->axisDim[0]*this->axisDim[1]*voxlist[p].getZ();
-          if(this->par.getFlagMaskWithObjectNum()) mask[pixelpos] = this->objectList->at(o).getID();
+      std::vector<Detection>::iterator obj;
+      for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
+        std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
+        std::vector<PixelInfo::Voxel>::iterator vox;
+        for(vox=voxlist.begin();vox<voxlist.end();vox++){
+          int pixelpos = vox->getX() + this->axisDim[0]*vox->getY() + 
+            this->axisDim[0]*this->axisDim[1]*vox->getZ();
+          if(this->par.getFlagMaskWithObjectNum()) mask[pixelpos] = obj->getID();
 	  else mask[pixelpos] = 1;
         }
       }

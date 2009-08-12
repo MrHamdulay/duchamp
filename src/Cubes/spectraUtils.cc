@@ -104,10 +104,10 @@ namespace duchamp
     long xySize = dimArray[0]*dimArray[1];
     bool *done = new bool[xySize]; 
     for(int i=0;i<xySize;i++) done[i]=false;
-//     std::vector<Voxel> voxlist = object.pixels().getPixelSet();
     std::vector<Voxel> voxlist = object.getPixelSet();
-    for(unsigned int pix=0;pix<voxlist.size();pix++){
-      int pos = voxlist[pix].getX() + dimArray[0] * voxlist[pix].getY();
+    std::vector<Voxel>::iterator vox;
+    for(vox=voxlist.begin();vox<voxlist.end();vox++){
+      int pos = vox->getX() + dimArray[0] * vox->getY();
       if(!done[pos]){
 	done[pos] = true;
 	for(int z=0;z<dimArray[2];z++){
@@ -194,10 +194,10 @@ namespace duchamp
     if(this->par.getSpectralMethod()=="sum"){
       bool *done = new bool[xdim*ydim];
       for(int i=0;i<xdim*ydim;i++) done[i]=false;
-//       std::vector<Voxel> voxlist = this->objectList->at(objNum).pixels().getPixelSet();
       std::vector<Voxel> voxlist = this->objectList->at(objNum).getPixelSet();
-      for(unsigned int pix=0;pix<voxlist.size();pix++){
-	int pos = voxlist[pix].getX() + xdim * voxlist[pix].getY();
+      std::vector<Voxel>::iterator vox;
+      for(vox=voxlist.begin();vox<voxlist.end();vox++){
+	int pos = vox->getX() + xdim * vox->getY();
 	if(!done[pos]){
 	  done[pos] = true;
 	  for(int z=0;z<zdim;z++){

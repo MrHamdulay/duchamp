@@ -140,11 +140,12 @@ std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 	  spectrum->extractSpectrum(Array,dim,npix);
 	  spectrum->removeMW(); // only works if flagMW is true
 	  std::vector<Scan> objlist = spectrum->findSources1D();
+	  std::vector<Scan>::iterator obj;
 	  num += objlist.size();
-	  for(unsigned int obj=0;obj<objlist.size();obj++){
+	  for(obj=objlist.begin();obj<objlist.end();obj++){
 	    Detection newObject;
 	    // Fix up coordinates of each pixel to match original array
- 	    for(int z=objlist[obj].getX();z<=objlist[obj].getXmax();z++) {
+ 	    for(int z=obj->getX();z<=obj->getXmax();z++) {
 	      newObject.addPixel(x,y,z);
 	    }
 	    newObject.setOffsets(par);
@@ -189,10 +190,11 @@ std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 
       channelImage->extractImage(Array,dim,z);
       std::vector<Object2D> objlist = channelImage->findSources2D();
+      std::vector<Object2D>::iterator obj;
       num += objlist.size();
-      for(unsigned int obj=0;obj<objlist.size();obj++){
+      for(obj=objlist.begin();obj!=objlist.end();obj++){
 	Detection newObject;
-	newObject.addChannel(z,objlist[obj]);
+	newObject.addChannel(z,*obj);
 	newObject.setOffsets(par);
 	mergeIntoList(newObject,outputList,par);
       }
@@ -255,10 +257,11 @@ std::vector <Detection> search3DArraySimple(long *dim, float *Array,
 
       channelImage->extractImage(Array,dim,z);
       std::vector<Object2D> objlist = channelImage->findSources2D();
+      std::vector<Object2D>::iterator obj;
       num += objlist.size();
-      for(unsigned int obj=0;obj<objlist.size();obj++){
+      for(obj=objlist.begin();obj!=objlist.end();obj++){
 	Detection newObject;
-	newObject.addChannel(z,objlist[obj]);
+	newObject.addChannel(z,*obj);
 	newObject.setOffsets(par);
 	mergeIntoList(newObject,outputList,par);
       }

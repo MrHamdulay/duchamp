@@ -292,11 +292,11 @@ void Cube::SpatialSmoothNSearch()
       channelImage->saveArray(smoothed,xySize);
 
       std::vector<PixelInfo::Object2D> objlist = channelImage->findSources2D();
+      std::vector<PixelInfo::Object2D>::iterator obj;
       numFound += objlist.size();
-      for(unsigned int obj=0;obj<objlist.size();obj++){
+      for(obj=objlist.begin();obj<objlist.end();obj++){
 	Detection newObject;
-// 	newObject.pixels().addChannel(z,objlist[obj]);
-	newObject.addChannel(z,objlist[obj]);
+	newObject.addChannel(z,*obj);
 	newObject.setOffsets(this->par);
 	mergeIntoList(newObject,outputList,this->par);
       }

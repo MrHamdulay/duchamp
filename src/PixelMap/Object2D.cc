@@ -64,7 +64,7 @@ namespace PixelInfo
   Object2D operator+ (Object2D lhs, Object2D rhs)
   {
     Object2D output = lhs;
-    for(unsigned int s=0;s<rhs.scanlist.size();s++) output.addScan(rhs.scanlist[s]);
+    for(size_t s=0;s<rhs.scanlist.size();s++) output.addScan(rhs.scanlist[s]);
     return output;
   }
 
@@ -88,7 +88,7 @@ namespace PixelInfo
 
     bool flagDone=false,flagChanged=false, isNew=false;
 
-    unsigned int scanCount = 0;
+    size_t scanCount = 0;
     while(!flagDone && (scanCount<this->scanlist.size()) ){
       Scan scan = this->scanlist[scanCount];    
       if(y == scan.itsY){ // if the y value is already in the list
@@ -282,7 +282,7 @@ namespace PixelInfo
   bool Object2D::isInObject(long x, long y)
   {
 
-    unsigned long scanCount = 0;
+    size_t scanCount = 0;
     do{
 
       if(y == this->scanlist[scanCount].itsY){
@@ -319,7 +319,7 @@ namespace PixelInfo
 
   std::ostream& operator<< ( std::ostream& theStream, Object2D& obj)
   {
-    for(unsigned int i=0;i<obj.scanlist.size();i++)
+    for(size_t i=0;i<obj.scanlist.size();i++)
       theStream << obj.scanlist[i] << "\n";
     theStream<<"---\n";
     return theStream;
@@ -331,25 +331,26 @@ namespace PixelInfo
   {
     this->xSum = 0;
     this->ySum = 0;
-    for(unsigned int s=0;s<this->scanlist.size();s++){
+    std::vector<Scan>::iterator s;
+    for(s=this->scanlist.begin();s<this->scanlist.end();s++){
 
-      if(s==0){
-	this->ymin = this->ymax = this->scanlist[s].itsY;
-	this->xmin = this->scanlist[s].itsX;
-	this->xmax = this->scanlist[s].getXmax();
+      if(s==this->scanlist.begin()){
+	this->ymin = this->ymax = s->itsY;
+	this->xmin = s->itsX;
+	this->xmax = s->getXmax();
       }
       else{
-	if(this->ymin>this->scanlist[s].itsY)    this->ymin = this->scanlist[s].itsY;
-	if(this->xmin>this->scanlist[s].itsX)    this->xmin = this->scanlist[s].itsX;
-	if(this->ymax<this->scanlist[s].itsY)    this->ymax = this->scanlist[s].itsY;
-	if(this->xmax<this->scanlist[s].getXmax()) this->xmax = this->scanlist[s].getXmax();
+	if(this->ymin>s->itsY)    this->ymin = s->itsY;
+	if(this->xmin>s->itsX)    this->xmin = s->itsX;
+	if(this->ymax<s->itsY)    this->ymax = s->itsY;
+	if(this->xmax<s->getXmax()) this->xmax = s->getXmax();
       }
 
-      this->ySum += this->scanlist[s].itsY*this->scanlist[s].getXlen();
-      for(int x=this->scanlist[s].itsX;x<=this->scanlist[s].getXmax();x++)
+      this->ySum += s->itsY*s->getXlen();
+      for(int x=s->itsX;x<=s->getXmax();x++)
 	this->xSum += x;
-//       this->xSum += (this->scanlist[s].getXmax()*(this->scanlist[s].getXmax()+1) -
-// 		     this->scanlist[s].itsX*(this->scanlist[s].itsX-1) ) / 2;
+//       this->xSum += (s->getXmax()*(s->getXmax()+1) -
+// 		     s->itsX*(s->itsX-1) ) / 2;
 
     }
 
@@ -358,7 +359,7 @@ namespace PixelInfo
 
   void Object2D::cleanup()
   {
-    unsigned int counter=0, compCounter=1;
+    size_t counter=0, compCounter=1;
     std::vector<Scan>::iterator iter;
     while(counter < this->scanlist.size())
       {
@@ -395,10 +396,11 @@ namespace PixelInfo
     if(this->scanlist.size()==0) return 0;
     if(this->scanlist.size()==1) return 1;
     ylist.push_back(this->scanlist[0].itsY);
-    for(unsigned int i=1;i<this->scanlist.size();i++){
+    std::vector<Scan>::iterator scn;
+    for(scn=this->scanlist.begin();scn<this->scanlist.end();scn++){
       bool inList = false;
       unsigned int j=0;
-      long y = this->scanlist[i].itsY;
+      long y = scn->itsY;
       while(!inList && j<ylist.size()){
 	if(y==ylist[j]) inList=true;
 	j++;
@@ -416,8 +418,11 @@ namespace PixelInfo
     if(this->scanlist.size()==1) return 1;
     for(int x=this->scanlist[0].itsX;x<this->scanlist[0].getXmax();x++)
       xlist.push_back(x);
-    for(unsigned int i=1;i<this->scanlist.size();i++){
-      for(int x=this->scanlist[0].itsX;x<this->scanlist[0].getXmax();x++){
+    std::vector<Scan>::iterator scn;
+    for(scn=this->scanlist.begin();scn<this->scanlist.end();scn++){
+      //    for(unsigned int i=1;i<this->scanlist.size();i++){
+      //      for(int x=this->scanlist[0].itsX;x<this->scanlist[0].getXmax();x++){
+      for(int x=scn->itsX;x<scn->getXmax();x++){
 	bool inList = false;
 	unsigned int j=0;
 	while(!inList && j<xlist.size()){
@@ -445,8 +450,9 @@ namespace PixelInfo
 
   void Object2D::addOffsets(long xoff, long yoff)
   {
-    for(unsigned int i=0;i<this->scanlist.size();i++) 
-      this->scanlist[i].addOffsets(xoff,yoff);
+    std::vector<Scan>::iterator scn;
+    for(scn=this->scanlist.begin();scn<this->scanlist.end();scn++)
+      scn->addOffsets(xoff,yoff);
     this->xSum += xoff*numPix;
     this->xmin += xoff; xmax += xoff;
     this->ySum += yoff*numPix;

@@ -44,7 +44,7 @@ namespace duchamp
      */
     std::string preamble = "WARNING <" + subroutine + "> : ";
     std::cerr << preamble;
-    for(unsigned int i=0;i<warning.size();i++){
+    for(size_t i=0;i<warning.size();i++){
       std::cerr << warning[i];
       if((i!=warning.size()-1)&&(warning[i]=='\n')) 
 	std::cerr << std::setw(preamble.size()) <<": ";
@@ -62,7 +62,7 @@ namespace duchamp
      */
     std::string preamble = "\aERROR <" + subroutine + "> : ";
     std::cerr << preamble;
-    for(unsigned int i=0;i<error.size();i++){
+    for(size_t i=0;i<error.size();i++){
       std::cerr << error[i];
       if((i!=error.size()-1)&&(error[i]=='\n'))
 	std::cerr << std::setw(preamble.size()-1) <<": ";

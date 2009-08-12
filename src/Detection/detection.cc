@@ -217,8 +217,9 @@ namespace duchamp
     listsMatch = listsMatch && this->voxelListCovered(voxelList);
 
     // make sure all voxels are in Detection
-    for(unsigned int i=0;i<voxelList.size();i++)
-      listsMatch = listsMatch && this->isInObject(voxelList[i]);
+    std::vector<Voxel>::iterator vox;
+    for(vox=voxelList.begin();vox<voxelList.end();vox++)
+      listsMatch = listsMatch && this->isInObject(*vox);
 
     return listsMatch;
 
@@ -238,11 +239,11 @@ namespace duchamp
     bool listsMatch = true;
 
     // make sure all Detection pixels are in voxel list
-    unsigned int v1=0;
+    size_t v1=0;
     std::vector<Voxel> detpixlist = this->getPixelSet();
     while(listsMatch && v1<detpixlist.size()){
       bool inList = false;
-      unsigned int v2=0;
+      size_t v2=0;
       while(!inList && v2<voxelList.size()){
 	inList = inList || detpixlist[v1].match(voxelList[v2]);
 	v2++;
@@ -277,17 +278,18 @@ namespace duchamp
       return;
     }
 
-    for(unsigned int i=0;i<voxelList.size();i++) {
-      if(this->isInObject(voxelList[i])){
-	long x = voxelList[i].getX();
-	long y = voxelList[i].getY();
-	long z = voxelList[i].getZ();
-	float f = voxelList[i].getF();
+    std::vector<Voxel>::iterator vox;
+    for(vox=voxelList.begin();vox<voxelList.end();vox++){
+      if(this->isInObject(*vox)){
+	long x = vox->getX();
+	long y = vox->getY();
+	long z = vox->getZ();
+	float f = vox->getF();
 	this->totalFlux += f;
 	this->xCentroid += x*f;
 	this->yCentroid += y*f;
 	this->zCentroid += z*f;
-	if( (i==0) ||  //first time round
+	if( (vox==voxelList.begin()) ||  //first time round
 	    (this->negSource&&(f<this->peakFlux)) || 
 	    (!this->negSource&&(f>this->peakFlux))   )
 	  {
@@ -467,14 +469,15 @@ namespace duchamp
       double *localFlux = new double[size];
       for(int i=0;i<size;i++) localFlux[i]=0.;
 
-      for(unsigned int i=0;i<voxelList.size();i++){
-	if(this->isInObject(voxelList[i])){
-	  long x = voxelList[i].getX();
-	  long y = voxelList[i].getY();
-	  long z = voxelList[i].getZ();
+      std::vector<Voxel>::iterator vox;
+      for(vox=voxelList.begin();vox<voxelList.end();vox++){
+	if(this->isInObject(*vox)){
+	  long x = vox->getX();
+	  long y = vox->getY();
+	  long z = vox->getZ();
 	  long pos = (x-this->getXmin()+border) + (y-this->getYmin()+border)*xsize
 	    + (z-this->getZmin()+border)*xsize*ysize;
-	  localFlux[pos] = voxelList[i].getF();
+	  localFlux[pos] = vox->getF();
 	  isObj[pos] = true;
 	}
       }
@@ -640,11 +643,12 @@ namespace duchamp
        
     Object2D spatMap = this->getSpatialMap();
     for(int s=0;s<spatMap.getNumScan();s++){
-      for(unsigned int i=0;i<voxelList.size();i++){
-	if(spatMap.isInObject(voxelList[i])){
-	  if(voxelList[i].getZ()>=this->getZmin()-border && 
-	     voxelList[i].getZ()<=this->getZmax()+border)
-	    intSpec[voxelList[i].getZ()-this->getZmin()+1] += voxelList[i].getF();
+      std::vector<Voxel>::iterator vox;
+      for(vox=voxelList.begin();vox<voxelList.end();vox++){
+	if(spatMap.isInObject(*vox)){
+	  if(vox->getZ()>=this->getZmin()-border && 
+	     vox->getZ()<=this->getZmax()+border)
+	    intSpec[vox->getZ()-this->getZmin()+1] += vox->getF();
 	}
       }
     }
@@ -871,9 +875,10 @@ namespace duchamp
 
     std::vector<Voxel> voxlist = this->getPixelSet();
     std::vector<bool> isObj(xsize*ysize,false);
-    for(unsigned int i=0;i<voxlist.size();i++){
-      int pos = (voxlist[i].getX()-xmin) + 
-	(voxlist[i].getY()-ymin)*xsize;
+    std::vector<Voxel>::iterator vox;
+    for(vox=voxlist.begin();vox<voxlist.end();vox++){
+      int pos = (vox->getX()-xmin) + 
+	(vox->getY()-ymin)*xsize;
       isObj[pos] = true;
     }
     voxlist.clear();

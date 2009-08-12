@@ -100,10 +100,10 @@ namespace duchamp
 	}
       }
  
-      for(unsigned int obj=0;obj<this->objectList->size();obj++){ 
+      std::vector<Detection>::iterator obj;
+      for(obj=this->objectList->begin();obj<this->objectList->end();obj++){ 
 	// for each detection, correct the flux calculations.
-	this->objectList->at(obj).calcFluxes(this->array, this->axisDim);
-      
+	obj->calcFluxes(this->array, this->axisDim);
       }
     
     }

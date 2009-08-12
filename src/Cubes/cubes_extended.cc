@@ -78,7 +78,7 @@ namespace duchamp
       }
     }
     else SortDetections(*this->objectList, this->par.getSortingParam());
-    for(unsigned int i=0; i<this->objectList->size();i++) 
+    for(size_t i=0; i<this->objectList->size();i++) 
       this->objectList->at(i).setID(i+1);
 
   }

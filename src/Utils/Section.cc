@@ -102,7 +102,7 @@ namespace duchamp
     this->dims.clear();
   
     this->numSections=1;
-    for(unsigned int i=0;i<this->subsection.size();i++)
+    for(size_t i=0;i<this->subsection.size();i++)
       if(this->subsection[i]==',') this->numSections++;
 
     if(numSections!=dimAxes.size()){
@@ -128,14 +128,14 @@ namespace duchamp
     std::string temp;
 
     getline(ss,temp,'[');
-    for(unsigned int i=0;i<numSections-1;i++){
+    for(size_t i=0;i<numSections-1;i++){
       getline(ss,temp,',');
       tempsections[i]=temp;
     }
     getline(ss,temp,']');
     tempsections[numSections-1]=temp;
 
-    for(unsigned int str=0;str<numSections;str++){
+    for(size_t str=0;str<numSections;str++){
       if(tempsections[str]=="*"){
 	this->starts[str] = 0;
 	this->dims[str]= dimAxes[str];
@@ -143,7 +143,7 @@ namespace duchamp
       }
       else{
 	int numColon=0;
-	for(unsigned int i=0;i<tempsections[str].size();i++){
+	for(size_t i=0;i<tempsections[str].size();i++){
 	  if(tempsections[str][i]==':'){
 	    tempsections[str][i]=' ';
 	    numColon++;
@@ -203,7 +203,7 @@ namespace duchamp
     if(removeStep || doingBorders){
       // rewrite subsection without any step sizes and with correct borders.
       this->subsection = "[" + this->sections[0];
-      for(unsigned int str=1;str<numSections;str++) 
+      for(size_t str=1;str<numSections;str++) 
 	this->subsection += ',' + this->sections[str];
       this->subsection += "]";
     }

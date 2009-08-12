@@ -175,7 +175,7 @@ namespace duchamp
     }
     template void Col::printEntry<int>(std::ostream &stream, int value);
     template void Col::printEntry<long>(std::ostream &stream, long value);
-    template void Col::printEntry<unsigned>(std::ostream &stream, unsigned value);
+    template void Col::printEntry<unsigned int>(std::ostream &stream, unsigned int value);
     template void Col::printEntry<float>(std::ostream &stream, float value);
     template void Col::printEntry<double>(std::ostream &stream, double value);
     template void Col::printEntry<std::string>(std::ostream &stream, std::string value);
@@ -289,22 +289,22 @@ namespace duchamp
 
 
       // Now test each object against each new column
-      for( unsigned int obj = 0; obj < objectList.size(); obj++){
+      std::vector<Detection>::iterator obj;
+      for(obj = objectList.begin(); obj < objectList.end(); obj++){
 	std::string tempstr;
 	int tempwidth;
 	float val,minval;
 
 	// Obj#
-	tempwidth = int( log10(objectList[obj].getID()) + 1) + 1;
+	tempwidth = int( log10(obj->getID()) + 1) + 1;
 	for(int i=newset[NUM].getWidth();i<tempwidth;i++) newset[NUM].widen();
 
 	// Name
-	tempwidth = objectList[obj].getName().size() + 1;
+	tempwidth = obj->getName().size() + 1;
 	for(int i=newset[NAME].getWidth();i<tempwidth;i++) newset[NAME].widen();
 
 	// X position
-	val = objectList[obj].getXcentre() 
-	  + objectList[obj].getXOffset();
+	val = obj->getXcentre() + obj->getXOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[X].getPrecision()+1)); 
 	  if(val < minval) newset[X].upPrec();
@@ -312,7 +312,7 @@ namespace duchamp
 	tempwidth = int( log10(val) + 1) + newset[X].getPrecision() + 2;
 	for(int i=newset[X].getWidth();i<tempwidth;i++) newset[X].widen();
 	// Y position
-	val = objectList[obj].getYcentre() + objectList[obj].getYOffset();
+	val = obj->getYcentre() + obj->getYOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[Y].getPrecision()+1)); 
 	  if(val < minval) newset[Y].upPrec();
@@ -320,7 +320,7 @@ namespace duchamp
 	tempwidth = int( log10(val) + 1) + newset[Y].getPrecision() + 2;
 	for(int i=newset[Y].getWidth();i<tempwidth;i++) newset[Y].widen();
 	// Z position
-	val = objectList[obj].getZcentre() + objectList[obj].getZOffset();
+	val = obj->getZcentre() + obj->getZOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[Z].getPrecision()+1)); 
 	  if((val>0.)&&(val < minval)) newset[Z].upPrec();
@@ -332,26 +332,26 @@ namespace duchamp
 	  // RA -- assign correct title. Check width but should be ok by definition
 	  tempstr = head.WCS().lngtyp;
 	  newset[RA].setName(tempstr);
-	  tempwidth = objectList[obj].getRAs().size() + 1;
+	  tempwidth = obj->getRAs().size() + 1;
 	  for(int i=newset[RA].getWidth();i<tempwidth;i++) newset[RA].widen();
       
 	  // Dec -- assign correct title. Check width, should be ok by definition
 	  tempstr = head.WCS().lattyp;
 	  newset[DEC].setName(tempstr);
-	  tempwidth = objectList[obj].getDecs().size() + 1;
+	  tempwidth = obj->getDecs().size() + 1;
 	  for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
 
 	  // RA decimal degrees -- assign correct title. Check width but should be OK
 	  tempstr = head.WCS().lngtyp;
 	  newset[RAJD].setName(tempstr);
-	  val = objectList[obj].getRA();
+	  val = obj->getRA();
 	  tempwidth = int( log10(fabs(val)) + 1) + newset[RAJD].getPrecision() + 2;
 	  for(int i=newset[RAJD].getWidth();i<tempwidth;i++) newset[RAJD].widen();
       
 	  // Dec decimal degrees -- assign correct title. Check width but should be OK
 	  tempstr = head.WCS().lattyp;
 	  newset[DECJD].setName(tempstr);
-	  val = objectList[obj].getDec();
+	  val = obj->getDec();
 	  tempwidth = int( log10(fabs(val)) + 1) + newset[DECJD].getPrecision() + 2;
 	  for(int i=newset[DECJD].getWidth();i<tempwidth;i++) newset[DECJD].widen();
 
@@ -368,7 +368,7 @@ namespace duchamp
 	    tempwidth = newset[VEL].getUnits().size() + 1;
 	    for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
 	
-	    val = objectList[obj].getVel();
+	    val = obj->getVel();
 	    if((fabs(val) < 1.)&&(val>0.)){
 	      minval = pow(10, -1. * (newset[VEL].getPrecision()+1)); 
 	      if(val < minval) newset[VEL].upPrec();
@@ -381,7 +381,7 @@ namespace duchamp
 	  // w_RA -- check width & title. leave units for the moment.
 	  tempwidth = newset[RA].getUnits().size() + 1;
 	  for(int i=newset[RA].getWidth();i<tempwidth;i++) newset[RA].widen();
-	  val = objectList[obj].getRAWidth();
+	  val = obj->getRAWidth();
 	  if((fabs(val) < 1.)&&(val>0.)){
 	    minval = pow(10, -1. * (newset[WRA].getPrecision()+1)); 
 	    if(val < minval) newset[WRA].upPrec();
@@ -393,7 +393,7 @@ namespace duchamp
 	  // w_DEC -- check width & title. leave units for the moment.
 	  tempwidth = newset[DEC].getUnits().size() + 1;
 	  for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
-	  val = objectList[obj].getDecWidth();
+	  val = obj->getDecWidth();
 	  if((fabs(val) < 1.)&&(val>0.)){
 	    minval = pow(10, -1. * (newset[WDEC].getPrecision()+1)); 
 	    if(val < minval) newset[WDEC].upPrec();
@@ -408,7 +408,7 @@ namespace duchamp
 	      newset[W50].setUnits("[" + head.getSpectralUnits() + "]");
 	    tempwidth = newset[W50].getUnits().size() + 1;
 	    for(int i=newset[W50].getWidth();i<tempwidth;i++) newset[W50].widen();
-	    val = objectList[obj].getW50();
+	    val = obj->getW50();
 	    if((fabs(val) < 1.)&&(val>0.)){
 	      minval = pow(10, -1. * (newset[W50].getPrecision()+1)); 
 	      if(val < minval) newset[W50].upPrec();
@@ -424,7 +424,7 @@ namespace duchamp
 	      newset[W20].setUnits("[" + head.getSpectralUnits() + "]");
 	    tempwidth = newset[W20].getUnits().size() + 1;
 	    for(int i=newset[W20].getWidth();i<tempwidth;i++)newset[W20].widen();
-	    val = objectList[obj].getW20();
+	    val = obj->getW20();
 	    if((fabs(val) < 1.)&&(val>0.)){
 	      minval = pow(10, -1. * (newset[W20].getPrecision()+1)); 
 	      if(val < minval) newset[W20].upPrec();
@@ -447,7 +447,7 @@ namespace duchamp
 	    for(int i=newset[WVEL].getWidth();i<tempwidth;i++)newset[WVEL].widen();
 	    tempwidth = newset[WVEL].getName().size() + 1;
 	    for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
-	    val = objectList[obj].getVelWidth();
+	    val = obj->getVelWidth();
 	    if((fabs(val) < 1.)&&(val>0.)){
 	      minval = pow(10, -1. * (newset[WVEL].getPrecision()+1)); 
 	      if(val < minval) newset[WVEL].upPrec();
@@ -462,7 +462,7 @@ namespace duchamp
 	    newset[FINT].setUnits("[" + head.getIntFluxUnits() + "]");
 	  tempwidth = newset[FINT].getUnits().size() + 1;
 	  for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
-	  val = objectList[obj].getIntegFlux();
+	  val = obj->getIntegFlux();
 	  if((fabs(val) < 1.)// &&(val>0.)
 	     ){
 	    int minprec = int(fabs(log10(fabs(val))))+2;
@@ -478,7 +478,7 @@ namespace duchamp
 	newset[FTOT].setUnits("[" + head.getFluxUnits() + "]");
 	tempwidth = newset[FTOT].getUnits().size() + 1;
 	for(int i=newset[FTOT].getWidth();i<tempwidth;i++) newset[FTOT].widen();
-	val = objectList[obj].getTotalFlux();
+	val = obj->getTotalFlux();
 	//     std::cerr << val << "\n";
 	if((fabs(val) < 1.)// &&(val>0.)
 	   ){
@@ -493,7 +493,7 @@ namespace duchamp
 	newset[FPEAK].setUnits("[" + head.getFluxUnits() + "]");
 	tempwidth = newset[FPEAK].getUnits().size() + 1;
 	for(int i=newset[FPEAK].getWidth();i<tempwidth;i++) newset[FPEAK].widen();
-	val = objectList[obj].getPeakFlux();
+	val = obj->getPeakFlux();
 	if((fabs(val) < 1.)// &&(val>0.)
 	   ){
 	  int minprec = int(fabs(log10(fabs(val))))+2;
@@ -504,7 +504,7 @@ namespace duchamp
 	for(int i=newset[FPEAK].getWidth();i<tempwidth;i++) newset[FPEAK].widen();
 
 	// S/N_peak
-	val = objectList[obj].getPeakSNR();
+	val = obj->getPeakSNR();
 	if((fabs(val) < 1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[SNRPEAK].getPrecision()+1)); 
 	  if(val < minval) newset[SNRPEAK].upPrec();
@@ -514,38 +514,38 @@ namespace duchamp
 	for(int i=newset[SNRPEAK].getWidth();i<tempwidth;i++) newset[SNRPEAK].widen();
 
 	// X1 position
-	val = objectList[obj].getXmin() + objectList[obj].getXOffset();
+	val = obj->getXmin() + obj->getXOffset();
 	tempwidth = int( log10(val) + 1) + newset[X1].getPrecision() + 1;
 	for(int i=newset[X1].getWidth();i<tempwidth;i++) newset[X1].widen();
 	// X2 position
-	val = objectList[obj].getXmax() + objectList[obj].getXOffset();
+	val = obj->getXmax() + obj->getXOffset();
 	tempwidth = int( log10(val) + 1) + newset[X2].getPrecision() + 1;
 	for(int i=newset[X2].getWidth();i<tempwidth;i++) newset[X2].widen();
 	// Y1 position
-	val = objectList[obj].getYmin() + objectList[obj].getYOffset();
+	val = obj->getYmin() + obj->getYOffset();
 	tempwidth = int( log10(val) + 1) + newset[Y1].getPrecision() + 1;
 	for(int i=newset[Y1].getWidth();i<tempwidth;i++) newset[Y1].widen();
 	// Y2 position
-	val = objectList[obj].getYmax() + objectList[obj].getYOffset();
+	val = obj->getYmax() + obj->getYOffset();
 	tempwidth = int( log10(val) + 1) + newset[Y2].getPrecision() + 1;
 	for(int i=newset[Y2].getWidth();i<tempwidth;i++) newset[Y2].widen();
 	// Z1 position
-	val = objectList[obj].getZmin() + objectList[obj].getZOffset();
+	val = obj->getZmin() + obj->getZOffset();
 	tempwidth = int( log10(val) + 1) + newset[Z1].getPrecision() + 1;
 	for(int i=newset[Z1].getWidth();i<tempwidth;i++) newset[Z1].widen();
 	// Z2 position
-	val = objectList[obj].getZmax() + objectList[obj].getZOffset();
+	val = obj->getZmax() + obj->getZOffset();
 	tempwidth = int( log10(val) + 1) + newset[Z2].getPrecision() + 1;
 	for(int i=newset[Z2].getWidth();i<tempwidth;i++) newset[Z2].widen();
 
 	// Npix
-	tempwidth = int( log10(objectList[obj].getSize()) + 1) + 
+	tempwidth = int( log10(obj->getSize()) + 1) + 
 	  newset[NPIX].getPrecision() + 1;
 	for(int i=newset[NPIX].getWidth();i<tempwidth;i++) newset[NPIX].widen();
     
 	// average X position
-// 	val = objectList[obj].getXAverage() + objectList[obj].getXOffset();
-	val = objectList[obj].getXaverage() + objectList[obj].getXOffset();
+// 	val = obj->getXAverage() + obj->getXOffset();
+	val = obj->getXaverage() + obj->getXOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[XAV].getPrecision()+1)); 
 	  if(val < minval) newset[XAV].upPrec();
@@ -553,8 +553,8 @@ namespace duchamp
 	tempwidth = int( log10(val) + 1) + newset[XAV].getPrecision() + 2;
 	for(int i=newset[XAV].getWidth();i<tempwidth;i++) newset[XAV].widen();
 	// average Y position
-// 	val = objectList[obj].getYAverage() + objectList[obj].getYOffset();
-	val = objectList[obj].getYaverage() + objectList[obj].getYOffset();
+// 	val = obj->getYAverage() + obj->getYOffset();
+	val = obj->getYaverage() + obj->getYOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[YAV].getPrecision()+1)); 
 	  if(val < minval) newset[YAV].upPrec();
@@ -562,8 +562,8 @@ namespace duchamp
 	tempwidth = int( log10(val) + 1) + newset[YAV].getPrecision() + 2;
 	for(int i=newset[YAV].getWidth();i<tempwidth;i++) newset[YAV].widen();
 	// average Z position
-// 	val = objectList[obj].getZAverage() + objectList[obj].getZOffset();
-	val = objectList[obj].getZaverage() + objectList[obj].getZOffset();
+// 	val = obj->getZAverage() + obj->getZOffset();
+	val = obj->getZaverage() + obj->getZOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[ZAV].getPrecision()+1)); 
 	  if((val>0.)&&(val < minval)) newset[ZAV].upPrec();
@@ -572,7 +572,7 @@ namespace duchamp
 	for(int i=newset[ZAV].getWidth();i<tempwidth;i++) newset[ZAV].widen();
     
 	// X position of centroid
-	val = objectList[obj].getXCentroid() + objectList[obj].getXOffset();
+	val = obj->getXCentroid() + obj->getXOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[XCENT].getPrecision()+1)); 
 	  if(val < minval) newset[XCENT].upPrec();
@@ -580,7 +580,7 @@ namespace duchamp
 	tempwidth = int( log10(val) + 1) + newset[XCENT].getPrecision() + 2;
 	for(int i=newset[XCENT].getWidth();i<tempwidth;i++) newset[XCENT].widen();
 	// Y position of centroid
-	val = objectList[obj].getYCentroid() + objectList[obj].getYOffset();
+	val = obj->getYCentroid() + obj->getYOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[YCENT].getPrecision()+1)); 
 	  if(val < minval) newset[YCENT].upPrec();
@@ -588,7 +588,7 @@ namespace duchamp
 	tempwidth = int( log10(val) + 1) + newset[YCENT].getPrecision() + 2;
 	for(int i=newset[YCENT].getWidth();i<tempwidth;i++) newset[YCENT].widen();
 	// Z position of centroid
-	val = objectList[obj].getZCentroid() + objectList[obj].getZOffset();
+	val = obj->getZCentroid() + obj->getZOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[ZCENT].getPrecision()+1)); 
 	  if((val>0.)&&(val < minval)) newset[ZCENT].upPrec();
@@ -597,7 +597,7 @@ namespace duchamp
 	for(int i=newset[ZCENT].getWidth();i<tempwidth;i++) newset[ZCENT].widen();
     
 	// X position of peak flux
-	val = objectList[obj].getXPeak() + objectList[obj].getXOffset();
+	val = obj->getXPeak() + obj->getXOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[XPEAK].getPrecision()+1)); 
 	  if(val < minval) newset[XPEAK].upPrec();
@@ -605,7 +605,7 @@ namespace duchamp
 	tempwidth = int( log10(val) + 1) + newset[XPEAK].getPrecision() + 2;
 	for(int i=newset[XPEAK].getWidth();i<tempwidth;i++) newset[XPEAK].widen();
 	// Y position of peak flux
-	val = objectList[obj].getYPeak() + objectList[obj].getYOffset();
+	val = obj->getYPeak() + obj->getYOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[YPEAK].getPrecision()+1)); 
 	  if(val < minval) newset[YPEAK].upPrec();
@@ -613,7 +613,7 @@ namespace duchamp
 	tempwidth = int( log10(val) + 1) + newset[YPEAK].getPrecision() + 2;
 	for(int i=newset[YPEAK].getWidth();i<tempwidth;i++) newset[YPEAK].widen();
 	// Z position of peak flux
-	val = objectList[obj].getZPeak() + objectList[obj].getZOffset();
+	val = obj->getZPeak() + obj->getZOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset[ZPEAK].getPrecision()+1)); 
 	  if((val>0.)&&(val < minval)) newset[ZPEAK].upPrec();

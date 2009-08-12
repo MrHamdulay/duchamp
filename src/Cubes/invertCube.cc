@@ -57,11 +57,12 @@ namespace duchamp
       }
     }
 
-    for(unsigned int i=0; i<this->objectList->size(); i++){
-      this->objectList->at(i).setNegative(true);
-      this->objectList->at(i).setTotalFlux(-1. * this->objectList->at(i).getTotalFlux() );
-      this->objectList->at(i).setIntegFlux(-1. * this->objectList->at(i).getIntegFlux() );
-      this->objectList->at(i).setPeakFlux(-1. * this->objectList->at(i).getPeakFlux() );
+    std::vector<Detection>::iterator obj;
+    for(obj=this->objectList->begin(); obj<this->objectList->end(); obj++){
+      obj->setNegative(true);
+      obj->setTotalFlux(-1. * obj->getTotalFlux() );
+      obj->setIntegFlux(-1. * obj->getIntegFlux() );
+      obj->setPeakFlux(-1. * obj->getPeakFlux() );
     }
 
   }

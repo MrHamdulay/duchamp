@@ -307,12 +307,12 @@ namespace duchamp
 	    spectrum->extractSpectrum(reconArray,dim,npix);
 	    spectrum->removeMW(); // only works if flagMW is true
 	    std::vector<Scan> objlist = spectrum->findSources1D();
+	    std::vector<Scan>::iterator obj;
 	    num += objlist.size();
-	    for(unsigned int obj=0;obj<objlist.size();obj++){
+	    for(obj=objlist.begin();obj!=objlist.end();obj++){
 	      Detection newObject;
 	      // Fix up coordinates of each pixel to match original array
-	      for(int z=objlist[obj].getX();z<=objlist[obj].getXmax();z++) {
-// 		newObject.pixels().addPixel(x,y,z);
+	      for(int z=obj->getX();z<=obj->getXmax();z++) {
 		newObject.addPixel(x,y,z);
 	      }
 	      newObject.setOffsets(par);
@@ -358,11 +358,11 @@ namespace duchamp
 
 	channelImage->extractImage(reconArray,dim,z);
 	std::vector<Object2D> objlist = channelImage->findSources2D();
+	std::vector<Object2D>::iterator obj;
 	num += objlist.size();
-	for(unsigned int obj=0;obj<objlist.size();obj++){
+	for(obj=objlist.begin();obj!=objlist.end();obj++){
 	  Detection newObject;
-// 	  newObject.pixels().addChannel(z,objlist[obj]);
-	  newObject.addChannel(z,objlist[obj]);
+	  newObject.addChannel(z,*obj);
 	  newObject.setOffsets(par);
 	  mergeIntoList(newObject,outputList,par);
 	}
@@ -429,11 +429,11 @@ namespace duchamp
 
 	channelImage->extractImage(reconArray,dim,z);
 	std::vector<Object2D> objlist = channelImage->findSources2D();
+	std::vector<Object2D>::iterator obj;
 	num += objlist.size();
-	for(unsigned int obj=0;obj<objlist.size();obj++){
+	for(obj=objlist.begin();obj!=objlist.end();obj++){
 	  Detection newObject;
-// 	  newObject.pixels().addChannel(z,objlist[obj]);
-	  newObject.addChannel(z,objlist[obj]);
+	  newObject.addChannel(z,*obj);
 	  newObject.setOffsets(par);
 	  mergeIntoList(newObject,outputList,par);
 	}
