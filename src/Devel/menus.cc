@@ -211,13 +211,14 @@ std::string imageMenu()
 std::string twoblMenu()
 {
   std::cout << "2BL spectra to choose from: \n";
-  system("ls /u/whi550/RESEARCH/2BL/data");
+//   system("ls /u/whi550/RESEARCH/2BL/data");
+  system("ls /Users/whi550/Work/RESEARCH/2BL/data");
   std::string fname;
   std::ifstream fin;
   do{
     std::cout << "Select a file: ";
     std::cin >> fname;
-    fname = "/u/whi550/RESEARCH/2BL/data/" + fname;
+    fname = "/Users/whi550/Work/RESEARCH/2BL/data/" + fname;
     fin.open(fname.c_str(),std::ifstream::in);
     if(!fin.good()) std::cout << "Bad file -- try again!";
   }while(!fin.good());
@@ -229,13 +230,13 @@ std::string twoblMenu()
 std::string b1555Menu()
 {
   std::cout << "B1555-140 spectra to choose from: \n";
-  system("set DIR=`pwd`;cd /u/whi550/RESEARCH/Papers/1555-140/b1555_redshifts/data/;ls *.txt;cd $DIR;unset $DIR");
+  system("set DIR=`pwd`;cd /Users/whi550/Work/myPapers/1555-140/b1555_redshifts/data/;ls *.txt;cd $DIR;unset $DIR");
   std::string fname;
   std::ifstream fin;
   do{
     std::cout << "Select a file: ";
     std::cin >> fname;
-    fname = "/u/whi550/RESEARCH/Papers/1555-140/b1555_redshifts/data/" + fname;
+    fname = "/Users/whi550/Work/myPapers/1555-140/b1555_redshifts/data/" + fname;
     fin.open(fname.c_str(),std::ifstream::in);
     if(!fin.good()) std::cout << "Bad file -- try again!";
   }while(!fin.good());
