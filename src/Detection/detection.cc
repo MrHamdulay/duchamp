@@ -916,4 +916,16 @@ namespace duchamp
   
   }
 
+
+  Detection operator+ (Detection lhs, Detection rhs)
+  {
+    Detection output = lhs;
+    for(std::map<long, Object2D>::iterator it = rhs.chanlist.begin(); it!=rhs.chanlist.end();it++)
+      output.addChannel(it->first, it->second);
+    return output;
+  }
+    
+
+
+
 }

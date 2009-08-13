@@ -62,6 +62,9 @@ namespace duchamp
     // These are functions in detection.cc. 
     //
 
+    friend Detection operator+ (Detection lhs, Detection rhs);
+
+
     /// @brief Test whether voxel lists match 
     bool voxelListsMatch(std::vector<PixelInfo::Voxel> voxelList);
 
