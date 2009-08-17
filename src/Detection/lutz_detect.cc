@@ -85,7 +85,7 @@ namespace duchamp
     std::vector<Object2D> outputlist;
     STATUS *status  = new STATUS[2];
     Object2D *store = new Object2D[xdim+1];
-    char *marker    = new char[ydim+1];
+    char *marker    = new char[xdim+1];
     for(int i=0; i<(xdim+1); i++) marker[i] = NULLMARKER;
     std::vector<FoundObject> oS;
     std::vector<STATUS>      psS;
