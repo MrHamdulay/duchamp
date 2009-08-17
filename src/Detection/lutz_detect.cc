@@ -70,7 +70,7 @@ public:
 namespace duchamp
 {
 
-  std::vector<Object2D> lutz_detect(std::vector<bool> array, long xdim, long ydim, unsigned int minSize) 
+  std::vector<Object2D> lutz_detect(std::vector<bool> &array, long xdim, long ydim, unsigned int minSize) 
   {
     /// @details
     ///  A detection algorithm for 2-dimensional images based on that of

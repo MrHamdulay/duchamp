@@ -33,9 +33,9 @@ namespace duchamp
 {
 
   /// @brief The main 2D source-detection function
-  std::vector<PixelInfo::Object2D> lutz_detect(std::vector<bool> array, long xdim, long ydim, unsigned int minSize);
+  std::vector<PixelInfo::Object2D> lutz_detect(std::vector<bool> &array, long xdim, long ydim, unsigned int minSize);
 
   /// @brief A source detection function that operates on a 1D spectrum
-  std::vector<PixelInfo::Scan> spectrumDetect(std::vector<bool> array, long dim, unsigned int minSize);
+  std::vector<PixelInfo::Scan> spectrumDetect(std::vector<bool> &array, long dim, unsigned int minSize);
 
 }

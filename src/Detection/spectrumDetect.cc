@@ -35,7 +35,7 @@ enum STATUS { NONOBJECT, OBJECT };
 namespace duchamp
 {
 
-  std::vector<Scan> spectrumDetect(std::vector<bool> array, long dim, unsigned int minSize)
+  std::vector<Scan> spectrumDetect(std::vector<bool> &array, long dim, unsigned int minSize)
   {
     /// @details
     ///  A detection algorithm that searches in a single 1-D spectrum.  It
