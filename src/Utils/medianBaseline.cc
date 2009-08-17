@@ -31,23 +31,17 @@
 float medVal(std::map<float,int> &themap)
 {
   std::map<float,int>::iterator it;
-//   for(it=themap.begin();it!=themap.end();it++) std::cerr << it->first << " ";
-//   std::cerr << "\n";
   it = themap.begin();
   if(themap.size()%2==0) {
-    for(int i=0;i<themap.size()/2-1;i++) it++;
+    for(size_t i=0;i<themap.size()/2-1;i++) it++;
     float v1 = it->first;
     it++;
     float v2 = it->first;
-    //    float v1=themap[themap.size()/2];
-    //    float v2=themap[themap.size()/2-1];
     return (v1+v2)/2.;
   }
   else{
-    for(int i=0;i<themap.size()/2;i++) it++;
+    for(size_t i=0;i<themap.size()/2;i++) it++;
     return it->first;
-    //     return themap[themap.size()/2];
-    //    return  (themap.begin()+(themap.size()/2))->second;
   }
 }
 
