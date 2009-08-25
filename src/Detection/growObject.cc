@@ -35,9 +35,6 @@
 #include <duchamp/PixelMap/Voxel.hh>
 #include <duchamp/Detection/detection.hh>
 
-using std::vector;
-using std::setw;
-
 using namespace PixelInfo;
 using namespace Statistics;
 
@@ -69,13 +66,13 @@ namespace duchamp
 
       if(doGrowing){
 
-	vector <bool> isInObj(cube.getSize(),false);
+	std::vector <bool> isInObj(cube.getSize(),false);
 	bool flagAdj = cube.pars().getFlagAdjacent();
 	int threshS = int(cube.pars().getThreshS());
 	if(flagAdj) threshS = 1;
 	int threshV = int(cube.pars().getThreshV());
 
-	vector<Voxel> voxlist = object.getPixelSet();
+	std::vector<Voxel> voxlist = object.getPixelSet();
 	int origSize = voxlist.size();
 	long zero = 0;
 
