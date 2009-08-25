@@ -71,13 +71,15 @@ namespace duchamp
       if(this->par.getFlagGrowth()) {
 	vector <Detection> newList(currentList.size());
 	for(size_t i=0;i<currentList.size();i++){
-	  std::cout.setf(std::ios::right);
-	  std::cout << "Growing: " << std::setw(6) << i+1 << "/";	   
-	  std::cout.unsetf(std::ios::right);
-	  std::cout.setf(std::ios::left);
-	  std::cout << std::setw(6) << currentList.size() << std::flush;
-	  printBackSpace(22);
-	  std::cout << std::flush;
+	  if(this->par.isVerbose()){
+	    std::cout.setf(std::ios::right);
+	    std::cout << "Growing: " << std::setw(6) << i+1 << "/";	   
+	    std::cout.unsetf(std::ios::right);
+	    std::cout.setf(std::ios::left);
+	    std::cout << std::setw(6) << currentList.size() << std::flush;
+	    printBackSpace(22);
+	    std::cout << std::flush;
+	  }
 	  Detection *obj = new Detection;
 	  *obj = currentList[i];
 	  growObject(*obj,*this);
