@@ -76,10 +76,13 @@ namespace duchamp
 	int origSize = voxlist.size();
 	long zero = 0;
 
-	std::vector<Voxel>::iterator vox;
-	for(vox=voxlist.begin();vox<voxlist.end();vox++){
-	  long pos = vox->getX() + vox->getY()*cube.getDimX() + 
-	    vox->getZ()*cube.getDimX()*cube.getDimY();
+// 	std::vector<Voxel>::iterator vox;
+// 	for(vox=voxlist.begin();vox<voxlist.end();vox++){
+// 	  long pos = vox->getX() + vox->getY()*cube.getDimX() + 
+// 	    vox->getZ()*cube.getDimX()*cube.getDimY();
+	for(size_t i=0; i<voxlist.size(); i++){
+	  long pos = voxlist[i].getX() + voxlist[i].getY()*cube.getDimX() + 
+	    voxlist[i].getZ()*cube.getDimX()*cube.getDimY();
 	  isInObj[pos] = true;
 	}
   
@@ -92,21 +95,26 @@ namespace duchamp
 
 	growthStats.setUseFDR(false);
 
-	for(vox=voxlist.begin();vox<voxlist.end();vox++){ // for each pixel in the object
+	for(size_t i=0; i<voxlist.size(); i++){
+// 	for(vox=voxlist.begin();vox<voxlist.end();vox++){ // for each pixel in the object
 
-	  int xmin = std::max(vox->getX() - threshS, zero);
-	  int xmax = std::min(vox->getX() + threshS, cube.getDimX()-1);
-	  int ymin = std::max(vox->getY() - threshS, zero);
-	  int ymax = std::min(vox->getY() + threshS, cube.getDimY()-1);
-	  int zmin = std::max(vox->getZ() - threshV, zero);
-	  int zmax = std::min(vox->getZ() + threshV, cube.getDimZ()-1);
+	  long xpt=voxlist[i].getX();
+	  long ypt=voxlist[i].getY();
+	  long zpt=voxlist[i].getZ();
+
+	  int xmin = std::max(xpt - threshS, zero);
+	  int xmax = std::min(xpt + threshS, cube.getDimX()-1);
+	  int ymin = std::max(ypt - threshS, zero);
+	  int ymax = std::min(ypt + threshS, cube.getDimY()-1);
+	  int zmin = std::max(zpt - threshV, zero);
+	  int zmax = std::min(zpt + threshV, cube.getDimZ()-1);
 
 	  //loop over surrounding pixels.
 	  for(int x=xmin; x<=xmax; x++){
 	    for(int y=ymin; y<=ymax; y++){
 	      for(int z=zmin; z<=zmax; z++){
 
-		if((x!=vox->getX())||(y!=vox->getY())||(z!=vox->getZ())){ 
+		if((x!=xpt)||(y!=ypt)||(z!=zpt)){ 
 		  // ignore when the current object pixel
 
 		  long pos = x + y * cube.getDimX() + z * cube.getDimX() * cube.getDimY();
@@ -114,7 +122,7 @@ namespace duchamp
 		  if(!isInObj[pos] && // pixel not already in object?
 		     !cube.isBlank(x,y,z)   &&   // pixel not BLANK?
 		     !cube.pars().isInMW(z)       &&   // pixel not MW?
-		     (flagAdj || hypot(x-vox->getX(),y-vox->getY())<threshS)   ){ // pixel not too far away?
+		     (flagAdj || hypot(x-xpt,y-ypt)<threshS)   ){ // pixel not too far away?
 	    
 		    float flux;
 		    if(cube.isRecon()) flux = cube.getReconValue(x,y,z);
