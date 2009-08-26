@@ -261,8 +261,8 @@ void Cube::SpatialSmoothNSearch()
   channelImage->setMinSize(1);
 
   float *image = new float[xySize];
-  float *smoothed;
-  bool *mask;
+  float *smoothed=0;
+  bool *mask=0;
   float median,madfm;//,threshold;
   for(int z=0;z<zdim;z++){
 

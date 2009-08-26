@@ -108,6 +108,8 @@ void cpgwedglog(const char* side, float disp, float width, float fg, float bg,
 /*   if(pgnoto("pgwedg")) return; */
 
   /* Get a numeric version of SIDE. */
+  nside=bot; /* initialise */
+  horiz=1;   /* initialise */
   if(tolower(side[0])=='b'){
     nside = bot;
     horiz = 1;
@@ -128,6 +130,7 @@ void cpgwedglog(const char* side, float disp, float width, float fg, float bg,
   else fprintf(stdout,"%%PGPLOT, Invalid \"SIDE\" argument in CPGWEDGLOG.");
 
   /* Determine which routine to use. */
+  image=0; /* initialise */
   if(strlen(side)<2) image = 0;
   else if(tolower(side[1])=='i') image = 1;
   else if(tolower(side[1])=='g') image = 0;

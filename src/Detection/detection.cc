@@ -654,8 +654,8 @@ namespace duchamp
     }
     
     std::vector<std::pair<int,float> > goodPix;
-    float peak;
-    int peakLoc;
+    float peak=0.;
+    int peakLoc=0;
     for(int z=0;z<zsize;z++) {
       if(z==0 || peak<intSpec[z]){
 	peak = intSpec[z];
@@ -748,8 +748,8 @@ namespace duchamp
       getIntSpec(*this,fluxArray,dim,mask,1.,intSpec);
 
       std::vector<std::pair<int,float> > goodPix;
-      float peak;
-      int peakLoc;
+      float peak=0.;
+      int peakLoc=0;
       for(int z=this->getZmin();z<=this->getZmax();z++) {
 	if(z==this->getZmin() || peak<intSpec[z]){
 	  peak = intSpec[z];

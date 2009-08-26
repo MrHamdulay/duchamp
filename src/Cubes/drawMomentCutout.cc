@@ -221,7 +221,7 @@ namespace duchamp
 	//   based on the pixel scale and size of the image.
 	float pixscale = this->head.getAvPixScale();
 	double *fraction = new double[numLengths];
-	int best;
+	int best=0;
 	float x1,x2,y1,y2;
 	cpgqwin(&x1,&x2,&y1,&y2);
 	for(int i=0;i<numLengths;i++){

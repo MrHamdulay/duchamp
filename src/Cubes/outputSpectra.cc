@@ -229,7 +229,7 @@ namespace duchamp
 
     this->objectList->at(objNum).calcFluxes(this->array, this->axisDim);
 
-    double minMWvel,maxMWvel,xval,yval,zval;
+    double minMWvel=0,maxMWvel=0,xval,yval,zval;
     xval = double(this->objectList->at(objNum).getXcentre());
     yval = double(this->objectList->at(objNum).getYcentre());
     if(this->par.getFlagMW()){
