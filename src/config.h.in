@@ -1,5 +1,8 @@
 /* src/config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define to 1 if you have the <algorithm> header file. */
+#undef HAVE_ALGORITHM
+
 /* Define to 1 if you have the `atan' function. */
 #undef HAVE_ATAN
 
@@ -12,8 +15,20 @@
 /* Define to 1 if you have the `floor' function. */
 #undef HAVE_FLOOR
 
+/* Define to 1 if you have the <fstream> header file. */
+#undef HAVE_FSTREAM
+
+/* Define to 1 if you have the <functional> header file. */
+#undef HAVE_FUNCTIONAL
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the <iomanip> header file. */
+#undef HAVE_IOMANIP
+
+/* Define to 1 if you have the <iostream> header file. */
+#undef HAVE_IOSTREAM
 
 /* Define to 1 if you have the `g2c' library (-lg2c). */
 #undef HAVE_LIBG2C
@@ -42,6 +57,9 @@
 /* Define to 1 if you have the `sqrt' function. */
 #undef HAVE_SQRT
 
+/* Define to 1 if you have the <sstream> header file. */
+#undef HAVE_SSTREAM
+
 /* Define to 1 if stdbool.h conforms to C99. */
 #undef HAVE_STDBOOL_H
 
@@ -50,6 +68,9 @@
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <string> header file. */
+#undef HAVE_STRING
 
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
@@ -71,6 +92,12 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the <values.h> header file. */
+#undef HAVE_VALUES_H
+
+/* Define to 1 if you have the <vector> header file. */
+#undef HAVE_VECTOR
 
 /* Define to 1 if WCSLIB is available. */
 #undef HAVE_WCSLIB
@@ -96,9 +123,14 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* Define to 1 if the X Window System is missing or not being used. */
+#undef X_DISPLAY_MISSING
+
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
 
-/* Define as `__inline' if that's what the C compiler calls it, or to nothing
-   if it is not supported. */
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
 #undef inline
+#endif

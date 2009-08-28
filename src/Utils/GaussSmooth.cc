@@ -27,6 +27,9 @@
 // -----------------------------------------------------------------------
 #include <iostream>
 #include <math.h>
+#ifdef HAVE_VALUES_H
+#include <values.h>
+#endif
 #include <duchamp/Utils/GaussSmooth.hh>
 
 template <class Type>
