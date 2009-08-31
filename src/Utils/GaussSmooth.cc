@@ -26,9 +26,15 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <iostream>
+#include <duchamp/config.h>
 #include <math.h>
 #ifdef HAVE_VALUES_H
 #include <values.h>
+#endif
+#ifdef MAXFLOAT
+#define MAXVAL MAXFLOAT
+#else
+#define MAXVAL 1.e38F
 #endif
 #include <duchamp/Utils/GaussSmooth.hh>
 
@@ -116,7 +122,7 @@ void GaussSmooth<Type>::define(float maj, float min, float pa)
   // less than the minimum floating-point value. Use the major axis to
   // get the largest square that includes the ellipse.
   float majorSigma = this->kernMaj / (4.*M_LN2);
-  int kernelHW = int(ceil(majorSigma * sqrt(-2.*log(1. / MAXFLOAT))));
+  int kernelHW = int(ceil(majorSigma * sqrt(-2.*log(1. / MAXVAL))));
   this->kernWidth = 2*kernelHW + 1;
 //   std::cerr << "Making a kernel of width " << this->kernWidth << "\n";
 
