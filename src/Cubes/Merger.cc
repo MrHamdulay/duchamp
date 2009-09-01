@@ -199,11 +199,13 @@ namespace duchamp
     ///   In the process, the object parameters are calculated and offsets
     ///    are added.
 
-    std::cout << "Rejecting:" << std::setw(6) << objList.size();
-    printSpace(6);
-    printBackSpace(22);
-    std::cout << std::flush;
-  
+    if(par.isVerbose()){
+      std::cout << "Rejecting:" << std::setw(6) << objList.size();
+      printSpace(6);
+      printBackSpace(22);
+      std::cout << std::flush;
+    }
+
     std::vector<Detection>::iterator obj = objList.begin();
 
     while(obj < objList.end()){
