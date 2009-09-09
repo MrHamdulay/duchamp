@@ -52,6 +52,7 @@ namespace duchamp
 
     /// @brief Convert the subsection string into the lists of numerical values. 
     int parse(std::vector<long> dimAxes);
+    int parse(std::vector<int> dimAxes);
     int parse(long *dim, int size);
 
     /// @brief Test whether a given voxel (x,y,z) lies within the subsection 
