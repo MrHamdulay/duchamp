@@ -61,7 +61,8 @@ HEADS = $(BASE)/duchamp.hh\
 	$(CUBESDIR)/plots.hh\
 	$(CUBESDIR)/VOTable.hh\
 	$(UTILDIR)/Hanning.hh\
-	$(UTILDIR)/GaussSmooth.hh\
+	$(UTILDIR)/GaussSmooth1D.hh\
+	$(UTILDIR)/GaussSmooth2D.hh\
 	$(UTILDIR)/Section.hh\
 	$(UTILDIR)/Statistics.hh\
 	$(UTILDIR)/utils.hh\
@@ -114,7 +115,8 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(UTILDIR)/Section.o\
 	$(UTILDIR)/Statistics.o\
 	$(UTILDIR)/feedback.o\
-	$(UTILDIR)/GaussSmooth.o\
+	$(UTILDIR)/GaussSmooth1D.o\
+	$(UTILDIR)/GaussSmooth2D.o\
 	$(UTILDIR)/Hanning.o\
 	$(UTILDIR)/getStats.o\
 	$(UTILDIR)/linear_regression.o\

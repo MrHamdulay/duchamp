@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// GaussSmooth.cc: Member functions for the GaussSmooth class.
+// GaussSmooth2D.cc: Member functions for the GaussSmooth2D class.
 // -----------------------------------------------------------------------
 // Copyright (C) 2006, Matthew Whiting, ATNF
 //
@@ -36,34 +36,34 @@
 #else
 #define MAXVAL 1.e38F
 #endif
-#include <duchamp/Utils/GaussSmooth.hh>
+#include <duchamp/Utils/GaussSmooth2D.hh>
 
 template <class Type>
-GaussSmooth<Type>::GaussSmooth()
+GaussSmooth2D<Type>::GaussSmooth2D()
 {
   allocated=false;
 }
-template GaussSmooth<float>::GaussSmooth();
-template GaussSmooth<double>::GaussSmooth();
+template GaussSmooth2D<float>::GaussSmooth2D();
+template GaussSmooth2D<double>::GaussSmooth2D();
 
 template <class Type>
-GaussSmooth<Type>::~GaussSmooth()
+GaussSmooth2D<Type>::~GaussSmooth2D()
 {
   if(allocated) delete [] kernel;
 }
-template GaussSmooth<float>::~GaussSmooth();
-template GaussSmooth<double>::~GaussSmooth();
+template GaussSmooth2D<float>::~GaussSmooth2D();
+template GaussSmooth2D<double>::~GaussSmooth2D();
 
 template <class Type>
-GaussSmooth<Type>::GaussSmooth(const GaussSmooth& g)
+GaussSmooth2D<Type>::GaussSmooth2D(const GaussSmooth2D& g)
 {
   operator=(g);
 }
-template GaussSmooth<float>::GaussSmooth(const GaussSmooth& g);
-template GaussSmooth<double>::GaussSmooth(const GaussSmooth& g);
+template GaussSmooth2D<float>::GaussSmooth2D(const GaussSmooth2D& g);
+template GaussSmooth2D<double>::GaussSmooth2D(const GaussSmooth2D& g);
 
 template <class Type>
-GaussSmooth<Type>& GaussSmooth<Type>::operator=(const GaussSmooth& g)
+GaussSmooth2D<Type>& GaussSmooth2D<Type>::operator=(const GaussSmooth2D& g)
 {
   if(this==&g) return *this;
   this->kernMaj   = g.kernMaj;
@@ -80,29 +80,29 @@ GaussSmooth<Type>& GaussSmooth<Type>::operator=(const GaussSmooth& g)
   }
   return *this;
 }
-template GaussSmooth<float>& GaussSmooth<float>::operator=(const GaussSmooth& g);
-template GaussSmooth<double>& GaussSmooth<double>::operator=(const GaussSmooth& g);
+template GaussSmooth2D<float>& GaussSmooth2D<float>::operator=(const GaussSmooth2D& g);
+template GaussSmooth2D<double>& GaussSmooth2D<double>::operator=(const GaussSmooth2D& g);
 
 template <class Type>
-GaussSmooth<Type>::GaussSmooth(float maj, float min, float pa)
+GaussSmooth2D<Type>::GaussSmooth2D(float maj, float min, float pa)
 {
   this->allocated=false;
   this->define(maj, min, pa);
 }
-template GaussSmooth<float>::GaussSmooth(float maj, float min, float pa);
-template GaussSmooth<double>::GaussSmooth(float maj, float min, float pa);
+template GaussSmooth2D<float>::GaussSmooth2D(float maj, float min, float pa);
+template GaussSmooth2D<double>::GaussSmooth2D(float maj, float min, float pa);
 
 template <class Type>
-GaussSmooth<Type>::GaussSmooth(float maj)
+GaussSmooth2D<Type>::GaussSmooth2D(float maj)
 {
   this->allocated=false;
   this->define(maj, maj, 0);
 }
-template GaussSmooth<float>::GaussSmooth(float maj);
-template GaussSmooth<double>::GaussSmooth(float maj);
+template GaussSmooth2D<float>::GaussSmooth2D(float maj);
+template GaussSmooth2D<double>::GaussSmooth2D(float maj);
 
 template <class Type>
-void GaussSmooth<Type>::define(float maj, float min, float pa)
+void GaussSmooth2D<Type>::define(float maj, float min, float pa)
 {
 
   this->kernMaj = maj;
@@ -147,16 +147,16 @@ void GaussSmooth<Type>::define(float maj, float min, float pa)
   this->stddevScale = sqrt(this->stddevScale);
 //   std::cerr << "Stddev scaling factor = " << this->stddevScale << "\n";
 }
-template void GaussSmooth<float>::define(float maj, float min, float pa);
-template void GaussSmooth<double>::define(float maj, float min, float pa);
+template void GaussSmooth2D<float>::define(float maj, float min, float pa);
+template void GaussSmooth2D<double>::define(float maj, float min, float pa);
 
 template <class Type>
-Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim, bool scaleByCoverage)
+Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool scaleByCoverage)
 {
   /// @details
   /// Smooth a given two-dimensional array, of dimensions xdim
   /// \f$\times\f$ ydim, with an elliptical gaussian. Simply runs as a
-  /// front end to GaussSmooth::smooth(float *, int, int, bool *) by
+  /// front end to GaussSmooth2D::smooth(float *, int, int, bool *) by
   /// defining a mask that allows all pixels in the input array.
   /// 
   ///  \param input The 2D array to be smoothed.
@@ -171,11 +171,11 @@ Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim, bool scaleByCov
   delete [] mask;
   return smoothed;
 }
-template float *GaussSmooth<float>::smooth(float *input, int xdim, int ydim, bool scaleByCoverage);
-template double *GaussSmooth<double>::smooth(double *input, int xdim, int ydim, bool scaleByCoverage);
+template float *GaussSmooth2D<float>::smooth(float *input, int xdim, int ydim, bool scaleByCoverage);
+template double *GaussSmooth2D<double>::smooth(double *input, int xdim, int ydim, bool scaleByCoverage);
 
 template <class Type>
-Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, bool scaleByCoverage)
+Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, bool scaleByCoverage)
 {
   /// @details
   ///  Smooth a given two-dimensional array, of dimensions xdim
@@ -256,5 +256,5 @@ Type *GaussSmooth<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, boo
   }
 
 }
-template float *GaussSmooth<float>::smooth(float *input, int xdim, int ydim, bool *mask, bool scaleByCoverage);
-template double *GaussSmooth<double>::smooth(double *input, int xdim, int ydim, bool *mask, bool scaleByCoverage);
+template float *GaussSmooth2D<float>::smooth(float *input, int xdim, int ydim, bool *mask, bool scaleByCoverage);
+template double *GaussSmooth2D<double>::smooth(double *input, int xdim, int ydim, bool *mask, bool scaleByCoverage);

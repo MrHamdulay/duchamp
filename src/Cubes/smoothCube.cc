@@ -32,7 +32,7 @@
 #include <duchamp/PixelMap/Object2D.hh>
 #include <duchamp/Utils/feedback.hh>
 #include <duchamp/Utils/Hanning.hh>
-#include <duchamp/Utils/GaussSmooth.hh>
+#include <duchamp/Utils/GaussSmooth2D.hh>
 #include <duchamp/Utils/Statistics.hh> 
 #include <duchamp/Utils/utils.hh>
 
@@ -183,7 +183,7 @@ void Cube::SpatialSmooth()
       if(this->par.getKernMin() < 0) 
 	this->par.setKernMin(this->par.getKernMaj());
 
-      GaussSmooth<float> gauss(this->par.getKernMaj(),
+      GaussSmooth2D<float> gauss(this->par.getKernMaj(),
 			       this->par.getKernMin(),
 			       this->par.getKernPA());
 
@@ -239,7 +239,7 @@ void Cube::SpatialSmoothNSearch()
   int numFound=0;
   ProgressBar bar;
 
-  GaussSmooth<float> gauss(this->par.getKernMaj(),
+  GaussSmooth2D<float> gauss(this->par.getKernMaj(),
 			   this->par.getKernMin(),
 			   this->par.getKernPA());
 

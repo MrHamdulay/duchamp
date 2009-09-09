@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// GaussSmooth.hh: Definition of GaussSmooth class, used to smooth a
+// GaussSmooth2D.hh: Definition of GaussSmooth2D class, used to smooth a
 //                 2D image with a Gaussian kernel.
 // -----------------------------------------------------------------------
 // Copyright (C) 2006, Matthew Whiting, ATNF
@@ -26,8 +26,8 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
-#ifndef GAUSSSMOOTH_H
-#define GAUSSSMOOTH_H
+#ifndef GAUSSSMOOTH2D_H
+#define GAUSSSMOOTH2D_H
 
 /// @brief
 ///  Define a Gaussian to smooth a 2D array.
@@ -36,19 +36,19 @@
 ///  smooth a two-dimensional array.
 
 template <class Type>
-class GaussSmooth
+class GaussSmooth2D
 {
 public:
-  GaussSmooth();          ///< Basic constructor: no kernel defined.
-  virtual ~GaussSmooth(); ///< Destructor
-  GaussSmooth(const GaussSmooth& g);
-  GaussSmooth& operator=(const GaussSmooth& g);
+  GaussSmooth2D();          ///< Basic constructor: no kernel defined.
+  virtual ~GaussSmooth2D(); ///< Destructor
+  GaussSmooth2D(const GaussSmooth2D& g);
+  GaussSmooth2D& operator=(const GaussSmooth2D& g);
   
 
   /// @brief Specific constructor that sets up kernel.
-  GaussSmooth(float maj, float min, float pa);  
+  GaussSmooth2D(float maj, float min, float pa);  
   /// @brief Specific constructor that sets up kernel: assuming circular gaussian.
-  GaussSmooth(float maj);  
+  GaussSmooth2D(float maj);  
 
   /// @brief Define the size and the array of coefficients. 
   void   define(float maj, float min, float pa); 
@@ -79,4 +79,4 @@ private:
 
 };
 
-#endif  // HANNING_H
+#endif  // GAUSSSMOOTH2D_H
