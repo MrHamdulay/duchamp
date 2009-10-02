@@ -29,8 +29,7 @@
 #define TESTS_HH
 #include <vector>
 #include <string>
-
-class Param;
+#include <duchamp/param.hh>
 
 // MENU ROUTINES FOR DIGANOSTIC/TEST PROGRAMS
 std::string menu();
@@ -49,13 +48,15 @@ void findTrimmedHistStatsOLD(float *array, const int size, float &tmean, float &
 void findTrimmedHistStats2(float *array, const int size, float &tmean, float &tsigma);
 
 // Atrous tranform functions not used in duchamp code
-void atrousTransform(long &length, int &numScales, float *spectrum, double *coeffs, double *wavelet, Param &par);
-void atrousTransform(long &length, float *spectrum, float *coeffs, float *wavelet, Param &par);
-void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet, Param &par);
-void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet);
-void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *&input, float *&coeffs, float *&wavelet, Param &par);
-void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *input, float *coeffs, float *wavelet);
-
+namespace duchamp {
+  class Param;
+  void atrousTransform(long &length, int &numScales, float *spectrum, double *coeffs, double *wavelet, Param &par);
+  void atrousTransform(long &length, float *spectrum, float *coeffs, float *wavelet, Param &par);
+  void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet, Param &par);
+  void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet);
+  void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *&input, float *&coeffs, float *&wavelet, Param &par);
+  void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *input, float *coeffs, float *wavelet);
+}
 
 // Calculating the sigma factors for the atrous reconstruction
 //    -- in sigma_factors.cc
@@ -95,6 +96,11 @@ void plotHorizLine(const float yval);
 void plotHorizLine(const float yval, const int colour);
 void drawContours(const int size, const float *x, const float *y);
 
+// The following are in plotImage.cc
+//
+void plotImage(float *array, int xdim, int ydim);
+void plotImage(float *array, int xdim, int ydim, duchamp::Param par);
+void plotImage(float *array, int xdim, int ydim, float z1, float z2);
 
 
 

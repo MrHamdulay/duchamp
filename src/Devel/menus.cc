@@ -78,7 +78,8 @@ std::string menu()
       std::cout<<"Enter cube number (1-538): ";
       std::cin>>cube;
     }
-    ss << "/DATA/MULTI_5/LUTHER/hipass_chop/H";
+//     ss << "/DATA/MULTI_5/LUTHER/hipass_chop/H";
+    ss << "/Users/whi550/ObsData/cubes/H";
     ss << std::setw(3) << std::setfill('0') << cube;
     ss << "_abcde_luther_chop.fits";
     fname = ss.str();
