@@ -115,12 +115,15 @@ void GaussSmooth1D<Type>::define(float fwhm)
   this->allocated = true;
   this->stddevScale=0.;
 
+  float sum=0.;
   for(int i=0;i<this->kernWidth;i++){
     float xpt = (i-kernelHW);
     float rsq = (xpt*xpt/sigma2);
     kernel[i] = exp( -0.5 * rsq);
+    sum += kernel[i];
     this->stddevScale += kernel[i]*kernel[i];
   }
+  for(int i=0;i<this->kernWidth;i++) kernel[i] /= sum;
   this->stddevScale = sqrt(this->stddevScale);
 }
 template void GaussSmooth1D<float>::define(float fwhm);
