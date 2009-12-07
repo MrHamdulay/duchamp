@@ -195,7 +195,7 @@ namespace duchamp
 
   std::string FitsHeader::getIAUName(double ra, double dec)
   {
-    if(strcmp(this->wcs->lngtyp,"RA")==0) 
+    if(std::string(this->wcs->lngtyp)=="RA") 
       return getIAUNameEQ(ra, dec, this->wcs->equinox);
     else 
       return getIAUNameGAL(ra, dec);
