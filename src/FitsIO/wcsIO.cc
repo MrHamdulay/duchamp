@@ -27,6 +27,7 @@
 // -----------------------------------------------------------------------
 #include <iostream>
 #include <string>
+#include <string.h>
 #include <stdlib.h>
 #include <wcslib/wcs.h>
 #include <wcslib/wcshdr.h>

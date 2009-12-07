@@ -78,7 +78,8 @@ namespace duchamp
     }
 
     // Read the BUNIT keyword, and translate to standard unit format if needs be
-    fits_read_key(fptr, TSTRING, "BUNIT", unit, comment, &returnStatus);
+    std::string header("BUNIT");
+    fits_read_key(fptr, TSTRING, (char *)header.c_str(), unit, comment, &returnStatus);
     if (returnStatus){
       duchampWarning("Cube Reader","Error reading BUNIT keyword: ");
       fits_report_error(stderr, returnStatus);
@@ -142,7 +143,8 @@ namespace duchamp
     //  If it is, read the other two necessary keywords, and then set
     //     the values accordingly.
 
-    if(fits_read_key(fptr, TINT, "BLANK", &blank, comment, &returnStatus)){
+    std::string header("BLANK");
+    if(fits_read_key(fptr, TINT, (char *)header.c_str(), &blank, comment, &returnStatus)){
 
       par.setFlagBlankPix(false);
 
@@ -161,9 +163,11 @@ namespace duchamp
     }
     else{
       status = 0;
-      fits_read_key(fptr, TFLOAT, "BZERO", &bzero, comment, &status);
+      header="BZERO";
+      fits_read_key(fptr, TFLOAT, (char *)header.c_str(), &bzero, comment, &status);
       status = 0;
-      fits_read_key(fptr, TFLOAT, "BSCALE", &bscale, NULL, &status);
+      header="BSCALE";
+      fits_read_key(fptr, TFLOAT, (char *)header.c_str(), &bscale, NULL, &status);
       this->blankKeyword  = blank;
       this->bscaleKeyword = bscale;
       this->bzeroKeyword  = bzero;

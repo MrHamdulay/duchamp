@@ -29,6 +29,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <string.h>
 #include <wcslib/wcs.h>
 #include <wcslib/wcshdr.h>
 #define WCSLIB_GETWCSTAB 
@@ -65,6 +66,7 @@ namespace duchamp
     ///  objects. Pixels not in a detected object have the value 0.
 
     int newbitpix = SHORT_IMG;
+    char *comment = new char[FLEN_COMMENT];
     long *fpixel = new long[this->numDim];
     for(int i=0;i<this->header().WCS().naxis;i++) fpixel[i]=1;
     int status = 0;  /* MUST initialize status */
@@ -98,15 +100,19 @@ namespace duchamp
 	fits_report_error(stderr, status);
       }
       status = 0;
-      fits_update_key(fptrNew, TINT, "BITPIX", &newbitpix, 
-		      "number of bits per data pixel", &status);
+      std::string header("BITPIX");
+      std::string comment2("number of bits per data pixel");
+      fits_update_key(fptrNew, TINT, (char *)header.c_str(), &newbitpix, 
+		      (char*)comment2.c_str(), &status);
       if (status){
 	duchampError("saveMask","Fits Error 5:");
 	fits_report_error(stderr, status);
       }
       float bscale=1., bzero=0.;
-      fits_update_key(fptrNew, TFLOAT, "BSCALE", &bscale, "", &status);
-      fits_update_key(fptrNew, TFLOAT, "BZERO", &bzero, "", &status);
+      header="BSCALE";
+      fits_update_key(fptrNew, TFLOAT, (char *)header.c_str(), &bscale, comment, &status);
+      header="BZERO";
+      fits_update_key(fptrNew, TFLOAT, (char *)header.c_str(), &bzero, comment, &status);
       fits_set_bscale(fptrNew, 1, 0, &status);
       if (status){
 	duchampError("saveMask","Fits Error 6:");
@@ -117,7 +123,8 @@ namespace duchamp
 	newunits = "Object ID";
       else
 	newunits = "Detection flag";
-      fits_update_key(fptrNew, TSTRING, "BUNIT", (char *)newunits.c_str(), "", &status);
+      header="BUNIT";
+      fits_update_key(fptrNew, TSTRING, (char *)header.c_str(), (char *)newunits.c_str(), comment, &status);
       if (status){
 	duchampError("saveMask","Fits Error 7:");
 	fits_report_error(stderr, status);
