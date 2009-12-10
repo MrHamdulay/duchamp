@@ -67,6 +67,7 @@ namespace duchamp
 
     int newbitpix = SHORT_IMG;
     char *comment = new char[FLEN_COMMENT];
+    strcpy(comment,"");
     long *fpixel = new long[this->numDim];
     for(int i=0;i<this->header().WCS().naxis;i++) fpixel[i]=1;
     int status = 0;  /* MUST initialize status */
@@ -100,22 +101,31 @@ namespace duchamp
 	fits_report_error(stderr, status);
       }
       status = 0;
-      std::string header("BITPIX");
-      std::string comment2("number of bits per data pixel");
-      fits_update_key(fptrNew, TINT, (char *)header.c_str(), &newbitpix, 
-		      (char*)comment2.c_str(), &status);
+      char *keyword = new char[FLEN_KEYWORD];
+      strcpy(keyword,"BITPIX");
+      strcpy(comment,"number of bits per data pixel");
+      fits_update_key(fptrNew, TINT, keyword, &newbitpix, comment, &status);
       if (status){
 	duchampError("saveMask","Fits Error 5:");
 	fits_report_error(stderr, status);
       }
       float bscale=1., bzero=0.;
-      header="BSCALE";
-      fits_update_key(fptrNew, TFLOAT, (char *)header.c_str(), &bscale, comment, &status);
-      header="BZERO";
-      fits_update_key(fptrNew, TFLOAT, (char *)header.c_str(), &bzero, comment, &status);
-      fits_set_bscale(fptrNew, 1, 0, &status);
+      strcpy(comment,"");
+      strcpy(keyword,"BSCALE");
+      fits_update_key(fptrNew, TFLOAT, keyword, &bscale, comment, &status);
       if (status){
 	duchampError("saveMask","Fits Error 6:");
+	fits_report_error(stderr, status);
+      }
+      strcpy(keyword,"BZERO");
+      fits_update_key(fptrNew, TFLOAT, keyword, &bzero, comment, &status);
+      if (status){
+	duchampError("saveMask","Fits Error 7:");
+	fits_report_error(stderr, status);
+      }
+      fits_set_bscale(fptrNew, 1, 0, &status);
+      if (status){
+	duchampError("saveMask","Fits Error 8:");
 	fits_report_error(stderr, status);
       }
       std::string newunits;
@@ -123,13 +133,12 @@ namespace duchamp
 	newunits = "Object ID";
       else
 	newunits = "Detection flag";
-      header="BUNIT";
-      fits_update_key(fptrNew, TSTRING, (char *)header.c_str(), (char *)newunits.c_str(), comment, &status);
+      strcpy(keyword,"BUNIT");
+      fits_update_key(fptrNew, TSTRING, keyword, (char *)newunits.c_str(), comment, &status);
       if (status){
-	duchampError("saveMask","Fits Error 7:");
+	duchampError("saveMask","Fits Error 9:");
 	fits_report_error(stderr, status);
       }
-      char *comment = new char[80];
       long dud;
       // Need to correct the dimensions, if we have subsectioned the image
       if(this->par.getFlagSubsection()){
@@ -169,13 +178,13 @@ namespace duchamp
       status=0;
       fits_write_pix(fptrNew, TSHORT, fpixel, this->numPixels, mask, &status);
       if(status){
-	duchampError("saveMask","Fits Error 8:");
+	duchampError("saveMask","Fits Error 10:");
 	fits_report_error(stderr,status);
       }
       status = 0;
       fits_close_file(fptrNew, &status);
       if (status){
-	duchampError("saveMask","Fits Error 9:");
+	duchampError("saveMask","Fits Error 11:");
 	fits_report_error(stderr, status);
       }
 
