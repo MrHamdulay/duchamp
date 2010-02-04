@@ -105,29 +105,39 @@ template float findStddev<float>(float *array, int size);
 template float findStddev<double>(double *array, int size);
 //--------------------------------------------------------------------
 
-template <class T> T findMedian(T *array, int size)
+template <class T> T findMedian(T *array, int size, bool changeArray)
 {
   /// @details
   /// Find the median value of an array of numbers. Type independent.
   /// \param array The array of numbers.
   /// \param size The length of the array.
+  /// \param changeArray [false] Whether to use the provided array in calculations. If true, the input array will be altered (ie. the order of elements will be changed).
   /// \return The median value of the array, returned as the same type as the array.
-  T *newarray = new T[size];
+  T *newarray;
+  if(changeArray) newarray = array;
+  else{
+    newarray = new T[size];
+    for(int i=0;i<size;i++) newarray[i] = array[i];
+  }
   T median;
-  for(int i=0;i<size;i++) newarray[i] = array[i];
-  std::sort(newarray,newarray+size);
-  if((size%2)==0) median = (newarray[size/2-1]+newarray[size/2])/2;
-  else median = newarray[size/2];
-  delete [] newarray;
+  bool isOdd = ((size/2)!=0);
+  std::nth_element(newarray,newarray+size/2,newarray+size);
+  median = newarray[size/2];
+  if(isOdd){
+    std::nth_element(newarray,newarray+size/2-1,newarray+size);
+    median += newarray[size/2-1];
+    median /= 2.;
+  }
+  if(!changeArray) delete [] newarray;
   return median;
 }
-template int findMedian<int>(int *array, int size);
-template long findMedian<long>(long *array, int size);
-template float findMedian<float>(float *array, int size);
-template double findMedian<double>(double *array, int size);
+template int findMedian<int>(int *array, int size, bool changeArray);
+template long findMedian<long>(long *array, int size, bool changeArray);
+template float findMedian<float>(float *array, int size, bool changeArray);
+template double findMedian<double>(double *array, int size, bool changeArray);
 //--------------------------------------------------------------------
 
-template <class T> T findMADFM(T *array, int size)
+template <class T> T findMADFM(T *array, int size, bool changeArray)
 {
   /// @details
   /// Find the median absolute deviation from the median value of an
@@ -135,22 +145,31 @@ template <class T> T findMADFM(T *array, int size)
   /// 
   /// \param array The array of numbers.
   /// \param size The length of the array.
+  /// \param changeArray [false] Whether to use the provided array in calculations. If true, the input array will be altered - both the order and values of the elements will be changed.
   /// \return The median absolute deviation from the median value of
   /// the array, returned as the same type as the array.
-  T *newarray = new T[size];
-  T median = findMedian<T>(array,size);
+  T *newarray;
+  if(changeArray) newarray = array;
+  else newarray = new T[size];
+
+  T median = findMedian<T>(array,size,changeArray);
   T madfm;
+  bool isOdd = ((size/2)!=0);
   for(int i=0;i<size;i++) newarray[i] = absval(array[i]-median);
-  std::sort(newarray,newarray+size);
-  if((size%2)==0) madfm = (newarray[size/2-1]+newarray[size/2])/2;
-  else madfm = newarray[size/2];
-  delete [] newarray;
+  std::nth_element(newarray,newarray+size/2,newarray+size);
+  madfm = newarray[size/2];
+  if(isOdd){
+    std::nth_element(newarray,newarray+size/2-1,newarray+size);
+    madfm += newarray[size/2-1];
+    madfm /= 2.;
+  }
+  if(!changeArray) delete [] newarray;
   return madfm;
 }
-template int findMADFM<int>(int *array, int size);
-template long findMADFM<long>(long *array, int size);
-template float findMADFM<float>(float *array, int size);
-template double findMADFM<double>(double *array, int size);
+template int findMADFM<int>(int *array, int size, bool changeArray);
+template long findMADFM<long>(long *array, int size, bool changeArray);
+template float findMADFM<float>(float *array, int size, bool changeArray);
+template double findMADFM<double>(double *array, int size, bool changeArray);
 //--------------------------------------------------------------------
 
 template <class T> void findMedianStats(T *array, int size, 
@@ -171,16 +190,10 @@ template <class T> void findMedianStats(T *array, int size,
     return;
   }
   T *newarray = new T[size];
+   for(int i=0;i<size;i++) newarray[i] = array[i];
 
-  for(int i=0;i<size;i++) newarray[i] = array[i];
-  std::sort(newarray,newarray+size);
-  if((size%2)==0) median = (newarray[size/2-1]+newarray[size/2])/2;
-  else median = newarray[size/2];
-
-  for(int i=0;i<size;i++) newarray[i] = absval(array[i]-median);
-  std::sort(newarray,newarray+size);
-  if((size%2)==0) madfm = (newarray[size/2-1]+newarray[size/2])/2;
-  else madfm = newarray[size/2];
+   median = findMedian(newarray,size,true);
+   madfm = findMADFM(newarray,size,true);
 
   delete [] newarray;
 }
@@ -219,20 +232,10 @@ template <class T> void findMedianStats(T *array, int size, bool *mask,
     return;
   }
   T *newarray = new T[goodSize];
-  goodSize=0;
-  for(int i=0;i<size;i++) if(mask[i]) newarray[goodSize++] = array[i];
-  std::sort(newarray,newarray+goodSize);
-  if((goodSize%2)==0) 
-    median = (newarray[goodSize/2-1]+newarray[goodSize/2])/2;
-  else 
-    median = newarray[goodSize/2];
 
-  for(int i=0;i<goodSize;i++) newarray[i] = absval(newarray[i]-median);
-  std::sort(newarray,newarray+goodSize);
-  if((goodSize%2)==0) 
-    madfm = (newarray[goodSize/2-1]+newarray[goodSize/2])/2;
-  else 
-    madfm = newarray[goodSize/2];
+  for(int i=0;i<size;i++) if(mask[i]) newarray[goodSize++] = array[i];
+  median = findMedian(newarray,goodSize,true);
+  madfm = findMADFM(newarray,goodSize,true);
 
   delete [] newarray;
 }
@@ -362,22 +365,10 @@ template <class T> void findAllStats(T *array, int size,
 
   for(int i=0;i<size;i++) newarray[i] = array[i];
 
-  mean = array[0];
-  for(int i=1;i<size;i++) mean += array[i];
-  mean /= float(size);
-
-  stddev = (array[0]-mean) * (array[0]-mean);
-  for(int i=1;i<size;i++) stddev += (array[i]-mean)*(array[i]-mean);
-  stddev = sqrt(stddev/float(size-1));
-
-  std::sort(newarray,newarray+size);
-  if((size%2)==0) median = (newarray[size/2-1]+newarray[size/2])/2;
-  else median = newarray[size/2];
-
-  for(int i=0;i<size;i++) newarray[i] = absval(newarray[i]-median);
-  std::sort(newarray,newarray+size);
-  if((size%2)==0) madfm = (newarray[size/2-1]+newarray[size/2])/2;
-  else madfm = newarray[size/2];
+  mean = findMean(newarray,size);
+  stddev = findStddev(newarray,size);
+  median = findMedian(newarray,size,true);
+  madfm = findMADFM(newarray,size,true);
 
   delete [] newarray;
 
@@ -429,22 +420,10 @@ template <class T> void findAllStats(T *array, int size, bool *mask,
   goodSize=0;
   for(int i=0;i<size;i++) if(mask[i]) newarray[goodSize++] = array[i];
 
-  mean = 0.;
-  for(int i=0;i<goodSize;i++) mean += newarray[i];
-  mean /= float(goodSize);
-
-  stddev = 0.;
-  for(int i=0;i<goodSize;i++) stddev += (newarray[i]-mean)*(newarray[i]-mean);
-  stddev = sqrt(stddev/float(goodSize-1));
-
-  std::sort(newarray,newarray+goodSize);
-  if((goodSize%2)==0) median = (newarray[goodSize/2-1]+newarray[goodSize/2])/2;
-  else median = newarray[goodSize/2];
-
-  for(int i=0;i<goodSize;i++) newarray[i] = absval(newarray[i]-median);
-  std::sort(newarray,newarray+goodSize);
-  if((goodSize%2)==0) madfm = (newarray[goodSize/2-1]+newarray[goodSize/2])/2;
-  else madfm = newarray[goodSize/2];
+  mean = findMean(newarray,goodSize);
+  stddev = findStddev(newarray,goodSize);
+  median = findMedian(newarray,goodSize,true);
+  madfm = findMADFM(newarray,goodSize,true);
 
   delete [] newarray;
 
