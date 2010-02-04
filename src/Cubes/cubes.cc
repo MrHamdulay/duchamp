@@ -734,22 +734,12 @@ namespace duchamp
 	  }
 
 	  // First, find the mean of the original array. Store it.
-	  mean = tempArray[0];
-	  for(int i=1;i<goodSize;i++) mean += tempArray[i];
-	  mean /= float(goodSize);
-	  mean = findMean(tempArray,goodSize);
-	  this->Stats.setMean(mean);
+	  this->Stats.setMean( findMean(tempArray, goodSize) );
 	
 	  // Now sort it and find the median. Store it.
-	  std::sort(tempArray,tempArray+goodSize);
-	  if((goodSize%2)==0) 
-	    median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
-	  else median = tempArray[goodSize/2];
-	  this->Stats.setMedian(median);
+	  this->Stats.setMedian( findMedian(tempArray, goodSize, true) );
 
-	  // Now calculate the residuals and find the mean & median of
-	  // them. We don't store these, but they are necessary to find
-	  // the sttdev & madfm.
+	  // Now calculate the residuals
 	  goodSize = 0;
 	  for(int p=0;p<xysize;p++){
 	    for(int z=0;z<this->axisDim[2];z++){
@@ -758,31 +748,12 @@ namespace duchamp
 		tempArray[goodSize++] = this->array[vox] - this->recon[vox];
 	    }
 	  }
-	  mean = tempArray[0];
-	  for(int i=1;i<goodSize;i++) mean += tempArray[i];
-	  mean /= float(goodSize);
-	  std::sort(tempArray,tempArray+goodSize);
-	  if((goodSize%2)==0) 
-	    median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
-	  else median = tempArray[goodSize/2];
 
-	  // Now find the standard deviation of the residuals. Store it.
-	  stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
-	  for(int i=1;i<goodSize;i++) 
-	    stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
-	  stddev = sqrt(stddev/float(goodSize-1));
-	  this->Stats.setStddev(stddev);
+	  // Now find the rms of the residuals. Store it.
+	  this->Stats.setStddev( findStddev(tempArray, goodSize) );
 
 	  // Now find the madfm of the residuals. Store it.
-	  for(int i=0;i<goodSize;i++){
-	    if(tempArray[i]>median) tempArray[i] = tempArray[i]-median;
-	    else tempArray[i] = median - tempArray[i];
-	  }
-	  std::sort(tempArray,tempArray+goodSize);
-	  if((goodSize%2)==0) 
-	    madfm = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
-	  else madfm = tempArray[goodSize/2];
-	  this->Stats.setMadfm(madfm);
+	  this->Stats.setMadfm( findMADFM(tempArray, goodSize, true) );
 
 	  delete [] tempArray;
 	}
