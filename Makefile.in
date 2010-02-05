@@ -1,9 +1,9 @@
-CFLAGS = -c -O2 -ftree-vectorize
+CFLAGS = -O2 -ftree-vectorize
 
 FFLAGS = -C -fast -O4
 
-CC =    @CC@ -O2
-CXX =   @CXX@ -O2
+CC =    @CC@ $(CFLAGS)
+CXX =   @CXX@ $(CFLAGS)
 F77=    @F77@ $(FFLAGS)
 LINK=   @LINKER@
 
