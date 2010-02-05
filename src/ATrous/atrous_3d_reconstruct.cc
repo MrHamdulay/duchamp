@@ -97,15 +97,12 @@ namespace duchamp
       // Otherwise, all is good, and we continue.
 
 
-      float *array = new float[size];
-      goodSize=0;
-      for(int i=0;i<size;i++) if(isGood[i]) array[goodSize++] = input[i];
-      findMedianStats(array,goodSize,originalMean,originalSigma);
+      findMedianStats(input,goodSize,isGood,originalMean,originalSigma);
       originalSigma = madfmToSigma(originalSigma);
-      delete [] array;
 
       float *coeffs = new float[size];
       float *wavelet = new float[size];
+      float *residual = new float[size];
 
       for(int pos=0;pos<size;pos++) output[pos]=0.;
 
@@ -254,12 +251,7 @@ namespace duchamp
 
 	  // Have found wavelet coeffs for this scale -- now threshold
 	  if(scale>=par.getMinScale()){
-	    array = new float[size];
-	    goodSize=0;
-	    for(int pos=0;pos<size;pos++) 
-	      if(isGood[pos]) array[goodSize++] = wavelet[pos];
-	    findMedianStats(array,goodSize,mean,sigma);
-	    delete [] array;
+	    findMedianStats(wavelet,goodSize,isGood,mean,sigma);
 	
 	    threshold = mean + 
 	      par.getAtrousCut()*originalSigma*sigmaFactors[scale];
@@ -281,14 +273,9 @@ namespace duchamp
 
 	for(int pos=0;pos<size;pos++) if(isGood[pos]) output[pos] += coeffs[pos];
 
-	array = new float[size];
-	goodSize=0;
-	for(int i=0;i<size;i++) {
-	  if(isGood[i]) array[goodSize++] = input[i] - output[i];
-	}
-	findMedianStats(array,goodSize,mean,newsigma);
+	for(int i=0;i<size;i++) residual[i] = input[i] - output[i];
+	findMedianStats(residual,goodSize,isGood,mean,newsigma);
 	newsigma = madfmToSigma(newsigma);
-	delete [] array;
 
 	if(par.isVerbose()) printBackSpace(15);
 
@@ -302,6 +289,7 @@ namespace duchamp
       delete [] yLim1;
       delete [] yLim2;
       delete [] filter;
+      delete [] residual;
       delete [] coeffs;
       delete [] wavelet;
 

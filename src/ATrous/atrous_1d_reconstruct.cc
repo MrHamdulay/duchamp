@@ -105,6 +105,7 @@ namespace duchamp
 
       float *coeffs = new float[xdim];
       float *wavelet = new float[xdim];
+      float *residual = new float[xdim];
 
       for(int pos=0;pos<xdim;pos++) output[pos]=0.;
 
@@ -128,18 +129,13 @@ namespace duchamp
 	// all other times round, we are transforming the residual array
 	for(int i=0;i<xdim;i++)  coeffs[i] = input[i] - output[i];
     
-	float *array = new float[xdim];
-	goodSize=0;
-	for(int i=0;i<xdim;i++) if(isGood[i]) array[goodSize++] = input[i];
-	findMedianStats(array,goodSize,originalMean,originalSigma);
+	findMedianStats(input,xdim,isGood,originalMean,originalSigma);
 	originalSigma = madfmToSigma(originalSigma); 
-	delete [] array;
 
 	int spacing = 1;
 	for(int scale = 1; scale<=numScales; scale++){
 
 	  if(par.isVerbose()) {
-	    // 	  printBackSpace(12);
 	    std::cout << "Scale " << std::setw(2) << scale
 		      << " /"     << std::setw(2) << numScales <<std::flush;
 	  }
@@ -178,12 +174,7 @@ namespace duchamp
 
 	  // Have found wavelet coeffs for this scale -- now threshold
 	  if(scale>=MIN_SCALE){
-	    array = new float[xdim];
-	    goodSize=0;
-	    for(int pos=0;pos<xdim;pos++) 
-	      if(isGood[pos]) array[goodSize++] = wavelet[pos];
-	    findMedianStats(array,goodSize,mean,sigma);
-	    delete [] array;
+ 	    findMedianStats(wavelet,xdim,isGood,mean,sigma);
 	
 	    for(int pos=0;pos<xdim;pos++){
 	      // preserve the Blank pixel values in the output.
@@ -203,13 +194,9 @@ namespace duchamp
 	  for(int pos=0;pos<xdim;pos++) 
 	    if(isGood[pos]) output[pos] += coeffs[pos];
 
-	array = new float[xdim];
-	goodSize=0;
-	for(int i=0;i<xdim;i++)
-	  if(isGood[i]) array[goodSize++] = input[i] - output[i];
-	findMedianStats(array,goodSize,mean,newsigma);
+ 	for(int pos=0;pos<xdim;pos++) residual[pos]=input[pos]-output[pos];
+  	findMedianStats(residual,xdim,isGood,mean,newsigma);
 	newsigma = madfmToSigma(newsigma); 
-	delete [] array;
 
 	if(par.isVerbose()) printBackSpace(26);
 
@@ -219,8 +206,9 @@ namespace duchamp
       if(par.isVerbose()) std::cout << "Completed "<<iteration<<" iterations. ";
 
       delete [] filter;
-      delete [] coeffs;
+      delete [] residual;
       delete [] wavelet;
+      delete [] coeffs;
 
     }
 
