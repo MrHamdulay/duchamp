@@ -1,4 +1,4 @@
-CFLAGS = -c -O2
+CFLAGS = -c -O2 -ftree-vectorize
 
 FFLAGS = -C -fast -O4
 
