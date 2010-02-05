@@ -75,10 +75,10 @@ template <class T> float findMean(T *array, int size)
   /// \param array The array of numbers.
   /// \param size The length of the array.
   /// \return The mean value of the array, returned as a float
-  float mean = array[0];
-  for(int i=1;i<size;i++) mean += array[i];
-  mean /= float(size);
-  return mean;
+  double mean = double(array[0]);
+  for(int i=1;i<size;i++) mean += double(array[i]);
+  mean /= double(size);
+  return float(mean);
 }
 template float findMean<int>(int *array, int size);
 template float findMean<long>(long *array, int size);
@@ -93,11 +93,11 @@ template <class T> float findStddev(T *array, int size)
   /// \param array The array of numbers.
   /// \param size The length of the array.
   /// \return The rms value of the array, returned as a float
-  float mean = findMean(array,size);
-  float stddev = (array[0]-mean) * (array[0]-mean);
-  for(int i=1;i<size;i++) stddev += (array[i]-mean)*(array[i]-mean);
-  stddev = sqrt(stddev/float(size-1));
-  return stddev;
+  double mean = double(findMean(array,size));
+  double stddev = (double(array[0])-mean) * (double(array[0])-mean);
+  for(int i=1;i<size;i++) stddev += (double(array[i])-mean)*(double(array[i])-mean);
+  stddev = sqrt(stddev/double(size-1));
+  return float(stddev);
 }
 template float findStddev<int>(int *array, int size);
 template float findStddev<long>(long *array, int size);
