@@ -233,6 +233,7 @@ template <class T> void findMedianStats(T *array, int size, bool *mask,
   }
   T *newarray = new T[goodSize];
 
+  goodSize=0;
   for(int i=0;i<size;i++) if(mask[i]) newarray[goodSize++] = array[i];
   median = findMedian(newarray,goodSize,true);
   madfm = findMADFM(newarray,goodSize,true);
