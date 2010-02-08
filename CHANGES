@@ -1,12 +1,56 @@
 Duchamp version 1.2-beta (2009/??/??)
 -------------------------------------
 
-Other:
+Improvements: 
+
+* Profiling of the code has led to a few changes that have sped up
+  some calculations, particularly those involving the median. Rather
+  than using std::sort, the code now simply uses std::nth_element,
+  which shows a substantial speedup factor.
+
+* When using the objectList parameter, the maps will now only show the
+  selected objects, rather than all detected objects.
+
+* There is a new verification test that looks at the "growing"
+  functionality.
+
+Bug fixes:
+
+* There was an occasional error in writing out FITS keywords, due to
+  the way comment strings were intialised. This has been improved and
+  made more robust.
+
+* Testing with gcc-4.3.2 showed a number of compilation warnings &
+  errors, which have been fixed.
+
+* The Gaussian smoothing kernel was too small - it is now made big
+  enough to encompass all possible values. It was also being
+  incorrectly scaled. This had no functional effect on the detection
+  of objects, but for other uses was incorrect. This has been
+  rectified.
+
+* Some outputs that weren't caught by the verbose flag now are.
+
+
+Code development notes:
+
+  The following notes only apply if you want to use the code as a
+  library, rather than the stand-alone package. These have generally
+  come out of the ASKAP software development. If you just use the
+  stand-alone package, they won't be a concern.
 
 * The API for storing detected objects has changed, making it more
-  robust from a programming point of view. This should have no impact
-  to the users of Duchamp, only for those interested in using the
-  library for development work.
+  robust from a programming point of view.
+
+* Additional versions of some functions (and the Gaussian smoothing
+  class) have been added - this has come out of the ASKAP development
+  work.
+
+* A number of instances of "unsigned int" being used for loops have
+  been changed to iterators or "size_t". There shouldn't be any
+  functional change from this -- the code should just build more
+  cleanly.
+
 
 Duchamp version 1.1.8 (2009/07/20)
 ----------------------------------

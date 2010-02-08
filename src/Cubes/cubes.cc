@@ -750,32 +750,10 @@ namespace duchamp
 		tempArray[goodSize++] = this->array[vox] - this->recon[vox];
 	    }
 	  }
-// 	  mean = tempArray[0];
-// 	  for(int i=1;i<goodSize;i++) mean += tempArray[i];
-// 	  mean /= float(goodSize);
-// 	  std::sort(tempArray,tempArray+goodSize);
-// 	  if((goodSize%2)==0) 
-// 	    median = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
-// 	  else median = tempArray[goodSize/2];
 
-	  // Now find the standard deviation of the residuals. Store it.
-// 	  stddev = (tempArray[0]-mean) * (tempArray[0]-mean);
-// 	  for(int i=1;i<goodSize;i++) 
-// 	    stddev += (tempArray[i]-mean)*(tempArray[i]-mean);
-// 	  stddev = sqrt(stddev/float(goodSize-1));
-// 	  this->Stats.setStddev(stddev);
 	  this->Stats.setStddev( findStddev(tempArray, goodSize) );
 
 	  // Now find the madfm of the residuals. Store it.
-// 	  for(int i=0;i<goodSize;i++){
-// 	    if(tempArray[i]>median) tempArray[i] = tempArray[i]-median;
-// 	    else tempArray[i] = median - tempArray[i];
-// 	  }
-// 	  std::sort(tempArray,tempArray+goodSize);
-// 	  if((goodSize%2)==0) 
-// 	    madfm = (tempArray[goodSize/2-1] + tempArray[goodSize/2])/2;
-// 	  else madfm = tempArray[goodSize/2];
-// 	  this->Stats.setMadfm(madfm);
 	  this->Stats.setMadfm( findMADFM(tempArray, goodSize, true) );
 
 	  delete [] tempArray;
