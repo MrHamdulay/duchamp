@@ -91,6 +91,7 @@ namespace duchamp
     std::vector<STATUS>      psS;
 
     Pixel pix;
+    size_t loc=0;
 
     for(int posY=0;posY<(ydim+1);posY++){
       // Loop over each row -- consider rows one at a time
@@ -107,7 +108,7 @@ namespace duchamp
 	bool isObject;
 	if((posX<xdim)&&(posY<ydim)){ 
 	  // if we are in the original image
-	  isObject = array[posX+xdim*posY];
+	  isObject = array[loc++];
 	}
 	else isObject = false;
 	// else we're in the padding row/col and isObject=FALSE;
