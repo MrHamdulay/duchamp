@@ -120,10 +120,10 @@ template <class T> T findMedian(T *array, int size, bool changeArray)
     for(int i=0;i<size;i++) newarray[i] = array[i];
   }
   T median;
-  bool isOdd = ((size/2)!=0);
+  bool isEven = ((size/2)==0);
   std::nth_element(newarray,newarray+size/2,newarray+size);
   median = newarray[size/2];
-  if(isOdd){
+  if(isEven){
     std::nth_element(newarray,newarray+size/2-1,newarray+size);
     median += newarray[size/2-1];
     median /= 2.;
@@ -154,11 +154,11 @@ template <class T> T findMADFM(T *array, int size, bool changeArray)
 
   T median = findMedian<T>(array,size,changeArray);
   T madfm;
-  bool isOdd = ((size/2)!=0);
+  bool isEven = ((size/2)==0);
   for(int i=0;i<size;i++) newarray[i] = absval(array[i]-median);
   std::nth_element(newarray,newarray+size/2,newarray+size);
   madfm = newarray[size/2];
-  if(isOdd){
+  if(isEven){
     std::nth_element(newarray,newarray+size/2-1,newarray+size);
     madfm += newarray[size/2-1];
     madfm /= 2.;
