@@ -32,6 +32,7 @@
 #include <duchamp/PixelMap/Voxel.hh>
 #include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Object2D.hh>
+#include <duchamp/Utils/Section.hh>
 #include <vector>
 #include <algorithm>
 #include <map>
@@ -119,6 +120,9 @@ namespace PixelInfo
 
     /// @brief Add constant offsets to each of the dimensions, changing the parameters at the same time. 
     virtual void addOffsets(long xoff, long yoff, long zoff);
+
+    /// @brief Return the bounding box for the object, as a duchamp::Section object
+    duchamp::Section getBoundingSection(int boundary=1);
 
     /// @brief Output operator for the Object3D. 
     friend std::ostream& operator<< ( std::ostream& theStream, Object3D& obj);

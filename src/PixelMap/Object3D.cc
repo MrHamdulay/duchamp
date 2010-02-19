@@ -26,6 +26,7 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <iostream>
+#include <sstream>
 #include <duchamp/PixelMap/Voxel.hh>
 #include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Object2D.hh>
@@ -373,8 +374,14 @@ namespace PixelInfo
 
   void Object3D::addOffsets(long xoff, long yoff, long zoff)
   {
-    for(std::map<long, Object2D>::iterator it = this->chanlist.begin(); it!=this->chanlist.end();it++)
-      it->second.addOffsets(xoff,yoff);
+    std::map<long,Object2D> newmap;
+    for(std::map<long, Object2D>::iterator it = this->chanlist.begin(); it!=this->chanlist.end();it++){
+      std::pair<long,Object2D> newOne(it->first+zoff, it->second);
+      newOne.second.addOffsets(xoff,yoff);
+      newmap.insert(newOne);
+    }
+    this->chanlist.clear();
+    this->chanlist = newmap;
     if(this->numVox>0){
       this->xSum += xoff*numVox;
       this->xmin += xoff; this->xmax += xoff;
@@ -383,6 +390,16 @@ namespace PixelInfo
       this->zSum += zoff*numVox;
       this->zmin += zoff; this->zmax += zoff;
     }
+  }
+
+
+  duchamp::Section Object3D::getBoundingSection(int boundary)
+  {
+    std::stringstream ss;
+    ss << "[" << this->xmin-boundary <<":"<<this->xmax+boundary<<","<< this->ymin-boundary <<":"<<this->ymax+boundary<<","<< this->zmin-boundary <<":"<<this->zmax+boundary<<"]";
+    std::string sec=ss.str();
+    duchamp::Section section(sec);
+    return section;
   }
 
 }
