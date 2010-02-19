@@ -1566,9 +1566,6 @@ namespace duchamp
       subcube->getCube();
       std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
       std::vector<PixelInfo::Voxel>::iterator vox;
-      long offset = subcube->pars().getXOffset() + 
-	subcube->getDimX()*subcube->pars().getYOffset() +
-	subcube->getDimY()*subcube->getDimX()*subcube->pars().getZOffset();
       for(vox=voxlist.begin(); vox<voxlist.end(); vox++){
 	long pix = (vox->getX()-subcube->pars().getXOffset()) +
 	  subcube->getDimX()*(vox->getY()-subcube->pars().getYOffset()) +
