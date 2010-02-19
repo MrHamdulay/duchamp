@@ -1548,4 +1548,40 @@ namespace duchamp
   }
 
 
+  std::vector< std::vector<PixelInfo::Voxel> > Cube::getObjVoxList()
+  {
+    
+    std::vector< std::vector<PixelInfo::Voxel> > biglist;
+    
+    std::vector<Detection>::iterator obj;
+    for(obj=this->objectList->begin(); obj<this->objectList->end(); obj++) {
+
+      Cube *subcube = new Cube;
+      subcube->pars() = this->par;
+      subcube->pars().setVerbosity(false);
+      subcube->pars().setFlagSubsection(true);
+      duchamp::Section sec = obj->getBoundingSection();
+      subcube->pars().setSubsection( sec.getSection() );
+      subcube->pars().verifySubsection();
+      subcube->getCube();
+      std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
+      std::vector<PixelInfo::Voxel>::iterator vox;
+      long offset = subcube->pars().getXOffset() + 
+	subcube->getDimX()*subcube->pars().getYOffset() +
+	subcube->getDimY()*subcube->getDimX()*subcube->pars().getZOffset();
+      for(vox=voxlist.begin(); vox<voxlist.end(); vox++){
+	long pix = (vox->getX()-subcube->pars().getXOffset()) +
+	  subcube->getDimX()*(vox->getY()-subcube->pars().getYOffset()) +
+	  subcube->getDimX()*subcube->getDimY()*(vox->getZ()-subcube->pars().getZOffset());
+	vox->setF( subcube->getPixValue(pix) );
+      }
+      biglist.push_back(voxlist);
+      delete subcube;
+
+    }
+
+    return biglist;
+
+  }
+
 }

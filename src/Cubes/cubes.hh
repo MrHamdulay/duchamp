@@ -302,6 +302,9 @@ namespace duchamp
     //-----------------------------
     // Dealing with the detections 
     //
+    
+    /// @brief Get the set of voxels pertaining to the detected objects.
+    std::vector< std::vector<PixelInfo::Voxel> > getObjVoxList();
 
     /// @brief Calculate the object fluxes 
     void        calcObjectFluxes();
@@ -506,7 +509,7 @@ namespace duchamp
     void        prepareLogFile(int argc, char *argv[]);
 
     /// @brief Output detections to the log file. 
-    void        logDetectionList();
+    void        logDetectionList(bool calcFluxes=true);
 
     /// @brief Output a single detection to the log file. 
     void        logDetection(Detection obj, int counter);

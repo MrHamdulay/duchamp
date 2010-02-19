@@ -280,13 +280,14 @@ namespace duchamp
   }
 
 
-  void Cube::logDetectionList()
+  void Cube::logDetectionList(bool calcFluxes)
   {
     /// @details
     ///  A front-end to writing a list of detected objects to the log file.
     ///  Does not assume WCS is present.
     ///  Designed to be used by searching routines before returning their 
     ///   final list.
+    ///  @param[in] calcFluxes If true (the default), calculate the various flux parameters for each object.
 
     if(this->objectList->size()>0){
 
@@ -294,7 +295,7 @@ namespace duchamp
       long bottom = this->par.getBorderBottom();
 
       std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
-      this->calcObjectFluxes();
+      if(calcFluxes) this->calcObjectFluxes();
       this->setupColumns();
       outputTableHeader(fout,this->fullCols,"log",this->head.isWCS());
 
@@ -309,7 +310,7 @@ namespace duchamp
 	if(this->par.getFlagCubeTrimmed()){
 	  obj.addOffsets(left,bottom,0);
 	}
-	obj.calcFluxes(this->array, this->axisDim);
+	if(calcFluxes) obj.calcFluxes(this->array, this->axisDim);
 	obj.setID(objCtr+1);
 	obj.printTableRow(fout,this->fullCols,"log");
       }
