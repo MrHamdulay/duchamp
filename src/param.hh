@@ -40,12 +40,22 @@
 namespace duchamp
 {
 
+  /// @brief Write out info on a parameter to e.g. the results file.
+  void recordParameters(std::ostream& theStream, std::string paramName, std::string paramDesc, std::string paramValue);
+
+  /// @brief A macro to handle streamed output to recordParameters
+#define recordParam(outstream,string1,string2,instream)      \
+  do{                                                       \
+    std::ostringstream oss;                                 \
+    oss<<instream;                                          \
+    recordParameters(outstream,string1,string2,oss.str());   \
+  }while(0)
+
 
   class FitsHeader; // foreshadow this so that Param knows it exists
 
   const int numSortingParamOptions = 10;
   const std::string sortingParamOptions[numSortingParamOptions]={"xvalue","yvalue","zvalue","ra","dec","vel","w50","iflux","pflux","snr"};
-
 
 
   /// @brief Class to store general parameters.

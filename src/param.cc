@@ -120,8 +120,8 @@ namespace duchamp
     this->flagMW            = false;
     this->maxMW             = 112;
     this->minMW             = 75;
-    this->areaBeam          = -1.;
-    this->fwhmBeam          = 3.;
+    this->areaBeam          = 10.;
+    this->fwhmBeam          = 10.;
     this->flagUsingBeam     = false;
     // Trim-related         
     this->flagTrim          = false;
@@ -847,6 +847,26 @@ namespace duchamp
       
   }
 
+  void recordParameters(std::ostream& theStream, std::string paramName, std::string paramDesc, std::string paramValue)
+  {
+    
+    const int widthText = 38;
+    const int widthPar  = 18;
+
+    theStream << std::setw(widthText) << paramDesc
+	      << std::setw(widthPar) << setiosflags(std::ios::right) << paramName
+	      << "  =  " << resetiosflags(std::ios::right) << paramValue 
+	      <<std::endl;
+  }
+
+  std::string fileOption(bool flag, std::string file)
+  {
+    std::ostringstream ss;
+    ss << stringize(flag);
+    if(flag) ss << " --> " << file;
+    return ss.str();
+    
+  }
 
   std::ostream& operator<< ( std::ostream& theStream, Param& par)
   {
@@ -863,295 +883,119 @@ namespace duchamp
     theStream.setf(std::ios::left);
     theStream  <<"\n---- Parameters ----"<<std::endl;
     theStream  << std::setfill('.');
-    const int widthText = 38;
-    const int widthPar  = 18;
     if(par.getFlagSubsection())
-      theStream<<std::setw(widthText)<<"Image to be analysed"                 
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[imageFile]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<(par.getImageFile()+par.getSubsection()) <<std::endl;
+      recordParam(theStream, "[imageFile]", "Image to be analysed", par.getImageFile()<<par.getSubsection());
     else 
-      theStream<<std::setw(widthText)<<"Image to be analysed"                 
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[imageFile]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getImageFile()      <<std::endl;
+      recordParam(theStream, "[imageFile]", "Image to be analysed", par.getImageFile());
     if(par.getFlagReconExists() && par.getFlagATrous()){
-      theStream<<std::setw(widthText)<<"Reconstructed array exists?"          
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[reconExists]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagReconExists())<<std::endl;
-      theStream<<std::setw(widthText)<<"FITS file containing reconstruction"  
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[reconFile]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getReconFile()      <<std::endl;
+      recordParam(theStream, "[reconExists]", "Reconstructed array exists?", stringize(par.getFlagReconExists()));
+      recordParam(theStream, "[reconFile]", "FITS file containing reconstruction", par.getReconFile());
     }
     if(par.getFlagSmoothExists() && par.getFlagSmooth()){
-      theStream<<std::setw(widthText)<<"Smoothed array exists?"          
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[smoothExists]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagSmoothExists())<<std::endl;
-      theStream<<std::setw(widthText)<<"FITS file containing smoothed array"  
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[smoothFile]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getSmoothFile()      <<std::endl;
+      recordParam(theStream, "[smoothExists]", "Smoothed array exists?", stringize(par.getFlagSmoothExists()));
+      recordParam(theStream, "[smoothFile]", "FITS file containing smoothed array", par.getSmoothFile());
     }
-    theStream  <<std::setw(widthText)<<"Intermediate Logfile"
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[logFile]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getLogFile()        <<std::endl;
-    theStream  <<std::setw(widthText)<<"Final Results file"                   
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[outFile]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getOutFile()        <<std::endl;
-    if(par.getFlagSeparateHeader())
-      theStream <<std::setw(widthText)<<"Header for results file" 
-		<<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[headerFile]"
-		<<"  =  " <<resetiosflags(std::ios::right)
-		<<par.getHeaderFile()        <<std::endl;
-    theStream  <<std::setw(widthText)<<"Spectrum file"                        
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[spectraFile]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getSpectraFile()    <<std::endl;
+    recordParam(theStream, "[logFile]", "Intermediate Logfile", par.getLogFile());
+    recordParam(theStream, "[outFile]", "Final Results file", par.getOutFile());
+    if(par.getFlagSeparateHeader()){
+      recordParam(theStream, "[headerFile]", "Header for results file", par.getHeaderFile());
+    }
+    recordParam(theStream, "[spectraFile]", "Spectrum file", par.getSpectraFile());
     if(par.getFlagTextSpectra()){
-      theStream<<std::setw(widthText)<<"Text file with ascii spectral data"                         
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[spectraTextFile]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getSpectraTextFile()<<std::endl;
+      recordParam(theStream, "[spectraTextFile]", "Text file with ascii spectral data", par.getSpectraTextFile());
     }
     if(par.getFlagVOT()){
-      theStream<<std::setw(widthText)<<"VOTable file"                         
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[votFile]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getVOTFile()        <<std::endl;
+      recordParam(theStream, "[votFile]", "VOTable file", par.getVOTFile());
     }
     if(par.getFlagKarma()){
-      theStream<<std::setw(widthText)<<"Karma annotation file"                
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[karmaFile]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getKarmaFile()      <<std::endl;
+      recordParam(theStream, "[karmaFile]", "Karma annotation file" , par.getKarmaFile());
     }
     if(par.getFlagMaps()){
-      theStream<<std::setw(widthText)<<"0th Moment Map"                       
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[momentMap]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getMomentMap()      <<std::endl;
-      theStream<<std::setw(widthText)<<"Detection Map"                        
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[detectionMap]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getDetectionMap()   <<std::endl;
+      recordParam(theStream, "[momentMap]", "0th Moment Map", par.getMomentMap());
+      recordParam(theStream, "[detectionMap]", "Detection Map", par.getDetectionMap());
     }
-    theStream  <<std::setw(widthText)<<"Display a map in a pgplot xwindow?" 
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagXOutput]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagXOutput())     <<std::endl;
-    if(par.getFlagATrous()){			       
-      theStream<<std::setw(widthText)<<"Saving reconstructed cube?"           
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagOutputRecon]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagOutputRecon());
-      if(par.getFlagOutputRecon()) theStream << " --> " << par.outputReconFile();
-      theStream<<std::endl;
-      theStream<<std::setw(widthText)<<"Saving residuals from reconstruction?"
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagOutputResid]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagOutputResid());
-      if(par.getFlagOutputResid()) theStream << " --> " << par.outputResidFile();
-      theStream<<std::endl;
+    recordParam(theStream, "[flagXOutput]", "Display a map in a pgplot xwindow?", stringize(par.getFlagXOutput()));
+    if(par.getFlagATrous()){
+      recordParam(theStream, "[flagOutputRecon]", "Saving reconstructed cube?", fileOption(par.getFlagOutputRecon(),par.outputReconFile()));
+      recordParam(theStream, "[flagOutputResid]", "Saving residuals from reconstruction?", fileOption(par.getFlagOutputResid(),par.outputResidFile()));
     }						       
-    if(par.getFlagSmooth()){			       
-      theStream<<std::setw(widthText)<<"Saving smoothed cube?"           
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagOutputSmooth]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagOutputSmooth());
-      if(par.getFlagOutputSmooth()) theStream << " --> " << par.outputSmoothFile();
-      theStream<<std::endl;
+    if(par.getFlagSmooth()){	
+      recordParam(theStream, "[flagOutputSmooth]", "Saving smoothed cube?", fileOption(par.getFlagOutputSmooth(),par.outputSmoothFile()));
     }						       
-    theStream<<std::setw(widthText)<<"Saving mask cube?"           
-	     <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagOutputMask]"
-	     <<"  =  " <<resetiosflags(std::ios::right)
-	     <<stringize(par.getFlagOutputMask());
-    if(par.getFlagOutputMask()) theStream << " --> " << par.outputMaskFile();
-    theStream<<std::endl;
+    recordParam(theStream, "[flagOutputMask]", "Saving mask cube?", fileOption(par.getFlagOutputMask(),par.outputMaskFile()));
+
     theStream  <<"------"<<std::endl;
+
     if(par.getFlagBlankPix()){
-      theStream<<std::setw(widthText)<<"Blank Pixel Value"                    
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<< ""
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getBlankPixVal()    <<std::endl;
+      recordParam(theStream, "", "Blank Pixel Value", par.getBlankPixVal());
     }
-    theStream  <<std::setw(widthText)<<"Trimming Blank Pixels?"                 
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagTrim]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagTrim())   <<std::endl;
-    theStream  <<std::setw(widthText)<<"Searching for Negative features?"     
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagNegative]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagNegative())   <<std::endl;
-    theStream  <<std::setw(widthText)<<"Removing Milky Way channels?"         
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagMW]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagMW())         <<std::endl;
+    recordParam(theStream, "[flagTrim]", "Trimming Blank Pixels?", stringize(par.getFlagTrim()));
+    recordParam(theStream, "[flagNegative]", "Searching for Negative features?", stringize(par.getFlagNegative()));
+    recordParam(theStream, "[flagMW]", "Removing Milky Way channels?", stringize(par.getFlagMW()));
     if(par.getFlagMW()){
-      theStream<<std::setw(widthText)<<"Milky Way Channels"                   
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[minMW - maxMW]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getMinMW()
-	       <<"-" <<par.getMaxMW()          <<std::endl;
+      recordParam(theStream, "[minMW - maxMW]", "Milky Way Channels", par.getMinMW()<<"-"<<par.getMaxMW());
     }
-    theStream  <<std::setw(widthText)<<"Beam Size (pixels)"                   
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<< beamParam
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getBeamSize()       <<std::endl;
-    theStream  <<std::setw(widthText)<<"Removing baselines before search?"    
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagBaseline]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagBaseline())   <<std::endl;
-    theStream  <<std::setw(widthText)<<"Smoothing data prior to searching?"        
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagSmooth]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagSmooth())     <<std::endl;
+    recordParam(theStream, beamParam, "Beam Size (pixels)", par.getBeamSize());
+    recordParam(theStream, "[flagBaseline]", "Removing baselines before search?", stringize(par.getFlagBaseline()));
+    recordParam(theStream, "[flagSmooth]", "Smoothing data prior to searching?", stringize(par.getFlagSmooth()));
     if(par.getFlagSmooth()){	       
-      theStream<<std::setw(widthText)<<"Type of smoothing"      
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[smoothType]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getSmoothType()       <<std::endl;
+      recordParam(theStream, "[smoothType]", "Type of smoothing", par.getSmoothType());
       if(par.getSmoothType()=="spectral")
-	theStream<<std::setw(widthText)<<"Width of hanning filter"      
-		 <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[hanningWidth]"
-		 <<"  =  " <<resetiosflags(std::ios::right)
-		 <<par.getHanningWidth()       <<std::endl;
+	recordParam(theStream, "[hanningWidth]", "Width of hanning filter", par.getHanningWidth());
       else{
-	theStream<<std::setw(widthText)<<"Gaussian kernel semi-major axis [pix]"
-		 <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[kernMaj]"
-		 <<"  =  " <<resetiosflags(std::ios::right)
-		 <<par.getKernMaj() << std::endl;
-	theStream<<std::setw(widthText)<<"Gaussian kernel semi-minor axis [pix]"
-		 <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[kernMin]"
-		 <<"  =  " <<resetiosflags(std::ios::right)
-		 <<par.getKernMin() << std::endl;
-	theStream<<std::setw(widthText)<<"Gaussian kernel position angle [deg]"
-		 <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[kernPA]"
-		 <<"  =  " <<resetiosflags(std::ios::right)
-		 <<par.getKernPA() << std::endl;
+	recordParam(theStream, "[kernMaj]", "Gaussian kernel semi-major axis [pix]", par.getKernMaj());
+	recordParam(theStream, "[kernMin]", "Gaussian kernel semi-minor axis [pix]", par.getKernMin());
+	recordParam(theStream, "[kernPA]",  "Gaussian kernel position angle [deg]",  par.getKernPA());
       }
     }
-    theStream  <<std::setw(widthText)<<"Using A Trous reconstruction?"        
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagATrous]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagATrous())     <<std::endl;
+    recordParam(theStream, "[flagATrous]", "Using A Trous reconstruction?", stringize(par.getFlagATrous()));
     if(par.getFlagATrous()){			       
-      theStream<<std::setw(widthText)<<"Number of dimensions in reconstruction"      
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[reconDim]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getReconDim()       <<std::endl;
+      recordParam(theStream, "[reconDim]", "Number of dimensions in reconstruction", par.getReconDim());
       if(par.getMaxScale()>0){
-	theStream<<std::setw(widthText-1)<<"Scales used in reconstruction"      
-		 <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[scaleMin-scaleMax]"
-		 <<"  =  " <<resetiosflags(std::ios::right)
-		 <<par.getMinScale() << "-" << par.getMaxScale()   <<std::endl;
+	recordParam(theStream, "[scaleMin-scaleMax]", "Scales used in reconstruction", par.getMinScale()<<"-"<<par.getMaxScale());
       }
       else{
-	theStream<<std::setw(widthText)<<"Minimum scale in reconstruction"      
-		 <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[scaleMin]"
-		 <<"  =  " <<resetiosflags(std::ios::right)
-		 <<par.getMinScale()      <<std::endl;
+	recordParam(theStream, "[scaleMin]", "Minimum scale in reconstruction", par.getMinScale());
       }
-      theStream<<std::setw(widthText)<<"SNR Threshold within reconstruction"  
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[snrRecon]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getAtrousCut()      <<std::endl;
-      theStream<<std::setw(widthText)<<"Filter being used for reconstruction" 
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[filterCode]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getFilterCode() 
-	       << " (" << par.getFilterName()  << ")" <<std::endl;
+      recordParam(theStream, "[snrRecon]", "SNR Threshold within reconstruction", par.getAtrousCut());
+      recordParam(theStream, "[filterCode]", "Filter being used for reconstruction", par.getFilterCode()<<" ("<<par.getFilterName()<<")");
     }	     					       
-    theStream  <<std::setw(widthText)<<"Using Robust statistics?"                  
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagRobustStats]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagRobustStats()) <<std::endl;
+    recordParam(theStream, "[flagRobustStats]", "Using Robust statistics?", stringize(par.getFlagRobustStats()));
     if(par.getFlagStatSec()){
-      theStream<<std::setw(widthText)<<"Section used by statistics calculation"
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[statSec]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.statSec.getSection()          <<std::endl;
+      recordParam(theStream, "[statSec]", "Section used by statistics calculation", par.statSec.getSection());
     }
-    theStream  <<std::setw(widthText)<<"Using FDR analysis?"                  
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagFDR]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagFDR())        <<std::endl;
+    recordParam(theStream, "[flagFDR]", "Using FDR analysis?", stringize(par.getFlagFDR()));
     if(par.getFlagFDR()){				       
-      theStream<<std::setw(widthText)<<"Alpha value for FDR analysis"         
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[alphaFDR]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getAlpha()          <<std::endl;
-      theStream<<std::setw(widthText)<<"Number of correlated channels for FDR"         
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[FDRnumCorChan]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getFDRnumCorChan()          <<std::endl;
+      recordParam(theStream, "[alphaFDR]", "Alpha value for FDR analysis", par.getAlpha());
+      recordParam(theStream, "[FDRnumCorChan]", "Number of correlated channels for FDR", par.getFDRnumCorChan());
     }	     					       
     else {
       if(par.getFlagUserThreshold()){
-	theStream<<std::setw(widthText)<<"Detection Threshold"                        
-		 <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[threshold]"
-		 <<"  =  " <<resetiosflags(std::ios::right)
-		 <<par.getThreshold()            <<std::endl;
+	recordParam(theStream, "[threshold]", "Detection Threshold", par.getThreshold());
       }
       else{
-	theStream<<std::setw(widthText)<<"SNR Threshold (in sigma)"
-		 <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[snrCut]"
-		 <<"  =  " <<resetiosflags(std::ios::right)
-		 <<par.getCut()            <<std::endl;
+	recordParam(theStream, "[snrCut]", "SNR Threshold (in sigma)", par.getCut());
       }
     }
-    theStream  <<std::setw(widthText)<<"Minimum # Pixels in a detection"      
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[minPix]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getMinPix()         <<std::endl;
-    theStream  <<std::setw(widthText)<<"Minimum # Channels in a detection"    
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[minChannels]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getMinChannels()    <<std::endl;
-    theStream  <<std::setw(widthText)<<"Growing objects after detection?"     
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagGrowth]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagGrowth())     <<std::endl;
+    recordParam(theStream, "[minPix]", "Minimum # Pixels in a detection", par.getMinPix());
+    recordParam(theStream, "[minChannels]", "Minimum # Channels in a detection", par.getMinChannels());
+    recordParam(theStream, "[flagGrowth]", "Growing objects after detection?", stringize(par.getFlagGrowth()));
     if(par.getFlagGrowth()) {			       
       if(par.getFlagUserGrowthThreshold()){
-	theStream<<std::setw(widthText)<<"Threshold for growth"                        
-		 <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[growthThreshold]"
-		 <<"  =  " <<resetiosflags(std::ios::right)
-		 <<par.getGrowthThreshold()        <<std::endl;
+	recordParam(theStream, "[growthThreshold]", "Threshold for growth", par.getGrowthThreshold());
       }
       else{
-	theStream<<std::setw(widthText)<<"SNR Threshold for growth"             
-		 <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[growthCut]"
-		 <<"  =  " <<resetiosflags(std::ios::right)
-		 <<par.getGrowthCut()      <<std::endl;
+	recordParam(theStream, "[growthCut]", "SNR Threshold for growth", par.getGrowthCut());
       }
     }
-    theStream  <<std::setw(widthText)<<"Using Adjacent-pixel criterion?"      
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[flagAdjacent]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<stringize(par.getFlagAdjacent())   <<std::endl;
+    recordParam(theStream, "[flagAdjacent]", "Using Adjacent-pixel criterion?", stringize(par.getFlagAdjacent()));
     if(!par.getFlagAdjacent()){
-      theStream<<std::setw(widthText)<<"Max. spatial separation for merging"  
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[threshSpatial]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getThreshS()        <<std::endl;
+      recordParam(theStream, "[threshSpatial]", "Max. spatial separation for merging", par.getThreshS());
     }
-    theStream  <<std::setw(widthText)<<"Max. velocity separation for merging" 
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[threshVelocity]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getThreshV()        <<std::endl;
-    theStream  <<std::setw(widthText)<<"Method of spectral plotting"          
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[spectralMethod]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getSpectralMethod() <<std::endl;
-    theStream  <<std::setw(widthText)<<"Type of object centre used in results"
-	       <<std::setw(widthPar)<<setiosflags(std::ios::right)<<"[pixelCentre]"
-	       <<"  =  " <<resetiosflags(std::ios::right)
-	       <<par.getPixelCentre() <<std::endl;
+    recordParam(theStream, "[threshVelocity]", "Max. velocity separation for merging", par.getThreshV());
+    recordParam(theStream, "[spectralMethod]", "Method of spectral plotting", par.getSpectralMethod());
+    recordParam(theStream, "[pixelCentre]", "Type of object centre used in results", par.getPixelCentre());
+
     theStream  <<"--------------------\n\n";
     theStream  << std::setfill(' ');
     theStream.unsetf(std::ios::left);
