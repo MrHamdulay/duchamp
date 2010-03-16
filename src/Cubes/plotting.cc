@@ -284,8 +284,6 @@ namespace duchamp
 	double *zArray  = new double[zdim];
 	for(int z=0; z<zdim; z++) zArray[z] = double(z);
     
-	double *world  = new double[zdim];
-
 	for(int pix=0; pix<xdim*ydim; pix++){ 
 
 	  x = double(pix%xdim);
@@ -293,8 +291,7 @@ namespace duchamp
 
 	  if(!this->isBlank(pix)){ // only do this for non-blank pixels. Judge this by the first pixel of the channel.
 
-	    delete [] world;
-	    world = this->head.pixToVel(x,y,zArray,zdim);
+	   double * world = this->head.pixToVel(x,y,zArray,zdim);
       
 	    for(int z=0; z<zdim; z++){      
 	      int pos =  z*xdim*ydim + pix;  // the voxel in the cube
@@ -312,29 +309,30 @@ namespace duchamp
 
 	      }
 	    }
+	    delete [] world;
 	  }
 
 	}
     
-	delete [] world;
 	delete [] zArray;
 
-	float *temp = new float[xdim*ydim];
 	int count=0;
+	float z1=0.,z2=0.;
 	for(int i=0;i<xdim*ydim;i++) {
 	  if(momentMap[i]>0.){
+	    float logmm = log10(momentMap[i]);
 	    bool addPixel = false;
 	    for(int z=0;z<zdim;z++) addPixel = addPixel || isObj[z*xdim*ydim+i];
-	    if(addPixel) temp[count++] = log10(momentMap[i]);
+	    if(addPixel){
+	      if(count==0) z1 = z2 = logmm;
+	      else{
+		if(logmm < z1) z1 = logmm;
+		if(logmm > z2) z2 = logmm;
+	      }
+	      count++;
+	    }
 	  }
 	}
-	float z1,z2;
-	z1 = z2 = temp[0];
-	for(int i=1;i<count;i++){
-	  if(temp[i]<z1) z1 = temp[i];
-	  if(temp[i]>z2) z2 = temp[i];
-	}
-	delete [] temp;
 
 	for(int i=0;i<xdim*ydim;i++) {
 	  bool addPixel = false;
