@@ -68,7 +68,7 @@ namespace duchamp
     int newbitpix = SHORT_IMG;
     char *comment = new char[FLEN_COMMENT];
     strcpy(comment,"");
-    long *fpixel = new long[this->numDim];
+    long *fpixel = new long[this->header().WCS().naxis];
     for(int i=0;i<this->header().WCS().naxis;i++) fpixel[i]=1;
     int status = 0;  /* MUST initialize status */
     fitsfile *fptrOld, *fptrNew;         
@@ -159,6 +159,7 @@ namespace duchamp
       }
 
       delete [] comment;
+      delete [] keyword;
 
       writeMaskHeaderInfo(fptrNew, this->par);
 	
