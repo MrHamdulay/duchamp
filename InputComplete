@@ -52,9 +52,9 @@ objectList      *
 # flagMaskWithObjectNum -- if true, the detected pixels in the mask array have 
 #                          the object ID number, else they all have the value 1.
 # flagOutputSmooth -- whether to save the smoothed arrays as a FITS file
-# fileOutputMask -- the filename for the smoothed array file. If not given, it defaults 
-#                   to the format shown (for input file image.fits). See documentation for 
-#                   explanation of format.
+# fileOutputSmooth -- the filename for the smoothed array file. If not given, it defaults 
+#                     to the format shown (for input file image.fits). See documentation for 
+#                     explanation of format.
 # flagOutputRecon/Resid -- whether to save the reconstruction & residual arrays
 #                          as FITS files
 # fileOutputRecon/Resid -- the filename for the reconstruction or residual files. 
@@ -143,7 +143,8 @@ threshold	0.
 flagGrowth	0
 growthCut	2.
 growthThreshold 0.
-beamsize        10.
+beamArea        -1.
+beamFWHM        3.
 
 # RECONSTRUCTION RELATED
 # flagATrous -- Whether or not to do the reconstruction before searching

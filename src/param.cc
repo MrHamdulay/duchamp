@@ -120,8 +120,8 @@ namespace duchamp
     this->flagMW            = false;
     this->maxMW             = 112;
     this->minMW             = 75;
-    this->areaBeam          = 10.;
-    this->fwhmBeam          = 10.;
+    this->areaBeam          = -1.;
+    this->fwhmBeam          = 3.;
     this->flagUsingBeam     = false;
     // Trim-related         
     this->flagTrim          = false;
