@@ -241,8 +241,10 @@ namespace duchamp
     void   setMaxMW(int m){maxMW=m;};
     int    getMinMW(){return minMW;};
     void   setMinMW(int m){minMW=m;};
-    void   setBeamSize(float s){numPixBeam = s;};
-    float  getBeamSize(){return numPixBeam;};
+    void   setBeamSize(float s){areaBeam = s;};
+    float  getBeamSize(){return areaBeam;};
+    void   setBeamFWHM(float s){fwhmBeam = s;};
+    float  getBeamFWHM(){return fwhmBeam;};
     bool   getFlagUsingBeam(){return flagUsingBeam;};
     void   setFlagUsingBeam(bool b){flagUsingBeam=b;};
     std::string getNewFluxUnits(){return newFluxUnits;};
@@ -435,7 +437,8 @@ namespace duchamp
 
     // Detection-related
     int         minPix;          ///< Minimum number of pixels for a detected object to be counted
-    float       numPixBeam;      ///< Size (area) of the beam in pixels.
+    float       areaBeam;        ///< Size (area) of the beam in pixels.
+    float       fwhmBeam;        ///< FWHM of the beam in pixels.
     bool        flagUsingBeam;   ///< If true, we are using the numPixBeam parameter, otherwise we use the value in the FITS header.
 
     // Object growth

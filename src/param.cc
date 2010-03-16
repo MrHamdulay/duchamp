@@ -120,7 +120,8 @@ namespace duchamp
     this->flagMW            = false;
     this->maxMW             = 112;
     this->minMW             = 75;
-    this->numPixBeam        = 10.;
+    this->areaBeam          = 10.;
+    this->fwhmBeam          = 10.;
     this->flagUsingBeam     = false;
     // Trim-related         
     this->flagTrim          = false;
@@ -240,7 +241,8 @@ namespace duchamp
     this->flagMW            = p.flagMW;         
     this->maxMW             = p.maxMW;          
     this->minMW             = p.minMW;         
-    this->numPixBeam        = p.numPixBeam;     
+    this->areaBeam          = p.areaBeam;     
+    this->fwhmBeam          = p.fwhmBeam;     
     this->flagTrim          = p.flagTrim;    
     this->hasBeenTrimmed    = p.hasBeenTrimmed;    
     this->borderLeft        = p.borderLeft;     
@@ -594,7 +596,8 @@ namespace duchamp
 	if(arg=="reconfile")       this->reconFile = readSval(ss); 
 	if(arg=="flagsmoothexists")this->flagSmoothExists = readFlag(ss); 
 	if(arg=="smoothfile")      this->smoothFile = readSval(ss); 
-	if(arg=="beamsize")        this->numPixBeam = readFval(ss); 
+	if(arg=="beamarea")        this->areaBeam = readFval(ss); 
+	if(arg=="beamfwhm")        this->fwhmBeam = readFval(ss); 
 	if(arg=="useprevious")     this->usePrevious = readFlag(ss);
 	if(arg=="objectlist")      this->objectList = readSval(ss);
 
@@ -699,6 +702,14 @@ namespace duchamp
 	  std::stringstream errmsg;
 	  errmsg <<"The parameter blankPixValue is deprecated.\n"
 		 <<"This value is only taken from the FITS header.\n";
+	  duchampWarning("Reading parameters",errmsg.str());
+	}
+	if(arg=="beamsize"){
+	  this->areaBeam = readFlag(ss);
+	  std::stringstream errmsg;
+	  errmsg <<"The parameter beamSize is deprecated.\n"
+		 <<"You can specify the beam size by beamArea or beamFWHM.\n"
+		 <<"Setting beamArea = " << stringize(this->areaBeam) << ".\n";
 	  duchampWarning("Reading parameters",errmsg.str());
 	}
 
@@ -1162,7 +1173,7 @@ namespace duchamp
     this->blankPixValue = this->blankKeyword * this->bscaleKeyword + 
       this->bzeroKeyword;
 
-    this->numPixBeam    = head.getBeamSize();
+    this->areaBeam    = head.getBeamSize();
   }
 
   std::string Param::outputMaskFile()
