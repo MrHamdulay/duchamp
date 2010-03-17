@@ -520,6 +520,15 @@ namespace duchamp
     /// @brief Output detections to a VOTable. 
     void        outputDetectionsVOTable(std::ostream &stream);
 
+
+    // ----------------------------------
+    // Calculation of overall moment maps
+
+    /// @brief Return a moment-0 map plus a map of where the object pixels are
+    void Cube::getMomentMap(float *momentMap, std::vector<bool> &detectedPixels);
+    /// @brief Return a moment-0 map formatted for logarithmic greyscale plotting, with greyscale limits
+    void Cube::getMomentMapForPlot(float *momentMap, float &z1, float &z2);
+
     // ----------------------------------
     // Graphical plotting of the cube and the detections.
     //
