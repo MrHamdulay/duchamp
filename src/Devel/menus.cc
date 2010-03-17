@@ -176,7 +176,8 @@ std::string imageMenu()
   std::cout << "3: 2126-158 i' band (GMOS)\n";
   std::cout << "4: NGC4567 Bband (2.3m)\n";
   std::cout << "5: NGC4567 Vband (2.3m)\n";
-  std::cout << "6: A single velocity plane of an HI cube\n";
+  //  std::cout << "6: A single velocity plane of an HI cube\n";
+  std::cout << "6: Your own image\n";
 
   int file=0;
   while((file<1)||(file>6)){
@@ -202,9 +203,12 @@ std::string imageMenu()
     fname = "/DATA/SITAR_1/whi550/iraf/search_test/N4567V_trim.fits[216:715,261:760]";
     break;
   default:
-    //    fname = menu();
-    fname = "";
+    std::cout << "Enter filename (full path): ";
+    std::cin >> fname;
     break;
+    //    fname = menu();
+    //    fname = "";
+    //    break;
   }
   return fname;
 }
