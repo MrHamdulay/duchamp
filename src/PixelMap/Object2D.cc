@@ -282,27 +282,15 @@ namespace PixelInfo
   bool Object2D::isInObject(long x, long y)
   {
 
-    size_t scanCount = 0;
-    do{
+    std::vector<Scan>::iterator scn;
+    bool returnval=false;
+    for(scn=this->scanlist.begin();scn<this->scanlist.end()&&!returnval;scn++){
 
-      if(y == this->scanlist[scanCount].itsY){
-	// if the y value is already in the list
+      returnval = ((y == scn->itsY) && (x>= scn->itsX) && (x<=scn->getXmax()));
 
- 	if((x>=this->scanlist[scanCount].itsX)&&
-	   (x<=this->scanlist[scanCount].getXmax())){
-	  // if the x value is already in the range, the pixel is
-	  //  already stored, so return true
-	  return true;
-	}
-
-      }
-
-      scanCount++;
-
-    }while( scanCount<this->scanlist.size() );
-
-    // if we get to here, we've looked at each pixel with no match.
-    return false; 
+    }
+       
+    return returnval;
 
   }
   //------------------------------------------------------
