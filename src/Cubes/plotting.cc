@@ -94,11 +94,13 @@ namespace duchamp
       //     if(this->objectList.size()>0){ 
       // if there are no detections, there will be nothing to plot here
 
-      float *detectMap = new float[xdim*ydim];
+      // Define a float equivalent of this->detectMap that can be plotted by cpggray.
+      // Also find the maximum value, so that we can get the greyscale right and plot a colour wedge.
+      float *detectionMap = new float[xdim*ydim];
       int maxNum = this->detectMap[0];
-      detectMap[0] = float(maxNum);
+      detectionMap[0] = float(maxNum);
       for(int pix=1;pix<xdim*ydim;pix++){
-	detectMap[pix] = float(this->detectMap[pix]);  
+	detectionMap[pix] = float(this->detectMap[pix]);  
 	if(this->detectMap[pix] > maxNum)  maxNum = this->detectMap[pix];
       }
 
@@ -107,14 +109,13 @@ namespace duchamp
 	maxNum = 5 * ((maxNum-1)/5 + 1);  // move to next multiple of 5
 
 	float tr[6] = {boxXmin,1.,0.,boxYmin,0.,1.};
-	cpggray(detectMap,xdim,ydim,1,xdim,1,ydim,maxNum,0,tr);  
-	
-	//       delete [] detectMap;
+	cpggray(detectionMap,xdim,ydim,1,xdim,1,ydim,maxNum,0,tr);  
 	cpgbox("bcnst",0.,0,"bcnst",0.,0);
 	cpgsch(1.5);
 	cpgwedg("rg",3.2,2,maxNum,0,"Number of detected channels");
       }
-      delete [] detectMap;
+
+      delete [] detectionMap;
       
       drawBlankEdges(this->array,this->axisDim[0],this->axisDim[1],this->par);
       
