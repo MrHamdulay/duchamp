@@ -81,6 +81,8 @@ headerFile      duchamp-Results.hdr
 spectraFile	duchamp-Spectra.ps
 flagTextSpectra 0
 spectraTextFile duchamp-Spectra.txt
+flagOutputMomentMap  0
+fileOutputMomentMap  image.MOM0.fits
 flagOutputMask  0
 fileOutputMask  image.MASK.fits
 flagMaskWithObjectNum 0

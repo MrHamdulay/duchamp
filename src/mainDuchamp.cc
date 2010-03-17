@@ -234,6 +234,12 @@ int main(int argc, char * argv[])
       cube->saveMaskCube();
       std::cout << "done.\n";
     }
+    if(cube->pars().getFlagOutputMomentMap()){
+      std::cout << "Saving 0th moment map image to "
+		<< cube->pars().outputMomentMapFile() << "... " <<std::flush;
+      cube->saveMomentMapImage();
+      std::cout << "done.\n";
+    }
 
     if(cube->pars().getFlagLog() && (cube->getNumObj()>0)){
       std::ofstream logfile(cube->pars().getLogFile().c_str(),std::ios::app);

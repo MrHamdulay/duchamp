@@ -49,13 +49,20 @@ namespace duchamp
 
   void Cube::getMomentMapForPlot(float *momentMap, float &z1, float &z2)
   {
+    
+    /// @details This returns the moment-0 map in a form suitable for
+    /// plotting via pgplot. The map is transformed to log space, and
+    /// the minimum & maximum values are also returned.
+    /// @param momentMap The values of log10(momentMap). This array needs to be declared beforehand.
+    /// @param z1 The minimum value of momentMap
+    /// @param z2 The maximum value of momentMap
+
 
     long xdim=this->axisDim[0];
     long ydim=this->axisDim[1];
 
     std::vector<bool> detectedPixels;
     this->getMomentMap(momentMap, detectedPixels);
-    std::cerr << momentMap << "\n";
 
     int count=0;
     for(int i=0;i<xdim*ydim;i++) {
@@ -84,6 +91,19 @@ namespace duchamp
 
   void Cube::getMomentMap(float *momentMap, std::vector<bool> &detectedPixels)
   {
+
+    /// @details This returns the moment-0 map (ie. the map of
+    /// integrated flux) for the cube. The momentMap array needs to be
+    /// allocated before calling this function - it should be of the
+    /// same spatial dimensions as the cube. The function also returns
+    /// a map showing which spatial pixels are detected. This provides
+    /// a way of telling whether a given pixel is affected, as
+    /// although the momentMap is initialised to zero, it is
+    /// conceivable that a pixel with detections in its spectrum could
+    /// yield a value of zero. The detection map is stored as a
+    /// vector<bool> for compactness.
+    /// @param momentMap The array holding the moment map values. Needs to be allocated beforehand.
+    /// @param detectedPixel The map showing which spatial pixels contain an object.
 
     long xdim=this->axisDim[0];
     long ydim=this->axisDim[1];

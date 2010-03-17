@@ -378,6 +378,9 @@ namespace duchamp
     /// @brief Function to retrieve FITS data array 
     int         getFITSdata(std::string fname);   // in FitsIO/dataIO.cc
 
+    /// @brief Save the moment map to a FITS file
+    void        saveMomentMapImage();
+
     /// @brief Save a mask array to disk.
     void        saveMaskCube();       // in Cubes/saveImage.cc
 

@@ -184,6 +184,14 @@ Selavy re-analyses and re-plots objects found by Duchamp.\n\
   const std::string header_maskSubsection_comment = 
     "A subsection of the original was searched by " + PROGNAME;
 
+  // Descriptive Headers: for the output Moment-0 image
+  const std::string header_moment0History =
+    "Moment-0 map from searching by " + PROGNAME + " v." + VERSION;
+  const std::string header_moment0History_input = 
+    "Input image used by " + PROGNAME + " follows";
+  const std::string header_moment0Subsection_comment = 
+    "A subsection of the original was searched by " + PROGNAME;
+
 }
 
 #ifdef HAVE_PGPLOT

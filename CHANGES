@@ -1,4 +1,4 @@
-Duchamp version 1.2-beta (2009/??/??)
+Duchamp version 1.1.9 (2009/??/??)
 -------------------------------------
 
 Improvements: 
@@ -15,6 +15,10 @@ Improvements:
   functionality.
 
 Bug fixes:
+
+* When saving a mask FITS file, there was an occasional memory leak
+  that caused Duchamp to crash (only when the cube was suitably
+  large). This has been fixed.
 
 * There was an occasional error in writing out FITS keywords, due to
   the way comment strings were intialised. This has been improved and

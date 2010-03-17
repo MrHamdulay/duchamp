@@ -53,7 +53,159 @@ namespace duchamp
 
   /// @brief Write FITS headers in correct format for mask array output 
   void writeMaskHeaderInfo(fitsfile *fptr, Param &par);
+
+  /// @brief Write FITS headers in correct format for moment-0 array output 
+  void writeMomentMapHeaderInfo(fitsfile *fptr, Param &par);
+
   //---------------------------------------------------------------------------
+
+  char *numerateKeyword(std::string key, int num)
+  {
+    /// @details A utility function to combine a keyword and a
+    /// value, to produce a relevant FITS keyword for a given
+    /// axis. For example numerateKeyword(CRPIX,1) returns CRPIX1.
+    std::stringstream ss;
+    ss << key << num;
+    return (char *)ss.str().c_str();
+  }
+
+  void Cube::saveMomentMapImage()
+  {
+    /// @details
+    ///  A function to save the moment-0 map to a FITS file.
+   
+    int newbitpix = FLOAT_IMG;
+    char *comment = new char[FLEN_COMMENT];
+    strcpy(comment,"");
+    long *fpixel = new long[2];
+    for(int i=0;i<2;i++) fpixel[i]=1;
+    int status = 0;  /* MUST initialize status */
+    fitsfile *fptr;         
+
+    std::string fileout = "!" + this->par.outputMomentMapFile(); 
+    // the ! is there so that it writes over an existing file.
+    char *keyword = new char[FLEN_KEYWORD];
+
+    status = 0;
+    fits_create_file(&fptr,fileout.c_str(),&status);
+    if (status){
+      duchampError("saveMomentMapImage","Error creating file:");
+      fits_report_error(stderr, status);
+    }
+    else {
+      status = 0;
+      long *dim = new long[2];
+      for (uint i = 0; i < 2; i++) dim[i] = this->axisDim[i];
+      if (fits_create_img(fptr, newbitpix, 2, dim, &status)) {
+	duchampError("saveMomentMapImage","Error creating image:");
+	fits_report_error(stderr, status);
+      }
+
+      if(!this->par.getFlagUsingBeam()){   // if the cube has beam info, copy it
+	float bmaj=this->head.getBmajKeyword(), bmin=this->head.getBminKeyword(), bpa=this->head.getBpaKeyword();
+	status = 0;
+	strcpy(keyword,"BMAJ");
+	if (fits_update_key(fptr, TFLOAT, keyword, &bmaj, NULL, &status)){
+	  duchampError("saveMomentMapImage","Error saving beam info:");
+	  fits_report_error(stderr, status);
+	}
+	status = 0;
+	strcpy(keyword,"BMIN");
+	if (fits_update_key(fptr, TFLOAT, keyword, &bmin, NULL, &status)){
+	  duchampError("saveMomentMapImage","Error saving beam info:");
+	  fits_report_error(stderr, status);
+	}
+	status = 0;
+	strcpy(keyword,"BPA");
+	if (fits_update_key(fptr, TFLOAT, keyword, &bpa, NULL, &status)){
+	  duchampError("saveMomentMapImage","Error saving beam info:");
+	  fits_report_error(stderr, status);
+	}
+      }			
+      status = 0;
+      strcpy(keyword,"EQUINOX");
+      if (fits_update_key(fptr, TFLOAT, keyword, &this->head.WCS().equinox, NULL, &status)){
+	duchampError("saveMomentMapImage","Error saving equinox:");
+	fits_report_error(stderr, status);
+      }
+      status = 0;
+      char unit[this->head.getIntFluxUnits().size()+1];
+      strcpy(unit, this->head.getIntFluxUnits().c_str());
+      strcpy(keyword,"BUNIT");
+      if (fits_update_key(fptr, TSTRING, keyword, unit,  NULL, &status)){
+	duchampError("saveMomentMapImage","Error saving BUNIT:");
+	fits_report_error(stderr, status);
+      }
+      float val;
+      int axisNumbers[2];
+      axisNumbers[0] = this->head.WCS().lng;
+      axisNumbers[1] = this->head.WCS().lat;
+      for (uint d = 0; d < 2; d++) {
+	int i = axisNumbers[d];
+	status = 0;
+	if (fits_update_key(fptr, TSTRING, numerateKeyword("CTYPE", d + 1), this->head.WCS().ctype[i],  NULL, &status)){
+	  duchampError("saveMomentMapImage","Error saving CTYPE:");
+	  fits_report_error(stderr, status);
+	}
+	status = 0;
+	if (fits_update_key(fptr, TSTRING, numerateKeyword("CUNIT", d + 1), this->head.WCS().cunit[i],  NULL, &status)){
+	  duchampError("saveMomentMapImage","Error saving CUNIT:");
+	  fits_report_error(stderr, status);
+	}
+	status = 0;
+	val = this->head.WCS().crval[i];
+	if (fits_update_key(fptr, TFLOAT, numerateKeyword("CRVAL", d + 1), &val, NULL, &status)){
+	  duchampError("saveMomentMapImage","Error saving CRVAL:");
+	  fits_report_error(stderr, status);
+	}
+	val = this->head.WCS().cdelt[i];
+	status = 0;
+	if (fits_update_key(fptr, TFLOAT, numerateKeyword("CDELT", d + 1), &val, NULL, &status)){
+	  duchampError("saveMomentMapImage","Error saving CDELT:");
+	  fits_report_error(stderr, status);
+	}
+	val = this->head.WCS().crpix[i];
+	status = 0;
+	if (fits_update_key(fptr, TFLOAT, numerateKeyword("CRPIX", d + 1), &val, NULL, &status)){
+	  duchampError("saveMomentMapImage","Error saving CRPIX:");
+	  fits_report_error(stderr, status);
+	}
+	val = this->head.WCS().crota[i];
+	status = 0;
+	if (fits_update_key(fptr, TFLOAT, numerateKeyword("CROTA", d + 1), &val, NULL, &status)){
+	  duchampError("saveMomentMapImage","Error saving CROTA:");
+	  fits_report_error(stderr, status);
+	}
+      }
+
+      delete [] comment;
+      delete [] keyword;
+
+      writeMomentMapHeaderInfo(fptr, this->par);
+	
+      long size = this->axisDim[0] * this->axisDim[1];
+      float *momentMap = new float[size];
+      std::vector<bool> detectionMap;
+      this->getMomentMap(momentMap,detectionMap);
+      status=0;
+      if(fits_write_pix(fptr, TFLOAT, fpixel, size, momentMap, &status)){
+	duchampError("saveMomentMapImage","Error writing data");
+	fits_report_error(stderr,status);
+      }
+      status = 0;
+      if(fits_close_file(fptr, &status)){
+	duchampError("saveMomentMapImage","Error closing file");
+	fits_report_error(stderr, status);
+      }
+
+      delete [] momentMap;
+
+    }
+
+    delete [] fpixel;
+
+
+  }
 
   void Cube::saveMaskCube()
   {
@@ -470,6 +622,34 @@ namespace duchamp
     if(par.getFlagSubsection()){
       status = 0;
       fits_write_comment(fptr,(char *)header_maskSubsection_comment.c_str(),
+			 &status);
+      status = 0;
+      fits_write_key(fptr, TSTRING, (char *)keyword_subsection.c_str(), 
+		     (char *)par.getSubsection().c_str(),
+		     (char *)comment_subsection.c_str(), &status);
+    }
+  }
+
+  //---------------------------------------------------------------------------
+
+  void writeMomentMapHeaderInfo(fitsfile *fptr, Param &par)
+  {
+    /// @details
+    ///   A simple function that writes all the necessary keywords and comments
+    ///    to the FITS header pointed to by fptr.
+    ///   The keyword names and comments are taken from duchamp.hh
+
+    int status = 0;
+
+    fits_write_history(fptr, (char *)header_moment0History.c_str(), &status);
+    status = 0;
+    fits_write_history(fptr, (char *)header_moment0History_input.c_str(),&status);
+    status = 0;
+    fits_write_history(fptr, (char *)par.getImageFile().c_str(), &status);
+
+    if(par.getFlagSubsection()){
+      status = 0;
+      fits_write_comment(fptr,(char *)header_moment0Subsection_comment.c_str(),
 			 &status);
       status = 0;
       fits_write_key(fptr, TSTRING, (char *)keyword_subsection.c_str(), 

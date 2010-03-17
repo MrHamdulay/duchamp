@@ -413,6 +413,14 @@ setting \texttt{flagXOutput = false} -- this might be useful if
 running \duchamp on a terminal with no window display capability, or
 if you have set up a script to run it in a batch mode.
 
+The moment map can also be written to a FITS file, so that it can be
+examined more closely, and have annotation files overlaid. This works
+in the same way as for the mask image. To create the FITS file, set the
+input parameter \texttt{flagOutputMomentMap=true}. The file will be named
+according to the \texttt{fileOutputMomentMap} parameter, or, if this is not
+given, \texttt{image.MOM0.fits} (where the input image is called
+\texttt{image.fits}).
+
 The purpose of these images are to provide a visual guide to where the
 detections have been made, and, particularly in the case of the moment
 map, to provide an indication of the strength of the source. In both

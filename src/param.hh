@@ -99,6 +99,9 @@ namespace duchamp
     void   copyHeaderInfo(FitsHeader &head);
 
     /// @brief Determine filename in which to save the mask array. 
+    std::string outputMomentMapFile();
+
+    /// @brief Determine filename in which to save the mask array. 
     std::string outputMaskFile();
 
     /// @brief Determine filename in which to save the smoothed array. 
@@ -190,6 +193,10 @@ namespace duchamp
     void   setFlagTextSpectra(bool b){flagTextSpectra = b;};
     std::string getSpectraTextFile(){return spectraTextFile;};
     void   setSpectraTextFile(std::string fname){spectraTextFile = fname;};
+    bool   getFlagOutputMomentMap(){return flagOutputMomentMap;};
+    void   setFlagOutputMomentMap(bool flag){flagOutputMomentMap=flag;};
+    std::string getFileOutputMomentMap(){return fileOutputMomentMap;};
+    void   setFileOutputMomentMap(std::string s){fileOutputMomentMap=s;};
     bool   getFlagOutputMask(){return flagOutputMask;};
     void   setFlagOutputMask(bool flag){flagOutputMask=flag;};
     std::string getFileOutputMask(){return fileOutputMask;};
@@ -391,6 +398,8 @@ namespace duchamp
     std::string spectraFile;     ///< Where the spectra are displayed
     bool        flagTextSpectra; ///< Should a text file with all spectra be written?
     std::string spectraTextFile; ///< Where the text spectra are written.
+    bool        flagOutputMomentMap;  ///< Should the moment map image be written to a FITS file?
+    std::string fileOutputMomentMap;  ///< The name of the moment map FITS file
     bool        flagOutputMask;  ///< Should the mask image be written?
     std::string fileOutputMask;  ///< The name of the mask image.
     bool        flagMaskWithObjectNum;///< Should the mask values be labeled with the object ID (or just 1)?
