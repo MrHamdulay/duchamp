@@ -423,7 +423,7 @@ namespace duchamp
     /// \return True if we are flagging Milky Way channels and z is in
     ///  the range.
 
-    return ( flagMW && (z>=minMW) && (z<=maxMW) );
+    return ( this->flagMW && (z>=this->getMinMW()) && (z<=this->getMaxMW()) );
   }
 
   bool Param::isStatOK(int x, int y, int z)
@@ -943,7 +943,8 @@ namespace duchamp
     recordParam(theStream, "[flagNegative]", "Searching for Negative features?", stringize(par.getFlagNegative()));
     recordParam(theStream, "[flagMW]", "Removing Milky Way channels?", stringize(par.getFlagMW()));
     if(par.getFlagMW()){
-      recordParam(theStream, "[minMW - maxMW]", "Milky Way Channels", par.getMinMW()<<"-"<<par.getMaxMW());
+      // need to remove the offset correction, as we want to report the parameters actually entered
+      recordParam(theStream, "[minMW - maxMW]", "Milky Way Channels", par.getMinMW()+par.getZOffset()<<"-"<<par.getMaxMW()+par.getZOffset());
     }
     recordParam(theStream, beamParam, "Beam Size (pixels)", par.getBeamSize());
     recordParam(theStream, "[flagBaseline]", "Removing baselines before search?", stringize(par.getFlagBaseline()));

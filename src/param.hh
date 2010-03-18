@@ -254,9 +254,9 @@ namespace duchamp
     void   setBzeroKeyword(float v){bzeroKeyword=v;};
     bool   getFlagMW(){return flagMW;};
     void   setFlagMW(bool flag){flagMW=flag;};
-    int    getMaxMW(){return maxMW;};
+    int    getMaxMW(){return maxMW - zSubOffset;};
     void   setMaxMW(int m){maxMW=m;};
-    int    getMinMW(){return minMW;};
+    int    getMinMW(){return minMW - zSubOffset;};
     void   setMinMW(int m){minMW=m;};
     void   setBeamSize(float s){areaBeam = s;};
     float  getBeamSize(){return areaBeam;};

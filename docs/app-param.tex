@@ -192,9 +192,11 @@ not matter, they are grouped here in logical sections.
   channels contaminated by Milky Way (or other) emission -- the
   searching algorithms will not look at these channels.
 \item[{maxMW [112]}] The maximum channel number that contains
-  ``Milky Way'' emission.
-\item[{minMW [75]}] The minimum channel number that contains
-  ``Milky Way'' emission. Note that the range specified by
+  ``Milky Way'' emission. This is the channel number in the original
+  cube, before any subsection is applied.
+\item[{minMW [75]}] The minimum channel number that contains ``Milky
+  Way'' emission. This is the channel number in the original cube,
+  before any subsection is applied.  Note that the range specified by
   \texttt{maxMW} and \texttt{minMW} is inclusive.
 \item[{flagBaseline [false]}] A flag to say whether to remove
   the baseline from each spectrum in the cube for the purposes of
