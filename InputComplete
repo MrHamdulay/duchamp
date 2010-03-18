@@ -208,12 +208,15 @@ FDRnumCorChan   2
 #                 for it to be accepted.
 # minPix -- Minimum number of spatial pixels a detected object must have for 
 #            it to be counted
+# flagRejectBeforeMerge -- If true, reject sources for not meeting the above 
+#                          criteria before the merging stage
 
 flagAdjacent	1
 threshSpatial	3
 threshVelocity	7
 minChannels	3
 minPix		2
+flagRejectBeforeMerge 0
 
 # OTHER PARAMETERS
 # verbose -- whether to provide progress indicators on the terminal during 

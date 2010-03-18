@@ -312,6 +312,10 @@ not matter, they are grouped here in logical sections.
   single detection to be counted.
 \item[{minChannels [3]}] At least one contiguous set of this many
   channels must be present in the detection for it to be accepted.
+\item[{flagRejectBeforeMerge [false]}] A flag indicating whether to
+  reject sources that fail to meet the \texttt{minPix} or
+  \texttt{minChannels} criteria \textbf{before} the merging
+  stage. Default behaviour is to do the rejection last.
 \item[{flagAdjacent [true]}] A flag indicating whether to use
   the ``adjacent pixel'' criterion to decide whether to merge
   objects. If not, the next two parameters are used to determine

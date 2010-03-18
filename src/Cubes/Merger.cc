@@ -65,6 +65,9 @@ namespace duchamp
       for(int i=0;i<startSize;i++) currentList[i] = this->objectList->at(i);
       this->objectList->clear();
 
+      if(this->par.getFlagRejectBeforeMerge()) 
+	finaliseList(currentList, this->par);
+
       mergeList(currentList, this->par);
 
       // Do growth stuff
@@ -95,7 +98,8 @@ namespace duchamp
 	mergeList(currentList, this->par);
       }
 
-      finaliseList(currentList, this->par);
+      if(!this->par.getFlagRejectBeforeMerge()) 
+	finaliseList(currentList, this->par);
 
       //     *this->objectList = currentList;
       this->objectList->resize(currentList.size());

@@ -475,9 +475,14 @@ need to treat the data on a 2-dimensional basis.
 Although there are parameters that govern the minimum number of pixels
 in a spatial and spectral sense that an object must have
 (\texttt{minPix} and \texttt{minChannels} respectively), these
-criteria are not applied at this point. It is only after the merging
-and growing (see \S\ref{sec-merger}) is done that objects are rejected
-for not meeting these criteria.
+criteria are not applied at this point. The default behaviour is that
+it is only after the merging and growing (see \S\ref{sec-merger}) is
+done that objects are rejected for not meeting these
+criteria. However, this can be changed by setting
+\texttt{flagRejectBeforeMerge=true}, so that the rejection is done
+before any merging takes place. This will potentially reduce the
+number of spurious sources, although also potentially at the expense
+of real sources that will only be apparent after merging.
 
 Finally, the search only looks for positive features. If one is
 interested instead in negative features (such as absorption lines),
