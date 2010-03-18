@@ -1,4 +1,4 @@
-Results of the Duchamp source finder: Thu Mar 18 11:05:21 2010
+Results of the Duchamp source finder: Thu Mar 18 15:22:30 2010
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits[35:64,35:64,*]
@@ -12,7 +12,7 @@ Saving 0th moment to FITS file?.........[flagOutputMask]  =  false
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false
 Removing Milky Way channels?....................[flagMW]  =  false
-Beam Size (pixels)......................................  =  14.6848
+Area of Beam (pixels)...................................  =  14.6848
 Removing baselines before search?.........[flagBaseline]  =  false
 Smoothing data prior to searching?..........[flagSmooth]  =  false
 Using A Trous reconstruction?...............[flagATrous]  =  false
@@ -24,6 +24,7 @@ Minimum # Channels in a detection..........[minChannels]  =  2
 Growing objects after detection?............[flagGrowth]  =  false
 Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
 Max. velocity separation for merging....[threshVelocity]  =  7
+Reject objects before merging?........[flagRejectBeforeMerge]  =  false
 Method of spectral plotting.............[spectralMethod]  =  peak
 Type of object centre used in results......[pixelCentre]  =  centroid
 --------------------
@@ -42,4 +43,4 @@ Total number of detections = 1
  Obj#           Name     X     Y     Z           RA          DEC     VEL     w_RA    w_DEC    w_50    w_20   w_VEL     F_int     F_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2  Npix Flag  X_av  Y_av  Z_av X_cent Y_cent Z_cent X_peak Y_peak Z_peak
                                                                   [km/s] [arcmin] [arcmin]  [km/s]  [km/s]  [km/s] [Jy km/s] [Jy/beam] [Jy/beam]                                [pix]                                                                 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    1 J060143-255604  49.9  50.0  64.0  06:01:43.91 -25:56:04.32 857.340    43.99    48.03 109.048 167.639 158.296  2645.774  2945.326    10.926  10.65  45  55  44  55  58  70   482    -  49.9  50.0  64.0   49.9   50.0   64.0     50     51     66
+    1 J060143-255604  49.9  50.0  64.0  06:01:43.91 -25:56:04.32 857.340    43.99    48.03 109.048 167.639 158.296  2645.773  2945.326    10.926  10.65  45  55  44  55  58  70   482    -  49.9  50.0  64.0   49.9   50.0   64.0     50     51     66

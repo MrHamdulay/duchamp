@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Thu Mar 18 11:05:22 2010
+New run of the Duchamp sourcefinder: Thu Mar 18 15:22:31 2010
 Executing statement : ./Duchamp -p verification/input7 
 
 ---- Parameters ----
@@ -13,7 +13,7 @@ Saving 0th moment to FITS file?.........[flagOutputMask]  =  false
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false
 Removing Milky Way channels?....................[flagMW]  =  false
-Beam Size (pixels)......................................  =  14.6848
+Area of Beam (pixels)...................................  =  14.6848
 Removing baselines before search?.........[flagBaseline]  =  false
 Smoothing data prior to searching?..........[flagSmooth]  =  false
 Using A Trous reconstruction?...............[flagATrous]  =  false
@@ -26,6 +26,7 @@ Growing objects after detection?............[flagGrowth]  =  true
 SNR Threshold for growth.....................[growthCut]  =  3
 Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
 Max. velocity separation for merging....[threshVelocity]  =  7
+Reject objects before merging?........[flagRejectBeforeMerge]  =  false
 Method of spectral plotting.............[spectralMethod]  =  peak
 Type of object centre used in results......[pixelCentre]  =  centroid
 --------------------
@@ -1182,4 +1183,4 @@ Detection #5
 75-75, 74, 115
 
 --------------
-Duchamp completed: Thu Mar 18 11:05:23 2010
+Duchamp completed: Thu Mar 18 15:22:32 2010
