@@ -67,10 +67,10 @@ namespace duchamp
       stream<<"# Threshold = " << this->par.getCut() << endl;
     if(this->par.getFlagATrous()){
       stream<<"# The a trous reconstruction method was used, with the following parameters." << endl;
-      stream<<"#  ATrous Dimension = " << this->par.getReconDim() << endl;
-      stream<<"#  ATrous Threshold = " << this->par.getAtrousCut() << endl;
-      stream<<"#  ATrous Minimum Scale =" << this->par.getMinScale() << endl;
-      stream<<"#  ATrous Filter = " << this->par.getFilterName() << endl;
+      stream<<"#  Dimension = " << this->par.getReconDim() << endl;
+      stream<<"#  Threshold = " << this->par.getAtrousCut() << endl;
+      stream<<"#  Minimum Scale =" << this->par.getMinScale() << endl;
+      stream<<"#  Filter = " << this->par.getFilterName() << endl;
     }
     else if(this->par.getFlagSmooth()){
       stream<<"# The data was smoothed prior to searching, with the following parameters." << endl;
@@ -87,7 +87,6 @@ namespace duchamp
 	stream << "#  Kernel Major axis = " << this->par.getKernPA() << endl;
       }
     }
-    else stream << "# No ATrous reconstruction done." << endl;
     stream << "#\n";
     stream << "COLOR RED" << endl;
     stream << "COORD W" << endl;
