@@ -141,7 +141,8 @@ Equatorial and Galactic projection cases).
   flux (the measured full-width at half-maximum, FWHM), in velocity
   units [see note below].
 \item[{F\_int}] The integrated flux over the object, in the units of
-  flux times velocity, corrected for the beam if necessary.
+  flux times velocity, corrected for the beam if necessary. See below
+  for a discussion on this correction.
 \item[{F\_peak}] The peak flux over the object, in the units of flux.
 \item[{S/Nmax}] The signal-to-noise ratio at the peak pixel.
 \item[{X1, X2}] The minimum and maximum X-pixel coordinates.
@@ -202,6 +203,37 @@ users. These units are also used to give the units of integrated
 flux. Note that if there is no rest frequency specified in the FITS
 header, the \duchamp output will instead default to using Frequency,
 with units of MHz.
+
+When the cube brightness units are quoted per beam (\eg Jy/beam), then
+the integrated flux \texttt{F\_int} includes a correction for
+this. This involves dividing by the integral over the beam. This is
+calculated using the BMAJ, BMIN \& BPA header keywords from the FITS
+file. BMAJ and BMIN are assumed to be the full-width at half maximum
+(FWHM) in the major and minor axis directions of a Gaussian beam. The
+integral is calculated as follows: the functional form of a 2D
+elliptical Gaussian can be written as
+$\exp(-((x^2/2\sigma_x^2)+(y^2/2\sigma_y^2)))$, and the FWHM in a
+given direction is then $f=2\sqrt{2\ln2}\sigma$. Then, 
+\[
+\int
+\exp\left(-\left(\frac{x^2}{2\sigma_x^2}\right)+\left(\frac{y^2}{2\sigma_y^2}\right)\right)
+= 2\pi\sigma_x\sigma_y
+=\frac{\pi f_x f_y}{4\ln2}
+\]
+provides the correction factor to go from units of Jy/beam to Jy. 
+
+If the FITS file does not have the beam information, the user can
+either:
+\begin{enumerate}
+\item Specify the FWHM of the beam in pixels (assuming a circular
+  beam) via the parameter \texttt{beamFWHM}.
+\item Specify the area of the beam, again in pixels, via the parameter
+  \texttt{beamArea}\footnote{Note that this is equivalent to the old
+    parameter \texttt{beamSize}, which was highlighted as being
+    ambiguous.}. This should be the value given by the equation above.
+\end{enumerate}
+If \texttt{beamFWHM}, is given, that will be used for the calculation,
+otherwise \texttt{beamArea} (which defaults to 10 pixels) is used.
 
 If the WCS is absent or not sufficiently specified, then all columns
 from \texttt{RA/GLON} to \texttt{w\_VEL} will be left blank. Also,

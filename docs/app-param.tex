@@ -240,10 +240,15 @@ not matter, they are grouped here in logical sections.
   same manner as the \texttt{threshold} parameter). When the
   \texttt{threshold} parameter is given, this option \textbf{must} be
   used instead of \texttt{growthCut}.
-\item[{beamSize [10.]}] The \textbf{area} of the beam in pixels (\ie
-  how many pixel does the beam cover?). If the header keywords BMAJ
-  and BMIN are present, then these will be used to calculate the beam
-  area, and this parameter will be ignored.
+\item[{beamFWHM [-1.]}] The full-width at half maximum of the beam, in
+  pixels.  If the header keywords BMAJ and BMIN are present, then
+  these will be used to calculate the beam area, and this parameter
+  will be ignored. This will take precedence over \texttt{beamArea}
+  (but is ignored if not specified).
+\item[{beamArea [10.]}] The \textbf{area} of the beam in pixels (\ie
+  how many pixel does the beam cover?). As above, if the header
+  keywords BMAJ and BMIN are present, then these will be used to
+  calculate the beam area, and this parameter will be ignored. 
 \end{Lentry}
 
 \secC*{\Atrous reconstruction}

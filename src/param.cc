@@ -123,7 +123,7 @@ namespace duchamp
     this->maxMW             = 112;
     this->minMW             = 75;
     this->areaBeam          = 10.;
-    this->fwhmBeam          = 10.;
+    this->fwhmBeam          = -1.;
     this->flagUsingBeam     = false;
     // Trim-related         
     this->flagTrim          = false;
@@ -714,11 +714,11 @@ namespace duchamp
 	  duchampWarning("Reading parameters",errmsg.str());
 	}
 	if(arg=="beamsize"){
-	  this->areaBeam = readFlag(ss);
+	  this->areaBeam = readFval(ss);
 	  std::stringstream errmsg;
 	  errmsg <<"The parameter beamSize is deprecated.\n"
 		 <<"You can specify the beam size by beamArea or beamFWHM.\n"
-		 <<"Setting beamArea = " << stringize(this->areaBeam) << ".\n";
+		 <<"Setting beamArea = " << this->areaBeam << ".\n";
 	  duchampWarning("Reading parameters",errmsg.str());
 	}
 
@@ -946,7 +946,13 @@ namespace duchamp
       // need to remove the offset correction, as we want to report the parameters actually entered
       recordParam(theStream, "[minMW - maxMW]", "Milky Way Channels", par.getMinMW()+par.getZOffset()<<"-"<<par.getMaxMW()+par.getZOffset());
     }
-    recordParam(theStream, beamParam, "Beam Size (pixels)", par.getBeamSize());
+    if(par.getFlagUsingBeam()){
+      if(par.getBeamFWHM()>0.) recordParam(theStream, "[beamFWHM]", "FWHM of Beam (pixels)", par.getBeamFWHM() << "   (beam area = " << par.getBeamSize() <<" pixels)");
+      else recordParam(theStream, "[beamArea]", "Area of Beam (pixels)", par.getBeamSize());
+    }
+    else {
+      recordParam(theStream, "", "Area of Beam (pixels)", par.getBeamSize());
+    }
     recordParam(theStream, "[flagBaseline]", "Removing baselines before search?", stringize(par.getFlagBaseline()));
     recordParam(theStream, "[flagSmooth]", "Smoothing data prior to searching?", stringize(par.getFlagSmooth()));
     if(par.getFlagSmooth()){	       

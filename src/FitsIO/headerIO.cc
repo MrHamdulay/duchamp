@@ -228,17 +228,26 @@ namespace duchamp
 		  comment, &status[3]);
 
     if(status[1]||status[2]||status[3]){ // error
+      std::string paramName;
+      if(par.getBeamFWHM()>0.){
+	this->setBeamSize( getBeamArea(par.getBeamFWHM(),par.getBeamFWHM()) );
+	par.setBeamSize(this->beamSize);
+	paramName = "beamFWHM";
+      }
+      else{
+	this->setBeamSize(par.getBeamSize());
+	paramName = "beamArea";
+      }
+      par.setFlagUsingBeam(true);
       std::stringstream errmsg;
       errmsg << "Header keywords not present: ";
       for(int i=0;i<3;i++) if(status[i+1]) errmsg<<keyword[i]<<" ";
-      errmsg << "\nUsing parameter beamSize to determine size of beam.\n";
+      errmsg << "\nUsing parameter "<< paramName <<" to determine size of beam.\n";
       duchampWarning("Cube Reader",errmsg.str());
-      this->setBeamSize(par.getBeamSize());
-      par.setFlagUsingBeam(true);
     }
     else{ // all keywords present
       float pixScale = this->getAvPixScale();
-      this->setBeamSize( M_PI * (bmaj/2.) * (bmin/2.) / (M_LN2*pixScale*pixScale) );
+      this->setBeamSize( getBeamArea(bmaj/pixScale, bmin/pixScale) );
       this->setBmajKeyword(bmaj);
       this->setBminKeyword(bmin);
       this->setBpaKeyword(bpa);

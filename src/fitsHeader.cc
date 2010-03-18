@@ -299,4 +299,12 @@ namespace duchamp
 
   }
 
+  float getBeamArea(float fwhmMaj, float fwhmMin)
+  {
+
+    return M_PI * (fwhmMaj/2.) * (fwhmMin/2.) / M_LN2;
+
+  }
+
+
 }
