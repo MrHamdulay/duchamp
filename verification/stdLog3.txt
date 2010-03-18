@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Wed Aug 26 09:15:17 2009
+New run of the Duchamp sourcefinder: Thu Mar 18 11:04:45 2010
 Executing statement : ./Duchamp -p verification/input3 
 
 ---- Parameters ----
@@ -9,6 +9,7 @@ Spectrum file..............................[spectraFile]  =  verification/spectr
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 Saving smoothed cube?.................[flagOutputSmooth]  =  false
 Saving mask cube?.......................[flagOutputMask]  =  false
+Saving 0th moment to FITS file?.........[flagOutputMask]  =  false
 ------
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false
@@ -1512,7 +1513,7 @@ Cube summary
 =-=-=-=-=-=-=-
 100x100x128
 Threshold	middle	spread	robust
-3.0426	0.0148019 1.00927	1
+3.04261	0.0148021 1.00927	1
 5 detections:
 --------------
 Detection #1
@@ -2596,4 +2597,4 @@ Detection #5
 75-75, 74, 115
 
 --------------
-Duchamp completed: Wed Aug 26 09:16:09 2009
+Duchamp completed: Thu Mar 18 11:05:17 2010

@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Wed Aug 26 09:16:24 2009
+New run of the Duchamp sourcefinder: Thu Mar 18 11:05:21 2010
 Executing statement : ./Duchamp -p verification/input6 
 
 ---- Parameters ----
@@ -10,6 +10,7 @@ Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 Saving reconstructed cube?.............[flagOutputRecon]  =  false
 Saving residuals from reconstruction?..[flagOutputResid]  =  false
 Saving mask cube?.......................[flagOutputMask]  =  false
+Saving 0th moment to FITS file?.........[flagOutputMask]  =  false
 ------
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false
@@ -38,13 +39,13 @@ Type of object centre used in results......[pixelCentre]  =  centroid
  Obj#     X     Y     Z     F_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2  Npix
                         [Jy/beam] [Jy/beam]                                [pix]
 --------------------------------------------------------------------------------
-    1  50.0  50.0  64.1  2470.297    10.926  11.15  46  54  45  54  59  70   391
+    1  50.0  50.0  64.1  2474.252    10.926  11.14  46  54  45  54  59  70   392
 =-=-=-=-=-=-=-
 Cube summary
 =-=-=-=-=-=-=-
 30x30x128
 Threshold	middle	spread	robust
-3.94241	0.0343318 0.97702	1
+3.94344	0.034351 0.977272	1
 1 detections:
 --------------
 Detection #1
@@ -76,7 +77,7 @@ Detection #1
 50-51, 54, 62
 49-51, 46, 63
 47-52, 47, 63
-47-53, 48, 63
+46-53, 48, 63
 46-53, 49, 63
 47-53, 50, 63
 47-54, 51, 63
@@ -133,4 +134,4 @@ Detection #1
 50-50, 50, 70
 
 --------------
-Duchamp completed: Wed Aug 26 09:16:25 2009
+Duchamp completed: Thu Mar 18 11:05:22 2010
