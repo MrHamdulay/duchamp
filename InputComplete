@@ -45,6 +45,9 @@ objectList      *
 # flagTextSpectra -- whether to save a text file detailing the spectra
 #                    of each source
 # spectraTextFile -- the file in which to save the text-formatted spectra
+# flagOutputMomentMap -- whether to save a FITS file containing the moment-0 map
+# fileOutputMomentMap -- the filename for the moment-0 FITS file. If not given, it defaults 
+#                   to the format shown (for input file image.fits)
 # flagOutputMask -- whether to save a FITS file containing a mask
 #                   array, showing the locations of detected objects
 # fileOutputMask -- the filename for the mask file. If not given, it defaults 

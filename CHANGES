@@ -1,7 +1,25 @@
-Duchamp version 1.1.9 (2009/??/??)
+Duchamp version 1.1.9 (2009/03/19)
 -------------------------------------
 
 Improvements: 
+
+* There is now the ability to save the moment-0 map as a FITS
+  file. This is controlled by the parameters flagOutputMomentMap and
+  fileOutputMomentMap, which work in the same way for the mask file.
+
+* There is a new parameter flagRejectBeforeMerging that, when true,
+  rejects sources according to the minPix/minChannels requirements
+  before the merging and growing is done. This defaults to false (so
+  default behaviour is as before). Thanks to Tobias Westmeier for
+  suggesting this and the above improvement.
+
+* The way the beam is specified in the absence of the BMAJ/BMIN/BPA
+  parameters has been slightly changed. The use of "beamSize" was
+  somewhat ambiguous (it meant the number of pixels covered by the
+  beam, not the FWHM), so new parameters have been introduced. The
+  beam can be specified by beamArea (which replaces beamSize), or
+  beamFWHM (the FWHM of the beam in pixels). If beamFWHM is provided,
+  it will be used, else the beamArea will be.
 
 * Profiling of the code has led to a few changes that have sped up
   some calculations, particularly those involving the median. Rather
@@ -19,6 +37,15 @@ Bug fixes:
 * When saving a mask FITS file, there was an occasional memory leak
   that caused Duchamp to crash (only when the cube was suitably
   large). This has been fixed.
+
+* The median calculation had a bug that led to an incorrect value
+  being reported. The difference will not be great (the element of an
+  array being reported as the median was out by one), but could be
+  noticeable depending on the dataset.
+
+* The MW range parameters did not respond to the use of a
+  subsection. They should refer to channel ranges in the original
+  cube, and changes have been made to the code to reflect this.
 
 * There was an occasional error in writing out FITS keywords, due to
   the way comment strings were intialised. This has been improved and
