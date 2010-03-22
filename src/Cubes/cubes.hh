@@ -251,7 +251,7 @@ namespace duchamp
 
     // additional functions -- in Cubes/cubes.cc
     /// @brief Allocate memory correctly, with WCS defining the correct axes. 
-    void        initialiseCube(long *dimensions, bool allocateArrays=true);
+    OUTCOME     initialiseCube(long *dimensions, bool allocateArrays=true);
 
     /// @brief Read in a FITS file, with subsection correction. 
     int         getCube();

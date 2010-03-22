@@ -438,7 +438,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Cube::initialiseCube(long *dimensions, bool allocateArrays)
+  OUTCOME Cube::initialiseCube(long *dimensions, bool allocateArrays)
   {
     /// @details
     ///  This function will set the sizes of all arrays that will be used by Cube.
@@ -453,7 +453,8 @@ namespace duchamp
     ///  the memory for the data arrays: the default is true. The
     ///  dimension arrays will be allocated and filled.
 
-    int lng,lat,spc,size,imsize;
+    int lng,lat,spc;
+    long size,imsize;
   
     int numAxes = this->head.getNumAxes();
     if(numAxes<=0) numAxes=3;
@@ -491,9 +492,11 @@ namespace duchamp
       this->arrayAllocated = false;
     }
 
-    if((size<0) || (imsize<0) )
+    if((size<0) || (imsize<0) ) {
       duchampError("Cube::initialiseCube(dimArray)",
 		   "Negative size -- could not define Cube.\n");
+      return FAILURE;
+    }
     else{
       this->numPixels = size;
       this->numDim  = 3;
@@ -520,6 +523,7 @@ namespace duchamp
 	}
       }
     }
+    return SUCCESS;
   }
   //--------------------------------------------------------------------
 
