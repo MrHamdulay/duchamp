@@ -26,6 +26,8 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <iostream>
+#include <sstream>
+#include <duchamp/duchamp.hh>
 #include <duchamp/config.h>
 #include <math.h>
 #ifdef HAVE_VALUES_H
@@ -140,7 +142,7 @@ void GaussSmooth2D<Type>::define(float maj, float min, float pa)
   else if(this->kernWidth < 2*kernelHW + 1){
     std::stringstream ss;
     ss << "You have provided a kernel smaller than optimal (" << this->kernWidth << " cf. " << 2*kernelHW + 1 <<")";
-    DuchampWarning("GaussSmooth2D::define",ss.str());
+    duchamp::duchampWarning("GaussSmooth2D::define",ss.str());
   }
 
   if(this->allocated) delete [] this->kernel;
