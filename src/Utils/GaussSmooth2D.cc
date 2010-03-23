@@ -39,9 +39,20 @@
 #include <duchamp/Utils/GaussSmooth2D.hh>
 
 template <class Type>
+void GaussSmooth2D<Type>::defaults()
+{
+  this->allocated=false;
+  this->blankVal = Type(-99);
+  this->kernWidth = -1;
+}
+template void GaussSmooth2D<float>::defaults();
+template void GaussSmooth2D<double>::defaults();
+
+
+template <class Type>
 GaussSmooth2D<Type>::GaussSmooth2D()
 {
-  allocated=false;
+  this->defaults();
 }
 template GaussSmooth2D<float>::GaussSmooth2D();
 template GaussSmooth2D<double>::GaussSmooth2D();
@@ -49,7 +60,7 @@ template GaussSmooth2D<double>::GaussSmooth2D();
 template <class Type>
 GaussSmooth2D<Type>::~GaussSmooth2D()
 {
-  if(allocated) delete [] kernel;
+  if(this->allocated) delete [] kernel;
 }
 template GaussSmooth2D<float>::~GaussSmooth2D();
 template GaussSmooth2D<double>::~GaussSmooth2D();
@@ -71,6 +82,7 @@ GaussSmooth2D<Type>& GaussSmooth2D<Type>::operator=(const GaussSmooth2D& g)
   this->kernPA    = g.kernPA;
   this->kernWidth = g.kernWidth;
   this->stddevScale = g.stddevScale;
+  this->blankVal    = g.blankVal;
   if(this->allocated) delete [] this->kernel;
   this->allocated = g.allocated;
   if(this->allocated){
@@ -86,7 +98,7 @@ template GaussSmooth2D<double>& GaussSmooth2D<double>::operator=(const GaussSmoo
 template <class Type>
 GaussSmooth2D<Type>::GaussSmooth2D(float maj, float min, float pa)
 {
-  this->allocated=false;
+  this->defaults();
   this->define(maj, min, pa);
 }
 template GaussSmooth2D<float>::GaussSmooth2D(float maj, float min, float pa);
@@ -95,7 +107,7 @@ template GaussSmooth2D<double>::GaussSmooth2D(float maj, float min, float pa);
 template <class Type>
 GaussSmooth2D<Type>::GaussSmooth2D(float maj)
 {
-  this->allocated=false;
+  this->defaults();
   this->define(maj, maj, 0);
 }
 template GaussSmooth2D<float>::GaussSmooth2D(float maj);
@@ -123,8 +135,13 @@ void GaussSmooth2D<Type>::define(float maj, float min, float pa)
   // get the largest square that includes the ellipse.
   float majorSigma = this->kernMaj / (4.*M_LN2);
   int kernelHW = int(ceil(majorSigma * sqrt(-2.*log(1. / MAXVAL))));
-  this->kernWidth = 2*kernelHW + 1;
-//   std::cerr << "Making a kernel of width " << this->kernWidth << "\n";
+
+  if(this->kernWidth < 0) this->kernWidth = 2*kernelHW + 1;
+  else if(this->kernWidth < 2*kernelHW + 1){
+    std::stringstream ss;
+    ss << "You have provided a kernel smaller than optimal (" << this->kernWidth << " cf. " << 2*kernelHW + 1 <<")";
+    DuchampWarning("GaussSmooth2D::define",ss.str());
+  }
 
   if(this->allocated) delete [] this->kernel;
   this->kernel = new Type[this->kernWidth*this->kernWidth];
@@ -145,13 +162,12 @@ void GaussSmooth2D<Type>::define(float maj, float min, float pa)
     }
   }
   this->stddevScale = sqrt(this->stddevScale);
-//   std::cerr << "Stddev scaling factor = " << this->stddevScale << "\n";
 }
 template void GaussSmooth2D<float>::define(float maj, float min, float pa);
 template void GaussSmooth2D<double>::define(float maj, float min, float pa);
 
 template <class Type>
-Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool scaleByCoverage)
+Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, EDGES edgeTreatment)
 {
   /// @details
   /// Smooth a given two-dimensional array, of dimensions xdim
@@ -167,15 +183,15 @@ Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool scaleByC
   Type *smoothed;
   bool *mask = new bool[xdim*ydim];
   for(int i=0;i<xdim*ydim;i++) mask[i]=true;
-  smoothed = this->smooth(input,xdim,ydim,mask,scaleByCoverage);
+  smoothed = this->smooth(input,xdim,ydim,mask,edgeTreatment);
   delete [] mask;
   return smoothed;
 }
-template float *GaussSmooth2D<float>::smooth(float *input, int xdim, int ydim, bool scaleByCoverage);
-template double *GaussSmooth2D<double>::smooth(double *input, int xdim, int ydim, bool scaleByCoverage);
+template float *GaussSmooth2D<float>::smooth(float *input, int xdim, int ydim, EDGES edgeTreatment);
+template double *GaussSmooth2D<double>::smooth(double *input, int xdim, int ydim, EDGES edgeTreatment);
 
 template <class Type>
-Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, bool scaleByCoverage)
+Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, EDGES edgeTreatment)
 {
   /// @details
   ///  Smooth a given two-dimensional array, of dimensions xdim
@@ -217,6 +233,10 @@ Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, b
 	pos = ypos*xdim + xpos;
       
 	if(!mask[pos]) output[pos] = input[pos];
+	else if(edgeTreatment==TRUNCATE &&
+		((xpos<=kernelHW)||((xdim-xpos)<=kernelHW)||(ypos<=kernelHW)||((ydim-ypos)<kernelHW))){
+	  output[pos] = this->blankVal;
+	}
 	else{
 	
 	  ct=0;
@@ -244,8 +264,8 @@ Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, b
 
 	    }
 	  }// yoff loop
-// 	  if(ct>0 && scaleByCoverage) output[pos] /= fsum;
- 	  if(ct>0 && scaleByCoverage) output[pos] *= kernsum/fsum;
+	  // 	  if(ct>0 && scaleByCoverage) output[pos] /= fsum;
+ 	  if(ct>0 && edgeTreatment==SCALEBYCOVERAGE) output[pos] *= kernsum/fsum;
  
 	} // else{
 
@@ -256,5 +276,5 @@ Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, b
   }
 
 }
-template float *GaussSmooth2D<float>::smooth(float *input, int xdim, int ydim, bool *mask, bool scaleByCoverage);
-template double *GaussSmooth2D<double>::smooth(double *input, int xdim, int ydim, bool *mask, bool scaleByCoverage);
+template float *GaussSmooth2D<float>::smooth(float *input, int xdim, int ydim, bool *mask, EDGES edgeTreatment);
+template double *GaussSmooth2D<double>::smooth(double *input, int xdim, int ydim, bool *mask, EDGES edgeTreatment);

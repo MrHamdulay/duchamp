@@ -29,6 +29,12 @@
 #ifndef GAUSSSMOOTH2D_H
 #define GAUSSSMOOTH2D_H
 
+/// @brief How the edges of the array are dealt with
+enum EDGES { EQUALTOEDGE,       ///< All pixels are used and treated equally
+	     SCALEBYCOVERAGE,   ///< All pixels are used, but edge pixels are weighted down by the kernel coverage
+	     TRUNCATE           ///< Pixels at edge are set to Blank.
+};
+
 /// @brief
 ///  Define a Gaussian to smooth a 2D array.
 /// @details
@@ -44,6 +50,7 @@ public:
   GaussSmooth2D(const GaussSmooth2D& g);
   GaussSmooth2D& operator=(const GaussSmooth2D& g);
   
+  void defaults();
 
   /// @brief Specific constructor that sets up kernel.
   GaussSmooth2D(float maj, float min, float pa);  
@@ -53,10 +60,13 @@ public:
   /// @brief Define the size and the array of coefficients. 
   void   define(float maj, float min, float pa); 
 
+  /// @brief Set the size of the kernel
+  void   setKernelWidth(float width){kernWidth = width;};
+
   /// @brief Smooth an array with the Gaussian kernel
-  Type *smooth(Type *input, int xdim, int ydim, bool scaleByCoverage=false);  
+  Type *smooth(Type *input, int xdim, int ydim, EDGES edgeTreatment=EQUALTOEDGE);  
   /// @brief Smooth an array with the Gaussian kernel, using a mask to define blank pixels
-  Type *smooth(Type *input, int xdim, int ydim, bool *mask, bool scaleByCoverage=false);  
+  Type *smooth(Type *input, int xdim, int ydim, bool *mask, EDGES edgeTreatment=EQUALTOEDGE);  
   
   void   setKernMaj(float f){kernMaj=f;};
   void   setKernMin(float f){kernMin=f;};
@@ -65,8 +75,11 @@ public:
   Type   getKernelPt(int i){return kernel[i];};
   Type  *getKernel(){return kernel;};
 
-  int    getKernWidth(){return kernWidth;};
+  int    getKernelWidth(){return kernWidth;};
   float  getStddevScale(){return stddevScale;};
+
+  void   setBlankVal(Type b){blankVal = b;};
+  Type   getBlankVal(){return blankVal;};
 
 private:
   float  kernMaj;      ///< The FWHM of the major axis of the elliptical Gaussian.
@@ -76,6 +89,7 @@ private:
   float  stddevScale;  ///< The factor by which the rms of the input array gets scaled by (assuming iid normally)
   Type  *kernel;       ///< The coefficients of the smoothing kernel
   bool   allocated;    ///< Have the coefficients been allocated in memory?
+  Type   blankVal;     ///< What value to set blanks (when doing TRUNCATE mode)
 
 };
 
