@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// GaussSmooth2D.cc: Member functions for the GaussSmooth2D class.
+// GaussSmooth2D.tcc: Member functions for the GaussSmooth2D class.
 // -----------------------------------------------------------------------
 // Copyright (C) 2006, Matthew Whiting, ATNF
 //
@@ -47,33 +47,24 @@ void GaussSmooth2D<Type>::defaults()
   this->blankVal = Type(-99);
   this->kernWidth = -1;
 }
-template void GaussSmooth2D<float>::defaults();
-template void GaussSmooth2D<double>::defaults();
-
 
 template <class Type>
 GaussSmooth2D<Type>::GaussSmooth2D()
 {
   this->defaults();
 }
-template GaussSmooth2D<float>::GaussSmooth2D();
-template GaussSmooth2D<double>::GaussSmooth2D();
 
 template <class Type>
 GaussSmooth2D<Type>::~GaussSmooth2D()
 {
   if(this->allocated) delete [] kernel;
 }
-template GaussSmooth2D<float>::~GaussSmooth2D();
-template GaussSmooth2D<double>::~GaussSmooth2D();
 
 template <class Type>
 GaussSmooth2D<Type>::GaussSmooth2D(const GaussSmooth2D& g)
 {
   operator=(g);
 }
-template GaussSmooth2D<float>::GaussSmooth2D(const GaussSmooth2D& g);
-template GaussSmooth2D<double>::GaussSmooth2D(const GaussSmooth2D& g);
 
 template <class Type>
 GaussSmooth2D<Type>& GaussSmooth2D<Type>::operator=(const GaussSmooth2D& g)
@@ -94,8 +85,6 @@ GaussSmooth2D<Type>& GaussSmooth2D<Type>::operator=(const GaussSmooth2D& g)
   }
   return *this;
 }
-template GaussSmooth2D<float>& GaussSmooth2D<float>::operator=(const GaussSmooth2D& g);
-template GaussSmooth2D<double>& GaussSmooth2D<double>::operator=(const GaussSmooth2D& g);
 
 template <class Type>
 GaussSmooth2D<Type>::GaussSmooth2D(float maj, float min, float pa)
@@ -103,8 +92,6 @@ GaussSmooth2D<Type>::GaussSmooth2D(float maj, float min, float pa)
   this->defaults();
   this->define(maj, min, pa);
 }
-template GaussSmooth2D<float>::GaussSmooth2D(float maj, float min, float pa);
-template GaussSmooth2D<double>::GaussSmooth2D(float maj, float min, float pa);
 
 template <class Type>
 GaussSmooth2D<Type>::GaussSmooth2D(float maj)
@@ -112,8 +99,6 @@ GaussSmooth2D<Type>::GaussSmooth2D(float maj)
   this->defaults();
   this->define(maj, maj, 0);
 }
-template GaussSmooth2D<float>::GaussSmooth2D(float maj);
-template GaussSmooth2D<double>::GaussSmooth2D(float maj);
 
 template <class Type>
 void GaussSmooth2D<Type>::define(float maj, float min, float pa)
@@ -165,8 +150,6 @@ void GaussSmooth2D<Type>::define(float maj, float min, float pa)
   }
   this->stddevScale = sqrt(this->stddevScale);
 }
-template void GaussSmooth2D<float>::define(float maj, float min, float pa);
-template void GaussSmooth2D<double>::define(float maj, float min, float pa);
 
 template <class Type>
 Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, EDGES edgeTreatment)
@@ -189,8 +172,6 @@ Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, EDGES edgeTre
   delete [] mask;
   return smoothed;
 }
-template float *GaussSmooth2D<float>::smooth(float *input, int xdim, int ydim, EDGES edgeTreatment);
-template double *GaussSmooth2D<double>::smooth(double *input, int xdim, int ydim, EDGES edgeTreatment);
 
 template <class Type>
 Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, EDGES edgeTreatment)
@@ -278,5 +259,3 @@ Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, E
   }
 
 }
-template float *GaussSmooth2D<float>::smooth(float *input, int xdim, int ydim, bool *mask, EDGES edgeTreatment);
-template double *GaussSmooth2D<double>::smooth(double *input, int xdim, int ydim, bool *mask, EDGES edgeTreatment);
