@@ -1027,17 +1027,18 @@ namespace duchamp
     int ct=0;
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
       obj->setID(ct++);
-      obj->setCentreType(this->par.getPixelCentre());
-      obj->calcFluxes(this->array,this->axisDim);
-      //      obj->calcWCSparams(this->array,this->axisDim,this->head);
-      obj->calcWCSparams(this->head);
-      obj->calcIntegFlux(this->array,this->axisDim,this->head);
-    
-      if(this->par.getFlagUserThreshold())
-	obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
-      else
-	obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
-
+      if(!obj->hasParams()){
+	obj->setCentreType(this->par.getPixelCentre());
+	obj->calcFluxes(this->array,this->axisDim);
+	//      obj->calcWCSparams(this->array,this->axisDim,this->head);
+	obj->calcWCSparams(this->head);
+	obj->calcIntegFlux(this->array,this->axisDim,this->head);
+	
+	if(this->par.getFlagUserThreshold())
+	  obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
+	else
+	  obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+      }
     }  
 
     if(!this->head.isWCS()){ 
@@ -1073,16 +1074,17 @@ namespace duchamp
     int ct=0;
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
       obj->setID(ct+1);
-      obj->setCentreType(this->par.getPixelCentre());
-      obj->calcFluxes(bigVoxList[ct]);
-      obj->calcWCSparams(this->head);
-      obj->calcIntegFlux(bigVoxList[ct],this->head);
-    
-      if(this->par.getFlagUserThreshold())
-	obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
-      else
-	obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
-
+      if(obj->hasParams()){
+	obj->setCentreType(this->par.getPixelCentre());
+	obj->calcFluxes(bigVoxList[ct]);
+	obj->calcWCSparams(this->head);
+	obj->calcIntegFlux(bigVoxList[ct],this->head);
+	
+	if(this->par.getFlagUserThreshold())
+	  obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
+	else
+	  obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+      }
       ct++;
     }  
 

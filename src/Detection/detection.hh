@@ -168,6 +168,8 @@ namespace duchamp
     long        getZOffset(){return zSubOffset;};
     void        setZOffset(long o){zSubOffset = o;};
     //	      
+    bool        hasParams(){return haveParams;};
+    //
     float       getXcentre();
     float       getYcentre();
     float       getZcentre();
@@ -240,6 +242,7 @@ namespace duchamp
     long           xSubOffset;     ///< The x-offset, from subsectioned cube
     long           ySubOffset;     ///< The y-offset, from subsectioned cube
     long           zSubOffset;     ///< The z-offset, from subsectioned cube
+    bool           haveParams;     ///< Have the parameters been calculated?
     // Flux related
     float          totalFlux;      ///< sum of the fluxes of all the pixels
     double         intFlux;        ///< integrated flux : involves integration over velocity.

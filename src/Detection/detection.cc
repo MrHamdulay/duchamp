@@ -51,6 +51,7 @@ namespace duchamp
     this->xSubOffset = 0;
     this->ySubOffset = 0;
     this->zSubOffset = 0;
+    this->haveParams = false;
     this->totalFlux = 0.;
     this->peakFlux = 0.;
     this->intFlux = 0.;
@@ -124,6 +125,7 @@ namespace duchamp
     this->xSubOffset   = d.xSubOffset;
     this->ySubOffset   = d.ySubOffset;
     this->zSubOffset   = d.zSubOffset;
+    this->haveParams   = d.haveParams;
     this->totalFlux    = d.totalFlux;
     this->intFlux      = d.intFlux;
     this->peakFlux     = d.peakFlux;
@@ -266,6 +268,8 @@ namespace duchamp
     ///  \param fluxArray The array of flux values to calculate the
     ///  flux parameters from.
     ///  \param dim The dimensions of the flux array.
+    
+    //    this->haveParams = true;
 
     this->totalFlux = this->peakFlux = 0;
     this->xCentroid = this->yCentroid = this->zCentroid = 0.;
@@ -316,6 +320,8 @@ namespace duchamp
     ///  \param fluxArray The array of flux values to calculate the
     ///  flux parameters from.
     ///  \param dim The dimensions of the flux array.
+
+    //    this->haveParams = true;
 
     this->totalFlux = this->peakFlux = 0;
     this->xCentroid = this->yCentroid = this->zCentroid = 0.;
@@ -396,6 +402,8 @@ namespace duchamp
 	// world now has the WCS coords for the five points 
 	//    -- use this to work out WCS params
   
+	this->haveParams = true;
+
 	this->specOK = head.canUseThirdAxis();
 	this->lngtype = head.WCS().lngtyp;
 	this->lattype = head.WCS().lattyp;
@@ -459,6 +467,8 @@ namespace duchamp
     }
 
     if(!head.is2D()){
+
+      this->haveParams = true;
 
       // include one pixel either side in each direction
       long xsize = (this->getXmax()-this->getXmin()+border*2+1);
@@ -547,6 +557,8 @@ namespace duchamp
 
     if(!head.is2D()){
 
+      this->haveParams = true;
+
       // include one pixel either side in each direction
       long xsize = (this->xmax-this->xmin+3);
       long ysize = (this->ymax-this->ymin+3);
@@ -631,6 +643,8 @@ namespace duchamp
     /// 
     ///  \param voxelList The list of Voxels with flux information
     ///  \param head FitsHeader object that contains the WCS information.
+
+    this->haveParams = true;
 
     const int border = 1;
     long zsize = (this->getZmax()-this->getZmin()+border*2+1); 
@@ -737,6 +751,8 @@ namespace duchamp
     ///  \param head FitsHeader object that contains the WCS information.
 
     if(dim[2] > 2){
+
+      this->haveParams = true;
 
       double xpt = double(this->getXcentre()); 
       double ypt = double(this->getYcentre());
@@ -922,6 +938,7 @@ namespace duchamp
     Detection output = lhs;
     for(std::map<long, Object2D>::iterator it = rhs.chanlist.begin(); it!=rhs.chanlist.end();it++)
       output.addChannel(it->first, it->second);
+    output.haveParams = false; // make it appear as if the parameters haven't been calculated, so that we can re-calculate them
     return output;
   }
     
