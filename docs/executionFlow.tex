@@ -463,15 +463,21 @@ value (using the parameter \texttt{threshold}) for the threshold,
 which will override the calculated value. Note that this option
 overrides any settings of \texttt{snrCut} or FDR options (see below). 
 
-The cube is searched one channel map at a time, using the
-2-dimensional raster-scanning algorithm of \citet{lutz80} that
-connects groups of neighbouring pixels. Such an algorithm cannot be
-applied directly to a 3-dimensional case, as it requires that objects
-are completely nested in a row (when scanning along a row, if an
-object finishes and other starts, you won't get back to the first
-until the second is completely finished for the
-row). Three-dimensional data does not have this property, hence the
-need to treat the data on a 2-dimensional basis.
+The cube can be searched in one of two ways, governed by the input
+parameter \texttt{searchType}. If \texttt{searchType=spatial}, the
+cube is searched one channel map at a time, using the 2-dimensional
+raster-scanning algorithm of \citet{lutz80} that connects groups of
+neighbouring pixels. Such an algorithm cannot be applied directly to a
+3-dimensional case, as it requires that objects are completely nested
+in a row (when scanning along a row, if an object finishes and other
+starts, you won't get back to the first until the second is completely
+finished for the row). Three-dimensional data does not have this
+property, hence the need to treat the data on a 2-dimensional basis at
+most.
+
+Alternatively, if \texttt{searchType=spectral}, the searching is done
+in one dimension on each individual spatial pixel's spectrum. This is
+a simpler search, but there are potentially many more of them.
 
 Although there are parameters that govern the minimum number of pixels
 in a spatial and spectral sense that an object must have

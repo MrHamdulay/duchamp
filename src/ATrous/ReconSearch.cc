@@ -67,11 +67,8 @@ namespace duchamp
     
       if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
   
-      *this->objectList = searchReconArraySimple(this->axisDim,this->array,
-						 this->recon,
-						 this->par,this->Stats);
-      //   this->objectList = searchReconArray(this->axisDim,this->array,
-      // 				      this->recon,this->par,this->Stats);
+      *this->objectList = searchReconArray(this->axisDim,this->array,
+					   this->recon,this->par,this->Stats);
 
       if(this->par.isVerbose()) std::cout << "  Updating detection map... " 
 					  << std::flush;
@@ -245,10 +242,27 @@ namespace duchamp
 					   float *reconArray, Param &par,
 					   StatsContainer<float> &stats)
   {
+
+  if(par.getSearchType()=="spectral")
+    return searchReconArraySpectral(dim,originalArray,reconArray,par,stats);
+  else if(par.getSearchType()=="spatial")
+    return searchReconArraySpatial(dim,originalArray,reconArray,par,stats);
+  else{
+    std::stringstream ss;
+    ss << "Unknown search type : " << par.getSearchType();
+    duchampError("searchReconArray",ss.str());
+    return std::vector<Detection>(0);
+  }
+  }
+  /////////////////////////////////////////////////////////////////////////////
+  std::vector <Detection> searchReconArraySpectral(long *dim, float *originalArray, 
+						   float *reconArray, Param &par,
+						   StatsContainer<float> &stats)
+  {
     ///  This searches for objects in a cube that has been reconstructed.
     /// 
-    ///  The search is conducted first in each spatial pixel (xdim*ydim 1D 
-    ///   searches), then in each channel image (zdim 2D searches).
+    ///  The search is conducted just in each spatial pixel (xdim*ydim 1D 
+    ///   searches).
     ///  The searches are done on the reconstructed array, although the detected
     ///   objects have fluxes drawn from the corresponding pixels of the original
     ///   array.
@@ -332,65 +346,18 @@ namespace duchamp
       }
     }
 
-    // Second search --  in each channel
-    if(par.isVerbose()){
-      std::cout << "  2D: ";
-      bar.init(zdim);
-    }
-
-    num = 0;
-
-    long *imdim = new long[2];
-    imdim[0] = dim[0]; imdim[1] = dim[1];
-    Image *channelImage = new Image(imdim);
-    delete [] imdim;
-    channelImage->saveParam(par);
-    channelImage->saveStats(stats);
-    channelImage->setMinSize(par.getMinPix());
-
-    for(int z=0; z<zdim; z++){  // loop over all channels
-
-      if( par.isVerbose() ) bar.update(z+1);
-
-      if(!par.isInMW(z)){ 
-	// purpose of this is to ignore the Milky Way channels 
-	//  if we are flagging them
-
-	channelImage->extractImage(reconArray,dim,z);
-	std::vector<Object2D> objlist = channelImage->findSources2D();
-	std::vector<Object2D>::iterator obj;
-	num += objlist.size();
-	for(obj=objlist.begin();obj!=objlist.end();obj++){
-	  Detection newObject;
-	  newObject.addChannel(z,*obj);
-	  newObject.setOffsets(par);
-	  mergeIntoList(newObject,outputList,par);
-	}
-      }
-    
-    }
-
-    delete channelImage;
-
-    if(par.isVerbose()){
-      bar.fillSpace("Found ");
-      std::cout << num << ".\n";
-    }
-
-
     return outputList;
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  std::vector <Detection> 
-  searchReconArraySimple(long *dim, float *originalArray,
-			 float *reconArray, Param &par,
-			 StatsContainer<float> &stats)
+  std::vector <Detection> searchReconArraySpatial(long *dim, float *originalArray,
+						  float *reconArray, Param &par,
+						  StatsContainer<float> &stats)
   {
     ///  This searches for objects in a cube that has been reconstructed.
     /// 
     ///  The search is conducted only in each channel image (zdim 2D
-    ///  searches) -- no searches in 1D are done.
+    ///  searches).
     /// 
     ///  The searches are done on the reconstructed array, although the detected
     ///   objects have fluxes drawn from the corresponding pixels of the original

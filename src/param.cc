@@ -125,6 +125,7 @@ namespace duchamp
     this->areaBeam          = 10.;
     this->fwhmBeam          = -1.;
     this->flagUsingBeam     = false;
+    this->searchType        = "spatial";
     // Trim-related         
     this->flagTrim          = false;
     this->hasBeenTrimmed    = false;
@@ -248,6 +249,7 @@ namespace duchamp
     this->minMW             = p.minMW;         
     this->areaBeam          = p.areaBeam;     
     this->fwhmBeam          = p.fwhmBeam;     
+    this->searchType        = p.searchType;
     this->flagTrim          = p.flagTrim;    
     this->hasBeenTrimmed    = p.hasBeenTrimmed;    
     this->borderLeft        = p.borderLeft;     
@@ -645,6 +647,7 @@ namespace duchamp
 	if(arg=="maxmw")           this->maxMW = readIval(ss); 
 	if(arg=="minmw")           this->minMW = readIval(ss); 
 	if(arg=="flagbaseline")    this->flagBaseline = readFlag(ss); 
+	if(arg=="searchType")      this->searchType = readFlag(ss);
 
 	if(arg=="flagnegative")    this->flagNegative = readFlag(ss);
 	if(arg=="minpix")          this->minPix = readIval(ss); 
@@ -744,6 +747,15 @@ namespace duchamp
     if(this->precFlux<0) this->precFlux = 0;
     if(this->precVel<0)  this->precVel = 0;
     if(this->precSNR<0)  this->precSNR = 0;
+
+    // Can only have "spatial" or "spectral" as search types
+    if(this->searchType != "spatial" && this->searchType != "spectral"){
+      std::stringstream errmsg;
+      errmsg << "You have requested a search type of \""<<this->searchType<<"\".\n"
+	     << "Only \"spectral\" and \"spatial\" are accepted. Setting to \"spatial\".\n";
+      duchampWarning("Reading parameters",errmsg.str());
+      this->searchType = "spatial";
+    }
 
     // The wavelet reconstruction takes precendence over the smoothing.
     if(this->flagATrous) this->flagSmooth = false;
@@ -936,6 +948,7 @@ namespace duchamp
 
     theStream  <<"------"<<std::endl;
 
+    recordParam(theStream, "[searchType]", "Type of searching performed", par.getSearchType());
     if(par.getFlagBlankPix()){
       recordParam(theStream, "", "Blank Pixel Value", par.getBlankPixVal());
     }

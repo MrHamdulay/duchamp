@@ -138,6 +138,9 @@ flagBaseline    0
 # growthThreshold -- The lower threshold, used in conjunction with "threshold"
 # beamsize -- the size of the beam in pixels. This value is overridden
 #             by the BMAJ, BMIN, BPA header parameters if present.
+# searchType -- how the searching is done. Either "spatial", where each 2D map is 
+#               searched then detections combined, or "spectral", where each 1D 
+#               spectrum is searched then detections combined. 
 
 flagStatSec     0
 StatSec         [*,*,*]
@@ -150,6 +153,7 @@ growthCut	2.
 growthThreshold 0.
 beamArea        -1.
 beamFWHM        3.
+searchType      spatial
 
 # RECONSTRUCTION RELATED
 # flagATrous -- Whether or not to do the reconstruction before searching

@@ -48,20 +48,20 @@ namespace duchamp
 
 
   /// @brief Search a reconstructed array for significant detections. 
-  std::vector <Detection> 
-  searchReconArray(long *dim, float *originalArray, float *reconArray, 
-		   Param &par, Statistics::StatsContainer<float> &stats);
-  std::vector <Detection> 
-  searchReconArraySimple(long *dim, float *originalArray, float *reconArray, 
-			 Param &par, Statistics::StatsContainer<float> &stats);
+  std::vector <Detection> searchReconArray(long *dim, float *originalArray, float *reconArray, 
+					   Param &par, Statistics::StatsContainer<float> &stats);
+  std::vector <Detection> searchReconArraySpectral(long *dim, float *originalArray, float *reconArray, 
+						   Param &par, Statistics::StatsContainer<float> &stats);
+  std::vector <Detection> searchReconArraySpatial(long *dim, float *originalArray, float *reconArray, 
+						  Param &par, Statistics::StatsContainer<float> &stats);
 
   /// @brief Search a 3-dimensional array for significant detections. 
-  std::vector <Detection> 
-  search3DArray(long *dim, float *Array, Param &par,
-		Statistics::StatsContainer<float> &stats);
-  std::vector <Detection> 
-  search3DArraySimple(long *dim, float *Array, Param &par,
-		      Statistics::StatsContainer<float> &stats);
+  std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
+					Statistics::StatsContainer<float> &stats);
+  std::vector <Detection> search3DArraySpectral(long *dim, float *Array, Param &par,
+						Statistics::StatsContainer<float> &stats);
+  std::vector <Detection> search3DArraySpatial(long *dim, float *Array, Param &par,
+					       Statistics::StatsContainer<float> &stats);
 
   //=========================================================================
 
@@ -457,7 +457,7 @@ namespace duchamp
       /// storing the results in the Cube::objectList vector. No stats
       /// are calculated beforehand, and no logging or detection map
       /// updating is done.
-      *objectList = search3DArraySimple(axisDim,array,par,Stats);
+      *objectList = search3DArray(axisDim,array,par,Stats);
     };
 
     void        Simple3DSearchRecon(){
@@ -470,7 +470,7 @@ namespace duchamp
       /// or detection map updating is done. The recon array is
       /// assumed to have been defined already.
 
-      *objectList = searchReconArraySimple(axisDim,array,recon,par,Stats);
+      *objectList = searchReconArray(axisDim,array,recon,par,Stats);
     };
 
     void        Simple3DSearchSmooth(){
@@ -484,7 +484,7 @@ namespace duchamp
       /// or detection map updating is done. The recon array is
       /// assumed to have been defined already.
 
-      *objectList = search3DArraySimple(axisDim,recon,par,Stats);
+      *objectList = search3DArray(axisDim,recon,par,Stats);
     };
 
     // in Cubes/Merger.cc

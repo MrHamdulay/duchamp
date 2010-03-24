@@ -59,10 +59,8 @@ void Cube::CubicSearch()
     
   if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
   
-//   this->objectList = search3DArray(this->axisDim,this->array,
-// 				   this->par,this->Stats);
-  *this->objectList = search3DArraySimple(this->axisDim,this->array,
-					 this->par,this->Stats);
+  *this->objectList = search3DArray(this->axisDim,this->array,
+				    this->par,this->Stats);
 
   if(this->par.isVerbose()) std::cout << "  Updating detection map... " 
 				      << std::flush;
@@ -79,13 +77,30 @@ void Cube::CubicSearch()
 }
 //---------------------------------------------------------------
 
-
 std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 				      StatsContainer<float> &stats)
 {
+
+  if(par.getSearchType()=="spectral")
+    return search3DArraySpectral(dim,Array,par,stats);
+  else if(par.getSearchType()=="spatial")
+    return search3DArraySpatial(dim,Array,par,stats);
+  else{
+    std::stringstream ss;
+    ss << "Unknown search type : " << par.getSearchType();
+    duchampError("search3DArray",ss.str());
+    return std::vector<Detection>(0);
+  }
+}
+//---------------------------------------------------------------
+
+
+std::vector <Detection> search3DArraySpectral(long *dim, float *Array, Param &par,
+					      StatsContainer<float> &stats)
+{
   /// @details
   ///  Takes a dimension array and data array as input (and Parameter set)
-  ///  and searches for detections in a combination of 1D and 2D searches.
+  ///  and searches for detections in just the 1D spectra.
   ///  Returns a vector list of Detections.
   ///  No reconstruction is assumed to have taken place, so statistics are
   ///  calculated (using robust methods) from the data array itself.
@@ -127,7 +142,6 @@ std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
     spectrum->saveParam(par);
     spectrum->saveStats(stats);
     spectrum->setMinSize(par.getMinChannels());
-    spectrum->pars().setBeamSize(2.); 
     // beam size: for spectrum, only neighbouring channels correlated
 
     for(int y=0; y<dim[1]; y++){
@@ -165,57 +179,13 @@ std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 
   }
 
-  // SECOND SEARCH --  IN EACH CHANNEL
-  if(par.isVerbose()){
-    std::cout << "  2D: ";
-    bar.init(zdim);
-  }
-  
-  num = 0;
-
-  long *imdim = new long[2];
-  imdim[0] = dim[0]; imdim[1] = dim[1];
-  Image *channelImage = new Image(imdim);
-  delete [] imdim;
-  channelImage->saveParam(par);
-  channelImage->saveStats(stats);
-  //  channelImage->setMinSize(par.getMinPix());
-  channelImage->setMinSize(1);
-
-  for(int z=0; z<zdim; z++){
-
-    if( par.isVerbose() ) bar.update(z+1);
-
-    if(!par.isInMW(z)){
-
-      channelImage->extractImage(Array,dim,z);
-      std::vector<Object2D> objlist = channelImage->findSources2D();
-      std::vector<Object2D>::iterator obj;
-      num += objlist.size();
-      for(obj=objlist.begin();obj!=objlist.end();obj++){
-	Detection newObject;
-	newObject.addChannel(z,*obj);
-	newObject.setOffsets(par);
-	mergeIntoList(newObject,outputList,par);
-      }
-    }
-
-  }
-
-  delete channelImage;
-
-  if(par.isVerbose()){
-    bar.fillSpace("Found ");
-    std::cout << num << ".\n";
-  }
-
   return outputList;
 }
 //---------------------------------------------------------------
 
-std::vector <Detection> search3DArraySimple(long *dim, float *Array, 
-					    Param &par,
-					    StatsContainer<float> &stats)
+std::vector <Detection> search3DArraySpatial(long *dim, float *Array, 
+					     Param &par,
+					     StatsContainer<float> &stats)
 {
   /// @details
   ///  Takes a dimension array and data array as input (and Parameter

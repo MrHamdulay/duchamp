@@ -265,7 +265,9 @@ namespace duchamp
     bool   getFlagUsingBeam(){return flagUsingBeam;};
     void   setFlagUsingBeam(bool b){flagUsingBeam=b;};
     std::string getNewFluxUnits(){return newFluxUnits;};
-    void setNewFluxUnits(std::string s){newFluxUnits=s;};
+    void   setNewFluxUnits(std::string s){newFluxUnits=s;};
+    std::string getSearchType(){return searchType;};
+    void   setSearchType(std::string s){searchType=s;};
     //
     bool   getFlagTrim(){return flagTrim;};
     void   setFlagTrim(bool b){flagTrim=b;};
@@ -461,6 +463,7 @@ namespace duchamp
     float       areaBeam;        ///< Size (area) of the beam in pixels.
     float       fwhmBeam;        ///< FWHM of the beam in pixels.
     bool        flagUsingBeam;   ///< If true, we are using the numPixBeam parameter, otherwise we use the value in the FITS header.
+    std::string searchType;      ///< How to do the search: by channel map or by spectrum
 
     // Object growth
     bool        flagGrowth;      ///< Are we growing objects once they are found?
