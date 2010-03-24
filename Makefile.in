@@ -117,7 +117,6 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(UTILDIR)/Statistics.o\
 	$(UTILDIR)/feedback.o\
 	$(UTILDIR)/GaussSmooth1D.o\
-	$(UTILDIR)/GaussSmooth2D.o\
 	$(UTILDIR)/Hanning.o\
 	$(UTILDIR)/getStats.o\
 	$(UTILDIR)/linear_regression.o\
