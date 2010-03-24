@@ -21,6 +21,13 @@ Improvements:
   beamFWHM (the FWHM of the beam in pixels). If beamFWHM is provided,
   it will be used, else the beamArea will be.
 
+* There is a new parameter searchType that allows the user to choose
+  how the searching is done. The behaviour up till now has been to
+  search the 2D channel maps one at a time to build up the 3D
+  detections. This is the default, and can be obtained by setting
+  searchType=spatial. Alternatively, you can set searchType=spectral
+  to do the searching in the 1D spectra.
+
 * Profiling of the code has led to a few changes that have sped up
   some calculations, particularly those involving the median. Rather
   than using std::sort, the code now simply uses std::nth_element,
@@ -81,6 +88,11 @@ Code development notes:
   been changed to iterators or "size_t". There shouldn't be any
   functional change from this -- the code should just build more
   cleanly.
+
+* The Detection class now records whether the parameters have been
+  set, and unsets that flag when objects are merged. This allows
+  external programs to track which objects have been merged and deal
+  with them appropriately.
 
 
 Duchamp version 1.1.8 (2009/07/20)
