@@ -379,16 +379,16 @@ namespace duchamp
     int         getFITSdata(std::string fname);   // in FitsIO/dataIO.cc
 
     /// @brief Save the moment map to a FITS file
-    void        saveMomentMapImage();
+    OUTCOME        saveMomentMapImage();
 
     /// @brief Save a mask array to disk.
-    void        saveMaskCube();       // in Cubes/saveImage.cc
+    OUTCOME        saveMaskCube();       // in Cubes/saveImage.cc
 
     /// @brief Save Smoothed array to disk.
-    void        saveSmoothedCube();       // in Cubes/saveImage.cc
+    OUTCOME        saveSmoothedCube();       // in Cubes/saveImage.cc
 
     /// @brief Save Reconstructed array to disk. 
-    void        saveReconstructedCube();  // in Cubes/saveImage.cc
+    OUTCOME        saveReconstructedCube();  // in Cubes/saveImage.cc
 
     /// @brief Read in reconstructed array from FITS file. 
     int         readReconCube();  // in Cubes/readRecon.cc

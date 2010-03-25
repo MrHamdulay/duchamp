@@ -69,7 +69,16 @@ namespace duchamp
     return (char *)ss.str().c_str();
   }
 
-  void Cube::saveMomentMapImage()
+  void duchampFITSerror(int status, std::string subroutine, std::string error)
+  {
+    if(status){
+      duchampError(subroutine,error);
+      fits_report_error(stderr, status);
+    }
+  }
+
+
+  OUTCOME Cube::saveMomentMapImage()
   {
     /// @details
     ///  A function to save the moment-0 map to a FITS file.
@@ -87,18 +96,16 @@ namespace duchamp
     char *keyword = new char[FLEN_KEYWORD];
 
     status = 0;
-    fits_create_file(&fptr,fileout.c_str(),&status);
-    if (status){
-      duchampError("saveMomentMapImage","Error creating file:");
-      fits_report_error(stderr, status);
+    if(fits_create_file(&fptr,fileout.c_str(),&status)){
+      duchampFITSerror(status,"saveMomentMapImage","Error creating file:");
+      return FAILURE;
     }
     else {
       status = 0;
       long *dim = new long[2];
       for (uint i = 0; i < 2; i++) dim[i] = this->axisDim[i];
       if (fits_create_img(fptr, newbitpix, 2, dim, &status)) {
-	duchampError("saveMomentMapImage","Error creating image:");
-	fits_report_error(stderr, status);
+	duchampFITSerror(status,"saveMomentMapImage","Error creating image:");
       }
 
       if(!this->par.getFlagUsingBeam()){   // if the cube has beam info, copy it
@@ -106,33 +113,28 @@ namespace duchamp
 	status = 0;
 	strcpy(keyword,"BMAJ");
 	if (fits_update_key(fptr, TFLOAT, keyword, &bmaj, NULL, &status)){
-	  duchampError("saveMomentMapImage","Error saving beam info:");
-	  fits_report_error(stderr, status);
+	  duchampFITSerror(status,"saveMomentMapImage","Error saving beam info:");
 	}
 	status = 0;
 	strcpy(keyword,"BMIN");
 	if (fits_update_key(fptr, TFLOAT, keyword, &bmin, NULL, &status)){
-	  duchampError("saveMomentMapImage","Error saving beam info:");
-	  fits_report_error(stderr, status);
+	  duchampFITSerror(status,"saveMomentMapImage","Error saving beam info:");
 	}
 	status = 0;
 	strcpy(keyword,"BPA");
 	if (fits_update_key(fptr, TFLOAT, keyword, &bpa, NULL, &status)){
-	  duchampError("saveMomentMapImage","Error saving beam info:");
-	  fits_report_error(stderr, status);
+	  duchampFITSerror(status,"saveMomentMapImage","Error saving beam info:");
 	}
       }			
       status = 0;
       strcpy(keyword,"EQUINOX");
       if (fits_update_key(fptr, TFLOAT, keyword, &this->head.WCS().equinox, NULL, &status)){
-	duchampError("saveMomentMapImage","Error saving equinox:");
-	fits_report_error(stderr, status);
+	duchampFITSerror(status,"saveMomentMapImage","Error saving equinox:");
       }
       status = 0;
       strcpy(keyword,"BUNIT");
       if (fits_update_key(fptr, TSTRING, keyword, (char *)this->head.getIntFluxUnits().c_str(),  NULL, &status)){
-	duchampError("saveMomentMapImage","Error saving BUNIT:");
-	fits_report_error(stderr, status);
+	duchampFITSerror(status,"saveMomentMapImage","Error saving BUNIT:");
       }
       float val;
       int axisNumbers[2];
@@ -142,37 +144,31 @@ namespace duchamp
 	int i = axisNumbers[d];
 	status = 0;
 	if (fits_update_key(fptr, TSTRING, numerateKeyword("CTYPE", d + 1), this->head.WCS().ctype[i],  NULL, &status)){
-	  duchampError("saveMomentMapImage","Error saving CTYPE:");
-	  fits_report_error(stderr, status);
+	  duchampFITSerror(status,"saveMomentMapImage","Error saving CTYPE:");
 	}
 	status = 0;
 	if (fits_update_key(fptr, TSTRING, numerateKeyword("CUNIT", d + 1), this->head.WCS().cunit[i],  NULL, &status)){
-	  duchampError("saveMomentMapImage","Error saving CUNIT:");
-	  fits_report_error(stderr, status);
+	  duchampFITSerror(status,"saveMomentMapImage","Error saving CUNIT:");
 	}
 	status = 0;
 	val = this->head.WCS().crval[i];
 	if (fits_update_key(fptr, TFLOAT, numerateKeyword("CRVAL", d + 1), &val, NULL, &status)){
-	  duchampError("saveMomentMapImage","Error saving CRVAL:");
-	  fits_report_error(stderr, status);
+	  duchampFITSerror(status,"saveMomentMapImage","Error saving CRVAL:");
 	}
 	val = this->head.WCS().cdelt[i];
 	status = 0;
 	if (fits_update_key(fptr, TFLOAT, numerateKeyword("CDELT", d + 1), &val, NULL, &status)){
-	  duchampError("saveMomentMapImage","Error saving CDELT:");
-	  fits_report_error(stderr, status);
+	  duchampFITSerror(status,"saveMomentMapImage","Error saving CDELT:");
 	}
 	val = this->head.WCS().crpix[i];
 	status = 0;
 	if (fits_update_key(fptr, TFLOAT, numerateKeyword("CRPIX", d + 1), &val, NULL, &status)){
-	  duchampError("saveMomentMapImage","Error saving CRPIX:");
-	  fits_report_error(stderr, status);
+	  duchampFITSerror(status,"saveMomentMapImage","Error saving CRPIX:");
 	}
 	val = this->head.WCS().crota[i];
 	status = 0;
 	if (fits_update_key(fptr, TFLOAT, numerateKeyword("CROTA", d + 1), &val, NULL, &status)){
-	  duchampError("saveMomentMapImage","Error saving CROTA:");
-	  fits_report_error(stderr, status);
+	  duchampFITSerror(status,"saveMomentMapImage","Error saving CROTA:");
 	}
       }
 
@@ -187,13 +183,11 @@ namespace duchamp
       this->getMomentMap(momentMap,detectionMap);
       status=0;
       if(fits_write_pix(fptr, TFLOAT, fpixel, size, momentMap, &status)){
-	duchampError("saveMomentMapImage","Error writing data");
-	fits_report_error(stderr,status);
+	duchampFITSerror(status,"saveMomentMapImage","Error writing data");
       }
       status = 0;
       if(fits_close_file(fptr, &status)){
-	duchampError("saveMomentMapImage","Error closing file");
-	fits_report_error(stderr, status);
+	duchampFITSerror(status,"saveMomentMapImage","Error closing file");
       }
 
       delete [] momentMap;
@@ -202,10 +196,11 @@ namespace duchamp
 
     delete [] fpixel;
 
+    return SUCCESS;
 
   }
 
-  void Cube::saveMaskCube()
+  OUTCOME Cube::saveMaskCube()
   {
     /// @details
     ///  A function to save a mask to a FITS file, indicating where the
@@ -222,61 +217,51 @@ namespace duchamp
     for(int i=0;i<this->header().WCS().naxis;i++) fpixel[i]=1;
     int status = 0;  /* MUST initialize status */
     fitsfile *fptrOld, *fptrNew;         
-    fits_open_file(&fptrOld,this->par.getImageFile().c_str(),READONLY,&status);
-    if (status){
-      duchampError("saveMask","Fits Error 1:");
-      fits_report_error(stderr, status);
+    if(fits_open_file(&fptrOld,this->par.getImageFile().c_str(),READONLY,&status)){
+      duchampFITSerror(status,"saveMask","Error opening existing file:");
+      return FAILURE;
     }
 
     std::string fileout = "!" + this->par.outputMaskFile(); 
     // the ! is there so that it writes over an existing file.
 
     status = 0;
-    fits_create_file(&fptrNew,fileout.c_str(),&status);
-    if (status){
-      duchampError("saveMask","Fits Error 2:");
-      fits_report_error(stderr, status);
+    if(fits_create_file(&fptrNew,fileout.c_str(),&status)){
+      duchampFITSerror(status,"saveMask","Error creating file:");
+      return FAILURE;
     }
     else {
       status = 0;
-      fits_movabs_hdu(fptrOld, 1, NULL, &status);
-      if (status){
-	duchampError("saveMask","Fits Error 3:");
-	fits_report_error(stderr, status);
+      if(fits_movabs_hdu(fptrOld, 1, NULL, &status)){
+	duchampFITSerror(status,"saveMask","Error accessing existing file's header:");
+	return FAILURE;
       }
       status = 0;
       fits_copy_header(fptrOld, fptrNew, &status);
       if (status){
-	duchampError("saveMask","Fits Error 4:");
+	duchampFITSerror(status,"saveMask","Error copying header to new file:");
 	fits_report_error(stderr, status);
+	return FAILURE;
       }
       status = 0;
       char *keyword = new char[FLEN_KEYWORD];
       strcpy(keyword,"BITPIX");
       strcpy(comment,"number of bits per data pixel");
-      fits_update_key(fptrNew, TINT, keyword, &newbitpix, comment, &status);
-      if (status){
-	duchampError("saveMask","Fits Error 5:");
-	fits_report_error(stderr, status);
+      if(fits_update_key(fptrNew, TINT, keyword, &newbitpix, comment, &status)){
+	duchampFITSerror(status,"saveMask","Error writing BITPIX header:");
       }
       float bscale=1., bzero=0.;
       strcpy(comment,"");
       strcpy(keyword,"BSCALE");
-      fits_update_key(fptrNew, TFLOAT, keyword, &bscale, comment, &status);
-      if (status){
-	duchampError("saveMask","Fits Error 6:");
-	fits_report_error(stderr, status);
+      if(fits_update_key(fptrNew, TFLOAT, keyword, &bscale, comment, &status)){
+	duchampFITSerror(status,"saveMask","Error writing BSCALE header:");
       }
       strcpy(keyword,"BZERO");
-      fits_update_key(fptrNew, TFLOAT, keyword, &bzero, comment, &status);
-      if (status){
-	duchampError("saveMask","Fits Error 7:");
-	fits_report_error(stderr, status);
+      if(fits_update_key(fptrNew, TFLOAT, keyword, &bzero, comment, &status)){
+	duchampFITSerror(status,"saveMask","Error writing BZERO header:");
       }
-      fits_set_bscale(fptrNew, 1, 0, &status);
-      if (status){
-	duchampError("saveMask","Fits Error 8:");
-	fits_report_error(stderr, status);
+      if(fits_set_bscale(fptrNew, 1, 0, &status)){
+	duchampFITSerror(status,"saveMask","Error setting scale:");
       }
       std::string newunits;
       if(this->par.getFlagMaskWithObjectNum())
@@ -284,10 +269,8 @@ namespace duchamp
       else
 	newunits = "Detection flag";
       strcpy(keyword,"BUNIT");
-      fits_update_key(fptrNew, TSTRING, keyword, (char *)newunits.c_str(), comment, &status);
-      if (status){
-	duchampError("saveMask","Fits Error 9:");
-	fits_report_error(stderr, status);
+      if(fits_update_key(fptrNew, TSTRING, keyword, (char *)newunits.c_str(), comment, &status)){
+	duchampFITSerror(status,"saveMask","Error writing BUNIT header:");
       }
       long dud;
       // Need to correct the dimensions, if we have subsectioned the image
@@ -327,16 +310,12 @@ namespace duchamp
         }
       }
       status=0;
-      fits_write_pix(fptrNew, TSHORT, fpixel, this->numPixels, mask, &status);
-      if(status){
-	duchampError("saveMask","Fits Error 10:");
-	fits_report_error(stderr,status);
+      if(fits_write_pix(fptrNew, TSHORT, fpixel, this->numPixels, mask, &status)){
+	duchampFITSerror(status,"saveMask","Error writing mask array:");
       }
       status = 0;
-      fits_close_file(fptrNew, &status);
-      if (status){
-	duchampError("saveMask","Fits Error 11:");
-	fits_report_error(stderr, status);
+      if(fits_close_file(fptrNew, &status)){
+	duchampFITSerror(status,"saveMask","Error closing file:");
       }
 
       delete [] mask;
@@ -345,11 +324,12 @@ namespace duchamp
 
     delete [] fpixel;
 
+    return SUCCESS;
   }
   
   //---------------------------------------------------------------------------
 
-  void Cube::saveSmoothedCube()
+  OUTCOME Cube::saveSmoothedCube()
   {
     /// @brief
     ///   A function to save the smoothed arrays to a FITS file.
@@ -363,24 +343,31 @@ namespace duchamp
 
     int status = 0;  /* MUST initialize status */
     fitsfile *fptrOld, *fptrNew;         
-    fits_open_file(&fptrOld,this->par.getFullImageFile().c_str(),READONLY,&status);
-    if (status) fits_report_error(stderr, status);
-  
+    if(fits_open_file(&fptrOld,this->par.getFullImageFile().c_str(),READONLY,&status)){
+      duchampFITSerror(status,"saveSmoothedCube", "Error opening existing file:");
+      return FAILURE;
+    }
+
     if(this->par.getFlagOutputSmooth()){
       std::string fileout = "!" + this->par.outputSmoothFile(); 
       // the ! is there so that it writes over an existing file.
 
       status = 0;
-      fits_create_file(&fptrNew,fileout.c_str(),&status);
-      if (status)
-	fits_report_error(stderr, status);
+      if(fits_create_file(&fptrNew,fileout.c_str(),&status)){
+	duchampFITSerror(status,"saveSmoothedCube","Error creating smoothed FITS file:");
+	return FAILURE;
+      }
       else {
 	status = 0;
-	fits_movabs_hdu(fptrOld, 1, NULL, &status);
-	if (status) fits_report_error(stderr, status);
+	if(fits_movabs_hdu(fptrOld, 1, NULL, &status)){
+	  duchampFITSerror(status,"saveSmoothedCube","Error accessing existing file's header:");
+	  return FAILURE;
+	}
 	status = 0;
-	fits_copy_header(fptrOld, fptrNew, &status);
-	if (status) fits_report_error(stderr, status);
+	if(fits_copy_header(fptrOld, fptrNew, &status)){
+	  duchampFITSerror(status,"saveSmoothedCube","Error copying header info:");
+	  return FAILURE;
+	}
 
 	writeSmoothHeaderInfo(fptrNew, this->par);
 
@@ -388,19 +375,25 @@ namespace duchamp
 	  fits_write_imgnull(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &blankval, &status);
 	else 
 	  fits_write_img(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &status);
+	if(status){
+	  duchampFITSerror(status,"saveSmothedCube","Error writing smoothed array:");
+	  return FAILURE;
+	}
 
 	status = 0;
-	fits_close_file(fptrNew, &status);
-	if (status) fits_report_error(stderr, status);
-
+	if(fits_close_file(fptrNew, &status)){
+	  duchampFITSerror(status,"saveSmoothedCube","Error closing file:");
+	}
       }
     }
+
+    return SUCCESS;
 
   }
 
   //---------------------------------------------------------------------------
 
-  void Cube::saveReconstructedCube()
+  OUTCOME Cube::saveReconstructedCube()
   {
     /// @details
     ///  A function to save the reconstructed and/or residual arrays.
@@ -413,25 +406,32 @@ namespace duchamp
 
     int status = 0;  /* MUST initialize status */
     fitsfile *fptrOld, *fptrNew;         
-    fits_open_file(&fptrOld,this->par.getFullImageFile().c_str(),READONLY,&status);
-    if (status) fits_report_error(stderr, status);
+    if(fits_open_file(&fptrOld,this->par.getFullImageFile().c_str(),READONLY,&status)){
+      duchampFITSerror(status,"saveReconCube","Error opening existing file:");
+      return FAILURE;
+    }
   
     if(this->par.getFlagOutputRecon()){
       std::string fileout = "!" + this->par.outputReconFile(); 
       // the ! is there so that it writes over an existing file.
 
       status = 0;
-      fits_create_file(&fptrNew,fileout.c_str(),&status);
-      if (status)
-	fits_report_error(stderr, status);
+      if(fits_create_file(&fptrNew,fileout.c_str(),&status)){
+	duchampFITSerror(status,"saveReconCube","Error creating file:");
+	return FAILURE;
+      }
       else
 	{
 	  status = 0;
-	  fits_movabs_hdu(fptrOld, 1, NULL, &status);
-	  if (status) fits_report_error(stderr, status);
+	  if(fits_movabs_hdu(fptrOld, 1, NULL, &status)){
+	    duchampFITSerror(status,"saveReconCube","Error accessing existing file's header:");
+	    return FAILURE;
+	  }
 	  status = 0;
-	  fits_copy_header(fptrOld, fptrNew, &status);
-	  if (status) fits_report_error(stderr, status);
+	  if(fits_copy_header(fptrOld, fptrNew, &status)){
+	    duchampFITSerror(status,"saveReconCube","Error copying header:");
+	    return FAILURE;
+	  }
 
 	  writeReconHeaderInfo(fptrNew, this->par, "recon");
 
@@ -439,10 +439,15 @@ namespace duchamp
 	    fits_write_imgnull(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &blankval, &status);
 	  else  
 	    fits_write_img(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &status);
+	  if(status){
+	    duchampFITSerror(status,"saveReconCube","Error writing reconstructed array:");
+	    return FAILURE;
+	  }
 
 	  status = 0;
-	  fits_close_file(fptrNew, &status);
-	  if (status) fits_report_error(stderr, status);
+	  if(fits_close_file(fptrNew, &status)){
+	    duchampFITSerror(status,"saveReconCube","Error closing file:");
+	  }
 	}
     }
 
@@ -455,31 +460,42 @@ namespace duchamp
       std::string fileout = "!" + this->par.outputResidFile(); 
       // the ! is there so that it writes over an existing file.
       status = 0;
-      fits_create_file(&fptrNew,fileout.c_str(),&status);
-      if (status)
-	fits_report_error(stderr, status);
+      if(fits_create_file(&fptrNew,fileout.c_str(),&status)){
+	duchampFITSerror(status,"saveResidualCube","Error creating new file:");
+	return FAILURE;
+      }
       else
 	{
 	  status = 0;
-	  fits_movabs_hdu(fptrOld, 1, NULL, &status);
-	  if (status) fits_report_error(stderr, status);
+	  if(fits_movabs_hdu(fptrOld, 1, NULL, &status)){
+	    duchampFITSerror(status,"saveResidualCube","Error accessing existing file's header:");
+	    return FAILURE;
+	  }
 	  status = 0;
-	  fits_copy_header(fptrOld, fptrNew, &status);
-	  if (status) fits_report_error(stderr, status);
-
+	  if(fits_copy_header(fptrOld, fptrNew, &status)){
+	    duchampFITSerror(status,"saveResidualCube","Error copying header:");
+	    return FAILURE;
+	  }
 	  writeReconHeaderInfo(fptrNew, this->par, "resid");
 
 	  if(this->par.getFlagBlankPix())
 	    fits_write_imgnull(fptrNew, TFLOAT, 1, this->numPixels, resid, &blankval, &status);
 	  else  
 	    fits_write_img(fptrNew, TFLOAT, 1, this->numPixels, resid, &status);
+	  if(status){
+	    duchampFITSerror(status,"saveResidualCube","Error writing reconstructed array:");
+	    return FAILURE;
+	  }
 
-	  fits_close_file(fptrNew, &status);
+	  status=0;
+	  if(fits_close_file(fptrNew, &status)){
+	    duchampFITSerror(status,"saveResidualCube","Error closing file:");
+	  }
 	}
       delete [] resid;
     }
 
-
+    return SUCCESS;
   }
 
   //---------------------------------------------------------------------------
