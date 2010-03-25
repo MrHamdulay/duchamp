@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Thu Mar 18 15:22:30 2010
+New run of the Duchamp sourcefinder: Thu Mar 25 14:38:40 2010
 Executing statement : ./Duchamp -p verification/input5 
 
 ---- Parameters ----
@@ -10,6 +10,7 @@ Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 Saving mask cube?.......................[flagOutputMask]  =  false
 Saving 0th moment to FITS file?.........[flagOutputMask]  =  false
 ------
+Type of searching performed.................[searchType]  =  spatial
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false
 Removing Milky Way channels?....................[flagMW]  =  false
@@ -26,19 +27,20 @@ Growing objects after detection?............[flagGrowth]  =  false
 Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
 Max. velocity separation for merging....[threshVelocity]  =  7
 Reject objects before merging?........[flagRejectBeforeMerge]  =  false
+Merge objects in two stages?..........[flagTwoStageMerging]  =  true
 Method of spectral plotting.............[spectralMethod]  =  peak
 Type of object centre used in results......[pixelCentre]  =  centroid
 --------------------
 
---------------------------------------------------------------------------------
- Obj#     X     Y     Z     F_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2  Npix
-                        [Jy/beam] [Jy/beam]                                [pix]
---------------------------------------------------------------------------------
-    1  56.0  52.0  64.0     4.213     4.213   4.09  56  56  52  52  64  64     1
-    2  50.0  49.9  64.2   952.614    10.731  10.46  45  55  44  54  59  68   155
-    3  49.8  49.9  64.0   652.483    10.926  10.65  45  54  45  54  58  69   110
-    4  49.9  50.0  64.0   503.166    10.461  10.19  45  54  44  55  61  70    77
-    5  49.8  50.1  63.8   837.063    10.364  10.10  45  55  46  55  59  70   140
+----------------------------------------------------------------------------------------------
+ Obj#     X     Y     Z     F_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2  Npix   Nch Sp_size
+                        [Jy/beam] [Jy/beam]                                [pix]              
+----------------------------------------------------------------------------------------------
+    1  56.0  52.0  64.0     4.213     4.213   4.09  56  56  52  52  64  64     1     1       1
+    2  50.0  49.9  64.2   952.614    10.731  10.46  45  55  44  54  59  68   155     2      77
+    3  49.8  49.9  64.0   652.483    10.926  10.65  45  54  45  54  58  69   110     2      64
+    4  49.9  50.0  64.0   503.166    10.461  10.19  45  54  44  55  61  70    77     1      76
+    5  49.8  50.1  63.8   837.063    10.364  10.10  45  55  46  55  59  70   140     2      67
 =-=-=-=-=-=-=-
 Cube summary
 =-=-=-=-=-=-=-
@@ -182,4 +184,4 @@ Detection #1
 50-50, 51, 70
 
 --------------
-Duchamp completed: Thu Mar 18 15:22:30 2010
+Duchamp completed: Thu Mar 25 14:38:40 2010
