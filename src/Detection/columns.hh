@@ -48,7 +48,7 @@ namespace duchamp
     //  the precision of different types of columns.
 
     /// @brief Total number of columns being considered.
-    const int numColumns=36;    
+    const int numColumns=38;    
     /// @brief Enumerated column titles 
     enum COLNAME {NUM=0, NAME, X, Y, Z,
 		  RA, DEC, RAJD, DECJD, VEL, 
@@ -57,6 +57,7 @@ namespace duchamp
 		  X1, X2, Y1, Y2, Z1, Z2, NPIX, FLAG,
 		  XAV, YAV, ZAV, XCENT, YCENT, ZCENT, 
 		  XPEAK, YPEAK, ZPEAK,
+		  NUMCH, SPATSIZE,
 		  UNKNOWN};  // the last is for unclassified columns
 
     /// @brief Guide for which columns are used for the results file 
@@ -68,6 +69,7 @@ namespace duchamp
        true,true,true,true,true,true,true,true,
        true,true,true,true,true,true,
        true,true,true,
+       false,false,
        false};
 
     /// @brief Guide for which columns are used for the results printed to screen 
@@ -79,6 +81,7 @@ namespace duchamp
        true,true,true,true,true,true,true,true,
        false,false,false,false,false,false,
        false,false,false,
+       false,false,
        false};
 
     /// @brief Guide for which columns are used for the log file 
@@ -90,6 +93,7 @@ namespace duchamp
        true,true,true,true,true,true,true,false,
        false,false,false,false,false,false,
        false,false,false,
+       true,true,
        false};
 
      /// @brief Guide for which columns are used for the VOTable file 
@@ -101,14 +105,16 @@ namespace duchamp
        false,false,false,false,false,false,false,true,
        true,true,true,true,true,true,
        true,true,true,
+       false,false,
        false};
 
     /// @brief Total number of columns used in logfile (no WCS ones). 
-    const int numColumnsLog=14; 
+    const int numColumnsLog=16; 
     /// @brief Enumerated column titles for logfile
     enum LOGNAME {lNUM=0, lX, lY, lZ,
 		  lFTOT, lFPEAK, lSNRPEAK,
-		  lX1, lX2, lY1, lY2, lZ1, lZ2, lNPIX}; 
+		  lX1, lX2, lY1, lY2, lZ1, lZ2, lNPIX,
+		  lNUMCH, lSPATSIZE}; 
 
     /// @brief Number of types of precision. 
     const int numPrec=6;        
@@ -124,6 +130,7 @@ namespace duchamp
        4, 4, 4, 4, 4, 4, 6, 5,
        6, 6, 6, 7, 7, 7, 
        7, 7, 7,
+       6, 8,
        1};
 
     /// @brief Default precisions for all columns.
@@ -135,6 +142,7 @@ namespace duchamp
        prSNR, 0, 0, 0, 0, 0, 0, 0, 0,
        prXYZ, prXYZ, prXYZ, prXYZ, prXYZ, prXYZ, 
        prXYZ, prXYZ, prXYZ,
+       0, 0,
        0}; 
 
     /// @brief Default Titles of all columns. 
@@ -146,6 +154,7 @@ namespace duchamp
        "X1","X2","Y1","Y2","Z1","Z2","Npix","Flag",
        "X_av", "Y_av", "Z_av", "X_cent", "Y_cent", "Z_cent",
        "X_peak", "Y_peak", "Z_peak",
+       "Nch", "Sp_size",
        " "};
 
     /// @brief Default units of all columns. 
@@ -156,6 +165,7 @@ namespace duchamp
        "","","", "",
        "","","","","","","[pix]","",
        "","","","","","","","","",
+       "","",
        ""}; 
 
 

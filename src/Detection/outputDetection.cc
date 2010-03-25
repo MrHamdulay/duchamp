@@ -244,6 +244,12 @@ namespace duchamp
       case ZPEAK:
 	column.printEntry(stream,this->getZPeak() + this->zSubOffset);
 	break;
+      case NUMCH:
+	column.printEntry(stream,this->getMaxAdjacentChannels());
+	break;
+      case SPATSIZE:
+	column.printEntry(stream,int(this->getSpatialSize()));
+	break;
       case UNKNOWN:
       default:
 	break;

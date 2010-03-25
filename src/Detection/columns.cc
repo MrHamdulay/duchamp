@@ -176,6 +176,7 @@ namespace duchamp
     template void Col::printEntry<int>(std::ostream &stream, int value);
     template void Col::printEntry<long>(std::ostream &stream, long value);
     template void Col::printEntry<unsigned int>(std::ostream &stream, unsigned int value);
+    template void Col::printEntry<unsigned long>(std::ostream &stream, unsigned long value);
     template void Col::printEntry<float>(std::ostream &stream, float value);
     template void Col::printEntry<double>(std::ostream &stream, double value);
     template void Col::printEntry<std::string>(std::ostream &stream, std::string value);
@@ -286,6 +287,8 @@ namespace duchamp
       newset.push_back( Col(XPEAK) );
       newset.push_back( Col(YPEAK) );
       newset.push_back( Col(ZPEAK) );
+      newset.push_back( Col(NUMCH) );
+      newset.push_back( Col(SPATSIZE) );
 
 
       // Now test each object against each new column
@@ -620,8 +623,18 @@ namespace duchamp
 	}
 	tempwidth = int( log10(val) + 1) + newset[ZPEAK].getPrecision() + 2;
 	for(int i=newset[ZPEAK].getWidth();i<tempwidth;i++) newset[ZPEAK].widen();
-      }
 
+	//Number of contiguous channels
+	tempwidth = int( log10(obj->getMaxAdjacentChannels()) + 1) + 
+	  newset[NUMCH].getPrecision() + 1;
+	for(int i=newset[NUMCH].getWidth();i<tempwidth;i++) newset[NUMCH].widen();
+	//Spatial size
+	tempwidth = int( log10(obj->getSpatialSize()) + 1) + 
+	  newset[SPATSIZE].getPrecision() + 1;
+	for(int i=newset[SPATSIZE].getWidth();i<tempwidth;i++) newset[SPATSIZE].widen();
+	
+      }
+      
       return newset;
 
     }
@@ -662,6 +675,8 @@ namespace duchamp
       newset.push_back( tempset[Z1] );
       newset.push_back( tempset[Z2] );
       newset.push_back( tempset[NPIX] );
+      newset.push_back( tempset[NUMCH] );
+      newset.push_back( tempset[SPATSIZE] );
 
       return newset;
 
