@@ -129,10 +129,8 @@ namespace duchamp
 	fits_report_error(stderr, status);
       }
       status = 0;
-      char unit[this->head.getIntFluxUnits().size()+1];
-      strcpy(unit, this->head.getIntFluxUnits().c_str());
       strcpy(keyword,"BUNIT");
-      if (fits_update_key(fptr, TSTRING, keyword, unit,  NULL, &status)){
+      if (fits_update_key(fptr, TSTRING, keyword, (char *)this->head.getIntFluxUnits().c_str(),  NULL, &status)){
 	duchampError("saveMomentMapImage","Error saving BUNIT:");
 	fits_report_error(stderr, status);
       }
