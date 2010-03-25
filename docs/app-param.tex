@@ -326,6 +326,10 @@ not matter, they are grouped here in logical sections.
   reject sources that fail to meet the \texttt{minPix} or
   \texttt{minChannels} criteria \textbf{before} the merging
   stage. Default behaviour is to do the rejection last.
+\item[{flagTwoStageMerging [true]}] A flag indicating whether to do an
+  initial merge of newly-detected sources into the source list as they
+  are found. If \texttt{false}, new sources are simply added to the
+  end of the list for later merging.
 \item[{flagAdjacent [true]}] A flag indicating whether to use
   the ``adjacent pixel'' criterion to decide whether to merge
   objects. If not, the next two parameters are used to determine

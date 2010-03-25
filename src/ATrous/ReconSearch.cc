@@ -279,14 +279,12 @@ namespace duchamp
     long zdim = dim[2];
     long xySize = dim[0] * dim[1];
     int num=0;
-    ProgressBar bar;
 
     // First search --  in each spectrum.
     if(zdim > 1){
-      if(par.isVerbose()){
-	std::cout << "1D: ";
-	bar.init(xySize);
-      }
+
+      ProgressBar bar;
+      if(par.isVerbose()) bar.init(xySize);
 
       bool *doPixel = new bool[xySize];
       // doPixel is a bool array to say whether to look in a given spectrum
@@ -330,7 +328,8 @@ namespace duchamp
 		newObject.addPixel(x,y,z);
 	      }
 	      newObject.setOffsets(par);
-	      mergeIntoList(newObject,outputList,par);
+	      if(par.getFlagTwoStageMerging()) mergeIntoList(newObject,outputList,par);
+	      else outputList.push_back(newObject);
 	    }
 	  }
 
@@ -339,11 +338,12 @@ namespace duchamp
 
       delete spectrum;
       delete [] doPixel;
-
-      if(par.isVerbose()) {
-	bar.fillSpace("Found ");
-	std::cout << num <<";" << std::flush;
+      
+      if(par.isVerbose()){
+	bar.remove();
+	std::cout << "Found " << num << ".\n";
       }
+
     }
 
     return outputList;
@@ -402,7 +402,8 @@ namespace duchamp
 	  Detection newObject;
 	  newObject.addChannel(z,*obj);
 	  newObject.setOffsets(par);
-	  mergeIntoList(newObject,outputList,par);
+	  if(par.getFlagTwoStageMerging()) mergeIntoList(newObject,outputList,par);
+	  else outputList.push_back(newObject);
 	}
       }
     

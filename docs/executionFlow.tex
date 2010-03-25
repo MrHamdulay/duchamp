@@ -482,14 +482,8 @@ a simpler search, but there are potentially many more of them.
 Although there are parameters that govern the minimum number of pixels
 in a spatial and spectral sense that an object must have
 (\texttt{minPix} and \texttt{minChannels} respectively), these
-criteria are not applied at this point. The default behaviour is that
-it is only after the merging and growing (see \S\ref{sec-merger}) is
-done that objects are rejected for not meeting these
-criteria. However, this can be changed by setting
-\texttt{flagRejectBeforeMerge=true}, so that the rejection is done
-before any merging takes place. This will potentially reduce the
-number of spurious sources, although also potentially at the expense
-of real sources that will only be apparent after merging.
+criteria are not applied at this point - see \S\ref{sec-reject} for
+details. 
 
 Finally, the search only looks for positive features. If one is
 interested instead in negative features (such as absorption lines),
@@ -627,15 +621,16 @@ in \S\ref{sec-notes}.
 %object is recorded using ``run-length'' encoding, where each row (a
 %fixed $y$ value) is stored by the starting $x$-value and the length
 
-\secB{Merging and growing detected objects}
+\secB{Merging, growing and rejecting detected objects}
 \label{sec-merger}
 
-The searching step produces a list of detected objects that will have
-many repeated detections of a given object -- for instance, spectral
-detections in adjacent pixels of the same object and/or spatial
-detections in neighbouring channels. These are then combined in an
-algorithm that matches all objects judged to be ``close'', according
-to one of two criteria.
+\secC{Merging}
+
+The searches described above are either 1- or 2-dimensional only.They
+do not know anything about the third dimension that is likely to be
+present.To build up 3D sources, merging of detections must be
+done. This is done via an algorithm that matches objects judged to be
+``close'', according to one of two criteria.
 
 One criterion is to define two thresholds -- one spatial and one in
 velocity -- and say that two objects should be merged if there is at
@@ -647,12 +642,31 @@ and channels respectively).
 Alternatively, the spatial requirement can be changed to say that
 there must be a pair of pixels that are \emph{adjacent} -- a stricter,
 but perhaps more realistic requirement, particularly when the spatial
-pixels have a large angular size (as is the case for 
-\hi surveys). This 
-method can be selected by setting the parameter
-\texttt{flagAdjacent} to 1 (\ie \texttt{true}) in the parameter
-file. The velocity thresholding is done in the same way as the first
-option.
+pixels have a large angular size (as is the case for \hi
+surveys). This method can be selected by setting the parameter
+\texttt{flagAdjacent=true} in the parameter file. The velocity
+thresholding is always done with the \texttt{threshVelocity} test. 
+
+
+\secC{Stages of merging}
+
+This merging can be done in two stages. The default behaviour is for
+each new detection to be compared with those sources already detected,
+and for it to be merged with the first one judged to be close. No
+other examination of the list is done at this point.
+
+This step can be turned off by setting
+\texttt{flagTwoStageMerging=false}, so that new detections are simply
+added to the end of the list, leaving all merging to be done in the
+second stage.
+
+The second, main stage of merging is more thorough, Once the searching
+is completed, the list is iterated through, looking at each pair of
+objects, and merging appropriately. The merged objects are then
+included in the examination, to see if a merged pair is suitably close
+to a third.
+
+\secC{Growing}
 
 Once the detections have been merged, they may be ``grown''. This is a
 process of increasing the size of the detection by adding nearby
@@ -674,12 +688,20 @@ The use of the growth algorithm is controlled by the
 merging algorithm a second time, to pick up any detections that now
 overlap or have grown over each other.
 
+\secC{Rejecting}
+\label{sec-reject}
+
 Finally, to be accepted, the detections must span \emph{both} a
 minimum number of channels (enabling the removal of any spurious
 single-channel spikes that may be present), and a minimum number of
 spatial pixels. These numbers, as for the original detection step, are
 set with the \texttt{minChannels} and \texttt{minPix} parameters. The
 channel requirement means a source must have at least one set of
-\texttt{minChannels} consecutive channels to be
-accepted.
+\texttt{minChannels} consecutive channels to be accepted.
 
+It is possible to do this rejection stage before the main merging and
+growing stage. This could be done to remove narrow (hopefully
+spurious) sources from the list before growing them, to reduce the
+number of false positives in the final list. This mode can be selected
+by setting \texttt{flagRejectBeforeMerge=true} - caution is urged if
+you use this in conjunction with \texttt{flagTwoStageMerging=false}. 

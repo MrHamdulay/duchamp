@@ -362,6 +362,8 @@ namespace duchamp
     void   setMinChannels(int n){minChannels=n;};
     bool   getFlagRejectBeforeMerge(){return flagRejectBeforeMerge;};
     void   setFlagRejectBeforeMerge(bool flag){flagRejectBeforeMerge=flag;};
+    bool   getFlagTwoStageMerging(){return flagTwoStageMerging;};
+    void   setFlagTwoStageMerging(bool flag){flagTwoStageMerging=flag;};
     //
     std::string getSpectralMethod(){return spectralMethod;};
     void   setSpectralMethod(std::string s){spectralMethod=s;};
@@ -508,6 +510,7 @@ namespace duchamp
     float  threshVelocity;  ///< Maximum channels separation between objects
     int    minChannels;     ///< Minimum no. of channels to make an object 
     bool   flagRejectBeforeMerge; ///< Whether to reject sources before merging
+    bool   flagTwoStageMerging;  ///< Whether to do a partial merge when the objects are found, via the mergeIntoList function.
 
     // Input-Output related
     std::string spectralMethod; ///< A string indicating choice of spectral plotting method: choices are "peak" (default) or "sum"

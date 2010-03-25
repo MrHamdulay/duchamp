@@ -180,6 +180,7 @@ namespace duchamp
     this->minChannels       = 3;
     this->minPix            = 2;
     this->flagRejectBeforeMerge = false;
+    this->flagTwoStageMerging = true;
     // Input-Output related
     this->spectralMethod    = "peak";
     this->spectralUnits     = "km/s";
@@ -298,7 +299,8 @@ namespace duchamp
     this->threshVelocity    = p.threshVelocity;
     this->minChannels       = p.minChannels;
     this->minPix            = p.minPix;
-    this->flagRejectBeforeMerge      = p.flagRejectBeforeMerge;
+    this->flagRejectBeforeMerge = p.flagRejectBeforeMerge;
+    this->flagTwoStageMerging = p.flagTwoStageMerging;
     this->spectralMethod    = p.spectralMethod;
     this->spectralUnits     = p.spectralUnits;
     this->pixelCentre       = p.pixelCentre;
@@ -647,7 +649,7 @@ namespace duchamp
 	if(arg=="maxmw")           this->maxMW = readIval(ss); 
 	if(arg=="minmw")           this->minMW = readIval(ss); 
 	if(arg=="flagbaseline")    this->flagBaseline = readFlag(ss); 
-	if(arg=="searchType")      this->searchType = readFlag(ss);
+	if(arg=="searchtype")      this->searchType = readSval(ss);
 
 	if(arg=="flagnegative")    this->flagNegative = readFlag(ss);
 	if(arg=="minpix")          this->minPix = readIval(ss); 
@@ -691,7 +693,8 @@ namespace duchamp
 	if(arg=="threshspatial")   this->threshSpatial = readFval(ss); 
 	if(arg=="threshvelocity")  this->threshVelocity = readFval(ss); 
 	if(arg=="minchannels")     this->minChannels = readIval(ss); 
-	if(arg=="flagrejectbeforemerge")    this->flagRejectBeforeMerge = readFlag(ss); 
+	if(arg=="flagrejectbeforemerge") this->flagRejectBeforeMerge = readFlag(ss); 
+	if(arg=="flagtwostagemerging") this->flagTwoStageMerging = readFlag(ss); 
 
 	if(arg=="spectralmethod")  this->spectralMethod=makelower(readSval(ss));
 	if(arg=="spectralunits")   this->spectralUnits = makelower(readSval(ss));
@@ -1024,6 +1027,7 @@ namespace duchamp
     }
     recordParam(theStream, "[threshVelocity]", "Max. velocity separation for merging", par.getThreshV());
     recordParam(theStream, "[flagRejectBeforeMerge]", "Reject objects before merging?", stringize(par.getFlagRejectBeforeMerge()));
+    recordParam(theStream, "[flagTwoStageMerging]", "Merge objects in two stages?", stringize(par.getFlagTwoStageMerging()));
     recordParam(theStream, "[spectralMethod]", "Method of spectral plotting", par.getSpectralMethod());
     recordParam(theStream, "[pixelCentre]", "Type of object centre used in results", par.getPixelCentre());
 

@@ -217,13 +217,17 @@ FDRnumCorChan   2
 #            it to be counted
 # flagRejectBeforeMerge -- If true, reject sources for not meeting the above 
 #                          criteria before the merging stage
+# flagTwoStageMerging -- If true, do an initial merge of a new source to the list 
+#                        (that is, merge it with the first source in the list that 
+#                        is close, but stop there)
 
-flagAdjacent	1
-threshSpatial	3
-threshVelocity	7
-minChannels	3
-minPix		2
-flagRejectBeforeMerge 0
+flagAdjacent	       1
+threshSpatial	       3
+threshVelocity	       7
+minChannels	       3
+minPix		       2
+flagRejectBeforeMerge  0
+flagTwoStageMerging    1
 
 # OTHER PARAMETERS
 # verbose -- whether to provide progress indicators on the terminal during 

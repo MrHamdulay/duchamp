@@ -350,21 +350,29 @@ namespace PixelInfo
 
   int Object3D::getMaxAdjacentChannels()
   {
+    /// @details Find the maximum number of contiguous channels in the
+    /// object. Since there can be gaps in the channels included in an
+    /// object, we run through the list of channels and keep track of
+    /// sizes of contiguous segments. Then return the largest size.
+
     int maxnumchan=0;
-    int zcurrent, zprevious,zcount=0;
-    std::map<long, Object2D>::iterator it = this->chanlist.begin();
-    zcurrent = it->first;
-    zcount++;
-    it++;
-    for(; it!=this->chanlist.end();it++)
+    int zcurrent=0, zprevious,zcount=0;
+    std::map<long, Object2D>::iterator it;
+    for(it = this->chanlist.begin(); it!=this->chanlist.end();it++)
       {
-	zprevious = zcurrent;
-	zcurrent = it->first;
-	if(zcurrent-zprevious>1){
-	  maxnumchan = std::max(maxnumchan, zcount);
-	  zcount=1;
+	if(it==this->chanlist.begin()){
+	  zcount++;
+	  zcurrent = it->first;
 	}
-	else zcount++;
+	else{
+	  zprevious = zcurrent;
+	  zcurrent = it->first;
+	  if(zcurrent-zprevious>1){
+	    maxnumchan = std::max(maxnumchan, zcount);
+	    zcount=1;
+	  }
+	  else zcount++;
+	}
       }
     maxnumchan = std::max(maxnumchan,zcount);
     return maxnumchan;

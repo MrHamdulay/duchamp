@@ -116,13 +116,10 @@ std::vector <Detection> search3DArraySpectral(long *dim, float *Array, Param &pa
   long xySize = dim[0] * dim[1];
   int num = 0;
 
-  ProgressBar bar;
-  // FIRST SEARCH --  IN EACH SPECTRUM.
   if(zdim>1){
-    if(par.isVerbose()) {
-      std::cout << "  1D: ";
-      bar.init(xySize);
-    }
+    
+    ProgressBar bar;
+    if(par.isVerbose()) bar.init(xySize);
 
     bool *doPixel = new bool[xySize];
     for(int npix=0; npix<xySize; npix++){
@@ -141,7 +138,8 @@ std::vector <Detection> search3DArraySpectral(long *dim, float *Array, Param &pa
     delete [] specdim;
     spectrum->saveParam(par);
     spectrum->saveStats(stats);
-    spectrum->setMinSize(par.getMinChannels());
+    //    spectrum->setMinSize(par.getMinChannels());
+    spectrum->setMinSize(1);
     // beam size: for spectrum, only neighbouring channels correlated
 
     for(int y=0; y<dim[1]; y++){
@@ -163,7 +161,8 @@ std::vector <Detection> search3DArraySpectral(long *dim, float *Array, Param &pa
 	      newObject.addPixel(x,y,z);
 	    }
 	    newObject.setOffsets(par);
-	    mergeIntoList(newObject,outputList,par);
+	    if(par.getFlagTwoStageMerging()) mergeIntoList(newObject,outputList,par);
+	    else outputList.push_back(newObject);
 	  }
 	}
       }
@@ -172,9 +171,10 @@ std::vector <Detection> search3DArraySpectral(long *dim, float *Array, Param &pa
     delete spectrum;
     delete [] doPixel;
   
-    if(par.isVerbose()) {
-      bar.fillSpace("Found ");
-      std::cout << num <<";" << std::flush;
+
+    if(par.isVerbose()){
+      bar.remove();
+      std::cout << "Found " << num << ".\n";
     }
 
   }
@@ -209,8 +209,6 @@ std::vector <Detection> search3DArraySpatial(long *dim, float *Array,
   bool useBar = (zdim>1);
   if(useBar && par.isVerbose()) bar.init(zdim);
   
-  num = 0;
-
   long *imdim = new long[2];
   imdim[0] = dim[0]; imdim[1] = dim[1];
   Image *channelImage = new Image(imdim);
@@ -233,7 +231,8 @@ std::vector <Detection> search3DArraySpatial(long *dim, float *Array,
 	Detection newObject;
 	newObject.addChannel(z,*obj);
 	newObject.setOffsets(par);
-	mergeIntoList(newObject,outputList,par);
+	if(par.getFlagTwoStageMerging()) mergeIntoList(newObject,outputList,par);
+	else outputList.push_back(newObject);
       }
     }
 
