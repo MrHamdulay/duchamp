@@ -123,7 +123,7 @@ namespace duchamp
 		     !cube.isBlank(x,y,z)   &&   // pixel not BLANK?
 		     !cube.pars().isInMW(z)       &&   // pixel not MW?
 		     (flagAdj || hypot(x-xpt,y-ypt)<threshS)  && // pixel not too far away spatially?
-		     (flagAdj || fabs(z-zpt)<threshV) ){  //pixel not too far away spectrally?
+		     (fabs(z-zpt)<=threshV) ){  //pixel not too far away spectrally?
 	    
 		    float flux;
 		    if(cube.isRecon()) flux = cube.getReconValue(x,y,z);
