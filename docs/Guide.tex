@@ -37,7 +37,7 @@
 %Define a test for doing PDF format -- use different code below
 \newif\ifPDF
 \ifx\pdfoutput\undefined\PDFfalse 
-\else\ifnum\pdfoutput > 0\PDFtrue 
+\else\ifnum\pdfoutput > 0 \PDFtrue 
      \else\PDFfalse 
      \fi 
 \fi
