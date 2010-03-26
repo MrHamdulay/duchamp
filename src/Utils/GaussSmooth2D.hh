@@ -93,6 +93,6 @@ private:
 
 };
 
-#include <Utils/GaussSmooth2D.tcc>
+#include <duchamp/Utils/GaussSmooth2D.tcc>
 
 #endif  // GAUSSSMOOTH2D_H
