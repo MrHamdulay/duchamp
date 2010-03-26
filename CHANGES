@@ -7,11 +7,17 @@ Improvements:
   file. This is controlled by the parameters flagOutputMomentMap and
   fileOutputMomentMap, which work in the same way for the mask file.
 
-* There is a new parameter flagRejectBeforeMerging that, when true,
+* There is a new parameter flagRejectBeforeMerge that, when true,
   rejects sources according to the minPix/minChannels requirements
   before the merging and growing is done. This defaults to false (so
   default behaviour is as before). Thanks to Tobias Westmeier for
   suggesting this and the above improvement.
+
+* There is also a new parameter flagTwoStageMerging. When true (the
+  default), newly-detected objects are merged with the first close
+  object in the list. When false, they are simply added to the end of
+  the list. In both cases, a second round of merging is done to pick
+  up all close matches.
 
 * The way the beam is specified in the absence of the BMAJ/BMIN/BPA
   parameters has been slightly changed. The use of "beamSize" was
