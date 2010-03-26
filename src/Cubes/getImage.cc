@@ -142,16 +142,16 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
 
 
     // Get the WCS information
-    this->head.defineWCS(fname, this->par);
+    if(this->head.defineWCS(fname, this->par) == FAILURE) return FAILURE;
 
     if(!this->head.isWCS()) 
       duchampWarning("Cube Reader","WCS is not good enough to be used.\n");
 
     // allocate the dimension array in the Cube.
-    this->initialiseCube(dimAxes,false);
+    if(this->initialiseCube(dimAxes,false) == FAILURE) return FAILURE;
 
     // Read the necessary header information, and copy some of it into the Param.
-    this->head.readHeaderInfo(fname, this->par);
+    if(this->head.readHeaderInfo(fname, this->par) == FAILURE) return FAILURE;
 
     delete [] dimAxes;
 
@@ -171,13 +171,13 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
     ///  \param fname A std::string with name of FITS file.
     ///  \return SUCCESS or FAILURE.
 
-    this->getMetadata(fname);
+    if(this->getMetadata(fname) == FAILURE) return FAILURE;
 
     // Get the data array from the FITS file.
     // Report the dimensions of the data array that was read (this can be
     //   different to the full FITS array).
     if(this->par.isVerbose()) std::cout << "Reading data ... "<<std::flush;
-    if(this->getFITSdata(fname)) return FAILURE;
+    if(this->getFITSdata(fname) == FAILURE) return FAILURE;
 
     if(this->axisDim[2] == 1){
       this->par.setMinChannels(0);

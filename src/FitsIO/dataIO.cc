@@ -135,7 +135,7 @@ namespace duchamp
       this->par.setFlagTrim(false);
     }
 
-    this->initialiseCube(dimAxes);
+    if(this->initialiseCube(dimAxes) == FAILURE) return FAILURE;
     this->saveArray(pixarray,npix);
     delete [] pixarray;
     delete [] dimAxes;

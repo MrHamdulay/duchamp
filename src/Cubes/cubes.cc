@@ -1568,8 +1568,10 @@ namespace duchamp
       subcube->pars().setFlagSubsection(true);
       duchamp::Section sec = obj->getBoundingSection();
       subcube->pars().setSubsection( sec.getSection() );
-      subcube->pars().verifySubsection();
-      subcube->getCube();
+      if(subcube->pars().verifySubsection() == FAILURE)
+	duchampError("get object voxel list","Unable to verify the subsection - something's wrong!");
+      if(subcube->getCube() == FAILURE)
+	duchampError("get object voxel list","Unable to read the FITS file - something's wrong!");
       std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
       std::vector<PixelInfo::Voxel>::iterator vox;
       for(vox=voxlist.begin(); vox<voxlist.end(); vox++){

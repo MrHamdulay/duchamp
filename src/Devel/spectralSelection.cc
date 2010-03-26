@@ -75,7 +75,7 @@ void spectralSelection(std::vector<float> &xvalues,
     par.setImageFile(fname);
     par.setVerbosity(false);
     cube->saveParam(par);
-    cube->getCube();
+    if(cube->getCube()==FAILURE) std::cerr << "Cannot read cube!";
     zdim = cube->getDimZ();
     if(par.getFlagMW()) cube->removeMW();
     zdim = cube->getDimZ();

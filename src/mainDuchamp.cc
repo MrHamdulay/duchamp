@@ -219,26 +219,34 @@ int main(int argc, char * argv[])
        (cube->pars().getFlagOutputRecon()||cube->pars().getFlagOutputResid()) ){
       std::cout << "Saving reconstructed cube to "
 		<< cube->pars().outputReconFile() << "... "<<std::flush;
-      cube->saveReconstructedCube();
-      std::cout << "done.\n";
+      if(cube->saveReconstructedCube() == FAILURE)
+	std::cout << "Failed!\n";
+      else 
+	std::cout << "done.\n";
     }
     if(cube->pars().getFlagSmooth()&& cube->pars().getFlagOutputSmooth()){
       std::cout << "Saving smoothed cube to "
 		<< cube->pars().outputSmoothFile() << "... " <<std::flush;
-      cube->saveSmoothedCube();
-      std::cout << "done.\n";
+      if(cube->saveSmoothedCube() == FAILURE)
+	std::cout << "Failed!\n";
+      else 
+	std::cout << "done.\n";
     }
     if(cube->pars().getFlagOutputMask()){
       std::cout << "Saving mask cube to "
 		<< cube->pars().outputMaskFile() << "... " <<std::flush;
-      cube->saveMaskCube();
-      std::cout << "done.\n";
+      if(cube->saveMaskCube() == FAILURE)
+	std::cout << "Failed!\n";
+      else 
+	std::cout << "done.\n";
     }
     if(cube->pars().getFlagOutputMomentMap()){
       std::cout << "Saving 0th moment map image to "
 		<< cube->pars().outputMomentMapFile() << "... " <<std::flush;
-      cube->saveMomentMapImage();
-      std::cout << "done.\n";
+      if(cube->saveMomentMapImage() == FAILURE)
+	std::cout << "Failed!\n";
+      else 
+	std::cout << "done.\n";
     }
 
     if(cube->pars().getFlagLog() && (cube->getNumObj()>0)){

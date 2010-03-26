@@ -104,7 +104,7 @@ namespace duchamp
     };
 
     /// @brief Read a parameter set from file. 
-    int                readParam(std::string paramfile){
+    OUTCOME readParam(std::string paramfile){
       /// @brief 
       ///  Uses Param::readParams() to read parameters from a file.
       ///  \param paramfile The file to be read.
