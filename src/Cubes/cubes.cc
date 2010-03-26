@@ -543,7 +543,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  int Cube::getCube()
+  OUTCOME Cube::getCube()
   {  
     ///  @details
     /// A front-end to the Cube::getCube() function, that does 

@@ -39,7 +39,7 @@
 namespace duchamp
 {
 
-  int Cube::readReconCube()
+  OUTCOME Cube::readReconCube()
   {
     ///  @details
     ///  A way to read in a previously reconstructed array, corresponding 

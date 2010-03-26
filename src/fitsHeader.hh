@@ -105,22 +105,22 @@ namespace duchamp
     // Functions in FitsIO/headerIO.cc
     //
     /// @brief Read all header info. 
-    int     readHeaderInfo(std::string fname, Param &par);
+    OUTCOME     readHeaderInfo(std::string fname, Param &par);
 
     /// @brief Read BUNIT keyword 
-    int     readBUNIT(std::string fname);
+    OUTCOME     readBUNIT(std::string fname);
 
     /// @brief Read BLANK & related keywords 
-    int     readBLANKinfo(std::string fname, Param &par);
+    OUTCOME     readBLANKinfo(std::string fname, Param &par);
 
     /// @brief Read beam-related keywords 
-    int     readBeamInfo(std::string fname, Param &par);
+    OUTCOME     readBeamInfo(std::string fname, Param &par);
  
     //--------------------
     // Function in FitsIO/wcsIO.cc
     //
     /// @brief Read the WCS information from a file. 
-    int     defineWCS(std::string fname, Param &par);
+    OUTCOME     defineWCS(std::string fname, Param &par);
 
     //--------------------
     // Basic inline accessor functions

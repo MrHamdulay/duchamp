@@ -45,7 +45,7 @@
 namespace duchamp
 {
 
-  int FitsHeader::defineWCS(std::string fname, Param &par)
+  OUTCOME FitsHeader::defineWCS(std::string fname, Param &par)
   {
     ///   A function that reads the WCS header information from the 
     ///    FITS file given by fname

@@ -31,6 +31,7 @@
 
 #include <string>
 #include <vector>
+#include <duchamp/duchamp.hh>
 
 namespace duchamp
 {
@@ -51,9 +52,9 @@ namespace duchamp
     virtual ~Section(){};
 
     /// @brief Convert the subsection string into the lists of numerical values. 
-    int parse(std::vector<long> dimAxes);
-    int parse(std::vector<int> dimAxes);
-    int parse(long *dim, int size);
+    OUTCOME parse(std::vector<long> dimAxes);
+    OUTCOME parse(std::vector<int> dimAxes);
+    OUTCOME parse(long *dim, int size);
 
     /// @brief Test whether a given voxel (x,y,z) lies within the subsection 
     bool isInside(int x, int y, int z){

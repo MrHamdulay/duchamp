@@ -39,7 +39,7 @@
 namespace duchamp
 {
 
-  int Cube::readSmoothCube()
+  OUTCOME Cube::readSmoothCube()
   {
     ///  @details
     ///   A way to read in a previously smoothed array, corresponding 

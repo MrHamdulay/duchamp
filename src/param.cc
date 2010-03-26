@@ -312,7 +312,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  int Param::getopts(int argc, char ** argv, std::string progname)
+  OUTCOME Param::getopts(int argc, char ** argv, std::string progname)
   {
     ///   A function that reads in the command-line options, in a manner 
     ///    tailored for use with the main Duchamp program.
@@ -320,7 +320,7 @@ namespace duchamp
     ///   \param argc The number of command line arguments.
     ///   \param argv The array of command line arguments.
 
-    int returnValue = FAILURE;
+    OUTCOME returnValue = FAILURE;
     if(argc==1){
       if(progname=="Selavy") std::cout << SELAVY_ERR_USAGE_MSG;
       else if(progname=="Duchamp") std::cout << ERR_USAGE_MSG;
@@ -574,7 +574,7 @@ namespace duchamp
     int val; ss >> val; return val;
   }
 
-  int Param::readParams(std::string paramfile)
+  OUTCOME Param::readParams(std::string paramfile)
   {
     /// The parameters are read in from a disk file, on the assumption that each
     ///  line of the file has the format "parameter value" (eg. alphafdr 0.1)

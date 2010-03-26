@@ -42,7 +42,7 @@ using namespace PixelInfo;
 namespace duchamp 
 {
 
-  int Cube::getExistingDetections()
+  OUTCOME Cube::getExistingDetections()
   {
 
     std::ifstream logfile(this->par.getLogFile().c_str());

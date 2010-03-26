@@ -47,7 +47,7 @@ namespace duchamp
 
   std::string imageType[4] = {"point", "spectrum", "image", "cube"};
 
-  int Cube::getMetadata()
+  OUTCOME Cube::getMetadata()
   {  
     ///  @details
     /// A front-end to the Cube::getMetadata() function, that does
@@ -57,7 +57,7 @@ namespace duchamp
     std::string fname = par.getImageFile();
     if(par.getFlagSubsection()) fname+=par.getSubsection();
 
-    int result = getMetadata(fname);
+    OUTCOME result = getMetadata(fname);
     
     if(result==SUCCESS){
       // Convert the flux Units if the user has so requested
@@ -68,7 +68,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  int Cube::getMetadata(std::string fname)
+  OUTCOME Cube::getMetadata(std::string fname)
   {
     /// @details
     /// Read in the metadata associated with the cube from the file
@@ -161,7 +161,7 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
   //--------------------------------------------------------------------
 
 
-  int Cube::getCube(std::string fname)
+  OUTCOME Cube::getCube(std::string fname)
   {
     /// @details
     /// Read in a cube from the file fname (assumed to be in FITS

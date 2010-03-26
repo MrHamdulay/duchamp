@@ -82,7 +82,7 @@ namespace duchamp
     }
   }
 
-  int Param::verifySubsection()
+  OUTCOME Param::verifySubsection()
   {
     /// Checks that the subsection strings (the pixel and stats
     /// subsections) are in the appropriate format, with the correct

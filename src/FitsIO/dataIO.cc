@@ -39,7 +39,7 @@
 namespace duchamp
 {
 
-  int Cube::getFITSdata(std::string fname)
+  OUTCOME Cube::getFITSdata(std::string fname)
   {
     /// This function retrieves the data array from the FITS file at the 
     ///   location given by the string argument.

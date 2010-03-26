@@ -40,12 +40,12 @@
 namespace duchamp
 {
 
-  int FitsHeader::readHeaderInfo(std::string fname, Param &par)
+  OUTCOME FitsHeader::readHeaderInfo(std::string fname, Param &par)
   {
     ///  A simple front-end function to the three header access
     ///   functions defined below.
 
-    int returnValue = SUCCESS;
+    OUTCOME returnValue = SUCCESS;
 
     //   if(this->readBUNIT(fname)==FAILURE) returnValue=FAILURE;
   
@@ -60,7 +60,7 @@ namespace duchamp
 
   //////////////////////////////////////////////////
 
-  int FitsHeader::readBUNIT(std::string fname)
+  OUTCOME FitsHeader::readBUNIT(std::string fname)
   {
     ///   Read the BUNIT header keyword, to store the units of brightness (flux).
     ///  \param fname The name of the FITS file.
@@ -68,7 +68,8 @@ namespace duchamp
     fitsfile *fptr;         
     char *comment = new char[FLEN_COMMENT];
     char *unit = new char[FLEN_VALUE];
-    int returnStatus = 0, status = 0;
+    OUTCOME returnStatus=SUCCESS;
+    int status = 0;
 
     // Open the FITS file
     status = 0;
@@ -79,10 +80,11 @@ namespace duchamp
 
     // Read the BUNIT keyword, and translate to standard unit format if needs be
     std::string header("BUNIT");
-    fits_read_key(fptr, TSTRING, (char *)header.c_str(), unit, comment, &returnStatus);
-    if (returnStatus){
+    fits_read_key(fptr, TSTRING, (char *)header.c_str(), unit, comment, &status);
+    if (status){
       duchampWarning("Cube Reader","Error reading BUNIT keyword: ");
-      fits_report_error(stderr, returnStatus);
+      fits_report_error(stderr, status);
+      return FAILURE;
     }
     else{
       wcsutrn(0,unit);
@@ -105,7 +107,7 @@ namespace duchamp
 
   //////////////////////////////////////////////////
 
-  int FitsHeader::readBLANKinfo(std::string fname, Param &par)
+  OUTCOME FitsHeader::readBLANKinfo(std::string fname, Param &par)
   {
     ///    Reading in the Blank pixel value keywords, which is only done
     ///    if requested via the flagBlankPix parameter.
@@ -122,7 +124,8 @@ namespace duchamp
     /// \param par The Param set: to know the flagBlankPix value and to
     /// store the keywords.
 
-    int returnStatus = 0, status = 0;
+    OUTCOME returnStatus = SUCCESS;
+    int status = 0;
 
     fitsfile *fptr;         
     char *comment = new char[FLEN_COMMENT];
@@ -144,7 +147,7 @@ namespace duchamp
     //     the values accordingly.
 
     std::string header("BLANK");
-    if(fits_read_key(fptr, TINT, (char *)header.c_str(), &blank, comment, &returnStatus)){
+    if(fits_read_key(fptr, TINT, (char *)header.c_str(), &blank, comment, &status)){
 
       par.setFlagBlankPix(false);
 
@@ -157,7 +160,8 @@ namespace duchamp
 	else{
 	  duchampWarning("Cube Reader", 
 			 "Error reading BLANK keyword, so not doing any trimming.");
-	  fits_report_error(stderr, returnStatus);
+	  fits_report_error(stderr, status);
+	  return FAILURE;
 	}
       }
     }
@@ -193,7 +197,7 @@ namespace duchamp
 
   //////////////////////////////////////////////////
 
-  int FitsHeader::readBeamInfo(std::string fname, Param &par)
+  OUTCOME FitsHeader::readBeamInfo(std::string fname, Param &par)
   {
     ///   Reading in the beam parameters from the header.
     ///   Use these, plus the basic WCS parameters to calculate the size of
@@ -206,28 +210,24 @@ namespace duchamp
     char *comment = new char[80];
     std::string keyword[3]={"BMAJ","BMIN","BPA"};
     float bmaj,bmin,bpa;
-    int status[5];
+    int status=0;
     fitsfile *fptr;         
 
-    for(int i=0;i<5;i++) status[i] = 0;
-
     // Open the FITS file
-    if( fits_open_file(&fptr,fname.c_str(),READONLY,&status[0]) ){
-      fits_report_error(stderr, status[0]);
+    if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
+      fits_report_error(stderr, status);
       return FAILURE;
     }
 
     // Read the Keywords -- first look for BMAJ. If it is present, read the
     //   others, and calculate the beam size.
     // If it is not, give warning and set beam size to nominal value.
-    fits_read_key(fptr, TFLOAT, (char *)keyword[0].c_str(), &bmaj, 
-		  comment, &status[1]);
-    fits_read_key(fptr, TFLOAT, (char *)keyword[1].c_str(), &bmin, 
-		  comment, &status[2]);
-    fits_read_key(fptr, TFLOAT, (char *)keyword[2].c_str(), &bpa, 
-		  comment, &status[3]);
+    int bstatus[3]={0,0,0};
+    fits_read_key(fptr, TFLOAT, (char *)keyword[0].c_str(), &bmaj, comment, &bstatus[0]);
+    fits_read_key(fptr, TFLOAT, (char *)keyword[1].c_str(), &bmin, comment, &bstatus[1]);
+    fits_read_key(fptr, TFLOAT, (char *)keyword[2].c_str(), &bpa, comment,  &bstatus[2]);
 
-    if(status[1]||status[2]||status[3]){ // error
+    if(bstatus[0]||bstatus[1]||bstatus[2]){ // error
       std::string paramName;
       if(par.getBeamFWHM()>0.){
 	this->setBeamSize( getBeamArea(par.getBeamFWHM(),par.getBeamFWHM()) );
@@ -241,7 +241,7 @@ namespace duchamp
       par.setFlagUsingBeam(true);
       std::stringstream errmsg;
       errmsg << "Header keywords not present: ";
-      for(int i=0;i<3;i++) if(status[i+1]) errmsg<<keyword[i]<<" ";
+      for(int i=0;i<3;i++) if(bstatus[i]) errmsg<<keyword[i]<<" ";
       errmsg << "\nUsing parameter "<< paramName <<" to determine size of beam.\n";
       duchampWarning("Cube Reader",errmsg.str());
     }
@@ -255,18 +255,16 @@ namespace duchamp
     }
    
     // Close the FITS file.
-    fits_close_file(fptr, &status[4]);
-    if (status[4]){
+    status=0;
+    fits_close_file(fptr, &status);
+    if (status){
       duchampWarning("Cube Reader","Error closing file: ");
-      fits_report_error(stderr, status[4]);
+      fits_report_error(stderr, status);
     }
 
     delete [] comment;
 
-    int returnStatus = status[0];
-    for(int i=1;i<5;i++) if(status[i]>returnStatus) returnStatus=status[i];
-
-    return returnStatus;
+    return SUCCESS;
   }
 
 }

@@ -254,9 +254,9 @@ namespace duchamp
     OUTCOME     initialiseCube(long *dimensions, bool allocateArrays=true);
 
     /// @brief Read in a FITS file, with subsection correction. 
-    int         getCube();
+    OUTCOME     getCube();
     /// @brief Read in a FITS file, with subsection correction. 
-    int         getMetadata();
+    OUTCOME     getMetadata();
 
     /// @brief Read in command-line options. 
     //   int         getopts(int argc, char ** argv);
@@ -369,14 +369,14 @@ namespace duchamp
     // FITS-I/O related functions -- not in cubes.cc
     //
     /// @brief Function to read in FITS file.
-    int         getMetadata(std::string fname);  // in Cubes/getImage.cc
-    int         getCube(std::string fname);  // in Cubes/getImage.cc
+    OUTCOME     getMetadata(std::string fname);  // in Cubes/getImage.cc
+    OUTCOME     getCube(std::string fname);  // in Cubes/getImage.cc
 
     /// @brief Convert the flux units to something user-specified.
     void        convertFluxUnits(); // in Cubes/getImage.cc
 
     /// @brief Function to retrieve FITS data array 
-    int         getFITSdata(std::string fname);   // in FitsIO/dataIO.cc
+    OUTCOME         getFITSdata(std::string fname);   // in FitsIO/dataIO.cc
 
     /// @brief Save the moment map to a FITS file
     OUTCOME        saveMomentMapImage();
@@ -391,10 +391,10 @@ namespace duchamp
     OUTCOME        saveReconstructedCube();  // in Cubes/saveImage.cc
 
     /// @brief Read in reconstructed array from FITS file. 
-    int         readReconCube();  // in Cubes/readRecon.cc
+    OUTCOME        readReconCube();  // in Cubes/readRecon.cc
   
     /// @brief Read in Hanning-smoothed array from FITS file. 
-    int         readSmoothCube();     // in Cubes/readSmooth.cc  
+    OUTCOME        readSmoothCube();     // in Cubes/readSmooth.cc  
 
     //-------------------------------------
     // Functions that act on the cube
@@ -493,7 +493,7 @@ namespace duchamp
   
     // in Cubes/existingDetections.cc
     /// @brief Read a previously-created log file to get the detections without searching 
-    int getExistingDetections();
+    OUTCOME     getExistingDetections();
 
     //-------------------------------------
     // Text outputting of detected objects.

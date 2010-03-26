@@ -87,10 +87,10 @@ namespace duchamp
     // Functions in param.cc
     //
     /// @brief Parse the command line parameters correctly. 
-    int    getopts(int argc, char ** argv, std::string progname="Duchamp");
+    OUTCOME getopts(int argc, char ** argv, std::string progname="Duchamp");
 
     /// @brief Read in parameters from a disk file. 
-    int    readParams(std::string paramfile);
+    OUTCOME readParams(std::string paramfile);
 
     /// @brief Check the parameter list for inconsistencies 
     void   checkPars();
@@ -121,7 +121,7 @@ namespace duchamp
     // Functions in FitsIO/subsection.cc
     //
     /// @brief Make sure the subsection strings are OK. 
-    int    verifySubsection();
+    OUTCOME verifySubsection();
 
     /// @brief Set the correct offset values for each axis 
     void   setOffsets(struct wcsprm *wcs);
