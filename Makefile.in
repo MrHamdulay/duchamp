@@ -169,6 +169,7 @@ install :
 	$(INSTALL) -m 644 $(PIXELMAPDIR)/*.hh $(INCDIR)/PixelMap
 	$(INSTALL) -d -m 2755 $(INCDIR)/Utils
 	$(INSTALL) -m 644 $(UTILDIR)/*.hh $(INCDIR)/Utils
+	$(INSTALL) -m 644 $(UTILDIR)/*.tcc $(INCDIR)/Utils
 
 $(OBJECTS) : $(HEADS)
 
