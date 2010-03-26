@@ -31,6 +31,7 @@
 #include <string>
 #include <wcslib/wcs.h>
 #include <math.h>
+#include <duchamp/duchamp.hh>
 
 namespace duchamp
 {
