@@ -874,11 +874,11 @@ namespace duchamp
   void recordParameters(std::ostream& theStream, std::string paramName, std::string paramDesc, std::string paramValue)
   {
     
-    const int widthText = 38;
-    const int widthPar  = 18;
+    const int width = 56;
+    int widthText = width - paramName.size();
 
     theStream << std::setw(widthText) << paramDesc
-	      << std::setw(widthPar) << setiosflags(std::ios::right) << paramName
+	      << setiosflags(std::ios::right) << paramName
 	      << "  =  " << resetiosflags(std::ios::right) << paramValue 
 	      <<std::endl;
   }
