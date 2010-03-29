@@ -148,7 +148,7 @@ int main(int argc, char * argv[])
     if(cube->getNumObj()==1) std::cout << " object.\n";
     else std::cout << " objects.\n";
 
-    if(cube->getNumObj() > 1){
+    if(cube->getNumObj() > 0){
       if(cube->pars().getFlagGrowth())
 	std::cout<<"Merging, Growing and Rejecting...  "<<std::flush;
       else
