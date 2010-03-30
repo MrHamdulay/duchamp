@@ -176,10 +176,11 @@ namespace duchamp
 	if(localwcs->spec>=0){ //if there is a spectral axis
 
 	  int index = localwcs->spec;
-	  std::string desiredType,specType = localwcs->ctype[index];
+	  std::string desiredType="",specType = localwcs->ctype[index];
 	  std::string shortType = specType.substr(0,4);
 	  if(shortType=="VELO" || shortType=="VOPT" || shortType=="ZOPT" 
-	     || shortType=="VRAD" || shortType=="BETA"){
+	     || shortType=="VRAD" || shortType=="BETA" ||
+	     (shortType=="FREQ" && localwcs->restfrq!=0)){
 	    if(localwcs->restfrq != 0){
 	      // Set the spectral axis to a standard specification: VELO-F2V
 	      desiredType = duchampVelocityType;
@@ -219,8 +220,8 @@ namespace duchamp
 
 	  bool needToTranslate = false;
 
-	  //       if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0) 
-	  // 	needToTranslate = true;
+	  if(strncmp(specType.c_str(),desiredType.c_str(),4)!=0) 
+	    needToTranslate = true;
 
 	  std::string blankstring = "";
 	  if(strcmp(localwcs->cunit[localwcs->spec],blankstring.c_str())==0)
