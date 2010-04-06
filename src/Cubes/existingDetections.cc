@@ -105,7 +105,7 @@ namespace duchamp
       if(temp.substr(0,11)!="Detection #") duchampError("existingDetections","Format of Log file is wrong!");
       Detection obj;
       while(getline(logfile,temp), temp.size()>0){
-	  for(uint i=0;i<temp.size();i++)
+	  for(size_t i=0;i<temp.size();i++)
 	    if(temp[i]=='-' || temp[i]==',') temp[i] = ' ';
 	  std::stringstream ss;
 	  ss.str(temp);
