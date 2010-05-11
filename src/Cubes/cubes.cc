@@ -1078,7 +1078,7 @@ namespace duchamp
 	obj->setCentreType(this->par.getPixelCentre());
 	obj->calcFluxes(bigVoxList[ct]);
 	obj->calcWCSparams(this->head);
-	obj->calcIntegFlux(bigVoxList[ct],this->head);
+	obj->calcIntegFlux(this->axisDim[2],bigVoxList[ct],this->head);
 	
 	if(this->par.getFlagUserThreshold())
 	  obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );

@@ -19,6 +19,7 @@ EXEC-STUB = Duchamp
 
 AR = ar cq
 LIB = libduchamp.a
+RANLIB = ranlib
 
 INSTALL = @INSTALL@
 LN_S = @LN_S@
@@ -143,6 +144,7 @@ duchamp : $(OBJECTS)
 
 lib     : $(OBJECTS)
 	$(AR) $(LIB) $(OBJECTS)
+	$(RANLIB) $(LIB)
 
 createTestImage : $(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o
 	$(CXX) -o createTestImage.x\
