@@ -480,10 +480,10 @@ in one dimension on each individual spatial pixel's spectrum. This is
 a simpler search, but there are potentially many more of them.
 
 Although there are parameters that govern the minimum number of pixels
-in a spatial and spectral sense that an object must have
-(\texttt{minPix} and \texttt{minChannels} respectively), these
-criteria are not applied at this point - see \S\ref{sec-reject} for
-details. 
+in a spatial, spectral and total senses that an object must have
+(\texttt{minPix}, \texttt{minChannels} and \texttt{minVoxels}
+respectively), these criteria are not applied at this point - see
+\S\ref{sec-reject} for details.
 
 Finally, the search only looks for positive features. If one is
 interested instead in negative features (such as absorption lines),
@@ -695,9 +695,13 @@ Finally, to be accepted, the detections must span \emph{both} a
 minimum number of channels (enabling the removal of any spurious
 single-channel spikes that may be present), and a minimum number of
 spatial pixels. These numbers, as for the original detection step, are
-set with the \texttt{minChannels} and \texttt{minPix} parameters. The
-channel requirement means a source must have at least one set of
-\texttt{minChannels} consecutive channels to be accepted.
+set with the \texttt{minChannels}, \texttt{minPix} parameters and
+\texttt{minVoxels}. The channel requirement means a source must have
+at least one set of \texttt{minChannels} consecutive channels to be
+accepted. The spatial pixels (\texttt{minPix}) requirement refers to
+distinct spatial pixels (which are possibly in different channels),
+while the voxels requirement refers to the total number of voxels
+detected.
 
 It is possible to do this rejection stage before the main merging and
 growing stage. This could be done to remove narrow (hopefully

@@ -179,6 +179,7 @@ namespace duchamp
     this->threshVelocity    = 7.;
     this->minChannels       = 3;
     this->minPix            = 2;
+    this->minVoxels         = 4;
     this->flagRejectBeforeMerge = false;
     this->flagTwoStageMerging = true;
     // Input-Output related
@@ -299,6 +300,7 @@ namespace duchamp
     this->threshVelocity    = p.threshVelocity;
     this->minChannels       = p.minChannels;
     this->minPix            = p.minPix;
+    this->minVoxels         = p.minVoxels;
     this->flagRejectBeforeMerge = p.flagRejectBeforeMerge;
     this->flagTwoStageMerging = p.flagTwoStageMerging;
     this->spectralMethod    = p.spectralMethod;
@@ -693,6 +695,7 @@ namespace duchamp
 	if(arg=="threshspatial")   this->threshSpatial = readFval(ss); 
 	if(arg=="threshvelocity")  this->threshVelocity = readFval(ss); 
 	if(arg=="minchannels")     this->minChannels = readIval(ss); 
+	if(arg=="minvoxels")       this->minVoxels = readIval(ss); 
 	if(arg=="flagrejectbeforemerge") this->flagRejectBeforeMerge = readFlag(ss); 
 	if(arg=="flagtwostagemerging") this->flagTwoStageMerging = readFlag(ss); 
 
@@ -1012,6 +1015,7 @@ namespace duchamp
     }
     recordParam(theStream, "[minPix]", "Minimum # Pixels in a detection", par.getMinPix());
     recordParam(theStream, "[minChannels]", "Minimum # Channels in a detection", par.getMinChannels());
+    recordParam(theStream, "[minVoxels]", "Minimum # Voxels in a detection", par.getMinVoxels());
     recordParam(theStream, "[flagGrowth]", "Growing objects after detection?", stringize(par.getFlagGrowth()));
     if(par.getFlagGrowth()) {			       
       if(par.getFlagUserGrowthThreshold()){
