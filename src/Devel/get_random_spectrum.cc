@@ -86,7 +86,8 @@ void getRandomSpectrum(int length, float *x, float *y)
 
 void getRandomSpectrum(int length, float *x, double *y)
 {
-  srandomdev();
+//   srandomdev();
+  srandom(time(0));
   rand();
   for(int i=0;i<length;i++){
     x[i] = (float)i;
@@ -105,7 +106,8 @@ void getRandomSpectrum(int length, float *x, double *y)
 void getRandomSpectrum(int length, float mean, float sigma, 
 		       float *x, double *y)
 {
-  srandomdev();
+//   srandomdev();
+  srandom(time(0));
   rand();
   for(int i=0;i<length;i++){
     x[i] = (float)i;
