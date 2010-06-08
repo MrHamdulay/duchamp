@@ -218,7 +218,7 @@ namespace duchamp
       
       if( (obj->hasEnoughChannels(par.getMinChannels()))
 	  && (obj->getSpatialSize() >= par.getMinPix())
-	  && (obj->getSize() >= par.getMinVoxels() ){
+	  && (obj->getSize() >= par.getMinVoxels() ) ){
 
 	obj++;
 

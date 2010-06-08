@@ -360,8 +360,8 @@ namespace duchamp
     void   setThreshV(float t){threshVelocity=t;};
     int    getMinChannels(){return minChannels;};
     void   setMinChannels(int n){minChannels=n;};
-    int    getMinVoxels(){return minVoxels;};
-    void   setMinVoxels(int n){minVoxels=n;};
+    unsigned int getMinVoxels(){return minVoxels;};
+    void   setMinVoxels(unsigned int n){minVoxels=n;};
     bool   getFlagRejectBeforeMerge(){return flagRejectBeforeMerge;};
     void   setFlagRejectBeforeMerge(bool flag){flagRejectBeforeMerge=flag;};
     bool   getFlagTwoStageMerging(){return flagTwoStageMerging;};
@@ -511,7 +511,7 @@ namespace duchamp
     float  threshSpatial;   ///< Maximum spatial separation between objects
     float  threshVelocity;  ///< Maximum channels separation between objects
     int    minChannels;     ///< Minimum no. of channels to make an object 
-    int    minVoxels;       ///< Minimum no. of voxels required in an object
+    unsigned int    minVoxels;       ///< Minimum no. of voxels required in an object
     bool   flagRejectBeforeMerge; ///< Whether to reject sources before merging
     bool   flagTwoStageMerging;  ///< Whether to do a partial merge when the objects are found, via the mergeIntoList function.
 
