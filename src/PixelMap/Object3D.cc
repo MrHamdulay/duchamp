@@ -301,6 +301,9 @@ namespace PixelInfo
 
   std::vector<Voxel> Object3D::getPixelSet()
   {
+    /// @details Returns a vector of the Voxels in the object. All
+    /// flux values are set to 0.
+
     std::vector<Voxel> voxList(this->numVox);
     long count = 0;
     for(std::map<long, Object2D>::iterator it = this->chanlist.begin(); 
@@ -311,6 +314,34 @@ namespace PixelInfo
 	long y = scn.getY();
 	for(long x=scn.getX(); x<=scn.getXmax(); x++){
 	  voxList[count].setXYZF(x,y,z,0);
+	  count++;
+	}
+      }
+    }
+    return voxList;
+
+  }
+
+  //--------------------------------------------------------------------
+
+  std::vector<Voxel> Object3D::getPixelSet(float *array, long *dim)
+  {
+    /// @details Returns a vector of Voxels with the flux values for each voxel
+    /// taken from the array provided. No check is made as to whether
+    /// the pixels fall in the array boundaries
+    /// @param array Array of pixel values
+    /// @param dim Array of axis dimensions
+
+    std::vector<Voxel> voxList(this->numVox);
+    long count = 0;
+    for(std::map<long, Object2D>::iterator it = this->chanlist.begin(); 
+	it!=this->chanlist.end();it++){
+      long z = it->first;
+      for(int s=0;s<it->second.getNumScan();s++){
+	Scan scn = it->second.getScan(s);
+	long y = scn.getY();
+	for(long x=scn.getX(); x<=scn.getXmax(); x++){
+	  voxList[count].setXYZF(x,y,z,array[x+dim[0]*y+dim[0]*dim[1]*z]);
 	  count++;
 	}
       }

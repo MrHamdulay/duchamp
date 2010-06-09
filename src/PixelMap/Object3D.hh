@@ -105,6 +105,8 @@ namespace PixelInfo
 
     /// @brief Return a vector set of all voxels in the Object. 
     std::vector<Voxel> getPixelSet();
+    /// @brief Return a vector set of all voxels in the Object, with flux values from the given array. 
+    std::vector<Voxel> getPixelSet(float *array, long *dim);
 
     /// @brief Return a vector list of the channel numbers in the Object
     std::vector<long> getChannelList();
