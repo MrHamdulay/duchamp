@@ -147,11 +147,13 @@ namespace duchamp
 
     ProgressBar bar;
     if(!this->reconExists){
-      std::cout<<"  Reconstructing... ";
-      if(par.isVerbose()) bar.init(xySize);
+      if(this->par.isVerbose()){
+	std::cout<<"  Reconstructing... ";
+	bar.init(xySize);
+      }
       for(int npix=0; npix<xySize; npix++){
 
-	if( par.isVerbose() ) bar.update(npix+1);
+	if( this->par.isVerbose() ) bar.update(npix+1);
 
 	float *spec = new float[zdim];
 	float *newSpec = new float[zdim];
@@ -165,9 +167,11 @@ namespace duchamp
 	delete [] newSpec;
       }
       this->reconExists = true;
-      bar.fillSpace(" All Done.");
-      printSpace(22);
-      std::cout << "\n";
+      if(this->par.isVerbose()){
+	bar.fillSpace(" All Done.");
+	printSpace(22);
+	std::cout << "\n";
+      }
     }
 
   }
@@ -183,11 +187,11 @@ namespace duchamp
     bool useBar = (this->axisDim[2]>1);
 
     if(!this->reconExists){
-      std::cout<<"  Reconstructing... ";
-      if(useBar&&par.isVerbose()) bar.init(this->axisDim[2]);
+      if(this->par.isVerbose()) std::cout<<"  Reconstructing... ";
+      if(useBar&&this->par.isVerbose()) bar.init(this->axisDim[2]);
       for(int z=0;z<this->axisDim[2];z++){
 
-	if( par.isVerbose() && useBar ) bar.update((z+1));
+	if( this->par.isVerbose() && useBar ) bar.update((z+1));
 
 	if(!this->par.isInMW(z)){
 	  float *im = new float[xySize];
@@ -210,9 +214,11 @@ namespace duchamp
 	}
       }
       this->reconExists = true;
-      if(useBar) bar.fillSpace(" All Done.");
-      printSpace(22);
-      std::cout << "\n";
+      if(this->par.isVerbose()) {
+	if(useBar) bar.fillSpace(" All Done.");
+	printSpace(22);
+	std::cout << "\n";
+      }
     }
   }
 
@@ -225,13 +231,15 @@ namespace duchamp
     else {
 
       if(!this->reconExists){
-	std::cout<<"  Reconstructing... "<<std::flush;
+	if(this->par.isVerbose()) std::cout<<"  Reconstructing... "<<std::flush;
 	atrous3DReconstruct(this->axisDim[0],this->axisDim[1],this->axisDim[2],
 			    this->array,this->recon,this->par);
 	this->reconExists = true;
-	std::cout << "  All Done.";
-	printSpace(22);
-	std::cout << "\n";
+	if(this->par.isVerbose()) {
+	  std::cout << "  All Done.";
+	  printSpace(22);
+	  std::cout << "\n";
+	}
       }
 
     }
