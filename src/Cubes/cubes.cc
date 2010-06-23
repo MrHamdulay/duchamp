@@ -489,7 +489,16 @@ namespace duchamp
 
     if(this->arrayAllocated){
       delete [] this->array;
+      delete [] this->detectMap;
       this->arrayAllocated = false;
+    }
+    if(this->reconAllocated){
+      delete [] this->recon;
+      this->reconAllocated = false;
+    }
+    if(this->baselineAllocated){
+      delete [] this->baseline;
+      this->baselineAllocated = false;
     }
 
     if((size<0) || (imsize<0) ) {
