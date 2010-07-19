@@ -1083,7 +1083,7 @@ namespace duchamp
     int ct=0;
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
       obj->setID(ct+1);
-      if(obj->hasParams()){
+      if(!obj->hasParams()){
 	obj->setCentreType(this->par.getPixelCentre());
 	obj->calcFluxes(bigVoxList[ct]);
 	obj->calcWCSparams(this->head);
