@@ -132,18 +132,7 @@ int main(int argc, char * argv[])
       std::cout<<" Done.\n";
     }
 
-    if(cube->pars().getFlagATrous()){
-      std::cout<<"Commencing search in reconstructed cube..."<<std::endl;
-      cube->ReconSearch();
-    }  
-    else if(cube->pars().getFlagSmooth()){
-      std::cout<<"Commencing search in smoothed cube..."<<std::endl;
-      cube->SmoothSearch();
-    }
-    else{
-      std::cout<<"Commencing search in cube..."<<std::endl;
-      cube->CubicSearch();
-    }
+    cube->Search();
     std::cout << "Done. Intermediate list has " << cube->getNumObj();
     if(cube->getNumObj()==1) std::cout << " object.\n";
     else std::cout << " objects.\n";

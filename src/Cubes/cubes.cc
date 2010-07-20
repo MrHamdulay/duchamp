@@ -990,6 +990,26 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
+  void Cube::Search(bool verboseFlag)
+  {
+    /// @details
+    /// This acts as a switching function to select the correct searching function based on the user's parameters.
+    /// @param verboseFlag If true, text is written to stdout describing the search function being used.
+    if(this->par.getFlagATrous()){
+      if(verboseFlag) std::cout<<"Commencing search in reconstructed cube..."<<std::endl;
+      this->ReconSearch();
+    }  
+    else if(this->par.getFlagSmooth()){
+      if(verboseFlag) std::cout<<"Commencing search in smoothed cube..."<<std::endl;
+      this->SmoothSearch();
+    }
+    else{
+      if(verboseFlag) std::cout<<"Commencing search in cube..."<<std::endl;
+      this->CubicSearch();
+    }
+
+  }
+
   bool Cube::isDetection(long x, long y, long z)
   {
     ///  @details

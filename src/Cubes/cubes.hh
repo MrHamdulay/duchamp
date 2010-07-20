@@ -421,6 +421,10 @@ namespace duchamp
     //-------------------------------------
     // Reconstruction, Searching and Merging functions
     //
+    // in cubes.cc
+    /// @brief A front-end to all the searching functions
+    void        Search(bool verboseFlag=true);
+
     // in ATrous/ReconSearch.cc
     /// @brief Front-end to reconstruction & searching functions.
     void        ReconSearch();
