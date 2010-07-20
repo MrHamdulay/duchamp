@@ -556,22 +556,22 @@ namespace duchamp
     else return false;
   }
 
-  inline std::string readSval(std::stringstream& ss)
+  std::string readSval(std::stringstream& ss)
   {
     std::string val; ss >> val; return val;
   }
 
-  inline bool readFlag(std::stringstream& ss)
+  bool readFlag(std::stringstream& ss)
   {
     std::string val; ss >> val; return boolify(val);
   }
 
-  inline float readFval(std::stringstream& ss)
+  float readFval(std::stringstream& ss)
   {
     float val; ss >> val; return val;
   }
 
-  inline int readIval(std::stringstream& ss)
+  int readIval(std::stringstream& ss)
   {
     int val; ss >> val; return val;
   }

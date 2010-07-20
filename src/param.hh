@@ -52,6 +52,11 @@ namespace duchamp
   }while(0)
 
 
+  std::string readSval(std::stringstream& ss);
+  bool readFlag(std::stringstream& ss);
+  float readFval(std::stringstream& ss);
+  int readIval(std::stringstream& ss);
+
   class FitsHeader; // foreshadow this so that Param knows it exists
 
   const int numSortingParamOptions = 10;
