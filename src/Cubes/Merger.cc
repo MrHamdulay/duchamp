@@ -200,8 +200,7 @@ namespace duchamp
     ///    minimum number of channels and spatial pixels, as provided by
     ///    the Param set par.
     ///   If it does not pass, it is removed from the list.
-    ///   In the process, the object parameters are calculated and offsets
-    ///    are added.
+    ///   In the process, the offsets are set.
 
     if(par.isVerbose()){
       std::cout << "Rejecting:" << std::setw(6) << objList.size();
