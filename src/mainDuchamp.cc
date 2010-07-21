@@ -132,7 +132,7 @@ int main(int argc, char * argv[])
       std::cout<<" Done.\n";
     }
 
-    cube->Search();
+    cube->Search(true);
     std::cout << "Done. Intermediate list has " << cube->getNumObj();
     if(cube->getNumObj()==1) std::cout << " object.\n";
     else std::cout << " objects.\n";
