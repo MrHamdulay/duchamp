@@ -1360,6 +1360,7 @@ namespace duchamp
   {
     // need error handling in case size<0 !!!
     this->numPixels = this->numDim = 0;
+    this->minSize = 2;
     if(size<0)
       duchampError("Image(size)","Negative size -- could not define Image");
     else{
@@ -1378,6 +1379,7 @@ namespace duchamp
   Image::Image(long *dimensions)
   {
     this->numPixels = this->numDim = 0;
+    this->minSize = 2;
     int size = dimensions[0] * dimensions[1];
     if(size<0)
       duchampError("Image(dimArray)","Negative size -- could not define Image");

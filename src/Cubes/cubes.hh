@@ -646,7 +646,7 @@ namespace duchamp
   class Image : public DataArray
   {
   public:
-    Image(){numPixels=0; numDim=2;};
+    Image(){numPixels=0; numDim=2; minSize=2;};
     Image(long nPix);
     Image(long *dimensions);
     virtual ~Image(){};
