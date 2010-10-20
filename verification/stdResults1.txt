@@ -1,4 +1,4 @@
-Results of the Duchamp source finder: Thu Mar 25 14:38:01 2010
+Results of the Duchamp source finder: Wed Oct 20 12:11:40 2010
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
@@ -22,11 +22,12 @@ Using FDR analysis?............................[flagFDR]  =  false
 SNR Threshold (in sigma)........................[snrCut]  =  4
 Minimum # Pixels in a detection.................[minPix]  =  2
 Minimum # Channels in a detection..........[minChannels]  =  2
+Minimum # Voxels in a detection..............[minVoxels]  =  4
 Growing objects after detection?............[flagGrowth]  =  false
 Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
 Max. velocity separation for merging....[threshVelocity]  =  7
-Reject objects before merging?........[flagRejectBeforeMerge]  =  false
-Merge objects in two stages?..........[flagTwoStageMerging]  =  true
+Reject objects before merging?...[flagRejectBeforeMerge]  =  false
+Merge objects in two stages?.......[flagTwoStageMerging]  =  true
 Method of spectral plotting.............[spectralMethod]  =  peak
 Type of object centre used in results......[pixelCentre]  =  centroid
 --------------------
