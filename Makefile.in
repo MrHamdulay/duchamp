@@ -123,6 +123,7 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(UTILDIR)/linear_regression.o\
 	$(UTILDIR)/position_related.o\
 	$(UTILDIR)/sort.o\
+	$(UTILDIR)/string_related.o\
 	$(UTILDIR)/wcsFunctions.o\
 	$(UTILDIR)/zscale.o
 

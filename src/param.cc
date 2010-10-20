@@ -523,59 +523,6 @@ namespace duchamp
   /// / Other Functions using the  Parameter class:
   /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// /// 
 
-  std::string makelower( std::string s )
-  {
-    // "borrowed" from Matt Howlett's 'fred'
-    std::string out = "";
-    for( size_t i=0; i<s.size(); ++i ) {
-      out += tolower(s[i]);
-    }
-    return out;
-  }
-
-  inline std::string stringize(bool b)
-  {
-   /// Convert a bool variable to the textual equivalent. 
-   /// \return A std::string with the english equivalent of the bool.
-
-    std::string output;
-    if(b) output="true";
-    else output="false";
-    return output;
-  }
-
-  inline bool boolify( std::string s )
-  {
-    ///  Convert a std::string to a bool variable: 
-    ///  "1" and "true" get converted to true;
-    ///  "0" and "false" (and anything else) get converted to false.
-    /// \return The bool equivalent of the string.
-
-    if((s=="1") || (makelower(s)=="true")) return true;
-    else if((s=="0") || (makelower(s)=="false")) return false;
-    else return false;
-  }
-
-  std::string readSval(std::stringstream& ss)
-  {
-    std::string val; ss >> val; return val;
-  }
-
-  bool readFlag(std::stringstream& ss)
-  {
-    std::string val; ss >> val; return boolify(val);
-  }
-
-  float readFval(std::stringstream& ss)
-  {
-    float val; ss >> val; return val;
-  }
-
-  int readIval(std::stringstream& ss)
-  {
-    int val; ss >> val; return val;
-  }
-
   OUTCOME Param::readParams(std::string paramfile)
   {
     /// The parameters are read in from a disk file, on the assumption that each
@@ -601,7 +548,7 @@ namespace duchamp
 	std::string arg;
 	ss >> arg;
 	arg = makelower(arg);
-	if(arg=="imagefile")       this->imageFile = readSval(ss);
+	if(arg=="imagefile")       this->imageFile = readFilename(ss);
 	if(arg=="flagsubsection")  this->flagSubsection = readFlag(ss); 
 	if(arg=="subsection")      this->pixelSec.setSection(readSval(ss));
 	if(arg=="flagreconexists") this->flagReconExists = readFlag(ss); 
@@ -617,29 +564,29 @@ namespace duchamp
 	if(arg=="logfile")         this->logFile = readSval(ss); 
 	if(arg=="outfile")         this->outFile = readSval(ss); 
 	if(arg=="flagseparateheader") this->flagSeparateHeader = readFlag(ss);
-	if(arg=="headerfile")      this->headerFile = readSval(ss);
-	if(arg=="spectrafile")     this->spectraFile = readSval(ss); 
+	if(arg=="headerfile")      this->headerFile = readFilename(ss);
+	if(arg=="spectrafile")     this->spectraFile = readFilename(ss); 
 	if(arg=="flagtextspectra") this->flagTextSpectra = readFlag(ss); 
-	if(arg=="spectratextfile") this->spectraTextFile = readSval(ss); 
+	if(arg=="spectratextfile") this->spectraTextFile = readFilename(ss); 
 	if(arg=="flagoutputmomentmap")  this->flagOutputMomentMap = readFlag(ss); 
-	if(arg=="fileoutputmomentmap")  this->fileOutputMomentMap = readSval(ss);
+	if(arg=="fileoutputmomentmap")  this->fileOutputMomentMap = readFilename(ss);
 	if(arg=="flagoutputmask")  this->flagOutputMask = readFlag(ss); 
-	if(arg=="fileoutputmask")  this->fileOutputMask = readSval(ss);
+	if(arg=="fileoutputmask")  this->fileOutputMask = readFilename(ss);
 	if(arg=="flagmaskwithobjectnum") this->flagMaskWithObjectNum = readFlag(ss);
 	if(arg=="flagoutputsmooth")this->flagOutputSmooth = readFlag(ss); 
-	if(arg=="fileoutputsmooth")this->fileOutputSmooth = readSval(ss);
+	if(arg=="fileoutputsmooth")this->fileOutputSmooth = readFilename(ss);
 	if(arg=="flagoutputrecon") this->flagOutputRecon = readFlag(ss); 
-	if(arg=="fileoutputrecon") this->fileOutputRecon = readSval(ss);
+	if(arg=="fileoutputrecon") this->fileOutputRecon = readFilename(ss);
 	if(arg=="flagoutputresid") this->flagOutputResid = readFlag(ss); 
-	if(arg=="fileoutputresid") this->fileOutputResid = readSval(ss);
+	if(arg=="fileoutputresid") this->fileOutputResid = readFilename(ss);
 	if(arg=="flagvot")         this->flagVOT = readFlag(ss); 
-	if(arg=="votfile")         this->votFile = readSval(ss); 
+	if(arg=="votfile")         this->votFile = readFilename(ss); 
 	if(arg=="flagkarma")       this->flagKarma = readFlag(ss); 
-	if(arg=="karmafile")       this->karmaFile = readSval(ss); 
+	if(arg=="karmafile")       this->karmaFile = readFilename(ss); 
 	if(arg=="annotationtype")  this->annotationType = readSval(ss); 
 	if(arg=="flagmaps")        this->flagMaps = readFlag(ss); 
-	if(arg=="detectionmap")    this->detectionMap = readSval(ss); 
-	if(arg=="momentmap")       this->momentMap = readSval(ss); 
+	if(arg=="detectionmap")    this->detectionMap = readFilename(ss); 
+	if(arg=="momentmap")       this->momentMap = readFilename(ss); 
 	if(arg=="flagxoutput")     this->flagXOutput = readFlag(ss); 
 	if(arg=="newfluxunits")    this->newFluxUnits = readSval(ss);
 	if(arg=="precflux")        this->precFlux = readIval(ss);

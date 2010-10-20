@@ -95,5 +95,16 @@ void tophatSmooth(float *array, int arraySize, int width);
 
 float *medianBaseline(float *inputArray, int dim, unsigned int boxWidth);
 
+// STRING AND INPUT PARAMETER MANIPULATION ROUTINES
+std::string makelower( std::string s );
+std::string stringize(bool b);
+bool boolify(std::string s);
+std::string readSval(std::stringstream& ss);
+std::string readFilename(std::stringstream& ss);
+bool readFlag(std::stringstream& ss);
+float readFval(std::stringstream& ss);
+int readIval(std::stringstream& ss);
+std::string removeLeadingBlanks(std::string s);
+std::string deblank(std::string s);
 
 #endif

@@ -51,12 +51,6 @@ namespace duchamp
     recordParameters(outstream,string1,string2,oss.str());   \
   }while(0)
 
-
-  std::string readSval(std::stringstream& ss);
-  bool readFlag(std::stringstream& ss);
-  float readFval(std::stringstream& ss);
-  int readIval(std::stringstream& ss);
-
   class FitsHeader; // foreshadow this so that Param knows it exists
 
   const int numSortingParamOptions = 10;
@@ -533,9 +527,6 @@ namespace duchamp
 
   //===========================================================================
 
-
-  /// @brief Convert a string to lowercase.
-  std::string makelower( std::string s );
 
 }
 #endif

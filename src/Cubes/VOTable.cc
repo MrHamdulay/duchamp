@@ -39,7 +39,8 @@
 #include <duchamp/Cubes/cubes.hh> 
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Detection/columns.hh>
- 
+#include <duchamp/Utils/utils.hh>
+
 namespace duchamp
 {
 
