@@ -136,8 +136,12 @@ flagBaseline    0
 # flagGrowth -- Should the detections be "grown" to a lower significance value?
 # growthCut -- The lower threshold used when growing detections
 # growthThreshold -- The lower threshold, used in conjunction with "threshold"
-# beamsize -- the size of the beam in pixels. This value is overridden
-#             by the BMAJ, BMIN, BPA header parameters if present.
+# beamarea -- the area of the beam in pixels (equivalent to the old beamsize 
+#             parameter). This value is overridden by the BMAJ, BMIN, BPA header 
+#             parameters if present.
+# beamFWHM -- the full-width at half-maximum of the beam, in pixels. Where given,
+#             it overrides beamarea, but is overridden by the BMAJ, BMIN, BPA
+#             headers.
 # searchType -- how the searching is done. Either "spatial", where each 2D map is 
 #               searched then detections combined, or "spectral", where each 1D 
 #               spectrum is searched then detections combined. 
@@ -151,8 +155,8 @@ threshold	0.
 flagGrowth	0
 growthCut	2.
 growthThreshold 0.
-beamArea        -1.
-beamFWHM        3.
+beamArea        10.
+beamFWHM        -1.
 searchType      spatial
 
 # RECONSTRUCTION RELATED
