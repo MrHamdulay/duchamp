@@ -74,7 +74,7 @@ done
 
 ##########################################################################
 # Search for PGPLOT
-# use --with-cfitsio=directory to specify a particular PGPLOT directory.
+# use --with-pgplot=directory to specify a particular PGPLOT directory.
 # or  --without-pgplot or --with-pgplot=no to do without it
 # else do the normal searching for libraries.
 

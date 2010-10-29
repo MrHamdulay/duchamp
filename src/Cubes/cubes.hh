@@ -243,6 +243,8 @@ namespace duchamp
       array[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x] = f;};
     void        setDetectMapValue(long pos, short f){ detectMap[pos] = f;};
     void        setDetectMapValue(long x, long y, short f){ detectMap[y*axisDim[0] + x] = f;};
+    void        incrementDetectMap(long x, long y){detectMap[y*axisDim[0]+x]++;};
+    void        incrementDetectMap(long pos){detectMap[pos]++;};
     void        setReconValue(long pos, float f){recon[pos] = f;};
     void        setReconValue(long x, long y, long z, float f){ 
       recon[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x] = f; };
