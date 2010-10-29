@@ -87,17 +87,21 @@ namespace duchamp
   }
 
   DataArray& DataArray::operator=(const DataArray &d){
-    if(this==*d) return *this;
+    if(this==&d) return *this;
     this->numDim = d.numDim;
-    this->axisDimAllocated = d.axisDimAllocated;
     if(this->axisDimAllocated) delete [] this->axisDim;
-    this->axisDim = new long[this->numDim];
-    for(size_t i=0;i<this->numDim;i++) this->axisDim[i] = d.axisDim[i];
+    this->axisDimAllocated = d.axisDimAllocated;
+    if(this->axisDimAllocated){
+      this->axisDim = new long[this->numDim];
+      for(size_t i=0;i<this->numDim;i++) this->axisDim[i] = d.axisDim[i];
+    }
     this->numPixels = d.numPixels;
-    this->arrayAllocated = d.arrayAllocated;
     if(this->arrayAllocated) delete [] this->array;
-    this->array = new long[this->numPixels];
-    for(size_t i=0;i<this->numPixels;i++) this->array[i] = d.array[i];
+    this->arrayAllocated = d.arrayAllocated;
+    if(this->arrayAllocated) {
+      this->array = new float[this->numPixels];
+      for(size_t i=0;i<this->numPixels;i++) this->array[i] = d.array[i];
+    }
     this->objectList = d.objectList;
     this->par = d.par;
     this->Stats = d.Stats;
@@ -467,14 +471,31 @@ namespace duchamp
     this->operator=(c);
   }
 
-  Cube& Cube::operator=(const Cube &c):
+  Cube& Cube::operator=(const Cube &c)
   {
-    if(this==*c) return *this;
-    ((DataArray &) *this) = d;
-    this->reconExists = d.reconExists;
-    this->reconAllocated = d.reconAllocated;
+    if(this==&c) return *this;
     if(this->arrayAllocated) delete [] this->detectMap;
-    this->detectMap = new short[
+    ((DataArray &) *this) = c;
+    this->reconExists = c.reconExists;
+    if(this->reconAllocated) delete [] this->recon;
+    this->reconAllocated = c.reconAllocated;
+    if(this->reconAllocated) {
+      this->recon = new float[this->numPixels];
+      for(size_t i=0;i<this->numPixels;i++) this->recon[i] = c.recon[i];
+    }
+    if(this->arrayAllocated){
+      this->detectMap = new short[this->axisDim[0]*this->axisDim[1]];
+      for(size_t i=0;i<this->axisDim[0]*this->axisDim[1];i++) this->detectMap[i] = c.detectMap[i];
+    }
+    if(this->baselineAllocated) delete [] this->baseline;
+    this->baselineAllocated = c.baselineAllocated;
+    if(this->baselineAllocated){
+      this->baseline = new float[this->numPixels];
+      for(size_t i=0;i<this->numPixels;i++) this->baseline[i] = c.baseline[i];
+    }
+    this->head = c.head;
+    this->fullCols = c.fullCols;
+    this->logCols = c.logCols;
     return *this;
   }
 
@@ -1442,9 +1463,9 @@ namespace duchamp
     this->operator=(i);
   }
 
-  Image& Image::operator=(const Image &i):
+  Image& Image::operator=(const Image &i)
   {
-    if(this==*i) return *this;
+    if(this==&i) return *this;
     ((DataArray &) *this) = i;
     this->minSize = i.minSize;
     return *this;
