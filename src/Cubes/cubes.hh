@@ -78,6 +78,8 @@ namespace duchamp
     DataArray(short int nDim, long size);///< Basic nDim-dimensional DataArray constructor, specifying size.
     DataArray(short int nDim, long *dimensions); ///< Basic nDim-dimensional DataArray constructor, specifying size of dimensions.
     virtual ~DataArray(); ///< Basic DataArray constructor
+    DataArray(const DataArray &d);
+    DataArray& operator=(const DataArray &d);
 
     //-----------------------------------------
     // Obvious inline accessor functions.
@@ -205,6 +207,8 @@ namespace duchamp
     Cube(long nPix);        ///< Alternative Cube constructor.
     Cube(long *dimensions); ///< Alternative Cube constructor.
     virtual ~Cube();        ///< Basic Cube destructor.
+    Cube(const Cube &c);    ///< Copy constructor
+    Cube& operator=(const Cube &c); ///< Copy operator
 
     bool        is2D();
     void        checkDim(){head.set2D(is2D());};
@@ -650,6 +654,8 @@ namespace duchamp
     Image(long nPix);
     Image(long *dimensions);
     virtual ~Image(){};
+    Image(const Image &i);
+    Image& operator=(const Image &i);
 
     //--------------------
     // Defining the array

@@ -82,6 +82,29 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
+  DataArray::DataArray(const DataArray &d){
+    operator=(d);
+  }
+
+  DataArray& DataArray::operator=(const DataArray &d){
+    if(this==*d) return *this;
+    this->numDim = d.numDim;
+    this->axisDimAllocated = d.axisDimAllocated;
+    if(this->axisDimAllocated) delete [] this->axisDim;
+    this->axisDim = new long[this->numDim];
+    for(size_t i=0;i<this->numDim;i++) this->axisDim[i] = d.axisDim[i];
+    this->numPixels = d.numPixels;
+    this->arrayAllocated = d.arrayAllocated;
+    if(this->arrayAllocated) delete [] this->array;
+    this->array = new long[this->numPixels];
+    for(size_t i=0;i<this->numPixels;i++) this->array[i] = d.array[i];
+    this->objectList = d.objectList;
+    this->par = d.par;
+    this->Stats = d.Stats;
+    return *this;
+  }
+
+
   DataArray::DataArray(short int nDim){
     /// @details
     /// N-dimensional constructor for DataArray.
@@ -437,6 +460,23 @@ namespace duchamp
     if(this->baselineAllocated) delete [] this->baseline;
   }
   //--------------------------------------------------------------------
+
+  Cube::Cube(const Cube &c):
+    DataArray(c)
+  {
+    this->operator=(c);
+  }
+
+  Cube& Cube::operator=(const Cube &c):
+  {
+    if(this==*c) return *this;
+    ((DataArray &) *this) = d;
+    this->reconExists = d.reconExists;
+    this->reconAllocated = d.reconAllocated;
+    if(this->arrayAllocated) delete [] this->detectMap;
+    this->detectMap = new short[
+    return *this;
+  }
 
   OUTCOME Cube::initialiseCube(long *dimensions, bool allocateArrays)
   {
@@ -1396,6 +1436,20 @@ namespace duchamp
     }
   }
   //--------------------------------------------------------------------
+  Image::Image(const Image &i):
+    DataArray(i)
+  {
+    this->operator=(i);
+  }
+
+  Image& Image::operator=(const Image &i):
+  {
+    if(this==*i) return *this;
+    ((DataArray &) *this) = i;
+    this->minSize = i.minSize;
+    return *this;
+  }
+
   //--------------------------------------------------------------------
 
   void Image::saveArray(float *input, long size)
