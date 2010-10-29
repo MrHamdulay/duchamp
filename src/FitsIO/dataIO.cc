@@ -92,14 +92,13 @@ namespace duchamp
     if(numAxes>1) npix *= dimAxes[lat];
     if((spc>=0)&&(numAxes>spc)) npix *= dimAxes[spc];
 
-    float *pixarray = new float[npix];// the array of pixel values
-    long *inc = new long[numAxes];    // the data-sampling increment
 
     // define the first and last pixels for each axis.
     // set both to 1 for the axes we don't want, and to the full
     //  range for the ones we do.
     long *fpixel = new long[numAxes];
     long *lpixel = new long[numAxes];
+    long *inc = new long[numAxes];    // the data-sampling increment
     for(int i=0;i<numAxes;i++){
       inc[i] = fpixel[i] = lpixel[i] = 1;
     }
@@ -110,10 +109,30 @@ namespace duchamp
     int colnum = 0;  // want the first dataset in the FITS file
 
     // read the relevant subset, defined by the first & last pixel ranges
+    if(this->initialiseCube(dimAxes) == FAILURE) return FAILURE;
+    if(this->par.isVerbose()){
+      float size = dimAxes[0];
+      for(int i=1;i<numAxes;i++) size*=dimAxes[i];
+      size *= sizeof(float) / 1024.;
+      std::string units=" kB";
+      if(size > 1024.){
+	size /= 1024.;
+	units = " MB";
+      }
+      if(size > 1024.){
+	size /= 1024.;
+	units = " GB";
+      }
+      if(size > 1024.){
+	size /= 1024.;
+	units = " TB";
+      }
+      std::cout << "\n  About to read " << size << units <<"\n";
+    }
     status = 0;
     if(fits_read_subset_flt(fptr, colnum, numAxes, dimAxes,
 			    fpixel, lpixel, inc, 
-			    this->par.getBlankPixVal(), pixarray, &anynul, &status)){
+			    this->par.getBlankPixVal(), this->array, &anynul, &status)){
       duchampError("Cube Reader",
 		   "There was an error reading in the data array:");
       fits_report_error(stderr, status);
@@ -135,9 +154,6 @@ namespace duchamp
       this->par.setFlagTrim(false);
     }
 
-    if(this->initialiseCube(dimAxes) == FAILURE) return FAILURE;
-    this->saveArray(pixarray,npix);
-    delete [] pixarray;
     delete [] dimAxes;
 
     // Close the FITS file -- not needed any more in this function.
