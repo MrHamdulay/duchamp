@@ -45,6 +45,8 @@ namespace PixelInfo
     Voxel(){};
     /// @brief Specific constructor, defining an (x,y,z) location and flux f. 
     Voxel(long x, long y, long z, float f);
+    /// @brief Specific constructor, defining an (x,y,z) location, setting f=0. 
+    Voxel(long x, long y, long z);
     /// @brief Copy constructor. 
     Voxel(const Voxel& v);
     /// @brief Assignment operator. 

@@ -32,12 +32,16 @@
 namespace PixelInfo
 {
 
-  Voxel::Voxel(long x, long y, long z, float f)
+  Voxel::Voxel(long x, long y, long z, float f) :
+    itsX(x), itsY(y), itsZ(z), itsF(f)
   { 
-    this->itsX=x; 
-    this->itsY=y; 
-    this->itsZ=z; 
-    this->itsF=f;
+  }
+  //--------------------------------------------------------------------
+
+  Voxel::Voxel(long x, long y, long z) :
+    itsX(x), itsY(y), itsZ(z)
+  { 
+    this->itsF=0.;
   }
   //--------------------------------------------------------------------
 
