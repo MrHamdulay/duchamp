@@ -154,7 +154,7 @@ namespace duchamp
     /// @brief Provides a reference to the Param set.
     Param&             pars(){ Param &rpar = par; return rpar; }; 
     /// @brief Is the voxel number given by vox a BLANK value?
-    bool               isBlank(int vox); 
+    bool               isBlank(int vox){return par.isBlank(array[vox]);}; 
 
     // --------------------------------------------
     // Statistics

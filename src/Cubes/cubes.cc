@@ -93,14 +93,14 @@ namespace duchamp
     this->axisDimAllocated = d.axisDimAllocated;
     if(this->axisDimAllocated){
       this->axisDim = new long[this->numDim];
-      for(size_t i=0;i<this->numDim;i++) this->axisDim[i] = d.axisDim[i];
+      for(size_t i=0;i<size_t(this->numDim);i++) this->axisDim[i] = d.axisDim[i];
     }
     this->numPixels = d.numPixels;
     if(this->arrayAllocated) delete [] this->array;
     this->arrayAllocated = d.arrayAllocated;
     if(this->arrayAllocated) {
       this->array = new float[this->numPixels];
-      for(size_t i=0;i<this->numPixels;i++) this->array[i] = d.array[i];
+      for(size_t i=0;i<size_t(this->numPixels);i++) this->array[i] = d.array[i];
     }
     this->objectList = d.objectList;
     this->par = d.par;
@@ -481,17 +481,17 @@ namespace duchamp
     this->reconAllocated = c.reconAllocated;
     if(this->reconAllocated) {
       this->recon = new float[this->numPixels];
-      for(size_t i=0;i<this->numPixels;i++) this->recon[i] = c.recon[i];
+      for(size_t i=0;i<size_t(this->numPixels);i++) this->recon[i] = c.recon[i];
     }
     if(this->arrayAllocated){
       this->detectMap = new short[this->axisDim[0]*this->axisDim[1]];
-      for(size_t i=0;i<this->axisDim[0]*this->axisDim[1];i++) this->detectMap[i] = c.detectMap[i];
+      for(size_t i=0;i<size_t(this->axisDim[0]*this->axisDim[1]);i++) this->detectMap[i] = c.detectMap[i];
     }
     if(this->baselineAllocated) delete [] this->baseline;
     this->baselineAllocated = c.baselineAllocated;
     if(this->baselineAllocated){
       this->baseline = new float[this->numPixels];
-      for(size_t i=0;i<this->numPixels;i++) this->baseline[i] = c.baseline[i];
+      for(size_t i=0;i<size_t(this->numPixels);i++) this->baseline[i] = c.baseline[i];
     }
     this->head = c.head;
     this->fullCols = c.fullCols;
@@ -769,18 +769,20 @@ namespace duchamp
       if(this->par.isVerbose())
 	std::cout << "Calculating the cube statistics... " << std::flush;
     
-      long xysize = this->axisDim[0]*this->axisDim[1];
+      // long xysize = this->axisDim[0]*this->axisDim[1];
 
       bool *mask = new bool[this->numPixels];
-      int vox,goodSize = 0;
-      for(int x=0;x<this->axisDim[0];x++){
+      int vox=0,goodSize = 0;
+      for(int z=0;z<this->axisDim[2];z++){
 	for(int y=0;y<this->axisDim[1];y++){
-	  for(int z=0;z<this->axisDim[2];z++){
-	    vox = z * xysize + y*this->axisDim[0] + x;
-	    mask[vox] = (!this->isBlank(vox) && 
-			 !this->par.isInMW(z) && 
-			 this->par.isStatOK(x,y,z) );
+	  for(int x=0;x<this->axisDim[0];x++){
+	    //	    vox = z * xysize + y*this->axisDim[0] + x;
+	    bool isBlank=this->isBlank(vox);
+	    bool isMW = this->par.isInMW(z);
+	    bool statOK = this->par.isStatOK(x,y,z);
+	    mask[vox] = (!isBlank && !isMW && statOK );
 	    if(mask[vox]) goodSize++;
+	    vox++;
 	  }
 	}
       }
@@ -798,11 +800,13 @@ namespace duchamp
 	  float *tempArray = new float[goodSize];
 
 	  goodSize=0;
-	  for(int x=0;x<this->axisDim[0];x++){
+	  vox++;
+	  for(int z=0;z<this->axisDim[2];z++){
 	    for(int y=0;y<this->axisDim[1];y++){
-	      for(int z=0;z<this->axisDim[2];z++){
-		vox = z * xysize + y*this->axisDim[0] + x;
+	      for(int x=0;x<this->axisDim[0];x++){
+		//		vox = z * xysize + y*this->axisDim[0] + x;
 		if(mask[vox]) tempArray[goodSize++] = this->array[vox];
+		vox++;
 	      }
 	    }
 	  }
@@ -817,14 +821,19 @@ namespace duchamp
 	  // them. We don't store these, but they are necessary to find
 	  // the sttdev & madfm.
 	  goodSize = 0;
-	  for(int p=0;p<xysize;p++){
-	    for(int z=0;z<this->axisDim[2];z++){
-	      vox = z * xysize + p;
+	  //	  for(int p=0;p<xysize;p++){
+	  vox=0;
+	  for(int z=0;z<this->axisDim[2];z++){
+	    for(int y=0;y<this->axisDim[1];y++){
+	      for(int x=0;x<this->axisDim[0];x++){
+		//	      vox = z * xysize + p;
 	      if(mask[vox])
 		tempArray[goodSize++] = this->array[vox] - this->recon[vox];
+	      vox++;
+	      }
 	    }
 	  }
-
+	    
 	  this->Stats.setStddev( findStddev(tempArray, goodSize) );
 
 	  // Now find the madfm of the residuals. Store it.
