@@ -137,12 +137,9 @@ namespace PixelInfo
 	    if(this->scanlist[count2].itsY==y){
 	      combined = touching(this->scanlist[count1], this->scanlist[count2]);
 	      if(combined){
-		Scan newOne = unite(this->scanlist[count1], this->scanlist[count2]);
+		for(int i=0;i<this->scanlist[count2].getXlen();i++) this->scanlist[count1].growRight();
 		iter = this->scanlist.begin() + count2;
 		this->scanlist.erase(iter);
-		iter = this->scanlist.begin() + count1;
-		this->scanlist.erase(iter);
-		this->scanlist.push_back(newOne);
 	      }
 	    }	
 	    count2++;
@@ -150,8 +147,6 @@ namespace PixelInfo
 	}
 	count1++;
       }
-
-      this->order(); // if we've added something, re-order everything
 
     }
 
