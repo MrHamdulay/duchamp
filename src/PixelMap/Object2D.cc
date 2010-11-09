@@ -177,103 +177,6 @@ namespace PixelInfo
     this->order();
 
   }
-//   void Object2D::addScan(Scan scan)
-//   {
-
-//     bool flagDone=false,flagChanged=false;;
-//     long y = scan.itsY;
-//     unsigned int scanCount = 0;
-//     std::vector <Scan>::iterator iter;
-
-//     while(!flagDone && (scanCount<this->scanlist.size()) ){
-//       Scan existing = this->scanlist[scanCount];    
-//       if(y==existing.itsY){ //ie. if the y value has a scan present
-// 	if(scan == existing) flagDone = true; // the scan is already there
-// 	else if(touching(scan,existing)){ // if it overlaps or is next to an existing scan
-// 	  // 	Scan joined = unite(scan,existing);
-// 	  // 	iter = this->scanlist.begin() + scanCount;
-// 	  // 	this->scanlist.erase(iter);
-// 	  // 	this->scanlist.push_back(joined);
-// 	  // 	flagDone = true;
-// 	  flagChanged = true;
-// 	}
-//       }
-//       scanCount++;
-//     }
-
-//     // if it is unconnected with any existing scan, add it to the end of
-//     // the list
-//     if(!flagDone) this->scanlist.push_back(scan);
-
-//     // if the scan has been added, we need to change the centres, mins,
-//     // maxs etc. First add all the pixels from the scan. We then remove
-//     // any doubled up ones later.
-//     if( (!flagDone) || flagChanged ){
-//       if(this->numPix==0){
-// 	this->ySum = y*scan.itsXLen;
-// 	this->ymin = this->ymax = y;
-// 	this->xmin = scan.itsX;
-// 	this->xmax = scan.getXmax();
-// 	this->xSum = scan.itsX;
-// 	for(int x=scan.itsX+1;x<=scan.getXmax();x++) this->xSum += x;
-// 	this->numPix = scan.itsXLen;
-//       }
-//       else{
-// 	this->ySum += y*scan.itsXLen;
-// 	for(int x=scan.itsX; x<=scan.getXmax(); x++) this->xSum += x;
-// 	if(y<this->ymin) this->ymin = y;
-// 	if(y>this->ymax) this->ymax = y;
-// 	if(scan.itsX<this->xmin)      this->xmin = scan.itsX;
-// 	if(scan.getXmax()>this->xmax) this->xmax = scan.getXmax();
-// 	this->numPix += scan.itsXLen;
-//       }
-//     }
-
-//     if(flagChanged){ 
-//       // this is true only if one of the pre-existing scans has changed
-//       // 
-//       // In this case, we are adding a scan, and the possibility exists
-//       // that more than one other scan could be affected. We therefore
-//       // need to look over all scans, not just stopping at the first
-//       // match we come across (as for addPixel() above).
-//       unsigned int count1=0;
-//       while(count1<this->scanlist.size()-1){
-// 	unsigned int count2 = count1 + 1;
-// 	do {
-// 	  Scan first = this->scanlist[count1];
-// 	  Scan second = this->scanlist[count2];
-// 	  if(y==first.itsY && y==second.itsY){ 
-// 	    // only look at the y-value where there would have been a change.
-// 	    if(touching(first,second)){
-// 	      Scan newOne = unite(first,second);
-// 	      iter = this->scanlist.begin() + count2;
-// 	      this->scanlist.erase(iter);
-// 	      iter = this->scanlist.begin() + count1;
-// 	      this->scanlist.erase(iter);
-// 	      this->scanlist.push_back(newOne);
-	    
-// 	      count2 = count1 + 1;
-
-// 	      // Need to remove the doubled-up pixels from the info
-// 	      Scan overlap = intersect(first,second);
-// 	      this->ySum -= overlap.itsY*overlap.itsXLen;
-// 	      for(int x=overlap.itsX; x<=overlap.getXmax(); x++)
-// 		this->xSum -= x;
-// 	      this->numPix -= overlap.itsXLen;
-
-// 	    }
-// 	    else count2++;
-// 	  }	
-// 	  else count2++;
-// 	} while(count2 < this->scanlist.size());
-
-// 	count1++;
-//       }
-//     }
-
-//     this->order();
-
-//   }
   //------------------------------------------------------
 
   bool Object2D::isInObject(long x, long y)
@@ -290,16 +193,6 @@ namespace PixelInfo
     return returnval;
 
   }
-  //------------------------------------------------------
-
-  // long Object2D::getSize()
-  // {
-  //   long size=0;
-  //   for(int i=0;i<this->scanlist.size();i++){
-  //     size += this->scanlist[i].getXlen();
-  //   }
-  //   return size;
-  // }
   //------------------------------------------------------
 
   std::ostream& operator<< ( std::ostream& theStream, Object2D& obj)
@@ -334,8 +227,6 @@ namespace PixelInfo
       this->ySum += s->itsY*s->getXlen();
       for(int x=s->itsX;x<=s->getXmax();x++)
 	this->xSum += x;
-//       this->xSum += (s->getXmax()*(s->getXmax()+1) -
-// 		     s->itsX*(s->itsX-1) ) / 2;
 
     }
 
@@ -370,8 +261,6 @@ namespace PixelInfo
 	counter++;
       }
 
-    //   this->order();
-
   }
   //------------------------------------------------------
 
@@ -405,8 +294,6 @@ namespace PixelInfo
       xlist.push_back(x);
     std::vector<Scan>::iterator scn;
     for(scn=this->scanlist.begin();scn<this->scanlist.end();scn++){
-      //    for(unsigned int i=1;i<this->scanlist.size();i++){
-      //      for(int x=this->scanlist[0].itsX;x<this->scanlist[0].getXmax();x++){
       for(int x=scn->itsX;x<scn->getXmax();x++){
 	bool inList = false;
 	unsigned int j=0;
