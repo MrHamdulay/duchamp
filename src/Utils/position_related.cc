@@ -46,7 +46,7 @@ std::string getIAUNameEQ(double ra, double dec, float equinox)
    *   and B1234-4321 otherwise
    */
 
-  double raHrs = ra / 15.;
+  double raHrs = fmod(ra+360.,360.) / 15.;   // need to account for ra possibly being negative...
   int h = int(raHrs);
   int m = (int)(fmod(raHrs,1.)*60.);
   int s = (int)(fmod(raHrs,1./60.)*3600.);
