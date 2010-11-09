@@ -88,16 +88,15 @@ namespace PixelInfo
 
     bool flagDone=false,flagChanged=false, isNew=false;
 
-    size_t scanCount = 0;
-    while(!flagDone && (scanCount<this->scanlist.size()) ){
-      Scan scan = this->scanlist[scanCount];    
-      if(y == scan.itsY){ // if the y value is already in the list
-	if(scan.isInScan(x,y)) flagDone = true; // pixel already here.
+    size_t scanCount = 0, size=this->scanlist.size();
+    while(!flagDone && (scanCount<size) ){
+      if(y == this->scanlist[scanCount].itsY){ // if the y value is already in the list
+	if(this->scanlist[scanCount].isInScan(x,y)) flagDone = true; // pixel already here.
 	else{ // it's a new pixel!
-	  if((x==(scan.itsX-1)) || (x == (scan.getXmax()+1)) ){
+	  if((x==(this->scanlist[scanCount].itsX-1)) || (x == (this->scanlist[scanCount].getXmax()+1)) ){
 	    // if it is adjacent to the existing range, add to that range
-	    if(x==(scan.itsX-1)) this->scanlist[scanCount].growLeft();
-	    else                 this->scanlist[scanCount].growRight();
+	    if(x==(this->scanlist[scanCount].itsX-1)) this->scanlist[scanCount].growLeft();
+	    else                                      this->scanlist[scanCount].growRight();
 	    flagDone = true;
 	    flagChanged = true;
 	    isNew = true;
@@ -174,7 +173,6 @@ namespace PixelInfo
   {
 
     for(int x=scan.getX();x<=scan.getXmax();x++) this->addPixel(x,scan.getY());
-    this->order();
 
   }
   //------------------------------------------------------

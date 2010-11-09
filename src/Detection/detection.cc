@@ -1017,6 +1017,13 @@ namespace duchamp
   
   }
 
+  
+  void Detection::addDetection(Detection other)
+  {
+    for(std::map<long, Object2D>::iterator it = other.chanlist.begin(); it!=other.chanlist.end();it++)
+      this->addChannel(it->first, it->second);
+    this->haveParams = false; // make it appear as if the parameters haven't been calculated, so that we can re-calculate them  
+  }
 
   Detection operator+ (Detection lhs, Detection rhs)
   {

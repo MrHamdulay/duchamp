@@ -148,19 +148,12 @@ namespace duchamp
 
 	do {
 
-	  Detection obj1 = objList[counter];
-	  Detection obj2 = objList[compCounter];
-	  Detection newobj;
-
-	  bool close = areClose(obj1, obj2, par);
+	  bool close = areClose(objList[counter], objList[compCounter], par);
 
 	  if(close){
-	    newobj = obj1 + obj2 ;
-	    iter = objList.begin() + compCounter;
+	    objList[counter].addDetection(objList[compCounter]);
+	    iter=objList.begin()+compCounter;
 	    objList.erase(iter);
-	    iter = objList.begin() + counter;
-	    objList.erase(iter);
-	    objList.push_back( newobj );
 
 	    if(isVerb){
 	      std::cout.setf(std::ios::right);
