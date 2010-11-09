@@ -45,14 +45,14 @@ namespace PixelInfo
   }
   //------------------------------------------------------
   
-  Scan& Scan::operator= (const Scan& s)
-  {    
-    if(this == &s) return *this;
-    this->itsY=s.itsY; 
-    this->itsX=s.itsX; 
-    this->itsXLen=s.itsXLen;
-    return *this;
-  }
+  // Scan& Scan::operator= (const Scan& s)
+  // {    
+  //   if(this == &s) return *this;
+  //   this->itsY=s.itsY; 
+  //   this->itsX=s.itsX; 
+  //   this->itsXLen=s.itsXLen;
+  //   return *this;
+  // }
   //------------------------------------------------------
 
   Scan nullScan()

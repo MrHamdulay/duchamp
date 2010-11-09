@@ -30,6 +30,7 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <vector>
 #include <math.h>
 #include <wcslib/wcs.h>
 #include <duchamp/Cubes/cubeUtils.hh>
@@ -84,7 +85,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void getIntSpec(Detection &object, float *fluxArray, long *dimArray, bool *mask, 
+  void getIntSpec(Detection &object, float *fluxArray, long *dimArray, std::vector<bool> mask, 
 		  float beamCorrection, float *spec)
   {
     /// @details

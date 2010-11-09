@@ -50,7 +50,7 @@ namespace PixelInfo
     Scan();
     Scan(long y, long x, long xl){itsY=y; itsX=x; itsXLen=xl;};
     Scan(const Scan& s);
-    Scan& operator= (const Scan& s);
+    Scan& operator= (const Scan& s){itsY=s.itsY; itsX=s.itsX; itsXLen=s.itsXLen; return *this;};
     virtual ~Scan(){};
 
     /// @brief Define a Scan by providing the three key parameters.  

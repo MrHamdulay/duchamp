@@ -171,11 +171,14 @@ int main(int argc, char * argv[])
 
   if(cube->getNumObj()>0){
 
+    std::cout << "Calculating final parameters and setting flags...  "<<std::flush;
     cube->calcObjectWCSparams();
 
     cube->setObjectFlags();
     
     cube->sortDetections();
+
+    std::cout << "Done." << std::endl;
 
   }
   

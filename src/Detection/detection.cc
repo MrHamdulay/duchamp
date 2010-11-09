@@ -840,8 +840,8 @@ namespace duchamp
 //       double zpt;
 
       float *intSpec = new float[dim[2]];
-      bool *mask = new bool[dim[0]*dim[1]*dim[2]]; 
-      for(int i=0;i<dim[0]*dim[1]*dim[2];i++) mask[i] = true;
+      long size=dim[0]*dim[1]*dim[2];
+      std::vector<bool> mask(size,true); 
       getIntSpec(*this,fluxArray,dim,mask,1.,intSpec);
 
 //       std::vector<std::pair<int,float> > goodPix;
@@ -906,7 +906,6 @@ namespace duchamp
       this->calcVelWidths(dim[2],intSpec,head);
 
       delete [] intSpec;
-      delete [] mask;
 
     }
     else{
