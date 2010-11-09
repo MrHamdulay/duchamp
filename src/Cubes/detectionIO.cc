@@ -60,7 +60,8 @@ namespace duchamp
 
     std::string fname = this->par.getImageFile();
     if(this->par.getFlagSubsection()) fname+=this->par.getSubsection();
-    stream << "# Duchamp Source Finder results for FITS file: " << fname << endl;
+    stream << "# Duchamp Source Finder v."<< VERSION << endl;
+    stream << "# Results for FITS file: " << fname << endl;
     if(this->par.getFlagFDR())
       stream<<"# FDR Significance = " << this->par.getAlpha() << endl;
     else
@@ -143,7 +144,7 @@ namespace duchamp
     if(this->par.getFlagSeparateHeader()) outfile = this->par.getHeaderFile();
     else outfile = this->par.getOutFile();
     std::ofstream output(outfile.c_str());
-    output<<"Results of the Duchamp source finder: ";
+    output<<"Results of the Duchamp source finder v."<<VERSION<<": ";
     time_t now = time(NULL);
     output << asctime( localtime(&now) );
     this->showParam(output);
@@ -266,7 +267,7 @@ namespace duchamp
 
     // Open the logfile and write the time on the first line
     std::ofstream logfile(this->par.getLogFile().c_str());
-    logfile << "New run of the Duchamp sourcefinder: ";
+    logfile << "New run of the Duchamp source finder v."<<VERSION<<": ";
     time_t now = time(NULL);
     logfile << asctime( localtime(&now) );
     // Write out the command-line statement
