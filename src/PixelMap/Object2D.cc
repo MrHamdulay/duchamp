@@ -107,18 +107,20 @@ namespace PixelInfo
       scanCount++;
     }
 
-    if(!flagDone){
+    if(!flagDone){ 
+      // we got to the end of the scanlist, so there is no pre-existing scan with this y value
+      // add a new scan consisting of just this pixel
       Scan newOne(y,x,1);
       this->scanlist.push_back(newOne);
       if(this->scanlist.size()>1) this->order();
       isNew = true;
     }
-  
-    if(flagChanged){ 
+    else if(flagChanged){ 
       // this is true only if one of the pre-existing scans has changed
       //
       // need to clean up, to see if there is a case of two scans when
-      // there should be one.
+      // there should be one. Only need to look at scans with matching
+      // y-value
       //
       // because there has been only one pixel added, only 2 AT MOST
       // scans will need to be combined, so once we meet a pair that
@@ -129,22 +131,22 @@ namespace PixelInfo
       int size = this->scanlist.size();
       int count1=0;
       while(!combined && count1<size){
-	int count2 = count1 + 1;
-	while(!combined && count2<size){
-	  Scan first = this->scanlist[count1];
-	  Scan second = this->scanlist[count2];
-	  if(y==first.itsY && y==second.itsY){
-	    combined = touching(first, second);
-	    if(combined){
-	      Scan newOne = unite(first,second);;
-	      iter = this->scanlist.begin() + count2;
-	      this->scanlist.erase(iter);
-	      iter = this->scanlist.begin() + count1;
-	      this->scanlist.erase(iter);
-	      this->scanlist.push_back(newOne);
-	    }
-	  }	
-	  count2++;
+	if(this->scanlist[count1].itsY==y){
+	  int count2 = count1 + 1;
+	  while(!combined && count2<size){
+	    if(this->scanlist[count2].itsY==y){
+	      combined = touching(this->scanlist[count1], this->scanlist[count2]);
+	      if(combined){
+		Scan newOne = unite(this->scanlist[count1], this->scanlist[count2]);
+		iter = this->scanlist.begin() + count2;
+		this->scanlist.erase(iter);
+		iter = this->scanlist.begin() + count1;
+		this->scanlist.erase(iter);
+		this->scanlist.push_back(newOne);
+	      }
+	    }	
+	    count2++;
+	  }
 	}
 	count1++;
       }

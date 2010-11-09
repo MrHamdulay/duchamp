@@ -35,6 +35,7 @@
 #include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Cubes/cubeUtils.hh>
 #include <duchamp/Detection/detection.hh>
+#include <duchamp/Detection/ObjectGrower.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/feedback.hh>
 
@@ -72,7 +73,8 @@ namespace duchamp
 
       // Do growth stuff
       if(this->par.getFlagGrowth()) {
-	vector <Detection> newList(currentList.size());
+	ObjectGrower grower;
+	grower.define(this);
 	for(size_t i=0;i<currentList.size();i++){
 	  if(this->par.isVerbose()){
 	    std::cout.setf(std::ios::right);
@@ -83,14 +85,8 @@ namespace duchamp
 	    printBackSpace(22);
 	    std::cout << std::flush;
 	  }
-	  Detection *obj = new Detection;
-	  *obj = currentList[i];
-	  growObject(*obj,*this);
-	  newList[i] = *obj;
-	  delete obj;
+	  grower.grow(&currentList[i]);
 	}
-	currentList.clear();
-	currentList = newList;
 	std::cout.unsetf(std::ios::left);
 
 	// and do the merging again to pick up objects that have

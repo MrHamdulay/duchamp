@@ -145,12 +145,10 @@ namespace duchamp
 	       obj1.getYmax()-obj1.getYmin()+1+2*int(threshold));
     Scan temp2(0, obj2.getYmin(),obj2.getYmax()-obj2.getYmin()+1);
     Scan Yoverlap = intersect(temp1,temp2);
-//       std::cerr << "\n"<<temp1 <<"\t" << temp2 << "\t" << Yoverlap<<"\n";
       
-      // Xoverlap has the scans that overlap with a padding of width threshold
+      // Yoverlap has the scans that overlap with a padding of width threshold
       // If two pixels are separated in Y by threshold, but have the same X, then they match.
       // This is the furthest apart they can be in Y.
-
 
     if(Yoverlap.getXlen()>0){
       // Grow by a pixel in each direction, to take into account the possibility of fractional thresholds (eg. 7.5)
@@ -162,22 +160,17 @@ namespace duchamp
       // Get the scans from object 2 that lie in the overlap region (these haven't been affected by the threshold gap)
        for(int scanct2=0; (!close && (scanct2<nscan2)); scanct2++){
 	temp2 = obj2.getScan(scanct2);
-// 	std::cerr << temp2.getY() << ":\n";
 	if(Yoverlap.isInScan(temp2.getY(),0)){ // if the scan is in the allowed Y range
 
 	  for(int scanct1=0; (!close && (scanct1<nscan1)); scanct1++){
 	    temp1 = obj1.getScan(scanct1);
-	    long y = temp1.getY();
-// 	    std::cerr << temp1.getY() << " ";
-	    if(abs(y-temp2.getY())<threshold){
-// 	      std::cerr << "("<<minSep(temp1,temp2)<<")";
+	    if(abs(temp1.getY()-temp2.getY())<threshold){
 
 	      close = (minSep(temp1,temp2) < threshold);
 
 	    }
 
 	  }
-// 	  std::cerr << "\n";
 
 	}
 
