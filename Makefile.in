@@ -58,6 +58,7 @@ HEADS = $(BASE)/duchamp.hh\
 	$(DETECTIONDIR)/detection.hh\
 	$(DETECTIONDIR)/columns.hh\
 	$(DETECTIONDIR)/finders.hh\
+	$(DETECTIONDIR)/ObjectGrower.hh\
 	$(CUBESDIR)/cubes.hh\
 	$(CUBESDIR)/plots.hh\
 	$(CUBESDIR)/VOTable.hh\
@@ -86,6 +87,7 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(ATROUSDIR)/ReconSearch.o\
 	$(DETECTIONDIR)/detection.o\
 	$(DETECTIONDIR)/columns.o\
+	$(DETECTIONDIR)/ObjectGrower.o\
 	$(DETECTIONDIR)/areClose.o\
 	$(DETECTIONDIR)/growObject.o\
 	$(DETECTIONDIR)/lutz_detect.o\
