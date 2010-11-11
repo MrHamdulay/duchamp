@@ -85,7 +85,8 @@ namespace duchamp
       // get the list of objects that should be plotted. Only applies to outlines and labels.
       std::vector<bool> objectChoice = this->par.getObjectChoices(this->objectList->size());
 
-      newplot.makeTitle(this->pars().getImageFile());
+      std::string filename=this->pars().getImageFile();
+      newplot.makeTitle(filename.substr(filename.rfind('/')+1,filename.size()));
 
       newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,
 			 boxYmin+0.5,boxYmin+ydim+0.5,
@@ -222,7 +223,8 @@ namespace duchamp
 
 	for(int iplot=0; iplot<numPlots; iplot++){
 	  plotList[iplot].goToPlot();
-	  plotList[iplot].makeTitle(this->pars().getImageFile());
+	  std::string filename=this->pars().getImageFile();
+	  plotList[iplot].makeTitle(filename.substr(filename.rfind('/')+1,filename.size()));
 	
 	  plotList[iplot].drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,
 				     boxYmin+0.5,boxYmin+ydim+0.5,
@@ -245,7 +247,8 @@ namespace duchamp
 	  // Although plot the axes so that the user knows something is 
 	  //  being done (at least, they will if there is an /xs plot)
 	  plotList[iplot].goToPlot();
-	  plotList[iplot].makeTitle(this->pars().getImageFile());
+	  std::string filename=this->pars().getImageFile();
+	  plotList[iplot].makeTitle(filename.substr(filename.rfind('/')+1,filename.size()));
     
 	  plotList[iplot].drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,
 				     boxYmin+0.5,boxYmin+ydim+0.5,
