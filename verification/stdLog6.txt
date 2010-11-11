@@ -1,4 +1,4 @@
-New run of the Duchamp sourcefinder: Wed Oct 20 12:12:00 2010
+New run of the Duchamp source finder v.1.1.9: Thu Nov 11 15:51:07 2010
 Executing statement : ./Duchamp -p verification/input6 
 
 ---- Parameters ----
@@ -138,4 +138,4 @@ Detection #1
 50-50, 50, 70
 
 --------------
-Duchamp completed: Wed Oct 20 12:12:00 2010
+Duchamp completed: Thu Nov 11 15:51:07 2010

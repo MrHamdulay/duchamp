@@ -1,4 +1,4 @@
-Results of the Duchamp source finder: Wed Oct 20 12:11:40 2010
+Results of the Duchamp source finder v.1.1.9: Thu Nov 11 15:50:50 2010
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
