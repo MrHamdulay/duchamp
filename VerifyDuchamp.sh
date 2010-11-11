@@ -37,11 +37,11 @@ else
     numErrors=$numErrors+1
 fi
 #Test the log files.
-if [ `diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log1.txt verification/stdLog1.txt | wc -l` == 0 ]; then
+if [ `diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log1.txt verification/stdLog1.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
-    diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log1.txt verification/stdLog1.txt
+    diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log1.txt verification/stdLog1.txt
     numErrors=$numErrors+1
 fi
 
@@ -54,7 +54,7 @@ echo "  [This uses the FDR method]"
 rm -f /tmp/duchampRes /tmp/duchampComp /tmp/duchamptest
 $progname -p verification/input2 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
-set numDet = `grep "Total number" verification/results2.txt | cut -f 6 -d " "`
+numDet=`grep "Total number" verification/results2.txt | cut -f 6 -d " "`
 if [ $numDet == 5 ]; then
     tail -5 verification/results2.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
     tail -5 verification/stdResults2.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
@@ -73,11 +73,11 @@ else
     numErrors=$numErrors+1
 fi
 #Test the log files.
-if [ `diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log2.txt verification/stdLog2.txt | wc -l` == 0 ]; then
+if [ `diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log2.txt verification/stdLog2.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
-    diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log2.txt verification/stdLog2.txt
+    diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log2.txt verification/stdLog2.txt
     numErrors=$numErrors+1
 fi
 
@@ -91,7 +91,7 @@ echo "  [It should take a bit longer than the first two.]"
 rm -f /tmp/duchampRes /tmp/duchampComp /tmp/duchamptest
 $progname -p verification/input3 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
-set numDet = `grep "Total number" verification/results3.txt | cut -f 6 -d " "`
+numDet=`grep "Total number" verification/results3.txt | cut -f 6 -d " "`
 if [ $numDet == 5 ]; then
     tail -5 verification/results3.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
     tail -5 verification/stdResults3.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
@@ -110,11 +110,11 @@ else
     numErrors=$numErrors+1
 fi
 #Test the log files.
-if [ `diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log3.txt verification/stdLog3.txt | wc -l` == 0 ]; then
+if [ `diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log3.txt verification/stdLog3.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
-    diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log3.txt verification/stdLog3.txt
+    diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log3.txt verification/stdLog3.txt
     numErrors=$numErrors+1
 fi
 
@@ -128,7 +128,7 @@ echo "  [It should take a bit longer again]"
 rm -f /tmp/duchampRes /tmp/duchampComp /tmp/duchamptest
 $progname -p verification/input4 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
-set numDet = `grep "Total number" verification/results4.txt | cut -f 6 -d " "`
+numDet=`grep "Total number" verification/results4.txt | cut -f 6 -d " "`
 if [ $numDet == 5 ]; then
     tail -5 verification/results4.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
     tail -5 verification/stdResults4.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
@@ -147,11 +147,11 @@ else
     numErrors=$numErrors+1
 fi
 #Test the log files.
-if [ `diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log4.txt verification/stdLog4.txt | wc -l` == 0 ]; then
+if [ `diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log4.txt verification/stdLog4.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
-    diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log4.txt verification/stdLog4.txt
+    diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log4.txt verification/stdLog4.txt
     numErrors=$numErrors+1
 fi
 
@@ -165,8 +165,8 @@ echo "  [This just uses a small subsection of the full cube, with simple searchi
 rm -f /tmp/duchampRes /tmp/duchampComp /tmp/duchamptest
 $progname -p verification/input5 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
-set numDet = `grep "Total number" verification/results4.txt | cut -f 6 -d " "`
-if [ $numDet == 5 ]; then
+numDet=`grep "Total number" verification/results5.txt | cut -f 6 -d " "`
+if [ $numDet == 1 ]; then
     tail -5 verification/results5.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
     tail -5 verification/stdResults5.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
     if [ `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ]; then
@@ -184,11 +184,11 @@ else
     numErrors=$numErrors+1
 fi
 #Test the log files.
-if [ `diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log5.txt verification/stdLog5.txt | wc -l` == 0 ]; then
+if [ `diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log5.txt verification/stdLog5.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
-    diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log5.txt verification/stdLog5.txt
+    diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log5.txt verification/stdLog5.txt
     numErrors=$numErrors+1
 fi
 
@@ -201,8 +201,8 @@ echo "  [This reconstructs the subsection, then searches with simple sigma-clipp
 rm -f /tmp/duchampRes /tmp/duchampComp /tmp/duchamptest
 $progname -p verification/input6 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
-set numDet = `grep "Total number" verification/results6.txt | cut -f 6 -d " "`
-if [ $numDet == 5 ]; then
+numDet=`grep "Total number" verification/results6.txt | cut -f 6 -d " "`
+if [ $numDet == 1 ]; then
     tail -5 verification/results6.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
     tail -5 verification/stdResults6.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
     if [ `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ]; then
@@ -220,11 +220,11 @@ else
     numErrors=$numErrors+1
 fi
 #Test the log files.
-if [ `diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log6.txt verification/stdLog6.txt | wc -l` == 0 ]; then
+if [ `diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log6.txt verification/stdLog6.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
-    diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log6.txt verification/stdLog6.txt
+    diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log6.txt verification/stdLog6.txt
     numErrors=$numErrors+1
 fi
 ##################################################################
@@ -236,7 +236,7 @@ echo "  [This does the same as the first, and grows detections]"
 rm -f /tmp/duchampRes /tmp/duchampComp /tmp/duchamptest
 $progname -p verification/input7 > /tmp/duchamptest
 echo "Done. Comparison to standard result:"
-set numDet = `grep "Total number" verification/results6.txt | cut -f 6 -d " "`
+numDet=`grep "Total number" verification/results7.txt | cut -f 6 -d " "`
 if [ $numDet == 5 ]; then
     tail -5 verification/results7.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
     tail -5 verification/stdResults7.txt | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
@@ -255,11 +255,11 @@ else
     numErrors=$numErrors+1
 fi
 #Test the log files.
-if [ `diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log6.txt verification/stdLog6.txt | wc -l` == 0 ]; then
+if [ `diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log7.txt verification/stdLog7.txt | wc -l` == 0 ]; then
     echo "  Logfiles correct."
 else
     echo "  ERROR: Differences in the log files:"
-    diff -I"flagXOutput" -I"New run of the Duchamp sourcefinder" -I"Executing statement" -I"Duchamp completed:" verification/log6.txt verification/stdLog6.txt
+    diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" verification/log7.txt verification/stdLog7.txt
     numErrors=$numErrors+1
 fi
 
