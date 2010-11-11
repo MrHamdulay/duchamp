@@ -800,7 +800,7 @@ namespace duchamp
 	  float *tempArray = new float[goodSize];
 
 	  goodSize=0;
-	  vox++;
+	  vox=0;
 	  for(int z=0;z<this->axisDim[2];z++){
 	    for(int y=0;y<this->axisDim[1];y++){
 	      for(int x=0;x<this->axisDim[0];x++){
