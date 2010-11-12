@@ -53,6 +53,7 @@ template <class T> float findMean(T *array, int size);
 template <class T> float findStddev(T *array, int size);
 template <class T> T findMedian(T *array, int size, bool changeArray=false);
 template <class T> T findMADFM(T *array, int size, bool changeArray=false);
+template <class T> T findMADFM(T *array, int size, T median, bool changeArray=false);
 template <class T> void findMedianStats(T *array, int size, 
 					T &median, T &madfm);
 template <class T> void findMedianStats(T *array, int size, bool *isGood, 
