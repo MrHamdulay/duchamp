@@ -89,6 +89,7 @@ namespace duchamp
     else{
       wcsutrn(0,unit);
       this->fluxUnits = unit;
+      this->originalFluxUnits = unit;
     }
 
     // Close the FITS file

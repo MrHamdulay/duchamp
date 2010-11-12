@@ -141,6 +141,8 @@ namespace duchamp
     void    setSpectralUnits(std::string s){spectralUnits=s;};
     std::string  getSpectralDescription(){return spectralDescription;};
     void    setSpectralDescription(std::string s){spectralDescription=s;};
+    std::string  getOrigFluxUnits(){return originalFluxUnits;};
+    void    setOrigFluxUnits(std::string s){originalFluxUnits=s;};
     std::string  getFluxUnits(){return fluxUnits;};
     void    setFluxUnits(std::string s){fluxUnits=s;};
     std::string  getIntFluxUnits(){return intFluxUnits;};
@@ -176,7 +178,8 @@ namespace duchamp
     bool           flag2D;              ///< Is the image only a 2D one (leaving out redundant dimensions of size 1)?
     std::string    spectralUnits;       ///< The units of the spectral dimension
     std::string    spectralDescription; ///< The description of the spectral dimension (Frequency, Velocity, ...)
-    std::string    fluxUnits;           ///< The units of pixel flux (from header)
+    std::string    originalFluxUnits;   ///< The units of pixel flux in the original image
+    std::string    fluxUnits;           ///< The units of pixel flux as used (either from image or from parameter set)
     std::string    intFluxUnits;        ///< The units of integrated flux (from header)
     float          beamSize;            ///< The calculated beam size in pixels.
     float          bmajKeyword;         ///< The FITS header keyword BMAJ.

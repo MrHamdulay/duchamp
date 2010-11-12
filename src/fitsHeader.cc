@@ -49,6 +49,7 @@ namespace duchamp
     this->flag2D=false;
     this->spectralUnits="";
     this->spectralDescription=duchamp::duchampSpectralDescription[FREQUENCY];
+    this->originalFluxUnits="counts";
     this->fluxUnits="counts";
     this->intFluxUnits="counts";
     this->scale=1.;
@@ -81,6 +82,7 @@ namespace duchamp
     this->flag2D        = h.flag2D;
     this->spectralUnits = h.spectralUnits;
     this->spectralDescription = h.spectralDescription;
+    this->originalFluxUnits = h.originalFluxUnits;
     this->fluxUnits     = h.fluxUnits;
     this->intFluxUnits  = h.intFluxUnits;
     this->beamSize      = h.beamSize;

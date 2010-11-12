@@ -32,6 +32,7 @@
 #include <string.h>
 #include <wcslib/wcs.h>
 #include <wcslib/wcshdr.h>
+#include <wcslib/wcsunits.h>
 #define WCSLIB_GETWCSTAB 
 // define this so that we don't try and redefine wtbarr 
 // (this is a problem when using cfitsio v.3 and g++ v.4)
@@ -404,11 +405,29 @@ namespace duchamp
   
     float blankval = this->par.getBlankPixVal();
 
+    if(!this->reconAllocated){
+      duchampError("saveReconCube","Have not allocated reconstructed array, so cannot save");
+      return FAILURE;
+    }
+
     int status = 0;  /* MUST initialize status */
     fitsfile *fptrOld, *fptrNew;         
     if(fits_open_file(&fptrOld,this->par.getFullImageFile().c_str(),READONLY,&status)){
       duchampFITSerror(status,"saveReconCube","Error opening existing file:");
       return FAILURE;
+    }
+
+    if(this->head.getFluxUnits()!=this->head.getOrigFluxUnits()){
+      // we have changed the flux units - need to change back
+      double scale,offset,power;
+      int status = wcsunits(this->head.getFluxUnits().c_str(), this->head.getOrigFluxUnits().c_str(), &scale, &offset, &power);
+      if(status==0){
+	for(int i=0;i<this->numPixels;i++)
+	  if(!this->isBlank(i)){
+	    this->array[i] = pow(scale * this->array[i] + offset, power);
+	    this->recon[i] = pow(scale * this->recon[i] + offset, power);
+	  }
+	}
     }
   
     if(this->par.getFlagOutputRecon()){
@@ -435,14 +454,23 @@ namespace duchamp
 
 	  writeReconHeaderInfo(fptrNew, this->par, "recon");
 
+	  status=0;
+	  long *fpixel = new long[this->numDim];
+	  for(int i=0;i<this->numDim;i++) fpixel[i]=1;
+	  long group=0;
 	  if(this->par.getFlagBlankPix())
-	    fits_write_imgnull(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &blankval, &status);
+	    // fits_write_imgnull(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &blankval, &status);
+	    fits_write_imgnull_flt(fptrNew, group, 1, this->numPixels, this->recon, blankval, &status);
+	  //	    fits_write_pixnull(fptrNew, TFLOAT, fpixel, this->numPixels, this->recon, &blankval, &status);
 	  else  
-	    fits_write_img(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &status);
+	    // fits_write_img(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &status);
+	    fits_write_img_flt(fptrNew, group, 1, this->numPixels, this->recon, &status);
+	  //	    fits_write_pix(fptrNew, TFLOAT, fpixel, this->numPixels, this->recon, &status);
 	  if(status){
 	    duchampFITSerror(status,"saveReconCube","Error writing reconstructed array:");
 	    return FAILURE;
 	  }
+	  delete [] fpixel;
 
 	  status = 0;
 	  if(fits_close_file(fptrNew, &status)){

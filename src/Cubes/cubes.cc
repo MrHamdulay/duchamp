@@ -586,10 +586,12 @@ namespace duchamp
 	if(this->par.getFlagATrous() || this->par.getFlagSmooth()){
 	  this->recon    = new float[size];
 	  this->reconAllocated = true;
+	  for(int i=0;i<size;i++) this->recon[i] = 0.;
 	}
 	if(this->par.getFlagBaseline()){
 	  this->baseline = new float[size];
 	  this->baselineAllocated = true;
+	  for(int i=0;i<size;i++) this->baseline[i] = 0.;
 	}
       }
     }
