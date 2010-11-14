@@ -874,7 +874,7 @@ namespace duchamp
 	  this->Stats.setStddev( findStddev(tempArray, goodSize) );
 
 	  // Now find the madfm of the residuals. Store it.
-	  this->Stats.setMadfm( findMADFM(tempArray, goodSize, this->Stats.getMedian(), true) );
+	  this->Stats.setMadfm( findMADFM(tempArray, goodSize, true) );
 
 	  delete [] tempArray;
 	}
