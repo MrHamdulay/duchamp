@@ -212,6 +212,7 @@ namespace duchamp
 
     bool        is2D();
     void        checkDim(){head.set2D(is2D());};
+    void        reportMemorySize(std::ostream &theStream, bool allocateArrays);
 
     // INLINE functions -- definitions included after class declaration.
     /// @brief Is the voxel number given by vox a BLANK value? 

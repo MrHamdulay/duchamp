@@ -570,6 +570,7 @@ namespace duchamp
     else{
       this->numPixels = size;
       this->numDim  = 3;
+
       this->axisDim = new long[this->numDim];
       this->axisDimAllocated = true;
       this->axisDim[0] = dimensions[lng];
@@ -577,6 +578,9 @@ namespace duchamp
       else this->axisDim[1] = 1;
       if(this->head.canUseThirdAxis() && numAxes>spc) this->axisDim[2] = dimensions[spc];
       else this->axisDim[2] = 1;
+
+      if(allocateArrays && this->par.isVerbose()) this->reportMemorySize(std::cout,allocateArrays);
+
       this->reconExists = false;
       if(size>0 && allocateArrays){
 	this->array      = new float[size];
@@ -598,6 +602,37 @@ namespace duchamp
     return SUCCESS;
   }
   //--------------------------------------------------------------------
+
+  void Cube::reportMemorySize(std::ostream &theStream, bool allocateArrays)
+  {
+    std::string unitlist[4]={"kB","MB","GB","TB"};
+    long size=axisDim[0]*axisDim[1]*axisDim[2];
+    long imsize=axisDim[0]*axisDim[1];
+    
+      // Calculate and report the total size of memory to be allocated.
+      float allocSize=3*sizeof(long);  // axisDim
+      float arrAllocSize=0.;
+      if(size>0 && allocateArrays){
+	allocSize += size * sizeof(float); // array
+	arrAllocSize = size*sizeof(float);
+	allocSize += imsize * sizeof(short); // detectMap
+	if(this->par.getFlagATrous() || this->par.getFlagSmooth()) 
+	  allocSize += size * sizeof(float); // recon
+	if(this->par.getFlagBaseline())
+	  allocSize += size * sizeof(float); // baseline
+      }
+      std::string units="bytes";
+      for(int i=0;i<4 && allocSize>1024.;i++){
+	allocSize/=1024.;
+	arrAllocSize /= 1024.;
+	units=unitlist[i];
+      }
+
+      theStream << "\n About to allocate " << allocSize << units;
+      if(arrAllocSize > 0.) theStream << " of which " << arrAllocSize << units << " is for the image\n";
+      else theStream << "\n";
+  }
+
 
   bool Cube::is2D()
   {
@@ -839,7 +874,7 @@ namespace duchamp
 	  this->Stats.setStddev( findStddev(tempArray, goodSize) );
 
 	  // Now find the madfm of the residuals. Store it.
-	  this->Stats.setMadfm( findMADFM(tempArray, goodSize, true) );
+	  this->Stats.setMadfm( findMADFM(tempArray, goodSize, this->Stats.getMedian(), true) );
 
 	  delete [] tempArray;
 	}

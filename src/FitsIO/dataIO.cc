@@ -110,25 +110,6 @@ namespace duchamp
 
     // read the relevant subset, defined by the first & last pixel ranges
     if(this->initialiseCube(dimAxes) == FAILURE) return FAILURE;
-    if(this->par.isVerbose()){
-      float size = dimAxes[0];
-      for(int i=1;i<numAxes;i++) size*=dimAxes[i];
-      size *= sizeof(float) / 1024.;
-      std::string units=" kB";
-      if(size > 1024.){
-	size /= 1024.;
-	units = " MB";
-      }
-      if(size > 1024.){
-	size /= 1024.;
-	units = " GB";
-      }
-      if(size > 1024.){
-	size /= 1024.;
-	units = " TB";
-      }
-      std::cout << "\n  About to read " << size << units <<"\n";
-    }
     status = 0;
     if(fits_read_subset_flt(fptr, colnum, numAxes, dimAxes,
 			    fpixel, lpixel, inc, 
