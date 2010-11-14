@@ -31,6 +31,14 @@ namespace duchamp {
 
   void ObjectGrower::define( Cube *theCube )
   {
+    /// @details This copies all necessary information from the Cube
+    /// and its parameters & statistics. It also defines the array of
+    /// pixel flags, which involves looking at each object to assign
+    /// them as detected, all blank & "milky-way" pixels to assign
+    /// them appropriately, and all others to "available". It is only
+    /// the latter that will be considered in the growing function.
+    /// @param theCube A pointer to a duchamp::Cube 
+
     this->itsGrowthStats = Statistics::StatsContainer<float>(theCube->stats());	
     if(theCube->pars().getFlagUserGrowthThreshold())
       this->itsGrowthStats.setThreshold(theCube->pars().getGrowthThreshold());
@@ -77,6 +85,17 @@ namespace duchamp {
 
   void ObjectGrower::grow(Detection *theObject)
   {
+    /// @details This function grows the provided object out to the
+    /// secondary threshold provided in itsGrowthStats. For each pixel
+    /// in an object, all surrounding pixels are considered and, if
+    /// their flag is AVAILABLE, their flux is examined. If it's above
+    /// the threshold, that pixel is added to the list to be looked at
+    /// and their flag is changed to DETECTED. 
+    /// @param theObject The duchamp::Detection object to be grown. It
+    /// is returned with new pixels in place. Only the basic
+    /// parameters that belong to PixelInfo::Object3D are
+    /// recalculated.
+
     long spatsize=this->itsArrayDim[0]*this->itsArrayDim[1];
     long zero = 0;
     std::vector<Voxel> voxlist = theObject->getPixelSet();
