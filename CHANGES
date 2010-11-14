@@ -11,8 +11,10 @@ Improvements:
   makes use of voxel flags to quickly identify those voxels not yet in
   an object and only examines them. For a certain test case
   (observations of extended Galactic HI), the time required reduced
-  from about a day to about a minute! Many thanks to Tara Murphy for
-  pointing out this bug and her help in diagnosing/fixing the problem.
+  from about a day to about a minute! (Note that compact sources, such
+  as HI galaxies, will not show this degree of speedup...) Many thanks
+  to Tara Murphy for pointing out this bug and her help in
+  diagnosing/fixing the problem.
 
 * There have been a number of further improvements to the code to
   speed it up, based on some profiling. The most important was the
