@@ -1,4 +1,79 @@
-Duchamp version 1.1.9 (2009/03/26)
+Duchamp version 1.1.10 (2010/11/15)
+-------------------------------------
+
+Improvements:
+
+* The major change for this release is a greatly improved growing
+  algorithm. The previous incarnation was very inefficient (testing
+  all pixels in an object, most of which only have neighbours that are
+  already in the object), and could take an unnecessarily large amount
+  of time in the case of extended sources. The improved algorithm
+  makes use of voxel flags to quickly identify those voxels not yet in
+  an object and only examines them. For a certain test case
+  (observations of extended Galactic HI), the time required reduced
+  from about a day to about a minute! Many thanks to Tara Murphy for
+  pointing out this bug and her help in diagnosing/fixing the problem.
+
+* There have been a number of further improvements to the code to
+  speed it up, based on some profiling. The most important was the
+  function to add pixels to a 2D object, but there were several other
+  minor changes as well.
+
+* The minimum size of the detections can now also be specified in
+  terms of the total number of voxels (in addition or instead of
+  specifying the minimum spatial pixels or channels).
+
+* The way memory is allocated when reading the image has been
+  streamlined. The amount of memory being allocated is also now
+  reported - this is in an effort to allow users to identify problems
+  with running out of memory.
+
+* The version number is now reported in the results and log files.
+
+* Only the filename of the input image (ie. not the leading
+  directories) is now shown on the detection and moment-0 maps. This
+  is to avoid problems with large directory paths being too wide for
+  the plot.
+
+* The verification script was improved for readability (although no
+  functional change was made).
+
+Bug fixes:
+
+* Growing was not being done when a single source was found. Now
+  fixed.
+
+* For particular WCS setups, the RA can be interpreted as being
+  negative, which corrupted the Source ID (ie. the IAU-format
+  string). This has been fixed.
+
+* When the flux units were changed, problems had been seen when
+  writing a reconstructed cube to a FITS file. Any unit change is now
+  undone prior to writing and there should now be no problem.
+
+* Filenames with spaces in them were not handled well. New functions
+  were included and moved to a more obvious location. These filenames
+  now work as expected.
+
+* Spectral axes of type FREQ that had a rest frequency were not being
+  put into velocity units. Now fixed.
+
+* Improvements to the output to screen, making sure everything is
+  covered by the verbose flag.
+
+* Better management of the allocation of arrays.
+
+* The minSize parameter in Image was never initialised, leading to
+  unpredictable behaviour. Now fixed.
+
+Code development notes:
+
+* New functionality includes: a function to return a vector list of
+  voxels in an Object3D or Detection; a new generic Search function
+  (basically a front-end to each of the individual functions); more
+  complete copy constructors for the DataArray classes;
+
+Duchamp version 1.1.9 (2010/03/26)
 -------------------------------------
 
 Improvements: 
