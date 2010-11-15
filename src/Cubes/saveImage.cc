@@ -455,7 +455,7 @@ namespace duchamp
 	  writeReconHeaderInfo(fptrNew, this->par, "recon");
 
 	  status=0;
-	  long *fpixel = new long[this->numDim];
+	  long *fpixel = new long[this->header().WCS().naxis];
 	  for(int i=0;i<this->numDim;i++) fpixel[i]=1;
 	  long group=0;
 	  if(this->par.getFlagBlankPix())
