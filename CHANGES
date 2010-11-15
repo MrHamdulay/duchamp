@@ -73,7 +73,8 @@ Code development notes:
 * New functionality includes: a function to return a vector list of
   voxels in an Object3D or Detection; a new generic Search function
   (basically a front-end to each of the individual functions); more
-  complete copy constructors for the DataArray classes;
+  complete copy constructors for the DataArray classes; new methods
+  for finding the velocity widths.
 
 Duchamp version 1.1.9 (2010/03/26)
 -------------------------------------
