@@ -10,7 +10,7 @@
 #define PACKAGE_NAME "Duchamp"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "Duchamp 1.1.9"
+#define PACKAGE_STRING "Duchamp 1.1.10"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "duchamp"
