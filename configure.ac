@@ -131,10 +131,11 @@ else
   
   # Search for X11 includes and libraries.
   AC_PATH_XTRA
+  AC_MSG_NOTICE([X-library search yielded X_CFLAGS=$X_CFLAGS, X_LIBS=$X_LIBS, X_EXTRA_LIBS=$X_EXTRA_LIBS, X_PRE_LIBS=$X_PRE_LIBS])
   # returns C compiler flags needed for X to X_CFLAGS and the X linker flags to X_LIBS
   if test "x$X_LIBS" != x; then
     LDFLAGS="$LDFLAGS $X_LIBS"
-    EXTRAPGLIB="$X_LIBS -lX11 $EXTRAPGLIB"
+    EXTRAPGLIB="$X_LIBS $X_PRE_LIBS -lX11 $EXTRAPGLIB"
   fi
 
 #  # Add pgplot libraries, if they exist to the lib path
@@ -149,7 +150,7 @@ else
   AC_CHECK_LIB([png],     [png_error], [EXTRAPGLIB="$EXTRAPGLIB -lpng"], 
   	     [], [$EXTRAPGLIB $LIBS])
 
-  AC_LANG(Fortran 77)
+  AC_LANG([Fortran 77])
   AC_CHECK_LIB([pgplot],  [pgopen],    [PGPLOTLIB="-lpgplot"],
                [], [$PGPLOTLIB $EXTRAPGLIB])
   AC_LANG(C)
