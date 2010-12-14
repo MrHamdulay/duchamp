@@ -93,13 +93,13 @@ namespace duchamp
     Pixel pix;
     size_t loc=0;
 
-    for(int posY=0;posY<(ydim+1);posY++){
+    for(long posY=0;posY<(ydim+1);posY++){
       // Loop over each row -- consider rows one at a time
     
       status[PRIOR] = COMPLETE;
       status[CURRENT] = NONOBJECT;
 
-      for(int posX=0;posX<(xdim+1);posX++){
+      for(long posX=0;posX<(xdim+1);posX++){
 	// Now the loop for a given row, looking at each column individually.
 
 	char currentMarker = marker[posX];
