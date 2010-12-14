@@ -75,6 +75,7 @@ namespace PixelInfo
     Object3D output = lhs;
     for(std::map<long, Object2D>::iterator it = rhs.chanlist.begin(); it!=rhs.chanlist.end();it++)
       output.addChannel(it->first, it->second);
+      //      output.addChannel(*it);
     return output;
   }
 
@@ -179,6 +180,13 @@ namespace PixelInfo
   }
 
   //--------------------------------------------
+
+  // void Object3D::addChannel(const std::pair<long, Object2D> *chan)
+  // {
+  //   long z = chan->first;
+  //   Object2D
+  // }
+
 
   void Object3D::addChannel(const long &z, Object2D &obj)
   {

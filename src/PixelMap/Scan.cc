@@ -39,20 +39,25 @@ namespace PixelInfo
     this->itsXLen=0;
   }
 
+  Scan::Scan(long y, long x, long xl):
+    itsY(y), itsX(x),itsXLen(xl)
+  {
+  }
+
   Scan::Scan(const Scan& s)
   {
     operator=(s);
   }
   //------------------------------------------------------
   
-  // Scan& Scan::operator= (const Scan& s)
-  // {    
-  //   if(this == &s) return *this;
-  //   this->itsY=s.itsY; 
-  //   this->itsX=s.itsX; 
-  //   this->itsXLen=s.itsXLen;
-  //   return *this;
-  // }
+  Scan& Scan::operator= (const Scan& s)
+  {    
+    if(this == &s) return *this;
+    this->itsY=s.itsY; 
+    this->itsX=s.itsX; 
+    this->itsXLen=s.itsXLen;
+    return *this;
+  }
   //------------------------------------------------------
 
   Scan nullScan()
@@ -98,9 +103,7 @@ namespace PixelInfo
     /// If they do not overlap, return the null scan.
 
     Scan intersection;
-    if(!overlap(scan1,scan2)){
-      //     std::cerr << "Intersecting scans failed! (" 
-      // 	      << scan1 <<"),("<<scan2<<") don't overlap.\n";
+    if(!scan1.overlaps(scan2)){
       intersection = nullScan();
     }
     else{
@@ -110,6 +113,34 @@ namespace PixelInfo
       intersection.define(y,x,xmax-x+1);
     }
     return intersection;
+  }
+  //------------------------------------------------------
+
+  bool Scan::touches(Scan &other)
+  {
+    return this->overlaps(other) || this->isAdjacentTo(other);
+  }
+
+  bool Scan::overlaps(Scan &other)
+  {
+    if(this->itsY != other.itsY) return false;
+    else if(this->itsX <= other.itsX){
+      return (other.itsX < (this->itsX+this->itsXLen));
+    }
+    else{
+      return (this->itsX < (other.itsX+other.itsXLen));
+    }
+  }
+
+  bool Scan::isAdjacentTo(Scan &other)
+  {
+    if(this->itsY != other.itsY) return false;
+    else if(this->itsX <= other.itsX){
+      return (this->itsX == (other.itsX+other.itsXLen));
+    }
+    else{
+      return (other.itsX == (this->itsX+this->itsXLen));
+    }
   }
   //------------------------------------------------------
 

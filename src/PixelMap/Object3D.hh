@@ -69,6 +69,8 @@ namespace PixelInfo
     void addScan(Scan s, long z);
     /// @brief Add a full channel map to the Object. 
     void addChannel(const long &z, Object2D &obj);
+    /// @brief Add a full channel map to the object.
+    // void addChannel(const std::pair<long, Object2D> &chan){addChannel(chan.first,chan.second);};
 
     /// @brief Calculate the averages and extrema of the three coordinates. 
     void calcParams();

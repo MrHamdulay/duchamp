@@ -61,11 +61,11 @@ namespace PixelInfo
     void  cleanup();
 
     /// @brief Add a pixel to the Object, making sure no scans overlap afterwards. 
-    void  addPixel(long x, long y);
-    /// @brief Add the (x,y) part of a Voxel to the Object, using addPixel(long,long)
-    void  addPixel(Voxel v){this->addPixel(v.getX(),v.getY());};
-    /// @brief Add a Pixel to the Object, using addPixel(long,long)
-    void  addPixel(Pixel p){this->addPixel(p.getX(),p.getY());};
+    void  addPixel(long &x, long &y);
+    // /// @brief Add the (x,y) part of a Voxel to the Object, using addPixel(long,long)
+    // void  addPixel(Voxel &v){this->addPixel(v.getX(),v.getY());};
+    // /// @brief Add a Pixel to the Object, using addPixel(long,long)
+    // void  addPixel(Pixel &p){this->addPixel(p.getX(),p.getY());};
 
     /// @brief Add a full Scan to the Object, making sure there are no overlapping scans afterwards. 
     void  addScan(Scan scan);
@@ -79,6 +79,10 @@ namespace PixelInfo
 
     /// @brief Test whether a given Scan overlaps with any pixels in the Object. 
     bool  scanOverlaps(Scan scan);
+
+    bool canMerge(Object2D &other, float threshS, bool flagAdj);
+    bool isNear(Object2D &other, long gap);
+    bool isClose(Object2D &other, float threshS, bool flagAdj);   
 
     /// @brief Return the number of pixels in the Object. 
     unsigned long  getSize(){return numPix;};

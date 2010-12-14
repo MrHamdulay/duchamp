@@ -69,7 +69,7 @@ namespace PixelInfo
   }
 
   //------------------------------------------------------
-  void Object2D::addPixel(long x, long y)
+  void Object2D::addPixel(long &x, long &y)
   {
     ///  This function has three parts to it:
     ///  <ul><li> First, it searches through the existing scans to see if 
@@ -171,8 +171,8 @@ namespace PixelInfo
 
   void Object2D::addScan(Scan scan)
   {
-
-    for(int x=scan.getX();x<=scan.getXmax();x++) this->addPixel(x,scan.getY());
+    long y=scan.getY();
+    for(long x=scan.getX();x<=scan.getXmax();x++) this->addPixel(x,y);
 
   }
   //------------------------------------------------------
@@ -390,5 +390,73 @@ namespace PixelInfo
     return axes;
 
   }
+
+
+  //------------------------------------------------------
+
+
+  bool Object2D::canMerge(Object2D &other, float threshS, bool flagAdj)
+  {
+    long gap;
+    if(flagAdj) gap = 1;
+    else gap = long( ceil(threshS) );
+    bool near = this->isNear(other,gap);
+    if(near) return this->isClose(other,threshS,flagAdj);
+    else return near;
+  }
+
+  //------------------------------------------------------
+
+  bool Object2D::isNear(Object2D &other, long gap)
+  {
+    bool areNear;
+    // Test X ranges
+    if((this->xmin-gap)<other.xmin) areNear=((this->xmax+gap)>=other.xmin);
+    else areNear=(other.xmax>=(this->xmin-gap));
+    // Test Y ranges
+    if(areNear){
+      if((this->ymin-gap)<other.ymin) areNear=areNear&&((this->ymax+gap)>=other.ymin);
+      else areNear=areNear&&(other.ymax>=(this->ymin-gap));
+    }
+    return areNear;
+  }
+
+  //------------------------------------------------------
+
+  bool Object2D::isClose(Object2D &other, float threshS, bool flagAdj)
+  {
+
+    long gap = long(ceil(threshS));
+    if(flagAdj) gap=1;
+
+    bool close = false;
+
+    long ycommonMin=std::max(this->ymin-gap,other.ymin)-gap;
+    long ycommonMax=std::min(this->ymax+gap,other.ymax)+gap;
+
+    std::vector<Scan>::iterator iter1,iter2;
+    for(iter1=this->scanlist.begin();!close && iter1<this->scanlist.end();iter1++){
+      if(iter1->itsY >= ycommonMin && iter1->itsY<=ycommonMax){
+	for(iter2=other.scanlist.begin();!close && iter2<other.scanlist.end();iter2++){
+	  if(iter2->itsY >= ycommonMin && iter2->itsY<=ycommonMax){
+	      
+	    if(abs(iter1->itsY-iter2->itsY)<=gap){
+	      if(flagAdj) {
+		if((iter1->itsX-gap)>iter2->itsX) close=((iter2->itsX+iter2->itsXLen)>=(iter1->itsX-gap));
+		else close = ( (iter1->itsX+iter1->itsXLen+gap)>=iter2->itsX);
+	      }
+	      else close = (minSep(*iter1,*iter2) < threshS);
+	    }
+
+	  }
+	}
+      }
+    }
+	    
+    return close;
+    
+  }
+
+
 
 }

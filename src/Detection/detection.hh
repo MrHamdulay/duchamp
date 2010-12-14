@@ -62,8 +62,12 @@ namespace duchamp
     // These are functions in detection.cc. 
     //
 
-    friend Detection operator+ (Detection lhs, Detection rhs);
-    void addDetection(Detection other);
+    friend Detection operator+ (Detection &lhs, Detection &rhs);
+    void addDetection(Detection &other);
+
+    bool canMerge(Detection &other, Param &par);
+    bool isNear(Detection &other, Param &par);
+    bool isClose(Detection &other, Param &par);
 
     /// @brief Test whether voxel lists match 
     bool voxelListsMatch(std::vector<PixelInfo::Voxel> voxelList);
@@ -321,8 +325,8 @@ namespace duchamp
   //----------------
   // This is in areClose.cc
   //
-  /// @brief Determine whether two objects are close according to set parameters.
-  bool areClose(Detection &object1, Detection &object2, Param &par);
+  // /// @brief Determine whether two objects are close according to set parameters.
+  // bool areClose(Detection &object1, Detection &object2, Param &par);
 
   //----------------
   // This is in mergeIntoList.cc

@@ -33,17 +33,15 @@
 namespace duchamp
 {
 
-  void mergeIntoList(Detection &object, std::vector <Detection> &objList, 
-		     Param &par)
+  void mergeIntoList(Detection &object, std::vector <Detection> &objList, Param &par)
   {
     /// @details
     /// A function to add a detection to a list of detections, checking
     /// first to see if it can be combined with existing members of the
     /// list.
     /// 
-    /// The areClose testing and combining is now done with the
-    /// parameters as given by the Param set, not just assuming adjacency
-    /// (as previously done).
+    /// The areClose testing and combining is done with the
+    /// parameters as given by the Param set.
     /// 
     /// \param object The Detection to be merged into the list.
     /// \param objList The vector list of Detections.
@@ -52,16 +50,12 @@ namespace duchamp
     bool haveMerged = false;
 
     std::vector<Detection>::iterator iter;
-    for(size_t ctr=0; (!(haveMerged) && (ctr<objList.size())); ctr++){
-    
-      if(areClose(object, objList[ctr], par)){
-	Detection newobj = objList[ctr] + object;
-	iter = objList.begin() + ctr;
-	objList.erase( iter );
-	objList.push_back( newobj );
+
+    for(iter=objList.begin(); (!haveMerged && iter<objList.end()); iter++) {
+      if(iter->canMerge(object,par)){
+	iter->addDetection(object);
 	haveMerged = true;
-      }
-    
+      }  
     }
   
     if(!haveMerged) objList.push_back(object);

@@ -1017,14 +1017,15 @@ namespace duchamp
   }
 
   
-  void Detection::addDetection(Detection other)
+  void Detection::addDetection(Detection &other)
   {
     for(std::map<long, Object2D>::iterator it = other.chanlist.begin(); it!=other.chanlist.end();it++)
+      //      this->addChannel(*it);
       this->addChannel(it->first, it->second);
     this->haveParams = false; // make it appear as if the parameters haven't been calculated, so that we can re-calculate them  
   }
 
-  Detection operator+ (Detection lhs, Detection rhs)
+  Detection operator+ (Detection &lhs, Detection &rhs)
   {
     Detection output = lhs;
     for(std::map<long, Object2D>::iterator it = rhs.chanlist.begin(); it!=rhs.chanlist.end();it++)
@@ -1033,6 +1034,82 @@ namespace duchamp
     return output;
   }
     
+
+  bool Detection::canMerge(Detection &other, Param &par)
+  {
+    bool near = this->isNear(other,par);
+    if(near) return this->isClose(other,par);
+    else return near;
+  }
+
+  bool Detection::isNear(Detection &other, Param &par)
+  {
+
+    bool flagAdj = par.getFlagAdjacent();
+    float threshS = par.getThreshS();
+    float threshV = par.getThreshV();
+
+    long gap;
+    if(flagAdj) gap = 1;
+    else gap = long( ceil(threshS) );
+
+    bool areNear;
+    // Test X ranges
+    if((this->xmin-gap)<other.xmin) areNear=((this->xmax+gap)>=other.xmin);
+    else areNear=(other.xmax>=(this->xmin-gap));
+    // Test Y ranges
+    if(areNear){
+      if((this->ymin-gap)<other.ymin) areNear=areNear&&((this->ymax+gap)>=other.ymin);
+      else areNear=areNear&&(other.ymax>=(this->ymin-gap));
+    }
+    // Test Z ranges
+    if(areNear){
+      gap = long(ceil(threshV));
+      if((this->zmin-gap)<other.zmin) areNear=areNear&&((this->zmax+gap)>=other.zmin);
+      else areNear=areNear&&(other.zmax>=(this->zmin-gap));
+    }
+    
+    return areNear;
+
+  }
+
+  bool Detection::isClose(Detection &other, Param &par)
+  {
+    bool close = false;   // this will be the value returned
+    
+    bool flagAdj = par.getFlagAdjacent();
+    float threshS = par.getThreshS();
+    float threshV = par.getThreshV();
+
+    // 
+    // If we get to here, the pixel ranges overlap -- so we do a
+    // pixel-by-pixel comparison to make sure they are actually
+    // "close" according to the thresholds.  Otherwise, close=false,
+    // and so don't need to do anything else before returning.
+    // 
+
+    std::vector<long> zlist1 = this->getChannelList();
+    std::vector<long> zlist2 = other.getChannelList();
+    Scan test1,test2;
+
+    for(size_t ct1=0; (!close && (ct1<zlist1.size())); ct1++){
+      for(size_t ct2=0; (!close && (ct2<zlist2.size())); ct2++){
+	
+	if(abs(zlist1[ct1]-zlist2[ct2])<=threshV){
+	      
+	  Object2D temp1 = this->getChanMap(zlist1[ct1]);
+	  Object2D temp2 = other.getChanMap(zlist2[ct2]);
+
+	  close = temp1.canMerge(temp2,threshS,flagAdj);
+
+	}
+
+      }
+    }
+       
+    return close;
+    
+  }
 
 
 

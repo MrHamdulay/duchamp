@@ -48,9 +48,9 @@ namespace PixelInfo
   {
   public:
     Scan();
-    Scan(long y, long x, long xl){itsY=y; itsX=x; itsXLen=xl;};
+    Scan(long y, long x, long xl);
     Scan(const Scan& s);
-    Scan& operator= (const Scan& s){itsY=s.itsY; itsX=s.itsX; itsXLen=s.itsXLen; return *this;};
+    Scan& operator= (const Scan& s);
     virtual ~Scan(){};
 
     /// @brief Define a Scan by providing the three key parameters.  
@@ -85,6 +85,10 @@ namespace PixelInfo
 
     /// @brief Tests whether a given (x,y) point is in the scan.
     bool isInScan(long x, long y);
+
+    bool touches(Scan &other);
+    bool overlaps(Scan &other);
+    bool isAdjacentTo(Scan &other);
 
     /// @brief Stream output operator for the Scan 
     friend std::ostream& operator<< ( std::ostream& theStream, Scan& scan);

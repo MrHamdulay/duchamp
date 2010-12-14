@@ -130,53 +130,74 @@ namespace duchamp
 
       bool isVerb = par.isVerbose();
       vector <Detection>::iterator iter;
+      
+      std::vector<bool> isValid(objList.size(),true);
+      int numRemoved=0;
 
-      size_t counter=0, compCounter;
+      size_t counter=0, compCounter,goodCounter=0;
+
       while( counter < (objList.size()-1) ){
 	if(isVerb){
 	  std::cout.setf(std::ios::right);
-	  std::cout << "Merging: " << std::setw(6) << counter+1 << "/" ;
+	  std::cout << "Merging: " << std::setw(6) << goodCounter+1 << "/" ;
 	  std::cout.unsetf(std::ios::right);
 	  std::cout.setf(std::ios::left);
-	  std::cout << std::setw(6) << objList.size();
+	  std::cout << std::setw(6) << objList.size()-numRemoved;
 	  printBackSpace(22);
 	  std::cout << std::flush;
 	  std::cout.unsetf(std::ios::left);
 	}
 
-	compCounter = counter + 1;
+	if(isValid[counter]){
 
-	do {
+	  compCounter = counter + 1;
 
-	  bool close = areClose(objList[counter], objList[compCounter], par);
+	  do {
 
-	  if(close){
-	    objList[counter].addDetection(objList[compCounter]);
-	    iter=objList.begin()+compCounter;
-	    objList.erase(iter);
+	    if(isValid[compCounter]){
 
-	    if(isVerb){
-	      std::cout.setf(std::ios::right);
-	      std::cout << "Merging: "
-			<< std::setw(6) << counter << "/";
-	      std::cout.unsetf(std::ios::right);
-	      std::cout.setf(std::ios::left);
-	      std::cout << std::setw(6) << objList.size();
-	      printBackSpace(22);
-	      std::cout << std::flush;
-	      std::cout.unsetf(std::ios::left);
+	      bool close = objList[counter].canMerge(objList[compCounter], par);
+
+	      if(close){
+		objList[counter].addDetection(objList[compCounter]);
+		isValid[compCounter]=false;
+		numRemoved++;
+
+		if(isVerb){
+		  std::cout.setf(std::ios::right);
+		  std::cout << "Merging: "
+			    << std::setw(6) << goodCounter+1 << "/";
+		  std::cout.unsetf(std::ios::right);
+		  std::cout.setf(std::ios::left);
+		  std::cout << std::setw(6) << objList.size()-numRemoved;
+		  printBackSpace(22);
+		  std::cout << std::flush;
+		  std::cout.unsetf(std::ios::left);
+		}
+		
+		compCounter = counter + 1;
+		
+	      }
+	      else compCounter++;
 	    }
+	    else compCounter++;
 
-	    compCounter = counter + 1;
+	  } while( (compCounter<objList.size()) );
 
-	  }
-	  else compCounter++;
-
-	} while( (compCounter<objList.size()) );
-
+	}
 	counter++;
+	if(isValid[counter]) goodCounter++;
 
       }  // end of while(counter<(objList.size()-1)) loop
+
+      std::vector<Detection> newlist(objList.size()-numRemoved);
+      size_t ct=0;
+      for(size_t i=0;i<objList.size();i++){
+	if(isValid[i]) newlist[ct++]=objList[i];
+      }
+      objList.clear();
+      objList=newlist;
+
     }
   }
 
@@ -198,24 +219,24 @@ namespace duchamp
       std::cout << std::flush;
     }
 
+    std::vector<Detection> newlist;
+    
     std::vector<Detection>::iterator obj = objList.begin();
-
-    while(obj < objList.end()){
-
+    int numRej=0;
+    for(;obj<objList.end();obj++){
       obj->setOffsets(par);
       
       if( (obj->hasEnoughChannels(par.getMinChannels()))
 	  && (obj->getSpatialSize() >= par.getMinPix())
 	  && (obj->getSize() >= par.getMinVoxels() ) ){
 
-	obj++;
+	newlist.push_back(*obj);
 
       }      
       else{
-      
-	objList.erase(obj);
+	numRej++;
 	if(par.isVerbose()){
-	  std::cout << "Rejecting:" << std::setw(6) << objList.size();
+	  std::cout << "Rejecting:" << std::setw(6) << objList.size()-numRej;
 	  printSpace(6);
 	  printBackSpace(22);
 	  std::cout << std::flush;
@@ -223,6 +244,10 @@ namespace duchamp
 
       }
     }
+
+    objList.clear();
+    objList = newlist;
+
   }
 
 
