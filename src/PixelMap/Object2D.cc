@@ -442,8 +442,8 @@ namespace PixelInfo
 	      
 	    if(abs(iter1->itsY-iter2->itsY)<=gap){
 	      if(flagAdj) {
-		if((iter1->itsX-gap)>iter2->itsX) close=((iter2->itsX+iter2->itsXLen)>=(iter1->itsX-gap));
-		else close = ( (iter1->itsX+iter1->itsXLen+gap)>=iter2->itsX);
+		if((iter1->itsX-gap)>iter2->itsX) close=((iter2->itsX+iter2->itsXLen-1)>=(iter1->itsX-gap));
+		else close = ( (iter1->itsX+iter1->itsXLen+gap-1)>=iter2->itsX);
 	      }
 	      else close = (minSep(*iter1,*iter2) < threshS);
 	    }
