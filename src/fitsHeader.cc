@@ -268,7 +268,9 @@ namespace duchamp
 	}
 	duchampError("fixUnits", errmsg.str());
       }
-
+      // else{
+      // 	std::cerr << "Converted " << this->wcs->cunit[this->wcs->spec] << " to " << this->spectralUnits << " and got offset="<<of << ", scale="<<sc <<", and power="<<po <<"\n";
+      // }
     }
     this->scale = sc;
     this->offset= of;

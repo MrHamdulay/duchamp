@@ -92,7 +92,8 @@ Selavy re-analyses and re-plots objects found by Duchamp.\n\
 
 
   /// The spectral type that we want the wcsprm structs to be in. 
-  const char duchampVelocityType[9] = "VOPT-F2W";
+    const char duchampVelocityType[9] = "VOPT-F2W";
+  //const char duchampVelocityType[9] = "VELO-F2V";
   /// The spectral type that we want the wcsprm structs to be in when no velocity info is present. 
   const char duchampFrequencyType[9] = "FREQ    ";
 
