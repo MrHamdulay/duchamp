@@ -36,7 +36,7 @@ using namespace PixelInfo;
 
 namespace duchamp
 {
-
+  /*
   bool areAdj(Object2D &obj1, Object2D &obj2);
   bool areClose(Object2D &obj1, Object2D &obj2, float threshold);
 
@@ -130,5 +130,5 @@ namespace duchamp
     }
     return close;
   }
-
+  */
 }
