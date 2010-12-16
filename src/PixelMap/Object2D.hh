@@ -32,6 +32,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <list>
 #include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Voxel.hh>
 
@@ -68,7 +69,7 @@ namespace PixelInfo
     // void  addPixel(Pixel &p){this->addPixel(p.getX(),p.getY());};
 
     /// @brief Add a full Scan to the Object, making sure there are no overlapping scans afterwards. 
-    void  addScan(Scan scan);
+    void  addScan(Scan &scan);
 
     /// @brief Test whether a pixel (x,y) is in the Object. 
     bool  isInObject(long x, long y);
@@ -78,7 +79,7 @@ namespace PixelInfo
     bool  isInObject(Pixel p){return this->isInObject(p.getX(),p.getY());};
 
     /// @brief Test whether a given Scan overlaps with any pixels in the Object. 
-    bool  scanOverlaps(Scan scan);
+    bool  scanOverlaps(Scan &scan);
 
     bool canMerge(Object2D &other, float threshS, bool flagAdj);
     bool isNear(Object2D &other, long gap);
@@ -91,10 +92,11 @@ namespace PixelInfo
     long  getNumScan(){return scanlist.size();};
 
     /// @brief Get the i-th Scan in the Scan list. 
-    Scan  getScan(int i){return scanlist[i];};
+    // Scan  getScan(int i){return scanlist[i];};
 
     /// @brief Order the Scans in the list, using the < operator for Scans. 
-    void  order(){std::stable_sort(scanlist.begin(),scanlist.end());};
+     void  order(){std::stable_sort(scanlist.begin(),scanlist.end());};
+    //void order(){scanlist.sort();};
 
     /// @brief Add values to the x- and y-axes, making sure to add the offsets to the sums and min/max values. 
     void  addOffsets(long xoff, long yoff);
@@ -129,10 +131,12 @@ namespace PixelInfo
     /// @brief Adding two Objects together. 
     friend Object2D operator+ (Object2D lhs, Object2D rhs);
 
+    friend class ChanMap;
     friend class Object3D; 
+    friend class Detection;
 
-  private:
-    std::vector<Scan> scanlist;       ///< The list of Scans
+  protected:
+    std::vector<Scan>   scanlist;       ///< The list of Scans
     unsigned long     numPix;         ///< Number of pixels in the Object
     float             xSum;           ///< Sum of x values
     float             ySum;           ///< Sum of y values

@@ -60,6 +60,19 @@ namespace PixelInfo
   }
   //------------------------------------------------------
 
+  bool Scan::addScan(const Scan &other)
+  {
+    bool altered=this->touches(other);
+    if(altered){
+      long x = std::min(this->itsX,other.itsX);
+      long xmax = std::max(this->itsX+this->itsXLen-1,other.itsX+other.itsXLen-1);
+      for(int ix=x;ix<this->itsX;ix++) this->growLeft();
+      for(int ix=this->itsX+this->itsXLen-1;ix<xmax;ix++) this->growRight();
+    }
+    return altered;
+  }
+
+
   Scan nullScan()
   {
     /// A simple way of returning a scan with zero length.
@@ -116,12 +129,12 @@ namespace PixelInfo
   }
   //------------------------------------------------------
 
-  bool Scan::touches(Scan &other)
+  bool Scan::touches(const Scan &other)
   {
     return this->overlaps(other) || this->isAdjacentTo(other);
   }
 
-  bool Scan::overlaps(Scan &other)
+  bool Scan::overlaps(const Scan &other)
   {
     if(this->itsY != other.itsY) return false;
     else if(this->itsX <= other.itsX){
@@ -132,7 +145,7 @@ namespace PixelInfo
     }
   }
 
-  bool Scan::isAdjacentTo(Scan &other)
+  bool Scan::isAdjacentTo(const Scan &other)
   {
     if(this->itsY != other.itsY) return false;
     else if(this->itsX <= other.itsX){

@@ -60,6 +60,9 @@ namespace PixelInfo
     void clear(){itsY=-1;itsX=-1;itsXLen=0;};
     bool isNull();
 
+    /// @brief Combine scans
+    bool addScan(const Scan &other);
+
     // Accessor functions -- obvious.
     long getY(){return itsY;};
     void setY(long l){itsY=l;};
@@ -86,9 +89,9 @@ namespace PixelInfo
     /// @brief Tests whether a given (x,y) point is in the scan.
     bool isInScan(long x, long y);
 
-    bool touches(Scan &other);
-    bool overlaps(Scan &other);
-    bool isAdjacentTo(Scan &other);
+    bool touches(const Scan &other);
+    bool overlaps(const Scan &other);
+    bool isAdjacentTo(const Scan &other);
 
     /// @brief Stream output operator for the Scan 
     friend std::ostream& operator<< ( std::ostream& theStream, Scan& scan);
@@ -100,8 +103,8 @@ namespace PixelInfo
     friend bool operator== (Scan lhs, Scan rhs);
 
     friend class Object2D; ///< Enable Object2D to see the private members.
-
-  private:
+    friend class Object3D;
+  protected:
     long itsY;    ///< The y-value of each point in the scan.
     long itsX;    ///< The x-value of the start (left-hand end) of the scan.
     long itsXLen; ///< The length of the scan (number of pixels in the scan).

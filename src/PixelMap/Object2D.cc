@@ -30,6 +30,7 @@
 #include <duchamp/PixelMap/Voxel.hh>
 #include <iostream>
 #include <vector>
+#include <list>
 #include <algorithm>
 #include <math.h>
 
@@ -64,7 +65,9 @@ namespace PixelInfo
   Object2D operator+ (Object2D lhs, Object2D rhs)
   {
     Object2D output = lhs;
-    for(size_t s=0;s<rhs.scanlist.size();s++) output.addScan(rhs.scanlist[s]);
+    for(std::vector<Scan>::iterator s=rhs.scanlist.begin();s!=rhs.scanlist.end();s++)
+      output.addScan(*s);
+    // for(size_t s=0;s<rhs.scanlist.size();s++) output.addScan(rhs.scanlist[s]);
     return output;
   }
 
@@ -88,22 +91,37 @@ namespace PixelInfo
 
     bool flagDone=false,flagChanged=false, isNew=false;
 
-    size_t scanCount = 0, size=this->scanlist.size();
-    while(!flagDone && (scanCount<size) ){
-      if(y == this->scanlist[scanCount].itsY){ // if the y value is already in the list
-	if(this->scanlist[scanCount].isInScan(x,y)) flagDone = true; // pixel already here.
+    // size_t scanCount = 0, size=this->scanlist.size();
+    // while(!flagDone && (scanCount<size) ){
+    //   if(y == this->scanlist[scanCount].itsY){ // if the y value is already in the list
+    // 	if(this->scanlist[scanCount].isInScan(x,y)) flagDone = true; // pixel already here.
+    // 	else{ // it's a new pixel!
+    // 	  if((x==(this->scanlist[scanCount].itsX-1)) || (x == (this->scanlist[scanCount].getXmax()+1)) ){
+    // 	    // if it is adjacent to the existing range, add to that range
+    // 	    if(x==(this->scanlist[scanCount].itsX-1)) this->scanlist[scanCount].growLeft();
+    // 	    else                                      this->scanlist[scanCount].growRight();
+    // 	    flagDone = true;
+    // 	    flagChanged = true;
+    // 	    isNew = true;
+    // 	  }
+    // 	}     
+    //   }
+    //   scanCount++;
+    // }
+    for (std::vector<Scan>::iterator scan=this->scanlist.begin(); !flagDone && scan!=this->scanlist.end(); scan++){
+      if(y == scan->itsY){ // if the y value is already in the list
+	if(scan->isInScan(x,y)) flagDone = true; // pixel already here.
 	else{ // it's a new pixel!
-	  if((x==(this->scanlist[scanCount].itsX-1)) || (x == (this->scanlist[scanCount].getXmax()+1)) ){
+	  if((x==(scan->itsX-1)) || (x == (scan->getXmax()+1)) ){
 	    // if it is adjacent to the existing range, add to that range
-	    if(x==(this->scanlist[scanCount].itsX-1)) this->scanlist[scanCount].growLeft();
-	    else                                      this->scanlist[scanCount].growRight();
+	    if(x==(scan->itsX-1)) scan->growLeft();
+	    else                  scan->growRight();
 	    flagDone = true;
 	    flagChanged = true;
 	    isNew = true;
 	  }
 	}     
       }
-      scanCount++;
     }
 
     if(!flagDone){ 
@@ -111,7 +129,7 @@ namespace PixelInfo
       // add a new scan consisting of just this pixel
       Scan newOne(y,x,1);
       this->scanlist.push_back(newOne);
-      if(this->scanlist.size()>1) this->order();
+      // if(this->scanlist.size()>1) this->order();
       isNew = true;
     }
     else if(flagChanged){ 
@@ -125,26 +143,42 @@ namespace PixelInfo
       // scans will need to be combined, so once we meet a pair that
       // overlap, we can finish.
 
-      std::vector <Scan>::iterator iter;
       bool combined = false;
-      int size = this->scanlist.size();
-      int count1=0;
-      while(!combined && count1<size){
-	if(this->scanlist[count1].itsY==y){
-	  int count2 = count1 + 1;
-	  while(!combined && count2<size){
-	    if(this->scanlist[count2].itsY==y){
-	      combined = touching(this->scanlist[count1], this->scanlist[count2]);
+      // int size = this->scanlist.size();
+      // int count1=0;
+      // while(!combined && count1<size){
+      // 	if(this->scanlist[count1].itsY==y){
+      // 	  int count2 = count1 + 1;
+      // 	  while(!combined && count2<size){
+      // 	    if(this->scanlist[count2].itsY==y){
+      // 	      combined = touching(this->scanlist[count1], this->scanlist[count2]);
+      // 	      if(combined){
+      // 		for(int i=0;i<this->scanlist[count2].getXlen();i++) this->scanlist[count1].growRight();
+      // 		iter = this->scanlist.begin() + count2;
+      // 		this->scanlist.erase(iter);
+      // 	      }
+      // 	    }	
+      // 	    count2++;
+      // 	  }
+      // 	}
+      // 	count1++;
+      // }
+      std::vector<Scan>::iterator scan1=this->scanlist.begin(),scan2;
+      for (; !combined && scan1!=this->scanlist.end(); scan1++){
+	if(scan1->itsY==y){
+	  scan2=scan1;
+	  scan2++;
+	  for(; !combined && scan2!=this->scanlist.end(); scan2++){
+	    if(scan2->itsY==y){
+	      combined = touching(*scan1,*scan2);
 	      if(combined){
-		for(int i=0;i<this->scanlist[count2].getXlen();i++) this->scanlist[count1].growRight();
-		iter = this->scanlist.begin() + count2;
-		this->scanlist.erase(iter);
+		// for(int i=0;i<scan2->getXlen();i++) scan1->growRight();
+		scan1->addScan(*scan2);
+		this->scanlist.erase(scan2);
 	      }
 	    }	
-	    count2++;
 	  }
 	}
-	count1++;
       }
 
     }
@@ -169,7 +203,7 @@ namespace PixelInfo
   }
   //------------------------------------------------------
 
-  void Object2D::addScan(Scan scan)
+  void Object2D::addScan(Scan &scan)
   {
     long y=scan.getY();
     for(long x=scan.getX();x<=scan.getXmax();x++) this->addPixel(x,y);
@@ -182,7 +216,7 @@ namespace PixelInfo
 
     std::vector<Scan>::iterator scn;
     bool returnval=false;
-    for(scn=this->scanlist.begin();scn<this->scanlist.end()&&!returnval;scn++){
+    for(scn=this->scanlist.begin();scn!=this->scanlist.end()&&!returnval;scn++){
 
       returnval = ((y == scn->itsY) && (x>= scn->itsX) && (x<=scn->getXmax()));
 
@@ -195,8 +229,11 @@ namespace PixelInfo
 
   std::ostream& operator<< ( std::ostream& theStream, Object2D& obj)
   {
-    for(size_t i=0;i<obj.scanlist.size();i++)
-      theStream << obj.scanlist[i] << "\n";
+    if(obj.scanlist.size()>1) obj.order();
+    // for(size_t i=0;i<obj.scanlist.size();i++)
+    //   theStream << obj.scanlist[i] << "\n";
+    for(std::vector<Scan>::iterator s=obj.scanlist.begin();s!=obj.scanlist.end();s++)
+      theStream << *s << "\n";
     theStream<<"---\n";
     return theStream;
 
@@ -208,7 +245,7 @@ namespace PixelInfo
     this->xSum = 0;
     this->ySum = 0;
     std::vector<Scan>::iterator s;
-    for(s=this->scanlist.begin();s<this->scanlist.end();s++){
+    for(s=this->scanlist.begin();s!=this->scanlist.end();s++){
 
       if(s==this->scanlist.begin()){
 	this->ymin = this->ymax = s->itsY;
@@ -233,31 +270,42 @@ namespace PixelInfo
 
   void Object2D::cleanup()
   {
-    size_t counter=0, compCounter=1;
-    std::vector<Scan>::iterator iter;
-    while(counter < this->scanlist.size())
-      {
-	compCounter = counter + 1;
+    // size_t counter=0, compCounter=1;
+    // std::vector<Scan>::iterator iter;
+    // while(counter < this->scanlist.size())
+    //   {
+    // 	compCounter = counter + 1;
       
-	while( compCounter < this->scanlist.size() ) {
+    // 	while( compCounter < this->scanlist.size() ) {
 
-	  Scan scan1 = this->scanlist[counter];
-	  Scan scan2 = this->scanlist[compCounter];
-	  if(overlap(scan1,scan2)){
-	    Scan newscan = unite(scan1,scan2);
-	    iter = this->scanlist.begin()+compCounter;
-	    this->scanlist.erase(iter);
-	    iter = this->scanlist.begin()+counter;
-	    this->scanlist.erase(iter);
-	    this->scanlist.push_back(newscan);
-	    compCounter = counter + 1;
-	  }
-	  else compCounter++;
+    // 	  Scan scan1 = this->scanlist[counter];
+    // 	  Scan scan2 = this->scanlist[compCounter];
+    // 	  if(overlap(scan1,scan2)){
+    // 	    Scan newscan = unite(scan1,scan2);
+    // 	    iter = this->scanlist.begin()+compCounter;
+    // 	    this->scanlist.erase(iter);
+    // 	    iter = this->scanlist.begin()+counter;
+    // 	    this->scanlist.erase(iter);
+    // 	    this->scanlist.push_back(newscan);
+    // 	    compCounter = counter + 1;
+    // 	  }
+    // 	  else compCounter++;
 
-	} 
+    // 	} 
 
-	counter++;
-      }
+    // 	counter++;
+    //   }
+    std::vector<Scan>::iterator s1=this->scanlist.begin(),s2;
+    for (; s1!=this->scanlist.end(); s1++){
+      s2=s1; s2++;
+      for (; s2!=this->scanlist.end(); s2++){
+
+	if(overlap(*s1,*s2)){
+	  s1->addScan(*s2);
+	  this->scanlist.erase(s2);
+	}
+      } 
+    }
 
   }
   //------------------------------------------------------
@@ -267,9 +315,9 @@ namespace PixelInfo
     std::vector<long> ylist;
     if(this->scanlist.size()==0) return 0;
     if(this->scanlist.size()==1) return 1;
-    ylist.push_back(this->scanlist[0].itsY);
+    // ylist.push_back(this->scanlist[0].itsY);
     std::vector<Scan>::iterator scn;
-    for(scn=this->scanlist.begin();scn<this->scanlist.end();scn++){
+    for(scn=this->scanlist.begin();scn!=this->scanlist.end();scn++){
       bool inList = false;
       unsigned int j=0;
       long y = scn->itsY;
@@ -288,10 +336,10 @@ namespace PixelInfo
     std::vector<long> xlist;
     if(this->scanlist.size()==0) return 0;
     if(this->scanlist.size()==1) return 1;
-    for(int x=this->scanlist[0].itsX;x<this->scanlist[0].getXmax();x++)
-      xlist.push_back(x);
+    // for(int x=this->scanlist[0].itsX;x<this->scanlist[0].getXmax();x++)
+    //   xlist.push_back(x);
     std::vector<Scan>::iterator scn;
-    for(scn=this->scanlist.begin();scn<this->scanlist.end();scn++){
+    for(scn=this->scanlist.begin();scn!=this->scanlist.end();scn++){
       for(int x=scn->itsX;x<scn->getXmax();x++){
 	bool inList = false;
 	unsigned int j=0;
@@ -306,12 +354,14 @@ namespace PixelInfo
   }
   //------------------------------------------------------
 
-  bool Object2D::scanOverlaps(Scan scan)
+  bool Object2D::scanOverlaps(Scan &scan)
   {
     bool returnval = false;
-    unsigned int scanCount=0;
-    while(!returnval && scanCount<this->scanlist.size()){
-      returnval = returnval || overlap(scan,this->scanlist[scanCount++]);
+    // unsigned int scanCount=0;
+    for(std::vector<Scan>::iterator s=this->scanlist.begin();!returnval&&s!=this->scanlist.end();s++){
+    // while(!returnval && scanCount<this->scanlist.size()){
+    //   returnval = returnval || overlap(scan,this->scanlist[scanCount++]);
+      returnval = returnval || s->overlaps(scan);
     }
     return returnval;
   }
@@ -321,7 +371,7 @@ namespace PixelInfo
   void Object2D::addOffsets(long xoff, long yoff)
   {
     std::vector<Scan>::iterator scn;
-    for(scn=this->scanlist.begin();scn<this->scanlist.end();scn++)
+    for(scn=this->scanlist.begin();scn!=this->scanlist.end();scn++)
       scn->addOffsets(xoff,yoff);
     this->xSum += xoff*numPix;
     this->xmin += xoff; xmax += xoff;
@@ -338,7 +388,7 @@ namespace PixelInfo
     int sumyy=0;
     int sumxy=0;
     std::vector<Scan>::iterator scn=this->scanlist.begin();
-    for(;scn<this->scanlist.end();scn++){
+    for(;scn!=this->scanlist.end();scn++){
       sumyy += (scn->itsY*scn->itsY)*scn->itsXLen;
       for(int x=scn->itsX;x<=scn->getXmax();x++){
 	sumxx += x*x;
@@ -372,7 +422,7 @@ namespace PixelInfo
     double y0 = this->getYaverage();
     std::vector<double> majorAxes, minorAxes;
     std::vector<Scan>::iterator scn=this->scanlist.begin();
-    for(;scn<this->scanlist.end();scn++){
+    for(;scn!=this->scanlist.end();scn++){
       for(int x=scn->itsX;x<=scn->getXmax();x++){
 	majorAxes.push_back((x-x0+0.5)*cos(theta) + (scn->itsY-y0+0.5)*sin(theta));
 	minorAxes.push_back((x-x0+0.5)*sin(theta) + (scn->itsY-y0+0.5)*cos(theta));
@@ -435,9 +485,9 @@ namespace PixelInfo
     long ycommonMax=std::min(this->ymax+gap,other.ymax)+gap;
 
     std::vector<Scan>::iterator iter1,iter2;
-    for(iter1=this->scanlist.begin();!close && iter1<this->scanlist.end();iter1++){
+    for(iter1=this->scanlist.begin();!close && iter1!=this->scanlist.end();iter1++){
       if(iter1->itsY >= ycommonMin && iter1->itsY<=ycommonMax){
-	for(iter2=other.scanlist.begin();!close && iter2<other.scanlist.end();iter2++){
+	for(iter2=other.scanlist.begin();!close && iter2!=other.scanlist.end();iter2++){
 	  if(iter2->itsY >= ycommonMin && iter2->itsY<=ycommonMax){
 	      
 	    if(abs(iter1->itsY-iter2->itsY)<=gap){

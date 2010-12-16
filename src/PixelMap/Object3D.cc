@@ -293,16 +293,34 @@ namespace PixelInfo
   }
   //------------------------------------------------------
 
-  std::ostream& operator<< ( std::ostream& theStream, Object3D& obj)
+  void Object3D::print(std::ostream& theStream)
   {
-    for(std::map<long, Object2D>::iterator it = obj.chanlist.begin(); 
-	it!=obj.chanlist.end();it++){
-      for(int s=0;s<it->second.getNumScan();s++){
-	Scan tempscan = it->second.getScan(s);
-	theStream << tempscan << ", " << it->first << "\n";
+    for(std::map<long, Object2D>::iterator it = this->chanlist.begin(); 
+	it!=this->chanlist.end();it++){
+      for(std::vector<Scan>::iterator s=it->second.scanlist.begin();s!=it->second.scanlist.end();s++){
+	theStream << *s << "," << it->first << "\n";
+      // for(int s=0;s<it->second.getNumScan();s++){
+      // 	Scan tempscan = it->second.getScan(s);
+      // 	theStream << tempscan << ", " << it->first << "\n";
       }
     }  
     theStream << "\n";
+  }
+
+
+  std::ostream& operator<< ( std::ostream& theStream, Object3D& obj)
+  {
+    // for(std::map<long, Object2D>::iterator it = obj.chanlist.begin(); 
+    // 	it!=obj.chanlist.end();it++){
+    //   for(std::vector<Scan>::iterator s=it->second.scanlist.begin();s!=it->second.scanlist.end();s++){
+    // 	theStream << *s << "," << it->first << "\n";
+    //   // for(int s=0;s<it->second.getNumScan();s++){
+    //   // 	Scan tempscan = it->second.getScan(s);
+    //   // 	theStream << tempscan << ", " << it->first << "\n";
+    //   }
+    // }  
+    // theStream << "\n";
+    obj.print(theStream);
     return theStream;
   }
   //--------------------------------------------
@@ -317,13 +335,19 @@ namespace PixelInfo
     for(std::map<long, Object2D>::iterator it = this->chanlist.begin(); 
 	it!=this->chanlist.end();it++){
       long z = it->first;
-      for(int s=0;s<it->second.getNumScan();s++){
-	Scan scn = it->second.getScan(s);
-	long y = scn.getY();
-	for(long x=scn.getX(); x<=scn.getXmax(); x++){
+      for(std::vector<Scan>::iterator s=it->second.scanlist.begin();s!=it->second.scanlist.end();s++){
+	long y = s->getY();
+	for(long x=s->getX(); x<=s->getXmax(); x++){
 	  voxList[count].setXYZF(x,y,z,0);
 	  count++;
 	}
+      // for(int s=0;s<it->second.getNumScan();s++){
+      // 	Scan scn = it->second.getScan(s);
+      // 	long y = scn.getY();
+      // 	for(long x=scn.getX(); x<=scn.getXmax(); x++){
+      // 	  voxList[count].setXYZF(x,y,z,0);
+      // 	  count++;
+      // 	}
       }
     }
     return voxList;
@@ -345,13 +369,19 @@ namespace PixelInfo
     for(std::map<long, Object2D>::iterator it = this->chanlist.begin(); 
 	it!=this->chanlist.end();it++){
       long z = it->first;
-      for(int s=0;s<it->second.getNumScan();s++){
-	Scan scn = it->second.getScan(s);
-	long y = scn.getY();
-	for(long x=scn.getX(); x<=scn.getXmax(); x++){
+      for(std::vector<Scan>::iterator s=it->second.scanlist.begin();s!=it->second.scanlist.end();s++){
+	long y = s->getY();
+	for(long x=s->getX(); x<=s->getXmax(); x++){
 	  voxList[count].setXYZF(x,y,z,array[x+dim[0]*y+dim[0]*dim[1]*z]);
 	  count++;
 	}
+      // for(int s=0;s<it->second.getNumScan();s++){
+      // 	Scan scn = it->second.getScan(s);
+      // 	long y = scn.getY();
+      // 	for(long x=scn.getX(); x<=scn.getXmax(); x++){
+      // 	  voxList[count].setXYZF(x,y,z,array[x+dim[0]*y+dim[0]*dim[1]*z]);
+      // 	  count++;
+      // 	}
       }
     }
     return voxList;

@@ -128,6 +128,9 @@ namespace PixelInfo
     /// @brief Return the bounding box for the object, as a duchamp::Section object
     duchamp::Section getBoundingSection(int boundary=1);
 
+    /// @brief Class function to print to a stream
+    void print(std::ostream& theStream);
+    
     /// @brief Output operator for the Object3D. 
     friend std::ostream& operator<< ( std::ostream& theStream, Object3D& obj);
 
