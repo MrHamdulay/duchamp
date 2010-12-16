@@ -576,31 +576,6 @@ namespace duchamp
 	localFlux[pos] = fluxArray[v->getX() + v->getY()*dim[0] + v->getZ()*dim[0]*dim[1]];
 	isObj[pos] = true;
       }
-      // for(std::map<long,Object2D>::iterator it=this->chanlist.begin();
-      // 	  it!=this->chanlist.end(); it++){
-      // 	long z = it->first;
-      // 	for(std::list<Scan>::iterator s=it->second.scanlist.begin();s!=it->second.scanlist.end();s++){
-      // 	  long y =s->getY();
-      // 	  for(long x=s->getX(); x<=s->getXmax(); x++){
-      // 	    long pos = (x-this->xmin+1) + (y-this->ymin+1)*xsize
-      // 	      + (z-this->zmin+1)*xsize*ysize;
-      // 	    localFlux[pos] = fluxArray[x + y*dim[0] + z*dim[0]*dim[1]];
-      // 	    isObj[pos] = true;
-      // 	  }
-      // 	}
-      // 	// for(int s=0; s<it->second.getNumScan();s++){
-      // 	//   long y = it->second.getScan(s).getY();
-      // 	//   for(long x=it->second.getScan(s).getX(); 
-      // 	//       x<=it->second.getScan(s).getXmax(); 
-      // 	//       x++){
-      // 	//     long pos = (x-this->xmin+1) + (y-this->ymin+1)*xsize
-      // 	//       + (z-this->zmin+1)*xsize*ysize;
-      // 	//     localFlux[pos] = fluxArray[x + y*dim[0] + z*dim[0]*dim[1]];
-      // 	//     isObj[pos] = true;
-      // 	//   }
-      // 	// }
-      // }
-
   
       // work out the WCS coords for each pixel
       double *world  = new double[size];

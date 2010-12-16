@@ -94,8 +94,6 @@ namespace PixelInfo
 
     Scan joined;
     if(!touching(scan1,scan2)){
-      //     std::cerr << "Joining scans failed! (" 
-      // 	      << scan1 <<"),("<<scan2<<") don't overlap\n";
       joined = nullScan();
     }
     else{
