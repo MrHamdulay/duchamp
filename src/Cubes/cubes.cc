@@ -47,6 +47,7 @@
 #include <duchamp/Detection/columns.hh>
 #include <duchamp/Detection/finders.hh>
 #include <duchamp/Utils/utils.hh>
+#include <duchamp/Utils/feedback.hh>
 #include <duchamp/Utils/mycpgplot.hh>
 #include <duchamp/Utils/Statistics.hh>
 
@@ -921,8 +922,10 @@ namespace duchamp
       std::cout << thresh;
       if(this->par.getFlagGrowth()){
 	std::cout << " and growing to threshold of: ";
-	if(this->par.getFlagUserGrowthThreshold()) std::cout << this->par.getGrowthThreshold();
-	else std::cout << this->Stats.snrToValue(this->par.getGrowthCut());
+	if(this->par.getFlagUserGrowthThreshold()) thresh= this->par.getGrowthThreshold();
+	else thresh= this->Stats.snrToValue(this->par.getGrowthCut());
+	if(this->par.getFlagNegative()) thresh *= -1.;
+	std::cout << thresh;
       }
       std::cout << std::endl;
     }
@@ -999,7 +1002,7 @@ namespace duchamp
   
     // now find the maximum P value.
     int max = 0;
-    float cN = 0.;
+    double cN = 0.;
     // Calculate number of correlated pixels. Assume all spatial
     // pixels within the beam are correlated, and multiply this by the
     // number of correlated pixels as determined by the parameter set.
@@ -1161,7 +1164,11 @@ namespace duchamp
 
     std::vector<Detection>::iterator obj;
     int ct=0;
+    ProgressBar bar;
+    if(this->par.isVerbose()) bar.init(this->objectList->size());
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
+      //      std::cerr << ct << ' ' << this->array << '\n';
+      if(this->par.isVerbose()) bar.update(ct);
       obj->setID(ct++);
       if(!obj->hasParams()){
 	obj->setCentreType(this->par.getPixelCentre());
@@ -1176,6 +1183,7 @@ namespace duchamp
 	  obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
       }
     }  
+    if(this->par.isVerbose()) bar.remove();
 
     if(!this->head.isWCS()){ 
       // if the WCS is bad, set the object names to Obj01 etc
