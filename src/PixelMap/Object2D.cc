@@ -94,7 +94,7 @@ namespace PixelInfo
       if(y == scan->itsY){ // if the y value is already in the list
 	if(scan->isInScan(x,y)) flagDone = true; // pixel already here.
 	else{ // it's a new pixel!
-	  if((x==(scan->itsX-1)) || (x == (scan->getXmax()+1)) ){
+	  if((x==(scan->itsX-1)) || (x == (scan->itsX+scan->itsXLen)) ){
 	    // if it is adjacent to the existing range, add to that range
 	    if(x==(scan->itsX-1)) scan->growLeft();
 	    else                  scan->growRight();
@@ -132,9 +132,8 @@ namespace PixelInfo
 	  scan2++;
 	  for(; !combined && scan2!=this->scanlist.end(); scan2++){
 	    if(scan2->itsY==y){
-	      combined = touching(*scan1,*scan2);
+	      combined = scan1->addScan(*scan2);
 	      if(combined){
-		scan1->addScan(*scan2);
 		this->scanlist.erase(scan2);
 	      }
 	    }	

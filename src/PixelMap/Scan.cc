@@ -66,8 +66,8 @@ namespace PixelInfo
     if(altered){
       long x = std::min(this->itsX,other.itsX);
       long xmax = std::max(this->itsX+this->itsXLen-1,other.itsX+other.itsXLen-1);
-      for(int ix=x;ix<this->itsX;ix++) this->growLeft();
-      for(int ix=this->itsX+this->itsXLen-1;ix<xmax;ix++) this->growRight();
+      this->itsX=x;
+      this->itsXLen=xmax-x+1;
     }
     return altered;
   }
@@ -147,10 +147,10 @@ namespace PixelInfo
   {
     if(this->itsY != other.itsY) return false;
     else if(this->itsX <= other.itsX){
-      return (this->itsX == (other.itsX+other.itsXLen));
+      return (other.itsX == (this->itsX+this->itsXLen));
     }
     else{
-      return (other.itsX == (this->itsX+this->itsXLen));
+      return (this->itsX == (other.itsX+other.itsXLen));
     }
   }
   //------------------------------------------------------

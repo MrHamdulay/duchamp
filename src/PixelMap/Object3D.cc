@@ -146,21 +146,18 @@ namespace PixelInfo
       // with the new pixel already existing in the Object2D
  
       // Remove that channel's information from the Object's information
-      long oldChanSize = it->second.numPix;
       this->xSum -= it->second.xSum;
       this->ySum -= it->second.ySum;
-      this->zSum -= z*oldChanSize;
+      this->zSum -= z*it->second.numPix;
+      this->numVox -= it->second.numPix;
 
       // Add the pixel
       it->second.addPixel(x,y);
     
-      // and update the information...
-     long newChanSize = it->second.numPix;
-    
-      this->numVox += (newChanSize - oldChanSize);
+      this->numVox += it->second.numPix;
       this->xSum += it->second.xSum;
       this->ySum += it->second.ySum;
-      this->zSum += z*newChanSize;
+      this->zSum += z*it->second.numPix;
       if(x<this->xmin) this->xmin = x;
       if(x>this->xmax) this->xmax = x;
       if(y<this->ymin) this->ymin = y;
