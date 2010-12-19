@@ -67,15 +67,17 @@ namespace duchamp {
     for(int o=0;o<theCube->getNumObj();o++){
       std::vector<Voxel> voxlist = theCube->getObject(o).getPixelSet();
       for(size_t i=0; i<voxlist.size(); i++){
-	long pos = voxlist[i].getX() + voxlist[i].getY()*this->itsArrayDim[0] + voxlist[i].getZ()*spatsize;
+	size_t pos = voxlist[i].getX() + voxlist[i].getY()*this->itsArrayDim[0] + voxlist[i].getZ()*spatsize;
 	this->itsFlagArray[pos] = DETECTED;
       }
     }
 
     if(theCube->pars().getFlagMW()){
-      long minz=theCube->pars().getMinMW();
-      long maxz=theCube->pars().getMaxMW();
-      for(size_t i=minz*spatsize;i<maxz*spatsize;i++) this->itsFlagArray[i]=MW;
+      int minz=std::max(0,theCube->pars().getMinMW());
+      int maxz=std::min(int(theCube->getDimZ())-1,theCube->pars().getMaxMW());
+      if(minz<maxz){
+	for(size_t i=minz*spatsize;i<(maxz+1)*spatsize;i++) this->itsFlagArray[i]=MW;
+      }
     }
 
     for(size_t i=0;i<fullsize;i++)
