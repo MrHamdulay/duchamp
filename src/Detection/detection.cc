@@ -573,7 +573,7 @@ namespace duchamp
       for(std::vector<Voxel>::iterator v=voxlist.begin();v<voxlist.end();v++){
 	long pos=(v->getX()-this->xmin+1) + (v->getY()-this->ymin+1)*xsize
 	  + (v->getZ()-this->zmin+1)*xsize*ysize;
-	localFlux[pos] = fluxArray[v->getX() + v->getY()*dim[0] + v->getZ()*dim[0]*dim[1]];
+	localFlux[pos] = fluxArray[v->arrayIndex(dim)];
 	isObj[pos] = true;
       }
   
