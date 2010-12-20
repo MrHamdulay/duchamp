@@ -33,29 +33,28 @@ namespace duchamp
 
   void Cube::invert()
   {
-    /// @details
-    ///  A function that multiplies all non-Blank pixels by -1. 
-    ///  This is used when searching for negative features.
+    /// @details A function that multiplies all non-Blank pixels by
+    ///  -1.  This is used when searching for negative features. This
+    ///  only has an effect when the main array has been allocated.
 
-    for(int i=0; i<this->numPixels; i++)
-      if(!this->isBlank(i)){
-	this->array[i] *= -1.;
-	if(this->reconExists) this->recon[i] *= -1.;
-      }
+    if(this->arrayAllocated){
+      for(int i=0; i<this->numPixels; i++)
+	if(!this->isBlank(i)){
+	  this->array[i] *= -1.;
+	  if(this->reconExists) this->recon[i] *= -1.;
+	}
+    }
+
   }
 
   void Cube::reInvert()
   {
-    /// @details
-    ///  A function that switches the array back to the original sign.
-    ///  This is used when searching for negative features.
-
-    for(int i=0; i<this->numPixels; i++){
-      if(!this->isBlank(i)){
-	this->array[i] *= -1.;
-	if(this->reconExists) this->recon[i] *= -1.;
-      }
-    }
+    /// @details A function that switches the array back to the
+    ///  original sign by calling Cube::invert(). It also inverts the
+    ///  fluxes in all the detected objects.  This is used when
+    ///  searching for negative features.
+    
+    this->invert();
 
     std::vector<Detection>::iterator obj;
     for(obj=this->objectList->begin(); obj<this->objectList->end(); obj++){
