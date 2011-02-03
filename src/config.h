@@ -16,7 +16,7 @@
 #define PACKAGE_TARNAME "duchamp"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.1.9"
+#define PACKAGE_VERSION "1.1.10"
 
 /* Define to 1 if stdbool.h conforms to C99. */
 #define HAVE_STDBOOL_H 1
