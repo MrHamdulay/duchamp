@@ -262,6 +262,12 @@ int main(int argc, char * argv[])
     karmafile.close();
   }
 
+  if(cube->pars().getFlagTextSpectra()){
+    if(cube->pars().isVerbose()) std::cout << "  Saving spectra to text file ... ";
+    cube->writeSpectralData();
+    if(cube->pars().isVerbose()) std::cout << "Done.\n";
+  }
+
   if(!cube->pars().getFlagUsePrevious() && cube->pars().getFlagLog()){
     // Open the logfile and write the time on the first line
     std::ofstream logfile(cube->pars().getLogFile().c_str(),std::ios::app);

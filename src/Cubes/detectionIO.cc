@@ -384,4 +384,57 @@ namespace duchamp
     fout.close();
   }
 
+
+  void Cube::writeSpectralData()
+  {
+    /// @details
+    ///  A function to write, in ascii form, the spectra of each
+    ///  detected object to a file. The file consists of a column for
+    ///  the spectral coordinates, and one column for each object
+    ///  showing the flux at that spectral position. The units are the
+    ///  same as those shown in the graphical output. The filename is
+    ///  given by the Param::spectraTextFile parameter in the Cube::par
+    ///  parameter set.
+
+    const int zdim = this->axisDim[2];
+    const int numObj = this->objectList->size();
+    float *specxOut = new float[zdim];
+    float *spectra = new float[numObj*zdim];
+    
+    for(int obj=0; obj<numObj; obj++){
+      float *temp = new float[zdim];
+      float *specx = new float[zdim];
+      float *recon = new float[zdim];
+      float *base = new float[zdim];
+      this->getSpectralArrays(obj, specx, temp, recon, base);
+      for(int z=0;z<zdim;z++) spectra[obj*zdim+z] = temp[z];
+      if(obj==0) for(int z=0;z<zdim;z++) specxOut[z] = specx[z];
+      delete [] specx;
+      delete [] recon;
+      delete [] base;
+      delete [] temp;
+    }
+    
+    std::ofstream fspec(this->par.getSpectraTextFile().c_str());
+    fspec.setf(std::ios::fixed);
+
+    for(int z=0;z<zdim;z++){
+      
+      fspec << std::setprecision(8);
+      fspec << specxOut[z] << "  ";
+      for(int obj=0;obj<numObj; obj++) {
+	fspec << spectra[obj*zdim+z] << "  ";
+      }
+      fspec << "\n";
+
+    }
+    fspec.close();
+
+    delete [] spectra;
+    delete [] specxOut;
+
+  }
+  //--------------------------------------------------------------------
+
+
 }
