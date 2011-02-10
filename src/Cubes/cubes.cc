@@ -50,6 +50,7 @@
 #include <duchamp/Utils/feedback.hh>
 #include <duchamp/Utils/mycpgplot.hh>
 #include <duchamp/Utils/Statistics.hh>
+#include <duchamp/FitsIO/DuchampBeam.hh>
 
 using namespace mycpgplot;
 using namespace Statistics;

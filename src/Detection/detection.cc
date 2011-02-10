@@ -621,7 +621,7 @@ namespace duchamp
       this->intFlux = this->totalFlux;
 
     if(head.isWCS()){
-      // correct for the beam size if the flux units string ends in "/beam"
+      // correct for the beam size if the flux units string ends in "/beam" and we have beam info
       // if(head.needBeamSize()) this->intFlux  /= head.getBeamSize();
       if(head.needBeamSize()) this->intFlux  /= head.beam().area();
     }

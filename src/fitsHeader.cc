@@ -210,12 +210,14 @@ namespace duchamp
     ///  A function that tells you whether the beam correction is
     ///  needed. It checks to see whether the flux units string ends in
     ///  "/beam" (in which case the beam size etc is needed and
-    ///  integrated fluxes need to be corrected).
+    ///  integrated fluxes need to be corrected). If we don't have any beam
+    ///  information, this will return false.
     ///  /return True if FitsHeader::fluxUnits ends in "/beam". False
     ///  otherwise.
 
     int size = this->fluxUnits.size();
-    if(size<6) return false;
+    if(this->itsBeam.origin()==EMPTY) return false; // we have no beam to correct with!
+    else if(size<6) return false;
     else {
       std::string tailOfFluxUnits = makelower(this->fluxUnits.substr(size-5,size));
       return (tailOfFluxUnits == "/beam");
@@ -290,7 +292,7 @@ namespace duchamp
     /// units. Then, if as long as the image is 3D, multiply by the
     /// spectral units.
 
-    if(this->fluxUnits.size()>5){
+    if(this->fluxUnits.size()>5 && this->itsBeam.origin()!=EMPTY){
     
       if(makelower(this->fluxUnits.substr(this->fluxUnits.size()-5,
 					  this->fluxUnits.size()   )) == "/beam"){
