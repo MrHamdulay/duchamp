@@ -313,8 +313,9 @@ namespace duchamp
       spectrum->saveParam(par);
       spectrum->saveStats(stats);
       spectrum->setMinSize(par.getMinChannels());
-      spectrum->pars().setBeamSize(2.); 
-      // beam size: for spectrum, only neighbouring channels correlated
+      // NB the beam is not used after this point
+      // spectrum->pars().setBeamSize(2.); 
+      // // beam size: for spectrum, only neighbouring channels correlated
 
       for(int y=0; y<dim[1]; y++){
 	for(int x=0; x<dim[0]; x++){

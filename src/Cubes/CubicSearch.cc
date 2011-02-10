@@ -140,7 +140,6 @@ std::vector <Detection> search3DArraySpectral(long *dim, float *Array, Param &pa
     spectrum->saveStats(stats);
     //    spectrum->setMinSize(par.getMinChannels());
     spectrum->setMinSize(1);
-    // beam size: for spectrum, only neighbouring channels correlated
 
     for(int y=0; y<dim[1]; y++){
       for(int x=0; x<dim[0]; x++){

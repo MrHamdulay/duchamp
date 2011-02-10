@@ -189,7 +189,8 @@ namespace duchamp
 	
     float beamCorrection;
     if(this->header().needBeamSize())
-      beamCorrection = this->par.getBeamSize();
+      beamCorrection = this->head.beam().area();
+      // beamCorrection = this->par.getBeamSize();
     else beamCorrection = 1.;
 	
     if(this->par.getSpectralMethod()=="sum"){

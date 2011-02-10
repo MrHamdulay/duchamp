@@ -122,9 +122,9 @@ namespace duchamp
     this->flagMW            = false;
     this->maxMW             = 112;
     this->minMW             = 75;
-    this->areaBeam          = 10.;
-    this->fwhmBeam          = -1.;
-    this->flagUsingBeam     = false;
+    this->areaBeam          = 0.;
+    this->fwhmBeam          = 0.;
+    // this->flagUsingBeam     = false;
     this->searchType        = "spatial";
     // Trim-related         
     this->flagTrim          = false;
@@ -251,7 +251,7 @@ namespace duchamp
     this->minMW             = p.minMW;         
     this->areaBeam          = p.areaBeam;     
     this->fwhmBeam          = p.fwhmBeam;     
-    this->flagUsingBeam     = p.flagUsingBeam;
+    // this->flagUsingBeam     = p.flagUsingBeam;
     this->searchType        = p.searchType;
     this->flagTrim          = p.flagTrim;    
     this->hasBeenTrimmed    = p.hasBeenTrimmed;    
@@ -848,10 +848,10 @@ namespace duchamp
     /// Print out the parameter set in a formatted, easy to read style.
     /// Lists the parameters, a description of them, and their value.
 
-    // Only show the [beamSize] bit if we are using the parameter
-    // otherwise we have read it from the FITS header.
-    std::string beamParam = "";
-    if(par.getFlagUsingBeam()) beamParam = "[beamSize]";
+    // // Only show the [beamSize] bit if we are using the parameter
+    // // otherwise we have read it from the FITS header.
+    // std::string beamParam = "";
+    // if(par.getFlagUsingBeam()) beamParam = "[beamSize]";
 
     // BUG -- can get error: `boolalpha' is not a member of type `ios' -- old compilers: gcc 2.95.3?
     //   theStream.setf(std::ios::boolalpha);
@@ -870,7 +870,7 @@ namespace duchamp
       recordParam(theStream, "[smoothExists]", "Smoothed array exists?", stringize(par.getFlagSmoothExists()));
       recordParam(theStream, "[smoothFile]", "FITS file containing smoothed array", par.getSmoothFile());
     }
-    recordParam(theStream, "[logFile]", "Intermediate Logfile", par.getLogFile());
+    recordParam(theStream, "[logFile]", "Intermediate Logfile", par.logFile);
     recordParam(theStream, "[outFile]", "Final Results file", par.getOutFile());
     if(par.getFlagSeparateHeader()){
       recordParam(theStream, "[headerFile]", "Header for results file", par.getHeaderFile());
@@ -913,12 +913,25 @@ namespace duchamp
       // need to remove the offset correction, as we want to report the parameters actually entered
       recordParam(theStream, "[minMW - maxMW]", "Milky Way Channels", par.getMinMW()+par.getZOffset()<<"-"<<par.getMaxMW()+par.getZOffset());
     }
-    if(par.getFlagUsingBeam()){
-      if(par.getBeamFWHM()>0.) recordParam(theStream, "[beamFWHM]", "FWHM of Beam (pixels)", par.getBeamFWHM() << "   (beam area = " << par.getBeamSize() <<" pixels)");
-      else recordParam(theStream, "[beamArea]", "Area of Beam (pixels)", par.getBeamSize());
+    // if(par.getFlagUsingBeam()){
+    //   if(par.getBeamFWHM()>0.) recordParam(theStream, "[beamFWHM]", "FWHM of Beam (pixels)", par.getBeamFWHM() << "   (beam area = " << par.getBeamSize() <<" pixels)");
+    //   else recordParam(theStream, "[beamArea]", "Area of Beam (pixels)", par.getBeamSize());
+    // }
+    // else {
+    //   recordParam(theStream, "", "Area of Beam (pixels)", par.getBeamSize());
+    // }
+    if(par.beamAsUsed.origin()==EMPTY){
+      recordParam(theStream, "", "Area of Beam", "No beam");
     }
-    else {
-      recordParam(theStream, "", "Area of Beam (pixels)", par.getBeamSize());
+    else if(par.beamAsUsed.origin()==HEADER){
+      recordParam(theStream, "", "Area of Beam (pixels)", par.beamAsUsed.area() << "   (beam: " << par.beamAsUsed.maj() << " x " << par.beamAsUsed.min() <<")");
+    }
+    else if(par.beamAsUsed.origin()==PARAM){
+      if(par.fwhmBeam>0.) recordParam(theStream, "[beamFWHM]", "FWHM of Beam (pixels)", par.beamAsUsed.maj() << "   (beam area = " << par.beamAsUsed.area() <<" pixels)");
+      else  recordParam(theStream, "[beamArea]", "Area of Beam (pixels)", par.beamAsUsed.area());
+    }
+    else{
+      duchampError("Parameter output","Unknown value for origin of beam");
     }
     recordParam(theStream, "[flagBaseline]", "Removing baselines before search?", stringize(par.getFlagBaseline()));
     recordParam(theStream, "[flagSmooth]", "Smoothing data prior to searching?", stringize(par.getFlagSmooth()));

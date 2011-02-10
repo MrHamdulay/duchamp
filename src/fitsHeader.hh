@@ -32,6 +32,7 @@
 #include <wcslib/wcs.h>
 #include <math.h>
 #include <duchamp/duchamp.hh>
+#include <duchamp/FitsIO/DuchampBeam.hh>
 
 namespace duchamp
 {
@@ -155,6 +156,9 @@ namespace duchamp
     void    setBminKeyword(float f){bminKeyword=f;};
     float   getBpaKeyword(){return bpaKeyword;};
     void    setBpaKeyword(float f){bpaKeyword=f;};
+    DuchampBeam getBeam(){return itsBeam;};
+    DuchampBeam& beam(){DuchampBeam& rbeam=itsBeam; return rbeam;};
+    void    setBeam(DuchampBeam &b){itsBeam=b;};
     int     getBlankKeyword(){return blankKeyword;};
     void    setBlankKeyword(int f){blankKeyword=f;};
     float   getBzeroKeyword(){return bzeroKeyword;};
@@ -185,6 +189,7 @@ namespace duchamp
     float          bmajKeyword;         ///< The FITS header keyword BMAJ.
     float          bminKeyword;         ///< The FITS header keyword BMIN.
     float          bpaKeyword;          ///< The FITS header keyword BPA.
+    DuchampBeam    itsBeam;             ///< The beam information
     int            blankKeyword;        ///< The FITS header keyword BLANK.
     float          bzeroKeyword;        ///< The FITS header keyword BZERO.
     float          bscaleKeyword;       ///< The FITS header keyword BSCALE.

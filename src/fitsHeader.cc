@@ -55,6 +55,7 @@ namespace duchamp
     this->scale=1.;
     this->offset=0.;
     this->power=1.;
+    this->itsBeam.empty();
   }
 
   FitsHeader::~FitsHeader()
@@ -89,6 +90,7 @@ namespace duchamp
     this->bmajKeyword   = h.bmajKeyword;
     this->bminKeyword   = h.bminKeyword;
     this->bpaKeyword    = h.bpaKeyword;
+    this->itsBeam       = h.itsBeam;
     this->blankKeyword  = h.blankKeyword;
     this->bzeroKeyword  = h.bzeroKeyword;
     this->bscaleKeyword = h.bscaleKeyword;

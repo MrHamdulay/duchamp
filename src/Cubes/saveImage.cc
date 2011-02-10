@@ -109,24 +109,27 @@ namespace duchamp
 	duchampFITSerror(status,"saveMomentMapImage","Error creating image:");
       }
 
-      if(!this->par.getFlagUsingBeam()){   // if the cube has beam info, copy it
-	float bmaj=this->head.getBmajKeyword(), bmin=this->head.getBminKeyword(), bpa=this->head.getBpaKeyword();
-	status = 0;
-	strcpy(keyword,"BMAJ");
-	if (fits_update_key(fptr, TFLOAT, keyword, &bmaj, NULL, &status)){
-	  duchampFITSerror(status,"saveMomentMapImage","Error saving beam info:");
-	}
-	status = 0;
-	strcpy(keyword,"BMIN");
-	if (fits_update_key(fptr, TFLOAT, keyword, &bmin, NULL, &status)){
-	  duchampFITSerror(status,"saveMomentMapImage","Error saving beam info:");
-	}
-	status = 0;
-	strcpy(keyword,"BPA");
-	if (fits_update_key(fptr, TFLOAT, keyword, &bpa, NULL, &status)){
-	  duchampFITSerror(status,"saveMomentMapImage","Error saving beam info:");
-	}
-      }			
+      // if(!this->par.getFlagUsingBeam()){   // if the cube has beam info, copy it
+      // 	float bmaj=this->head.getBmajKeyword(), bmin=this->head.getBminKeyword(), bpa=this->head.getBpaKeyword();
+      // 	status = 0;
+      // 	strcpy(keyword,"BMAJ");
+      // 	if (fits_update_key(fptr, TFLOAT, keyword, &bmaj, NULL, &status)){
+      // 	  duchampFITSerror(status,"saveMomentMapImage","Error saving beam info:");
+      // 	}
+      // 	status = 0;
+      // 	strcpy(keyword,"BMIN");
+      // 	if (fits_update_key(fptr, TFLOAT, keyword, &bmin, NULL, &status)){
+      // 	  duchampFITSerror(status,"saveMomentMapImage","Error saving beam info:");
+      // 	}
+      // 	status = 0;
+      // 	strcpy(keyword,"BPA");
+      // 	if (fits_update_key(fptr, TFLOAT, keyword, &bpa, NULL, &status)){
+      // 	  duchampFITSerror(status,"saveMomentMapImage","Error saving beam info:");
+      // 	}
+      // }			
+
+      this->head.beam().writeToFITS(fptr);
+
       status = 0;
       strcpy(keyword,"EQUINOX");
       if (fits_update_key(fptr, TFLOAT, keyword, &this->head.WCS().equinox, NULL, &status)){

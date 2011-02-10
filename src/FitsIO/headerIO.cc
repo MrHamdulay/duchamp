@@ -208,9 +208,9 @@ namespace duchamp
     /// \param fname The name of the FITS file.
     /// \param par The Param set.
 
-    char *comment = new char[80];
-    std::string keyword[3]={"BMAJ","BMIN","BPA"};
-    float bmaj,bmin,bpa;
+    // char *comment = new char[80];
+    // std::string keyword[3]={"BMAJ","BMIN","BPA"};
+    // float bmaj,bmin,bpa;
     int status=0;
     fitsfile *fptr;         
 
@@ -220,40 +220,42 @@ namespace duchamp
       return FAILURE;
     }
 
-    // Read the Keywords -- first look for BMAJ. If it is present, read the
-    //   others, and calculate the beam size.
-    // If it is not, give warning and set beam size to nominal value.
-    int bstatus[3]={0,0,0};
-    fits_read_key(fptr, TFLOAT, (char *)keyword[0].c_str(), &bmaj, comment, &bstatus[0]);
-    fits_read_key(fptr, TFLOAT, (char *)keyword[1].c_str(), &bmin, comment, &bstatus[1]);
-    fits_read_key(fptr, TFLOAT, (char *)keyword[2].c_str(), &bpa, comment,  &bstatus[2]);
+    this->itsBeam.readFromFITS(fptr, par, this->getAvPixScale());
 
-    if(bstatus[0]||bstatus[1]||bstatus[2]){ // error
-      std::string paramName;
-      if(par.getBeamFWHM()>0.){
-	this->setBeamSize( getBeamArea(par.getBeamFWHM(),par.getBeamFWHM()) );
-	par.setBeamSize(this->beamSize);
-	paramName = "beamFWHM";
-      }
-      else{
-	this->setBeamSize(par.getBeamSize());
-	paramName = "beamArea";
-      }
-      par.setFlagUsingBeam(true);
-      std::stringstream errmsg;
-      errmsg << "Header keywords not present: ";
-      for(int i=0;i<3;i++) if(bstatus[i]) errmsg<<keyword[i]<<" ";
-      errmsg << "\nUsing parameter "<< paramName <<" to determine size of beam.\n";
-      duchampWarning("Cube Reader",errmsg.str());
-    }
-    else{ // all keywords present
-      float pixScale = this->getAvPixScale();
-      this->setBeamSize( getBeamArea(bmaj/pixScale, bmin/pixScale) );
-      this->setBmajKeyword(bmaj);
-      this->setBminKeyword(bmin);
-      this->setBpaKeyword(bpa);
-      par.setBeamSize(this->beamSize);
-    }
+    // // Read the Keywords -- first look for BMAJ. If it is present, read the
+    // //   others, and calculate the beam size.
+    // // If it is not, give warning and set beam size to nominal value.
+    // int bstatus[3]={0,0,0};
+    // fits_read_key(fptr, TFLOAT, (char *)keyword[0].c_str(), &bmaj, comment, &bstatus[0]);
+    // fits_read_key(fptr, TFLOAT, (char *)keyword[1].c_str(), &bmin, comment, &bstatus[1]);
+    // fits_read_key(fptr, TFLOAT, (char *)keyword[2].c_str(), &bpa, comment,  &bstatus[2]);
+
+    // if(bstatus[0]||bstatus[1]||bstatus[2]){ // error
+    //   std::string paramName;
+    //   if(par.getBeamFWHM()>0.){
+    // 	this->setBeamSize( getBeamArea(par.getBeamFWHM(),par.getBeamFWHM()) );
+    // 	par.setBeamSize(this->beamSize);
+    // 	paramName = "beamFWHM";
+    //   }
+    //   else{
+    // 	this->setBeamSize(par.getBeamSize());
+    // 	paramName = "beamArea";
+    //   }
+    //   par.setFlagUsingBeam(true);
+    //   std::stringstream errmsg;
+    //   errmsg << "Header keywords not present: ";
+    //   for(int i=0;i<3;i++) if(bstatus[i]) errmsg<<keyword[i]<<" ";
+    //   errmsg << "\nUsing parameter "<< paramName <<" to determine size of beam.\n";
+    //   duchampWarning("Cube Reader",errmsg.str());
+    // }
+    // else{ // all keywords present
+    //   float pixScale = this->getAvPixScale();
+    //   this->setBeamSize( getBeamArea(bmaj/pixScale, bmin/pixScale) );
+    //   this->setBmajKeyword(bmaj);
+    //   this->setBminKeyword(bmin);
+    //   this->setBpaKeyword(bpa);
+    //   par.setBeamSize(this->beamSize);
+    // }
    
     // Close the FITS file.
     status=0;
@@ -263,7 +265,7 @@ namespace duchamp
       fits_report_error(stderr, status);
     }
 
-    delete [] comment;
+    // delete [] comment;
 
     return SUCCESS;
   }

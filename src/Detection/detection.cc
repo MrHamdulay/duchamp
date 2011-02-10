@@ -532,7 +532,8 @@ namespace duchamp
 
     if(head.isWCS()){
       // correct for the beam size if the flux units string ends in "/beam"
-      if(head.needBeamSize()) this->intFlux  /= head.getBeamSize();
+      // if(head.needBeamSize()) this->intFlux  /= head.getBeamSize();
+      if(head.needBeamSize()) this->intFlux  /= head.beam().area();
     }
 
   }
@@ -621,7 +622,8 @@ namespace duchamp
 
     if(head.isWCS()){
       // correct for the beam size if the flux units string ends in "/beam"
-      if(head.needBeamSize()) this->intFlux  /= head.getBeamSize();
+      // if(head.needBeamSize()) this->intFlux  /= head.getBeamSize();
+      if(head.needBeamSize()) this->intFlux  /= head.beam().area();
     }
 
   }
