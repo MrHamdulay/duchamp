@@ -580,12 +580,6 @@ namespace duchamp
       // work out the WCS coords for each pixel
       double *world  = new double[size];
       double xpt,ypt,zpt;
-      // for(int i=0;i<xsize*ysize*zsize;i++){
-      // 	xpt = double( this->getXmin() -1 + i%xsize );
-      // 	ypt = double( this->getYmin() -1 + (i/xsize)%ysize );
-      // 	zpt = double( this->getZmin() -1 + i/(xsize*ysize) );
-      // 	world[i] = head.pixToVel(xpt,ypt,zpt);
-      // }
       int i=0;
       for(int z=0;z<zsize;z++){
 	for(int y=0;y<ysize;y++){
