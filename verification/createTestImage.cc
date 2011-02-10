@@ -64,30 +64,17 @@ int main()
   
 }
 
-
-template <class T> T min(T x1, T x2)
-{
-  if(x1<x2) return x1;
-  else return x2;
-}
-
-template <class T> T max(T x1, T x2)
-{
-  if(x1>x2) return x1;
-  else return x2;
-}
-
 void addGaussian(float *array, long *dim, float *pos, float *fwhm, float norm)
 {
   long size = dim[0] * dim[1] * dim[2];
   float sigsig = fwhm[0]*fwhm[0] + fwhm[1]*fwhm[1] + fwhm[2]*fwhm[2];
 
-  int x1 = int(max(0.,pos[0]-10.));
-  int x2 = int(min(float(dim[0]),pos[0]+11));
-  int y1 = int(max(0.,pos[1]-10.));
-  int y2 = int(min(float(dim[1]),pos[1]+11));
-  int z1 = int(max(0.,pos[2]-10.));
-  int z2 = int(min(float(dim[2]),pos[2]+11));
+  int x1 = int(std::max(0.,pos[0]-10.));
+  int x2 = int(std::min(float(dim[0]),pos[0]+11));
+  int y1 = int(std::max(0.,pos[1]-10.));
+  int y2 = int(std::min(float(dim[1]),pos[1]+11));
+  int z1 = int(std::max(0.,pos[2]-10.));
+  int z2 = int(std::min(float(dim[2]),pos[2]+11));
 
   for(int x=x1;x<x2;x++){
     for(int y=y1;y<y2;y++){
