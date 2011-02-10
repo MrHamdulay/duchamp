@@ -465,7 +465,7 @@ namespace duchamp
     int         minPix;          ///< Minimum number of pixels for a detected object to be counted
     float       areaBeam;        ///< Size (area) of the beam in pixels.
     float       fwhmBeam;        ///< FWHM of the beam in pixels.
-    bool        flagUsingBeam;   ///< If true, we are using the numPixBeam parameter, otherwise we use the value in the FITS header.
+    bool        flagUsingBeam;   ///< If true, we are using the beam parameters above, otherwise we use the value in the FITS header.
     std::string searchType;      ///< How to do the search: by channel map or by spectrum
 
     // Object growth

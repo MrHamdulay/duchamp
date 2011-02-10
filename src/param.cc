@@ -251,6 +251,7 @@ namespace duchamp
     this->minMW             = p.minMW;         
     this->areaBeam          = p.areaBeam;     
     this->fwhmBeam          = p.fwhmBeam;     
+    this->flagUsingBeam     = p.flagUsingBeam;
     this->searchType        = p.searchType;
     this->flagTrim          = p.flagTrim;    
     this->hasBeenTrimmed    = p.hasBeenTrimmed;    
