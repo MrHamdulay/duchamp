@@ -262,8 +262,6 @@ namespace duchamp
     float  getBeamSize(){return areaBeam;};
     void   setBeamFWHM(float s){fwhmBeam = s;};
     float  getBeamFWHM(){return fwhmBeam;};
-    // bool   getFlagUsingBeam(){return flagUsingBeam;};
-    // void   setFlagUsingBeam(bool b){flagUsingBeam=b;};
     void   setBeamAsUsed(DuchampBeam &b){beamAsUsed = b;}; // just have the set function as we only want this for the operator<< function. Set from FitsHeader::itsBeam
     std::string getNewFluxUnits(){return newFluxUnits;};
     void   setNewFluxUnits(std::string s){newFluxUnits=s;};
@@ -467,7 +465,6 @@ namespace duchamp
     int         minPix;          ///< Minimum number of pixels for a detected object to be counted
     float       areaBeam;        ///< Size (area) of the beam in pixels.
     float       fwhmBeam;        ///< FWHM of the beam in pixels.
-    // bool        flagUsingBeam;   ///< If true, we are using the beam parameters above, otherwise we use the value in the FITS header.
     DuchampBeam beamAsUsed;      ///< A copy of the beam as used in FitsHeader - only used here for output
     std::string searchType;      ///< How to do the search: by channel map or by spectrum
 

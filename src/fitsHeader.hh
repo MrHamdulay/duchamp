@@ -148,14 +148,6 @@ namespace duchamp
     void    setFluxUnits(std::string s){fluxUnits=s;};
     std::string  getIntFluxUnits(){return intFluxUnits;};
     void    setIntFluxUnits(std::string s){intFluxUnits=s;};
-    float   getBeamSize(){return beamSize;};
-    void    setBeamSize(float f){beamSize=f;};
-    float   getBmajKeyword(){return bmajKeyword;};
-    void    setBmajKeyword(float f){bmajKeyword=f;};
-    float   getBminKeyword(){return bminKeyword;};
-    void    setBminKeyword(float f){bminKeyword=f;};
-    float   getBpaKeyword(){return bpaKeyword;};
-    void    setBpaKeyword(float f){bpaKeyword=f;};
     DuchampBeam getBeam(){return itsBeam;};
     DuchampBeam& beam(){DuchampBeam& rbeam=itsBeam; return rbeam;};
     void    setBeam(DuchampBeam &b){itsBeam=b;};
@@ -185,10 +177,6 @@ namespace duchamp
     std::string    originalFluxUnits;   ///< The units of pixel flux in the original image
     std::string    fluxUnits;           ///< The units of pixel flux as used (either from image or from parameter set)
     std::string    intFluxUnits;        ///< The units of integrated flux (from header)
-    float          beamSize;            ///< The calculated beam size in pixels.
-    float          bmajKeyword;         ///< The FITS header keyword BMAJ.
-    float          bminKeyword;         ///< The FITS header keyword BMIN.
-    float          bpaKeyword;          ///< The FITS header keyword BPA.
     DuchampBeam    itsBeam;             ///< The beam information
     int            blankKeyword;        ///< The FITS header keyword BLANK.
     float          bzeroKeyword;        ///< The FITS header keyword BZERO.

@@ -124,7 +124,7 @@ namespace duchamp
     this->minMW             = 75;
     this->areaBeam          = 0.;
     this->fwhmBeam          = 0.;
-    // this->flagUsingBeam     = false;
+    this->beamAsUsed.empty();
     this->searchType        = "spatial";
     // Trim-related         
     this->flagTrim          = false;
@@ -251,7 +251,7 @@ namespace duchamp
     this->minMW             = p.minMW;         
     this->areaBeam          = p.areaBeam;     
     this->fwhmBeam          = p.fwhmBeam;     
-    // this->flagUsingBeam     = p.flagUsingBeam;
+    this->beamAsUsed        = p.beamAsUsed;
     this->searchType        = p.searchType;
     this->flagTrim          = p.flagTrim;    
     this->hasBeenTrimmed    = p.hasBeenTrimmed;    
@@ -556,8 +556,8 @@ namespace duchamp
 	if(arg=="reconfile")       this->reconFile = readSval(ss); 
 	if(arg=="flagsmoothexists")this->flagSmoothExists = readFlag(ss); 
 	if(arg=="smoothfile")      this->smoothFile = readSval(ss); 
-	if(arg=="beamarea")        this->areaBeam = readFval(ss); 
-	if(arg=="beamfwhm")        this->fwhmBeam = readFval(ss); 
+	if(arg=="beamarea") {       this->areaBeam = readFval(ss); std::cerr << "**** Beam area = " << this->areaBeam << "\n";}
+	if(arg=="beamfwhm") {       this->fwhmBeam = readFval(ss); std::cerr << "**** Beam FWHM = " << this->fwhmBeam << "\n";}
 	if(arg=="useprevious")     this->usePrevious = readFlag(ss);
 	if(arg=="objectlist")      this->objectList = readSval(ss);
 
@@ -848,11 +848,6 @@ namespace duchamp
     /// Print out the parameter set in a formatted, easy to read style.
     /// Lists the parameters, a description of them, and their value.
 
-    // // Only show the [beamSize] bit if we are using the parameter
-    // // otherwise we have read it from the FITS header.
-    // std::string beamParam = "";
-    // if(par.getFlagUsingBeam()) beamParam = "[beamSize]";
-
     // BUG -- can get error: `boolalpha' is not a member of type `ios' -- old compilers: gcc 2.95.3?
     //   theStream.setf(std::ios::boolalpha);
     theStream.setf(std::ios::left);
@@ -913,20 +908,13 @@ namespace duchamp
       // need to remove the offset correction, as we want to report the parameters actually entered
       recordParam(theStream, "[minMW - maxMW]", "Milky Way Channels", par.getMinMW()+par.getZOffset()<<"-"<<par.getMaxMW()+par.getZOffset());
     }
-    // if(par.getFlagUsingBeam()){
-    //   if(par.getBeamFWHM()>0.) recordParam(theStream, "[beamFWHM]", "FWHM of Beam (pixels)", par.getBeamFWHM() << "   (beam area = " << par.getBeamSize() <<" pixels)");
-    //   else recordParam(theStream, "[beamArea]", "Area of Beam (pixels)", par.getBeamSize());
-    // }
-    // else {
-    //   recordParam(theStream, "", "Area of Beam (pixels)", par.getBeamSize());
-    // }
-    if(par.beamAsUsed.origin()==EMPTY){
+    if(par.beamAsUsed.origin()==EMPTY){  // No beam in FITS file and no information provided
       recordParam(theStream, "", "Area of Beam", "No beam");
     }
-    else if(par.beamAsUsed.origin()==HEADER){
+    else if(par.beamAsUsed.origin()==HEADER){ // Report beam size from FITS file
       recordParam(theStream, "", "Area of Beam (pixels)", par.beamAsUsed.area() << "   (beam: " << par.beamAsUsed.maj() << " x " << par.beamAsUsed.min() <<")");
     }
-    else if(par.beamAsUsed.origin()==PARAM){
+    else if(par.beamAsUsed.origin()==PARAM){ // Report beam size requested in parameter set input
       if(par.fwhmBeam>0.) recordParam(theStream, "[beamFWHM]", "FWHM of Beam (pixels)", par.beamAsUsed.maj() << "   (beam area = " << par.beamAsUsed.area() <<" pixels)");
       else  recordParam(theStream, "[beamArea]", "Area of Beam (pixels)", par.beamAsUsed.area());
     }
@@ -1016,8 +1004,6 @@ namespace duchamp
     this->bzeroKeyword  = head.getBzeroKeyword();
     this->blankPixValue = this->blankKeyword * this->bscaleKeyword + 
       this->bzeroKeyword;
-
-    this->areaBeam    = head.getBeamSize();
   }
 
   std::string Param::outputMaskFile()

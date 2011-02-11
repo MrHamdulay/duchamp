@@ -70,19 +70,16 @@ namespace duchamp
       this->setFWHM(par.getBeamFWHM(),PARAM);
       par.setBeamSize(this->itsArea);
       paramName = "beamFWHM";
-      // par.setFlagUsingBeam(true);
       par.setBeamAsUsed(*this);
     }
     else if(par.getBeamSize()>0.){
       this->setArea(par.getBeamSize(),PARAM);
       paramName = "beamArea";
-      // par.setFlagUsingBeam(true);
       par.setBeamAsUsed(*this);
     }
     else{
       this->empty();
       doWarning = false;
-      // par.setFlagUsingBeam(false);
     }
 
     if(doWarning){

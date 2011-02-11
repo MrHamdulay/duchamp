@@ -1008,7 +1008,6 @@ namespace duchamp
     // pixels within the beam are correlated, and multiply this by the
     // number of correlated pixels as determined by the beam
     int numVox = int(ceil(this->head.beam().area()));
-    // int numVox = int(ceil(this->par.getBeamSize()));
     if(this->head.canUseThirdAxis()) numVox *= this->par.getFDRnumCorChan();
     for(int psfCtr=1;psfCtr<=numVox;psfCtr++) cN += 1./float(psfCtr);
 

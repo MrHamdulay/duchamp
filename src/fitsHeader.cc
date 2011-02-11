@@ -86,10 +86,6 @@ namespace duchamp
     this->originalFluxUnits = h.originalFluxUnits;
     this->fluxUnits     = h.fluxUnits;
     this->intFluxUnits  = h.intFluxUnits;
-    this->beamSize      = h.beamSize;
-    this->bmajKeyword   = h.bmajKeyword;
-    this->bminKeyword   = h.bminKeyword;
-    this->bpaKeyword    = h.bpaKeyword;
     this->itsBeam       = h.itsBeam;
     this->blankKeyword  = h.blankKeyword;
     this->bzeroKeyword  = h.bzeroKeyword;
@@ -291,17 +287,11 @@ namespace duchamp
     /// units. If flux is per beam, trim the /beam from the flux
     /// units. Then, if as long as the image is 3D, multiply by the
     /// spectral units.
-
-    if(this->fluxUnits.size()>5 && this->itsBeam.origin()!=EMPTY){
     
-      if(makelower(this->fluxUnits.substr(this->fluxUnits.size()-5,
-					  this->fluxUnits.size()   )) == "/beam"){
-	this->intFluxUnits = this->fluxUnits.substr(0,this->fluxUnits.size()-5);
-      }
-      else this->intFluxUnits = this->fluxUnits;
-
-    }
-    else this->intFluxUnits = this->fluxUnits;
+    if(this->needBeamSize())
+      this->intFluxUnits = this->fluxUnits.substr(0,this->fluxUnits.size()-5);
+    else 
+      this->intFluxUnits = this->fluxUnits;
 
     if(!this->flag2D) this->intFluxUnits += std::string(" ") + this->spectralUnits;
 
