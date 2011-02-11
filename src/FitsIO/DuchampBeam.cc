@@ -1,3 +1,4 @@
+#include <duchamp/duchamp.hh>
 #include <duchamp/FitsIO/DuchampBeam.hh>
 #include <duchamp/FitsIO/Beam.hh>
 #include <duchamp/param.hh>
