@@ -1,6 +1,6 @@
 CFLAGS = -O2 -ftree-vectorize
 
-FFLAGS = -C -fast -O4
+FFLAGS = -fast -O4
 
 CC =    @CC@ $(CFLAGS)
 CXX =   @CXX@ $(CFLAGS)
