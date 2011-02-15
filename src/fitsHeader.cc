@@ -201,25 +201,6 @@ namespace duchamp
       return getIAUNameGAL(ra, dec);
   }
 
-  bool FitsHeader::needBeamSize()
-  {
-    ///  A function that tells you whether the beam correction is
-    ///  needed. It checks to see whether the flux units string ends in
-    ///  "/beam" (in which case the beam size etc is needed and
-    ///  integrated fluxes need to be corrected). If we don't have any beam
-    ///  information, this will return false.
-    ///  /return True if FitsHeader::fluxUnits ends in "/beam". False
-    ///  otherwise.
-
-    int size = this->fluxUnits.size();
-    if(this->itsBeam.origin()==EMPTY) return false; // we have no beam to correct with!
-    else if(size<6) return false;
-    else {
-      std::string tailOfFluxUnits = makelower(this->fluxUnits.substr(size-5,size));
-      return (tailOfFluxUnits == "/beam");
-    }
-  }
-
   void FitsHeader::fixUnits(Param &par)
   {
     ///  Put the units for the FITS header into some sort of standard form.
@@ -280,6 +261,25 @@ namespace duchamp
 
   }
 
+  bool FitsHeader::needBeamSize()
+  {
+    ///  A function that tells you whether the beam correction is
+    ///  needed. It checks to see whether the flux units string ends in
+    ///  "/beam" (in which case the beam size etc is needed and
+    ///  integrated fluxes need to be corrected). If we don't have any beam
+    ///  information, this will return false.
+    ///  /return True if FitsHeader::fluxUnits ends in "/beam". False
+    ///  otherwise.
+
+    int size = this->fluxUnits.size();
+    if(this->itsBeam.origin()==EMPTY) return false; // we have no beam to correct with!
+    else if(size<6) return false;
+    else {
+      std::string tailOfFluxUnits = makelower(this->fluxUnits.substr(size-5,size));
+      return (tailOfFluxUnits == "/beam");
+    }
+  }
+
   void FitsHeader::setIntFluxUnits()
   {
 
@@ -297,12 +297,6 @@ namespace duchamp
 
   }
 
-  float getBeamArea(float fwhmMaj, float fwhmMin)
-  {
-
-    return M_PI * (fwhmMaj/2.) * (fwhmMin/2.) / M_LN2;
-
-  }
 
 
 }

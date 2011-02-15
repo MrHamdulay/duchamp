@@ -37,9 +37,6 @@
 namespace duchamp
 {
 
-  /// @brief Calculation to return area of a beam given FWHM values
-  float getBeamArea(float fwhmMaj, float fwhmMin);
-
   class Param;
 
   /// 
