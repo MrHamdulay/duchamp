@@ -912,7 +912,7 @@ namespace duchamp
       recordParam(theStream, "", "Area of Beam", "No beam");
     }
     else if(par.beamAsUsed.origin()==HEADER){ // Report beam size from FITS file
-      recordParam(theStream, "", "Area of Beam (pixels)", par.beamAsUsed.area() << "   (beam: " << par.beamAsUsed.maj() << " x " << par.beamAsUsed.min() <<")");
+      recordParam(theStream, "", "Area of Beam (pixels)", par.beamAsUsed.area() << "   (beam: " << par.beamAsUsed.maj() << " x " << par.beamAsUsed.min() <<" pixels)");
     }
     else if(par.beamAsUsed.origin()==PARAM){ // Report beam size requested in parameter set input
       if(par.fwhmBeam>0.) recordParam(theStream, "[beamFWHM]", "FWHM of Beam (pixels)", par.beamAsUsed.maj() << "   (beam area = " << par.beamAsUsed.area() <<" pixels)");

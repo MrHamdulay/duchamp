@@ -27,6 +27,7 @@ namespace duchamp
     void setArea(float area, BEAM_ORIGIN origin);
 
     BEAM_ORIGIN origin(){return itsOrigin;};
+    std::string originString();
     bool isDefined(){return (itsOrigin != EMPTY);};
     
     void define(Param &par,bool warn=true); // do we need this? How to define directly?

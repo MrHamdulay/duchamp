@@ -47,12 +47,15 @@ namespace duchamp
 
     OUTCOME returnValue = SUCCESS;
 
-    //   if(this->readBUNIT(fname)==FAILURE) returnValue=FAILURE;
+    // Get the brightness unit, so that we can set the units for the 
+    //  integrated flux when we go to fixUnits.
+    if(this->readBUNIT(fname) == FAILURE) return FAILURE;
   
     if(this->readBLANKinfo(fname, par)==FAILURE) returnValue=FAILURE;
   
-    // if(this->needBeamSize())
-      if(this->readBeamInfo(fname, par)==FAILURE) returnValue=FAILURE;
+    if(this->readBeamInfo(fname, par)==FAILURE) returnValue=FAILURE;
+
+    if(this->wcs->spec>=0) this->fixUnits(par);
 
     return returnValue;
   }

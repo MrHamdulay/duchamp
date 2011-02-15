@@ -280,12 +280,6 @@ namespace duchamp
     free(hdr);
     delete [] dimAxes;
 
-    // Get the brightness unit, so that we can set the units for the 
-    //  integrated flux when we go to fixUnits.
-    if(this->readBUNIT(fname) == FAILURE) return FAILURE;
-
-    if(this->wcs->spec>=0) this->fixUnits(par);
-
     return SUCCESS;
 
   }

@@ -64,6 +64,28 @@ namespace duchamp
     this->itsOrigin = EMPTY;
   }
 
+  std::string DuchampBeam::originString()
+  {
+    std::string output;
+    switch(this->itsOrigin)
+      {
+      case HEADER:
+	output="HEADER";
+	break;
+      case PARAM:
+	output="PARAM";
+	break;
+      case EMPTY:
+	output="EMPTY";
+	break;
+      default:
+	output="ERROR";
+	break;
+      }
+    return output;
+
+  }
+
   void DuchampBeam::define(Param &par, bool warn)
   {
     std::string paramName;
@@ -111,9 +133,8 @@ namespace duchamp
     }
     else{ // all keywords present
       this->define(bmaj/pixelScale, bmin/pixelScale, bpa, HEADER);
-      par.setBeamSize(this->itsArea);
+      par.setBeamAsUsed(*this);
     }
-
   }
 
   

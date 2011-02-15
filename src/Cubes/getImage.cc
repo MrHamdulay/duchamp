@@ -144,14 +144,14 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
     // Get the WCS information
     if(this->head.defineWCS(fname, this->par) == FAILURE) return FAILURE;
 
+    // Read the necessary header information, and copy some of it into the Param.
+    if(this->head.readHeaderInfo(fname, this->par) == FAILURE) return FAILURE;
+
     if(!this->head.isWCS()) 
       duchampWarning("Cube Reader","WCS is not good enough to be used.\n");
 
     // allocate the dimension array in the Cube.
     if(this->initialiseCube(dimAxes,false) == FAILURE) return FAILURE;
-
-    // Read the necessary header information, and copy some of it into the Param.
-    if(this->head.readHeaderInfo(fname, this->par) == FAILURE) return FAILURE;
 
     delete [] dimAxes;
 
