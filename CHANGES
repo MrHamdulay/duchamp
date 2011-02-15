@@ -1,3 +1,31 @@
+Duchamp version 1.1.11 (2011/02/18)
+-------------------------------------
+
+Improvements:
+
+* The largest changes in this release involved improving the
+  efficiency of the code, resulting in further speed-ups. The code
+  affected was the low-level object-handling code, with the merging
+  stages in particular showing good speed-ups.
+
+* The default value for the beam size, when the beam parameters are
+  not in the FITS header, has been dropped. Now the default behaviour
+  is to simply not make any beam corrections if the beam is not
+  specified by either the FITS file or the input parameters. Thanks to
+  Tobias Westemeier for the suggestion. 
+
+* The reporting of the beam size has changed slightly to provide a bit
+  more information.
+
+Bug Fixes:
+
+* There was a problem with using a MW range and subsectioning when
+  growing objects, as a result of changes in 1.1.10. This has been
+  fixed.
+
+* Inversion was failing when no array was allocated (not a problem for
+  standard Duchamp, but affected its use as a library by other code).
+
 Duchamp version 1.1.10 (2010/11/15)
 -------------------------------------
 
