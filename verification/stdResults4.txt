@@ -1,4 +1,4 @@
-Results of the Duchamp source finder v.1.1.9: Thu Nov 11 15:51:07 2010
+Results of the Duchamp source finder v.1.1.10: Tue Feb 15 16:53:01 2011
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
@@ -15,7 +15,7 @@ Type of searching performed.................[searchType]  =  spatial
 Trimming Blank Pixels?........................[flagTrim]  =  false
 Searching for Negative features?..........[flagNegative]  =  false
 Removing Milky Way channels?....................[flagMW]  =  false
-Area of Beam (pixels)...................................  =  14.6848
+Area of Beam (pixels)...................................  =  14.6848   (beam: 3.6 x 3.6 pixels)
 Removing baselines before search?.........[flagBaseline]  =  false
 Smoothing data prior to searching?..........[flagSmooth]  =  false
 Using A Trous reconstruction?...............[flagATrous]  =  true
