@@ -62,6 +62,8 @@ HEADS = $(BASE)/duchamp.hh\
 	$(CUBESDIR)/cubes.hh\
 	$(CUBESDIR)/plots.hh\
 	$(CUBESDIR)/VOTable.hh\
+	$(FITSIODIR)/Beam.hh\
+	$(FITSIODIR)/DuchampBeam.hh\
 	$(UTILDIR)/Hanning.hh\
 	$(UTILDIR)/GaussSmooth1D.hh\
 	$(UTILDIR)/GaussSmooth2D.hh\
@@ -112,6 +114,8 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(CUBESDIR)/spectraUtils.o\
 	$(CUBESDIR)/trimImage.o\
 	$(CUBESDIR)/VOTable.o\
+	$(FITSIODIR)/Beam.o\
+	$(FITSIODIR)/DuchampBeam.o\
 	$(FITSIODIR)/dataIO.o\
 	$(FITSIODIR)/headerIO.o\
 	$(FITSIODIR)/subsection.o\
