@@ -176,6 +176,7 @@ the output file:
 \item[{X\_peak, Y\_peak, Z\_peak}] The location of the pixel
   containing the peak flux value.
 \end{Lentry}
+
 The velocity width of the detection is calculated at 50\% and 20\% of
 the peak flux, as well as the full detected width (if the detection
 threshold is greater than 20\% or 50\% of the peak, then these values
@@ -237,8 +238,10 @@ either:
     parameter \texttt{beamSize}, which was highlighted as being
     ambiguous.}. This should be the value given by the equation above.
 \end{enumerate}
-If \texttt{beamFWHM}, is given, that will be used for the calculation,
-otherwise \texttt{beamArea} (which defaults to 10 pixels) is used.
+If both are given, \texttt{beamFWHM} takes precendence. If neither are
+given, and there is no beam information in the header, then no
+correction to the integrated flux is made (and so it will stay in
+units of Jy/beam or equivalent).
 
 If the WCS is absent or not sufficiently specified, then all columns
 from \texttt{RA/GLON} to \texttt{w\_VEL} will be left blank. Also,

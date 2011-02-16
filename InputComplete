@@ -155,8 +155,8 @@ threshold	0.
 flagGrowth	0
 growthCut	2.
 growthThreshold 0.
-beamArea        10.
-beamFWHM        -1.
+beamArea        0.
+beamFWHM        0.
 searchType      spatial
 
 # RECONSTRUCTION RELATED
