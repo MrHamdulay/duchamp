@@ -26,6 +26,9 @@ Bug Fixes:
 * Inversion was failing when no array was allocated (not a problem for
   standard Duchamp, but affected its use as a library by other code).
 
+* The equation for the beam size in Sec.4.2 of the User Guide was
+  incorrect and has been fixed.
+
 Duchamp version 1.1.10 (2010/11/15)
 -------------------------------------
 
