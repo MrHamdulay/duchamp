@@ -5789,9 +5789,9 @@ if eval test \"x\$"$as_ac_File"\" = x"yes"; then :
 fi
 
     done
-    if test "x$F77" = xgfortran; then
-      PGPLOTLIB="$PGPLOTLIB -bind_at_load"
-    fi
+#    if test "x$F77" = xgfortran; then
+#      PGPLOTLIB="$PGPLOTLIB -bind_at_load"
+#    fi
   fi
 
 fi

@@ -184,9 +184,9 @@ else
     for LIBDIR in $PGPLOTLIBDIRS ; do
      AC_CHECK_FILE([$LIBDIR/libcpgplot.a], [PGPLOTLIB="-L$LIBDIR $PGPLOTLIB"; break])
     done
-    if test "x$F77" = xgfortran; then
-      PGPLOTLIB="$PGPLOTLIB -bind_at_load"
-    fi
+#    if test "x$F77" = xgfortran; then
+#      PGPLOTLIB="$PGPLOTLIB -bind_at_load"
+#    fi
   fi
 
 fi
