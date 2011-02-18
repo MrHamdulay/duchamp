@@ -117,8 +117,8 @@ else
 
   for INCDIR in $PGPLOTINCDIRS ; do
     AC_CHECK_FILE([$INCDIR/cpgplot.h], [PGPLOTINC=-I$INCDIR; break])
-    INCDIR=$INCDIR/pgplot
-    AC_CHECK_FILE([$INCDIR/cpgplot.h], [PGPLOTINC=-I$INCDIR; break])
+    AC_CHECK_FILE([$INCDIR/pgplot/cpgplot.h], [PGPLOTINC=-I$INCDIR/pglot; break])
+    AC_CHECK_FILE([$INCDIR/include/cpgplot.h], [PGPLOTINC=-I$INCDIR/include; break])
   done
   
   # PGPLOT compiled with a SUN compiler but linked with something else.
@@ -183,6 +183,8 @@ else
     AC_DEFINE([HAVE_PGPLOT], [1], [Define to 1 if PGPLOT is available.])
     for LIBDIR in $PGPLOTLIBDIRS ; do
      AC_CHECK_FILE([$LIBDIR/libcpgplot.a], [PGPLOTLIB="-L$LIBDIR $PGPLOTLIB"; break])
+     AC_CHECK_FILE([$LIBDIR/lib/libcpgplot.a], [PGPLOTLIB="-L$LIBDIR/lib $PGPLOTLIB"; break])
+     AC_CHECK_FILE([$LIBDIR/pgplot/libcpgplot.a], [PGPLOTLIB="-L$LIBDIR/pgplot $PGPLOTLIB"; break])
     done
 #    if test "x$F77" = xgfortran; then
 #      PGPLOTLIB="$PGPLOTLIB -bind_at_load"

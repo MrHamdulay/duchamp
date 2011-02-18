@@ -4645,16 +4645,15 @@ if eval test \"x\$"$as_ac_File"\" = x"yes"; then :
   PGPLOTINC=-I$INCDIR; break
 fi
 
-    INCDIR=$INCDIR/pgplot
-    as_ac_File=`$as_echo "ac_cv_file_$INCDIR/cpgplot.h" | $as_tr_sh`
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $INCDIR/cpgplot.h" >&5
-$as_echo_n "checking for $INCDIR/cpgplot.h... " >&6; }
+    as_ac_File=`$as_echo "ac_cv_file_$INCDIR/pgplot/cpgplot.h" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $INCDIR/pgplot/cpgplot.h" >&5
+$as_echo_n "checking for $INCDIR/pgplot/cpgplot.h... " >&6; }
 if eval \${$as_ac_File+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   test "$cross_compiling" = yes &&
   as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
-if test -r "$INCDIR/cpgplot.h"; then
+if test -r "$INCDIR/pgplot/cpgplot.h"; then
   eval "$as_ac_File=yes"
 else
   eval "$as_ac_File=no"
@@ -4664,7 +4663,28 @@ eval ac_res=\$$as_ac_File
 	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
 $as_echo "$ac_res" >&6; }
 if eval test \"x\$"$as_ac_File"\" = x"yes"; then :
-  PGPLOTINC=-I$INCDIR; break
+  PGPLOTINC=-I$INCDIR/pglot; break
+fi
+
+    as_ac_File=`$as_echo "ac_cv_file_$INCDIR/include/cpgplot.h" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $INCDIR/include/cpgplot.h" >&5
+$as_echo_n "checking for $INCDIR/include/cpgplot.h... " >&6; }
+if eval \${$as_ac_File+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  test "$cross_compiling" = yes &&
+  as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
+if test -r "$INCDIR/include/cpgplot.h"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+eval ac_res=\$$as_ac_File
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_File"\" = x"yes"; then :
+  PGPLOTINC=-I$INCDIR/include; break
 fi
 
   done
@@ -5786,6 +5806,48 @@ eval ac_res=\$$as_ac_File
 $as_echo "$ac_res" >&6; }
 if eval test \"x\$"$as_ac_File"\" = x"yes"; then :
   PGPLOTLIB="-L$LIBDIR $PGPLOTLIB"; break
+fi
+
+     as_ac_File=`$as_echo "ac_cv_file_$LIBDIR/lib/libcpgplot.a" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $LIBDIR/lib/libcpgplot.a" >&5
+$as_echo_n "checking for $LIBDIR/lib/libcpgplot.a... " >&6; }
+if eval \${$as_ac_File+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  test "$cross_compiling" = yes &&
+  as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
+if test -r "$LIBDIR/lib/libcpgplot.a"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+eval ac_res=\$$as_ac_File
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_File"\" = x"yes"; then :
+  PGPLOTLIB="-L$LIBDIR/lib $PGPLOTLIB"; break
+fi
+
+     as_ac_File=`$as_echo "ac_cv_file_$LIBDIR/pgplot/libcpgplot.a" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $LIBDIR/pgplot/libcpgplot.a" >&5
+$as_echo_n "checking for $LIBDIR/pgplot/libcpgplot.a... " >&6; }
+if eval \${$as_ac_File+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  test "$cross_compiling" = yes &&
+  as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
+if test -r "$LIBDIR/pgplot/libcpgplot.a"; then
+  eval "$as_ac_File=yes"
+else
+  eval "$as_ac_File=no"
+fi
+fi
+eval ac_res=\$$as_ac_File
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_File"\" = x"yes"; then :
+  PGPLOTLIB="-L$LIBDIR/pgplot $PGPLOTLIB"; break
 fi
 
     done
