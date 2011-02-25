@@ -26,10 +26,10 @@ Bug Fixes:
 * Inversion was failing when no array was allocated (not a problem for
   standard Duchamp, but affected its use as a library by other code).
 
-* Writing text spectra would only occur when graphical output was
-  enabled (it was combined with the plotting of the spectral
+* Writing text spectra would only occur when PGPlot output was enabled
+  in the build (it was combined with the plotting of the spectral
   graphs). This has been changed so that this output can be requested
-  without requiring graphics.
+  without requiring PGPlot.
 
 * The equation for the beam size in Sec.4.2 of the User Guide was
   incorrect and has been fixed.
