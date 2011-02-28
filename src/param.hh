@@ -314,6 +314,7 @@ namespace duchamp
     void   setFlagStatSec(bool flag){flagStatSec=flag;};
     std::string getStatSec(){return statSec.getSection();};
     void   setStatSec(std::string range){statSec.setSection(range);};
+    Section &statsec(){Section &rsection = statSec; return rsection;};
     bool   getFlagRobustStats(){return flagRobustStats;};
     void   setFlagRobustStats(bool flag){flagRobustStats=flag;};
     float  getCut(){return snrCut;};
