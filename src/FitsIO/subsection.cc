@@ -156,6 +156,19 @@ namespace duchamp
 
   }
 
+  OUTCOME Param::parseSubsections(long *dim, int size)
+  {
+    std::vector<long> vecDim(size);
+    for(int i=0;i<size;i++) vecDim[i] = dim[i];
+    return this->parseSubsections(vecDim);
+  }
+
+  OUTCOME Param::parseSubsections(std::vector<int> &dim)
+  {
+    std::vector<long> vecDim(dim.size());
+    for(size_t i=0;i<dim.size();i++) vecDim[i] = long(dim[i]);
+    return this->parseSubsections(vecDim);
+  }
 
   OUTCOME Param::parseSubsections(std::vector<long> &dim)
   {

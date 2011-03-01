@@ -124,6 +124,8 @@ namespace duchamp
     OUTCOME verifySubsection();
     /// @brief Parse the subsection strings with a dimension set
     OUTCOME parseSubsections(std::vector<long> &dim);
+    OUTCOME parseSubsections(std::vector<int> &dim);
+    OUTCOME parseSubsections(long *dim, int size);
 
     /// @brief Set the correct offset values for each axis 
     void   setOffsets(struct wcsprm *wcs);
