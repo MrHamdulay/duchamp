@@ -149,15 +149,27 @@ namespace duchamp
       std::vector<long> dim(numAxes);
       for(int i=0;i<numAxes;i++) dim[i] = dimAxes[i];
       delete [] dimAxes;
-  
-      if(this->flagSubsection)
-	if(this->pixelSec.parse(dim)==FAILURE) return FAILURE;
 
-      if(this->flagStatSec)
-	if(this->statSec.parse(dim)==FAILURE)  return FAILURE;
-  
-      return SUCCESS;
+      return this->parseSubsections(dim);
+
     }
+
+  }
+
+
+  OUTCOME Param::parseSubsections(std::vector<long> &dim)
+  {
+
+    if(this->flagSubsection)
+      if(this->pixelSec.parse(dim)==FAILURE) return FAILURE;
+    
+    if(this->flagStatSec){
+      if(this->statSec.parse(dim)==FAILURE)  return FAILURE;
+      this->statSec = this->statSec.intersect(this->pixelSec);
+      if(this->statSec.parse(dim)==FAILURE)  return FAILURE;
+    }
+    
+    return SUCCESS;
 
   }
 

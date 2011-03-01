@@ -51,8 +51,9 @@ namespace duchamp
   {
     if(this == &s) return *this;
     this->subsection  = s.subsection;
+    this->sections    = s.sections;
     this->numSections = s.numSections;
-    this->starts 	    = s.starts;
+    this->starts      = s.starts;
     this->dims        = s.dims;
     return *this;
   }
@@ -245,6 +246,39 @@ namespace duchamp
       valid = valid && dims[i]>0;
     }
     return valid;
+  }
+
+  Section Section::intersect(Section &other)
+  {
+    /// @details Return a Section object that is the intersection
+    /// between the current section and another. The returned section
+    /// only has its section string set, so it will need to be parsed
+    /// afterwards.
+    
+    if(this->numSections != other.numSections){
+      duchampError("Section::intersect", "Sizes of sections not equal - returning initial section");
+      return *this;
+    }
+
+    std::vector<std::string> outputsections(this->numSections);
+    for(size_t i=0;i<this->numSections;i++){
+      if(this->getSection(i)=="*") outputsections[i] = other.getSection(i);
+      else if(other.getSection(i)=="*") outputsections[i] = this->getSection(i);
+      else{
+	std::stringstream ss;
+	ss << std::max(this->starts[i],other.starts[i])+1 << ":" << std::min(this->getEnd(i),other.getEnd(i))+1;
+	outputsections[i] = ss.str();
+      }
+    }
+	  
+    std::stringstream section;
+    section << "[" << outputsections[0];
+    for(size_t i=1;i<this->numSections;i++) section<<"," << outputsections[i];
+    section << "]";
+    duchamp::Section output;
+    output.setSection(section.str());
+    return output;
+
   }
 
 }

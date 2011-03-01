@@ -99,6 +99,9 @@ namespace duchamp
     /// @brief Return the full list of dimension lengths 
     std::vector<int> getDimList(){return dims;};
 
+    /// @brief Return a section that is the intersection of this with another
+    Section intersect(Section &other);
+
   private:
     std::string subsection;   ///< The string indicating the subsection, of the format [a:b,c:d,e:f] etc.
     std::vector<std::string> sections; // The individual section strings for each dimension

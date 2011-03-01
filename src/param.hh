@@ -120,8 +120,10 @@ namespace duchamp
     //------------------
     // Functions in FitsIO/subsection.cc
     //
-    /// @brief Make sure the subsection strings are OK. 
+    /// @brief Make sure the subsection strings are OK, with FITS access. 
     OUTCOME verifySubsection();
+    /// @brief Parse the subsection strings with a dimension set
+    OUTCOME parseSubsections(std::vector<long> &dim);
 
     /// @brief Set the correct offset values for each axis 
     void   setOffsets(struct wcsprm *wcs);
