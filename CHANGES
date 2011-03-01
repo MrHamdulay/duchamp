@@ -1,4 +1,4 @@
-Duchamp version 1.1.11 (2011/02/25)
+Duchamp version 1.1.11 (2011/03/01)
 -------------------------------------
 
 Improvements:
@@ -19,6 +19,19 @@ Improvements:
 
 Bug Fixes:
 
+* The statistics section (statSec) could be larger than the image
+  subsection (if provided), yet the pixels required would never be
+  read in from the FITS file. The behaviour has been changed so that
+  the statSec, if requested, is trimmed to be wholly within the image
+  section.
+
+* It was possible to request, for instance, spectral smoothing on a 2D
+  image. This resulted in a blank smoothed array, which led to
+  problems in the calculations of statistics (and hence the
+  threshold), as well as subsequent calculations. This has been fixed,
+  so that in cases like this the smoothing is turned off (and a
+  warning message is displayed).
+
 * There was a problem with using a MW range and subsectioning when
   growing objects, as a result of changes in 1.1.10. This has been
   fixed.
@@ -33,6 +46,18 @@ Bug Fixes:
 
 * The equation for the beam size in Sec.4.2 of the User Guide was
   incorrect and has been fixed.
+
+* Minor change to the configure script to improve the detection of the
+  PGPlot library.
+
+Code development notes:
+
+* The main work has been additions and improvements to the interfaces
+  for the Param and the Section classes, as well as new classes to
+  manage the beam information. The efficiency changes mentioned above
+  also affected the internals of some of the PixelInfo classes, and
+  provided additional functions for judging the closeness of
+  neighbouring objects.
 
 Duchamp version 1.1.10 (2010/11/15)
 -------------------------------------

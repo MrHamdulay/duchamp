@@ -542,12 +542,17 @@ provide good estimators. It is possible, however, to use only a
 subsection of the cube by setting the parameter \texttt{flagStatSec =
   true} and providing the desired subsection to the \texttt{StatSec}
 parameter. This subsection works in exactly the same way as the pixel
-subsection discussed in \S\ref{sec-input}. Note that this subsection
-applies only to the statistics used to determine the threshold. It
-does not affect the calculation of statistics in the case of the
-wavelet reconstruction. Note also that pixels flagged as BLANK or as
-part of the ``Milky Way'' range of channels are ignored in the
-statistics calculations.
+subsection discussed in \S\ref{sec-input}. The \texttt{StatSec} will
+be trimmed if necessary so that it lies wholly within the image
+subsection being used (\ie that given by the \texttt{subsection}
+parameter - this governs what pixels are read in and so are able to be
+used in the calculations).
+
+Note that \texttt{StatSec} applies only to the statistics used to
+determine the threshold. It does not affect the calculation of
+statistics in the case of the wavelet reconstruction. Note also that
+pixels flagged as BLANK or as part of the ``Milky Way'' range of
+channels are ignored in the statistics calculations.
 
 \secC{Determining the threshold}
 
@@ -627,9 +632,9 @@ in \S\ref{sec-notes}.
 
 \secC{Merging}
 
-The searches described above are either 1- or 2-dimensional only.They
+The searches described above are either 1- or 2-dimensional only. They
 do not know anything about the third dimension that is likely to be
-present.To build up 3D sources, merging of detections must be
+present. To build up 3D sources, merging of detections must be
 done. This is done via an algorithm that matches objects judged to be
 ``close'', according to one of two criteria.
 
