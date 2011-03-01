@@ -51,6 +51,12 @@ namespace duchamp
     Section& operator= (const Section& s);
     virtual ~Section(){};
 
+    /// @brief Has the section been defined by a parse() call?
+    bool isDefined(){return numSections>0;};
+
+    /// @brief Are all axis sections of length >0?
+    bool isValid();
+
     /// @brief Convert the subsection string into the lists of numerical values. 
     OUTCOME parse(std::vector<long> dimAxes);
     OUTCOME parse(std::vector<int> dimAxes);

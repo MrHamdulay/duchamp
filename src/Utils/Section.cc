@@ -233,4 +233,18 @@ namespace duchamp
     return ss.str();
   }
 
+  bool Section::isValid()
+  {
+    /// @details A test to see whether each of the axis sections have
+    /// a positive length. If at least one of them has zero or
+    /// negative length, or if the section has not yet been parsed,
+    /// then false is returned. If everything is OK, then we get true.
+
+    bool valid = (this->numSections>0);
+    for(size_t i=0;i<this->dims.size()&&valid;i++){
+      valid = valid && dims[i]>0;
+    }
+    return valid;
+  }
+
 }
