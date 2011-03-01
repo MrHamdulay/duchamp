@@ -581,6 +581,30 @@ namespace duchamp
       if(this->head.canUseThirdAxis() && numAxes>spc) this->axisDim[2] = dimensions[spc];
       else this->axisDim[2] = 1;
 
+      int numNondegDim=0;
+      for(int i=0;i<3;i++) if(this->axisDim[i]>1) numNondegDim++;
+
+      if(this->par.getFlagSmooth()){
+	if(this->par.getSmoothType()=="spectral" && numNondegDim==2){
+	  duchampWarning("Cube::initialiseCube", "Spectral smooth requested, but have a 2D image. Setting flagSmooth=false");
+	  this->par.setFlagSmooth(false);
+	}
+	if(this->par.getSmoothType()=="spatial" && numNondegDim==1){
+	  duchampWarning("Cube::initialiseCube", "Spatial smooth requested, but have a 1D image. Setting flagSmooth=false");
+	  this->par.setFlagSmooth(false);
+	}
+      }
+      if(this->par.getFlagATrous()){
+	for(int d=3; d>=1; d--){
+	  if(this->par.getReconDim()==d && numNondegDim==(d-1)){
+	    std::stringstream ss;
+	    ss << d << "D reconstruction requested, but image is " << d-1 <<"D. Setting flagAtrous=false";
+	    duchampWarning("Cube::initialiseCube", ss.str());
+	    this->par.setFlagATrous(false);
+	  }
+	}
+      }
+
       if(allocateArrays && this->par.isVerbose()) this->reportMemorySize(std::cout,allocateArrays);
 
       this->reconExists = false;
