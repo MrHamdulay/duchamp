@@ -30,9 +30,6 @@
 #include <sstream>
 #include <math.h>
 #include <string.h>
-#include <wcslib/cpgsbox.h>
-#include <wcslib/pgwcsl.h>
-#include <wcslib/wcs.h>
 #include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
