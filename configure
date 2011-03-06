@@ -6323,12 +6323,15 @@ if test "x$ac_cv_lib_wcs_wcss2p" = xyes; then :
   WCSLIB="$WCSLIB -lwcs"
 fi
 
-if test "x$F77" = xgfortran; then
-  WCSLIB="$WCSLIB -lpgsbox"
-  { $as_echo "$as_me:${as_lineno-$LINENO}:  Using gfortran, so manually adding -lpgsbox to WCSLIB string." >&5
+
+# Only use libpgsbox if we have pgplot enabled - determine this by testing the PGPLOTINCDIRS variable
+if test "x$PGPLOTINCDIRS" != x; then
+   if test "x$F77" = xgfortran; then
+     WCSLIB="$WCSLIB -lpgsbox"
+       { $as_echo "$as_me:${as_lineno-$LINENO}:  Using gfortran, so manually adding -lpgsbox to WCSLIB string." >&5
 $as_echo "$as_me:  Using gfortran, so manually adding -lpgsbox to WCSLIB string." >&6;}
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cpgsbox in -lpgsbox" >&5
+   else
+     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cpgsbox in -lpgsbox" >&5
 $as_echo_n "checking for cpgsbox in -lpgsbox... " >&6; }
 if ${ac_cv_lib_pgsbox_cpgsbox+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -6368,6 +6371,7 @@ if test "x$ac_cv_lib_pgsbox_cpgsbox" = xyes; then :
   WCSLIB="$WCSLIB -lpgsbox"
 fi
 
+   fi
 fi
 
 # WCSLIB is essential for Duchamp, so exit with error message if it

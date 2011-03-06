@@ -318,12 +318,16 @@ fi
 # Look for libwcs.a, and libpgsbox.a
 AC_CHECK_LIB([wcs], [wcss2p], [WCSLIB="$WCSLIB -lwcs"], [],
              [$WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB])
-if test "x$F77" = xgfortran; then
-  WCSLIB="$WCSLIB -lpgsbox"
-  AC_MSG_NOTICE([ Using gfortran, so manually adding -lpgsbox to WCSLIB string.])
-else
-  AC_CHECK_LIB([pgsbox], [cpgsbox], [WCSLIB="$WCSLIB -lpgsbox"], [],
-               [$WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB])
+
+# Only use libpgsbox if we have pgplot enabled - determine this by testing the PGPLOTINCDIRS variable
+if test "x$PGPLOTINCDIRS" != x; then 
+   if test "x$F77" = xgfortran; then
+     WCSLIB="$WCSLIB -lpgsbox"
+       AC_MSG_NOTICE([ Using gfortran, so manually adding -lpgsbox to WCSLIB string.])
+   else
+     AC_CHECK_LIB([pgsbox], [cpgsbox], [WCSLIB="$WCSLIB -lpgsbox"], [],
+                 [$WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB])
+   fi
 fi
 
 # WCSLIB is essential for Duchamp, so exit with error message if it
