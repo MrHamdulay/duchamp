@@ -102,6 +102,11 @@ namespace duchamp
     /// @brief Return a section that is the intersection of this with another
     Section intersect(Section &other);
 
+    /// @brief Return a section that is the intersection of this with the full section given by a set of axis dimensions
+    Section intersect(std::vector<long> dimAxes);
+    Section intersect(std::vector<int> dimAxes);
+    Section intersect(long *dim, int size);
+
   private:
     std::string subsection;   ///< The string indicating the subsection, of the format [a:b,c:d,e:f] etc.
     std::vector<std::string> sections; // The individual section strings for each dimension

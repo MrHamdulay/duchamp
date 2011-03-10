@@ -174,6 +174,7 @@ namespace duchamp
   {
 
     if(this->pixelSec.parse(dim)==FAILURE) return FAILURE;
+    this->pixelSec = this->pixelSec.intersect(dim);
     
     if(this->flagStatSec){
       if(this->statSec.parse(dim)==FAILURE)  return FAILURE;

@@ -262,13 +262,9 @@ namespace duchamp
 
     std::vector<std::string> outputsections(this->numSections);
     for(size_t i=0;i<this->numSections;i++){
-      if(this->getSection(i)=="*") outputsections[i] = other.getSection(i);
-      else if(other.getSection(i)=="*") outputsections[i] = this->getSection(i);
-      else{
-	std::stringstream ss;
-	ss << std::max(this->starts[i],other.starts[i])+1 << ":" << std::min(this->getEnd(i),other.getEnd(i))+1;
-	outputsections[i] = ss.str();
-      }
+      std::stringstream ss;
+      ss << std::max(this->starts[i],other.starts[i])+1 << ":" << std::min(this->getEnd(i),other.getEnd(i))+1;
+      outputsections[i] = ss.str();
     }
 	  
     std::stringstream section;
@@ -278,6 +274,30 @@ namespace duchamp
     duchamp::Section output;
     output.setSection(section.str());
     return output;
+
+  }
+
+  Section Section::intersect(long *dimAxes, int size)
+  {
+    std::vector<long> vecDim(size);
+    for(int i=0;i<size;i++) vecDim[i] = dimAxes[i];
+    return this->intersect(vecDim);
+  }
+
+  Section Section::intersect(std::vector<int> dimAxes)
+  {
+    std::vector<long> vecDim(dimAxes.size());
+    for(size_t i=0;i<dimAxes.size();i++) vecDim[i] = long(dimAxes[i]);
+    return this->intersect(vecDim);
+  }
+
+  Section Section::intersect(std::vector<long> dimAxes)
+  {
+    
+    std::string nullSec = nullSection(dimAxes.size());
+    Section null(nullSec);
+    null.parse(dimAxes);
+    return this->intersect(null);
 
   }
 
