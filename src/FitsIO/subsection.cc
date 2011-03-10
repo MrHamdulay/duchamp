@@ -175,6 +175,10 @@ namespace duchamp
 
     if(this->pixelSec.parse(dim)==FAILURE) return FAILURE;
     this->pixelSec = this->pixelSec.intersect(dim);
+    if(!this->pixelSec.isValid()){
+      duchampError("parseSubsections","pixel section does not include any pixels\n");
+      return FAILURE;
+    }
     
     if(this->flagStatSec){
       if(this->statSec.parse(dim)==FAILURE)  return FAILURE;
