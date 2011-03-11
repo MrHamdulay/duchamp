@@ -182,6 +182,11 @@ namespace duchamp
     
     if(this->flagStatSec){
       if(this->statSec.parse(dim)==FAILURE)  return FAILURE;
+      this->statSec = this->statSec.intersect(dim);
+      if(!this->statSec.isValid()){
+	duchampError("parseSubsections","StatSec does not include any pixels\n");
+	return FAILURE;
+      }
       this->statSec = this->statSec.intersect(this->pixelSec);
       if(!this->statSec.isValid()){
 	duchampError("parseSubsections","StatSec does not intersect with pixel subsection\n");
