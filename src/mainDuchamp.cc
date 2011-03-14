@@ -263,9 +263,9 @@ int main(int argc, char * argv[])
   }
 
   if(cube->pars().getFlagTextSpectra()){
-    if(cube->pars().isVerbose()) std::cout << "  Saving spectra to text file ... ";
+    if(cube->pars().isVerbose()) std::cout << "Saving spectra to text file ... ";
     cube->writeSpectralData();
-    if(cube->pars().isVerbose()) std::cout << "Done.\n";
+    if(cube->pars().isVerbose()) std::cout << "done.\n";
   }
 
   if(!cube->pars().getFlagUsePrevious() && cube->pars().getFlagLog()){
