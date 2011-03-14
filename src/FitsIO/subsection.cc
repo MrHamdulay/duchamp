@@ -175,24 +175,27 @@ namespace duchamp
 
     if(this->pixelSec.parse(dim)==FAILURE) return FAILURE;
     this->pixelSec = this->pixelSec.intersect(dim);
+    if(this->pixelSec.parse(dim)==FAILURE) return FAILURE;
     if(!this->pixelSec.isValid()){
       duchampError("parseSubsections","pixel section does not include any pixels\n");
       return FAILURE;
     }
     
     if(this->flagStatSec){
-      if(this->statSec.parse(dim)==FAILURE)  return FAILURE;
+      if(this->statSec.parse(dim)==FAILURE) return FAILURE;
       this->statSec = this->statSec.intersect(dim);
+      if(this->statSec.parse(dim)==FAILURE) return FAILURE;
       if(!this->statSec.isValid()){
 	duchampError("parseSubsections","StatSec does not include any pixels\n");
 	return FAILURE;
       }
       this->statSec = this->statSec.intersect(this->pixelSec);
+      if(this->statSec.parse(dim)==FAILURE) return FAILURE;
       if(!this->statSec.isValid()){
 	duchampError("parseSubsections","StatSec does not intersect with pixel subsection\n");
 	return FAILURE;
       }
-      if(this->statSec.parse(dim)==FAILURE)  return FAILURE;
+      if(this->statSec.parse(dim)==FAILURE) return FAILURE;
     }
     
     return SUCCESS;
