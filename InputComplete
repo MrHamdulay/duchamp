@@ -41,6 +41,7 @@ objectList      *
 #                        to a separate file from the outFile (so that the 
 #                        outFile just contains the table of detections).
 # headerFile -- the file to write the header information to.
+# flagPlotSpectra -- whether to produce a file showing spectra of each detection
 # spectraFile -- the postscript file of spectra
 # flagTextSpectra -- whether to save a text file detailing the spectra
 #                    of each source
@@ -81,6 +82,7 @@ logFile		duchamp-Logfile.txt
 outFile		duchamp-Results.txt
 flagSeparateHeader 0
 headerFile      duchamp-Results.hdr
+flagPlotSpectra 1
 spectraFile	duchamp-Spectra.ps
 flagTextSpectra 0
 spectraTextFile duchamp-Spectra.txt

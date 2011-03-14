@@ -191,6 +191,8 @@ namespace duchamp
     void   setFlagSeparateHeader(bool b){flagSeparateHeader=b;};
     std::string getHeaderFile(){return headerFile;};
     void   setHeaderFile(std::string s){headerFile=s;};
+    bool   getFlagPlotSpectra(){return flagPlotSpectra;};
+    void   setFlagPlotSpectra(bool b){flagPlotSpectra=b;};
     std::string getSpectraFile(){return spectraFile;};
     void   setSpectraFile(std::string fname){spectraFile = fname;};
     bool   getFlagTextSpectra(){return flagTextSpectra;};
@@ -407,6 +409,7 @@ namespace duchamp
     std::string outFile;         ///< Where the final results get put.
     bool        flagSeparateHeader;///< Should the header information(parameters & statistics) be written to a separate file to the table ofresults?
     std::string headerFile;      ///< Where the header information to go with the results table should be written.
+    bool        flagPlotSpectra; ///< Should we plot the spectrum of each detection?
     std::string spectraFile;     ///< Where the spectra are displayed
     bool        flagTextSpectra; ///< Should a text file with all spectra be written?
     std::string spectraTextFile; ///< Where the text spectra are written.

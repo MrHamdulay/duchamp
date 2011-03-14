@@ -85,6 +85,7 @@ namespace duchamp
     this->outFile           = "duchamp-Results.txt";
     this->flagSeparateHeader= false;
     this->headerFile        = "duchamp-Results.hdr";
+    this->flagPlotSpectra   = true;
     this->spectraFile       = "duchamp-Spectra.ps";
     this->flagTextSpectra   = false;
     this->spectraTextFile   = "duchamp-Spectra.txt";
@@ -566,6 +567,7 @@ namespace duchamp
 	if(arg=="outfile")         this->outFile = readSval(ss); 
 	if(arg=="flagseparateheader") this->flagSeparateHeader = readFlag(ss);
 	if(arg=="headerfile")      this->headerFile = readFilename(ss);
+	if(arg=="flagplotspectra") this->flagPlotSpectra = readFlag(ss);
 	if(arg=="spectrafile")     this->spectraFile = readFilename(ss); 
 	if(arg=="flagtextspectra") this->flagTextSpectra = readFlag(ss); 
 	if(arg=="spectratextfile") this->spectraTextFile = readFilename(ss); 
@@ -695,7 +697,13 @@ namespace duchamp
     if(!this->usePrevious) this->objectList = "";
 
     // If pgplot was not included in the compilation, need to set flagXOutput to false
-    if(!USE_PGPLOT) this->flagXOutput = false;
+    if(!USE_PGPLOT){
+      if(this->flagXOutput || this->flagMaps || this->flagPlotSpectra)
+	duchampWarning("Reading parameters","PGPlot has not been enabled, so setting flagXOutput, flagMaps and flagPlotSpectra to false.\n");
+      this->flagXOutput = false;
+      this->flagMaps = false;
+      this->flagPlotSpectra = false;
+    }
 
     // Correcting bad precision values -- if negative, set to 0
     if(this->precFlux<0) this->precFlux = 0;
@@ -870,7 +878,9 @@ namespace duchamp
     if(par.getFlagSeparateHeader()){
       recordParam(theStream, "[headerFile]", "Header for results file", par.getHeaderFile());
     }
-    recordParam(theStream, "[spectraFile]", "Spectrum file", par.getSpectraFile());
+    if(USE_PGPLOT && par.getFlagPlotSpectra()){
+      recordParam(theStream, "[spectraFile]", "Spectrum file", par.getSpectraFile());
+    }
     if(par.getFlagTextSpectra()){
       recordParam(theStream, "[spectraTextFile]", "Text file with ascii spectral data", par.getSpectraTextFile());
     }
@@ -880,11 +890,13 @@ namespace duchamp
     if(par.getFlagKarma()){
       recordParam(theStream, "[karmaFile]", "Karma annotation file" , par.getKarmaFile());
     }
-    if(par.getFlagMaps()){
+    if(USE_PGPLOT && par.getFlagMaps()){
       recordParam(theStream, "[momentMap]", "0th Moment Map", par.getMomentMap());
       recordParam(theStream, "[detectionMap]", "Detection Map", par.getDetectionMap());
     }
-    recordParam(theStream, "[flagXOutput]", "Display a map in a pgplot xwindow?", stringize(par.getFlagXOutput()));
+    if(USE_PGPLOT){
+      recordParam(theStream, "[flagXOutput]", "Display a map in a pgplot xwindow?", stringize(par.getFlagXOutput()));
+    }
     if(par.getFlagATrous()){
       recordParam(theStream, "[flagOutputRecon]", "Saving reconstructed cube?", fileOption(par.getFlagOutputRecon(),par.outputReconFile()));
       recordParam(theStream, "[flagOutputResid]", "Saving residuals from reconstruction?", fileOption(par.getFlagOutputResid(),par.outputResidFile()));
