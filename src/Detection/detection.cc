@@ -679,7 +679,7 @@ namespace duchamp
     
     float peak=0.;
     int peakLoc=0;
-    for(int z=0;z<zdim;z++) {
+    for(int z=this->getZmin();z<=this->getZmax();z++) {
       if(z==0 || peak<intSpec[z]){
 	peak = intSpec[z];
 	peakLoc = z;
