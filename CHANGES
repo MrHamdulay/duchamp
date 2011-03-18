@@ -1,3 +1,37 @@
+Duchamp version 1.1.12 (2011/03/18)
+-------------------------------------
+
+Bug fixes:
+
+* The velocity width calculations had a bug that occasionally led to
+  very large values. The widths are calculated using the integrated
+  spectrum, using a threshold relative to its peak. In v.1.1.10 and
+  1.1.11, however, the peak was searched for over the entire spectral
+  range, rather than just the range for the current object. This led
+  to spurious values. This has been fixed, so that the peak is only
+  searched for within the detected ranage of the object.
+
+* Both the pixel and statistics subsections are now more carefully
+  examined, with errors reported if there are no valid pixels in the
+  pixel subsection, or if the statistics subsection does not intersect
+  with the pixel subsection. 
+
+Other:
+
+* The configure script has been slightly improved so that the pgsbox
+  library is only added if PGPlot has been enabled - this is
+  particularly necessary with the slightly changed build procedure for
+  recent wcslib versions. 
+
+* In a related note, one file - momentMap.cc - had some #include
+  statements that failed when PGPlot (and hence pgsbox in WCSLIB) was
+  not enabled. These were actually unnecesssary and have been removed.
+
+* There is a new input parameter - flagPlotSpectra - that allows the
+  user to turn off the production of the spectral plots. It defaults
+  to true (meaning the plots are produced).
+
+
 Duchamp version 1.1.11 (2011/03/01)
 -------------------------------------
 
