@@ -1,7 +1,7 @@
-Results of the Duchamp source finder v.1.1.10: Tue Feb 15 16:53:02 2011
+Results of the Duchamp source finder v.1.1.11: Fri Mar 18 11:25:13 2011
 
 ---- Parameters ----
-Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits[35:64,35:64,*]
+Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits[35:64,35:64,1:128]
 Intermediate Logfile...........................[logFile]  =  verification/log6.txt
 Final Results file.............................[outFile]  =  verification/results6.txt
 Spectrum file..............................[spectraFile]  =  verification/spectra6.ps

@@ -1,4 +1,4 @@
-New run of the Duchamp source finder v.1.1.10: Tue Feb 15 16:53:02 2011
+New run of the Duchamp source finder v.1.1.11: Fri Mar 18 11:25:14 2011
 Executing statement : ./Duchamp -p ./verification/input7 
 
 ---- Parameters ----
@@ -1186,4 +1186,4 @@ Detection #5
 75-75, 74,115
 
 --------------
-Duchamp completed: Tue Feb 15 16:53:02 2011
+Duchamp completed: Fri Mar 18 11:25:14 2011
