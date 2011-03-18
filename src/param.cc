@@ -539,6 +539,13 @@ namespace duchamp
     /// \return FAILURE if the parameter file does not exist. SUCCESS if
     /// it is able to read it.
 
+    if(!USE_PGPLOT){
+      // Change default values for these parameters when we don't use PGPlot
+      this->flagXOutput = false;
+      this->flagMaps = false;
+      this->flagPlotSpectra = false;
+    }
+
     std::ifstream fin(paramfile.c_str());
     if(!fin.is_open()) return FAILURE;
     std::string line;
@@ -557,8 +564,8 @@ namespace duchamp
 	if(arg=="reconfile")       this->reconFile = readSval(ss); 
 	if(arg=="flagsmoothexists")this->flagSmoothExists = readFlag(ss); 
 	if(arg=="smoothfile")      this->smoothFile = readSval(ss); 
-	if(arg=="beamarea") {       this->areaBeam = readFval(ss); std::cerr << "**** Beam area = " << this->areaBeam << "\n";}
-	if(arg=="beamfwhm") {       this->fwhmBeam = readFval(ss); std::cerr << "**** Beam FWHM = " << this->fwhmBeam << "\n";}
+	if(arg=="beamarea")        this->areaBeam = readFval(ss);
+	if(arg=="beamfwhm")        this->fwhmBeam = readFval(ss);
 	if(arg=="useprevious")     this->usePrevious = readFlag(ss);
 	if(arg=="objectlist")      this->objectList = readSval(ss);
 
