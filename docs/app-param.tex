@@ -89,7 +89,8 @@ not matter, they are grouped here in logical sections.
   header information should be written when
   \texttt{flagSeparateHeader=true}.
 \item[{flagPlotSpectra [true]}] Whether to produce a postscript file
-  containing spectra of all detected objects.
+  containing spectra of all detected objects. If PGPlot has not been
+  enabled, this parameter defaults to \texttt{false}.
 \item[{SpectraFile [duchamp-\\Spectra.ps]}] The postscript file
   containing the resulting integrated spectra and images of the
   detections.
@@ -156,10 +157,11 @@ not matter, they are grouped here in logical sections.
   spatial pixels, while ``circles'' gives a circle centred on the
   centre of the object with radius large enough to encompass all
   spatial pixels.
-\item[{flagMaps [true]}] A flag to say whether to save
-  postscript files showing the 0th moment map of the whole cube
-  (parameter \texttt{momentMap}) and the detection image
-  (\texttt{detectionMap}).
+\item[{flagMaps [true]}] A flag to say whether to save postscript
+  files showing the 0th moment map of the whole cube (parameter
+  \texttt{momentMap}) and the detection image
+  (\texttt{detectionMap}). If PGPlot has not been enabled, this
+  parameter defaults to \texttt{false}.
 \item[{momentMap [duchamp-\\MomentMap.ps]}] A postscript file
   containing a map of the 0th moment of the detected sources, as well
   as pixel and WCS coordinates.
@@ -171,7 +173,8 @@ not matter, they are grouped here in logical sections.
   0th moment map in a PGPlot X-window. This will be in addition to any
   that are saved to a file. This parameter can be overridden by the
   use of the \texttt{-x} command-line option, which disables the
-  X-windows output.
+  X-windows output. If PGPlot has not been enabled, this parameter
+  defaults to \texttt{false}.
 \item[{newFluxUnits [no default]}] Flux units that the pixel values
   should be converted into. These should be directly compatible with
   the existing units, given by the BUNIT keyword.
