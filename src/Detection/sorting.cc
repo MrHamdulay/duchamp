@@ -181,7 +181,7 @@ namespace duchamp
     }
 
     bool isGood = true;
-    if(parameter!="zvalue"){
+    if(parameter!="zvalue" && parameter!="pflux" && parameter!="snr" && parameter!="xvalue" && parameter!="yvalue"){
       for(size_t i=0;i<inputList.size();i++) isGood = isGood && inputList[i].isWCS();
     }
 

@@ -76,6 +76,9 @@ namespace duchamp
 	duchampWarning("sortDetections","No good WCS, so sorting by z-value");
 	SortDetections(*this->objectList, "z-value");
       }
+      else {
+	SortDetections(*this->objectList, this->par.getSortingParam());
+      }
     }
     else SortDetections(*this->objectList, this->par.getSortingParam());
     for(size_t i=0; i<this->objectList->size();i++) 
