@@ -179,6 +179,7 @@ namespace duchamp
       this->blankKeyword  = blank;
       this->bscaleKeyword = bscale;
       this->bzeroKeyword  = bzero;
+      par.setFlagBlankPix(true);
       par.setBlankKeyword(blank);
       par.setBscaleKeyword(bscale);
       par.setBzeroKeyword(bzero);

@@ -113,7 +113,7 @@ namespace duchamp
     this->precVel           = Column::prVEL;
     this->precSNR           = Column::prSNR;
     // Cube related parameters 
-    this->flagBlankPix      = true;
+    this->flagBlankPix      = false;
     this->blankPixValue     = -8.00061;
     this->blankKeyword      = 1;
     this->bscaleKeyword     = -8.00061;

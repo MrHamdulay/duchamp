@@ -140,8 +140,8 @@ Returning input array.\n");
 	}
 	avGapY /= float(xdim);
     
-	mindim = int(avGapX);
-	if(avGapY < avGapX) mindim = int(avGapY);
+	if(avGapX < mindim) mindim = int(avGapX);
+	if(avGapY < mindim) mindim = int(avGapY);
 	numScales = par.filter().getNumScales(mindim);
       }
 
