@@ -89,12 +89,16 @@ Returning input array.\n");
     else{
       // Otherwise, all is good, and we continue.
 
-      findMedianStats(input,goodSize,isGood,originalMean,originalSigma);
-      originalSigma = madfmToSigma(originalSigma);
+      //      findMedianStats(input,goodSize,isGood,originalMean,originalSigma);
+      // originalSigma = madfmToSigma(originalSigma);
+      if(par.getFlagRobustStats())
+	originalSigma = madfmToSigma(findMADFM(input,isGood,size));
+      else
+	originalSigma = findStddev(input,isGood,size);
   
       float *coeffs    = new float[size];
       float *wavelet   = new float[size];
-      float *residual  = new float[size];
+      // float *residual  = new float[size];
 
       for(size_t pos=0;pos<size;pos++) output[pos]=0.;
 
@@ -232,7 +236,11 @@ Returning input array.\n");
 
 	  // Have found wavelet coeffs for this scale -- now threshold    
 	  if(scale>=par.getMinScale()){
-	    findMedianStats(wavelet,goodSize,isGood,mean,sigma);
+	    //	    findMedianStats(wavelet,goodSize,isGood,mean,sigma);
+	    if(par.getFlagRobustStats())
+	      mean = findMedian(wavelet,isGood,size);
+	    else
+	      mean= findMean(wavelet,isGood,size);
 
 	    threshold = mean + 
 	      par.getAtrousCut() * originalSigma * sigmaFactors[scale];
@@ -249,10 +257,15 @@ Returning input array.\n");
 
 	for(size_t pos=0;pos<size;pos++) if(isGood[pos]) output[pos] += coeffs[pos];
 
-	for(size_t i=0;i<size;i++) residual[i] = input[i] - output[i];
-	findMedianStats(residual,goodSize,isGood,mean,newsigma);
-	newsigma = madfmToSigma(newsigma); 
-    
+	// for(size_t i=0;i<size;i++) residual[i] = input[i] - output[i];
+	// findMedianStats(residual,goodSize,isGood,mean,newsigma);
+	// findMedianStatsDiff(input,output,size,isGood,mean,newsigma);
+	// newsigma = madfmToSigma(newsigma); 
+	if(par.getFlagRobustStats())
+	  newsigma = madfmToSigma(findMADFMDiff(input,output,isGood,size));
+	else
+	  newsigma = findStddevDiff(input,output,isGood,size);
+
 	if(par.isVerbose()) printBackSpace(15);
 
       } while( (iteration==1) || 
@@ -267,7 +280,7 @@ Returning input array.\n");
       delete [] filter;
       delete [] coeffs;
       delete [] wavelet;
-      delete [] residual;
+      // delete [] residual;
 
     }
 

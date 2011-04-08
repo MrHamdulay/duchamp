@@ -105,7 +105,7 @@ namespace duchamp
 
       float *coeffs = new float[xdim];
       float *wavelet = new float[xdim];
-      float *residual = new float[xdim];
+      // float *residual = new float[xdim];
 
       for(size_t pos=0;pos<xdim;pos++) output[pos]=0.;
 
@@ -129,8 +129,12 @@ namespace duchamp
 	// all other times round, we are transforming the residual array
 	for(size_t i=0;i<xdim;i++)  coeffs[i] = input[i] - output[i];
     
-	findMedianStats(input,xdim,isGood,originalMean,originalSigma);
-	originalSigma = madfmToSigma(originalSigma); 
+	// findMedianStats(input,xdim,isGood,originalMean,originalSigma);
+	// originalSigma = madfmToSigma(originalSigma); 
+	if(par.getFlagRobustStats())
+	  originalSigma = madfmToSigma(findMADFM(input,isGood,xdim));
+	else
+	  originalSigma = findStddev(input,isGood,xdim);
 
 	int spacing = 1;
 	for(unsigned int scale = 1; scale<=numScales; scale++){
@@ -174,7 +178,11 @@ namespace duchamp
 
 	  // Have found wavelet coeffs for this scale -- now threshold
 	  if(scale>=MIN_SCALE){
- 	    findMedianStats(wavelet,xdim,isGood,mean,sigma);
+	    // 	    findMedianStats(wavelet,xdim,isGood,mean,sigma);
+	    if(par.getFlagRobustStats())
+	      mean = findMedian(wavelet,isGood,xdim);
+	    else
+	      mean = findMean(wavelet,isGood,xdim);
 	
 	    for(size_t pos=0;pos<xdim;pos++){
 	      // preserve the Blank pixel values in the output.
@@ -194,9 +202,13 @@ namespace duchamp
 	  for(size_t pos=0;pos<xdim;pos++) 
 	    if(isGood[pos]) output[pos] += coeffs[pos];
 
- 	for(size_t pos=0;pos<xdim;pos++) residual[pos]=input[pos]-output[pos];
-  	findMedianStats(residual,xdim,isGood,mean,newsigma);
-	newsigma = madfmToSigma(newsigma); 
+ 	// for(size_t pos=0;pos<xdim;pos++) residual[pos]=input[pos]-output[pos];
+  	// findMedianStats(residual,xdim,isGood,mean,newsigma);
+	// newsigma = madfmToSigma(newsigma); 
+	if(par.getFlagRobustStats())
+	  newsigma = madfmToSigma(findMADFMDiff(input,output,isGood,xdim));
+	else
+	  newsigma = findStddevDiff(input,output,isGood,xdim);
 
 	if(par.isVerbose()) printBackSpace(26);
 
@@ -206,7 +218,7 @@ namespace duchamp
       if(par.isVerbose()) std::cout << "Completed "<<iteration<<" iterations. ";
 
       delete [] filter;
-      delete [] residual;
+      // delete [] residual;
       delete [] wavelet;
       delete [] coeffs;
 

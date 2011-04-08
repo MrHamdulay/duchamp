@@ -51,14 +51,24 @@ template <class T> void findMinMax(const T *array, const size_t size,
 				   T &min, T &max);
 template <class T> float findMean(T *array, size_t size);
 template <class T> float findMean(T *array, bool *mask, size_t size);
+template <class T> float findMeanDiff(T *first, T *second, size_t size);
+template <class T> float findMeanDiff(T *first, T *second, bool *mask, size_t size);
 template <class T> float findStddev(T *array, size_t size);
 template <class T> float findStddev(T *array, bool *mask, size_t size);
+template <class T> float findStddevDiff(T *first, T *second, size_t size);
+template <class T> float findStddevDiff(T *first, T *second, bool *mask, size_t size);
 template <class T> T findMedian(T *array, size_t size, bool changeArray=false);
 template <class T> T findMedian(T *array, bool *mask, size_t size);
+template <class T> T findMedianDiff(T *first, T *second, size_t size);
+template <class T> T findMedianDiff(T *first, T *second, bool *mask, size_t size);
 template <class T> T findMADFM(T *array, size_t size, bool changeArray=false);
 template <class T> T findMADFM(T *array, bool *mask, size_t size);
 template <class T> T findMADFM(T *array, size_t size, T median, bool changeArray=false);
 template <class T> T findMADFM(T *array, bool *mask, size_t size, T median);
+template <class T> T findMADFMDiff(T *first, T *second, size_t size);
+template <class T> T findMADFMDiff(T *first, T *second, bool *mask, size_t size);
+template <class T> T findMADFMDiff(T *first, T *second, size_t size, T median);
+template <class T> T findMADFMDiff(T *first, T *second, bool *mask, size_t size, T median);
 template <class T> void findMedianStats(T *array, size_t size, 
 					T &median, T &madfm);
 template <class T> void findMedianStats(T *array, size_t size, bool *isGood, 

@@ -97,12 +97,15 @@ namespace duchamp
       // Otherwise, all is good, and we continue.
 
 
-      findMedianStats(input,goodSize,isGood,originalMean,originalSigma);
-      originalSigma = madfmToSigma(originalSigma);
+      // findMedianStats(input,goodSize,isGood,originalMean,originalSigma);
+      if(par.getFlagRobustStats())
+	originalSigma = madfmToSigma(findMADFM(input,isGood,size));
+      else
+	originalSigma = findStddev(input,isGood,size);
 
       float *coeffs = new float[size];
       float *wavelet = new float[size];
-      float *residual = new float[size];
+      // float *residual = new float[size];
 
       for(size_t pos=0;pos<size;pos++) output[pos]=0.;
 
@@ -252,8 +255,13 @@ namespace duchamp
 
 	  // Have found wavelet coeffs for this scale -- now threshold
 	  if(scale>=par.getMinScale()){
-	    findMedianStats(wavelet,goodSize,isGood,mean,sigma);
-	
+	    if(par.getFlagRobustStats())
+	      // findMedianStats(wavelet,size,isGood,mean,sigma);
+	      mean = findMedian(wavelet,isGood,size);
+	    else
+	      //findNormalStats(wavelet,size,isGood,mean,sigma);
+	      mean = findMean(wavelet,isGood,size);
+	      
 	    threshold = mean + 
 	      par.getAtrousCut()*originalSigma*sigmaFactors[scale];
 	    for(size_t pos=0;pos<size;pos++){
@@ -274,9 +282,14 @@ namespace duchamp
 
 	for(size_t pos=0;pos<size;pos++) if(isGood[pos]) output[pos] += coeffs[pos];
 
-	for(size_t i=0;i<size;i++) residual[i] = input[i] - output[i];
-	findMedianStats(residual,goodSize,isGood,mean,newsigma);
-	newsigma = madfmToSigma(newsigma);
+	// for(size_t i=0;i<size;i++) residual[i] = input[i] - output[i];
+	// findMedianStats(residual,goodSize,isGood,mean,newsigma);
+	// findMedianStatsDiff(input,output,goodSize,isGood,mean,newsigma);
+	// newsigma = madfmToSigma(newsigma);
+	if(par.getFlagRobustStats())
+	  newsigma = madfmToSigma(findMADFMDiff(input,output,isGood,size));
+	else
+	  newsigma = findStddevDiff(input,output,isGood,size);
 
 	if(par.isVerbose()) printBackSpace(15);
 
@@ -290,7 +303,7 @@ namespace duchamp
       delete [] yLim1;
       delete [] yLim2;
       delete [] filter;
-      delete [] residual;
+      // delete [] residual;
       delete [] coeffs;
       delete [] wavelet;
 

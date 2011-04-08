@@ -63,6 +63,35 @@ template float findMedian<float>(float *array, size_t size, bool changeArray);
 template double findMedian<double>(double *array, size_t size, bool changeArray);
 //--------------------------------------------------------------------
 
+template <class T> T findMedianDiff(T *first, T *second, size_t size)
+{
+  /// @details
+  /// Find the median value of an array of numbers. Type independent.
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param changeArray [false] Whether to use the provided array in calculations. If true, the input array will be altered (ie. the order of elements will be changed).
+  /// \return The median value of the array, returned as the same type as the array.
+  T *newarray = new T[size];
+  for(size_t i=0;i<size;i++) newarray[i] = first[i]-second[i];
+  
+  T median;
+  bool isEven = ((size%2)==0);
+  std::nth_element(newarray,newarray+size/2,newarray+size);
+  median = newarray[size/2];
+  if(isEven){
+    std::nth_element(newarray,newarray+size/2-1,newarray+size);
+    median += newarray[size/2-1];
+    median /= T(2);
+  }
+  delete [] newarray;
+  return median;
+}
+template int findMedianDiff<int>(int *first, int *second, size_t size);
+template long findMedianDiff<long>(long *first, long *second, size_t size);
+template float findMedianDiff<float>(float *first, float *second, size_t size);
+template double findMedianDiff<double>(double *first, double *second, size_t size);
+//--------------------------------------------------------------------
+
 template <class T> T findMedian(T *array, bool *mask, size_t size)
 {
   /// @details
@@ -94,6 +123,38 @@ template int findMedian<int>(int *array, bool *mask, size_t size);
 template long findMedian<long>(long *array, bool *mask, size_t size);
 template float findMedian<float>(float *array, bool *mask, size_t size);
 template double findMedian<double>(double *array, bool *mask, size_t size);
+//--------------------------------------------------------------------
+
+template <class T> T findMedianDiff(T *first, T *second, bool *mask, size_t size)
+{
+  /// @details
+  /// Find the median value of an array of numbers. Type independent.
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param changeArray [false] Whether to use the provided array in calculations. If true, the input array will be altered (ie. the order of elements will be changed).
+  /// \return The median value of the array, returned as the same type as the array.
+  int goodSize=0,ct=0;
+  for(size_t i=0;i<size;i++) if(mask[i]) goodSize++;
+  T *newarray = new T[goodSize];
+  for(size_t i=0;i<size;i++)
+    if(mask[i]) newarray[ct++] = first[i]-second[i];
+  
+  T median=0;
+  bool isEven = ((goodSize%2)==0);
+  std::nth_element(newarray,newarray+goodSize/2,newarray+goodSize);
+  median = newarray[goodSize/2];
+  if(isEven){
+    std::nth_element(newarray,newarray+goodSize/2-1,newarray+goodSize);
+    median += newarray[goodSize/2-1];
+    median /= T(2);
+  }
+  delete [] newarray;
+  return median;
+}
+template int findMedianDiff<int>(int *first, int *second, bool *mask, size_t size);
+template long findMedianDiff<long>(long *first, long *second, bool *mask, size_t size);
+template float findMedianDiff<float>(float *first, float *second, bool *mask, size_t size);
+template double findMedianDiff<double>(double *first, double *second, bool *mask, size_t size);
 //--------------------------------------------------------------------
 
 template <class T> T findMADFM(T *array, size_t size, bool changeArray)
@@ -129,6 +190,38 @@ template int findMADFM<int>(int *array, size_t size, bool changeArray);
 template long findMADFM<long>(long *array, size_t size, bool changeArray);
 template float findMADFM<float>(float *array, size_t size, bool changeArray);
 template double findMADFM<double>(double *array, size_t size, bool changeArray);
+//--------------------------------------------------------------------
+
+template <class T> T findMADFMDiff(T *first, T *second, size_t size)
+{
+  /// @details
+  /// Find the median absolute deviation from the median value of an
+  /// array of numbers. Type independent.
+  /// 
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param changeArray [false] Whether to use the provided array in calculations. If true, the input array will be altered - both the order and values of the elements will be changed.
+  /// \return The median absolute deviation from the median value of
+  /// the array, returned as the same type as the array.
+  T *newarray = new T[size];
+  T median = findMedianDiff<T>(first,second,size);
+  T madfm;
+  bool isEven = ((size%2)==0);
+  for(size_t i=0;i<size;i++) newarray[i] = absval(first[i]-second[i]-median);
+  std::nth_element(newarray,newarray+size/2,newarray+size);
+  madfm = newarray[size/2];
+  if(isEven){
+    std::nth_element(newarray,newarray+size/2-1,newarray+size);
+    madfm += newarray[size/2-1];
+    madfm /= T(2);
+  }
+  delete [] newarray;
+  return madfm;
+}
+template int findMADFMDiff<int>(int *first, int *second, size_t size);
+template long findMADFMDiff<long>(long *first, long *second, size_t size);
+template float findMADFMDiff<float>(float *first, float *second, size_t size);
+template double findMADFMDiff<double>(double *first, double *second, size_t size);
 //--------------------------------------------------------------------
 
 template <class T> T findMADFM(T *array, bool *mask, size_t size)
@@ -167,6 +260,42 @@ template float findMADFM<float>(float *array, bool *mask, size_t size);
 template double findMADFM<double>(double *array, bool *mask, size_t size);
 //--------------------------------------------------------------------
 
+template <class T> T findMADFMDiff(T *first, T *second, bool *mask, size_t size)
+{
+  /// @details
+  /// Find the median absolute deviation from the median value of an
+  /// array of numbers. Type independent.
+  /// 
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param changeArray [false] Whether to use the provided array in calculations. If true, the input array will be altered - both the order and values of the elements will be changed.
+  /// \return The median absolute deviation from the median value of
+  /// the array, returned as the same type as the array.
+  T median = findMedianDiff<T>(first,second,mask,size);
+  int goodSize=0,ct=0;
+  for(size_t i=0;i<size;i++) if(mask[i]) goodSize++;
+  T *newarray = new T[goodSize];
+  for(size_t i=0;i<size;i++)
+    if(mask[i]) newarray[ct++] = absval(first[i]-second[i]-median);
+
+  T madfm;
+  bool isEven = ((goodSize%2)==0);
+  std::nth_element(newarray,newarray+goodSize/2,newarray+goodSize);
+  madfm = newarray[goodSize/2];
+  if(isEven){
+    std::nth_element(newarray,newarray+goodSize/2-1,newarray+goodSize);
+    madfm += newarray[goodSize/2-1];
+    madfm /= T(2);
+  }
+  delete [] newarray;
+  return madfm;
+}
+template int findMADFMDiff<int>(int *first, int *second, bool *mask, size_t size);
+template long findMADFMDiff<long>(long *first, long *second, bool *mask, size_t size);
+template float findMADFMDiff<float>(float *first, float *second, bool *mask, size_t size);
+template double findMADFMDiff<double>(double *first, double *second, bool *mask, size_t size);
+//--------------------------------------------------------------------
+
 template <class T> T findMADFM(T *array, size_t size, T median, bool changeArray)
 {
   /// @details
@@ -201,6 +330,40 @@ template int findMADFM<int>(int *array, size_t size, int median, bool changeArra
 template long findMADFM<long>(long *array, size_t size, long median, bool changeArray);
 template float findMADFM<float>(float *array, size_t size, float median, bool changeArray);
 template double findMADFM<double>(double *array, size_t size, double median, bool changeArray);
+//--------------------------------------------------------------------
+
+template <class T> T findMADFMDiff(T *first, T *second, size_t size, T median)
+{
+  /// @details
+  /// Find the median absolute deviation from the median value of an
+  /// array of numbers. Type independent. This version accepts a previously-
+  /// calculated median value.
+  /// 
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param median The median of the array.
+  /// \param changeArray [false] Whether to use the provided array in calculations. If true, the input array will be altered - both the order and values of the elements will be changed.
+  /// \return The median absolute deviation from the median value of
+  /// the array, returned as the same type as the array.
+  T *newarray = new T[size];
+
+  T madfm;
+  bool isEven = ((size%2)==0);
+  for(size_t i=0;i<size;i++) newarray[i] = absval(first[i]-second[i]-median);
+  std::nth_element(newarray,newarray+size/2,newarray+size);
+  madfm = newarray[size/2];
+  if(isEven){
+    std::nth_element(newarray,newarray+size/2-1,newarray+size);
+    madfm += newarray[size/2-1];
+    madfm /= T(2);
+  }
+  delete [] newarray;
+  return madfm;
+}
+template int findMADFMDiff<int>(int *first, int *second, size_t size, int median);
+template long findMADFMDiff<long>(long *first, long *second, size_t size, long median);
+template float findMADFMDiff<float>(float *first, float *second, size_t size, float median);
+template double findMADFMDiff<double>(double *first, double *second, size_t size, double median);
 //--------------------------------------------------------------------
 
 template <class T> T findMADFM(T *array, bool *mask, size_t size, T median)
@@ -238,6 +401,43 @@ template int findMADFM<int>(int *array, bool *mask, size_t size, int median);
 template long findMADFM<long>(long *array, bool *mask, size_t size, long median);
 template float findMADFM<float>(float *array, bool *mask, size_t size, float median);
 template double findMADFM<double>(double *array, bool *mask, size_t size, double median);
+//--------------------------------------------------------------------
+
+template <class T> T findMADFMDiff(T *first, T *second, bool *mask, size_t size, T median)
+{
+  /// @details
+  /// Find the median absolute deviation from the median value of an
+  /// array of numbers. Type independent. This version accepts a previously-
+  /// calculated median value.
+  /// 
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param median The median of the array.
+  /// \param changeArray [false] Whether to use the provided array in calculations. If true, the input array will be altered - both the order and values of the elements will be changed.
+  /// \return The median absolute deviation from the median value of
+  /// the array, returned as the same type as the array.
+  int goodSize=0,ct=0;
+  for(size_t i=0;i<size;i++) if(mask[i]) goodSize++;
+  T *newarray = new T[goodSize];
+  for(size_t i=0;i<size;i++){
+    if(mask[i]) newarray[ct++] = absval(first[i]-second[i]-median);
+  }
+  T madfm;
+  bool isEven = ((goodSize%2)==0);
+  std::nth_element(newarray,newarray+goodSize/2,newarray+goodSize);
+  madfm = newarray[goodSize/2];
+  if(isEven){
+    std::nth_element(newarray,newarray+goodSize/2-1,newarray+goodSize);
+    madfm += newarray[goodSize/2-1];
+    madfm /= T(2);
+  }
+  delete [] newarray;
+  return madfm;
+}
+template int findMADFMDiff<int>(int *first, int *second, bool *mask, size_t size, int median);
+template long findMADFMDiff<long>(long *first, long *second, bool *mask, size_t size, long median);
+template float findMADFMDiff<float>(float *first, float *second, bool *mask, size_t size, float median);
+template double findMADFMDiff<double>(double *first, double *second, bool *mask, size_t size, double median);
 //--------------------------------------------------------------------
 
 template <class T> void findMedianStats(T *array, size_t size, 
