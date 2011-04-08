@@ -143,7 +143,7 @@ namespace duchamp
 
     long xySize = this->axisDim[0] * this->axisDim[1];
 
-    long zdim = this->axisDim[2];
+    unsigned long zdim = this->axisDim[2];
 
     ProgressBar bar;
     if(!this->reconExists){
@@ -157,12 +157,12 @@ namespace duchamp
 
 	float *spec = new float[zdim];
 	float *newSpec = new float[zdim];
-	for(int z=0;z<zdim;z++) spec[z] = this->array[z*xySize + npix];
+	for(size_t z=0;z<zdim;z++) spec[z] = this->array[z*xySize + npix];
 	bool verboseFlag = this->par.isVerbose();
 	this->par.setVerbosity(false);
-	atrous1DReconstruct(this->axisDim[2],spec,newSpec,this->par);
+	atrous1DReconstruct(zdim,spec,newSpec,this->par);
 	this->par.setVerbosity(verboseFlag);
-	for(int z=0;z<zdim;z++) this->recon[z*xySize+npix] = newSpec[z];
+	for(size_t z=0;z<zdim;z++) this->recon[z*xySize+npix] = newSpec[z];
 	delete [] spec;
 	delete [] newSpec;
       }
@@ -185,6 +185,7 @@ namespace duchamp
     long xySize = this->axisDim[0] * this->axisDim[1];
     ProgressBar bar;
     bool useBar = (this->axisDim[2]>1);
+    unsigned long xdim=this->axisDim[0],ydim=this->axisDim[1];
 
     if(!this->reconExists){
       if(this->par.isVerbose()) std::cout<<"  Reconstructing... ";
@@ -200,8 +201,7 @@ namespace duchamp
 	    im[npix] = this->array[z*xySize+npix];
 	  bool verboseFlag = this->par.isVerbose();
 	  this->par.setVerbosity(false);
-	  atrous2DReconstruct(this->axisDim[0],this->axisDim[1],
-			      im,newIm,this->par);
+	  atrous2DReconstruct(xdim,ydim,im,newIm,this->par);
 	  this->par.setVerbosity(verboseFlag);
 	  for(int npix=0; npix<xySize; npix++) 
 	    this->recon[z*xySize+npix] = newIm[npix];
@@ -229,11 +229,10 @@ namespace duchamp
 
     if(this->axisDim[2]==1) this->ReconCube2D();
     else {
-
+      unsigned long xdim=this->axisDim[0],ydim=this->axisDim[1],zdim=this->axisDim[2];
       if(!this->reconExists){
 	if(this->par.isVerbose()) std::cout<<"  Reconstructing... "<<std::flush;
-	atrous3DReconstruct(this->axisDim[0],this->axisDim[1],this->axisDim[2],
-			    this->array,this->recon,this->par);
+	atrous3DReconstruct(xdim,ydim,zdim,this->array,this->recon,this->par);
 	this->reconExists = true;
 	if(this->par.isVerbose()) {
 	  std::cout << "  All Done.";

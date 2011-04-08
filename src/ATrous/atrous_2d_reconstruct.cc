@@ -40,7 +40,7 @@ using Statistics::madfmToSigma;
 namespace duchamp
 {
 
-  void atrous2DReconstruct(long &xdim, long &ydim, float *&input, float *&output, Param &par)
+  void atrous2DReconstruct(unsigned long &xdim, unsigned long &ydim, float *&input, float *&output, Param &par)
   {
     ///  A routine that uses the a trous wavelet method to reconstruct a 
     ///   2-dimensional image.
@@ -57,21 +57,21 @@ namespace duchamp
     ///  \param par The Param set:contains all necessary info about the
     ///  filter and reconstruction parameters.
 
-    long size = xdim * ydim;
-    long mindim = xdim;
+    size_t size = xdim * ydim;
+    unsigned long mindim = xdim;
     if (ydim<mindim) mindim = ydim;
-    int numScales = par.filter().getNumScales(mindim);
+    size_t numScales = par.filter().getNumScales(mindim);
     double *sigmaFactors = new double[numScales+1];
-    for(int i=0;i<=numScales;i++){
+    for(size_t i=0;i<=numScales;i++){
       if(i<=par.filter().maxFactor(2)) 
 	sigmaFactors[i] = par.filter().sigmaFactor(2,i);
       else sigmaFactors[i] = sigmaFactors[i-1] / 2.;
     }
 
     float mean,sigma,originalSigma,originalMean,oldsigma,newsigma;
-    int goodSize=0;
+    size_t goodSize=0;
     bool *isGood = new bool[size];
-    for(int pos=0;pos<size;pos++){
+    for(size_t pos=0;pos<size;pos++){
       isGood[pos] = !par.isBlank(input[pos]);
       if(isGood[pos]) goodSize++;
     }
@@ -80,7 +80,7 @@ namespace duchamp
       // There are no good pixels -- everything is BLANK for some reason.
       // Return the input array as the output, and give a warning message.
 
-      for(int pos=0;pos<size; pos++) output[pos] = input[pos];
+      for(size_t pos=0;pos<size; pos++) output[pos] = input[pos];
 
       duchampWarning("2D Reconstruction","\
 There are no good pixels to be reconstructed -- all are BLANK.\n\
@@ -96,31 +96,31 @@ Returning input array.\n");
       float *wavelet   = new float[size];
       float *residual  = new float[size];
 
-      for(int pos=0;pos<size;pos++) output[pos]=0.;
+      for(size_t pos=0;pos<size;pos++) output[pos]=0.;
 
-      int filterwidth = par.filter().width();
+      unsigned int filterwidth = par.filter().width();
       int filterHW = filterwidth/2;
       double *filter = new double[filterwidth*filterwidth];
-      for(int i=0;i<filterwidth;i++){
-	for(int j=0;j<filterwidth;j++){
+      for(size_t i=0;i<filterwidth;i++){
+	for(size_t j=0;j<filterwidth;j++){
 	  filter[i*filterwidth+j] = par.filter().coeff(i) * par.filter().coeff(j);
 	}
       }
 
-      int *xLim1 = new int[ydim];
-      for(int i=0;i<ydim;i++) xLim1[i] = 0;
-      int *yLim1 = new int[xdim];
-      for(int i=0;i<xdim;i++) yLim1[i] = 0;
-      int *xLim2 = new int[ydim];
-      for(int i=0;i<ydim;i++) xLim2[i] = xdim-1;
-      int *yLim2 = new int[xdim];
-      for(int i=0;i<xdim;i++) yLim2[i] = ydim-1;
+      long *xLim1 = new long[ydim];
+      for(size_t i=0;i<ydim;i++) xLim1[i] = 0;
+      long *yLim1 = new long[xdim];
+      for(size_t i=0;i<xdim;i++) yLim1[i] = 0;
+      long *xLim2 = new long[ydim];
+      for(size_t i=0;i<ydim;i++) xLim2[i] = xdim-1;
+      long *yLim2 = new long[xdim];
+      for(size_t i=0;i<xdim;i++) yLim2[i] = ydim-1;
 
       if(par.getFlagBlankPix()){
 	float avGapX = 0, avGapY = 0;
-	for(int row=0;row<ydim;row++){
-	  int ct1 = 0;
-	  int ct2 = xdim - 1;
+	for(size_t row=0;row<ydim;row++){
+	  size_t ct1 = 0;
+	  size_t ct2 = xdim - 1;
 	  while((ct1<ct2)&&(par.isBlank(input[row*xdim+ct1]))) ct1++;
 	  while((ct2>ct1)&&(par.isBlank(input[row*xdim+ct2]))) ct2--;
 	  xLim1[row] = ct1;
@@ -129,9 +129,9 @@ Returning input array.\n");
 	}
 	avGapX /= float(ydim);
     
-	for(int col=0;col<xdim;col++){
-	  int ct1=0;
-	  int ct2=ydim-1;
+	for(size_t col=0;col<xdim;col++){
+	  size_t ct1=0;
+	  size_t ct2=ydim-1;
 	  while((ct1<ct2)&&(par.isBlank(input[col+xdim*ct1]))) ct1++;
 	  while((ct2>ct1)&&(par.isBlank(input[col+xdim*ct2]))) ct2--;
 	  yLim1[col] = ct1;
@@ -148,7 +148,7 @@ Returning input array.\n");
       float threshold;
       int iteration=0;
       newsigma = 1.e9;
-      for(int i=0;i<size;i++) output[i] = 0;
+      for(size_t i=0;i<size;i++) output[i] = 0;
       do{
 	if(par.isVerbose()) {
 	  std::cout << "Iteration #"<<std::setw(2)<<++iteration<<":";
@@ -159,10 +159,10 @@ Returning input array.\n");
 	//   newsigma value
 	oldsigma = newsigma;
 	// we are transforming the residual array
-	for(int i=0;i<size;i++)  coeffs[i] = input[i] - output[i];  
+	for(size_t i=0;i<size;i++)  coeffs[i] = input[i] - output[i];  
 
 	int spacing = 1;
-	for(int scale = 1; scale<numScales; scale++){
+	for(unsigned int scale = 1; scale<numScales; scale++){
 
 	  if(par.isVerbose()){
 	    std::cout << "Scale ";
@@ -171,19 +171,19 @@ Returning input array.\n");
 	    std::cout <<std::flush;
 	  }
 
-	  for(int ypos = 0; ypos<ydim; ypos++){
-	    for(int xpos = 0; xpos<xdim; xpos++){
+	  for(unsigned long ypos = 0; ypos<ydim; ypos++){
+	    for(unsigned long xpos = 0; xpos<xdim; xpos++){
 	      // loops over each pixel in the image
-	      int pos = ypos*xdim + xpos;
+	      size_t pos = ypos*xdim + xpos;
 	  
 	      wavelet[pos] = coeffs[pos];
 
 	      if(!isGood[pos]) wavelet[pos] = 0.;
 	      else{
 
-		int filterpos = -1;
+		size_t filterpos = -1;
 		for(int yoffset=-filterHW; yoffset<=filterHW; yoffset++){
-		  int y = ypos + spacing*yoffset;
+		  long y = long(ypos) + spacing*yoffset;
 		  // Boundary conditions -- assume reflection at boundaries.
 		  // Use limits as calculated above
 		  // 	      if(yLim1[xpos]!=yLim2[xpos]){ 
@@ -193,10 +193,10 @@ Returning input array.\n");
 		  // 		  else if(y>yLim2[xpos]) y = 2*yLim2[xpos] - y;      
 		  // 		}
 		  // 	      }
-		  int oldrow = y * xdim;
+		  size_t oldrow = y * xdim;
 	  
 		  for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
-		    int x = xpos + spacing*xoffset;
+		    long x = long(xpos) + spacing*xoffset;
 		    // Boundary conditions -- assume reflection at boundaries.
 		    // Use limits as calculated above
 		    // 		if(xLim1[ypos]!=xLim2[ypos]){
@@ -207,7 +207,7 @@ Returning input array.\n");
 		    // 		  }
 		    // 		}
 
-		    int oldpos = oldrow + x;
+		    size_t oldpos = oldrow + x;
 
 		    float oldCoeff;
 		    if((y>=yLim1[xpos])&&(y<=yLim2[xpos])&&
@@ -228,7 +228,7 @@ Returning input array.\n");
 	  } //-> end of ypos loop
 
 	  // Need to do this after we've done *all* the convolving
-	  for(int pos=0;pos<size;pos++) coeffs[pos] = coeffs[pos] - wavelet[pos];
+	  for(size_t pos=0;pos<size;pos++) coeffs[pos] = coeffs[pos] - wavelet[pos];
 
 	  // Have found wavelet coeffs for this scale -- now threshold    
 	  if(scale>=par.getMinScale()){
@@ -236,7 +236,7 @@ Returning input array.\n");
 
 	    threshold = mean + 
 	      par.getAtrousCut() * originalSigma * sigmaFactors[scale];
-	    for(int pos=0;pos<size;pos++){
+	    for(size_t pos=0;pos<size;pos++){
 	      if(!isGood[pos]) output[pos] = input[pos];
 	      // preserve the Blank pixel values in the output.
 	      else if( fabs(wavelet[pos]) > threshold ) 
@@ -247,9 +247,9 @@ Returning input array.\n");
 
 	} // END OF LOOP OVER SCALES
 
-	for(int pos=0;pos<size;pos++) if(isGood[pos]) output[pos] += coeffs[pos];
+	for(size_t pos=0;pos<size;pos++) if(isGood[pos]) output[pos] += coeffs[pos];
 
-	for(int i=0;i<size;i++) residual[i] = input[i] - output[i];
+	for(size_t i=0;i<size;i++) residual[i] = input[i] - output[i];
 	findMedianStats(residual,goodSize,isGood,mean,newsigma);
 	newsigma = madfmToSigma(newsigma); 
     

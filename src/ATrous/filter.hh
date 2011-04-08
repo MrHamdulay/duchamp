@@ -60,13 +60,13 @@ namespace duchamp
     void   define(int code);
 
     /// @brief Calculate the number of scales possible with a given filter and data size. 
-    int    getNumScales(long length);
+    unsigned int    getNumScales(long length);
 
     /// @brief Calculate the maximum number of pixels able to be analysed with a filter at a given scale. 
-    int    getMaxSize(int scale);
+    unsigned int    getMaxSize(int scale);
 
     /// @brief Return the width of the filter 
-    int    width(){return filter1D.size();};
+    size_t    width(){return filter1D.size();};
 
     // these are inline functions.
     /// @brief Return the text name of the filter 
@@ -79,7 +79,7 @@ namespace duchamp
     void   setCoeff(int i, double val){filter1D[i] = val;};
 
     /// @brief Return the maximum number of scales in the sigmaFactor array for the given dimension 
-    int    maxFactor(int dim){return maxNumScales[dim-1];};
+    unsigned int    maxFactor(int dim){return maxNumScales[dim-1];};
 
     /// @brief Set the maximum number of scales in the sigmaFactor array for the given dimension 
     void   setMaxFactor(int dim, int val){maxNumScales[dim-1] = val;};
@@ -92,7 +92,7 @@ namespace duchamp
   private:
     std::string name;                ///< what is the filter called?
     std::vector <double> filter1D;   ///< filter coefficients.
-    std::vector <int> maxNumScales;  ///< max number of scales for the sigmaFactor arrays, for each dim.
+    std::vector <unsigned int> maxNumScales;  ///< max number of scales for the sigmaFactor arrays, for each dim.
     std::vector < std::vector <double>* > sigmaFactors; ///< arrays of sigmaFactors, one for each dim.
 
     // these are all in atrous.cc

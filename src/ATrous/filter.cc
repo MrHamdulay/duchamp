@@ -107,23 +107,25 @@ namespace duchamp
   }
   //-----------------------------------------------------------------------
 
-  int Filter::getNumScales(long length)
+  unsigned int Filter::getNumScales(long length)
   {
+    unsigned int num;
     switch(this->filter1D.size()){
     case 5: 
-      return int(log(double(length-1))/M_LN2) - 1;
+      num = log(double(length-1))/M_LN2 - 1;
       break;
     case 3:
-      return int(log(double(length-1))/M_LN2);
+      num = log(double(length-1))/M_LN2;
       break;
     default:
-      return 1 + int(log(double(length-1)/double(this->filter1D.size()-1))/M_LN2);
+      num = 1 + log(double(length-1)/double(this->filter1D.size()-1))/M_LN2;
       break;
     }
+    return num;
   }
   //-----------------------------------------------------------------------
 
-  int Filter::getMaxSize(int scale)
+  unsigned int Filter::getMaxSize(int scale)
   {
     switch(this->filter1D.size()){
     case 5:

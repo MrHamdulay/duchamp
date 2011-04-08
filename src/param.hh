@@ -347,7 +347,7 @@ namespace duchamp
     void   setFlagATrous(bool flag){flagATrous=flag;};
     int    getReconDim(){return reconDim;};
     void   setReconDim(int i){reconDim=i;};
-    int    getMinScale(){return scaleMin;};
+    unsigned int    getMinScale(){return scaleMin;};
     void   setMinScale(int s){scaleMin=s;};
     int    getMaxScale(){return scaleMax;};
     void   setMaxScale(int s){scaleMax=s;};
@@ -506,7 +506,7 @@ namespace duchamp
     // A trous reconstruction parameters
     bool   flagATrous;      ///< Are we using the a trous reconstruction?
     int    reconDim;        ///< How many dimensions to use for the reconstruction?
-    int    scaleMin;        ///< Min scale used in a trous reconstruction
+    unsigned int    scaleMin;        ///< Min scale used in a trous reconstruction
     int    scaleMax;        ///< Max scale used in a trous reconstruction
     float  snrRecon;        ///< SNR cutoff used in a trous reconstruction (only wavelet coefficients that survive this threshold are kept)
     Filter reconFilter;     ///< The filter used for reconstructions.

@@ -41,7 +41,7 @@ using Statistics::madfmToSigma;
 namespace duchamp
 {
 
-  void atrous1DReconstruct(long &xdim, float *&input, float *&output, Param &par)
+  void atrous1DReconstruct(unsigned long &xdim, float *&input, float *&output, Param &par)
   {
     ///  A routine that uses the a trous wavelet method to reconstruct a 
     ///   1-dimensional spectrum. 
@@ -59,11 +59,11 @@ namespace duchamp
     ///  \param par The Param set.
 
     const float SNR_THRESH=par.getAtrousCut();
-    const int MIN_SCALE=par.getMinScale();
+    const unsigned int MIN_SCALE=par.getMinScale();
     static bool firstTime = true;
 
-    int numScales = par.filter().getNumScales(xdim);
-    int maxScale = par.getMaxScale();
+    size_t numScales = par.filter().getNumScales(xdim);
+    size_t maxScale = par.getMaxScale();
     if((maxScale>0)&&(maxScale<=numScales))
       maxScale = std::min(maxScale,numScales);
     else{
@@ -78,7 +78,7 @@ namespace duchamp
       maxScale = numScales;
     }
     double *sigmaFactors = new double[numScales+1];
-    for(int i=0;i<=numScales;i++){
+    for(size_t i=0;i<=numScales;i++){
       if(i<=par.filter().maxFactor(1)) 
 	sigmaFactors[i] = par.filter().sigmaFactor(1,i);
       else sigmaFactors[i] = sigmaFactors[i-1] / sqrt(2.);
@@ -86,8 +86,8 @@ namespace duchamp
 
     float mean,sigma,originalSigma,originalMean,oldsigma,newsigma;
     bool *isGood = new bool[xdim];
-    int goodSize=0;
-    for(int pos=0;pos<xdim;pos++) {
+    size_t goodSize=0;
+    for(size_t pos=0;pos<xdim;pos++) {
       isGood[pos] = !par.isBlank(input[pos]);
       if(isGood[pos]) goodSize++;
     }
@@ -96,7 +96,7 @@ namespace duchamp
       // There are no good pixels -- everything is BLANK for some reason.
       // Return the input array as the output.
 
-      for(int pos=0;pos<xdim; pos++) output[pos] = input[pos];
+      for(size_t pos=0;pos<xdim; pos++) output[pos] = input[pos];
 
     }
     else{
@@ -107,11 +107,11 @@ namespace duchamp
       float *wavelet = new float[xdim];
       float *residual = new float[xdim];
 
-      for(int pos=0;pos<xdim;pos++) output[pos]=0.;
+      for(size_t pos=0;pos<xdim;pos++) output[pos]=0.;
 
       int filterHW = par.filter().width()/2;
       double *filter = new double[par.filter().width()];
-      for(int i=0;i<par.filter().width();i++) filter[i] = par.filter().coeff(i);
+      for(size_t i=0;i<par.filter().width();i++) filter[i] = par.filter().coeff(i);
 
 
       // No trimming done in 1D case.
@@ -127,22 +127,22 @@ namespace duchamp
 	//   newsigma value
 	oldsigma = newsigma;
 	// all other times round, we are transforming the residual array
-	for(int i=0;i<xdim;i++)  coeffs[i] = input[i] - output[i];
+	for(size_t i=0;i<xdim;i++)  coeffs[i] = input[i] - output[i];
     
 	findMedianStats(input,xdim,isGood,originalMean,originalSigma);
 	originalSigma = madfmToSigma(originalSigma); 
 
 	int spacing = 1;
-	for(int scale = 1; scale<=numScales; scale++){
+	for(unsigned int scale = 1; scale<=numScales; scale++){
 
 	  if(par.isVerbose()) {
 	    std::cout << "Scale " << std::setw(2) << scale
 		      << " /"     << std::setw(2) << numScales <<std::flush;
 	  }
 
-	  for(int xpos = 0; xpos<xdim; xpos++){
+	  for(unsigned long xpos = 0; xpos<xdim; xpos++){
 	    // loops over each pixel in the image
-	    int pos = xpos;
+	    size_t pos = xpos;
 
 	    wavelet[pos] = coeffs[pos];
 	
@@ -150,16 +150,16 @@ namespace duchamp
 	    else{
 
 	      for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
-		int x = xpos + spacing*xoffset;
+		long x = xpos + spacing*xoffset;
 
-		while((x<0)||(x>=xdim)){
+		while((x<0)||(x>=long(xdim))){
 		  // boundary conditions are reflection. 
 		  if(x<0) x = 0 - x;
-		  else if(x>=xdim) x = 2*(xdim-1) - x;
+		  else if(x>=long(xdim)) x = 2*(xdim-1) - x;
 		}
 
-		int filterpos = (xoffset+filterHW);
-		int oldpos = x;
+		size_t filterpos = (xoffset+filterHW);
+		size_t oldpos = x;
 
 		if(isGood[oldpos]) 
 		  wavelet[pos] -= filter[filterpos]*coeffs[oldpos];
@@ -170,13 +170,13 @@ namespace duchamp
 	  } //-> end of xpos loop
 
 	  // Need to do this after we've done *all* the convolving
-	  for(int pos=0;pos<xdim;pos++) coeffs[pos] = coeffs[pos] - wavelet[pos];
+	  for(size_t pos=0;pos<xdim;pos++) coeffs[pos] = coeffs[pos] - wavelet[pos];
 
 	  // Have found wavelet coeffs for this scale -- now threshold
 	  if(scale>=MIN_SCALE){
  	    findMedianStats(wavelet,xdim,isGood,mean,sigma);
 	
-	    for(int pos=0;pos<xdim;pos++){
+	    for(size_t pos=0;pos<xdim;pos++){
 	      // preserve the Blank pixel values in the output.
 	      if(!isGood[pos]) output[pos] = input[pos];
 	      else if( fabs(wavelet[pos]) > 
@@ -191,10 +191,10 @@ namespace duchamp
 
 	// Only add the final smoothed array if we are doing *all* the scales. 
 	if(numScales == par.filter().getNumScales(xdim))
-	  for(int pos=0;pos<xdim;pos++) 
+	  for(size_t pos=0;pos<xdim;pos++) 
 	    if(isGood[pos]) output[pos] += coeffs[pos];
 
- 	for(int pos=0;pos<xdim;pos++) residual[pos]=input[pos]-output[pos];
+ 	for(size_t pos=0;pos<xdim;pos++) residual[pos]=input[pos]-output[pos];
   	findMedianStats(residual,xdim,isGood,mean,newsigma);
 	newsigma = madfmToSigma(newsigma); 
 

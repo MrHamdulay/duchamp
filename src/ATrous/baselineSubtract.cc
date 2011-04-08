@@ -37,7 +37,7 @@
 namespace duchamp
 {
 
-  void baselineSubtract(long numSpec, long specLength, float *originalCube, 
+  void baselineSubtract(size_t numSpec, unsigned long specLength, float *originalCube, 
 			float *baselineValues, Param &par)
   {
     ///  A routine to find the baseline of each spectrum in a cube (the spectral 
@@ -62,16 +62,16 @@ namespace duchamp
 
     ProgressBar bar;
     if(flagVerb) bar.init(numSpec);
-    for(int pix=0; pix<numSpec; pix++){ // for each spatial pixel...
+    for(size_t pix=0; pix<numSpec; pix++){ // for each spatial pixel...
 
       if(flagVerb) bar.update(pix+1);
 
-      for(int z=0; z<specLength; z++) 
+      for(size_t z=0; z<specLength; z++) 
 	spec[z] = originalCube[z*numSpec + pix];
 
       atrous1DReconstruct(specLength,spec,thisBaseline,par);
 
-      for(int z=0; z<specLength; z++) {
+      for(size_t z=0; z<specLength; z++) {
 	baselineValues[z*numSpec+pix] = thisBaseline[z];
 	if(!par.isBlank(originalCube[z*numSpec+pix])) 
 	  originalCube[z*numSpec+pix] = originalCube[z*numSpec+pix] - 
@@ -90,7 +90,7 @@ namespace duchamp
     
   }
 
-  void getBaseline(long size, float *input, float *baseline, Param &par)
+  void getBaseline(unsigned long size, float *input, float *baseline, Param &par)
   {
     ///   Uses the a trous reconstruction, keeping only the highest two scales, 
     ///     to reconstruct the baseline.
@@ -115,7 +115,7 @@ namespace duchamp
     float med,sig;
     findMedianStats(input,size,med,sig);
     float threshold = 5. * sig;
-    for(int i=0;i<size;i++) {
+    for(size_t i=0;i<size;i++) {
       if(fabs(input[i]-med)>threshold){
 	if(input[i]>med) spec[i] = med + threshold;
 	else spec[i] = med - threshold;
@@ -134,8 +134,8 @@ namespace duchamp
 
   }
 
-
-  void getBaseline(long size, float *input, float *baseline)
+ 
+  void getBaseline(unsigned long size, float *input, float *baseline)
   {
     ///  This version is designed for programs not using Param classes -- it 
     ///   keeps that side of things hidden from the user.
@@ -159,7 +159,7 @@ namespace duchamp
     float med,sig;
     findMedianStats(input,size,med,sig);
     float threshold = 8. * sig;
-    for(int i=0;i<size;i++) {
+    for(size_t i=0;i<size;i++) {
       if(fabs(input[i]-med)>threshold){
 	if(input[i]>med) spec[i] = med + threshold;
 	else spec[i] = med - threshold;
