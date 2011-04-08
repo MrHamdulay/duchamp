@@ -47,27 +47,36 @@ template <class T1, class T2> void sort(T1 *arr, T2 *matchingArray,
 
 // STATISTICS-RELATED ROUTINES
 template <class T> T absval(T value);
-template <class T> void findMinMax(const T *array, const int size, 
+template <class T> void findMinMax(const T *array, const size_t size, 
 				   T &min, T &max);
-template <class T> float findMean(T *array, int size);
-template <class T> float findStddev(T *array, int size);
-template <class T> T findMedian(T *array, int size, bool changeArray=false);
-template <class T> T findMADFM(T *array, int size, bool changeArray=false);
-template <class T> T findMADFM(T *array, int size, T median, bool changeArray=false);
-template <class T> void findMedianStats(T *array, int size, 
+template <class T> float findMean(T *array, size_t size);
+template <class T> float findMean(T *array, bool *mask, size_t size);
+template <class T> float findStddev(T *array, size_t size);
+template <class T> float findStddev(T *array, bool *mask, size_t size);
+template <class T> T findMedian(T *array, size_t size, bool changeArray=false);
+template <class T> T findMedian(T *array, bool *mask, size_t size);
+template <class T> T findMADFM(T *array, size_t size, bool changeArray=false);
+template <class T> T findMADFM(T *array, bool *mask, size_t size);
+template <class T> T findMADFM(T *array, size_t size, T median, bool changeArray=false);
+template <class T> T findMADFM(T *array, bool *mask, size_t size, T median);
+template <class T> void findMedianStats(T *array, size_t size, 
 					T &median, T &madfm);
-template <class T> void findMedianStats(T *array, int size, bool *isGood, 
+template <class T> void findMedianStats(T *array, size_t size, bool *isGood, 
 					T &median, T &madfm);
-template <class T> void findNormalStats(T *array, int size, 
+template <class T> void findNormalStats(T *array, size_t size, 
 					float &mean, float &stddev);
-template <class T> void findNormalStats(T *array, int size, bool *isGood, 
+template <class T> void findNormalStats(T *array, size_t size, bool *isGood, 
 					float &mean, float &stddev);
-template <class T> void findAllStats(T *array, int size, 
+template <class T> void findAllStats(T *array, size_t size, 
 				     float &mean, float &stddev,
 				     T &median, T &madfm);
-template <class T> void findAllStats(T *array, int size, bool *mask, 
+template <class T> void findAllStats(T *array, size_t size, bool *mask, 
 				     float &mean, float &stddev,
 				     T &median, T &madfm);
+template <class T> void findMedianStatsDiff(T *first, T *second, size_t size, T &median, T &madfm);
+template <class T> void findMedianStatsDiff(T *first, T *second, size_t size, bool *isGood, T &median, T &madfm);
+template <class T> void findNormalStatsDiff(T *first, T *second, size_t size, float &mean, float &stddev);
+template <class T> void findNormalStatsDiff(T *first, T *second, size_t size, bool *isGood, float &mean, float &stddev);
 
 
 // POSITION-RELATED ROUTINES

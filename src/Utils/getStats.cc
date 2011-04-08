@@ -43,7 +43,7 @@ template float absval<float>(float value);
 template double absval<double>(double value);
 //--------------------------------------------------------------------
 
-template <class T> void findMinMax(const T *array, const int size, 
+template <class T> void findMinMax(const T *array, const size_t size, 
 				   T &min, T &max)
 {
   /// @details
@@ -53,59 +53,130 @@ template <class T> void findMinMax(const T *array, const int size,
   /// \param min The returned value of the minimum value in the array.
   /// \param max The returned value of the maximum value in the array.
   min = max = array[0];
-  for(int i=1;i<size;i++) {
+  for(size_t i=1;i<size;i++) {
     if(array[i]<min) min=array[i];
     if(array[i]>max) max=array[i];
   }
 }
-template void findMinMax<int>(const int *array, const int size, 
+template void findMinMax<int>(const int *array, const size_t size, 
 				 int &min, int &max);
-template void findMinMax<long>(const long *array, const int size, 
+template void findMinMax<long>(const long *array, const size_t size, 
 				  long &min, long &max);
-template void findMinMax<float>(const float *array, const int size, 
+template void findMinMax<float>(const float *array, const size_t size, 
 				   float &min, float &max);
-template void findMinMax<double>(const double *array, const int size, 
+template void findMinMax<double>(const double *array, const size_t size, 
 				    double &min, double &max);
 //--------------------------------------------------------------------
 
-template <class T> float findMean(T *array, int size)
+template <class T> float findMean(T *array, size_t size)
 {
   /// @details
   /// Find the mean of an array of numbers. Type independent.
   /// \param array The array of numbers.
   /// \param size The length of the array.
   /// \return The mean value of the array, returned as a float
-  double mean = double(array[0]);
-  for(int i=1;i<size;i++) mean += double(array[i]);
-  mean /= double(size);
+  double mean = 0; 
+  for(size_t i=0;i<size;i++) mean += double(array[i]);
+  if(size>0)
+    mean /= double(size);
   return float(mean);
 }
-template float findMean<int>(int *array, int size);
-template float findMean<long>(long *array, int size);
-template float findMean<float>(float *array, int size);
-template float findMean<double>(double *array, int size);
+template float findMean<int>(int *array, size_t size);
+template float findMean<long>(long *array, size_t size);
+template float findMean<float>(float *array, size_t size);
+template float findMean<double>(double *array, size_t size);
 //--------------------------------------------------------------------
 
-template <class T> float findStddev(T *array, int size)
+template <class T> float findMean(T *array, bool *mask, size_t size)
 {
   /// @details
-  /// Find the rms or standard deviation of an array of numbers. Type independent.
+  /// Find the mean of an array of numbers. Type independent.
+  /// \param array The array of numbers.
+  /// \param mask An array of the same length that says whether to
+  /// include each member of the array in the calculations. Only use
+  /// values where mask=true.
+  /// \param size The length of the array.
+  /// \return The mean value of the array, returned as a float
+  double mean = 0.;
+  int ct=0;
+  for(size_t i=0;i<size;i++){
+    if(mask[i]){
+      mean += double(array[i]);
+      ct++;
+    }
+  }
+  if(ct>0) mean /= double(ct);
+  return float(mean);
+}
+template float findMean<int>(int *array, bool *mask, size_t size);
+template float findMean<long>(long *array, bool *mask, size_t size);
+template float findMean<float>(float *array, bool *mask, size_t size);
+template float findMean<double>(double *array, bool *mask, size_t size);
+//--------------------------------------------------------------------
+
+template <class T> float findStddev(T *array, size_t size)
+{
+  /// @details Find the rms or standard deviation of an array of
+  /// numbers. Type independent. Calculated by iterating only once,
+  /// using \sum x and \sum x^2 (no call to findMean)
   /// \param array The array of numbers.
   /// \param size The length of the array.
   /// \return The rms value of the array, returned as a float
-  double mean = double(findMean(array,size));
-  double stddev = (double(array[0])-mean) * (double(array[0])-mean);
-  for(int i=1;i<size;i++) stddev += (double(array[i])-mean)*(double(array[i])-mean);
-  stddev = sqrt(stddev/double(size-1));
+
+  // double mean = double(findMean(array,size));
+  // double stddev = (double(array[0])-mean) * (double(array[0])-mean);
+  // for(size_t i=1;i<size;i++) stddev += (double(array[i])-mean)*(double(array[i])-mean);
+  // double stddev = stddev/double(size-1));
+
+  T sumx=0,sumxx=0;
+  double stddev=0;
+  for(size_t i=0;i<size;i++){
+    sumx += array[i];
+    sumxx += (array[i]*array[i]);
+  }
+  if(size>0)
+    stddev = sqrt(double(sumxx)/double(size) - double(sumx*sumx)/double(size*size));
   return float(stddev);
 }
-template float findStddev<int>(int *array, int size);
-template float findStddev<long>(long *array, int size);
-template float findStddev<float>(float *array, int size);
-template float findStddev<double>(double *array, int size);
+template float findStddev<int>(int *array, size_t size);
+template float findStddev<long>(long *array, size_t size);
+template float findStddev<float>(float *array, size_t size);
+template float findStddev<double>(double *array, size_t size);
 //--------------------------------------------------------------------
 
-template <class T> T findMedian(T *array, int size, bool changeArray)
+template <class T> float findStddev(T *array, bool *mask, size_t size)
+{
+  /// @details Find the rms or standard deviation of an array of
+  /// numbers. Type independent. Calculated by iterating only once,
+  /// using \sum x and \sum x^2 (no call to findMean)
+  /// \param array The array of numbers.
+  /// \param mask An array of the same length that says whether to
+  /// include each member of the array in the calculations. Only use
+  /// values where mask=true.
+  /// \param size The length of the array.
+  /// \return The rms value of the array, returned as a float
+
+  T sumx=0,sumxx=0;
+  double stddev=0;
+  int ct=0;
+  for(size_t i=0;i<size;i++){
+    if(mask[i]){
+      sumx += array[i];
+      sumxx += (array[i]*array[i]);
+      ct++;
+    }
+  }
+  if(ct>0)
+    stddev = sqrt(double(sumxx)/double(ct) - double(sumx*sumx)/double(ct*ct));
+  return float(stddev);
+}
+template float findStddev<int>(int *array, bool *mask, size_t size);
+template float findStddev<long>(long *array, bool *mask, size_t size);
+template float findStddev<float>(float *array, bool *mask, size_t size);
+template float findStddev<double>(double *array, bool *mask, size_t size);
+//--------------------------------------------------------------------
+
+template <class T> T findMedian(T *array, size_t size, bool changeArray)
 {
   /// @details
   /// Find the median value of an array of numbers. Type independent.
@@ -117,7 +188,7 @@ template <class T> T findMedian(T *array, int size, bool changeArray)
   if(changeArray) newarray = array;
   else{
     newarray = new T[size];
-    for(int i=0;i<size;i++) newarray[i] = array[i];
+    for(size_t i=0;i<size;i++) newarray[i] = array[i];
   }
   T median;
   bool isEven = ((size%2)==0);
@@ -131,13 +202,46 @@ template <class T> T findMedian(T *array, int size, bool changeArray)
   if(!changeArray) delete [] newarray;
   return median;
 }
-template int findMedian<int>(int *array, int size, bool changeArray);
-template long findMedian<long>(long *array, int size, bool changeArray);
-template float findMedian<float>(float *array, int size, bool changeArray);
-template double findMedian<double>(double *array, int size, bool changeArray);
+template int findMedian<int>(int *array, size_t size, bool changeArray);
+template long findMedian<long>(long *array, size_t size, bool changeArray);
+template float findMedian<float>(float *array, size_t size, bool changeArray);
+template double findMedian<double>(double *array, size_t size, bool changeArray);
 //--------------------------------------------------------------------
 
-template <class T> T findMADFM(T *array, int size, bool changeArray)
+template <class T> T findMedian(T *array, bool *mask, size_t size)
+{
+  /// @details
+  /// Find the median value of an array of numbers. Type independent.
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param changeArray [false] Whether to use the provided array in calculations. If true, the input array will be altered (ie. the order of elements will be changed).
+  /// \return The median value of the array, returned as the same type as the array.
+
+  int goodSize=0,ct=0;
+  for(size_t i=0;i<size;i++) if(mask[i]) goodSize++;
+  T *newarray = new T[goodSize];
+  for(size_t i=0;i<size;i++) {
+    if(mask[i]) newarray[ct++] = array[i];
+  }
+  T median;
+  bool isEven = ((goodSize%2)==0);
+  std::nth_element(newarray,newarray+goodSize/2,newarray+goodSize);
+  median = newarray[goodSize/2];
+  if(isEven){
+    std::nth_element(newarray,newarray+goodSize/2-1,newarray+goodSize);
+    median += newarray[goodSize/2-1];
+    median /= T(2);
+  }
+  delete [] newarray;
+  return median;
+}
+template int findMedian<int>(int *array, bool *mask, size_t size);
+template long findMedian<long>(long *array, bool *mask, size_t size);
+template float findMedian<float>(float *array, bool *mask, size_t size);
+template double findMedian<double>(double *array, bool *mask, size_t size);
+//--------------------------------------------------------------------
+
+template <class T> T findMADFM(T *array, size_t size, bool changeArray)
 {
   /// @details
   /// Find the median absolute deviation from the median value of an
@@ -155,7 +259,7 @@ template <class T> T findMADFM(T *array, int size, bool changeArray)
   T median = findMedian<T>(array,size,changeArray);
   T madfm;
   bool isEven = ((size%2)==0);
-  for(int i=0;i<size;i++) newarray[i] = absval(array[i]-median);
+  for(size_t i=0;i<size;i++) newarray[i] = absval(array[i]-median);
   std::nth_element(newarray,newarray+size/2,newarray+size);
   madfm = newarray[size/2];
   if(isEven){
@@ -166,13 +270,49 @@ template <class T> T findMADFM(T *array, int size, bool changeArray)
   if(!changeArray) delete [] newarray;
   return madfm;
 }
-template int findMADFM<int>(int *array, int size, bool changeArray);
-template long findMADFM<long>(long *array, int size, bool changeArray);
-template float findMADFM<float>(float *array, int size, bool changeArray);
-template double findMADFM<double>(double *array, int size, bool changeArray);
+template int findMADFM<int>(int *array, size_t size, bool changeArray);
+template long findMADFM<long>(long *array, size_t size, bool changeArray);
+template float findMADFM<float>(float *array, size_t size, bool changeArray);
+template double findMADFM<double>(double *array, size_t size, bool changeArray);
 //--------------------------------------------------------------------
 
-template <class T> T findMADFM(T *array, int size, T median, bool changeArray)
+template <class T> T findMADFM(T *array, bool *mask, size_t size)
+{
+  /// @details
+  /// Find the median absolute deviation from the median value of an
+  /// array of numbers. Type independent.
+  /// 
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param changeArray [false] Whether to use the provided array in calculations. If true, the input array will be altered - both the order and values of the elements will be changed.
+  /// \return The median absolute deviation from the median value of
+  /// the array, returned as the same type as the array.
+  T median = findMedian<T>(array,mask,size);
+  int goodSize=0,ct=0;
+  for(size_t i=0;i<size;i++) if(mask[i]) goodSize++;
+  T *newarray = new T[goodSize];
+  for(size_t i=0;i<size;i++)
+    if(mask[i]) newarray[ct++] = absval(array[i]-median);
+
+  T madfm;
+  bool isEven = ((goodSize%2)==0);
+  std::nth_element(newarray,newarray+goodSize/2,newarray+goodSize);
+  madfm = newarray[goodSize/2];
+  if(isEven){
+    std::nth_element(newarray,newarray+goodSize/2-1,newarray+goodSize);
+    madfm += newarray[goodSize/2-1];
+    madfm /= T(2);
+  }
+  delete [] newarray;
+  return madfm;
+}
+template int findMADFM<int>(int *array, bool *mask, size_t size);
+template long findMADFM<long>(long *array, bool *mask, size_t size);
+template float findMADFM<float>(float *array, bool *mask, size_t size);
+template double findMADFM<double>(double *array, bool *mask, size_t size);
+//--------------------------------------------------------------------
+
+template <class T> T findMADFM(T *array, size_t size, T median, bool changeArray)
 {
   /// @details
   /// Find the median absolute deviation from the median value of an
@@ -191,7 +331,7 @@ template <class T> T findMADFM(T *array, int size, T median, bool changeArray)
 
   T madfm;
   bool isEven = ((size%2)==0);
-  for(int i=0;i<size;i++) newarray[i] = absval(array[i]-median);
+  for(size_t i=0;i<size;i++) newarray[i] = absval(array[i]-median);
   std::nth_element(newarray,newarray+size/2,newarray+size);
   madfm = newarray[size/2];
   if(isEven){
@@ -202,13 +342,50 @@ template <class T> T findMADFM(T *array, int size, T median, bool changeArray)
   if(!changeArray) delete [] newarray;
   return madfm;
 }
-template int findMADFM<int>(int *array, int size, int median, bool changeArray);
-template long findMADFM<long>(long *array, int size, long median, bool changeArray);
-template float findMADFM<float>(float *array, int size, float median, bool changeArray);
-template double findMADFM<double>(double *array, int size, double median, bool changeArray);
+template int findMADFM<int>(int *array, size_t size, int median, bool changeArray);
+template long findMADFM<long>(long *array, size_t size, long median, bool changeArray);
+template float findMADFM<float>(float *array, size_t size, float median, bool changeArray);
+template double findMADFM<double>(double *array, size_t size, double median, bool changeArray);
 //--------------------------------------------------------------------
 
-template <class T> void findMedianStats(T *array, int size, 
+template <class T> T findMADFM(T *array, bool *mask, size_t size, T median)
+{
+  /// @details
+  /// Find the median absolute deviation from the median value of an
+  /// array of numbers. Type independent. This version accepts a previously-
+  /// calculated median value.
+  /// 
+  /// \param array The array of numbers.
+  /// \param size The length of the array.
+  /// \param median The median of the array.
+  /// \param changeArray [false] Whether to use the provided array in calculations. If true, the input array will be altered - both the order and values of the elements will be changed.
+  /// \return The median absolute deviation from the median value of
+  /// the array, returned as the same type as the array.
+  int goodSize=0,ct=0;
+  for(size_t i=0;i<size;i++) if(mask[i]) goodSize++;
+  T *newarray = new T[goodSize];
+  for(size_t i=0;i<size;i++){
+    if(mask[i]) newarray[ct++] = absval(array[i]-median);
+  }
+  T madfm;
+  bool isEven = ((goodSize%2)==0);
+  std::nth_element(newarray,newarray+goodSize/2,newarray+goodSize);
+  madfm = newarray[goodSize/2];
+  if(isEven){
+    std::nth_element(newarray,newarray+goodSize/2-1,newarray+goodSize);
+    madfm += newarray[goodSize/2-1];
+    madfm /= T(2);
+  }
+  delete [] newarray;
+  return madfm;
+}
+template int findMADFM<int>(int *array, bool *mask, size_t size, int median);
+template long findMADFM<long>(long *array, bool *mask, size_t size, long median);
+template float findMADFM<float>(float *array, bool *mask, size_t size, float median);
+template double findMADFM<double>(double *array, bool *mask, size_t size, double median);
+//--------------------------------------------------------------------
+
+template <class T> void findMedianStats(T *array, size_t size, 
 					T &median, T &madfm)
 {
   /// @details
@@ -226,7 +403,7 @@ template <class T> void findMedianStats(T *array, int size,
     return;
   }
   T *newarray = new T[size];
-   for(int i=0;i<size;i++) newarray[i] = array[i];
+   for(size_t i=0;i<size;i++) newarray[i] = array[i];
 
    median = findMedian(newarray,size,true);
    //   madfm = findMADFM(newarray,size,true);
@@ -234,17 +411,17 @@ template <class T> void findMedianStats(T *array, int size,
 
   delete [] newarray;
 }
-template void findMedianStats<int>(int *array, int size, 
+template void findMedianStats<int>(int *array, size_t size, 
 				      int &median, int &madfm);
-template void findMedianStats<long>(long *array, int size, 
+template void findMedianStats<long>(long *array, size_t size, 
 				       long &median, long &madfm);
-template void findMedianStats<float>(float *array, int size, 
+template void findMedianStats<float>(float *array, size_t size, 
 					float &median, float &madfm);
-template void findMedianStats<double>(double *array, int size, 
+template void findMedianStats<double>(double *array, size_t size, 
 					 double &median, double &madfm);
 //--------------------------------------------------------------------
 
-template <class T> void findMedianStats(T *array, int size, bool *mask, 
+template <class T> void findMedianStats(T *array, size_t size, bool *mask, 
 					T &median, T &madfm)
 {
   /// @details
@@ -263,7 +440,7 @@ template <class T> void findMedianStats(T *array, int size, bool *mask,
   /// of the array, returned as the same type as the array.
 
   int goodSize=0;
-  for(int i=0;i<size;i++) if(mask[i]) goodSize++;
+  for(size_t i=0;i<size;i++) if(mask[i]) goodSize++;
   if(goodSize==0){
     std::cerr << "Error in findMedianStats: no good values!\n";
     return;
@@ -271,25 +448,25 @@ template <class T> void findMedianStats(T *array, int size, bool *mask,
   T *newarray = new T[goodSize];
 
   goodSize=0;
-  for(int i=0;i<size;i++) if(mask[i]) newarray[goodSize++] = array[i];
+  for(size_t i=0;i<size;i++) if(mask[i]) newarray[goodSize++] = array[i];
   median = findMedian(newarray,goodSize,true);
   //  madfm = findMADFM(newarray,goodSize,true);
   madfm = findMADFM(newarray,goodSize,median,true);
 
   delete [] newarray;
 }
-template void findMedianStats<int>(int *array, int size, bool *mask, 
+template void findMedianStats<int>(int *array, size_t size, bool *mask, 
 				      int &median, int &madfm);
-template void findMedianStats<long>(long *array, int size, bool *mask, 
+template void findMedianStats<long>(long *array, size_t size, bool *mask, 
 				       long &median, long &madfm);
-template void findMedianStats<float>(float *array, int size, bool *mask, 
+template void findMedianStats<float>(float *array, size_t size, bool *mask, 
 					float &median, float &madfm);
-template void findMedianStats<double>(double *array, int size, bool *mask, 
+template void findMedianStats<double>(double *array, size_t size, bool *mask, 
 					 double &median, double &madfm);
 //--------------------------------------------------------------------
   
 
-template <class T> void findNormalStats(T *array, int size, 
+template <class T> void findNormalStats(T *array, size_t size, 
 					float &mean, float &stddev)
 {
   /// @details
@@ -307,27 +484,27 @@ template <class T> void findNormalStats(T *array, int size,
     return;
   }
   mean = array[0];
-  for(int i=1;i<size;i++){
+  for(size_t i=1;i<size;i++){
     mean += array[i];
   }
   mean /= float(size);
 
   stddev = (array[0]-mean) * (array[0]-mean);
-  for(int i=1;i<size;i++) stddev += (array[i]-mean)*(array[i]-mean);
+  for(size_t i=1;i<size;i++) stddev += (array[i]-mean)*(array[i]-mean);
   stddev = sqrt(stddev/float(size-1));
 
 }
-template void findNormalStats<int>(int *array, int size, 
+template void findNormalStats<int>(int *array, size_t size, 
 				      float &mean, float &stddev);
-template void findNormalStats<long>(long *array, int size, 
+template void findNormalStats<long>(long *array, size_t size, 
 				       float &mean, float &stddev);
-template void findNormalStats<float>(float *array, int size, 
+template void findNormalStats<float>(float *array, size_t size, 
 					float &mean, float &stddev);
-template void findNormalStats<double>(double *array, int size, 
+template void findNormalStats<double>(double *array, size_t size, 
 					 float &mean, float &stddev);
 //--------------------------------------------------------------------
 
-template <class T> void findNormalStats(T *array, int size, bool *mask, 
+template <class T> void findNormalStats(T *array, size_t size, bool *mask, 
 					float &mean, float &stddev)
 {
   /// @details
@@ -345,7 +522,7 @@ template <class T> void findNormalStats(T *array, int size, bool *mask,
   /// returned as a float.
 
   int goodSize=0;
-  for(int i=0;i<size;i++) if(mask[i]) goodSize++;
+  for(size_t i=0;i<size;i++) if(mask[i]) goodSize++;
   if(goodSize==0){
     std::cerr << "Error in findNormalStats: no good values!\n";
     return;
@@ -353,31 +530,31 @@ template <class T> void findNormalStats(T *array, int size, bool *mask,
   int start=0;
   while(!mask[start]){start++;}
   mean = array[start];
-  for(int i=start+1;i<size;i++){
+  for(size_t i=start+1;i<size;i++){
     if(mask[i]) mean += array[i];
   }
   mean /= float(goodSize);
 
   stddev = (array[start]-mean) * (array[start]-mean);
-  for(int i=1;i<size;i++){
+  for(size_t i=1;i<size;i++){
     if(mask[i]) stddev += (array[i]-mean)*(array[i]-mean);
   }
   stddev = sqrt(stddev/float(goodSize-1));
 
 }
-template void findNormalStats<int>(int *array, int size, bool *mask, 
+template void findNormalStats<int>(int *array, size_t size, bool *mask, 
 				      float &mean, float &stddev);
-template void findNormalStats<long>(long *array, int size, bool *mask, 
+template void findNormalStats<long>(long *array, size_t size, bool *mask, 
 				       float &mean, float &stddev);
-template void findNormalStats<float>(float *array, int size, bool *mask, 
+template void findNormalStats<float>(float *array, size_t size, bool *mask, 
 					float &mean, float &stddev);
-template void findNormalStats<double>(double *array, int size, bool *mask, 
+template void findNormalStats<double>(double *array, size_t size, bool *mask, 
 					 float &mean, float &stddev);
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
   
 
-template <class T> void findAllStats(T *array, int size, 
+template <class T> void findAllStats(T *array, size_t size, 
 				     float &mean, float &stddev,
 				     T &median, T &madfm)
 {
@@ -402,7 +579,7 @@ template <class T> void findAllStats(T *array, int size,
 
   T *newarray = new T[size];
 
-  for(int i=0;i<size;i++) newarray[i] = array[i];
+  for(size_t i=0;i<size;i++) newarray[i] = array[i];
 
   mean = findMean(newarray,size);
   stddev = findStddev(newarray,size);
@@ -413,21 +590,21 @@ template <class T> void findAllStats(T *array, int size,
   delete [] newarray;
 
 }
-template void findAllStats<int>(int *array, int size, 
+template void findAllStats<int>(int *array, size_t size, 
 				float &mean, float &stddev,
 				int &median, int &madfm);
-template void findAllStats<long>(long *array, int size, 
+template void findAllStats<long>(long *array, size_t size, 
 				 float &mean, float &stddev,
 				 long &median, long &madfm);
-template void findAllStats<float>(float *array, int size, 
+template void findAllStats<float>(float *array, size_t size, 
 				  float &mean, float &stddev,
 				  float &median, float &madfm);
-template void findAllStats<double>(double *array, int size, 
+template void findAllStats<double>(double *array, size_t size, 
 				   float &mean, float &stddev,
 				   double &median, double &madfm);
 //--------------------------------------------------------------------
 
-template <class T> void findAllStats(T *array, int size, bool *mask, 
+template <class T> void findAllStats(T *array, size_t size, bool *mask, 
 				     float &mean, float &stddev,
 				     T &median, T &madfm)
 {
@@ -450,7 +627,7 @@ template <class T> void findAllStats(T *array, int size, bool *mask,
   /// of the array, returned as the same type as the array.
 
   int goodSize=0;
-  for(int i=0;i<size;i++) if(mask[i]) goodSize++;
+  for(size_t i=0;i<size;i++) if(mask[i]) goodSize++;
   if(goodSize==0){
     std::cerr << "Error in findAllStats: no good values!\n";
     return;
@@ -458,7 +635,7 @@ template <class T> void findAllStats(T *array, int size, bool *mask,
 
   T *newarray = new T[goodSize];
   goodSize=0;
-  for(int i=0;i<size;i++) if(mask[i]) newarray[goodSize++] = array[i];
+  for(size_t i=0;i<size;i++) if(mask[i]) newarray[goodSize++] = array[i];
 
   mean = findMean(newarray,goodSize);
   stddev = findStddev(newarray,goodSize);
@@ -469,16 +646,189 @@ template <class T> void findAllStats(T *array, int size, bool *mask,
   delete [] newarray;
 
 }
-template void findAllStats<int>(int *array, int size, bool *mask,
+template void findAllStats<int>(int *array, size_t size, bool *mask,
 				float &mean, float &stddev,
 				int &median, int &madfm);
-template void findAllStats<long>(long *array, int size, bool *mask,
+template void findAllStats<long>(long *array, size_t size, bool *mask,
 				 float &mean, float &stddev,
 				 long &median, long &madfm);
-template void findAllStats<float>(float *array, int size, bool *mask,
+template void findAllStats<float>(float *array, size_t size, bool *mask,
 				  float &mean, float &stddev,
 				  float &median, float &madfm);
-template void findAllStats<double>(double *array, int size, bool *mask,
+template void findAllStats<double>(double *array, size_t size, bool *mask,
 				   float &mean, float &stddev,
 				   double &median, double &madfm);
+//--------------------------------------------------------------------
+template <class T> void findMedianStatsDiff(T *first, T *second, size_t size, 
+					    T &median, T &madfm)
+{
+  /// @details Find the median and the median absolute deviation from
+  /// the median value of the difference between two arrays of
+  /// numbers. Type independent. The difference is defined as first -
+  /// second.
+  /// 
+  /// \param first The first array
+  /// \param second The second array
+  /// \param size The length of the array.
+  /// \param median The median value of the array, returned as the same
+  /// type as the array.
+  /// \param madfm The median absolute deviation from the median value
+  /// of the array, returned as the same type as the array.
+  if(size==0){
+    std::cerr << "Error in findMedianStats: zero sized array!\n";
+    return;
+  }
+  T *newarray = new T[size];
+   for(size_t i=0;i<size;i++) newarray[i] = first[i]-second[i];
+
+   median = findMedian(newarray,size,true);
+   //   madfm = findMADFM(newarray,size,true);
+   madfm = findMADFM(newarray,size,median,true);
+
+  delete [] newarray;
+}
+template void findMedianStatsDiff<int>(int *first, int *second, size_t size, 
+				       int &median, int &madfm);
+template void findMedianStatsDiff<long>(long *first, long *second, size_t size, 
+					long &median, long &madfm);
+template void findMedianStatsDiff<float>(float *first, float *second, size_t size, 
+					 float &median, float &madfm);
+template void findMedianStatsDiff<double>(double *first, double *second, size_t size, 
+					  double &median, double &madfm);
+//--------------------------------------------------------------------
+
+template <class T> void findMedianStatsDiff(T *first, T *second, size_t size, bool *mask, 
+					    T &median, T &madfm)
+{
+  /// @details Find the median and the median absolute deviation from
+  /// the median value of the difference between two arrays of
+  /// numbers, where some elements are masked out. The mask is defined
+  /// by an array of bool variables. Type independent. The difference
+  /// is defined as first - second.
+  /// 
+  /// \param first The first array
+  /// \param second The second array
+  /// \param size The length of the array.
+  /// \param mask An array of the same length that says whether to
+  /// include each member of the array in the calculations. Only use
+  /// values where mask=true.
+  /// \param median The median value of the array, returned as the same
+  /// type as the array.
+  /// \param madfm The median absolute deviation from the median value
+  /// of the array, returned as the same type as the array.
+
+  int goodSize=0;
+  for(size_t i=0;i<size;i++) if(mask[i]) goodSize++;
+  if(goodSize==0){
+    std::cerr << "Error in findMedianStats: no good values!\n";
+    return;
+  }
+  T *newarray = new T[goodSize];
+
+  goodSize=0;
+  for(size_t i=0;i<size;i++) if(mask[i]) newarray[goodSize++] = first[i]-second[i];
+  median = findMedian(newarray,goodSize,true);
+  //  madfm = findMADFM(newarray,goodSize,true);
+  madfm = findMADFM(newarray,goodSize,median,true);
+
+  delete [] newarray;
+}
+template void findMedianStatsDiff<int>(int *first, int *second, size_t size, bool *mask, 
+				       int &median, int &madfm);
+template void findMedianStatsDiff<long>(long *first, long *second, size_t size, bool *mask, 
+					long &median, long &madfm);
+template void findMedianStatsDiff<float>(float *first, float *second, size_t size, bool *mask, 
+					 float &median, float &madfm);
+template void findMedianStatsDiff<double>(double *first, double *second, size_t size, bool *mask, 
+					  double &median, double &madfm);
+//--------------------------------------------------------------------
+  
+
+template <class T> void findNormalStatsDiff(T *first, T *second, size_t size, 
+					    float &mean, float &stddev)
+{
+  /// @details
+  /// Find the mean and rms or standard deviation of  the difference between two arrays of
+  /// numbers. The difference is defined as first - second. Type independent.
+  /// 
+  /// \param first The first array
+  /// \param second The second array
+  /// \param size The length of the array.
+  /// \param mean The mean value of the array, returned as a float.
+  /// \param stddev The rms or standard deviation of the array,
+  /// returned as a float.
+
+  if(size==0){
+    std::cerr << "Error in findNormalStats: zero sized array!\n";
+    return;
+  }
+  mean = first[0]-second[0];
+  for(size_t i=1;i<size;i++){
+    mean += (first[i]-second[i]);
+  }
+  mean /= float(size);
+
+  stddev = (first[0]-second[0]-mean) * (first[0]-second[0]-mean);
+  for(size_t i=1;i<size;i++) stddev += (first[i]-second[i]-mean)*(first[i]-second[i]-mean);
+  stddev = sqrt(stddev/float(size-1));
+
+}
+template void findNormalStatsDiff<int>(int *first, int *second, size_t size, 
+				       float &mean, float &stddev);
+template void findNormalStatsDiff<long>(long *first, long *second, size_t size, 
+					float &mean, float &stddev);
+template void findNormalStatsDiff<float>(float *first, float *second, size_t size, 
+					 float &mean, float &stddev);
+template void findNormalStatsDiff<double>(double *first, double *second, size_t size, 
+					  float &mean, float &stddev);
+//--------------------------------------------------------------------
+
+template <class T> void findNormalStatsDiff(T *first, T *second, size_t size, bool *mask, 
+					    float &mean, float &stddev)
+{
+  /// @details Find the mean and rms or standard deviation of the
+  /// difference between two arrays of numbers, where some elements
+  /// are masked out. The mask is defined by an array of bool
+  /// variables, and the difference is defined as first - second. Type
+  /// independent.
+  /// 
+  /// \param first The first array
+  /// \param second The second array
+  /// \param size The length of the array.
+  /// \param mask An array of the same length that says whether to
+  /// include each member of the array in the calculations. Only look
+  /// at values where mask=true.
+  /// \param mean The mean value of the array, returned as a float.
+  /// \param stddev The rms or standard deviation of the array,
+  /// returned as a float.
+
+  int goodSize=0;
+  for(size_t i=0;i<size;i++) if(mask[i]) goodSize++;
+  if(goodSize==0){
+    std::cerr << "Error in findNormalStats: no good values!\n";
+    return;
+  }
+  int start=0;
+  while(!mask[start]){start++;}
+  mean = first[start]-second[start];
+  for(size_t i=start+1;i<size;i++){
+    if(mask[i]) mean += (first[i]-second[i]);
+  }
+  mean /= float(goodSize);
+
+  stddev = (first[start]-second[start]-mean) * (first[start]-second[start]-mean);
+  for(size_t i=1;i<size;i++){
+    if(mask[i]) stddev += (first[i]-second[i]-mean)*(first[i]-second[i]-mean);
+  }
+  stddev = sqrt(stddev/float(goodSize-1));
+
+}
+template void findNormalStatsDiff<int>(int *first, int *second, size_t size, bool *mask, 
+				       float &mean, float &stddev);
+template void findNormalStatsDiff<long>(long *first, long *second, size_t size, bool *mask, 
+					float &mean, float &stddev);
+template void findNormalStatsDiff<float>(float *first, float *second, size_t size, bool *mask, 
+					 float &mean, float &stddev);
+template void findNormalStatsDiff<double>(double *first, double *second, size_t size, bool *mask, 
+					  float &mean, float &stddev);
 //--------------------------------------------------------------------
