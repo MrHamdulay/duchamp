@@ -112,13 +112,13 @@ namespace duchamp
     unsigned int num;
     switch(this->filter1D.size()){
     case 5: 
-      num = log(double(length-1))/M_LN2 - 1;
+      num = int(log(double(length-1))/M_LN2) - 1;
       break;
     case 3:
-      num = log(double(length-1))/M_LN2;
+      num = int(log(double(length-1))/M_LN2);
       break;
     default:
-      num = 1 + log(double(length-1)/double(this->filter1D.size()-1))/M_LN2;
+      num = 1 + int(log(double(length-1)/double(this->filter1D.size()-1))/M_LN2);
       break;
     }
     return num;
