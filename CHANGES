@@ -1,3 +1,38 @@
+Duchamp version 1.1.13 (2011/04/10)
+-------------------------------------
+
+Bug fixes:
+
+* The median statistics calculations had a bug in the test for whether
+  the array under consideration was of even size. The correction for
+  this can mean small differences in the resulting values. This can
+  flow through to calculated detection thresholds - please check this
+  with your data if you use this mode!
+
+* The reconstruction code had a bug where the incorrect number of
+  scales was being used. This occurred when the blank pixel flag was
+  set, and when the spectral dimension was smaller than both the
+  spatial dimensions.
+
+Other:
+
+* The default value of the blank pixel flag has been set to false,
+  rather than true. For Duchamp, this should not matter, as it is set
+  when the FITS file is read in. For external code using, for
+  instance, the reconstruction algorithms, this default may be
+  important. Having it true was contributing to the second bug listed
+  above. It also makes more sense for it to be false unless explicitly
+  set in some way.
+
+* The reconstruction code has been streamlined a little, reducing its
+  memory impact and using more appropriate variable types
+  (eg. unsigned ints instead of ints and so forth).
+
+* For those who care about the actual code base, the statistics
+  functions have been expanded, and separated from getStats.cc into
+  "normal" and "robust" versions.
+
+
 Duchamp version 1.1.12 (2011/03/18)
 -------------------------------------
 
