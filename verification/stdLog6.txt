@@ -1,4 +1,4 @@
-New run of the Duchamp source finder v.1.1.11: Fri Mar 18 11:25:13 2011
+New run of the Duchamp source finder v.1.1.12: Sun Apr 10 21:36:52 2011
 Executing statement : ./Duchamp -p ./verification/input6 
 
 ---- Parameters ----
@@ -43,13 +43,13 @@ Type of object centre used in results......[pixelCentre]  =  centroid
  Obj#     X     Y     Z     F_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2  Npix   Nch Sp_size
                         [Jy/beam] [Jy/beam]                                [pix]              
 ----------------------------------------------------------------------------------------------
-    1  50.0  50.0  64.1  2474.252    10.926  11.14  46  54  45  54  59  70   392    12      63
+    1  50.0  50.0  64.1  2470.297    10.926  11.15  46  54  45  54  59  70   391    12      63
 =-=-=-=-=-=-=-
 Cube summary
 =-=-=-=-=-=-=-
 30x30x128
 Threshold	middle	spread	robust
-3.94344	0.034351 0.977272	1
+3.94241	0.0343318 0.97702	1
 1 detections:
 --------------
 Detection #1
@@ -79,10 +79,10 @@ Detection #1
 47-53, 52,62
 48-52, 53,62
 50-51, 54,62
-46-53, 48,63
+46-53, 49,63
 47-52, 47,63
 49-51, 46,63
-46-53, 49,63
+47-53, 48,63
 47-53, 50,63
 47-54, 51,63
 47-53, 52,63
@@ -138,4 +138,4 @@ Detection #1
 50-50, 50,70
 
 --------------
-Duchamp completed: Fri Mar 18 11:25:13 2011
+Duchamp completed: Sun Apr 10 21:36:52 2011

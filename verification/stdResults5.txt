@@ -1,4 +1,4 @@
-Results of the Duchamp source finder v.1.1.11: Fri Mar 18 11:25:13 2011
+Results of the Duchamp source finder v.1.1.12: Sun Apr 10 21:36:51 2011
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits[35:64,35:64,1:128]
@@ -34,11 +34,11 @@ Type of object centre used in results......[pixelCentre]  =  centroid
 
 --------------------
 Summary of statistics:
-Detection threshold = 4.1255 Jy/beam
-Noise level = 0.034351, Noise spread = 1.02279
+Detection threshold = 4.1253 Jy/beam
+Noise level = 0.0343318, Noise spread = 1.02274
 Full stats:
-Mean   = 0.0629985	Std.Dev. = 1.10348
-Median = 0.034351	MADFM    = 0.689859 (= 1.02279 as std.dev.)
+Mean   = 0.0629985	Std.Dev. = 1.10346
+Median = 0.0343318	MADFM    = 0.689828 (= 1.02274 as std.dev.)
 --------------------
 Total number of detections = 1
 --------------------

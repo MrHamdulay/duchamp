@@ -1,4 +1,4 @@
-New run of the Duchamp source finder v.1.1.11: Fri Mar 18 11:25:13 2011
+New run of the Duchamp source finder v.1.1.12: Sun Apr 10 21:36:51 2011
 Executing statement : ./Duchamp -p ./verification/input5 
 
 ---- Parameters ----
@@ -47,7 +47,7 @@ Cube summary
 =-=-=-=-=-=-=-
 30x30x128
 Threshold	middle	spread	robust
-4.1255	0.034351 1.02279	1
+4.1253	0.0343318 1.02274	1
 1 detections:
 --------------
 Detection #1
@@ -185,4 +185,4 @@ Detection #1
 50-50, 51,70
 
 --------------
-Duchamp completed: Fri Mar 18 11:25:13 2011
+Duchamp completed: Sun Apr 10 21:36:52 2011
