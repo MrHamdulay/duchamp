@@ -89,6 +89,16 @@ namespace PixelInfo
   }
   //------------------------------------------------------
 
+  bool operator< (Voxel lhs, Voxel rhs)
+  {
+    /// Do comparison on position, z then y then x. Last f.
+    if(lhs.itsZ!=rhs.itsZ) return lhs.itsZ<rhs.itsZ;
+    else if(lhs.itsY!=rhs.itsY) return lhs.itsY<rhs.itsY;
+    else if(lhs.itsX!=rhs.itsX) return lhs.itsX<rhs.itsX;
+    else return lhs.itsF < rhs.itsF;
+  }
+  //------------------------------------------------------
+
   bool Voxel::match(Voxel other)
   {
     /// This function just tests for equality of position. The flux is ignored.

@@ -79,6 +79,9 @@ namespace PixelInfo
 
     /// @brief Operator to test for equality.
     friend bool operator== (Voxel lhs, Voxel rhs);
+
+    /// @brief Less-than operator to allow ordering
+    friend bool operator< (Voxel lhs, Voxel rhs);
     
     /// @brief Function to test for equality of positions only.
     bool match(Voxel other);
