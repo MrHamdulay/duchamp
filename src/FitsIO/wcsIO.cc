@@ -179,8 +179,7 @@ namespace duchamp
 	  std::string desiredType="",specType = localwcs->ctype[index];
 	  std::string shortType = specType.substr(0,4);
 	  if(shortType=="VELO" || shortType=="VOPT" || shortType=="ZOPT" 
-	     || shortType=="VRAD" || shortType=="BETA" ||
-	     (shortType=="FREQ" && localwcs->restfrq!=0)){
+	     || shortType=="VRAD" || shortType=="BETA"){
 	    if(localwcs->restfrq != 0){
 	      // Set the spectral axis to a standard specification: VELO-F2V
 	      desiredType = duchampVelocityType;
@@ -189,19 +188,24 @@ namespace duchamp
 	      this->spectralDescription = duchampSpectralDescription[VELOCITY];
 	    }
 	    else{
-	      // No rest frequency defined, so put spectral dimension in frequency. 
-	      // Set the spectral axis to a standard specification: FREQ
-	      duchampWarning("Cube Reader",
-			     "No rest frequency defined. Using frequency units in spectral axis.\n");
-	      desiredType = duchampFrequencyType;
-	      par.setSpectralUnits("MHz");
-	      if(strcmp(localwcs->cunit[index],"")==0){
-		duchampWarning("Cube Reader",
-			       "No frequency unit given. Assuming frequency axis is in Hz.\n");
-		strcpy(localwcs->cunit[index],"Hz");
-	      }
-	      this->spectralDescription = duchampSpectralDescription[FREQUENCY];
+	      // No rest frequency defined, so just use given specification
+	      desiredType = specType;
+	      this->spectralDescription = duchampSpectralDescription[VELOCITY];
 	    }
+	  }
+	  else if (shortType=="FREQ" && localwcs->restfrq!=0){
+	    // No rest frequency defined, so put spectral dimension in frequency. 
+	    // Set the spectral axis to a standard specification: FREQ
+	    duchampWarning("Cube Reader",
+			   "No rest frequency defined. Using frequency units in spectral axis.\n");
+	    desiredType = duchampFrequencyType;
+	    par.setSpectralUnits("MHz");
+	    if(strcmp(localwcs->cunit[index],"")==0){
+	      duchampWarning("Cube Reader",
+			     "No frequency unit given. Assuming frequency axis is in Hz.\n");
+	      strcpy(localwcs->cunit[index],"Hz");
+	    }
+	    this->spectralDescription = duchampSpectralDescription[FREQUENCY];
 	  }
 	  else {
 	    desiredType = duchampFrequencyType;
