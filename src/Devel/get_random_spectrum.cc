@@ -69,7 +69,7 @@ float getNormalRV(float mean, float sigma)
 
 void getRandomSpectrum(int length, float *x, float *y)
 {
-  srandom(time(0));
+  // srandom(time(0));
   rand();
   for(int i=0;i<length;i++){
     x[i] = (float)i;

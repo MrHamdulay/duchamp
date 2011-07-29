@@ -176,8 +176,9 @@ std::string imageMenu()
   std::cout << "3: 2126-158 i' band (GMOS)\n";
   std::cout << "4: NGC4567 Bband (2.3m)\n";
   std::cout << "5: NGC4567 Vband (2.3m)\n";
+  std::cout << "6: Channel 229 of HIPASS H201\n";
   //  std::cout << "6: A single velocity plane of an HI cube\n";
-  std::cout << "6: Your own image\n";
+  std::cout << "7: Your own image\n";
 
   int file=0;
   while((file<1)||(file>6)){
@@ -201,6 +202,9 @@ std::string imageMenu()
     break;
   case 5:
     fname = "/DATA/SITAR_1/whi550/iraf/search_test/N4567V_trim.fits[216:715,261:760]";
+    break;
+  case 6:
+    fname = "/Users/whi550/ObsData/cubes/H201_abcde_luther_chop.fits[*,*,229:229]";
     break;
   default:
     std::cout << "Enter filename (full path): ";

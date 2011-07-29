@@ -30,6 +30,7 @@
 #include <vector>
 #include <string>
 #include <duchamp/param.hh>
+#include <atrous/filter.hh>
 
 // MENU ROUTINES FOR DIGANOSTIC/TEST PROGRAMS
 std::string menu();
@@ -40,7 +41,7 @@ std::string twoblMenu();
 std::string b1555Menu();
 void spectralSelection(std::vector<float> &xvalues, 
 		       std::vector<float> &yvalues, 
-		       long &zdim);
+		       unsigned long &zdim);
 
 // trimmed histogram statistics -- in trimStats.cc
 void findTrimmedHistStats(float *array, const int size, float &tmean, float &tsigma);
@@ -50,8 +51,8 @@ void findTrimmedHistStats2(float *array, const int size, float &tmean, float &ts
 // Atrous tranform functions not used in duchamp code
 namespace duchamp {
   class Param;
-  void atrousTransform(long &length, int &numScales, float *spectrum, double *coeffs, double *wavelet, Param &par);
-  void atrousTransform(long &length, float *spectrum, float *coeffs, float *wavelet, Param &par);
+  void atrousTransform(unsigned long &length, int &numScales, float *spectrum, double *coeffs, double *wavelet, Param &par);
+  void atrousTransform(unsigned long &length, float *spectrum, float *coeffs, float *wavelet, Param &par);
   void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet, Param &par);
   void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet);
   void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *&input, float *&coeffs, float *&wavelet, Param &par);
@@ -63,9 +64,9 @@ namespace duchamp {
 void getSigmaFactors(int &numScales, float *factors);
 void getSigmaFactors2D(int &numScales, float *factors);
 void getSigmaFactors3D(int &numScales, float *factors);
-void getSigmaFactors1DNew(int &numScales);
-void getSigmaFactors2DNew(int &numScales);
-void getSigmaFactors3DNew(int &numScales);
+void getSigmaFactors1DNew(duchamp::Filter &reconFilter, int &numScales);
+void getSigmaFactors2DNew(duchamp::Filter &reconFilter, int &numScales);
+void getSigmaFactors3DNew(duchamp::Filter &reconFilter, int &numScales);
 
 
 // Random number generators -- all in get_random_spectrum.cc

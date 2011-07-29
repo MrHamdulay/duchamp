@@ -32,18 +32,19 @@
 #include <duchamp/ATrous/atrous.hh>
 #include <duchamp/ATrous/filter.hh>
 #define DEBUG true
+//#define DEBUG false
 
-void getSigmaFactors1DNew(int &numScales)
+void getSigmaFactors1DNew(duchamp::Filter &reconFilter, int &numScales)
 {
-//   extern Filter reconFilter;
-//   std::cerr<<"-->"<<reconFilter.getName()<<"<--"<<std::endl;  
+  std::cerr<<"-->"<<reconFilter.getName()<<"<--"<<std::endl;  
 //  std::cerr << "-->"<<Filter::getName()<<"<--"<<std::endl;
 //  std::cerr << "-->"<<getNumScales(125)<<"<--"<<std::endl;
   
-//   int filterHW = reconFilter.width()/2;
+  int filterwidth = reconFilter.width();
+   // int filterHW = reconFilter.width()/2;
 //  int filterwidth = Filter::width();
 //  int filterHW = Filter::width()/2;
-  int filterwidth=1;
+//  int filterwidth=1;
   int filterHW=filterwidth/2;
 
   // starting values:
@@ -54,13 +55,13 @@ void getSigmaFactors1DNew(int &numScales)
   w[0] = 1.;
 
   double *filter = new double[filterwidth];
-//   for(int i=0;i<filterwidth;i++) filter[i] = reconFilter.coeff(i);
+  for(int i=0;i<filterwidth;i++) filter[i] = reconFilter.coeff(i);
 //  for(int i=0;i<filterwidth;i++) filter[i] = Filter::coeff(i);
   
   int spacing = 1;
 //   const float FACTOR = 16.;
-//   const float FACTOR = 1./reconFilter.coeff(0);
-  const float FACTOR = 1.;
+  const float FACTOR = reconFilter.coeff(0)==0?1.:1./reconFilter.coeff(0);
+  // const float FACTOR = 1.;
   const float FACFAC = FACTOR*FACTOR;
 
   if(DEBUG){
@@ -138,12 +139,9 @@ void getSigmaFactors1DNew(int &numScales)
 
 }
 
-void getSigmaFactors2DNew(int &numScales)
+void getSigmaFactors2DNew(duchamp::Filter &reconFilter, int &numScales)
 {
-/*
 
-  
-  extern Filter reconFilter;
   int filterHW = reconFilter.width()/2;
   int fsize = reconFilter.width()*reconFilter.width();
   double *filter = new double[fsize];
@@ -155,26 +153,27 @@ void getSigmaFactors2DNew(int &numScales)
 
   
   // starting values:
-  long xdim = 1;
-  long size = xdim*xdim*xdim;
+  size_t xdim = 1;
+  size_t size = xdim*xdim;
   double *c = new double[size];
   double *w = new double[size];
   w[0] = 1.;
 
   int spacing = 1;
-//   const float FACTOR = 1./(reconFilter.coeff(0)*reconFilter.coeff(0));
-//   const float FACTOR = 16.*16.;
-  const float FACTOR = 1.;
+   const float FACTOR = reconFilter.coeff(0)==0?1.:1./(reconFilter.coeff(0)*reconFilter.coeff(0));
+   // const float FACTOR = 16.*16.;
+  // const float FACTOR = 1.;
   const float FACFAC = FACTOR * FACTOR;
 
   for(int scale = 1; scale<=numScales; scale++){
 
     // re-size and incorporate previous w into new c
-    long oldsize = size;
-    long oldxdim = xdim;
+    size_t oldsize = size;
+    size_t oldxdim = xdim;
 //     xdim = 2 * oldxdim + 3;
     xdim += filterHW*long(pow(2,scale));
     size = xdim * xdim;
+    //    std::cerr << xdim << " " << size << " " << size*sizeof(float) << "\n";
     double *newc = new double[size];
     for(int i=0;i<size;i++){
       int x = i%xdim;
@@ -185,8 +184,8 @@ void getSigmaFactors2DNew(int &numScales)
 	newc[i] = w[centrepos] * FACTOR;
       }
       else newc[i] = 0.;
-//       std::cout<<i<<" "<<x<<" "<<y<<" "<<centrepos<<" "<<xdim<<" "<<size
-// 	       <<" "<<oldxdim<<" "<<oldsize<<"   "<<newc[i]*pow(256,scale-1)<<std::endl;
+       // std::cout<<i<<" "<<x<<" "<<y<<" "<<centrepos<<" "<<xdim<<" "<<size
+       // 	       <<" "<<oldxdim<<" "<<oldsize<<"   "<<newc[i]*pow(256,scale-1)<<std::endl;
     }
 //     std::cout<<"---------------\n";
     delete [] c;
@@ -241,15 +240,13 @@ void getSigmaFactors2DNew(int &numScales)
 
   } //-> end of scale loop 
 
-*/
 
 }
 
 
-void getSigmaFactors3DNew(int &numScales)
+void getSigmaFactors3DNew(duchamp::Filter &reconFilter, int &numScales)
 {
-  /*  
-  extern Filter reconFilter;
+  
   int filterHW = reconFilter.width()/2;
   int fsize = reconFilter.width()*reconFilter.width()*reconFilter.width();
   double *filter = new double[fsize];
@@ -356,7 +353,7 @@ void getSigmaFactors3DNew(int &numScales)
 
   } //-> end of scale loop 
 
-*/
+
 
 
 }
