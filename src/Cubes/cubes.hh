@@ -320,7 +320,8 @@ namespace duchamp
     void        calcObjectWCSparams();
     /// @brief Calculate the WCS parameters for each Cube Detection, using flux information in Voxels. 
     void        calcObjectWCSparams(std::vector< std::vector<PixelInfo::Voxel> > bigVoxList);
-
+    void        calcObjectWCSparams(std::map<PixelInfo::Voxel,float> &voxelMap);
+  
     /// @brief Sort the list of detections. 
     void        sortDetections();
 

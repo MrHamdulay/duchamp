@@ -79,6 +79,7 @@ namespace duchamp
     void   calcFluxes(float *fluxArray, long *dim); 
     /// @brief Calculate flux-related parameters of the Detection. 
     void   calcFluxes(std::vector<PixelInfo::Voxel> voxelList); 
+    void   calcFluxes(std::map<Voxel,float> &voxelMap);
 
     /// @brief Calculate parameters related to the World Coordinate System. 
     //    void   calcWCSparams(float *fluxArray, long *dim, FitsHeader &head); 
@@ -88,6 +89,7 @@ namespace duchamp
     void   calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head); 
     /// @brief Calculate the integrated flux over the entire Detection. 
     void   calcIntegFlux(long zdim, std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head); 
+    void   calcIntegFlux(long zdim, std::map<Voxel,float> voxelMap, FitsHeader &head);
 
     /// @brief Calculate the 20%-/50%-peak-flux widths in a general fashion
     void calcVelWidths(long zdim, float *intSpec, FitsHeader &head);
@@ -95,6 +97,7 @@ namespace duchamp
     void calcVelWidths(float *fluxArray, long *dim, FitsHeader &head);
     /// @brief Calculate the 20%/50% peak flux widths 
     void calcVelWidths(long zdim, std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head);
+    void calcVelWidths(long zdim, std::map<Voxel,float> voxelMap, FitsHeader &head);
 
     /// @brief Set the values of the axis offsets from the cube. 
     void   setOffsets(Param &par); 

@@ -1273,6 +1273,53 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
+  void Cube::calcObjectWCSparams(std::map<PixelInfo::Voxel,float> &voxelMap)
+  {
+    ///  @details
+    ///  A function that calculates the WCS parameters for each object in the 
+    ///  Cube's list of detections.
+    ///  Each object gets an ID number assigned to it (which is simply its order 
+    ///   in the list), and if the WCS is good, the WCS paramters are calculated.
+    /// 
+    ///  This version uses vectors of Voxels to define the fluxes.
+    /// 
+    /// \param bigVoxList A vector of vectors of Voxels, with the same
+    /// number of elements as this->objectList, where each element is a
+    /// vector of Voxels corresponding to the same voxels in each
+    /// detection and indicating the flux of each voxel.
+  
+    std::vector<Detection>::iterator obj;
+    int ct=0;
+    for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
+      obj->setID(ct+1);
+      if(!obj->hasParams()){
+	obj->setCentreType(this->par.getPixelCentre());
+	obj->calcFluxes(voxelMap);
+	obj->calcWCSparams(this->head);
+	obj->calcIntegFlux(this->axisDim[2],voxelMap,this->head);
+	
+	if(this->par.getFlagUserThreshold())
+	  obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
+	else
+	  obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+      }
+      ct++;
+    }  
+
+    if(!this->head.isWCS()){ 
+      // if the WCS is bad, set the object names to Obj01 etc
+      int numspaces = int(log10(this->objectList->size())) + 1;
+      std::stringstream ss;
+      for(size_t i=0;i<this->objectList->size();i++){
+	ss.str("");
+	ss << "Obj" << std::setfill('0') << std::setw(numspaces) << i+1;
+	this->objectList->at(i).setName(ss.str());
+      }
+    }
+  
+  }
+  //--------------------------------------------------------------------
+
   void Cube::updateDetectMap()
   {
     /// @details A function that, for each detected object in the

@@ -28,6 +28,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <map>
 #include <string>
 #include <wcslib/wcs.h>
 #include <math.h>
@@ -311,6 +312,55 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
+  void Detection::calcFluxes(std::map<Voxel,float> &voxelMap)
+  {
+    ///  @details
+    ///  A function that calculates total & peak fluxes (and the location
+    ///  of the peak flux) for a Detection.
+    /// 
+    ///  \param fluxArray The array of flux values to calculate the
+    ///  flux parameters from.
+    ///  \param dim The dimensions of the flux array.
+    
+    //    this->haveParams = true;
+
+    this->totalFlux = this->peakFlux = 0;
+    this->xCentroid = this->yCentroid = this->zCentroid = 0.;
+
+    std::vector<Voxel> voxelList = this->getPixelSet();
+    std::vector<Voxel>::iterator vox;
+    for(vox=voxelList.begin();vox<voxelList.end();vox++){
+      if(voxelMap.find(*vox) == voxelMap.end()){
+	duchampError("Detection::calcFluxes","Voxel list provided does not match");
+	return;
+      }	
+      else {
+	long x = vox->getX();
+	long y = vox->getY();
+	long z = vox->getZ();
+	float f = voxelMap[*vox];
+	this->totalFlux += f;
+	this->xCentroid += x*f;
+	this->yCentroid += y*f;
+	this->zCentroid += z*f;
+	if( (vox==voxelList.begin()) ||  //first time round
+	    (this->negSource&&(f<this->peakFlux)) || 
+	    (!this->negSource&&(f>this->peakFlux))   )
+	  {
+	    this->peakFlux = f;
+	    this->xpeak =    x;
+	    this->ypeak =    y;
+	    this->zpeak =    z;
+	  }
+      }
+    }
+
+    this->xCentroid /= this->totalFlux;
+    this->yCentroid /= this->totalFlux;
+    this->zCentroid /= this->totalFlux;
+  }
+  //--------------------------------------------------------------------
+
   void Detection::calcFluxes(float *fluxArray, long *dim)
   {
     ///  @details
@@ -538,6 +588,104 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
+  void Detection::calcIntegFlux(long zdim, std::map<Voxel,float> voxelMap, FitsHeader &head)
+  {
+    ///  @details
+    ///  Uses the input WCS to calculate the velocity-integrated flux, 
+    ///   putting velocity in units of km/s.
+    ///  The fluxes used are taken from the Voxels, rather than an
+    ///   array of flux values.
+    ///  Integrates over full spatial and velocity range as given 
+    ///   by the extrema calculated by calcWCSparams.
+    /// 
+    ///  If the flux units end in "/beam" (eg. Jy/beam), then the flux is
+    ///  corrected by the beam size (in pixels). This is done by
+    ///  multiplying the integrated flux by the number of spatial pixels,
+    ///  and dividing by the beam size in pixels (e.g. Jy/beam * pix /
+    ///  pix/beam --> Jy)
+    /// 
+    ///  \param zdim The size of the spectral axis (needed to find the velocity widths)
+    ///  \param voxelList The list of Voxels with flux information
+    ///  \param head FitsHeader object that contains the WCS information.
+
+    const int border = 1;
+
+    if(!head.is2D()){
+
+      this->haveParams = true;
+
+      // include one pixel either side in each direction
+      long xsize = (this->getXmax()-this->getXmin()+border*2+1);
+      long ysize = (this->getYmax()-this->getYmin()+border*2+1);
+      long zsize = (this->getZmax()-this->getZmin()+border*2+1); 
+      long size = xsize*ysize*zsize;
+      std::vector <bool> isObj(size,false);
+      double *localFlux = new double[size];
+      for(int i=0;i<size;i++) localFlux[i]=0.;
+
+      std::vector<Voxel> voxelList = this->getPixelSet();
+      std::vector<Voxel>::iterator vox;
+      for(vox=voxelList.begin();vox<voxelList.end();vox++){
+	if(voxelMap.find(*vox) == voxelMap.end()){
+	  duchampError("Detection::calcIntegFlux","Voxel list provided does not match");
+	  return;
+	}	
+	else {
+	  long x = vox->getX();
+	  long y = vox->getY();
+	  long z = vox->getZ();
+	  long pos = (x-this->getXmin()+border) + (y-this->getYmin()+border)*xsize
+	    + (z-this->getZmin()+border)*xsize*ysize;
+	  localFlux[pos] = voxelMap[*vox];
+	  isObj[pos] = true;
+	}
+      }
+  
+      // work out the WCS coords for each pixel
+      double *world  = new double[size];
+      double xpt,ypt,zpt;
+      for(int i=0;i<xsize*ysize*zsize;i++){
+	xpt = double( this->getXmin() - border + i%xsize );
+	ypt = double( this->getYmin() - border + (i/xsize)%ysize );
+	zpt = double( this->getZmin() - border + i/(xsize*ysize) );
+	world[i] = head.pixToVel(xpt,ypt,zpt);
+      }
+
+      double integrated = 0.;
+      for(int pix=0; pix<xsize*ysize; pix++){ // loop over each spatial pixel.
+	for(int z=0; z<zsize; z++){
+	  int pos =  z*xsize*ysize + pix;
+	  if(isObj[pos]){ // if it's an object pixel...
+	    double deltaVel;
+	    if(z==0) 
+	      deltaVel = (world[pos+xsize*ysize] - world[pos]);
+	    else if(z==(zsize-1)) 
+	      deltaVel = (world[pos] - world[pos-xsize*ysize]);
+	    else 
+	      deltaVel = (world[pos+xsize*ysize] - world[pos-xsize*ysize]) / 2.;
+	    integrated += localFlux[pos] * fabs(deltaVel);
+	  }
+	}
+      }
+      this->intFlux = integrated;
+
+      delete [] world;
+      delete [] localFlux;
+
+      calcVelWidths(zdim,voxelMap,head);
+
+    }
+    else // in this case there is just a 2D image.
+      this->intFlux = this->totalFlux;
+
+    if(head.isWCS()){
+      // correct for the beam size if the flux units string ends in "/beam"
+      if(head.needBeamSize()) this->intFlux  /= head.beam().area();
+    }
+
+  }
+  //--------------------------------------------------------------------
+
   void Detection::calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head)
   {
     ///  @details
@@ -663,6 +811,44 @@ namespace duchamp
 
   //--------------------------------------------------------------------
 
+  void Detection::calcVelWidths(long zdim, std::map<Voxel,float> voxelMap, FitsHeader &head)
+  {
+    ///  @details
+    /// Calculates the widths of the detection at 20% and 50% of the
+    /// peak integrated flux. The procedure is as follows: first
+    /// generate an integrated flux spectrum (using all given voxels
+    /// that lie in the object's spatial map); find the peak; starting
+    /// at the spectral edges of the detection, move in or out until
+    /// you reach the 20% or 50% peak flux level. Linear interpolation
+    /// between points is done.
+    /// 
+    ///  \param zdim The size of the spectral axis in the cube
+    ///  \param voxelList The list of Voxels with flux information
+    ///  \param head FitsHeader object that contains the WCS information.
+
+    float *intSpec = new float[zdim];
+    for(int i=0;i<zdim;i++) intSpec[i]=0;
+       
+    std::vector<Voxel> voxelList = this->getPixelSet();
+    std::vector<Voxel>::iterator vox;
+    for(vox=voxelList.begin();vox<voxelList.end();vox++){
+      if(voxelMap.find(*vox) == voxelMap.end()){
+	duchampError("Detection::calcVelWidths","Voxel list provided does not match");
+	return;
+      }	
+      else {
+	intSpec[vox->getZ()] += voxelMap[*vox];
+      }
+    }
+
+    calcVelWidths(zdim, intSpec, head);
+
+    delete [] intSpec;
+
+  }
+
+  //--------------------------------------------------------------------
+
   void Detection::calcVelWidths(long zdim, float *intSpec, FitsHeader &head)
   {
 
@@ -673,7 +859,6 @@ namespace duchamp
 
     this->haveParams = true;
 
-    int z=this->getZmin();
     double zpt,xpt=double(this->getXcentre()),ypt=double(this->getXcentre());
     bool goLeft;
     
@@ -686,6 +871,7 @@ namespace duchamp
       }
     }
     
+    int z=this->getZmin();
     goLeft = intSpec[z]>peak*0.5;
     if(goLeft) while(z>0 && intSpec[z]>peak*0.5) z--;
     else       while(z<peakLoc && intSpec[z]<peak*0.5) z++;
