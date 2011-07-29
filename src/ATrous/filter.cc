@@ -159,12 +159,13 @@ namespace duchamp
     this->sigmaFactors[0]->resize(19);
     for(int i=0;i<19;i++)(*this->sigmaFactors[0])[i] = sigmaFactors1D[i]; 
 
-    this->maxNumScales[1] = 11;
-    double sigmaFactors2D[12] = {1.00000000000,8.90796310e-1,2.00663851e-1,8.55075048e-2,
+    this->maxNumScales[1] = 12;
+    double sigmaFactors2D[13] = {1.00000000000,8.90796310e-1,2.00663851e-1,8.55075048e-2,
 				 4.12474444e-2,2.04249666e-2,1.01897592e-2,5.09204670e-3,
-				 2.54566946e-3,1.27279050e-3,6.36389722e-4,3.18194170e-4};
-    this->sigmaFactors[1]->resize(12);
-    for(int i=0;i<12;i++)(*this->sigmaFactors[1])[i] = sigmaFactors2D[i]; 
+				 2.54566946e-3,1.27279050e-3,6.36389722e-4,3.18194170e-4,
+				 1.59096999e-4};
+    this->sigmaFactors[1]->resize(13);
+    for(int i=0;i<13;i++)(*this->sigmaFactors[1])[i] = sigmaFactors2D[i]; 
 
     this->maxNumScales[2] = 7;
     double sigmaFactors3D[8] = {1.00000000000,9.56543592e-1,1.20336499e-1,3.49500154e-2,
