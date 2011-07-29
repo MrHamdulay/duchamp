@@ -160,9 +160,9 @@ namespace duchamp
 	}
 	avGapY /= float(xdim);
  
-	if(avGapX < mindim) mindim = int(avGapX);
-	if(avGapY < mindim) mindim = int(avGapY);
-	numScales = par.filter().getNumScales(mindim);
+	// if(avGapX < mindim) mindim = int(avGapX);
+	// if(avGapY < mindim) mindim = int(avGapY);
+	// numScales = par.filter().getNumScales(mindim);
       }
 
       float threshold;
