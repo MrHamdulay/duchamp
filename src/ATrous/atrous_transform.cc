@@ -3,6 +3,7 @@
 #include <duchamp/param.hh>
 #include <duchamp/ATrous/atrous.hh>
 #include <duchamp/Utils/utils.hh>
+#include <duchamp/Devel/devel.hh>
 
 namespace duchamp{
 
@@ -48,7 +49,7 @@ namespace duchamp{
   // }
 
   
-  void atrousTransform(long &length, int &numScales, float *spectrum, double *coeffs, double *wavelet, duchamp::Param &par)
+  void atrousTransform(unsigned long &length, int &numScales, float *spectrum, double *coeffs, double *wavelet, duchamp::Param &par)
   {
     duchamp::Filter reconFilter = par.filter();
     int filterHW = reconFilter.width()/2;
@@ -82,7 +83,7 @@ namespace duchamp{
 
   }
 
-  void atrousTransform(long &length, float *spectrum, float *coeffs, float *wavelet, duchamp::Param &par)
+  void atrousTransform(unsigned long &length, float *spectrum, float *coeffs, float *wavelet, duchamp::Param &par)
   {
     duchamp::Filter reconFilter = par.filter();
     int filterHW = reconFilter.width()/2;
