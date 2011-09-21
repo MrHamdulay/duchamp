@@ -143,8 +143,8 @@ template <class T> float findStddev(T *array, size_t size)
     sumx += array[i];
     sumxx += (array[i]*array[i]);
   }
-  std::cerr << sumx << " " << sumxx << " " << size <<"\n";
-  std::cerr << double(sumx) << " " << double(sumxx) << " " << double(size) << "\n";
+  std::cerr << sumx << " " << sumxx << " " << size << " " << size*size <<"\n";
+  std::cerr << double(sumx) << " " << double(sumxx) << " " << double(size) << " " << double(size*size)<< "\n";
   double mean=double(sumx)/double(size);
   if(size>0)
     // stddev = sqrt(double(sumxx)/double(size) - double(sumx*sumx)/double(size*size));
