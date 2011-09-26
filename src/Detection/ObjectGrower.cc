@@ -98,41 +98,44 @@ namespace duchamp {
     /// parameters that belong to PixelInfo::Object3D are
     /// recalculated.
 
-    long spatsize=this->itsArrayDim[0]*this->itsArrayDim[1];
-    long zero = 0;
+    // long spatsize=this->itsArrayDim[0]*this->itsArrayDim[1];
+    // long zero = 0;
     std::vector<Voxel> voxlist = theObject->getPixelSet();
     int origSize = voxlist.size();
     for(size_t i=0; i<voxlist.size(); i++){
       
-      long xpt=voxlist[i].getX();
-      long ypt=voxlist[i].getY();
-      long zpt=voxlist[i].getZ();
+      std::vector<Voxel> newvox = this->growFromPixel(voxlist[i]);
+      for(size_t v=0;v<newvox.size();v++) voxlist.push_back(newvox[v]);
+
+      // long xpt=voxlist[i].getX();
+      // long ypt=voxlist[i].getY();
+      // long zpt=voxlist[i].getZ();
       
-      int xmin = std::max(xpt - this->itsSpatialThresh, zero);
-      int xmax = std::min(xpt + this->itsSpatialThresh, this->itsArrayDim[0]-1);
-      int ymin = std::max(ypt - this->itsSpatialThresh, zero);
-      int ymax = std::min(ypt + this->itsSpatialThresh, this->itsArrayDim[1]-1);
-      int zmin = std::max(zpt - this->itsVelocityThresh, zero);
-      int zmax = std::min(zpt + this->itsVelocityThresh, this->itsArrayDim[2]-1);
+      // int xmin = std::max(xpt - this->itsSpatialThresh, zero);
+      // int xmax = std::min(xpt + this->itsSpatialThresh, this->itsArrayDim[0]-1);
+      // int ymin = std::max(ypt - this->itsSpatialThresh, zero);
+      // int ymax = std::min(ypt + this->itsSpatialThresh, this->itsArrayDim[1]-1);
+      // int zmin = std::max(zpt - this->itsVelocityThresh, zero);
+      // int zmax = std::min(zpt + this->itsVelocityThresh, this->itsArrayDim[2]-1);
       
-      //loop over surrounding pixels.
-      for(int x=xmin; x<=xmax; x++){
-	for(int y=ymin; y<=ymax; y++){
-	  for(int z=zmin; z<=zmax; z++){
+      // //loop over surrounding pixels.
+      // for(int x=xmin; x<=xmax; x++){
+      // 	for(int y=ymin; y<=ymax; y++){
+      // 	  for(int z=zmin; z<=zmax; z++){
 
-	    int pos=x+y*this->itsArrayDim[0]+z*spatsize;
-	    if( ((x!=xpt) || (y!=ypt) || (z!=zpt))
-		&& this->itsFlagArray[pos]==AVAILABLE ) {
+      // 	    int pos=x+y*this->itsArrayDim[0]+z*spatsize;
+      // 	    if( ((x!=xpt) || (y!=ypt) || (z!=zpt))
+      // 		&& this->itsFlagArray[pos]==AVAILABLE ) {
 
-	      if(this->itsGrowthStats.isDetection(this->itsFluxArray[pos])){
-		this->itsFlagArray[pos]=DETECTED;
-		voxlist.push_back(Voxel(x,y,z));
-	      }
-	    }
+      // 	      if(this->itsGrowthStats.isDetection(this->itsFluxArray[pos])){
+      // 		this->itsFlagArray[pos]=DETECTED;
+      // 		voxlist.push_back(Voxel(x,y,z));
+      // 	      }
+      // 	    }
 
-	  } //end of z loop
-	} // end of y loop
-      } // end of x loop
+      // 	  } //end of z loop
+      // 	} // end of y loop
+      // } // end of x loop
 
     } // end of i loop (voxels)
 
@@ -144,5 +147,61 @@ namespace duchamp {
 
   }
 
+
+  std::vector<Voxel> ObjectGrower::growFromPixel(Voxel vox)
+  {
+    std::vector<Voxel> newVoxels;
+
+    long xpt=vox.getX();
+    long ypt=vox.getY();
+    long zpt=vox.getZ();
+    long spatsize=this->itsArrayDim[0]*this->itsArrayDim[1];
+    long zero = 0;
+      
+    int xmin = std::max(xpt - this->itsSpatialThresh, zero);
+    int xmax = std::min(xpt + this->itsSpatialThresh, this->itsArrayDim[0]-1);
+    int ymin = std::max(ypt - this->itsSpatialThresh, zero);
+    int ymax = std::min(ypt + this->itsSpatialThresh, this->itsArrayDim[1]-1);
+    int zmin = std::max(zpt - this->itsVelocityThresh, zero);
+    int zmax = std::min(zpt + this->itsVelocityThresh, this->itsArrayDim[2]-1);
+      
+    //loop over surrounding pixels.
+    for(int x=xmin; x<=xmax; x++){
+      for(int y=ymin; y<=ymax; y++){
+	for(int z=zmin; z<=zmax; z++){
+
+	  int pos=x+y*this->itsArrayDim[0]+z*spatsize;
+	  if( ((x!=xpt) || (y!=ypt) || (z!=zpt))
+	      && this->itsFlagArray[pos]==AVAILABLE ) {
+
+	    if(this->itsGrowthStats.isDetection(this->itsFluxArray[pos])){
+	      this->itsFlagArray[pos]=DETECTED;
+	      newVoxels.push_back(Voxel(x,y,z));
+	      std::vector<Voxel> morevox = this->growFromPixel(Voxel(x,y,z));
+	      for(size_t v=0;v<morevox.size();v++) newVoxels.push_back(morevox[v]);
+	      
+	    }
+	  }
+
+	} //end of z loop
+      } // end of y loop
+    } // end of x loop
+
+    return newVoxels;
+
+  }
+
+  // void ObjectGrower::resetDetectionFlags()
+  // {
+  //   for(size_t i=0;i<itsFlagArray.size();i++)
+  //     if(itsFlagArray[i]==DETECTED) itsFlagArray[i] = AVAILABLE;
+  // }
+
+  // void ObjectGrower::growInwardsFromEdge()
+  // {
+    
+
+
+  // }
 
 }

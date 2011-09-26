@@ -37,6 +37,8 @@ namespace duchamp {
     void define(Cube *theCube);
     /// @brief Grow an object
     void grow(Detection *theObject);
+    /// @brief Grow out from a single voxel, returning the list of new voxels.
+    std::vector<Voxel> growFromPixel(Voxel vox);
 
   protected:
     std::vector<STATE> itsFlagArray;                   ///< The array of pixel flags
