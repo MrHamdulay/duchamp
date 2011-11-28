@@ -45,6 +45,9 @@ using namespace duchamp;
 int main(int argc, char * argv[])
 {
 
+  try {
+    
+
   std::string paramFile,fitsfile;
   Cube *cube = new Cube;
 
@@ -280,6 +283,12 @@ int main(int argc, char * argv[])
 
   delete cube;
 
+  } catch (const DuchampError &err) {
+    std::cout << "\nDuchamp failed with error: " << err.what() << "\n";
+    exit(1);
+  }
+
   return SUCCESS;
+
 }
 

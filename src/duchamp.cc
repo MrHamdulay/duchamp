@@ -26,6 +26,7 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <iostream>
+#include <stdexcept>
 #include <iomanip>
 #include <string>
 #include <duchamp/duchamp.hh>
@@ -51,6 +52,13 @@ namespace duchamp
     }
   }
 
+  DuchampError::DuchampError(const std::string& message)
+    : std::runtime_error(message)
+  {}
+
+  DuchampError::~DuchampError() throw()
+  {}
+
   void duchampError(std::string subroutine, std::string error)
   {
     /**
@@ -67,6 +75,7 @@ namespace duchamp
       if((i!=error.size()-1)&&(error[i]=='\n'))
 	std::cerr << std::setw(preamble.size()-1) <<": ";
     }
+    throw DuchampError(error);
   }
 
 }

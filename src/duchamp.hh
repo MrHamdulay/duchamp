@@ -29,6 +29,7 @@
 #define DUCHAMP_HH
 
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 // need to undef these in case other packages have them defined.
@@ -89,6 +90,17 @@ Selavy re-analyses and re-plots objects found by Duchamp.\n\
   void duchampWarning(std::string subroutine, std::string warning);
   /// Print an error message to the stderr and sound the bell 
   void duchampError(std::string subroutine, std::string error);
+
+  /// Define the duchamp exception class.
+  class DuchampError: public std::runtime_error
+  {
+  public:
+    /// Constructor taking a message
+    explicit DuchampError(const std::string& message);
+    /// empty destructor
+    virtual ~DuchampError() throw();
+  };
+
 
 
   /// The spectral type that we want the wcsprm structs to be in. 
