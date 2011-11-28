@@ -57,7 +57,7 @@ int main(int argc, char * argv[])
     std::stringstream errmsg;
     errmsg << "No input image has been given!\n"
 	   << "Use the imageFile parameter in " 
-	   << paramFile << " to specify the FITS file.\nExiting...\n";
+	   << paramFile << " to specify the FITS file.";
     duchampError("Duchamp", errmsg.str());
     return FAILURE;
   }
@@ -66,7 +66,7 @@ int main(int argc, char * argv[])
     // make sure the subsection is OK.
     if(cube->pars().verifySubsection() == FAILURE){
       duchampError("Duchamp", 
-		   "Unable to use the subsection provided.\nExiting...\n");
+		   "Unable to use the subsection provided.");
       return FAILURE;
     }
   }      
@@ -76,9 +76,7 @@ int main(int argc, char * argv[])
 
   if( cube->getCube() == FAILURE){
     std::stringstream errmsg;
-    errmsg << "Unable to open image file "
-	   << cube->pars().getFullImageFile() 
-	   << "\nExiting...\n";
+    errmsg << "Unable to open image file "<< cube->pars().getFullImageFile();
     duchampError("Duchamp", errmsg.str());
     return FAILURE;
   }
@@ -98,7 +96,7 @@ int main(int argc, char * argv[])
     std::cout << "Reading detections from existing log file... \n";
     if(cube->getExistingDetections() == FAILURE){
       duchampError("Duchamp", 
-		   "Could not read detections from log file\nExiting...\n");
+		   "Could not read detections from log file");
       return FAILURE;
     }
     else std::cout << "Done.\n";
@@ -284,7 +282,7 @@ int main(int argc, char * argv[])
   delete cube;
 
   } catch (const DuchampError &err) {
-    std::cout << "\nDuchamp failed with error: " << err.what() << "\n";
+    std::cout << "\nDuchamp failed with the following error:\n" << err.what() << "\n";
     exit(1);
   }
 

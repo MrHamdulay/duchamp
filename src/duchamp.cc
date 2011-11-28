@@ -75,6 +75,17 @@ namespace duchamp
       if((i!=error.size()-1)&&(error[i]=='\n'))
 	std::cerr << std::setw(preamble.size()-1) <<": ";
     }
+
+    size_t loc=-1;
+    //    std::cout << "|"<<error<<"|\n";
+    while (loc=error.find('\n',loc+1),
+	   //	   std::cout << loc << " " << error.size() << " " << std::string::npos << "\n",
+	   loc!=std::string::npos){
+      if(loc!=error.size()-1) error.replace(loc,1," -- ");
+      else error[loc]=' ';
+      //      std::cout << "|"<<error<<"|\n";
+    }
+
     throw DuchampError(error);
   }
 
