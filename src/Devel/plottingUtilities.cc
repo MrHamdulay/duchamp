@@ -29,6 +29,7 @@
 // -----------------------------------------------------------------------
 #include <iostream>
 #include <math.h>
+#include <stdlib.h>
 #include <cpgplot.h>
 #include <duchamp/Utils/utils.hh>
 

@@ -30,6 +30,7 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <stdlib.h>
 using std::stringstream;
 
 // void menu(std::string &fname)

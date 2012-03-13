@@ -29,6 +29,7 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
+#include <stdlib.h>
 #include <duchamp/ATrous/atrous.hh>
 #include <duchamp/ATrous/filter.hh>
 #define DEBUG true
