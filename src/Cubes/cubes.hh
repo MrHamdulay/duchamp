@@ -210,6 +210,11 @@ namespace duchamp
     Cube(const Cube &c);    ///< Copy constructor
     Cube& operator=(const Cube &c); ///< Copy operator
 
+    /// @brief Return a Cube holding only a subsection of the original
+    Cube slice(Section subsection);
+    
+
+
     bool        is2D();
     void        checkDim(){head.set2D(is2D());};
     void        reportMemorySize(std::ostream &theStream, bool allocateArrays);
