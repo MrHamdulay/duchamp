@@ -39,6 +39,7 @@ namespace duchamp
   Section::Section()
   {
     this->numSections = 0;
+    this->flagParsed = false;
   }
 
   Section::Section(const Section& s)
@@ -50,6 +51,7 @@ namespace duchamp
   Section& Section::operator= (const Section& s)
   {
     if(this == &s) return *this;
+    this->flagParsed    = s.flagParsed;
     this->subsection  = s.subsection;
     this->sections    = s.sections;
     this->numSections = s.numSections;
@@ -221,6 +223,7 @@ namespace duchamp
       duchampWarning("Section parsing", errmsg.str());
     }
 
+    this->flagParsed = true;
     return SUCCESS;
   
   }
@@ -300,5 +303,39 @@ namespace duchamp
     return this->intersect(null);
 
   }
+
+  Section operator* (Section &lhs, Section &rhs)
+  {
+    /// @details Return a Section object that is the combination of two subsections. The second subsection indicates the pixel ranges *within* the ranges of the first, and the output is in the same global units as the first (this).
+    /// So, [10:20,20:40] * [4:7,12:15] = [13:16,31:34]
+    /// Note this is not commutative!
+    
+    if(lhs.numSections != rhs.numSections){
+      std::stringstream ss;
+      ss << "Sizes of sections not equal - you requested " << lhs.subsection << " * " << rhs.subsection << ", with " << lhs.numSections << " and " << rhs.numSections << " sections each.\n";
+      duchampError("Section::operator*", ss.str());
+      return lhs;
+    }
+
+    std::vector<std::string> outputsections(lhs.numSections);
+    for(size_t i=0;i<lhs.numSections;i++){
+      std::stringstream ss;
+      int minval=std::min(lhs.starts[i]+rhs.starts[i],lhs.starts[i]+lhs.dims[i])+1;
+      int maxval=std::min(lhs.starts[i]+rhs.starts[i]+rhs.dims[i],lhs.starts[i]+lhs.dims[i]);
+      //      ss << lhs.starts[i]+rhs.starts[i]+1 << ":" << lhs.starts[i]+rhs.starts[i]+rhs.dims[i];
+      ss << minval << ":"<<maxval;
+      outputsections[i] = ss.str();
+    }
+	  
+    std::stringstream section;
+    section << "[" << outputsections[0];
+    for(size_t i=1;i<lhs.numSections;i++) section<<"," << outputsections[i];
+    section << "]";
+    duchamp::Section output;
+    output.setSection(section.str());
+    return output;
+
+  }
+
 
 }
