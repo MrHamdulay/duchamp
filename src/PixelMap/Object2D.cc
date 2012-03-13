@@ -378,7 +378,6 @@ namespace PixelInfo
     if(flagAdj) gap = 1;
     else gap = long( ceil(threshS) );
     bool near = this->isNear(other,gap);
-    std::cerr << "Testing canMerge with threshS="<<threshS << " (-->gap="<<gap<<") and flagAdj="<<flagAdj<<" and we get near="<<near<<"\n";
     if(near) return this->isClose(other,threshS,flagAdj);
     else return near;
   }
