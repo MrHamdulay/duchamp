@@ -503,42 +503,43 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  Cube Cube::slice(Section subsection)
+  Cube* Cube::slice(Section subsection)
   {
-    Cube output;
+    Cube *output = new Cube;
     subsection.parse(this->axisDim, this->numDim);
     if(subsection.isValid()){
-      output.par = this->par;
-      output.head = this->head;
-      output.Stats = this->Stats;
-      output.fullCols = this->fullCols;
-      output.logCols = this->logCols;
-//       if(output.arrayAllocated) delete [] this->array;
-//       if(output.reconAllocated) delete [] this->recon;
-//       if(output.baselineAllocated) delete [] this->baseline;
-//       output.arrayAllocated = this->arrayAllocated;
-//       output.reconAllocated
+      output->par = this->par;
+      output->head = this->head;
+      output->Stats = this->Stats;
+      output->fullCols = this->fullCols;
+      output->logCols = this->logCols;
       long *dims = new long[3];
       for(size_t i=0;i<3;i++){
 	dims[i] = subsection.getDimList()[i];
 	std::cout << "Dim " << i+1 << " = " << dims[i] << "\n";
       }
-      
-      output.initialiseCube(dims,true);
-      for(size_t z=0;z<output.axisDim[2];z++){
-	for(size_t y=0;y<output.axisDim[1];y++){
-	  for(size_t x=0;x<output.axisDim[0];x++){
-	    size_t impos=x+y*output.axisDim[0];
-	    size_t pos=impos+z*output.axisDim[0]*output.axisDim[1]; 
+     
+      output->initialiseCube(dims,true);
+      for(size_t z=0;z<output->axisDim[2];z++){
+	for(size_t y=0;y<output->axisDim[1];y++){
+	  for(size_t x=0;x<output->axisDim[0];x++){
+	    size_t impos=x+y*output->axisDim[0];
+	    size_t pos=impos+z*output->axisDim[0]*output->axisDim[1]; 
+	    if(pos>=output->numPixels) duchampError("cube slicer","Out of bounds in new Cube");
 	    size_t imposIn=(x+subsection.getStart(0)) + (y+subsection.getStart(1))*this->axisDim[0];
 	    size_t posIn=imposIn + (z+subsection.getStart(2))*this->axisDim[0]*this->axisDim[1];
-	    output.array[pos] = this->array[posIn];
-	    output.detectMap[pos] = this->detectMap[imposIn];
-	    if(this->reconAllocated) output.recon[pos] = this->recon[posIn];
-	    if(this->baselineAllocated) output.baseline[pos] = this->baseline[pos];
+	    if(posIn>=this->numPixels) duchampError("cube slicer","Out of bounds in new Cube");
+	    output->array[pos] = this->array[posIn];
+	    output->detectMap[impos] = this->detectMap[imposIn];
+	    if(this->reconAllocated) output->recon[pos] = this->recon[posIn];
+	    if(this->baselineAllocated) output->baseline[pos] = this->baseline[posIn];
 	  }
 	}
       }
+       std::cout << this->par << "\n"<<output->par <<"\n";
+    }
+    else{
+      duchampError("cube slicer","Subsection does not parse");
     }
 
     return output;

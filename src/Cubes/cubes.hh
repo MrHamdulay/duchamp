@@ -211,7 +211,7 @@ namespace duchamp
     Cube& operator=(const Cube &c); ///< Copy operator
 
     /// @brief Return a Cube holding only a subsection of the original
-    Cube slice(Section subsection);
+    Cube* slice(Section subsection);
     
 
 
