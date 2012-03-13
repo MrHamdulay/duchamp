@@ -46,7 +46,7 @@ namespace duchamp
   {
   public:
     Section();
-    Section(std::string &s){subsection=s;};
+    Section(std::string &s){subsection=s; numSections=0; flagParsed=false;};
     Section(const Section& s);
     Section& operator= (const Section& s);
     virtual ~Section(){};
@@ -61,6 +61,8 @@ namespace duchamp
     OUTCOME parse(std::vector<long> dimAxes);
     OUTCOME parse(std::vector<int> dimAxes);
     OUTCOME parse(long *dim, int size);
+
+    bool isParsed(){return flagParsed;};
 
     /// @brief Test whether a given voxel (x,y,z) lies within the subsection 
     bool isInside(int x, int y, int z){
@@ -107,7 +109,11 @@ namespace duchamp
     Section intersect(std::vector<int> dimAxes);
     Section intersect(long *dim, int size);
 
+    /// @brief Return a section that is the result of applying some subseection of the current one, where the "other" subsection acts in the coordinates of this.
+    friend Section operator* (Section &lhs, Section &rhs);
+
   private:
+    bool flagParsed;            ///< Has the Section been parsed yet?
     std::string subsection;   ///< The string indicating the subsection, of the format [a:b,c:d,e:f] etc.
     std::vector<std::string> sections; // The individual section strings for each dimension
     size_t numSections;         ///< The number of sections in the string.
