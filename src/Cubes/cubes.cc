@@ -506,9 +506,21 @@ namespace duchamp
   Cube* Cube::slice(Section subsection)
   {
     Cube *output = new Cube;
+    Section thisSection;
+    std::string nullsec=nullSection(this->numDim);
+    if(this->par.section().isParsed()) thisSection=this->par.section();
+    else{
+      thisSection = Section(nullsec);
+      thisSection.parse(this->axisDim, this->numDim);
+    }
+
     subsection.parse(this->axisDim, this->numDim);
     if(subsection.isValid()){
       output->par = this->par;
+      output->par.section() = thisSection * subsection;
+      output->par.setXOffset(output->par.getXOffset()+subsection.getStart(0));
+      output->par.setYOffset(output->par.getYOffset()+subsection.getStart(1));
+      output->par.setZOffset(output->par.getZOffset()+subsection.getStart(2));
       output->head = this->head;
       output->Stats = this->Stats;
       output->fullCols = this->fullCols;

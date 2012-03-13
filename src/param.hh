@@ -511,7 +511,6 @@ namespace duchamp
     float  snrRecon;        ///< SNR cutoff used in a trous reconstruction (only wavelet coefficients that survive this threshold are kept)
     Filter reconFilter;     ///< The filter used for reconstructions.
     int    filterCode;      ///< The code number for the filter to be used (saves having to parse names)
-    std::string filterName; ///< The code number converted into a name, for outputting purposes.
 
     // Volume-merging parameters
     bool   flagAdjacent;    ///< Whether to use the adjacent criterion for judging if objects are to be merged.

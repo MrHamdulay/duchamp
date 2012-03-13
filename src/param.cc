@@ -46,6 +46,7 @@
 
 namespace duchamp
 {
+  const std::string defaultSection = "[*,*,*]";
 
   /****************************************************************/
   ///////////////////////////////////////////////////
@@ -68,11 +69,10 @@ namespace duchamp
     /// Provides default intial values for the parameters. Note that
     /// imageFile has no default value!
 
-    std::string baseSection = "[*,*,*]";
     // Input files
     this->imageFile         = "";
     this->flagSubsection    = false;
-    this->pixelSec.setSection(baseSection);
+    this->pixelSec.setSection(defaultSection);
     this->flagReconExists   = false;
     this->reconFile         = "";
     this->flagSmoothExists  = false;
@@ -154,7 +154,7 @@ namespace duchamp
     this->FDRnumCorChan     = 2;
     // Other detection      
     this->flagStatSec       = false;
-    this->statSec.setSection(baseSection);
+    this->statSec.setSection(defaultSection);
     this->flagRobustStats   = true;
     this->snrCut            = 3.;
     this->threshold         = 0.;
@@ -215,6 +215,7 @@ namespace duchamp
     this->outFile           = p.outFile;        
     this->flagSeparateHeader= p.flagSeparateHeader;
     this->headerFile        = p.headerFile;
+    this->flagPlotSpectra   = p.flagPlotSpectra;
     this->spectraFile       = p.spectraFile;    
     this->flagTextSpectra   = p.flagTextSpectra;    
     this->spectraTextFile   = p.spectraTextFile;    
@@ -241,6 +242,7 @@ namespace duchamp
     this->precFlux          = p.precFlux;
     this->precVel           = p.precVel;
     this->precSNR           = p.precSNR;
+    this->flagNegative      = p.flagNegative;
     this->flagBlankPix      = p.flagBlankPix;   
     this->blankPixValue     = p.blankPixValue;  
     this->blankKeyword      = p.blankKeyword;   
@@ -270,7 +272,6 @@ namespace duchamp
     this->ySubOffset        = p.ySubOffset;     
     this->zSubOffset        = p.zSubOffset;
     this->flagBaseline      = p.flagBaseline;
-    this->flagNegative      = p.flagNegative;
     this->flagGrowth        = p.flagGrowth;
     this->growthCut         = p.growthCut;
     this->growthThreshold   = p.growthThreshold;
@@ -699,6 +700,14 @@ namespace duchamp
   
   void Param::checkPars()
   {
+
+    // If flagSubsection is false, but the parset had a subsection string in it, we want to set this back to the default.
+    if(!this->flagSubsection){
+      this->pixelSec.setSection(defaultSection);
+    }
+    if(!this->flagStatSec){
+      this->statSec.setSection(defaultSection);
+    }
 
     // If we have usePrevious=false, set the objectlist to blank so that we use all of them
     if(!this->usePrevious) this->objectList = "";
