@@ -522,6 +522,11 @@ namespace duchamp
       output->par.setYOffset(output->par.getYOffset()+subsection.getStart(1));
       output->par.setZOffset(output->par.getZOffset()+subsection.getStart(2));
       output->head = this->head;
+      // correct the reference pixel in the WCS
+      output->head.WCS().crpix[output->head.WCS().lng] -= subsection.getStart(output->head.WCS().lng);
+      output->head.WCS().crpix[output->head.WCS().lat] -= subsection.getStart(output->head.WCS().lat);
+      if(output->head.WCS().spec>0)
+	output->head.WCS().crpix[output->head.WCS().spec] -= subsection.getStart(output->head.WCS().spec);
       output->Stats = this->Stats;
       output->fullCols = this->fullCols;
       output->logCols = this->logCols;
