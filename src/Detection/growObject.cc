@@ -102,22 +102,22 @@ namespace duchamp
 	  long ypt=voxlist[i].getY();
 	  long zpt=voxlist[i].getZ();
 
-	  int xmin = std::max(xpt - threshS, zero);
-	  int xmax = std::min(xpt + threshS, cube.getDimX()-1);
-	  int ymin = std::max(ypt - threshS, zero);
-	  int ymax = std::min(ypt + threshS, cube.getDimY()-1);
-	  int zmin = std::max(zpt - threshV, zero);
-	  int zmax = std::min(zpt + threshV, cube.getDimZ()-1);
+	  size_t xmin = std::max(xpt - threshS, zero);
+	  size_t xmax = std::min(xpt + threshS, long(cube.getDimX()-1));
+	  size_t ymin = std::max(ypt - threshS, zero);
+	  size_t ymax = std::min(ypt + threshS, long(cube.getDimY()-1));
+	  size_t zmin = std::max(zpt - threshV, zero);
+	  size_t zmax = std::min(zpt + threshV, long(cube.getDimZ()-1));
 
 	  //loop over surrounding pixels.
-	  for(int x=xmin; x<=xmax; x++){
-	    for(int y=ymin; y<=ymax; y++){
-	      for(int z=zmin; z<=zmax; z++){
+	  for(size_t x=xmin; x<=xmax; x++){
+	    for(size_t y=ymin; y<=ymax; y++){
+	      for(size_t z=zmin; z<=zmax; z++){
 
 		if((x!=xpt)||(y!=ypt)||(z!=zpt)){ 
 		  // ignore when the current object pixel
 
-		  long pos = x + y * cube.getDimX() + z * cube.getDimX() * cube.getDimY();
+		  size_t pos = x + y * cube.getDimX() + z * cube.getDimX() * cube.getDimY();
 
 		  if(!isInObj[pos] && // pixel not already in object?
 		     !cube.isBlank(x,y,z)   &&   // pixel not BLANK?

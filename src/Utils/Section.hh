@@ -58,8 +58,10 @@ namespace duchamp
     bool isValid();
 
     /// @brief Convert the subsection string into the lists of numerical values. 
+    OUTCOME parse(std::vector<size_t> dimAxes);
     OUTCOME parse(std::vector<long> dimAxes);
     OUTCOME parse(std::vector<int> dimAxes);
+    OUTCOME parse(size_t *dim, int size);
     OUTCOME parse(long *dim, int size);
 
     bool isParsed(){return flagParsed;};

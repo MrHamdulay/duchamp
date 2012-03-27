@@ -426,7 +426,7 @@ namespace duchamp
 //   }
   
   
-  void plotWCSaxes(struct wcsprm *wcs, long *axes, int textColour, int axisColour)
+  void plotWCSaxes(struct wcsprm *wcs, size_t *axes, int textColour, int axisColour)
   {
 
     /// @details

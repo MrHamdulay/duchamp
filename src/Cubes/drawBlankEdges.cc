@@ -36,7 +36,7 @@
 namespace duchamp
 {
 
-  void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par)
+  void drawBlankEdges(float *dataArray, size_t xdim, size_t ydim, Param &par)
   {
     ///  @details
     ///  A subroutine that is designed to draw the edges of the blank
@@ -67,10 +67,10 @@ namespace duchamp
 	bool *blank = new bool[xdim*ydim];
 	for(int i=0;i<xdim*ydim;i++) blank[i] = par.isBlank(dataArray[i]);
 
-	for(int x=0; x<xdim; x++){// for each column...
-	  for(int y=1;y<ydim;y++){
-	    int current = y*xdim + x;
-	    int previous = (y-1)*xdim + x;
+	for(size_t x=0; x<xdim; x++){// for each column...
+	  for(size_t y=1;y<ydim;y++){
+	    size_t current = y*xdim + x;
+	    size_t previous = (y-1)*xdim + x;
 	    if( (blank[current]&&!blank[previous]) || 
 		(!blank[current]&&blank[previous])   ){
 	      cpgmove(x-0.5, y-0.5);
@@ -79,10 +79,10 @@ namespace duchamp
 	  }
 	}
       
-	for(int y=0; y<ydim; y++){// for each row...
-	  for(int x=1;x<xdim;x++){
-	    int current = y*xdim + x;
-	    int previous = y*xdim + x-1;
+	for(size_t y=0; y<ydim; y++){// for each row...
+	  for(size_t x=1;x<xdim;x++){
+	    size_t current = y*xdim + x;
+	    size_t previous = y*xdim + x-1;
 	    if( (blank[current]&&!blank[previous]) || 
 		(!blank[current]&&blank[previous])   ){
 	      cpgmove(x-0.5, y-0.5);

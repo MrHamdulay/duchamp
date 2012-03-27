@@ -94,7 +94,7 @@ namespace duchamp
     if(this->axisDimAllocated) delete [] this->axisDim;
     this->axisDimAllocated = d.axisDimAllocated;
     if(this->axisDimAllocated){
-      this->axisDim = new long[this->numDim];
+      this->axisDim = new size_t[this->numDim];
       for(size_t i=0;i<size_t(this->numDim);i++) this->axisDim[i] = d.axisDim[i];
     }
     this->numPixels = d.numPixels;
@@ -121,7 +121,7 @@ namespace duchamp
     this->axisDimAllocated = false;
     this->arrayAllocated = false;
     if(nDim>0){
-      this->axisDim = new long[nDim];
+      this->axisDim = new size_t[nDim];
       this->axisDimAllocated = true;
     }
     this->numDim=nDim; 
@@ -130,7 +130,7 @@ namespace duchamp
   } 
   //--------------------------------------------------------------------
 
-  DataArray::DataArray(short int nDim, long size){
+  DataArray::DataArray(short int nDim, size_t size){
     /// @details
     /// N-dimensional constructor for DataArray.
     /// Number of dimensions and number of pixels defined. 
@@ -155,7 +155,7 @@ namespace duchamp
       }
       this->numPixels = size;
       if(nDim>0){
-	this->axisDim = new long[nDim];
+	this->axisDim = new size_t[nDim];
 	this->axisDimAllocated = true;
       }
       this->numDim = nDim;
@@ -164,7 +164,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  DataArray::DataArray(short int nDim, long *dimensions)
+  DataArray::DataArray(short int nDim, size_t *dimensions)
   {
     /// @details
     /// Most robust constructor for DataArray.
@@ -192,7 +192,7 @@ namespace duchamp
 	}
 	this->numDim=nDim;
 	if(nDim>0){
-	  this->axisDim = new long[nDim];
+	  this->axisDim = new size_t[nDim];
 	  this->axisDimAllocated = true;
 	}
 	for(int i=0;i<nDim;i++) this->axisDim[i] = dimensions[i];
@@ -220,7 +220,7 @@ namespace duchamp
   //--------------------------------------------------------------------
   //--------------------------------------------------------------------
 
-  void DataArray::getDim(long &x, long &y, long &z)
+  void DataArray::getDim(size_t &x, size_t &y, size_t &z)
   {
     /// @details
     /// The sizes of the first three dimensions (if they exist) are returned.
@@ -237,7 +237,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void DataArray::getDimArray(long *output)
+  void DataArray::getDimArray(size_t *output)
   {
     /// @details
     /// The axisDim array is written to output. This needs to be defined 
@@ -259,7 +259,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void DataArray::saveArray(float *input, long size)
+  void DataArray::saveArray(float *input, size_t size)
   {
     /// @details
     /// Saves the array in input to the pixel array DataArray::array.
@@ -311,7 +311,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  bool DataArray::isDetection(long voxel)
+  bool DataArray::isDetection(size_t voxel)
   {
     ///  @details
     /// Is a given pixel a detection, based on the statistics in the 
@@ -379,7 +379,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  Cube::Cube(long size)
+  Cube::Cube(size_t size)
   {
     /// @details
     /// Alternative Cube constructor, where size is given but not individual
@@ -407,7 +407,7 @@ namespace duchamp
 	}
       }
       this->numPixels = size;
-      this->axisDim = new long[3];
+      this->axisDim = new size_t[3];
       this->axisDimAllocated = true;
       this->numDim = 3;
       this->reconExists = false;
@@ -415,7 +415,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  Cube::Cube(long *dimensions)
+  Cube::Cube(size_t *dimensions)
   {
     /// Alternative Cube constructor, where sizes of dimensions are given. 
     /// Arrays are allocated as appropriate (according to the 
@@ -446,7 +446,7 @@ namespace duchamp
 	}
       }
       this->numDim  = 3;
-      this->axisDim = new long[3];
+      this->axisDim = new size_t[3];
       this->axisDimAllocated = true;
       for(int i=0;i<3     ;i++) this->axisDim[i]   = dimensions[i];
       for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
@@ -530,7 +530,7 @@ namespace duchamp
       output->Stats = this->Stats;
       output->fullCols = this->fullCols;
       output->logCols = this->logCols;
-      long *dims = new long[3];
+      size_t *dims = new size_t[3];
       for(size_t i=0;i<3;i++){
 	dims[i] = subsection.getDimList()[i];
 	std::cout << "Dim " << i+1 << " = " << dims[i] << "\n";
@@ -566,6 +566,17 @@ namespace duchamp
 
   OUTCOME Cube::initialiseCube(long *dimensions, bool allocateArrays)
   {
+    int numAxes = this->head.getNumAxes();
+    if(numAxes<=0) numAxes=3;
+    size_t *dim = new size_t[numAxes];
+    for(int i=0;i<numAxes;i++) dim[i]=dimensions[i];
+    this->initialiseCube(dim,allocateArrays);
+    delete dim;
+  }
+
+
+  OUTCOME Cube::initialiseCube(size_t *dimensions, bool allocateArrays)
+  {
     /// @details
     ///  This function will set the sizes of all arrays that will be used by Cube.
     ///  It will also define the values of the axis dimensions: this will be done 
@@ -580,7 +591,7 @@ namespace duchamp
     ///  dimension arrays will be allocated and filled.
 
     int lng,lat,spc;
-    long size,imsize;
+    size_t size,imsize;
   
     int numAxes = this->head.getNumAxes();
     if(numAxes<=0) numAxes=3;
@@ -636,7 +647,7 @@ namespace duchamp
       this->numPixels = size;
       this->numDim  = 3;
 
-      this->axisDim = new long[this->numDim];
+      this->axisDim = new size_t[this->numDim];
       this->axisDimAllocated = true;
       this->axisDim[0] = dimensions[lng];
       if(numAxes>1) this->axisDim[1] = dimensions[lat];
@@ -695,11 +706,11 @@ namespace duchamp
   void Cube::reportMemorySize(std::ostream &theStream, bool allocateArrays)
   {
     std::string unitlist[4]={"kB","MB","GB","TB"};
-    long size=axisDim[0]*axisDim[1]*axisDim[2];
-    long imsize=axisDim[0]*axisDim[1];
+    size_t size=axisDim[0]*axisDim[1]*axisDim[2];
+    size_t imsize=axisDim[0]*axisDim[1];
     
       // Calculate and report the total size of memory to be allocated.
-      float allocSize=3*sizeof(long);  // axisDim
+      float allocSize=3*sizeof(size_t);  // axisDim
       float arrAllocSize=0.;
       if(size>0 && allocateArrays){
 	allocSize += size * sizeof(float); // array
@@ -752,7 +763,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Cube::saveArray(float *input, long size)
+  void Cube::saveArray(float *input, size_t size)
   {
     if(size != this->numPixels){
       std::stringstream errmsg;
@@ -778,7 +789,7 @@ namespace duchamp
     /// pixels, else an error message is returned and nothing is done.
     /// \param input The array of values to be saved.
 
-    if(long(input.size()) != this->numPixels){
+    if(input.size() != this->numPixels){
       std::stringstream errmsg;
       errmsg << "Input array different size to existing array ("
 	     << input.size() << " cf. " << this->numPixels << "). Cannot save.\n";
@@ -794,7 +805,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Cube::saveRecon(float *input, long size)
+  void Cube::saveRecon(float *input, size_t size)
   {
     /// @details
     /// Saves the array in input to the reconstructed array Cube::recon
@@ -895,7 +906,7 @@ namespace duchamp
       if(this->par.isVerbose())
 	std::cout << "Calculating the cube statistics... " << std::flush;
     
-      // long xysize = this->axisDim[0]*this->axisDim[1];
+      // size_t xysize = this->axisDim[0]*this->axisDim[1];
 
       bool *mask = new bool[this->numPixels];
       int vox=0,goodSize = 0;
@@ -1210,7 +1221,7 @@ namespace duchamp
 
   }
 
-  bool Cube::isDetection(long x, long y, long z)
+  bool Cube::isDetection(size_t x, size_t y, size_t z)
   {
     ///  @details
     /// Is a given voxel at position (x,y,z) a detection, based on the statistics
@@ -1221,7 +1232,7 @@ namespace duchamp
     /// \param y Y-value of the Cube's voxel to be tested.
     /// \param z Z-value of the Cube's voxel to be tested.
 
-    long voxel = z*axisDim[0]*axisDim[1] + y*axisDim[0] + x;
+    size_t voxel = z*axisDim[0]*axisDim[1] + y*axisDim[0] + x;
     return DataArray::isDetection(array[voxel]);
   }
   //--------------------------------------------------------------------
@@ -1606,7 +1617,7 @@ namespace duchamp
   //// Functions for Image class
   /////////////////////////////////////////////////////////////
 
-  Image::Image(long size)
+  Image::Image(size_t size)
   {
     // need error handling in case size<0 !!!
     this->numPixels = this->numDim = 0;
@@ -1619,14 +1630,14 @@ namespace duchamp
 	this->arrayAllocated = true;
       }
       this->numPixels = size;
-      this->axisDim = new long[2];
+      this->axisDim = new size_t[2];
       this->axisDimAllocated = true;
       this->numDim = 2;
     }
   }
   //--------------------------------------------------------------------
 
-  Image::Image(long *dimensions)
+  Image::Image(size_t *dimensions)
   {
     this->numPixels = this->numDim = 0;
     this->minSize = 2;
@@ -1640,7 +1651,7 @@ namespace duchamp
 	this->arrayAllocated = true;
       }
       this->numDim=2;
-      this->axisDim = new long[2];
+      this->axisDim = new size_t[2];
       this->axisDimAllocated = true;
       for(int i=0;i<2;i++) this->axisDim[i] = dimensions[i];
     }
@@ -1662,7 +1673,7 @@ namespace duchamp
 
   //--------------------------------------------------------------------
 
-  void Image::saveArray(float *input, long size)
+  void Image::saveArray(float *input, size_t size)
   {
     /// @details
     /// Saves the array in input to the pixel array Image::array.
@@ -1686,7 +1697,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Image::extractSpectrum(float *Array, long *dim, long pixel)
+  void Image::extractSpectrum(float *Array, size_t *dim, size_t pixel)
   {
     /// @details
     ///  A function to extract a 1-D spectrum from a 3-D array.
@@ -1717,7 +1728,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Image::extractSpectrum(Cube &cube, long pixel)
+  void Image::extractSpectrum(Cube &cube, size_t pixel)
   {
     /// @details
     ///  A function to extract a 1-D spectrum from a Cube class
@@ -1727,8 +1738,8 @@ namespace duchamp
     /// \param cube The Cube containing the pixel values, from which the spectrum is extracted.
     /// \param pixel The spatial pixel that contains the desired spectrum.
 
-    long zdim = cube.getDimZ();
-    long spatSize = cube.getDimX()*cube.getDimY();
+    size_t zdim = cube.getDimZ();
+    size_t spatSize = cube.getDimX()*cube.getDimY();
     if((pixel<0)||(pixel>=spatSize))
       duchampError("Image::extractSpectrum",
 		   "Requested spatial pixel outside allowed range. Cannot save.");
@@ -1748,7 +1759,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Image::extractImage(float *Array, long *dim, long channel)
+  void Image::extractImage(float *Array, size_t *dim, size_t channel)
   {
     /// @details
     ///  A function to extract a 2-D image from a 3-D array.
@@ -1761,7 +1772,7 @@ namespace duchamp
     /// \param dim The array of dimension values.
     /// \param channel The spectral channel that contains the desired image.
 
-    long spatSize = dim[0]*dim[1];
+    size_t spatSize = dim[0]*dim[1];
     if((channel<0)||(channel>=dim[2]))
       duchampError("Image::extractImage",
 		   "Requested channel outside allowed range. Cannot save.");
@@ -1781,7 +1792,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Image::extractImage(Cube &cube, long channel)
+  void Image::extractImage(Cube &cube, size_t channel)
   {
     /// @details
     ///  A function to extract a 2-D image from Cube class.
@@ -1791,7 +1802,7 @@ namespace duchamp
     /// \param cube The Cube containing the pixel values, from which the image is extracted.
     /// \param channel The spectral channel that contains the desired image.
 
-    long spatSize = cube.getDimX()*cube.getDimY();
+    size_t spatSize = cube.getDimX()*cube.getDimY();
     if((channel<0)||(channel>=cube.getDimZ()))
       duchampError("Image::extractImage",
 		   "Requested channel outside allowed range. Cannot save.");
@@ -1870,7 +1881,7 @@ namespace duchamp
       std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
       std::vector<PixelInfo::Voxel>::iterator vox;
       for(vox=voxlist.begin(); vox<voxlist.end(); vox++){
-	long pix = (vox->getX()-subcube->pars().getXOffset()) +
+	size_t pix = (vox->getX()-subcube->pars().getXOffset()) +
 	  subcube->getDimX()*(vox->getY()-subcube->pars().getYOffset()) +
 	  subcube->getDimX()*subcube->getDimY()*(vox->getZ()-subcube->pars().getZOffset());
 	vox->setF( subcube->getPixValue(pix) );

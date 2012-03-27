@@ -141,9 +141,9 @@ namespace duchamp
     /// This reconstructs a cube by performing a 1D a trous reconstruction
     ///  in the spectrum of each spatial pixel.
 
-    long xySize = this->axisDim[0] * this->axisDim[1];
+    size_t xySize = this->axisDim[0] * this->axisDim[1];
 
-    unsigned long zdim = this->axisDim[2];
+    size_t zdim = this->axisDim[2];
 
     ProgressBar bar;
     if(!this->reconExists){
@@ -182,10 +182,10 @@ namespace duchamp
     /// This reconstructs a cube by performing a 2D a trous reconstruction
     ///  in each spatial image (ie. each channel map) of the cube.
 
-    long xySize = this->axisDim[0] * this->axisDim[1];
+    size_t xySize = this->axisDim[0] * this->axisDim[1];
     ProgressBar bar;
     bool useBar = (this->axisDim[2]>1);
-    unsigned long xdim=this->axisDim[0],ydim=this->axisDim[1];
+    size_t xdim=this->axisDim[0],ydim=this->axisDim[1];
 
     if(!this->reconExists){
       if(this->par.isVerbose()) std::cout<<"  Reconstructing... ";
@@ -229,7 +229,7 @@ namespace duchamp
 
     if(this->axisDim[2]==1) this->ReconCube2D();
     else {
-      unsigned long xdim=this->axisDim[0],ydim=this->axisDim[1],zdim=this->axisDim[2];
+      size_t xdim=this->axisDim[0],ydim=this->axisDim[1],zdim=this->axisDim[2];
       if(!this->reconExists){
 	if(this->par.isVerbose()) std::cout<<"  Reconstructing... "<<std::flush;
 	atrous3DReconstruct(xdim,ydim,zdim,this->array,this->recon,this->par);
@@ -245,7 +245,7 @@ namespace duchamp
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  std::vector <Detection> searchReconArray(long *dim, float *originalArray, 
+  std::vector <Detection> searchReconArray(size_t *dim, float *originalArray, 
 					   float *reconArray, Param &par,
 					   StatsContainer<float> &stats)
   {
@@ -262,7 +262,7 @@ namespace duchamp
   }
   }
   /////////////////////////////////////////////////////////////////////////////
-  std::vector <Detection> searchReconArraySpectral(long *dim, float *originalArray, 
+  std::vector <Detection> searchReconArraySpectral(size_t *dim, float *originalArray, 
 						   float *reconArray, Param &par,
 						   StatsContainer<float> &stats)
   {
@@ -283,8 +283,8 @@ namespace duchamp
     ///  \return A vector of Detections resulting from the search.
 
     std::vector <Detection> outputList;
-    long zdim = dim[2];
-    long xySize = dim[0] * dim[1];
+    size_t zdim = dim[2];
+    size_t xySize = dim[0] * dim[1];
     int num=0;
 
     // First search --  in each spectrum.
@@ -305,7 +305,7 @@ namespace duchamp
 	//  of pixel #i.
       }
 
-      long *specdim = new long[2];
+      size_t *specdim = new size_t[2];
       specdim[0] = zdim; specdim[1]=1;
       Image *spectrum = new Image(specdim);
       delete [] specdim;
@@ -358,7 +358,7 @@ namespace duchamp
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  std::vector <Detection> searchReconArraySpatial(long *dim, float *originalArray,
+  std::vector <Detection> searchReconArraySpatial(size_t *dim, float *originalArray,
 						  float *reconArray, Param &par,
 						  StatsContainer<float> &stats)
   {
@@ -380,13 +380,13 @@ namespace duchamp
     ///  \return A vector of Detections resulting from the search.
 
     std::vector <Detection> outputList;
-    long zdim = dim[2];
+    size_t zdim = dim[2];
     int num=0;
     ProgressBar bar;
     bool useBar = (zdim>1);
     if(useBar&&par.isVerbose()) bar.init(zdim);
   
-    long *imdim = new long[2];
+    size_t *imdim = new size_t[2];
     imdim[0] = dim[0]; imdim[1] = dim[1];
     Image *channelImage = new Image(imdim);
     delete [] imdim;

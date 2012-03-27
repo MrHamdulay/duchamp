@@ -76,7 +76,7 @@ namespace duchamp
 	std::cerr << std::setw(preamble.size()-1) <<": ";
     }
 
-    size_t loc=-1;
+    size_t loc=0;
     //    std::cout << "|"<<error<<"|\n";
     while (loc=error.find('\n',loc+1),
 	   //	   std::cout << loc << " " << error.size() << " " << std::string::npos << "\n",

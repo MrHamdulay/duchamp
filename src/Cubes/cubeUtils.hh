@@ -49,13 +49,13 @@ namespace duchamp
   void growObject(Detection &object, Cube &cube);
 
   /// @brief Draw the edge of the BLANK region on a map.
-  void drawBlankEdges(float *dataArray, int xdim, int ydim, Param &par);
+  void drawBlankEdges(float *dataArray, size_t xdim, size_t ydim, Param &par);
 
   // In Cubes/spectraUtils.cc
-  void getSpecAbscissae(Detection &object, FitsHeader &head, long zdim, float *output);
-  void getSpecAbscissae(FitsHeader &head, float xpt, float ypt, long zdim, float *output);
-  void getIntSpec(Detection &object, float *fluxArray, long *dimArray, std::vector<bool> mask, float beamCorrection, float *output);
-  void getPeakSpec(Detection &object, float *fluxArray, long *dimArray, bool *mask, float *output);
+  void getSpecAbscissae(Detection &object, FitsHeader &head, size_t zdim, float *output);
+  void getSpecAbscissae(FitsHeader &head, float xpt, float ypt, size_t zdim, float *output);
+  void getIntSpec(Detection &object, float *fluxArray, size_t *dimArray, std::vector<bool> mask, float beamCorrection, float *output);
+  void getPeakSpec(Detection &object, float *fluxArray, size_t *dimArray, bool *mask, float *output);
 
 }
 

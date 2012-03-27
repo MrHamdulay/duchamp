@@ -40,7 +40,7 @@ namespace duchamp
 {
 
   /// @brief A function to handle plotting of WCS axes, with duchamp-suitable defaults.
-  void plotWCSaxes(struct wcsprm *wcs, long *axes, int textColour=DUCHAMP_ID_TEXT_COLOUR, int axisColour=DUCHAMP_WCS_AXIS_COLOUR);
+  void plotWCSaxes(struct wcsprm *wcs, size_t *axes, int textColour=DUCHAMP_ID_TEXT_COLOUR, int axisColour=DUCHAMP_WCS_AXIS_COLOUR);
 
   /// @brief A namespace to control plotting of the spectral output and the
   /// spatial image output.

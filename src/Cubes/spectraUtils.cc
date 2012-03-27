@@ -46,7 +46,7 @@ using namespace PixelInfo;
 namespace duchamp
 {
 
-  void getSpecAbscissae(Detection &object, FitsHeader &head, long zdim, float *abscissae)
+  void getSpecAbscissae(Detection &object, FitsHeader &head, size_t zdim, float *abscissae)
   {
     /// @details
     ///  A function that returns an array of
@@ -61,7 +61,7 @@ namespace duchamp
     getSpecAbscissae(head,object.getXcentre(),object.getYcentre(),zdim, abscissae);
   }
 
-  void getSpecAbscissae(FitsHeader &head, float xpt, float ypt, long zdim, float *abscissae)
+  void getSpecAbscissae(FitsHeader &head, float xpt, float ypt, size_t zdim, float *abscissae)
   {
     /// @details
     ///  A function that returns an array of
@@ -85,7 +85,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void getIntSpec(Detection &object, float *fluxArray, long *dimArray, std::vector<bool> mask, 
+  void getIntSpec(Detection &object, float *fluxArray, size_t *dimArray, std::vector<bool> mask, 
 		  float beamCorrection, float *spec)
   {
     /// @details
@@ -102,7 +102,7 @@ namespace duchamp
     ///   \param spec The integrated spectrum for the object -- must be allocated first.
 
     for(int i=0;i<dimArray[2];i++) spec[i] = 0.;
-    long xySize = dimArray[0]*dimArray[1];
+    size_t xySize = dimArray[0]*dimArray[1];
     bool *done = new bool[xySize]; 
     for(int i=0;i<xySize;i++) done[i]=false;
     std::vector<Voxel> voxlist = object.getPixelSet();
@@ -123,7 +123,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void getPeakSpec(Detection &object, float *fluxArray, long *dimArray, bool *mask, float *spec)
+  void getPeakSpec(Detection &object, float *fluxArray, size_t *dimArray, bool *mask, float *spec)
   {
     /// @details
     ///  The base function that extracts an peak spectrum for a
@@ -136,7 +136,7 @@ namespace duchamp
     ///   \param mask A mask array indicating whether given pixels are valid
     ///   \param spec The peak spectrum for the object -- must be allocated first
 
-    long xySize = dimArray[0]*dimArray[1];
+    size_t xySize = dimArray[0]*dimArray[1];
     int pos = object.getXPeak() + dimArray[0]*object.getYPeak();
     for(int z=0;z<dimArray[2];z++){
       if(mask[pos + z*xySize])
@@ -170,9 +170,9 @@ namespace duchamp
     ///  \param specBase The fitted baseline values, done in the same
     ///         way as specy.
 
-    long xdim = this->axisDim[0];
-    long ydim = this->axisDim[1];
-    long zdim = this->axisDim[2];
+    size_t xdim = this->axisDim[0];
+    size_t ydim = this->axisDim[1];
+    size_t zdim = this->axisDim[2];
 	
     for(int i=0;i<zdim;i++) specy[i]     = 0.;
     for(int i=0;i<zdim;i++) specRecon[i] = 0.;
@@ -226,7 +226,7 @@ namespace duchamp
       }
     }
 
-//     long zdim = this->axisDim[2];
+//     size_t zdim = this->axisDim[2];
 //     Detection obj = this->objectList->at(objNum);
 //     getSpecAbscissae(obj, this->head, zdim, specx);
 

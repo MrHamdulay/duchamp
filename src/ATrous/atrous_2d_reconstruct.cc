@@ -60,7 +60,7 @@ namespace duchamp
     size_t size = xdim * ydim;
     unsigned long mindim = xdim;
     if (ydim<mindim) mindim = ydim;
-    size_t numScales = par.filter().getNumScales(mindim);
+    unsigned int numScales = par.filter().getNumScales(mindim);
     double *sigmaFactors = new double[numScales+1];
     for(size_t i=0;i<=numScales;i++){
       if(i<=par.filter().maxFactor(2)) 

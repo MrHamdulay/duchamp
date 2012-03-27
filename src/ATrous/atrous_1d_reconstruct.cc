@@ -62,8 +62,8 @@ namespace duchamp
     const unsigned int MIN_SCALE=par.getMinScale();
     static bool firstTime = true;
 
-    size_t numScales = par.filter().getNumScales(xdim);
-    size_t maxScale = par.getMaxScale();
+    unsigned int numScales = par.filter().getNumScales(xdim);
+    unsigned int maxScale = par.getMaxScale();
     if((maxScale>0)&&(maxScale<=numScales))
       maxScale = std::min(maxScale,numScales);
     else{
@@ -144,13 +144,12 @@ namespace duchamp
 		      << " /"     << std::setw(2) << numScales <<std::flush;
 	  }
 
-	  for(unsigned long xpos = 0; xpos<xdim; xpos++){
+	  for(size_t xpos = 0; xpos<xdim; xpos++){
 	    // loops over each pixel in the image
-	    size_t pos = xpos;
 
-	    wavelet[pos] = coeffs[pos];
+	    wavelet[xpos] = coeffs[xpos];
 	
-	    if(!isGood[pos] )  wavelet[pos] = 0.;
+	    if(!isGood[xpos] )  wavelet[xpos] = 0.;
 	    else{
 
 	      for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
@@ -166,10 +165,10 @@ namespace duchamp
 		size_t oldpos = x;
 
 		if(isGood[oldpos]) 
-		  wavelet[pos] -= filter[filterpos]*coeffs[oldpos];
+		  wavelet[xpos] -= filter[filterpos]*coeffs[oldpos];
 	      
 	      } //-> end of xoffset loop
-	    } //-> end of else{ ( from if(!isGood[pos])  )
+	    } //-> end of else{ ( from if(!isGood[xpos])  )
 	    
 	  } //-> end of xpos loop
 

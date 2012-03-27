@@ -76,7 +76,7 @@ namespace duchamp
     bool voxelListCovered(std::vector<PixelInfo::Voxel> voxelList);
 
     /// @brief Calculate flux-related parameters of the Detection. 
-    void   calcFluxes(float *fluxArray, long *dim); 
+    void   calcFluxes(float *fluxArray, size_t *dim); 
     /// @brief Calculate flux-related parameters of the Detection. 
     void   calcFluxes(std::vector<PixelInfo::Voxel> voxelList); 
     void   calcFluxes(std::map<Voxel,float> &voxelMap);
@@ -86,24 +86,24 @@ namespace duchamp
     void   calcWCSparams(FitsHeader &head); 
 
     /// @brief Calculate the integrated flux over the entire Detection. 
-    void   calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head); 
+    void   calcIntegFlux(float *fluxArray, size_t *dim, FitsHeader &head); 
     /// @brief Calculate the integrated flux over the entire Detection. 
-    void   calcIntegFlux(long zdim, std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head); 
-    void   calcIntegFlux(long zdim, std::map<Voxel,float> voxelMap, FitsHeader &head);
+    void   calcIntegFlux(size_t zdim, std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head); 
+    void   calcIntegFlux(size_t zdim, std::map<Voxel,float> voxelMap, FitsHeader &head);
 
     /// @brief Calculate the 20%-/50%-peak-flux widths in a general fashion
-    void calcVelWidths(long zdim, float *intSpec, FitsHeader &head);
+    void calcVelWidths(size_t zdim, float *intSpec, FitsHeader &head);
     /// @brief Calculate the 20%/50% peak flux widths 
-    void calcVelWidths(float *fluxArray, long *dim, FitsHeader &head);
+    void calcVelWidths(float *fluxArray, size_t *dim, FitsHeader &head);
     /// @brief Calculate the 20%/50% peak flux widths 
-    void calcVelWidths(long zdim, std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head);
-    void calcVelWidths(long zdim, std::map<Voxel,float> voxelMap, FitsHeader &head);
+    void calcVelWidths(size_t zdim, std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head);
+    void calcVelWidths(size_t zdim, std::map<Voxel,float> voxelMap, FitsHeader &head);
 
     /// @brief Set the values of the axis offsets from the cube. 
     void   setOffsets(Param &par); 
 
     /// @brief Add the offset values to the pixel locations 
-    void   addOffsets(long xoff, long yoff, long zoff){Object3D::addOffsets(xoff,yoff,zoff);};
+    void   addOffsets(size_t xoff, size_t yoff, size_t zoff){Object3D::addOffsets(xoff,yoff,zoff);};
     void   addOffsets(){
       Object3D::addOffsets(xSubOffset,ySubOffset,zSubOffset);
       xpeak+=xSubOffset; ypeak+=ySubOffset; zpeak+=zSubOffset;

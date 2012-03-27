@@ -111,8 +111,8 @@ void Cube::SpectralSmooth()
   ///    Hanning smoothing function. The degree of smoothing is given
   ///    by the parameter Param::hanningWidth.
 
-  long xySize = this->axisDim[0]*this->axisDim[1];
-  long zdim = this->axisDim[2];
+  size_t xySize = this->axisDim[0]*this->axisDim[1];
+  size_t zdim = this->axisDim[2];
   ProgressBar bar;
 
   if(!this->reconExists && this->par.getSmoothType()=="spectral"){
@@ -170,10 +170,10 @@ void Cube::SpatialSmooth()
 		     "There are not enough axes to do the spatial smoothing.\n");
     else{
 
-      long xySize = this->axisDim[0]*this->axisDim[1];
-      long xdim = this->axisDim[0];
-      long ydim = this->axisDim[1];
-      long zdim = this->axisDim[2];
+      size_t xySize = this->axisDim[0]*this->axisDim[1];
+      size_t xdim = this->axisDim[0];
+      size_t ydim = this->axisDim[1];
+      size_t zdim = this->axisDim[2];
 
       ProgressBar bar;
 //       bool useBar = this->head.canUseThirdAxis();
@@ -232,10 +232,10 @@ void Cube::SpatialSmooth()
 void Cube::SpatialSmoothNSearch()
 {
 
-  long xySize = this->axisDim[0]*this->axisDim[1];
-  long xdim = this->axisDim[0];
-  long ydim = this->axisDim[1];
-  long zdim = this->axisDim[2];
+  size_t xySize = this->axisDim[0]*this->axisDim[1];
+  size_t xdim = this->axisDim[0];
+  size_t ydim = this->axisDim[1];
+  size_t zdim = this->axisDim[2];
   int numFound=0;
   ProgressBar bar;
 
@@ -252,7 +252,7 @@ void Cube::SpatialSmoothNSearch()
   }
 
   std::vector <Detection> outputList;
-  long *imdim = new long[2];
+  size_t *imdim = new size_t[2];
   imdim[0] = xdim; imdim[1] = ydim;
   Image *channelImage = new Image(imdim);
   delete [] imdim;

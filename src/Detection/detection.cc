@@ -361,7 +361,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::calcFluxes(float *fluxArray, long *dim)
+  void Detection::calcFluxes(float *fluxArray, size_t *dim)
   {
     ///  @details
     ///  A function that calculates total & peak fluxes (and the location
@@ -383,7 +383,7 @@ namespace duchamp
       long x=vox->getX();
       long y=vox->getY();
       long z=vox->getZ();
-      long ind = vox->arrayIndex(dim);
+      size_t ind = vox->arrayIndex(dim);
       float f = fluxArray[ind];
       this->totalFlux += f;
       this->xCentroid += x*f;
@@ -490,7 +490,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::calcIntegFlux(long zdim, std::vector<Voxel> voxelList, FitsHeader &head)
+  void Detection::calcIntegFlux(size_t zdim, std::vector<Voxel> voxelList, FitsHeader &head)
   {
     ///  @details
     ///  Uses the input WCS to calculate the velocity-integrated flux, 
@@ -522,13 +522,14 @@ namespace duchamp
       this->haveParams = true;
 
       // include one pixel either side in each direction
-      long xsize = (this->getXmax()-this->getXmin()+border*2+1);
-      long ysize = (this->getYmax()-this->getYmin()+border*2+1);
-      long zsize = (this->getZmax()-this->getZmin()+border*2+1); 
-      long size = xsize*ysize*zsize;
+      size_t xsize = (this->getXmax()-this->getXmin()+border*2+1);
+      size_t ysize = (this->getYmax()-this->getYmin()+border*2+1);
+      size_t zsize = (this->getZmax()-this->getZmin()+border*2+1); 
+      size_t spatsize=xsize*ysize;
+      size_t size = xsize*ysize*zsize;
       std::vector <bool> isObj(size,false);
       double *localFlux = new double[size];
-      for(int i=0;i<size;i++) localFlux[i]=0.;
+      for(size_t i=0;i<size;i++) localFlux[i]=0.;
 
       std::vector<Voxel>::iterator vox;
       for(vox=voxelList.begin();vox<voxelList.end();vox++){
@@ -536,7 +537,7 @@ namespace duchamp
 	  long x = vox->getX();
 	  long y = vox->getY();
 	  long z = vox->getZ();
-	  long pos = (x-this->getXmin()+border) + (y-this->getYmin()+border)*xsize
+	  size_t pos = (x-this->getXmin()+border) + (y-this->getYmin()+border)*xsize
 	    + (z-this->getZmin()+border)*xsize*ysize;
 	  localFlux[pos] = vox->getF();
 	  isObj[pos] = true;
@@ -546,7 +547,7 @@ namespace duchamp
       // work out the WCS coords for each pixel
       double *world  = new double[size];
       double xpt,ypt,zpt;
-      for(int i=0;i<xsize*ysize*zsize;i++){
+      for(size_t i=0;i<xsize*ysize*zsize;i++){
 	xpt = double( this->getXmin() - border + i%xsize );
 	ypt = double( this->getYmin() - border + (i/xsize)%ysize );
 	zpt = double( this->getZmin() - border + i/(xsize*ysize) );
@@ -554,8 +555,8 @@ namespace duchamp
       }
 
       double integrated = 0.;
-      for(int pix=0; pix<xsize*ysize; pix++){ // loop over each spatial pixel.
-	for(int z=0; z<zsize; z++){
+      for(size_t pix=0; pix<spatsize; pix++){ // loop over each spatial pixel.
+	for(size_t z=0; z<zsize; z++){
 	  int pos =  z*xsize*ysize + pix;
 	  if(isObj[pos]){ // if it's an object pixel...
 	    double deltaVel;
@@ -588,7 +589,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::calcIntegFlux(long zdim, std::map<Voxel,float> voxelMap, FitsHeader &head)
+  void Detection::calcIntegFlux(size_t zdim, std::map<Voxel,float> voxelMap, FitsHeader &head)
   {
     ///  @details
     ///  Uses the input WCS to calculate the velocity-integrated flux, 
@@ -615,13 +616,14 @@ namespace duchamp
       this->haveParams = true;
 
       // include one pixel either side in each direction
-      long xsize = (this->getXmax()-this->getXmin()+border*2+1);
-      long ysize = (this->getYmax()-this->getYmin()+border*2+1);
-      long zsize = (this->getZmax()-this->getZmin()+border*2+1); 
-      long size = xsize*ysize*zsize;
+      size_t xsize = (this->getXmax()-this->getXmin()+border*2+1);
+      size_t ysize = (this->getYmax()-this->getYmin()+border*2+1);
+      size_t zsize = (this->getZmax()-this->getZmin()+border*2+1); 
+      size_t spatsize=xsize*ysize;
+      size_t size = xsize*ysize*zsize;
       std::vector <bool> isObj(size,false);
       double *localFlux = new double[size];
-      for(int i=0;i<size;i++) localFlux[i]=0.;
+      for(size_t i=0;i<size;i++) localFlux[i]=0.;
 
       std::vector<Voxel> voxelList = this->getPixelSet();
       std::vector<Voxel>::iterator vox;
@@ -634,7 +636,7 @@ namespace duchamp
 	  long x = vox->getX();
 	  long y = vox->getY();
 	  long z = vox->getZ();
-	  long pos = (x-this->getXmin()+border) + (y-this->getYmin()+border)*xsize
+	  size_t pos = (x-this->getXmin()+border) + (y-this->getYmin()+border)*xsize
 	    + (z-this->getZmin()+border)*xsize*ysize;
 	  localFlux[pos] = voxelMap[*vox];
 	  isObj[pos] = true;
@@ -644,7 +646,7 @@ namespace duchamp
       // work out the WCS coords for each pixel
       double *world  = new double[size];
       double xpt,ypt,zpt;
-      for(int i=0;i<xsize*ysize*zsize;i++){
+      for(size_t i=0;i<xsize*ysize*zsize;i++){
 	xpt = double( this->getXmin() - border + i%xsize );
 	ypt = double( this->getYmin() - border + (i/xsize)%ysize );
 	zpt = double( this->getZmin() - border + i/(xsize*ysize) );
@@ -652,8 +654,8 @@ namespace duchamp
       }
 
       double integrated = 0.;
-      for(int pix=0; pix<xsize*ysize; pix++){ // loop over each spatial pixel.
-	for(int z=0; z<zsize; z++){
+      for(size_t pix=0; pix<spatsize; pix++){ // loop over each spatial pixel.
+	for(size_t z=0; z<zsize; z++){
 	  int pos =  z*xsize*ysize + pix;
 	  if(isObj[pos]){ // if it's an object pixel...
 	    double deltaVel;
@@ -686,7 +688,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::calcIntegFlux(float *fluxArray, long *dim, FitsHeader &head)
+  void Detection::calcIntegFlux(float *fluxArray, size_t *dim, FitsHeader &head)
   {
     ///  @details
     ///  Uses the input WCS to calculate the velocity-integrated flux, 
@@ -709,17 +711,18 @@ namespace duchamp
       this->haveParams = true;
 
       // include one pixel either side in each direction
-      long xsize = (this->xmax-this->xmin+3);
-      long ysize = (this->ymax-this->ymin+3);
-      long zsize = (this->zmax-this->zmin+3); 
-      long size = xsize*ysize*zsize;
+      size_t xsize = (this->xmax-this->xmin+3);
+      size_t ysize = (this->ymax-this->ymin+3);
+      size_t zsize = (this->zmax-this->zmin+3); 
+      size_t spatsize = xsize*ysize;
+      size_t size = xsize*ysize*zsize;
       std::vector <bool> isObj(size,false);
       double *localFlux = new double[size];
       for(int i=0;i<size;i++) localFlux[i]=0.;
       // work out which pixels are object pixels
       std::vector<Voxel> voxlist = this->getPixelSet();
       for(std::vector<Voxel>::iterator v=voxlist.begin();v<voxlist.end();v++){
-	long pos=(v->getX()-this->xmin+1) + (v->getY()-this->ymin+1)*xsize
+	size_t pos=(v->getX()-this->xmin+1) + (v->getY()-this->ymin+1)*xsize
 	  + (v->getZ()-this->zmin+1)*xsize*ysize;
 	localFlux[pos] = fluxArray[v->arrayIndex(dim)];
 	isObj[pos] = true;
@@ -728,10 +731,10 @@ namespace duchamp
       // work out the WCS coords for each pixel
       double *world  = new double[size];
       double xpt,ypt,zpt;
-      int i=0;
-      for(int z=0;z<zsize;z++){
-	for(int y=0;y<ysize;y++){
-	  for(int x=0;x<xsize;x++){
+      size_t i=0;
+      for(size_t z=0;z<zsize;z++){
+	for(size_t y=0;y<ysize;y++){
+	  for(size_t x=0;x<xsize;x++){
 	    xpt=double(this->xmin - 1 + x);
 	    ypt=double(this->ymin - 1 + y);
 	    zpt=double(this->zmin - 1 + z);
@@ -741,8 +744,8 @@ namespace duchamp
       }
 
       double integrated = 0.;
-      for(int pix=0; pix<xsize*ysize; pix++){ // loop over each spatial pixel.
-	for(int z=0; z<zsize; z++){
+      for(size_t pix=0; pix<xsize*ysize; pix++){ // loop over each spatial pixel.
+	for(size_t z=0; z<zsize; z++){
 	  int pos =  z*xsize*ysize + pix;
 	  if(isObj[pos]){ // if it's an object pixel...
 	    double deltaVel;
@@ -775,7 +778,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::calcVelWidths(long zdim, std::vector<Voxel> voxelList, FitsHeader &head)
+  void Detection::calcVelWidths(size_t zdim, std::vector<Voxel> voxelList, FitsHeader &head)
   {
     ///  @details
     /// Calculates the widths of the detection at 20% and 50% of the
@@ -811,7 +814,7 @@ namespace duchamp
 
   //--------------------------------------------------------------------
 
-  void Detection::calcVelWidths(long zdim, std::map<Voxel,float> voxelMap, FitsHeader &head)
+  void Detection::calcVelWidths(size_t zdim, std::map<Voxel,float> voxelMap, FitsHeader &head)
   {
     ///  @details
     /// Calculates the widths of the detection at 20% and 50% of the
@@ -849,7 +852,7 @@ namespace duchamp
 
   //--------------------------------------------------------------------
 
-  void Detection::calcVelWidths(long zdim, float *intSpec, FitsHeader &head)
+  void Detection::calcVelWidths(size_t zdim, float *intSpec, FitsHeader &head)
   {
 
       // finding the 20% & 50% points.  Start at the velmin & velmax
@@ -919,7 +922,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::calcVelWidths(float *fluxArray, long *dim, FitsHeader &head)
+  void Detection::calcVelWidths(float *fluxArray, size_t *dim, FitsHeader &head)
   {
     ///  @details
     /// Calculates the widths of the detection at 20% and 50% of the
@@ -937,7 +940,7 @@ namespace duchamp
     if(dim[2] > 2){
 
       float *intSpec = new float[dim[2]];
-      long size=dim[0]*dim[1]*dim[2];
+      size_t size=dim[0]*dim[1]*dim[2];
       std::vector<bool> mask(size,true); 
       getIntSpec(*this,fluxArray,dim,mask,1.,intSpec);
 

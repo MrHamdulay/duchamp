@@ -48,19 +48,19 @@ namespace duchamp
 
 
   /// @brief Search a reconstructed array for significant detections. 
-  std::vector <Detection> searchReconArray(long *dim, float *originalArray, float *reconArray, 
+  std::vector <Detection> searchReconArray(size_t *dim, float *originalArray, float *reconArray, 
 					   Param &par, Statistics::StatsContainer<float> &stats);
-  std::vector <Detection> searchReconArraySpectral(long *dim, float *originalArray, float *reconArray, 
+  std::vector <Detection> searchReconArraySpectral(size_t *dim, float *originalArray, float *reconArray, 
 						   Param &par, Statistics::StatsContainer<float> &stats);
-  std::vector <Detection> searchReconArraySpatial(long *dim, float *originalArray, float *reconArray, 
+  std::vector <Detection> searchReconArraySpatial(size_t *dim, float *originalArray, float *reconArray, 
 						  Param &par, Statistics::StatsContainer<float> &stats);
 
   /// @brief Search a 3-dimensional array for significant detections. 
-  std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
+  std::vector <Detection> search3DArray(size_t *dim, float *Array, Param &par,
 					Statistics::StatsContainer<float> &stats);
-  std::vector <Detection> search3DArraySpectral(long *dim, float *Array, Param &par,
+  std::vector <Detection> search3DArraySpectral(size_t *dim, float *Array, Param &par,
 						Statistics::StatsContainer<float> &stats);
-  std::vector <Detection> search3DArraySpatial(long *dim, float *Array, Param &par,
+  std::vector <Detection> search3DArraySpatial(size_t *dim, float *Array, Param &par,
 					       Statistics::StatsContainer<float> &stats);
 
   //=========================================================================
@@ -75,8 +75,8 @@ namespace duchamp
   public:
     DataArray();  ///< Basic DataArray constructor
     DataArray(short int nDim); ///< Basic nDim-dimensional DataArray constructor
-    DataArray(short int nDim, long size);///< Basic nDim-dimensional DataArray constructor, specifying size.
-    DataArray(short int nDim, long *dimensions); ///< Basic nDim-dimensional DataArray constructor, specifying size of dimensions.
+    DataArray(short int nDim, size_t size);///< Basic nDim-dimensional DataArray constructor, specifying size.
+    DataArray(short int nDim, size_t *dimensions); ///< Basic nDim-dimensional DataArray constructor, specifying size of dimensions.
     virtual ~DataArray(); ///< Basic DataArray constructor
     DataArray(const DataArray &d);
     DataArray& operator=(const DataArray &d);
@@ -84,19 +84,19 @@ namespace duchamp
     //-----------------------------------------
     // Obvious inline accessor functions.
     //
-    long               getDimX(){if(numDim>0) return axisDim[0];else return 0;}; 
-    long               getDimY(){if(numDim>1) return axisDim[1];else return 1;};
-    long               getDimZ(){if(numDim>2) return axisDim[2];else return 1;};
-    long               getSize(){ return numPixels; };
+    size_t             getDimX(){if(numDim>0) return axisDim[0];else return 0;}; 
+    size_t             getDimY(){if(numDim>1) return axisDim[1];else return 1;};
+    size_t             getDimZ(){if(numDim>2) return axisDim[2];else return 1;};
+    size_t             getSize(){ return numPixels; };
     short int          getNumDim(){ return numDim; };
-    virtual float      getPixValue(long pos){ return array[pos]; };
-    virtual void       setPixValue(long pos, float f){array[pos] = f;};
-    Detection          getObject(long number){ return objectList->at(number); };
-    Detection *        pObject(long number){ return &(objectList->at(number));};
+    virtual float      getPixValue(size_t pos){ return array[pos]; };
+    virtual void       setPixValue(size_t pos, float f){array[pos] = f;};
+    Detection          getObject(size_t number){ return objectList->at(number); };
+    Detection *        pObject(size_t number){ return &(objectList->at(number));};
     std::vector <Detection> getObjectList(){ return *objectList; };
     std::vector <Detection> *pObjectList(){ return objectList; };
     std::vector <Detection> &ObjectList(){ std::vector<Detection> &rlist = *objectList; return rlist; };
-    long               getNumObj(){ return objectList->size(); };
+    size_t              getNumObj(){ return objectList->size(); };
 
     /// @brief Delete all objects from the list of detections. 
     void               clearDetectionList(){ 
@@ -118,17 +118,17 @@ namespace duchamp
     // Related to the various arrays
     // 
     /// @brief  Return first three dimensional axes. 
-    void               getDim(long &x, long &y, long &z);
+    void               getDim(size_t &x, size_t &y, size_t &z);
     /// @brief Return array of dimensional sizes.
-    void               getDimArray(long *output);
-    long *             getDimArray(){return axisDim;};
+    void               getDimArray(size_t *output);
+    size_t *           getDimArray(){return axisDim;};
 
     /// @brief Return pixel value array. 
     void               getArray(float *output);
     float *            getArray(){return array;};
 
     /// @brief Save pixel value array. 
-    virtual void       saveArray(float *input, long size);
+    virtual void       saveArray(float *input, size_t size);
 
     //-----------------------------------------
     // Related to the object lists
@@ -174,7 +174,7 @@ namespace duchamp
     bool isDetection(float value);
 
     /// @brief  A detection test for pixel.  
-    bool isDetection(long voxel);
+    bool isDetection(size_t voxel);
 
 
     /// @brief Output operator for DataArray.
@@ -183,9 +183,9 @@ namespace duchamp
 
   protected:
     short int                numDim;     ///< Number of dimensions.
-    long                    *axisDim;    ///< Array of axis dimensions of cube
+    size_t                  *axisDim;    ///< Array of axis dimensions of cube
     bool                     axisDimAllocated; ///< has axisDim been allocated?
-    long                     numPixels;  ///< Total number of pixels in cube.
+    size_t                   numPixels;  ///< Total number of pixels in cube.
     float                   *array;      ///< Array of data.
     bool                     arrayAllocated; ///< has the array been allocated?
     std::vector <Detection> *objectList; ///< The list of detected objects.
@@ -204,8 +204,8 @@ namespace duchamp
   {
   public:
     Cube();                 ///< Basic Cube constructor.
-    Cube(long nPix);        ///< Alternative Cube constructor.
-    Cube(long *dimensions); ///< Alternative Cube constructor.
+    Cube(size_t nPix);        ///< Alternative Cube constructor.
+    Cube(size_t *dimensions); ///< Alternative Cube constructor.
     virtual ~Cube();        ///< Basic Cube destructor.
     Cube(const Cube &c);    ///< Copy constructor
     Cube& operator=(const Cube &c); ///< Copy operator
@@ -221,10 +221,10 @@ namespace duchamp
 
     // INLINE functions -- definitions included after class declaration.
     /// @brief Is the voxel number given by vox a BLANK value? 
-    bool        isBlank(int vox){ return par.isBlank(array[vox]); };
+    bool        isBlank(size_t vox){ return par.isBlank(array[vox]); };
 
     /// @brief Is the voxel at (x,y,z) a BLANK value? 
-    bool        isBlank(long x, long y, long z){ 
+    bool        isBlank(size_t x, size_t y, size_t z){ 
       return par.isBlank(array[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x]); };
 
     /// @brief Return a bool array masking blank pixels: 1=good, 0=blank 
@@ -233,26 +233,26 @@ namespace duchamp
     /// @brief Does the Cube::recon array exist? 
     bool        isRecon(){ return reconExists; }; 
 
-    float       getPixValue(long pos){ return array[pos]; };
-    float       getPixValue(long x, long y, long z){ 
+    float       getPixValue(size_t pos){ return array[pos]; };
+    float       getPixValue(size_t x, size_t y, size_t z){ 
       return array[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x]; };
-    short       getDetectMapValue(long pos){ return detectMap[pos]; };
-    short       getDetectMapValue(long x, long y){ return detectMap[y*axisDim[0]+x]; };
-    float       getReconValue(long pos){ return recon[pos]; };
-    float       getReconValue(long x, long y, long z){ 
+    short       getDetectMapValue(size_t pos){ return detectMap[pos]; };
+    short       getDetectMapValue(size_t x, size_t y){ return detectMap[y*axisDim[0]+x]; };
+    float       getReconValue(size_t pos){ return recon[pos]; };
+    float       getReconValue(size_t x, size_t y, size_t z){ 
       return recon[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x];};
-    float       getBaselineValue(long pos){ return baseline[pos]; };
-    float       getBaselineValue(long x, long y, long z){ 
+    float       getBaselineValue(size_t pos){ return baseline[pos]; };
+    float       getBaselineValue(size_t x, size_t y, size_t z){ 
       return baseline[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x]; };
-    void        setPixValue(long pos, float f){array[pos] = f;};
-    void        setPixValue(long x, long y, long z, float f){ 
+    void        setPixValue(size_t pos, float f){array[pos] = f;};
+    void        setPixValue(size_t x, size_t y, size_t z, float f){ 
       array[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x] = f;};
-    void        setDetectMapValue(long pos, short f){ detectMap[pos] = f;};
-    void        setDetectMapValue(long x, long y, short f){ detectMap[y*axisDim[0] + x] = f;};
-    void        incrementDetectMap(long x, long y){detectMap[y*axisDim[0]+x]++;};
-    void        incrementDetectMap(long pos){detectMap[pos]++;};
-    void        setReconValue(long pos, float f){recon[pos] = f;};
-    void        setReconValue(long x, long y, long z, float f){ 
+    void        setDetectMapValue(size_t pos, short f){ detectMap[pos] = f;};
+    void        setDetectMapValue(size_t x, size_t y, short f){ detectMap[y*axisDim[0] + x] = f;};
+    void        incrementDetectMap(size_t x, size_t y){detectMap[y*axisDim[0]+x]++;};
+    void        incrementDetectMap(size_t pos){detectMap[pos]++;};
+    void        setReconValue(size_t pos, float f){recon[pos] = f;};
+    void        setReconValue(size_t x, size_t y, size_t z, float f){ 
       recon[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x] = f; };
     void        setReconFlag(bool f){reconExists = f;};
 
@@ -263,6 +263,7 @@ namespace duchamp
 
     // additional functions -- in Cubes/cubes.cc
     /// @brief Allocate memory correctly, with WCS defining the correct axes. 
+    OUTCOME     initialiseCube(size_t *dimensions, bool allocateArrays=true);
     OUTCOME     initialiseCube(long *dimensions, bool allocateArrays=true);
 
     /// @brief Read in a FITS file, with subsection correction. 
@@ -278,13 +279,13 @@ namespace duchamp
     void        readSavedArrays();
 
     /// @brief Save an external array to the Cube's pixel array 
-    void        saveArray(float *input, long size);
+    void        saveArray(float *input, size_t size);
 
     /// @brief Save an external array to the Cube's pixel array 
     void        saveArray(std::vector<float> &input);
 
     /// @brief Save an external array to the Cube's reconstructed array. 
-    void        saveRecon(float *input, long size);
+    void        saveRecon(float *input, size_t size);
 
     /// @brief Save reconstructed array to an external array. 
     void        getRecon(float *output);
@@ -309,7 +310,7 @@ namespace duchamp
     void        setupFDR(float *input);
 
     /// @brief A detection test for a given voxel. 
-    bool        isDetection(long x, long y, long z);
+    bool        isDetection(size_t x, size_t y, size_t z);
 
     //-----------------------------
     // Dealing with the detections 
@@ -338,7 +339,7 @@ namespace duchamp
 
     /// @brief Clear the map of detected pixels. 
     void        clearDetectMap(){
-      for(int i=0;i<axisDim[0]*axisDim[1];i++) detectMap[i]=0;
+      for(size_t i=0;i<axisDim[0]*axisDim[1];i++) detectMap[i]=0;
     };
 
     /// @brief Find the flux enclosed by a Detection. 
@@ -660,8 +661,8 @@ namespace duchamp
   {
   public:
     Image(){numPixels=0; numDim=2; minSize=2;};
-    Image(long nPix);
-    Image(long *dimensions);
+    Image(size_t nPix);
+    Image(size_t *dimensions);
     virtual ~Image(){};
     Image(const Image &i);
     Image& operator=(const Image &i);
@@ -670,30 +671,30 @@ namespace duchamp
     // Defining the array
     //
     /// @brief Save an external array to the Cube's pixel array 
-    void      saveArray(float *input, long size);
+    void      saveArray(float *input, size_t size);
 
     /// @brief Extract a spectrum from an array and save to the local pixel array. 
-    void      extractSpectrum(float *Array, long *dim, long pixel);
+    void      extractSpectrum(float *Array, size_t *dim, size_t pixel);
 
     /// @brief Extract an image from an array and save to the local pixel array. 
-    void      extractImage(float *Array, long *dim, long channel);
+    void      extractImage(float *Array, size_t *dim, size_t channel);
 
     /// @brief Extract a spectrum from a cube and save to the local pixel array. 
-    void      extractSpectrum(Cube &cube, long pixel);
+    void      extractSpectrum(Cube &cube, size_t pixel);
 
     /// @brief Extract an image from a cube and save to the local pixel array. 
-    void      extractImage(Cube &cube, long channel);
+    void      extractImage(Cube &cube, size_t channel);
 
     //--------------------
     // Accessing the data.
     //
-    float     getPixValue(long pos){ return array[pos]; };
-    float     getPixValue(long x, long y){return array[y*axisDim[0] + x];};
+    float     getPixValue(size_t pos){ return array[pos]; };
+    float     getPixValue(size_t x, size_t y){return array[y*axisDim[0] + x];};
     // the next few should have checks against array overflow...
-    void      setPixValue(long pos, float f){array[pos] = f;};
-    void      setPixValue(long x, long y, float f){array[y*axisDim[0] + x] = f;};
+    void      setPixValue(size_t pos, float f){array[pos] = f;};
+    void      setPixValue(size_t x, size_t y, float f){array[y*axisDim[0] + x] = f;};
     bool      isBlank(int vox){return par.isBlank(array[vox]);};
-    bool      isBlank(long x,long y){return par.isBlank(array[y*axisDim[0]+x]);};
+    bool      isBlank(size_t x,size_t y){return par.isBlank(array[y*axisDim[0]+x]);};
 
     //-----------------------
     // Detection-related
@@ -708,12 +709,12 @@ namespace duchamp
     void         setMinSize(int i){minSize=i;};
 
     /// @brief  A detection test for a pixel location.  
-    bool      isDetection(long x, long y){
+    bool      isDetection(size_t x, size_t y){
       /// @details Test whether a pixel (x,y) is a statistically
       /// significant detection, according to the set of statistics in
       /// the local StatsContainer object.
 
-      long voxel = y*axisDim[0] + x;
+      size_t voxel = y*axisDim[0] + x;
       if(isBlank(x,y)) return false;
       else return Stats.isDetection(array[voxel]);
     };  

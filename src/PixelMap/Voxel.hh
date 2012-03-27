@@ -72,7 +72,7 @@ namespace PixelInfo
     float  getF(){return itsF;};
     
     /// @brief Return an index value for an array 
-    long   arrayIndex(long *dim);
+    size_t arrayIndex(size_t *dim);
 
     /// @brief Operator to print information of voxel. 
     friend std::ostream& operator<< ( std::ostream& theStream, Voxel& vox);

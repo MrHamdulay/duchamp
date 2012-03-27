@@ -186,12 +186,11 @@ namespace duchamp
 	    std::cout << std::flush;
 	  }
 
-	  size_t pos = -1;
+	  size_t pos = 0;
 	  for(unsigned long zpos = 0; zpos<zdim; zpos++){
 	    for(unsigned long ypos = 0; ypos<ydim; ypos++){
 	      for(unsigned long xpos = 0; xpos<xdim; xpos++){
 		// loops over each pixel in the image
-		pos++;
 
 		wavelet[pos] = coeffs[pos];
  	    
@@ -246,6 +245,7 @@ namespace duchamp
 		  } //-> end of zoffset loop
 		} //-> end of else{ ( from if(!isGood[pos])  )
 	    
+		pos++;
 	      } //-> end of xpos loop
 	    } //-> end of ypos loop
 	  } //-> end of zpos loop

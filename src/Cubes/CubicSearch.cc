@@ -77,7 +77,7 @@ void Cube::CubicSearch()
 }
 //---------------------------------------------------------------
 
-std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
+std::vector <Detection> search3DArray(size_t *dim, float *Array, Param &par,
 				      StatsContainer<float> &stats)
 {
 
@@ -95,7 +95,7 @@ std::vector <Detection> search3DArray(long *dim, float *Array, Param &par,
 //---------------------------------------------------------------
 
 
-std::vector <Detection> search3DArraySpectral(long *dim, float *Array, Param &par,
+std::vector <Detection> search3DArraySpectral(size_t *dim, float *Array, Param &par,
 					      StatsContainer<float> &stats)
 {
   /// @details
@@ -112,8 +112,8 @@ std::vector <Detection> search3DArraySpectral(long *dim, float *Array, Param &pa
   /// \return Vector of detected objects.
 
   std::vector <Detection> outputList;
-  long zdim = dim[2];
-  long xySize = dim[0] * dim[1];
+  size_t zdim = dim[2];
+  size_t xySize = dim[0] * dim[1];
   int num = 0;
 
   if(zdim>1){
@@ -132,7 +132,7 @@ std::vector <Detection> search3DArraySpectral(long *dim, float *Array, Param &pa
       //  of pixel #i.
     }
 
-    long *specdim = new long[2];
+    size_t *specdim = new size_t[2];
     specdim[0] = zdim; specdim[1]=1;
     Image *spectrum = new Image(specdim);
     delete [] specdim;
@@ -182,7 +182,7 @@ std::vector <Detection> search3DArraySpectral(long *dim, float *Array, Param &pa
 }
 //---------------------------------------------------------------
 
-std::vector <Detection> search3DArraySpatial(long *dim, float *Array, 
+std::vector <Detection> search3DArraySpatial(size_t *dim, float *Array, 
 					     Param &par,
 					     StatsContainer<float> &stats)
 {
@@ -201,14 +201,14 @@ std::vector <Detection> search3DArraySpatial(long *dim, float *Array,
   /// \return A std::vector of detected objects.
 
   std::vector <Detection> outputList;
-  long zdim = dim[2];
+  size_t zdim = dim[2];
   int num = 0;
 
   ProgressBar bar;
   bool useBar = (zdim>1);
   if(useBar && par.isVerbose()) bar.init(zdim);
   
-  long *imdim = new long[2];
+  size_t *imdim = new size_t[2];
   imdim[0] = dim[0]; imdim[1] = dim[1];
   Image *channelImage = new Image(imdim);
   delete [] imdim;

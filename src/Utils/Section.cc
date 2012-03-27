@@ -63,19 +63,33 @@ namespace duchamp
 
   OUTCOME Section::parse(long *dimAxes, int size)
   {
-    std::vector<long> vecDim(size);
+    std::vector<size_t> vecDim(size);
+    for(int i=0;i<size;i++) vecDim[i] = dimAxes[i];
+    return this->parse(vecDim);
+  }
+
+  OUTCOME Section::parse(size_t *dimAxes, int size)
+  {
+    std::vector<size_t> vecDim(size);
     for(int i=0;i<size;i++) vecDim[i] = dimAxes[i];
     return this->parse(vecDim);
   }
 
   OUTCOME Section::parse(std::vector<int> dimAxes)
   {
-    std::vector<long> vecDim(dimAxes.size());
+    std::vector<size_t> vecDim(dimAxes.size());
     for(size_t i=0;i<dimAxes.size();i++) vecDim[i] = long(dimAxes[i]);
     return this->parse(vecDim);
   }
 
   OUTCOME Section::parse(std::vector<long> dimAxes)
+  {
+    std::vector<size_t> vecDim(dimAxes.size());
+    for(size_t i=0;i<dimAxes.size();i++) vecDim[i] = long(dimAxes[i]);
+    return this->parse(vecDim);
+  }
+
+  OUTCOME Section::parse(std::vector<size_t> dimAxes)
   {
     /// @details
     /// This function reads the subsection string, and registers the
