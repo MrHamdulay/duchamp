@@ -132,12 +132,6 @@ template <class T> float findStddev(T *array, size_t size)
   /// \param size The length of the array.
   /// \return The rms value of the array, returned as a float
 
-  // double mean = double(findMean(array,size));
-  // double stddev = (double(array[0])-mean) * (double(array[0])-mean);
-  // for(size_t i=1;i<size;i++) stddev += (double(array[i])-mean)*(double(array[i])-mean);
-  // double stddev = stddev/double(size-1));
-
-  // T sumx=0,sumxx=0;
   double sumx=0.,sumxx=0.;
   double stddev=0.;
   double dsize=double(size);
@@ -147,11 +141,8 @@ template <class T> float findStddev(T *array, size_t size)
   }
    // std::cerr << sumx << " " << sumxx << " " << size << " " << size*size <<"\n";
    // std::cerr << double(sumx) << " " << double(sumxx) << " " << double(size) << " " << double(size*size)<< "\n";
-   //  double mean=double(sumx)/double(size);
   double mean=sumx/dsize;
   if(size>0)
-    // stddev = sqrt(double(sumxx)/double(size) - double(sumx*sumx)/double(size*size));
-    //    stddev = sqrt(double(sumxx)/double(size) - mean*mean);
     stddev = sqrt(sumxx/dsize - mean*mean);
    // std::cerr << stddev << " " << float(stddev) << "\n";
   return float(stddev);
@@ -171,7 +162,6 @@ template <class T> float findStddevDiff(T *first, T *second, size_t size)
   /// \param size The length of the array.
   /// \return The rms value of the array, returned as a float
 
-  // T sumx=0,sumxx=0;
   double sumx=0.,sumxx=0.;
   double stddev=0.;
   double dsize=double(size);
@@ -182,7 +172,6 @@ template <class T> float findStddevDiff(T *first, T *second, size_t size)
   double mean=sumx/dsize;
   if(size>0)
     stddev = sqrt(sumxx/dsize - mean*mean);
-    // stddev = sqrt(double(sumxx)/double(size) - double(sumx*sumx)/double(size*size));
   return float(stddev);
 }
 template float findStddevDiff<int>(int *first, int *second, size_t size);
@@ -203,7 +192,6 @@ template <class T> float findStddev(T *array, bool *mask, size_t size)
   /// \param size The length of the array.
   /// \return The rms value of the array, returned as a float
 
-  // T sumx=0,sumxx=0;
   double sumx=0.,sumxx=0.;
   double stddev=0.;
   int ct=0;
@@ -218,7 +206,6 @@ template <class T> float findStddev(T *array, bool *mask, size_t size)
   double mean=sumx/dct;
   if(ct>0)
     stddev = sqrt(sumxx/dct - mean*mean);
-    // stddev = sqrt(double(sumxx)/double(ct) - double(sumx*sumx)/double(ct*ct));
   return float(stddev);
 }
 template float findStddev<int>(int *array, bool *mask, size_t size);
@@ -239,7 +226,6 @@ template <class T> float findStddevDiff(T *first, T *second, bool *mask, size_t 
   /// \param size The length of the array.
   /// \return The rms value of the array, returned as a float
 
-  // T sumx=0,sumxx=0;
   double sumx=0,sumxx=0;
   double stddev=0;
   int ct=0;
@@ -254,7 +240,6 @@ template <class T> float findStddevDiff(T *first, T *second, bool *mask, size_t 
   double mean=sumx/dct;
   if(ct>0)
     stddev = sqrt(sumxx/dct - mean*mean);
-    // stddev = sqrt(double(sumxx)/double(ct) - double(sumx*sumx)/double(ct*ct));
   return float(stddev);
 }
 template float findStddevDiff<int>(int *first, int *second, bool *mask, size_t size);
