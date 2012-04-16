@@ -1,0 +1,12 @@
+imageFile	verification/verificationCube.fits
+flagMW		false
+flagTrim	false
+flagAtrous	false
+snrCut		4
+minChannels     2
+flagMaps        false
+flagLog         true
+logFile         verification/log8.txt
+outFile         verification/results8.txt
+spectraFile     verification/spectra8.ps
+flagRobustStats false

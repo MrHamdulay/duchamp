@@ -7,16 +7,17 @@ dir=./verification
 
 numErrors=0
 
-ndet=(5 5 5 5 1 1 5)
-number=("first" "second" "third" "fourth" "fifth" "sixth" "seventh")
+ndet=(5 5 5 5 1 1 5 5)
+number=("first" "second" "third" "fourth" "fifth" "sixth" "seventh" "eighth")
 explanation=("This is a simple sigma-clipping search" 
 "This uses the FDR method" 
 "This spatially smoothes the cube, then searches with simple sigma-clipping" 
 "This reconstructs the cube, then searches with simple sigma-clipping" 
 "This just uses a small subsection of the full cube, with simple searching" 
 "This reconstructs the subsection, then searches with simple sigma-clipping" 
-"This does the same as the first, and grows detections" )
-explanation2=("-" "-" "It should take a bit longer than the first two." "It should take a bit longer again" "-" "-" "-" )
+"This does the same as the first, and grows detections" 
+"This does the same as the first, but with regular statistics instead of robust")
+explanation2=("-" "-" "It should take a bit longer than the first two." "It should take a bit longer again" "-" "-" "-" "-")
 
 ##################################################################
 # Run the tests.
