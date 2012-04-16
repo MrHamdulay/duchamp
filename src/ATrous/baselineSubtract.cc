@@ -37,7 +37,7 @@
 namespace duchamp
 {
 
-  void baselineSubtract(size_t numSpec, unsigned long specLength, float *originalCube, 
+  void baselineSubtract(size_t numSpec, size_t specLength, float *originalCube, 
 			float *baselineValues, Param &par)
   {
     ///  A routine to find the baseline of each spectrum in a cube (the spectral 

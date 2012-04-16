@@ -51,7 +51,7 @@ namespace duchamp
 			   float *&input,float *&output, Param &par);
 
   /// @brief Subtract a baseline from a set of spectra in a cube. 
-  void baselineSubtract(size_t numSpec, unsigned int specLength, 
+  void baselineSubtract(size_t numSpec, size_t specLength, 
 			float *originalCube, float *baseline, Param &par);
 
   /// @brief Find the baseline of a 1-D spectrum. 
