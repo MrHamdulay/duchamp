@@ -151,7 +151,7 @@ namespace duchamp
 	std::cout<<"  Reconstructing... ";
 	bar.init(xySize);
       }
-      for(int npix=0; npix<xySize; npix++){
+      for(size_t npix=0; npix<xySize; npix++){
 
 	if( this->par.isVerbose() ) bar.update(npix+1);
 
@@ -190,26 +190,26 @@ namespace duchamp
     if(!this->reconExists){
       if(this->par.isVerbose()) std::cout<<"  Reconstructing... ";
       if(useBar&&this->par.isVerbose()) bar.init(this->axisDim[2]);
-      for(int z=0;z<this->axisDim[2];z++){
+      for(size_t z=0;z<this->axisDim[2];z++){
 
 	if( this->par.isVerbose() && useBar ) bar.update((z+1));
 
 	if(!this->par.isInMW(z)){
 	  float *im = new float[xySize];
 	  float *newIm = new float[xySize];
-	  for(int npix=0; npix<xySize; npix++) 
+	  for(size_t npix=0; npix<xySize; npix++) 
 	    im[npix] = this->array[z*xySize+npix];
 	  bool verboseFlag = this->par.isVerbose();
 	  this->par.setVerbosity(false);
 	  atrous2DReconstruct(xdim,ydim,im,newIm,this->par);
 	  this->par.setVerbosity(verboseFlag);
-	  for(int npix=0; npix<xySize; npix++) 
+	  for(size_t npix=0; npix<xySize; npix++) 
 	    this->recon[z*xySize+npix] = newIm[npix];
 	  delete [] im;
 	  delete [] newIm;
 	}
 	else {
-	  for(int i=z*xySize; i<(z+1)*xySize; i++) 
+	  for(size_t i=z*xySize; i<(z+1)*xySize; i++) 
 	    this->recon[i] = this->array[i];
 	}
       }
@@ -295,9 +295,9 @@ namespace duchamp
 
       bool *doPixel = new bool[xySize];
       // doPixel is a bool array to say whether to look in a given spectrum
-      for(int npix=0; npix<xySize; npix++){
+      for(size_t npix=0; npix<xySize; npix++){
 	doPixel[npix] = false;
-	for(int z=0;z<zdim;z++) {
+	for(size_t z=0;z<zdim;z++) {
 	  doPixel[npix] = doPixel[npix] || 
 	    (!par.isBlank(originalArray[npix]) && !par.isInMW(z));
 	}
@@ -316,10 +316,10 @@ namespace duchamp
       // spectrum->pars().setBeamSize(2.); 
       // // beam size: for spectrum, only neighbouring channels correlated
 
-      for(int y=0; y<dim[1]; y++){
-	for(int x=0; x<dim[0]; x++){
+      for(size_t y=0; y<dim[1]; y++){
+	for(size_t x=0; x<dim[0]; x++){
 
-	  int npix = y*dim[0] + x;
+	  size_t npix = y*dim[0] + x;
 	  if( par.isVerbose() ) bar.update(npix+1);
 
 	  if(doPixel[npix]){
@@ -394,7 +394,7 @@ namespace duchamp
     channelImage->saveStats(stats);
     channelImage->setMinSize(1);
 
-    for(int z=0; z<zdim; z++){  // loop over all channels
+    for(size_t z=0; z<zdim; z++){  // loop over all channels
 
       if( par.isVerbose() && useBar ) bar.update(z+1);
 

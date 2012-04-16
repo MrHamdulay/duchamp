@@ -112,9 +112,9 @@ namespace duchamp
 
 	// Trim the array of pixel values
 	float *newarray  = new float[this->numPixels];
-	for(int x = 0; x < axisDim[0]; x++){
-	  for(int y = 0; y < axisDim[1]; y++){
-	    for(int z = 0; z < axisDim[2]; z++){ 
+	for(size_t x = 0; x < axisDim[0]; x++){
+	  for(size_t y = 0; y < axisDim[1]; y++){
+	    for(size_t z = 0; z < axisDim[2]; z++){ 
 	      oldpos = (x+left) + (y+bottom)*xdim + z*xdim*ydim;
 	      newpos = x + y*this->axisDim[0] + 
 		z*this->axisDim[0]*this->axisDim[1];
@@ -128,9 +128,9 @@ namespace duchamp
 	// Trim the array of baseline values
 	if(this->par.getFlagBaseline()){
 	  float *newarray  = new float[this->numPixels];
-	  for(int x = 0; x < axisDim[0]; x++){
-	    for(int y = 0; y < axisDim[1]; y++){
-	      for(int z = 0; z < axisDim[2]; z++){ 
+	  for(size_t x = 0; x < axisDim[0]; x++){
+	    for(size_t y = 0; y < axisDim[1]; y++){
+	      for(size_t z = 0; z < axisDim[2]; z++){ 
 		oldpos = (x+left) + (y+bottom)*xdim + z*xdim*ydim;
 		newpos = x + y*this->axisDim[0] + 
 		  z*this->axisDim[0]*this->axisDim[1];
@@ -144,8 +144,8 @@ namespace duchamp
 
 	// Trim the 2-D detection map
 	short *newdetect = new short[this->axisDim[0]*this->axisDim[1]];
-	for(int x = 0; x < axisDim[0]; x++){
-	  for(int y = 0; y < axisDim[1]; y++){
+	for(size_t x = 0; x < axisDim[0]; x++){
+	  for(size_t y = 0; y < axisDim[1]; y++){
 	    oldpos = (x+left) + (y+bottom)*xdim;
 	    newpos = x + y*this->axisDim[0];
 	    newdetect[newpos] = this->detectMap[oldpos];
@@ -158,9 +158,9 @@ namespace duchamp
 	  // Trim the reconstructed array if we are going to do the
 	  // reconstruction or smooth the array
 	  float *newrecon  = new float[this->numPixels];
-	  for(int x = 0; x < axisDim[0]; x++){
-	    for(int y = 0; y < axisDim[1]; y++){
-	      for(int z = 0; z < axisDim[2]; z++){ 
+	  for(size_t x = 0; x < axisDim[0]; x++){
+	    for(size_t y = 0; y < axisDim[1]; y++){
+	      for(size_t z = 0; z < axisDim[2]; z++){ 
 		oldpos = (x+left) + (y+bottom)*xdim + z*xdim*ydim;
 		newpos = x + y*this->axisDim[0] + 
 		  z*this->axisDim[0]*this->axisDim[1];
@@ -206,17 +206,17 @@ namespace duchamp
       this->axisDim[2] = smallZDim;
       this->numPixels = this->axisDim[0]*this->axisDim[1]*this->axisDim[2];
 
-      long pos,smlpos;
+      size_t pos,smlpos;
       bool isDud;
 
       // Correct the array of pixel values
       float *newarray  = new float[this->numPixels];
-      for(int x = 0; x < this->axisDim[0]; x++){
-	for(int y = 0; y < this->axisDim[1]; y++){
+      for(size_t x = 0; x < this->axisDim[0]; x++){
+	for(size_t y = 0; y < this->axisDim[1]; y++){
 	  isDud = (x<left) || (x>=smallXDim+left) || 
 	    (y<bottom) || (y>=smallYDim+bottom);
 	
-	  for(int z = 0; z < this->axisDim[2]; z++){ 
+	  for(size_t z = 0; z < this->axisDim[2]; z++){ 
 	    pos = x + y*this->axisDim[0] + z*this->axisDim[0]*this->axisDim[1];
 	    smlpos = (x-left) + (y-bottom)*smallXDim + z * smallXDim * smallYDim;
 	    if(isDud) newarray[pos] = this->par.getBlankPixVal();
@@ -230,12 +230,12 @@ namespace duchamp
       if(this->reconExists){
 	// Correct the reconstructed/smoothed array
 	float *newrecon   = new float[this->numPixels];
-	for(int x = 0; x < this->axisDim[0]; x++){
-	  for(int y = 0; y < this->axisDim[1]; y++){
+	for(size_t x = 0; x < this->axisDim[0]; x++){
+	  for(size_t y = 0; y < this->axisDim[1]; y++){
 	    isDud = (x<left) || (x>=smallXDim+left) || 
 	      (y<bottom) || (y>=smallYDim+bottom);
 	  
-	    for(int z = 0; z < this->axisDim[2]; z++){ 
+	    for(size_t z = 0; z < this->axisDim[2]; z++){ 
 	      pos = x + y*this->axisDim[0] + z*this->axisDim[0]*this->axisDim[1];
 	      smlpos = (x-left) + (y-bottom)*smallXDim
 		+ z * smallXDim * smallYDim;
@@ -251,12 +251,12 @@ namespace duchamp
       // Correct the array of baseline values
       if(this->par.getFlagBaseline()){
 	float *newbase  = new float[this->numPixels];
-	for(int x = 0; x < this->axisDim[0]; x++){
-	  for(int y = 0; y < this->axisDim[1]; y++){
+	for(size_t x = 0; x < this->axisDim[0]; x++){
+	  for(size_t y = 0; y < this->axisDim[1]; y++){
 	    isDud = (x<left) || (x>=smallXDim+left) || 
 	      (y<bottom) || (y>=smallYDim+bottom);
 	
-	    for(int z = 0; z < this->axisDim[2]; z++){ 
+	    for(size_t z = 0; z < this->axisDim[2]; z++){ 
 	      pos = x + y*this->axisDim[0] + z*this->axisDim[0]*this->axisDim[1];
 	      smlpos = (x-left) + (y-bottom)*smallXDim + z*smallXDim*smallYDim;
 	      if(isDud) newbase[pos] = this->par.getBlankPixVal();
@@ -270,8 +270,8 @@ namespace duchamp
 
       // Correct the 2-D detection map
       short *newdetect = new short[this->axisDim[0]*this->axisDim[1]];
-      for(int x = 0; x < this->axisDim[0]; x++){
-	for(int y = 0; y < this->axisDim[1]; y++){
+      for(size_t x = 0; x < this->axisDim[0]; x++){
+	for(size_t y = 0; y < this->axisDim[1]; y++){
 	  pos = x + y*this->axisDim[0];
 	  smlpos = (x-left) + (y-bottom)*smallXDim;
 	  isDud = (x<left) || (x>=smallXDim+left) || 

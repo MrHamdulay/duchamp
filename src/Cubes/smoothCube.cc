@@ -131,18 +131,18 @@ void Cube::SpectralSmooth()
 	bar.init(xySize);
       }
 
-      for(int pix=0;pix<xySize;pix++){
+      for(size_t pix=0;pix<xySize;pix++){
 
 	if( this->par.isVerbose() ) bar.update(pix+1);
     
-	for(int z=0;z<zdim;z++){
+	for(size_t z=0;z<zdim;z++){
 	  if(this->isBlank(z*xySize+pix)) spectrum[z]=0.;
 	  else spectrum[z] = this->array[z*xySize+pix];
 	}
 
 	float *smoothed = hann.smooth(spectrum,zdim);
 
-	for(int z=0;z<zdim;z++){
+	for(size_t z=0;z<zdim;z++){
 	  if(this->isBlank(z*xySize+pix)) 
 	    this->recon[z*xySize+pix] = this->array[z*xySize+pix];
 	  else 
@@ -194,17 +194,17 @@ void Cube::SpatialSmooth()
 
       float *image = new float[xySize];
 
-      for(int z=0;z<zdim;z++){
+      for(size_t z=0;z<zdim;z++){
 
 	if( this->par.isVerbose() && useBar ) bar.update(z+1);
       
-	for(int pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];
+	for(size_t pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];
     
 	bool *mask      = this->par.makeBlankMask(image,xySize);
     
 	float *smoothed = gauss.smooth(image,xdim,ydim,mask);
     
-	for(int pix=0;pix<xySize;pix++){
+	for(size_t pix=0;pix<xySize;pix++){
 	  if(mask[pix])
 	    this->recon[z*xySize+pix] = this->array[z*xySize+pix];
 	  else
@@ -264,13 +264,13 @@ void Cube::SpatialSmoothNSearch()
   float *smoothed=0;
   bool *mask=0;
   float median,madfm;//,threshold;
-  for(int z=0;z<zdim;z++){
+  for(size_t z=0;z<zdim;z++){
 
     if( this->par.isVerbose() ) bar.update(z+1);
       
     if(!this->par.isInMW(z)){
 
-      for(int pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];
+      for(size_t pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];
 
       mask  = this->par.makeBlankMask(image,xySize);
 

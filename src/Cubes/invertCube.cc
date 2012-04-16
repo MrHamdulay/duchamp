@@ -38,7 +38,7 @@ namespace duchamp
     ///  only has an effect when the main array has been allocated.
 
     if(this->arrayAllocated){
-      for(int i=0; i<this->numPixels; i++)
+      for(size_t i=0; i<this->numPixels; i++)
 	if(!this->isBlank(i)){
 	  this->array[i] *= -1.;
 	  if(this->reconExists) this->recon[i] *= -1.;

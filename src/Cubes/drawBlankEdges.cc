@@ -65,7 +65,7 @@ namespace duchamp
 	cpgqwin(&xoff,&x2,&yoff,&y2);
 
 	bool *blank = new bool[xdim*ydim];
-	for(int i=0;i<xdim*ydim;i++) blank[i] = par.isBlank(dataArray[i]);
+	for(size_t i=0;i<xdim*ydim;i++) blank[i] = par.isBlank(dataArray[i]);
 
 	for(size_t x=0; x<xdim; x++){// for each column...
 	  for(size_t y=1;y<ydim;y++){

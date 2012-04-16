@@ -122,9 +122,9 @@ std::vector <Detection> search3DArraySpectral(size_t *dim, float *Array, Param &
     if(par.isVerbose()) bar.init(xySize);
 
     bool *doPixel = new bool[xySize];
-    for(int npix=0; npix<xySize; npix++){
+    for(size_t npix=0; npix<xySize; npix++){
       doPixel[npix] = false;
-      for(int z=0;z<zdim;z++){
+      for(size_t z=0;z<zdim;z++){
 	doPixel[npix] = doPixel[npix] || 
 	  (!par.isBlank(Array[npix]) && !par.isInMW(z));
       }
@@ -141,10 +141,10 @@ std::vector <Detection> search3DArraySpectral(size_t *dim, float *Array, Param &
     //    spectrum->setMinSize(par.getMinChannels());
     spectrum->setMinSize(1);
 
-    for(int y=0; y<dim[1]; y++){
-      for(int x=0; x<dim[0]; x++){
+    for(size_t y=0; y<dim[1]; y++){
+      for(size_t x=0; x<dim[0]; x++){
 
-	int npix = y*dim[0] + x;
+	size_t npix = y*dim[0] + x;
 	if( par.isVerbose() ) bar.update(npix+1);
 	
 	if(doPixel[npix]){
@@ -216,7 +216,7 @@ std::vector <Detection> search3DArraySpatial(size_t *dim, float *Array,
   channelImage->saveStats(stats);
   channelImage->setMinSize(1);
 
-  for(int z=0; z<zdim; z++){
+  for(size_t z=0; z<zdim; z++){
 
     if( par.isVerbose() && useBar ) bar.update(z+1);
 

@@ -300,7 +300,7 @@ namespace duchamp
       outputTableHeader(fout,this->fullCols,"log",this->head.isWCS());
 
       if(this->par.getFlagBaseline()){
-	for(int i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
+	for(size_t i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
 	  this->array[i] += this->baseline[i];
       }
 
@@ -316,7 +316,7 @@ namespace duchamp
       }
 
       if(this->par.getFlagBaseline()){
-	for(int i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
+	for(size_t i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
 	  this->array[i] -= this->baseline[i];
       }
       fout.close();
@@ -345,23 +345,23 @@ namespace duchamp
     long right = this->par.getBorderRight();
     long top = this->par.getBorderTop();
     long bottom = this->par.getBorderBottom();
-    long *tempDim = new long[3];
+    size_t *tempDim = new size_t[3];
     tempDim[0] = (this->axisDim[0] + left + right);
     tempDim[1] = (this->axisDim[1] + bottom + top);
     tempDim[2] = this->axisDim[2];
-    long tempsize = tempDim[0] * tempDim[1] * tempDim[2];
+    size_t tempsize = tempDim[0] * tempDim[1] * tempDim[2];
     float *temparray = new float[tempsize];
     //  for(int i=0;i<this->numPixels;i++){ // loop over this->array
-    for(int z=0;z<tempDim[2];z++){
-      for(int y=0;y<tempDim[1];y++){
-	for(int x=0;x<tempDim[0];x++){
+    for(size_t z=0;z<tempDim[2];z++){
+      for(size_t y=0;y<tempDim[1];y++){
+	for(size_t x=0;x<tempDim[0];x++){
 
 	  bool isDud = (x<left) || (x>=this->axisDim[0]+left) || 
 	    (y<bottom) || (y>=this->axisDim[1]+bottom);
 	
-	  int temppos = x + tempDim[0]*y + tempDim[1]*tempDim[0]*z;
+	  size_t temppos = x + tempDim[0]*y + tempDim[1]*tempDim[0]*z;
 
-	  int pos = (x-left) + (y-bottom)*this->axisDim[0] + 
+	  size_t pos = (x-left) + (y-bottom)*this->axisDim[0] + 
 	    z*this->axisDim[0]*this->axisDim[1];
 
 	  if(isDud) temparray[temppos] = this->par.getBlankPixVal();

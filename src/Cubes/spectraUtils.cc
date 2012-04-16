@@ -101,17 +101,17 @@ namespace duchamp
     ///   by to return the integrated flux.
     ///   \param spec The integrated spectrum for the object -- must be allocated first.
 
-    for(int i=0;i<dimArray[2];i++) spec[i] = 0.;
+    for(size_t i=0;i<dimArray[2];i++) spec[i] = 0.;
     size_t xySize = dimArray[0]*dimArray[1];
     bool *done = new bool[xySize]; 
-    for(int i=0;i<xySize;i++) done[i]=false;
+    for(size_t i=0;i<xySize;i++) done[i]=false;
     std::vector<Voxel> voxlist = object.getPixelSet();
     std::vector<Voxel>::iterator vox;
     for(vox=voxlist.begin();vox<voxlist.end();vox++){
-      int pos = vox->getX() + dimArray[0] * vox->getY();
+      size_t pos = vox->getX() + dimArray[0] * vox->getY();
       if(!done[pos]){
 	done[pos] = true;
-	for(int z=0;z<dimArray[2];z++){
+	for(size_t z=0;z<dimArray[2];z++){
 	  if(mask[pos+z*xySize]){
 	    spec[z] += fluxArray[pos + z*xySize] / beamCorrection;
 	  }	    
@@ -138,7 +138,7 @@ namespace duchamp
 
     size_t xySize = dimArray[0]*dimArray[1];
     int pos = object.getXPeak() + dimArray[0]*object.getYPeak();
-    for(int z=0;z<dimArray[2];z++){
+    for(size_t z=0;z<dimArray[2];z++){
       if(mask[pos + z*xySize])
 	spec[z] = fluxArray[pos + z*xySize];
     }
@@ -174,10 +174,12 @@ namespace duchamp
     size_t ydim = this->axisDim[1];
     size_t zdim = this->axisDim[2];
 	
-    for(int i=0;i<zdim;i++) specy[i]     = 0.;
-    for(int i=0;i<zdim;i++) specRecon[i] = 0.;
-    for(int i=0;i<zdim;i++) specBase[i]  = 0.;
-	
+    for(int i=0;i<zdim;i++){
+      specy[i]     = 0.;
+      specRecon[i] = 0.;
+      specBase[i]  = 0.;
+    }
+
     if(this->head.isWCS()){
       double xval = double(this->objectList->at(objNum).getXcentre());
       double yval = double(this->objectList->at(objNum).getYcentre());
@@ -194,14 +196,14 @@ namespace duchamp
 	
     if(this->par.getSpectralMethod()=="sum"){
       bool *done = new bool[xdim*ydim];
-      for(int i=0;i<xdim*ydim;i++) done[i]=false;
+      for(size_t i=0;i<xdim*ydim;i++) done[i]=false;
       std::vector<Voxel> voxlist = this->objectList->at(objNum).getPixelSet();
       std::vector<Voxel>::iterator vox;
       for(vox=voxlist.begin();vox<voxlist.end();vox++){
-	int pos = vox->getX() + xdim * vox->getY();
+	size_t pos = vox->getX() + xdim * vox->getY();
 	if(!done[pos]){
 	  done[pos] = true;
-	  for(int z=0;z<zdim;z++){
+	  for(size_t z=0;z<zdim;z++){
 	    if(!(this->isBlank(pos+z*xdim*ydim))){
 	      specy[z] += this->array[pos + z*xdim*ydim] / beamCorrection;
 	      if(this->reconExists)
@@ -217,7 +219,7 @@ namespace duchamp
     else {// if(par.getSpectralMethod()=="peak"){
       int pos = this->objectList->at(objNum).getXPeak() +
 	xdim*this->objectList->at(objNum).getYPeak();
-      for(int z=0;z<zdim;z++){
+      for(size_t z=0;z<zdim;z++){
 	specy[z] = this->array[pos + z*xdim*ydim];
 	if(this->reconExists)
 	  specRecon[z] = this->recon[pos + z*xdim*ydim];

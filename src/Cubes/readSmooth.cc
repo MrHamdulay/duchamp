@@ -140,7 +140,7 @@ namespace duchamp
       }
 
       for(int i=0;i<numAxesNew;i++){
-	if(dimAxesNew[i]!=this->axisDim[i]){
+	if(dimAxesNew[i]!=int(this->axisDim[i])){
 	  std::stringstream errmsg;
 	  errmsg << "Smoothed cube has different axis dimensions to original!"
 		 << "\nAxis #" << i+1 << " has size " << dimAxesNew[i] 

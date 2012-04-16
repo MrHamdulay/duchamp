@@ -718,12 +718,12 @@ namespace duchamp
       size_t size = xsize*ysize*zsize;
       std::vector <bool> isObj(size,false);
       double *localFlux = new double[size];
-      for(int i=0;i<size;i++) localFlux[i]=0.;
+      for(size_t i=0;i<size;i++) localFlux[i]=0.;
       // work out which pixels are object pixels
       std::vector<Voxel> voxlist = this->getPixelSet();
       for(std::vector<Voxel>::iterator v=voxlist.begin();v<voxlist.end();v++){
 	size_t pos=(v->getX()-this->xmin+1) + (v->getY()-this->ymin+1)*xsize
-	  + (v->getZ()-this->zmin+1)*xsize*ysize;
+	  + (v->getZ()-this->zmin+1)*spatsize;
 	localFlux[pos] = fluxArray[v->arrayIndex(dim)];
 	isObj[pos] = true;
       }
@@ -794,7 +794,7 @@ namespace duchamp
     ///  \param head FitsHeader object that contains the WCS information.
 
     float *intSpec = new float[zdim];
-    for(int i=0;i<zdim;i++) intSpec[i]=0;
+    for(size_t i=0;i<zdim;i++) intSpec[i]=0;
        
     Object2D spatMap = this->getSpatialMap();
     for(int s=0;s<spatMap.getNumScan();s++){
@@ -830,7 +830,7 @@ namespace duchamp
     ///  \param head FitsHeader object that contains the WCS information.
 
     float *intSpec = new float[zdim];
-    for(int i=0;i<zdim;i++) intSpec[i]=0;
+    for(size_t i=0;i<zdim;i++) intSpec[i]=0;
        
     std::vector<Voxel> voxelList = this->getPixelSet();
     std::vector<Voxel>::iterator vox;
@@ -866,15 +866,15 @@ namespace duchamp
     bool goLeft;
     
     float peak=0.;
-    int peakLoc=0;
-    for(int z=this->getZmin();z<=this->getZmax();z++) {
+    size_t peakLoc=0;
+    for(size_t z=this->getZmin();z<=size_t(this->getZmax());z++) {
       if(z==0 || peak<intSpec[z]){
 	peak = intSpec[z];
 	peakLoc = z;
       }
     }
     
-    int z=this->getZmin();
+    size_t z=this->getZmin();
     goLeft = intSpec[z]>peak*0.5;
     if(goLeft) while(z>0 && intSpec[z]>peak*0.5) z--;
     else       while(z<peakLoc && intSpec[z]<peak*0.5) z++;

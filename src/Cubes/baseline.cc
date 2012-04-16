@@ -55,12 +55,12 @@ namespace duchamp
 
       if(this->par.isVerbose() ) bar.update(pix+1);
 
-      for(int z=0; z<this->axisDim[2]; z++)  
+      for(size_t z=0; z<this->axisDim[2]; z++)  
 	spec[z] = this->array[z*numSpec + pix];
 
       getBaseline(this->axisDim[2], spec, thisBaseline, this->par);
 
-      for(int z=0; z<this->axisDim[2]; z++) {
+      for(size_t z=0; z<this->axisDim[2]; z++) {
 	this->baseline[z*numSpec+pix] = thisBaseline[z];
 	if(!par.isBlank(this->array[z*numSpec+pix])){
 	  this->array[z*numSpec+pix] -= thisBaseline[z];
@@ -86,7 +86,7 @@ namespace duchamp
 
     if(this->par.getFlagBaseline()){
 
-      for(int i=0;i<this->numPixels;i++){
+      for(size_t i=0;i<this->numPixels;i++){
 	if(!(this->par.isBlank(this->array[i])))
 	  this->array[i] += this->baseline[i];
       }
@@ -94,7 +94,7 @@ namespace duchamp
       if(this->reconExists){ 
 	// if we made a reconstruction, we need to add the baseline back in 
 	//   for plotting purposes
-	for(int i=0;i<this->numPixels;i++){
+	for(size_t i=0;i<this->numPixels;i++){
 	  if(!(this->par.isBlank(this->array[i])))
 	    this->recon[i] += this->baseline[i];
 	}

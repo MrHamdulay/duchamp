@@ -135,7 +135,7 @@ namespace duchamp
       }
 
       for(int i=0;i<numAxesNew;i++){
-	if(dimAxesNew[i]!=this->axisDim[i]){
+	if(dimAxesNew[i]!=int(this->axisDim[i])){
 	  std::stringstream errmsg;
 	  errmsg << "Reconstructed cube has different axis dimensions to original!"
 		 << "\nAxis #" << i+1 << " has size " << dimAxesNew[i] 
@@ -170,7 +170,8 @@ namespace duchamp
 	delete subsection;
       }
 
-      int scaleMin,filterCode,reconDim;
+      unsigned int scaleMin;
+      int filterCode,reconDim;
       float snrRecon;
       status = 0;
       fits_read_key(fptr, TINT, (char *)keyword_reconDim.c_str(), 

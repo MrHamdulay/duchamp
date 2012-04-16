@@ -255,7 +255,7 @@ namespace duchamp
     ///  beforehand: no checking is done on the memory.
     /// \param output The array that is written to.
 
-    for(int i=0;i<this->numPixels;i++) output[i] = this->array[i];
+    for(size_t i=0;i<this->numPixels;i++) output[i] = this->array[i];
   }
   //--------------------------------------------------------------------
 
@@ -276,7 +276,7 @@ namespace duchamp
       this->numPixels = size;
       this->array = new float[size];
       this->arrayAllocated = true;
-      for(int i=0;i<size;i++) this->array[i] = input[i];
+      for(size_t i=0;i<size;i++) this->array[i] = input[i];
     }
   }
   //--------------------------------------------------------------------
@@ -570,8 +570,9 @@ namespace duchamp
     if(numAxes<=0) numAxes=3;
     size_t *dim = new size_t[numAxes];
     for(int i=0;i<numAxes;i++) dim[i]=dimensions[i];
-    this->initialiseCube(dim,allocateArrays);
+    OUTCOME outcome=this->initialiseCube(dim,allocateArrays);
     delete dim;
+    return outcome;
   }
 
 
@@ -686,16 +687,16 @@ namespace duchamp
 	this->array      = new float[size];
 	this->arrayAllocated = true;
 	this->detectMap  = new short[imsize];
-	for(int i=0;i<imsize;i++) this->detectMap[i] = 0;
+	for(size_t i=0;i<imsize;i++) this->detectMap[i] = 0;
 	if(this->par.getFlagATrous() || this->par.getFlagSmooth()){
 	  this->recon    = new float[size];
 	  this->reconAllocated = true;
-	  for(int i=0;i<size;i++) this->recon[i] = 0.;
+	  for(size_t i=0;i<size;i++) this->recon[i] = 0.;
 	}
 	if(this->par.getFlagBaseline()){
 	  this->baseline = new float[size];
 	  this->baselineAllocated = true;
-	  for(int i=0;i<size;i++) this->baseline[i] = 0.;
+	  for(size_t i=0;i<size;i++) this->baseline[i] = 0.;
 	}
       }
     }
@@ -776,7 +777,7 @@ namespace duchamp
       this->numPixels = size;
       this->array = new float[size];
       this->arrayAllocated = true;
-      for(int i=0;i<size;i++) this->array[i] = input[i];
+      for(size_t i=0;i<size;i++) this->array[i] = input[i];
     }
   }
   //--------------------------------------------------------------------
@@ -829,7 +830,7 @@ namespace duchamp
 	this->numPixels = size;
 	this->recon = new float[size];
 	this->reconAllocated = true;
-	for(int i=0;i<size;i++) this->recon[i] = input[i];
+	for(size_t i=0;i<size;i++) this->recon[i] = input[i];
 	this->reconExists = true;
       }
     }
@@ -844,7 +845,7 @@ namespace duchamp
     /// \param output The array that is written to.
 
     // Need check for change in number of pixels!
-    for(int i=0;i<this->numPixels;i++){
+    for(size_t i=0;i<this->numPixels;i++){
       if(this->reconExists) output[i] = this->recon[i];
       else output[i] = 0.;
     }
@@ -860,9 +861,9 @@ namespace duchamp
     /// \deprecated
 
     if(this->par.getFlagMW()){
-      for(int pix=0;pix<this->axisDim[0]*this->axisDim[1];pix++){
-	for(int z=0;z<this->axisDim[2];z++){
-	  int pos = z*this->axisDim[0]*this->axisDim[1] + pix;
+      for(size_t pix=0;pix<this->axisDim[0]*this->axisDim[1];pix++){
+	for(size_t z=0;z<this->axisDim[2];z++){
+	  size_t pos = z*this->axisDim[0]*this->axisDim[1] + pix;
 	  if(!this->isBlank(pos) && this->par.isInMW(z)) this->array[pos]=0.;
 	}
       }
@@ -909,10 +910,10 @@ namespace duchamp
       // size_t xysize = this->axisDim[0]*this->axisDim[1];
 
       bool *mask = new bool[this->numPixels];
-      int vox=0,goodSize = 0;
-      for(int z=0;z<this->axisDim[2];z++){
-	for(int y=0;y<this->axisDim[1];y++){
-	  for(int x=0;x<this->axisDim[0];x++){
+      size_t vox=0,goodSize = 0;
+      for(size_t z=0;z<this->axisDim[2];z++){
+	for(size_t y=0;y<this->axisDim[1];y++){
+	  for(size_t x=0;x<this->axisDim[0];x++){
 	    //	    vox = z * xysize + y*this->axisDim[0] + x;
 	    bool isBlank=this->isBlank(vox);
 	    bool isMW = this->par.isInMW(z);
@@ -938,9 +939,9 @@ namespace duchamp
 
 	  goodSize=0;
 	  vox=0;
-	  for(int z=0;z<this->axisDim[2];z++){
-	    for(int y=0;y<this->axisDim[1];y++){
-	      for(int x=0;x<this->axisDim[0];x++){
+	  for(size_t z=0;z<this->axisDim[2];z++){
+	    for(size_t y=0;y<this->axisDim[1];y++){
+	      for(size_t x=0;x<this->axisDim[0];x++){
 		//		vox = z * xysize + y*this->axisDim[0] + x;
 		if(mask[vox]) tempArray[goodSize++] = this->array[vox];
 		vox++;
@@ -960,9 +961,9 @@ namespace duchamp
 	  goodSize = 0;
 	  //	  for(int p=0;p<xysize;p++){
 	  vox=0;
-	  for(int z=0;z<this->axisDim[2];z++){
-	    for(int y=0;y<this->axisDim[1];y++){
-	      for(int x=0;x<this->axisDim[0];x++){
+	  for(size_t z=0;z<this->axisDim[2];z++){
+	    for(size_t y=0;y<this->axisDim[1];y++){
+	      for(size_t x=0;x<this->axisDim[0];x++){
 		//	      vox = z * xysize + p;
 	      if(mask[vox])
 		tempArray[goodSize++] = this->array[vox] - this->recon[vox];
@@ -1080,11 +1081,11 @@ namespace duchamp
     // first calculate p-value for each pixel -- assume Gaussian for now.
 
     float *orderedP = new float[this->numPixels];
-    int count = 0;
-    for(int x=0;x<this->axisDim[0];x++){
-      for(int y=0;y<this->axisDim[1];y++){
-	for(int z=0;z<this->axisDim[2];z++){
-	  int pix = z * this->axisDim[0]*this->axisDim[1] + 
+    size_t count = 0;
+    for(size_t x=0;x<this->axisDim[0];x++){
+      for(size_t y=0;y<this->axisDim[1];y++){
+	for(size_t z=0;z<this->axisDim[2];z++){
+	  size_t pix = z * this->axisDim[0]*this->axisDim[1] + 
 	    y*this->axisDim[0] + x;
 
 	  if(!(this->par.isBlank(this->array[pix])) && !this->par.isInMW(z)){ 
@@ -1100,7 +1101,7 @@ namespace duchamp
     std::stable_sort(orderedP,orderedP+count);
   
     // now find the maximum P value.
-    int max = 0;
+    size_t max = 0;
     double cN = 0.;
     // Calculate number of correlated pixels. Assume all spatial
     // pixels within the beam are correlated, and multiply this by the
@@ -1112,7 +1113,7 @@ namespace duchamp
     for(int psfCtr=1;psfCtr<=numVox;psfCtr++) cN += 1./float(psfCtr);
 
     double slope = this->par.getAlpha()/cN;
-    for(int loopCtr=0;loopCtr<count;loopCtr++) {
+    for(size_t loopCtr=0;loopCtr<count;loopCtr++) {
       if( orderedP[loopCtr] < (slope * double(loopCtr+1)/ double(count)) ){
 	max = loopCtr;
       }
@@ -1691,7 +1692,7 @@ namespace duchamp
       if(this->numPixels>0){
 	this->array = new float[size];
 	this->arrayAllocated = true;
-	for(int i=0;i<size;i++) this->array[i] = input[i];
+	for(size_t i=0;i<size;i++) this->array[i] = input[i];
       }
     }
   }
@@ -1722,7 +1723,7 @@ namespace duchamp
       if(this->numPixels>0){
 	this->array = new float[dim[2]];
 	this->arrayAllocated = true;
-	for(int z=0;z<dim[2];z++) this->array[z] = Array[z*dim[0]*dim[1] + pixel];
+	for(size_t z=0;z<dim[2];z++) this->array[z] = Array[z*dim[0]*dim[1] + pixel];
       }
     }
   }
@@ -1752,7 +1753,7 @@ namespace duchamp
       if(this->numPixels>0){
 	this->array = new float[zdim];
 	this->arrayAllocated = true;
-	for(int z=0;z<zdim;z++) 
+	for(size_t z=0;z<zdim;z++) 
 	  this->array[z] = cube.getPixValue(z*spatSize + pixel);
       }
     }
@@ -1785,7 +1786,7 @@ namespace duchamp
       if(this->numPixels>0){
 	this->array = new float[spatSize];
 	this->arrayAllocated = true;
-	for(int npix=0; npix<spatSize; npix++)
+	for(size_t npix=0; npix<spatSize; npix++)
 	  this->array[npix] = Array[channel*spatSize + npix];
       }
     }
@@ -1815,7 +1816,7 @@ namespace duchamp
       if(this->numPixels>0){
 	this->array = new float[spatSize];
 	this->arrayAllocated = true;
-	for(int npix=0; npix<spatSize; npix++) 
+	for(size_t npix=0; npix<spatSize; npix++) 
 	  this->array[npix] = cube.getPixValue(channel*spatSize + npix);
       }
     }
@@ -1831,7 +1832,7 @@ namespace duchamp
     ///  The values of the MW channels are set to 0, unless they are BLANK.
 
     if(this->par.getFlagMW() && (this->axisDim[1]==1) ){
-      for(int z=0;z<this->axisDim[0];z++){
+      for(size_t z=0;z<this->axisDim[0];z++){
 	if(!this->isBlank(z) && this->par.isInMW(z)) this->array[z]=0.;
       }
     }
@@ -1841,9 +1842,9 @@ namespace duchamp
   std::vector<Object2D> Image::findSources2D() 
   {
     std::vector<bool> thresholdedArray(this->axisDim[0]*this->axisDim[1]);
-    for(int posY=0;posY<this->axisDim[1];posY++){
-      for(int posX=0;posX<this->axisDim[0];posX++){
-	int loc = posX + this->axisDim[0]*posY;
+    for(size_t posY=0;posY<this->axisDim[1];posY++){
+      for(size_t posX=0;posX<this->axisDim[0];posX++){
+	size_t loc = posX + this->axisDim[0]*posY;
 	thresholdedArray[loc] = this->isDetection(posX,posY);
       }
     }
@@ -1853,7 +1854,7 @@ namespace duchamp
   std::vector<Scan> Image::findSources1D() 
   {
     std::vector<bool> thresholdedArray(this->axisDim[0]);
-    for(int posX=0;posX<this->axisDim[0];posX++){
+    for(size_t posX=0;posX<this->axisDim[0];posX++){
       thresholdedArray[posX] = this->isDetection(posX,0);
     }
     return spectrumDetect(thresholdedArray, this->axisDim[0], this->minSize);

@@ -282,7 +282,7 @@ namespace duchamp
       writeMaskHeaderInfo(fptrNew, this->par);
 	
       short *mask = new short[this->numPixels];
-      for(int i=0;i<this->numPixels;i++) mask[i]=0;
+      for(size_t i=0;i<this->numPixels;i++) mask[i]=0;
       std::vector<Detection>::iterator obj;
       for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
         std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
@@ -406,7 +406,7 @@ namespace duchamp
       double scale,offset,power;
       int status = wcsunits(this->head.getFluxUnits().c_str(), this->head.getOrigFluxUnits().c_str(), &scale, &offset, &power);
       if(status==0){
-	for(int i=0;i<this->numPixels;i++)
+	for(size_t i=0;i<this->numPixels;i++)
 	  if(!this->isBlank(i)){
 	    this->array[i] = pow(scale * this->array[i] + offset, power);
 	    this->recon[i] = pow(scale * this->recon[i] + offset, power);
@@ -466,7 +466,7 @@ namespace duchamp
 
     if(this->par.getFlagOutputResid()){
       float *resid = new float[this->numPixels];
-      for(int i=0;i<this->numPixels;i++) 
+      for(size_t i=0;i<this->numPixels;i++) 
 	resid[i] = this->array[i] - this->recon[i];
 
       std::string fileout = "!" + this->par.outputResidFile(); 

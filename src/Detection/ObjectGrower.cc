@@ -64,7 +64,7 @@ namespace duchamp {
 
     this->itsFlagArray = std::vector<STATE>(fullsize,AVAILABLE);
 
-    for(int o=0;o<theCube->getNumObj();o++){
+    for(size_t o=0;o<theCube->getNumObj();o++){
       std::vector<Voxel> voxlist = theCube->getObject(o).getPixelSet();
       for(size_t i=0; i<voxlist.size(); i++){
 	size_t pos = voxlist[i].getX() + voxlist[i].getY()*this->itsArrayDim[0] + voxlist[i].getZ()*spatsize;

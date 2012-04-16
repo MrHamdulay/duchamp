@@ -68,7 +68,7 @@ namespace duchamp
       else sigmaFactors[i] = sigmaFactors[i-1] / 2.;
     }
 
-    float mean,sigma,originalSigma,originalMean,oldsigma,newsigma;
+    float mean,originalSigma,oldsigma,newsigma;
     size_t goodSize=0;
     bool *isGood = new bool[size];
     for(size_t pos=0;pos<size;pos++){
