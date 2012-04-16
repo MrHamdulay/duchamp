@@ -101,7 +101,7 @@ namespace duchamp
       if(par.getFlagRobustStats())
 	originalSigma = madfmToSigma(findMADFM(input,isGood,size));
       else
-	originalSigma = findStddev(input,isGood,size);
+	originalSigma = findStddev<float>(input,isGood,size);
 
       float *coeffs = new float[size];
       float *wavelet = new float[size];
@@ -257,10 +257,10 @@ namespace duchamp
 	  if(scale>=par.getMinScale()){
 	    if(par.getFlagRobustStats())
 	      // findMedianStats(wavelet,size,isGood,mean,sigma);
-	      mean = findMedian(wavelet,isGood,size);
+	      mean = findMedian<float>(wavelet,isGood,size);
 	    else
 	      //findNormalStats(wavelet,size,isGood,mean,sigma);
-	      mean = findMean(wavelet,isGood,size);
+	      mean = findMean<float>(wavelet,isGood,size);
 	      
 	    threshold = mean + 
 	      par.getAtrousCut()*originalSigma*sigmaFactors[scale];
@@ -289,7 +289,7 @@ namespace duchamp
 	if(par.getFlagRobustStats())
 	  newsigma = madfmToSigma(findMADFMDiff(input,output,isGood,size));
 	else
-	  newsigma = findStddevDiff(input,output,isGood,size);
+	  newsigma = findStddevDiff<float>(input,output,isGood,size);
 
 	if(par.isVerbose()) printBackSpace(15);
 

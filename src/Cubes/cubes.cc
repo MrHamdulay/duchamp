@@ -949,10 +949,10 @@ namespace duchamp
 	  }
 
 	  // First, find the mean of the original array. Store it.
-	  this->Stats.setMean( findMean(tempArray, goodSize) );
+	  this->Stats.setMean( findMean<float>(tempArray, goodSize) );
 	
 	  // Now sort it and find the median. Store it.
-	  this->Stats.setMedian( findMedian(tempArray, goodSize, true) );
+	  this->Stats.setMedian( findMedian<float>(tempArray, goodSize, true) );
 
 	  // Now calculate the residuals and find the mean & median of
 	  // them. We don't store these, but they are necessary to find
@@ -971,7 +971,7 @@ namespace duchamp
 	    }
 	  }
 	    
-	  this->Stats.setStddev( findStddev(tempArray, goodSize) );
+	  this->Stats.setStddev( findStddev<float>(tempArray, goodSize) );
 
 	  // Now find the madfm of the residuals. Store it.
 	  this->Stats.setMadfm( findMADFM(tempArray, goodSize, true) );

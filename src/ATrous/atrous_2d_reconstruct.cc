@@ -94,7 +94,7 @@ Returning input array.\n");
       if(par.getFlagRobustStats())
 	originalSigma = madfmToSigma(findMADFM(input,isGood,size));
       else
-	originalSigma = findStddev(input,isGood,size);
+	originalSigma = findStddev<float>(input,isGood,size);
   
       float *coeffs    = new float[size];
       float *wavelet   = new float[size];
@@ -238,9 +238,9 @@ Returning input array.\n");
 	  if(scale>=par.getMinScale()){
 	    //	    findMedianStats(wavelet,goodSize,isGood,mean,sigma);
 	    if(par.getFlagRobustStats())
-	      mean = findMedian(wavelet,isGood,size);
+	      mean = findMedian<float>(wavelet,isGood,size);
 	    else
-	      mean= findMean(wavelet,isGood,size);
+	      mean= findMean<float>(wavelet,isGood,size);
 
 	    threshold = mean + 
 	      par.getAtrousCut() * originalSigma * sigmaFactors[scale];
@@ -264,7 +264,7 @@ Returning input array.\n");
 	if(par.getFlagRobustStats())
 	  newsigma = madfmToSigma(findMADFMDiff(input,output,isGood,size));
 	else
-	  newsigma = findStddevDiff(input,output,isGood,size);
+	  newsigma = findStddevDiff<float>(input,output,isGood,size);
 
 	if(par.isVerbose()) printBackSpace(15);
 

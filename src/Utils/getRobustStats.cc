@@ -460,9 +460,9 @@ template <class T> void findMedianStats(T *array, size_t size,
   T *newarray = new T[size];
    for(size_t i=0;i<size;i++) newarray[i] = array[i];
 
-   median = findMedian(newarray,size,true);
-   //   madfm = findMADFM(newarray,size,true);
-   madfm = findMADFM(newarray,size,median,true);
+   median = findMedian<T>(newarray,size,true);
+   //   madfm = findMADFM<T>(newarray,size,true);
+   madfm = findMADFM<T>(newarray,size,median,true);
 
   delete [] newarray;
 }
@@ -504,9 +504,9 @@ template <class T> void findMedianStats(T *array, size_t size, bool *mask,
 
   goodSize=0;
   for(size_t i=0;i<size;i++) if(mask[i]) newarray[goodSize++] = array[i];
-  median = findMedian(newarray,goodSize,true);
-  //  madfm = findMADFM(newarray,goodSize,true);
-  madfm = findMADFM(newarray,goodSize,median,true);
+  median = findMedian<T>(newarray,goodSize,true);
+  //  madfm = findMADFM<T>(newarray,goodSize,true);
+  madfm = findMADFM<T>(newarray,goodSize,median,true);
 
   delete [] newarray;
 }
@@ -542,9 +542,9 @@ template <class T> void findMedianStatsDiff(T *first, T *second, size_t size,
   T *newarray = new T[size];
    for(size_t i=0;i<size;i++) newarray[i] = first[i]-second[i];
 
-   median = findMedian(newarray,size,true);
-   //   madfm = findMADFM(newarray,size,true);
-   madfm = findMADFM(newarray,size,median,true);
+   median = findMedian<T>(newarray,size,true);
+   //   madfm = findMADFM<T>(newarray,size,true);
+   madfm = findMADFM<T>(newarray,size,median,true);
 
   delete [] newarray;
 }
@@ -588,9 +588,9 @@ template <class T> void findMedianStatsDiff(T *first, T *second, size_t size, bo
 
   goodSize=0;
   for(size_t i=0;i<size;i++) if(mask[i]) newarray[goodSize++] = first[i]-second[i];
-  median = findMedian(newarray,goodSize,true);
-  //  madfm = findMADFM(newarray,goodSize,true);
-  madfm = findMADFM(newarray,goodSize,median,true);
+  median = findMedian<T>(newarray,goodSize,true);
+  //  madfm = findMADFM<T>(newarray,goodSize,true);
+  madfm = findMADFM<T>(newarray,goodSize,median,true);
 
   delete [] newarray;
 }

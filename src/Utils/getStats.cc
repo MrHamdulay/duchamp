@@ -95,11 +95,11 @@ template <class T> void findAllStats(T *array, size_t size,
 
   for(size_t i=0;i<size;i++) newarray[i] = array[i];
 
-  mean = findMean(newarray,size);
-  stddev = findStddev(newarray,size);
-  median = findMedian(newarray,size,true);
-  //  madfm = findMADFM(newarray,size,true);
-  madfm = findMADFM(newarray,size,median,true);
+  mean = findMean<T>(newarray,size);
+  stddev = findStddev<T>(newarray,size);
+  median = findMedian<T>(newarray,size,true);
+  //  madfm = findMADFM<T>(newarray,size,true);
+  madfm = findMADFM<T>(newarray,size,median,true);
 
   delete [] newarray;
 
@@ -151,11 +151,11 @@ template <class T> void findAllStats(T *array, size_t size, bool *mask,
   goodSize=0;
   for(size_t i=0;i<size;i++) if(mask[i]) newarray[goodSize++] = array[i];
 
-  mean = findMean(newarray,goodSize);
-  stddev = findStddev(newarray,goodSize);
-  median = findMedian(newarray,goodSize,true);
-  //madfm = findMADFM(newarray,goodSize,true);
-  madfm = findMADFM(newarray,goodSize,median,true);
+  mean = findMean<T>(newarray,goodSize);
+  stddev = findStddev<T>(newarray,goodSize);
+  median = findMedian<T>(newarray,goodSize,true);
+  //madfm = findMADFM<T>(newarray,goodSize,true);
+  madfm = findMADFM<T>(newarray,goodSize,median,true);
 
   delete [] newarray;
 

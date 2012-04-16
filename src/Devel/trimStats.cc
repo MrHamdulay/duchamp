@@ -95,7 +95,7 @@ void findTrimmedHistStats2(float *array, const int size,
     if(keep[bin]) newarray[newsize++] = array[i];
   }
 
-  tmean = findMean(newarray,newsize);
+  tmean = findMean<float>(newarray,newsize);
 
   tsigma = newsize * (max-min)/float(nbin) / 
     (num[binmax] * erf(sqrt(M_LN2)) * sqrt(2.*M_PI));

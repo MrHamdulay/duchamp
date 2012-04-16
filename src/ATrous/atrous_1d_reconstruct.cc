@@ -134,7 +134,7 @@ namespace duchamp
 	if(par.getFlagRobustStats())
 	  originalSigma = madfmToSigma(findMADFM(input,isGood,xdim));
 	else
-	  originalSigma = findStddev(input,isGood,xdim);
+	  originalSigma = findStddev<float>(input,isGood,xdim);
 
 	int spacing = 1;
 	for(unsigned int scale = 1; scale<=numScales; scale++){
@@ -179,9 +179,9 @@ namespace duchamp
 	  if(scale>=MIN_SCALE){
 	    // 	    findMedianStats(wavelet,xdim,isGood,mean,sigma);
 	    if(par.getFlagRobustStats())
-	      mean = findMedian(wavelet,isGood,xdim);
+	      mean = findMedian<float>(wavelet,isGood,xdim);
 	    else
-	      mean = findMean(wavelet,isGood,xdim);
+	      mean = findMean<float>(wavelet,isGood,xdim);
 	
 	    for(size_t pos=0;pos<xdim;pos++){
 	      // preserve the Blank pixel values in the output.
@@ -207,7 +207,7 @@ namespace duchamp
 	if(par.getFlagRobustStats())
 	  newsigma = madfmToSigma(findMADFMDiff(input,output,isGood,xdim));
 	else
-	  newsigma = findStddevDiff(input,output,isGood,xdim);
+	  newsigma = findStddevDiff<float>(input,output,isGood,xdim);
 
 	if(par.isVerbose()) printBackSpace(26);
 
