@@ -41,7 +41,7 @@ using Statistics::madfmToSigma;
 namespace duchamp
 {
 
-  void atrous1DReconstruct(unsigned long &xdim, float *&input, float *&output, Param &par)
+  void atrous1DReconstruct(size_t &xdim, float *&input, float *&output, Param &par)
   {
     ///  A routine that uses the a trous wavelet method to reconstruct a 
     ///   1-dimensional spectrum. 

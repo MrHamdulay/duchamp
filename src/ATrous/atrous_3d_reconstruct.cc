@@ -43,7 +43,7 @@ using std::setw;
 namespace duchamp
 {
 
-  void atrous3DReconstruct(unsigned long &xdim, unsigned long &ydim, unsigned long &zdim, float *&input, 
+  void atrous3DReconstruct(size_t &xdim, size_t &ydim, size_t &zdim, float *&input, 
 			   float *&output, Param &par)
   {
     ///  A routine that uses the a trous wavelet method to reconstruct a 

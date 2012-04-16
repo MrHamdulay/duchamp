@@ -39,15 +39,15 @@ namespace duchamp
   /////////////////////////////////////////////////////////////////////////
 
   /// @brief Perform a 1-dimensional a trous wavelet reconstruction. 
-  void atrous1DReconstruct(unsigned long &size, float *&input, 
+  void atrous1DReconstruct(size_t &size, float *&input, 
 			   float *&output, Param &par);
 
   /// @brief Perform a 2-dimensional a trous wavelet reconstruction. 
-  void atrous2DReconstruct(unsigned long &xdim, unsigned long &ydim, float *&input,
+  void atrous2DReconstruct(size_t &xdim, size_t &ydim, float *&input,
 			   float *&output, Param &par);
 
   /// @brief Perform a 3-dimensional a trous wavelet reconstruction. 
-  void atrous3DReconstruct(unsigned long &xdim, unsigned long &ydim, unsigned long &zdim, 
+  void atrous3DReconstruct(size_t &xdim, size_t &ydim, size_t &zdim, 
 			   float *&input,float *&output, Param &par);
 
   /// @brief Subtract a baseline from a set of spectra in a cube. 

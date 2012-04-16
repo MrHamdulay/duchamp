@@ -40,7 +40,7 @@ using Statistics::madfmToSigma;
 namespace duchamp
 {
 
-  void atrous2DReconstruct(unsigned long &xdim, unsigned long &ydim, float *&input, float *&output, Param &par)
+  void atrous2DReconstruct(size_t &xdim, size_t &ydim, float *&input, float *&output, Param &par)
   {
     ///  A routine that uses the a trous wavelet method to reconstruct a 
     ///   2-dimensional image.
