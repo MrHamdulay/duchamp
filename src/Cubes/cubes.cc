@@ -571,7 +571,7 @@ namespace duchamp
     size_t *dim = new size_t[numAxes];
     for(int i=0;i<numAxes;i++) dim[i]=dimensions[i];
     OUTCOME outcome=this->initialiseCube(dim,allocateArrays);
-    delete dim;
+    delete [] dim;
     return outcome;
   }
 
