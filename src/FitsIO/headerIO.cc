@@ -52,7 +52,7 @@ namespace duchamp
     if(this->readBUNIT(fname) == FAILURE) return FAILURE;
   
     if(this->readBLANKinfo(fname, par)==FAILURE)
-      duchampWarning("Cube Reader", "Reading BLANK info failed");
+      duchampWarning("Cube Reader", "Reading BLANK info failed\n");
   
     if(this->readBeamInfo(fname, par)==FAILURE) returnValue=FAILURE;
 
