@@ -51,7 +51,8 @@ namespace duchamp
     //  integrated flux when we go to fixUnits.
     if(this->readBUNIT(fname) == FAILURE) return FAILURE;
   
-    if(this->readBLANKinfo(fname, par)==FAILURE) returnValue=FAILURE;
+    if(this->readBLANKinfo(fname, par)==FAILURE)
+      duchampWarning("Cube Reader", "Reading BLANK info failed");
   
     if(this->readBeamInfo(fname, par)==FAILURE) returnValue=FAILURE;
 
@@ -158,16 +159,16 @@ namespace duchamp
       if(par.getFlagTrim()){
 	par.setFlagTrim(false);
 	std::stringstream errmsg;
-	if(returnStatus == KEY_NO_EXIST)
+	if(status == KEY_NO_EXIST)
 	  duchampWarning("Cube Reader", 
 			 "There is no BLANK keyword present. Not doing any trimming.\n");
 	else{
 	  duchampWarning("Cube Reader", 
 			 "Error reading BLANK keyword, so not doing any trimming.");
 	  fits_report_error(stderr, status);
-	  return FAILURE;
 	}
       }
+      returnStatus = FAILURE;
     }
     else{
       status = 0;
