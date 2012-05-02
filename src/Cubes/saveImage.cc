@@ -580,26 +580,28 @@ namespace duchamp
     }
     
     if(bitpix>0){
-      strcpy(keyname,"BSCALE");
-      float bscale=this->head.getBscaleKeyword();
-      if(fits_update_key(fptr, TFLOAT, keyname, &bscale, NULL, &status)){
-	duchampFITSerror(status,"saveImage","Error writing BSCALE header:");
-      }
-      strcpy(keyname,"BZERO");
-      float bzero=this->head.getBzeroKeyword();
-      if(fits_update_key(fptr, TFLOAT, keyname, &bzero, NULL, &status)){
-	duchampFITSerror(status,"saveImage","Error writing BZERO header:");
-      }
-      strcpy(keyname,"BLANK");
-      int blank=this->head.getBlankKeyword();
-      if(fits_update_key(fptr, TINT, keyname, &blank, NULL, &status)){
-	duchampFITSerror(status,"saveImage","Error writing BLANK header:");
-      }
-      if(fits_set_imgnull(fptr, blank, &status)){
-	duchampFITSerror(status, "saveImage", "Error setting null value:");
-      }
-      if(fits_set_bscale(fptr, bscale, bzero, &status)){
-      	duchampFITSerror(status,"saveImage","Error setting scale:");
+      if(this->par.getFlagBlankPix()){
+	strcpy(keyname,"BSCALE");
+	float bscale=this->head.getBscaleKeyword();
+	if(fits_update_key(fptr, TFLOAT, keyname, &bscale, NULL, &status)){
+	  duchampFITSerror(status,"saveImage","Error writing BSCALE header:");
+	}
+	strcpy(keyname,"BZERO");
+	float bzero=this->head.getBzeroKeyword();
+	if(fits_update_key(fptr, TFLOAT, keyname, &bzero, NULL, &status)){
+	  duchampFITSerror(status,"saveImage","Error writing BZERO header:");
+	}
+	strcpy(keyname,"BLANK");
+	int blank=this->head.getBlankKeyword();
+	if(fits_update_key(fptr, TINT, keyname, &blank, NULL, &status)){
+	  duchampFITSerror(status,"saveImage","Error writing BLANK header:");
+	}
+	if(fits_set_imgnull(fptr, blank, &status)){
+	  duchampFITSerror(status, "saveImage", "Error setting null value:");
+	}
+	if(fits_set_bscale(fptr, bscale, bzero, &status)){
+	  duchampFITSerror(status,"saveImage","Error setting scale:");
+	}
       }
     }
 
