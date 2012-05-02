@@ -37,6 +37,7 @@ namespace duchamp
 
   protected:
     BEAM_ORIGIN itsOrigin;
+    float itsPixelScale;
 
   };
 

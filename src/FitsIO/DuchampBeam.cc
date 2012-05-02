@@ -13,18 +13,21 @@ namespace duchamp
     Beam()
   {
     this->itsOrigin = EMPTY;
+    this->itsPixelScale = 1.;
   }
 
   DuchampBeam::DuchampBeam(float maj, float min, float pa):
     Beam(maj,min,pa)
   {
     this->itsOrigin  = EMPTY;
+    this->itsPixelScale = 1.;
   }
 
   DuchampBeam::DuchampBeam(const Beam &b):
     Beam(b)
   {
     this->itsOrigin = EMPTY;
+    this->itsPixelScale = 1.;
   }
 
   DuchampBeam::DuchampBeam(const DuchampBeam &b):
@@ -36,7 +39,8 @@ namespace duchamp
   DuchampBeam& DuchampBeam::operator=(const DuchampBeam &b)
   {
     ((Beam &) *this) = b;
-    this->itsOrigin = b.itsOrigin;
+    this->itsOrigin = b.itsOrigin;		
+    this->itsPixelScale = b.itsPixelScale;
     return *this;
   }
     
@@ -44,12 +48,14 @@ namespace duchamp
   {
     this->Beam::define(maj,min,pa);
     this->itsOrigin = origin;
+    this->itsPixelScale = 1.;
   }
   
   void DuchampBeam::setFWHM(float fwhm, BEAM_ORIGIN origin)
   {
     this->Beam::setFWHM(fwhm);
     this->itsOrigin = origin;
+    this->itsPixelScale = 1.;
   }
 
   void DuchampBeam::setArea(float area, BEAM_ORIGIN origin)
@@ -134,6 +140,7 @@ namespace duchamp
     else{ // all keywords present
       this->define(bmaj/pixelScale, bmin/pixelScale, bpa, HEADER);
       par.setBeamAsUsed(*this);
+      this->itsPixelScale = pixelScale;
     }
   }
 
@@ -145,19 +152,22 @@ namespace duchamp
       char *keyword = new char[FLEN_KEYWORD];
       int status = 0;
       strcpy(keyword,"BMAJ");
-      if (fits_update_key(fptr, TFLOAT, keyword, &this->itsMaj, NULL, &status)){
+      float val=this->itsMaj*this->itsPixelScale;
+      if (fits_update_key(fptr, TFLOAT, keyword, &val, NULL, &status)){
 	duchampError("Writing beam","Error writing beam info:");
 	fits_report_error(stderr, status);
       }
       status = 0;
       strcpy(keyword,"BMIN");
-      if (fits_update_key(fptr, TFLOAT, keyword, &this->itsMin, NULL, &status)){
+      val=this->itsMin*this->itsPixelScale;
+      if (fits_update_key(fptr, TFLOAT, keyword, &val, NULL, &status)){
 	duchampError("Writing beam","Error writing beam info:");
 	fits_report_error(stderr, status);
       }
       status = 0;
       strcpy(keyword,"BPA");
-      if (fits_update_key(fptr, TFLOAT, keyword, &this->itsPA, NULL, &status)){
+      val=this->itsPA;
+      if (fits_update_key(fptr, TFLOAT, keyword, &val, NULL, &status)){
 	duchampError("Writing beam","Error writing beam info:");
 	fits_report_error(stderr, status);
       }
