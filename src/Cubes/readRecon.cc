@@ -253,7 +253,6 @@ namespace duchamp
       this->par.setFlagOutputRecon(false);
       this->par.setFlagOutputResid(false);
 
-      std::cerr << "Found flux units of " << fluxunits <<" compared to the desired flux units of " << this->par.getNewFluxUnits() << "\n";
       this->convertFluxUnits(fluxunits,this->par.getNewFluxUnits(),RECON);
 
       // The reconstruction is done -- set the appropriate flag

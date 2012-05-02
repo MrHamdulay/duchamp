@@ -30,6 +30,7 @@
 #include <string>
 #include <wcslib/wcs.h>
 #include <wcslib/wcshdr.h>
+#include <wcslib/wcsunits.h>
 #define WCSLIB_GETWCSTAB // define this so that we don't try to redefine wtbarr
                          // (this is a problem when using gcc v.4+
 #include <fitsio.h>
@@ -230,6 +231,21 @@ namespace duchamp
 
       }
 
+      // Read the BUNIT keyword, and translate to standard unit format if needs be
+      std::string header("BUNIT");
+      char *unit = new char[FLEN_VALUE];
+      std::string fluxunits;
+      fits_read_key(fptr, TSTRING, (char *)header.c_str(), unit, comment, &status);
+      if (status){
+	duchampWarning("Cube Reader","Error reading BUNIT keyword: ");
+	fits_report_error(stderr, status);
+	return FAILURE;
+      }
+      else{
+	wcsutrn(0,unit);
+	fluxunits = unit;
+      }
+  
       //
       // If we get to here, the smoothFile exists and the smoothing
       // parameters match those requested.
@@ -247,6 +263,8 @@ namespace duchamp
 
       // We don't want to write out the smoothed files at the end
       this->par.setFlagOutputSmooth(false);
+
+      this->convertFluxUnits(fluxunits,this->par.getNewFluxUnits(),RECON);
 
       // The reconstruction is done -- set the appropriate flag
       this->reconExists = true;
