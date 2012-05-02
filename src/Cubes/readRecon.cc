@@ -30,6 +30,7 @@
 #include <string>
 #include <wcslib/wcs.h>
 #include <wcslib/wcshdr.h>
+#include <wcslib/wcsunits.h>
 #define WCSLIB_GETWCSTAB // define this so that we don't try to redefine wtbarr
                          // (this is a problem when using gcc v.4+
 #include <fitsio.h>
@@ -217,6 +218,21 @@ namespace duchamp
 	duchampError("readReconCube", errmsg.str());
 	return FAILURE;
       }
+
+      // Read the BUNIT keyword, and translate to standard unit format if needs be
+      std::string header("BUNIT");
+      char *unit = new char[FLEN_VALUE];
+      std::string fluxunits;
+      fits_read_key(fptr, TSTRING, (char *)header.c_str(), unit, comment, &status);
+      if (status){
+	duchampWarning("Cube Reader","Error reading BUNIT keyword: ");
+	fits_report_error(stderr, status);
+	return FAILURE;
+      }
+      else{
+	wcsutrn(0,unit);
+	fluxunits = unit;
+      }
   
       //
       // If we get to here, the reconFile exists and matches the atrous 
@@ -236,6 +252,9 @@ namespace duchamp
       // We don't want to write out the recon or resid files at the end
       this->par.setFlagOutputRecon(false);
       this->par.setFlagOutputResid(false);
+
+      std::cerr << "Found flux units of " << fluxunits <<" compared to the desired flux units of " << this->par.getNewFluxUnits() << "\n";
+      this->convertFluxUnits(fluxunits,this->par.getNewFluxUnits(),RECON);
 
       // The reconstruction is done -- set the appropriate flag
       this->reconExists = true;

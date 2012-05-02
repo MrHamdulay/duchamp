@@ -61,7 +61,7 @@ namespace duchamp
     
     if(result==SUCCESS){
       // Convert the flux Units if the user has so requested
-      this->convertFluxUnits();
+      this->convertFluxUnits(this->head.getFluxUnits(),this->par.getNewFluxUnits());
     }
 
     return result;
@@ -192,7 +192,7 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
     }   
 
     // Convert the flux Units if the user has so requested
-    this->convertFluxUnits();
+    this->convertFluxUnits(this->head.getFluxUnits(),this->par.getNewFluxUnits(),ARRAY);
 
     return SUCCESS;    
 
@@ -200,7 +200,7 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
   //--------------------------------------------------------------------
 
 
-  void Cube::convertFluxUnits()
+  void Cube::convertFluxUnits(std::string oldUnit, std::string newUnit, ARRAYREF whichArray)
   {
     /// @details
     ///  If the user has requested new flux units (via the input
@@ -211,10 +211,11 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
     ///  FitsHeader::fluxUnits parameter is updated and the pixel array
     ///  is converted accordingly.
 
-    if(this->par.getNewFluxUnits()!=""){
+    //    if(this->par.getNewFluxUnits()!=""){
+    if(newUnit!=""){
 
-      std::string oldUnit = this->head.getFluxUnits();
-      std::string newUnit = this->par.getNewFluxUnits();
+      // std::string oldUnit = this->head.getFluxUnits();
+      // std::string newUnit = this->par.getNewFluxUnits();
 
       if(oldUnit != newUnit){
 
@@ -231,9 +232,23 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
 	  this->head.setFluxUnits( newUnit );
 	  this->head.setIntFluxUnits();
 
-	  if(this->arrayAllocated){
-	    for(size_t i=0;i<this->numPixels;i++)
-	      if(!this->isBlank(i)) this->array[i] = pow(scale * array[i] + offset, power);
+	  if(whichArray == ARRAY){
+	    if(this->arrayAllocated){
+	      for(size_t i=0;i<this->numPixels;i++)
+		if(!this->isBlank(i)) this->array[i] = pow(scale * this->array[i] + offset, power);
+	    }
+	  }
+	  else if(whichArray==RECON){
+	    if(this->reconAllocated){
+	      for(size_t i=0;i<this->numPixels;i++)
+		if(!this->isBlank(i)) this->recon[i] = pow(scale * this->recon[i] + offset, power);
+	    }
+	  }
+	  else if(whichArray==BASELINE){
+	    if(this->baselineAllocated){
+	      for(size_t i=0;i<this->numPixels;i++)
+		if(!this->isBlank(i)) this->baseline[i] = pow(scale * this->baseline[i] + offset, power);
+	    }
 	  }
 	  if(this->par.isVerbose()) {
 	    std::cout << " Done.\n";

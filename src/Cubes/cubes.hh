@@ -65,6 +65,10 @@ namespace duchamp
 
   //=========================================================================
 
+  /// An enumeration allowing us to refer to a particular array within functions
+  enum ARRAYREF {ARRAY=0, RECON, BASELINE};
+
+
   /// @brief Base class for the image container.
   /// 
   /// @details Definition of an n-dimensional data array: array of
@@ -387,7 +391,7 @@ namespace duchamp
     OUTCOME     getCube(std::string fname);  // in Cubes/getImage.cc
 
     /// @brief Convert the flux units to something user-specified.
-    void        convertFluxUnits(); // in Cubes/getImage.cc
+    void        convertFluxUnits(std::string oldUnit, std::string newUnit, ARRAYREF whichArray=ARRAY); // in Cubes/getImage.cc
 
     /// @brief Function to retrieve FITS data array 
     OUTCOME         getFITSdata(std::string fname);   // in FitsIO/dataIO.cc
