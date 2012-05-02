@@ -60,15 +60,6 @@ namespace duchamp
 
   //---------------------------------------------------------------------------
 
-  char *numerateKeyword(std::string key, int num)
-  {
-    /// @details A utility function to combine a keyword and a
-    /// value, to produce a relevant FITS keyword for a given
-    /// axis. For example numerateKeyword(CRPIX,1) returns CRPIX1.
-    std::stringstream ss;
-    ss << key << num;
-    return (char *)ss.str().c_str();
-  }
 
   void duchampFITSerror(int status, std::string subroutine, std::string error)
   {
@@ -85,16 +76,13 @@ namespace duchamp
     ///  A function to save the moment-0 map to a FITS file.
    
     int newbitpix = FLOAT_IMG;
-    char *comment = new char[FLEN_COMMENT];
-    strcpy(comment,"");
-    long *fpixel = new long[2];
-    for(int i=0;i<2;i++) fpixel[i]=1;
+    long *fpixel = new long[this->head.WCS().naxis];
+    for(int i=0;i<this->header().WCS().naxis;i++) fpixel[i]=1;
     int status = 0;  /* MUST initialize status */
     fitsfile *fptr;         
 
     std::string fileout = "!" + this->par.outputMomentMapFile(); 
     // the ! is there so that it writes over an existing file.
-    char *keyword = new char[FLEN_KEYWORD];
 
     status = 0;
     if(fits_create_file(&fptr,fileout.c_str(),&status)){
@@ -102,63 +90,11 @@ namespace duchamp
       return FAILURE;
     }
     else {
-      status = 0;
-      long *dim = new long[2];
-      for (uint i = 0; i < 2; i++) dim[i] = this->axisDim[i];
-      if (fits_create_img(fptr, newbitpix, 2, dim, &status)) {
-	duchampFITSerror(status,"saveMomentMapImage","Error creating image:");
-      }
 
-      this->head.beam().writeToFITS(fptr);
-
-      status = 0;
-      strcpy(keyword,"EQUINOX");
-      if (fits_update_key(fptr, TFLOAT, keyword, &this->head.WCS().equinox, NULL, &status)){
-	duchampFITSerror(status,"saveMomentMapImage","Error saving equinox:");
+      if(this->writeBasicHeader(fptr, newbitpix,true)==FAILURE){
+	duchampWarning("write Recon Cube", "Failure writing to header");
+	return FAILURE;
       }
-      status = 0;
-      strcpy(keyword,"BUNIT");
-      if (fits_update_key(fptr, TSTRING, keyword, (char *)this->head.getIntFluxUnits().c_str(),  NULL, &status)){
-	duchampFITSerror(status,"saveMomentMapImage","Error saving BUNIT:");
-      }
-      float val;
-      int axisNumbers[2];
-      axisNumbers[0] = this->head.WCS().lng;
-      axisNumbers[1] = this->head.WCS().lat;
-      for (uint d = 0; d < 2; d++) {
-	int i = axisNumbers[d];
-	status = 0;
-	if (fits_update_key(fptr, TSTRING, numerateKeyword("CTYPE", d + 1), this->head.WCS().ctype[i],  NULL, &status)){
-	  duchampFITSerror(status,"saveMomentMapImage","Error saving CTYPE:");
-	}
-	status = 0;
-	if (fits_update_key(fptr, TSTRING, numerateKeyword("CUNIT", d + 1), this->head.WCS().cunit[i],  NULL, &status)){
-	  duchampFITSerror(status,"saveMomentMapImage","Error saving CUNIT:");
-	}
-	status = 0;
-	val = this->head.WCS().crval[i];
-	if (fits_update_key(fptr, TFLOAT, numerateKeyword("CRVAL", d + 1), &val, NULL, &status)){
-	  duchampFITSerror(status,"saveMomentMapImage","Error saving CRVAL:");
-	}
-	val = this->head.WCS().cdelt[i];
-	status = 0;
-	if (fits_update_key(fptr, TFLOAT, numerateKeyword("CDELT", d + 1), &val, NULL, &status)){
-	  duchampFITSerror(status,"saveMomentMapImage","Error saving CDELT:");
-	}
-	val = this->head.WCS().crpix[i];
-	status = 0;
-	if (fits_update_key(fptr, TFLOAT, numerateKeyword("CRPIX", d + 1), &val, NULL, &status)){
-	  duchampFITSerror(status,"saveMomentMapImage","Error saving CRPIX:");
-	}
-	val = this->head.WCS().crota[i];
-	status = 0;
-	if (fits_update_key(fptr, TFLOAT, numerateKeyword("CROTA", d + 1), &val, NULL, &status)){
-	  duchampFITSerror(status,"saveMomentMapImage","Error saving CROTA:");
-	}
-      }
-
-      delete [] comment;
-      delete [] keyword;
 
       writeMomentMapHeaderInfo(fptr, this->par);
 	
@@ -198,7 +134,7 @@ namespace duchamp
     int newbitpix = SHORT_IMG;
     char *comment = new char[FLEN_COMMENT];
     strcpy(comment,"");
-    long *fpixel = new long[this->header().WCS().naxis];
+    long *fpixel = new long[this->head.WCS().naxis];
     for(int i=0;i<this->header().WCS().naxis;i++) fpixel[i]=1;
     int status = 0;  /* MUST initialize status */
     fitsfile *fptrNew;         
@@ -219,6 +155,7 @@ namespace duchamp
 
       writeMaskHeaderInfo(fptrNew, this->par);
 
+      char *keyword = new char[FLEN_KEYWORD];
       std::string newunits;
       if(this->par.getFlagMaskWithObjectNum())
 	newunits = "Object ID";
@@ -227,24 +164,6 @@ namespace duchamp
       strcpy(keyword,"BUNIT");
       if(fits_update_key(fptrNew, TSTRING, keyword, (char *)newunits.c_str(), comment, &status)){
 	duchampFITSerror(status,"saveMask","Error writing BUNIT header:");
-      }
-      long dud;
-      // Need to correct the dimensions, if we have subsectioned the image
-      if(this->par.getFlagSubsection()){
-	std::stringstream naxis;
-	fits_read_key(fptrOld, TLONG, (char *)naxis.str().c_str(), &dud, comment, &status);
-	fits_update_key(fptrNew, TLONG, (char *)naxis.str().c_str(),
-			&(this->axisDim[0]), comment, &status);
-	naxis.str("");
-	naxis << "NAXIS" << this->head.WCS().lat;
-	fits_read_key(fptrOld, TLONG, (char *)naxis.str().c_str(), &dud, comment, &status);
-	fits_update_key(fptrNew, TLONG, (char *)naxis.str().c_str(), 
-			&(this->axisDim[1]), comment, &status);
-	naxis.str("");
-	naxis << "NAXIS" << this->head.WCS().spec;
-	fits_read_key(fptrOld, TLONG, (char *)naxis.str().c_str(), &dud, comment, &status);
-	fits_update_key(fptrNew, TLONG, (char *)naxis.str().c_str(), 
-			&(this->axisDim[2]), comment, &status);
       }
 
       delete [] comment;
@@ -617,7 +536,7 @@ namespace duchamp
 
   //---------------------------------------------------------------------------
 
-  OUTCOME Cube::writeBasicHeader(fitsfile *fptr, int bitpix)
+  OUTCOME Cube::writeBasicHeader(fitsfile *fptr, int bitpix, bool is2D)
   {
     char *header, *hptr, keyname[9];
     int  i, nkeyrec, status = 0;
@@ -625,6 +544,7 @@ namespace duchamp
     long naxis=this->numDim;
     long naxes[this->numDim];
     for(int i=0;i<naxis;i++) naxes[i]=this->axisDim[i];
+    if(is2D) naxes[this->head.WCS().spec]=1;
     // write the required header keywords 
     fits_write_imghdr(fptr, bitpix, naxis, naxes,  &status);
 
