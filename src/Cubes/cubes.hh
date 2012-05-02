@@ -396,6 +396,8 @@ namespace duchamp
     /// @brief Function to retrieve FITS data array 
     OUTCOME         getFITSdata(std::string fname);   // in FitsIO/dataIO.cc
 
+    OUTCOME         writeBasicHeader(fitsfile *fptr, int bitpix);
+
     /// @brief Save the moment map to a FITS file
     OUTCOME        saveMomentMapImage();
 
