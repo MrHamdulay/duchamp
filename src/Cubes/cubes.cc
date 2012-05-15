@@ -1051,7 +1051,12 @@ namespace duchamp
 	this->setupFDR(this->array);
       }
     else if( this->par.getFlagATrous() ){
-      this->setupFDR(this->recon);
+      if(this->reconExists) this->setupFDR(this->recon);
+      else{
+	duchampError("setupFDR",
+		     "Reconstruction not done properly! Using original array for defining threshold.\n");
+	this->setupFDR(this->array);
+      }
     }
     else{
       this->setupFDR(this->array);
