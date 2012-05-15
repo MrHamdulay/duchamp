@@ -51,8 +51,9 @@ namespace duchamp
     //  integrated flux when we go to fixUnits.
     if(this->readBUNIT(fname) == FAILURE) return FAILURE;
   
-    if(this->readBLANKinfo(fname, par)==FAILURE)
-      duchampWarning("Cube Reader", "Reading BLANK info failed\n");
+    // if(this->readBLANKinfo(fname, par)==FAILURE)
+    //   duchampWarning("Cube Reader", "Reading BLANK info failed\n");
+    OUTCOME blankResult=this->readBLANKinfo(fname,par);
   
     if(this->readBeamInfo(fname, par)==FAILURE) returnValue=FAILURE;
 
