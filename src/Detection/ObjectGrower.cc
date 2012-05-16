@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <duchamp/duchamp.hh>
 #include <Detection/ObjectGrower.hh>
 #include <Detection/detection.hh>
@@ -148,16 +149,18 @@ namespace duchamp {
   }
 
 
-  std::vector<Voxel> ObjectGrower::growFromPixel(Voxel vox)
+  std::vector<Voxel> ObjectGrower::growFromPixel(Voxel &vox)
   {
-    std::vector<Voxel> newVoxels;
 
+    std::vector<Voxel> newVoxels(0);
+    // std::cerr << vox << "\n";
     long xpt=vox.getX();
     long ypt=vox.getY();
     long zpt=vox.getZ();
     long spatsize=this->itsArrayDim[0]*this->itsArrayDim[1];
     long zero = 0;
-      
+    // std::cerr << "--> " << xpt << " " << ypt << " " << zpt << "\n";
+
     int xmin = std::max(xpt - this->itsSpatialThresh, zero);
     int xmax = std::min(xpt + this->itsSpatialThresh, this->itsArrayDim[0]-1);
     int ymin = std::max(ypt - this->itsSpatialThresh, zero);
@@ -165,20 +168,27 @@ namespace duchamp {
     int zmin = std::max(zpt - this->itsVelocityThresh, zero);
     int zmax = std::min(zpt + this->itsVelocityThresh, this->itsArrayDim[2]-1);
       
+    // std::cerr << xmin << " " << xmax << "  " << ymin << " " << ymax << "  " << zmin << " " << zmax << "\n";
     //loop over surrounding pixels.
+    int pos;
+    Voxel nvox;
+    std::vector<Voxel> morevox;
     for(int x=xmin; x<=xmax; x++){
       for(int y=ymin; y<=ymax; y++){
 	for(int z=zmin; z<=zmax; z++){
 
-	  int pos=x+y*this->itsArrayDim[0]+z*spatsize;
+	  pos=x+y*this->itsArrayDim[0]+z*spatsize;
 	  if( ((x!=xpt) || (y!=ypt) || (z!=zpt))
 	      && this->itsFlagArray[pos]==AVAILABLE ) {
 
 	    if(this->itsGrowthStats.isDetection(this->itsFluxArray[pos])){
 	      this->itsFlagArray[pos]=DETECTED;
-	      newVoxels.push_back(Voxel(x,y,z));
-	      std::vector<Voxel> morevox = this->growFromPixel(Voxel(x,y,z));
-	      for(size_t v=0;v<morevox.size();v++) newVoxels.push_back(morevox[v]);
+	      nvox.setXYZF(x,y,z,this->itsFluxArray[pos]);
+	      newVoxels.push_back(nvox);
+	      // std::cerr << x << " " << y << " " << z << " " << this->itsFluxArray[pos] << "  =  " << nvox << "\n";
+	      morevox = this->growFromPixel(nvox);
+	      if(morevox.size()>0)
+		for(size_t v=0;v<morevox.size();v++) newVoxels.push_back(morevox[v]);
 	      
 	    }
 	  }
