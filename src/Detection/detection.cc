@@ -463,8 +463,9 @@ namespace duchamp
 	this->intFluxUnits = head.getIntFluxUnits();
 	this->ra   = world[0];
 	this->dec  = world[1];
-	this->raS  = decToDMS(this->ra, this->lngtype);
-	this->decS = decToDMS(this->dec,this->lattype);
+	int precision = -int(log10(fabs(head.WCS().cdelt[head.WCS().lng]*3600./10.)));
+	this->raS  = decToDMS(this->ra, this->lngtype,precision);
+	this->decS = decToDMS(this->dec,this->lattype,precision);
 	this->raWidth = angularSeparation(world[9],world[1],
 					  world[12],world[1]) * 60.;
 	this->decWidth  = angularSeparation(world[0],world[10],

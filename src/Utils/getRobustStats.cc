@@ -95,10 +95,10 @@ template double findMedianDiff<double>(double *first, double *second, size_t siz
 template <class T> T findMedian(T *array, bool *mask, size_t size)
 {
   /// @details
-  /// Find the median value of an array of numbers. Type independent.
+  /// Find the median value of an array of numbers. Type independent. This will create a new array that gets partially sorted.
   /// \param array The array of numbers.
+  /// \param mask Whether a given array value should be included in calculations. NB: mask=true implies use this array value.
   /// \param size The length of the array.
-  /// \param changeArray [false] Whether to use the provided array in calculations. If true, the input array will be altered (ie. the order of elements will be changed).
   /// \return The median value of the array, returned as the same type as the array.
 
   int goodSize=0,ct=0;

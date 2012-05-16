@@ -94,7 +94,7 @@ std::string getIAUNameGAL(double lon, double lat)
   return ss.str();
 }
 
-std::string decToDMS(const double dec, const std::string type)
+std::string decToDMS(const double dec, const std::string type, int decPrecision)
 {
   /** 
    *Converts a decimal angle (in degrees) to a format reflecting the axis type:
@@ -116,6 +116,9 @@ std::string decToDMS(const double dec, const std::string type)
   double thisDec = dec;
   std::string sign="";
   int degSize = 2; // number of figures in the degrees part of the output.
+
+  int precision=std::max(0,decPrecision);
+  if(type=="RA") precision++;
 
   if((type=="RA")||(type=="GLON")){
     if(type=="GLON")  degSize = 3; // longitude has three figures in degrees.
@@ -150,7 +153,14 @@ std::string decToDMS(const double dec, const std::string type)
   ss << sign;
   ss << setw(degSize)<<setfill('0')<<deg<<":";
   ss<<setw(2)<<setfill('0')<<min<<":";
-  ss<<setw(5)<<setprecision(2)<<sec;
+  if(precision>0)
+    ss<<setw(precision+3)<<setprecision(precision)<<sec;
+  else {
+    //ss.unsetf(std::ios::showpoint);
+    //    ss.unsetf(std::ios::fixed);
+    ss << setw(2) << int(sec);
+    //    ss<<setw(2)<<setfill('0')<<setprecision(precision)<<sec;
+  }
   return ss.str();
 }
 

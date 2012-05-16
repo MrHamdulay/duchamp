@@ -92,7 +92,7 @@ template <class T> void findNormalStatsDiff(T *first, T *second, size_t size, bo
 // POSITION-RELATED ROUTINES
 std::string getIAUNameEQ(double ra, double dec, float equinox);
 std::string getIAUNameGAL(double ra, double dec);
-std::string decToDMS(double dec, std::string type);
+std::string decToDMS(double dec, std::string type, int decPrecision=2);
 double dmsToDec(std::string dms);
 double angularSeparation(double &ra1, double &dec1, double &ra2, double &dec2);
 

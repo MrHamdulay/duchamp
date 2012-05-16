@@ -124,7 +124,7 @@ namespace duchamp
     /// @brief Default widths of all columns.
     const int defaultWidth[numColumns+1]=
       {5, 8, 6, 6, 6,
-       13, 13, 11, 11, 7, 
+       11, 10, 11, 11, 7, 
        9, 9, 7, 7, 7,
        10, 10, 9, 7,
        4, 4, 4, 4, 4, 4, 6, 5,
