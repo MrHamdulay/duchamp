@@ -110,13 +110,16 @@ namespace duchamp
       fitsfile *fptr;         
 
       // Make sure the FITS file exists
-      int exists;
-      fits_file_exists(this->imageFile.c_str(),&exists,&status);
-      if(exists<=0){
-	fits_report_error(stderr, status);
-	duchampWarning("Cube Reader", "Requested image does not exist!\n");
-	return FAILURE;
-      }
+      // int exists;
+      // fits_file_exists(this->imageFile.c_str(),&exists,&status);
+      // if(exists<=0){
+      // 	fits_report_error(stderr, status);
+      // 	//	duchampError("Cube Reader", "Requested image does not exist!\n");
+      // 	DUCHAMPTHROW("Cube Reader","Requested image " << this->imageFile << " does not exist!");
+      // 	return FAILURE;
+      // }
+      if(this->checkImageExists()==FAILURE) return FAILURE;
+
       // Open the FITS file
       if( fits_open_file(&fptr,this->imageFile.c_str(),READONLY,&status) ){
 	fits_report_error(stderr, status);

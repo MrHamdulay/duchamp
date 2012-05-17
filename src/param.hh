@@ -95,6 +95,8 @@ namespace duchamp
     /// @brief Check the parameter list for inconsistencies 
     void   checkPars();
 
+    OUTCOME checkImageExists();
+
     /// @brief Copy certain necessary FITS header parameters from a FitsHeader object 
     void   copyHeaderInfo(FitsHeader &head);
 

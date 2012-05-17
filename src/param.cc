@@ -846,6 +846,22 @@ namespace duchamp
       
   }
 
+  OUTCOME Param::checkImageExists()
+  {
+    /// A simple check to see whether the image actually exists or not, using the cfitsio interface.
+    /// If it does, we return SUCCESS, otherwise we throw an exception.
+
+    int exists,status = 0;  /* MUST initialize status */
+    fits_file_exists(this->imageFile.c_str(),&exists,&status);
+    if(exists<=0){
+      fits_report_error(stderr, status);
+      DUCHAMPTHROW("Cube Reader","Requested image " << this->imageFile << " does not exist!");
+      return FAILURE;
+    }
+    return SUCCESS;
+  }
+
+
   void recordParameters(std::ostream& theStream, std::string paramName, std::string paramDesc, std::string paramValue)
   {
     

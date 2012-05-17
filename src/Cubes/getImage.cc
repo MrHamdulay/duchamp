@@ -54,6 +54,17 @@ namespace duchamp
     ///  subsection checks. Does the flux unit conversion if the user
     ///  has requested it. Assumes the Param is set up properly.
 
+    // int exists;
+    // fits_file_exists(fname.c_str(),&exists,&status);
+    // if(exists<=0){
+    //   fits_report_error(stderr, status);
+    //   std::stringstream errmsg;
+    //   errmsg << "Requested image (" << fname << ") does not exist!\n";
+    //   duchampError("Cube Reader", errmsg.str());
+    //   return FAILURE;
+    // }
+    if(this->par.checkImageExists() == FAILURE) return FAILURE;
+
     std::string fname = par.getImageFile();
     if(par.getFlagSubsection()) fname+=par.getSubsection();
 
@@ -85,16 +96,6 @@ namespace duchamp
 
     int numAxes, status = 0;  /* MUST initialize status */
     fitsfile *fptr;         
-
-    int exists;
-    fits_file_exists(fname.c_str(),&exists,&status);
-    if(exists<=0){
-      fits_report_error(stderr, status);
-      std::stringstream errmsg;
-      errmsg << "Requested image (" << fname << ") does not exist!\n";
-      duchampError("Cube Reader", errmsg.str());
-      return FAILURE;
-    }
 
     // Open the FITS file -- make sure it exists
     status = 0;
