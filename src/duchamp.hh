@@ -101,7 +101,29 @@ Selavy re-analyses and re-plots objects found by Duchamp.\n\
     virtual ~DuchampError() throw();
   };
 
+  // Macro to handle warnings, specifying the origin of the warning and taking a streamed input
+#define DUCHAMPWARN(origin,stream) \
+  {                                \
+    std::ostringstream oss;        \
+    oss << stream;                 \
+    std::cerr << "WARNING <" << origin << ">: " << oss.str()<<"\n"; \
+  }     
+  
+  // Macro to handle errors, with origin and streamed input. No exception is thrown (use DUCHAMPTHROW instead)
+#define DUCHAMPERROR(origin,stream) \
+{                                   \
+  std::ostringstream oss;           \
+  oss << stream;                    \
+  std::cerr << "ERROR <" << origin << ">: " << oss.str() << "\n"; \
+}
 
+#define DUCHAMPTHROW(origin,stream) \
+{                                   \
+  DUCHAMPERROR(origin,"\a"<<stream);\
+  std::ostringstream error;         \
+  error << stream;                  \
+  throw DuchampError(error.str());  \
+}
 
   /// The spectral type that we want the wcsprm structs to be in. 
     const char duchampVelocityType[9] = "VOPT-F2W";
