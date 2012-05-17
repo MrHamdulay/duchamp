@@ -123,47 +123,47 @@ namespace duchamp
 	}
       }
 
-      // Locating the borders of the image -- ignoring BLANK pixels
-      //  Only do this if flagBlankPix is true. 
-      //  Otherwise use the full range of x and y.
-      //  No trimming is done in the z-direction at this point.
-      long *xLim1 = new long[ydim];
-      for(size_t i=0;i<ydim;i++) xLim1[i] = 0;
-      long *xLim2 = new long[ydim];
-      for(size_t i=0;i<ydim;i++) xLim2[i] = xdim-1;
-      long *yLim1 = new long[xdim];
-      for(size_t i=0;i<xdim;i++) yLim1[i] = 0;
-      long *yLim2 = new long[xdim];
-      for(size_t i=0;i<xdim;i++) yLim2[i] = ydim-1;
+      // // Locating the borders of the image -- ignoring BLANK pixels
+      // //  Only do this if flagBlankPix is true. 
+      // //  Otherwise use the full range of x and y.
+      // //  No trimming is done in the z-direction at this point.
+      // long *xLim1 = new long[ydim];
+      // for(size_t i=0;i<ydim;i++) xLim1[i] = 0;
+      // long *xLim2 = new long[ydim];
+      // for(size_t i=0;i<ydim;i++) xLim2[i] = xdim-1;
+      // long *yLim1 = new long[xdim];
+      // for(size_t i=0;i<xdim;i++) yLim1[i] = 0;
+      // long *yLim2 = new long[xdim];
+      // for(size_t i=0;i<xdim;i++) yLim2[i] = ydim-1;
 
-      if(par.getFlagBlankPix()){
-	float avGapX = 0, avGapY = 0;
-	for(size_t row=0;row<ydim;row++){
-	  size_t ct1 = 0;
-	  size_t ct2 = xdim - 1;
-	  while((ct1<ct2)&&(par.isBlank(input[row*xdim+ct1]))) ct1++;
-	  while((ct2>ct1)&&(par.isBlank(input[row*xdim+ct2]))) ct2--;
-	  xLim1[row] = ct1;
-	  xLim2[row] = ct2;
-	  avGapX += ct2 - ct1 + 1;
-	}
-	avGapX /= float(ydim);
+      // if(par.getFlagBlankPix()){
+      // 	float avGapX = 0, avGapY = 0;
+      // 	for(size_t row=0;row<ydim;row++){
+      // 	  size_t ct1 = 0;
+      // 	  size_t ct2 = xdim - 1;
+      // 	  while((ct1<ct2)&&(par.isBlank(input[row*xdim+ct1]))) ct1++;
+      // 	  while((ct2>ct1)&&(par.isBlank(input[row*xdim+ct2]))) ct2--;
+      // 	  xLim1[row] = ct1;
+      // 	  xLim2[row] = ct2;
+      // 	  avGapX += ct2 - ct1 + 1;
+      // 	}
+      // 	avGapX /= float(ydim);
 
-	for(size_t col=0;col<xdim;col++){
-	  size_t ct1=0;
-	  size_t ct2=ydim-1;
-	  while((ct1<ct2)&&(par.isBlank(input[col+xdim*ct1]))) ct1++;
-	  while((ct2>ct1)&&(par.isBlank(input[col+xdim*ct2]))) ct2--;
-	  yLim1[col] = ct1;
-	  yLim2[col] = ct2;
-	  avGapY += ct2 - ct1 + 1;
-	}
-	avGapY /= float(xdim);
+      // 	for(size_t col=0;col<xdim;col++){
+      // 	  size_t ct1=0;
+      // 	  size_t ct2=ydim-1;
+      // 	  while((ct1<ct2)&&(par.isBlank(input[col+xdim*ct1]))) ct1++;
+      // 	  while((ct2>ct1)&&(par.isBlank(input[col+xdim*ct2]))) ct2--;
+      // 	  yLim1[col] = ct1;
+      // 	  yLim2[col] = ct2;
+      // 	  avGapY += ct2 - ct1 + 1;
+      // 	}
+      // 	avGapY /= float(xdim);
  
-	// if(avGapX < mindim) mindim = int(avGapX);
-	// if(avGapY < mindim) mindim = int(avGapY);
-	// numScales = par.filter().getNumScales(mindim);
-      }
+      // 	// if(avGapX < mindim) mindim = int(avGapX);
+      // 	// if(avGapY < mindim) mindim = int(avGapY);
+      // 	// numScales = par.filter().getNumScales(mindim);
+      // }
 
       float threshold;
       int iteration=0;
@@ -197,49 +197,60 @@ namespace duchamp
 		if(!isGood[pos] )  wavelet[pos] = 0.;
 		else{
 
-		  unsigned int filterpos = -1;
+		  unsigned int filterpos = 0;
 		  for(int zoffset=-filterHW; zoffset<=filterHW; zoffset++){
 		    long z = zpos + spacing*zoffset;
-		    if(z<0) z = -z;                 // boundary conditions are 
-		    if(z>=long(zdim)) z = 2*(zdim-1) - z; //    reflection.
-		
+		    while((z<0)||(z>=long(zdim))){
+		      if(z<0) z = -z;                 // boundary conditions are 
+		      if(z>=long(zdim)) z = 2*(zdim-1) - z; //    reflection.
+		    }
 		    size_t oldchan = z * spatialSize;
 		
 		    for(int yoffset=-filterHW; yoffset<=filterHW; yoffset++){
 		      long y = long(ypos) + spacing*yoffset;
-
-		      // Boundary conditions -- assume reflection at boundaries.
-		      // Use limits as calculated above
-		      if(yLim1[xpos]!=yLim2[xpos]){ 
-			// if these are equal we will get into an infinite loop
-			while((y<yLim1[xpos])||(y>yLim2[xpos])){
-			// std::cerr << y << " " <<spacing << " " << yoffset << " " << ypos << " " << xpos << " " << yLim1[xpos] << " " << yLim2[xpos] << "\n";
-			  if(y<yLim1[xpos]) y = 2*yLim1[xpos] - y;      
-			  else if(y>yLim2[xpos]) y = 2*yLim2[xpos] - y;      
-			}
+		      while((y<0)||(y>=long(ydim))){
+			// boundary conditions are reflection. 
+			if(y<0) y = 0 - y;
+			else if(y>=long(ydim)) y = 2*(ydim-1) - y;
 		      }
+
+		      // // Boundary conditions -- assume reflection at boundaries.
+		      // // Use limits as calculated above
+		      // if(yLim1[xpos]!=yLim2[xpos]){ 
+		      // 	// if these are equal we will get into an infinite loop
+		      // 	while((y<yLim1[xpos])||(y>yLim2[xpos])){
+		      // 	// std::cerr << y << " " <<spacing << " " << yoffset << " " << ypos << " " << xpos << " " << yLim1[xpos] << " " << yLim2[xpos] << "\n";
+		      // 	  if(y<yLim1[xpos]) y = 2*yLim1[xpos] - y;      
+		      // 	  else if(y>yLim2[xpos]) y = 2*yLim2[xpos] - y;      
+		      // 	}
+		      // }
 		      size_t oldrow = y * xdim;
 	  
 		      for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
 			long x = long(xpos) + spacing*xoffset;
-
-			// Boundary conditions -- assume reflection at boundaries.
-			// Use limits as calculated above
-			if(xLim1[ypos]!=xLim2[ypos]){
-			  // if these are equal we will get into an infinite loop
-			  while((x<xLim1[ypos])||(x>xLim2[ypos])){
-			    if(x<xLim1[ypos]) x = 2*xLim1[ypos] - x;      
-			    else if(x>xLim2[ypos]) x = 2*xLim2[ypos] - x;      
-			  }
+			while((x<0)||(x>=long(xdim))){
+			  // boundary conditions are reflection. 
+			  if(x<0) x = 0 - x;
+			  else if(x>=long(xdim)) x = 2*(xdim-1) - x;
 			}
+
+			// // Boundary conditions -- assume reflection at boundaries.
+			// // Use limits as calculated above
+			// if(xLim1[ypos]!=xLim2[ypos]){
+			//   // if these are equal we will get into an infinite loop
+			//   while((x<xLim1[ypos])||(x>xLim2[ypos])){
+			//     if(x<xLim1[ypos]) x = 2*xLim1[ypos] - x;      
+			//     else if(x>xLim2[ypos]) x = 2*xLim2[ypos] - x;      
+			//   }
+			// }
 
 			size_t oldpos = oldchan + oldrow + x;
 
-			filterpos++;
-		   
 			if(isGood[oldpos]) 
 			  wavelet[pos] -= filter[filterpos]*coeffs[oldpos];
 		      
+			filterpos++;
+		   
 		      } //-> end of xoffset loop
 		    } //-> end of yoffset loop
 		  } //-> end of zoffset loop
@@ -298,10 +309,10 @@ namespace duchamp
 
       if(par.isVerbose()) std::cout << "Completed "<<iteration<<" iterations. ";
 
-      delete [] xLim1;
-      delete [] xLim2;
-      delete [] yLim1;
-      delete [] yLim2;
+      // delete [] xLim1;
+      // delete [] xLim2;
+      // delete [] yLim1;
+      // delete [] yLim2;
       delete [] filter;
       // delete [] residual;
       delete [] coeffs;

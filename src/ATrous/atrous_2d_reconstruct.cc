@@ -111,43 +111,43 @@ Returning input array.\n");
 	}
       }
 
-      long *xLim1 = new long[ydim];
-      for(size_t i=0;i<ydim;i++) xLim1[i] = 0;
-      long *yLim1 = new long[xdim];
-      for(size_t i=0;i<xdim;i++) yLim1[i] = 0;
-      long *xLim2 = new long[ydim];
-      for(size_t i=0;i<ydim;i++) xLim2[i] = xdim-1;
-      long *yLim2 = new long[xdim];
-      for(size_t i=0;i<xdim;i++) yLim2[i] = ydim-1;
+      // long *xLim1 = new long[ydim];
+      // for(size_t i=0;i<ydim;i++) xLim1[i] = 0;
+      // long *yLim1 = new long[xdim];
+      // for(size_t i=0;i<xdim;i++) yLim1[i] = 0;
+      // long *xLim2 = new long[ydim];
+      // for(size_t i=0;i<ydim;i++) xLim2[i] = xdim-1;
+      // long *yLim2 = new long[xdim];
+      // for(size_t i=0;i<xdim;i++) yLim2[i] = ydim-1;
 
-      if(par.getFlagBlankPix()){
-	float avGapX = 0, avGapY = 0;
-	for(size_t row=0;row<ydim;row++){
-	  size_t ct1 = 0;
-	  size_t ct2 = xdim - 1;
-	  while((ct1<ct2)&&(par.isBlank(input[row*xdim+ct1]))) ct1++;
-	  while((ct2>ct1)&&(par.isBlank(input[row*xdim+ct2]))) ct2--;
-	  xLim1[row] = ct1;
-	  xLim2[row] = ct2;
-	  avGapX += ct2 - ct1;
-	}
-	avGapX /= float(ydim);
+      // if(par.getFlagBlankPix()){
+      // 	float avGapX = 0, avGapY = 0;
+      // 	for(size_t row=0;row<ydim;row++){
+      // 	  size_t ct1 = 0;
+      // 	  size_t ct2 = xdim - 1;
+      // 	  while((ct1<ct2)&&(par.isBlank(input[row*xdim+ct1]))) ct1++;
+      // 	  while((ct2>ct1)&&(par.isBlank(input[row*xdim+ct2]))) ct2--;
+      // 	  xLim1[row] = ct1;
+      // 	  xLim2[row] = ct2;
+      // 	  avGapX += ct2 - ct1;
+      // 	}
+      // 	avGapX /= float(ydim);
     
-	for(size_t col=0;col<xdim;col++){
-	  size_t ct1=0;
-	  size_t ct2=ydim-1;
-	  while((ct1<ct2)&&(par.isBlank(input[col+xdim*ct1]))) ct1++;
-	  while((ct2>ct1)&&(par.isBlank(input[col+xdim*ct2]))) ct2--;
-	  yLim1[col] = ct1;
-	  yLim2[col] = ct2;
-	  avGapY += ct2 - ct1;
-	}
-	avGapY /= float(xdim);
+      // 	for(size_t col=0;col<xdim;col++){
+      // 	  size_t ct1=0;
+      // 	  size_t ct2=ydim-1;
+      // 	  while((ct1<ct2)&&(par.isBlank(input[col+xdim*ct1]))) ct1++;
+      // 	  while((ct2>ct1)&&(par.isBlank(input[col+xdim*ct2]))) ct2--;
+      // 	  yLim1[col] = ct1;
+      // 	  yLim2[col] = ct2;
+      // 	  avGapY += ct2 - ct1;
+      // 	}
+      // 	avGapY /= float(xdim);
     
-	// if(avGapX < mindim) mindim = int(avGapX);
-	// if(avGapY < mindim) mindim = int(avGapY);
-	// numScales = par.filter().getNumScales(mindim);
-      }
+      // 	// if(avGapX < mindim) mindim = int(avGapX);
+      // 	// if(avGapY < mindim) mindim = int(avGapY);
+      // 	// numScales = par.filter().getNumScales(mindim);
+      // }
 
       float threshold;
       int iteration=0;
@@ -185,9 +185,14 @@ Returning input array.\n");
 	      if(!isGood[pos]) wavelet[pos] = 0.;
 	      else{
 
-		size_t filterpos = -1;
+		size_t filterpos = 0;
 		for(int yoffset=-filterHW; yoffset<=filterHW; yoffset++){
 		  long y = long(ypos) + spacing*yoffset;
+		  while((y<0)||(y>=long(ydim))){
+		    // boundary conditions are reflection. 
+		    if(y<0) y = 0 - y;
+		    else if(y>=long(ydim)) y = 2*(ydim-1) - y;
+		  }
 		  // Boundary conditions -- assume reflection at boundaries.
 		  // Use limits as calculated above
 		  // 	      if(yLim1[xpos]!=yLim2[xpos]){ 
@@ -201,6 +206,11 @@ Returning input array.\n");
 	  
 		  for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
 		    long x = long(xpos) + spacing*xoffset;
+		    while((x<0)||(x>=long(xdim))){
+		      // boundary conditions are reflection. 
+		      if(x<0) x = 0 - x;
+		      else if(x>=long(xdim)) x = 2*(xdim-1) - x;
+		    }
 		    // Boundary conditions -- assume reflection at boundaries.
 		    // Use limits as calculated above
 		    // 		if(xLim1[ypos]!=xLim2[ypos]){
@@ -213,16 +223,18 @@ Returning input array.\n");
 
 		    size_t oldpos = oldrow + x;
 
-		    float oldCoeff;
-		    if((y>=yLim1[xpos])&&(y<=yLim2[xpos])&&
-		       (x>=xLim1[ypos])&&(x<=xLim2[ypos])  )
-		      oldCoeff = coeffs[oldpos];
-		    else oldCoeff = 0.;
+		    // float oldCoeff;
+		    // if((y>=yLim1[xpos])&&(y<=yLim2[xpos])&&
+		    //    (x>=xLim1[ypos])&&(x<=xLim2[ypos])  )
+		    //   oldCoeff = coeffs[oldpos];
+		    // else oldCoeff = 0.;
+
+		    // if(isGood[pos]) wavelet[pos] -= filter[filterpos] * oldCoeff;
+		    // // 		  wavelet[pos] -= filter[filterpos] * coeffs[oldpos];
+		    if(isGood[pos]) 
+		      wavelet[pos] -= filter[filterpos] * coeffs[oldpos];
 
 		    filterpos++;
-
-		    if(isGood[pos]) wavelet[pos] -= filter[filterpos] * oldCoeff;
-		    // 		  wavelet[pos] -= filter[filterpos] * coeffs[oldpos];
 
 		  } //-> end of xoffset loop
 		} //-> end of yoffset loop
@@ -273,10 +285,10 @@ Returning input array.\n");
 
       if(par.isVerbose()) std::cout << "Completed "<<iteration<<" iterations. ";
 
-      delete [] xLim1;
-      delete [] xLim2;
-      delete [] yLim1;
-      delete [] yLim2;
+      // delete [] xLim1;
+      // delete [] xLim2;
+      // delete [] yLim1;
+      // delete [] yLim2;
       delete [] filter;
       delete [] coeffs;
       delete [] wavelet;
