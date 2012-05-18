@@ -512,7 +512,7 @@ namespace duchamp
     ///  \param voxelList The list of Voxels with flux information
     ///  \param head FitsHeader object that contains the WCS information.
 
-    const int border = 1;
+    const double border = 1.;
 
     if(!this->voxelListCovered(voxelList)){
       DUCHAMPERROR("Detection::calcIntegFlux","Voxel list provided does not match");
@@ -549,7 +549,7 @@ namespace duchamp
       // work out the WCS coords for each pixel
       double *world  = new double[size];
       double xpt,ypt,zpt;
-      for(size_t i=0;i<xsize*ysize*zsize;i++){
+      for(size_t i=0;i<size;i++){
 	xpt = double( this->getXmin() - border + i%xsize );
 	ypt = double( this->getYmin() - border + (i/xsize)%ysize );
 	zpt = double( this->getZmin() - border + i/(xsize*ysize) );
@@ -611,7 +611,7 @@ namespace duchamp
     ///  \param voxelList The list of Voxels with flux information
     ///  \param head FitsHeader object that contains the WCS information.
 
-    const int border = 1;
+    const double border = 1.;
 
     if(!head.is2D()){
 
@@ -737,9 +737,9 @@ namespace duchamp
       for(size_t z=0;z<zsize;z++){
 	for(size_t y=0;y<ysize;y++){
 	  for(size_t x=0;x<xsize;x++){
-	    xpt=double(this->xmin - 1 + x);
-	    ypt=double(this->ymin - 1 + y);
-	    zpt=double(this->zmin - 1 + z);
+	    xpt=double(this->xmin - 1. + x);
+	    ypt=double(this->ymin - 1. + y);
+	    zpt=double(this->zmin - 1. + z);
 	    world[i++] = head.pixToVel(xpt,ypt,zpt);
 	  }
 	}
@@ -864,7 +864,7 @@ namespace duchamp
 
     this->haveParams = true;
 
-    double zpt,xpt=double(this->getXcentre()),ypt=double(this->getXcentre());
+    double zpt,xpt=double(this->getXcentre()),ypt=double(this->getYcentre());
     bool goLeft;
     
     float peak=0.;
