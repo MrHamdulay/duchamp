@@ -157,7 +157,7 @@ namespace duchamp {
     long xpt=vox.getX();
     long ypt=vox.getY();
     long zpt=vox.getZ();
-    long spatsize=this->itsArrayDim[0]*this->itsArrayDim[1];
+    size_t spatsize=this->itsArrayDim[0]*this->itsArrayDim[1];
     long zero = 0;
     // std::cerr << "--> " << xpt << " " << ypt << " " << zpt << "\n";
 
@@ -170,7 +170,7 @@ namespace duchamp {
       
     // std::cerr << xmin << " " << xmax << "  " << ymin << " " << ymax << "  " << zmin << " " << zmax << "\n";
     //loop over surrounding pixels.
-    int pos;
+    size_t pos;
     Voxel nvox;
     std::vector<Voxel> morevox;
     for(int x=xmin; x<=xmax; x++){
