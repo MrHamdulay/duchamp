@@ -42,33 +42,31 @@ std::string getIAUNameEQ(double ra, double dec, float equinox)
   /**
    * std::string getIAUNameEQ(double, double, float)
    *  both ra and dec are assumed to be in degrees.
-   *  returns name of the form J1234-4321 for equinox = 2000, 
+   *  returns name of the form J123456-654321 for equinox = 2000, 
    *   and B1234-4321 otherwise
    */
 
-  double raHrs = fmod(ra+360.,360.) / 15.;   // need to account for ra possibly being negative...
-  int h = int(raHrs);
-  int m = (int)(fmod(raHrs,1.)*60.);
-  int s = (int)(fmod(raHrs,1./60.)*3600.);
-  std::stringstream ss(std::stringstream::out);
-  ss.setf(std::ios::showpoint);
-  ss.setf(std::ios::fixed);
-  if(equinox==2000.) ss << "J"; 
-  else ss << "B";
-  ss<<setw(2)<<setfill('0')<<h;
-  ss<<setw(2)<<setfill('0')<<m;
-  ss<<setw(2)<<setfill('0')<<s;
-  int sign = int( dec / fabs(dec) );
-  double d = dec / sign;
-  h = int(d);
-  m = (int)(fmod(d,1.)*60.);
-  s = (int)(fmod(d,1./60.)*3600.);
-  if(sign==1) ss<<"+"; else ss<<"-";
-  ss<<setw(2)<<setfill('0')<<h;
-  ss.unsetf(std::ios::showpos);
-  ss<<setw(2)<<setfill('0')<<m;
-  ss<<setw(2)<<setfill('0')<<s;
+  std::string rastr=decToDMS(ra,"RA",0);
+  rastr.erase(rastr.begin()+2);
+  rastr.erase(rastr.begin()+4);
+  if(equinox==2000.)
+    rastr.erase(rastr.begin()+6,rastr.end());
+  else
+    rastr.erase(rastr.begin()+4,rastr.end());
+  std::string decstr=decToDMS(dec,"DEC",0);
+  decstr.erase(decstr.begin()+3);
+  decstr.erase(decstr.begin()+5);
+  if(equinox==2000.)
+    decstr.erase(decstr.begin()+7,decstr.end());
+  else
+    decstr.erase(decstr.begin()+5,decstr.end());
+    
+  std::stringstream ss;
+  if(equinox==2000.) ss<<"J";
+  else ss<<"B";
+  ss<<rastr<<decstr;
   return ss.str();
+
 }
 
 std::string getIAUNameGAL(double lon, double lat)
@@ -143,9 +141,13 @@ std::string decToDMS(const double dec, const std::string type, int decPrecision)
   deg = int(dec_abs);
   min = int(fmod(dec_abs,1.)*60.);
   sec = fmod(dec_abs,onemin)*3600.;
-  if(fabs(sec-60.)<1.e-10){ // to prevent rounding errors stuffing things up
+  if(fabs(sec-60.)<pow(10,precision)){ // to prevent rounding errors stuffing things up
     sec=0.;
     min++;
+    if(min==60){
+      min=0;
+      deg++;
+    }
   }
   std::stringstream ss(std::stringstream::out);
   ss.setf(std::ios::showpoint);
