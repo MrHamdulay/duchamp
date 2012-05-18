@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
                The Duchamp Source Finder
 -----------------------------------------------------------------------
-Duchamp 1.1.13 -- an object finder for spectral-line data cubes
+Duchamp 1.1.14 -- an object finder for spectral-line data cubes
 Copyright (C) 2006-2011
 Matthew Whiting, CSIRO Astronomy & Space Science
 
@@ -229,6 +229,6 @@ http://adsabs.harvard.edu/abs/2008glv..book..343W
 
 -------
 Author: 
-  Matthew Whiting, Australia Telescope National Facility, April 2011
+  Matthew Whiting, Australia Telescope National Facility, May 2012
   Matthew.Whiting [at] csiro.au
 
