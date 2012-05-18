@@ -371,18 +371,6 @@ namespace duchamp
     /// @brief Provide a reference to the FitsHeader object.
     FitsHeader& header(){ FitsHeader &h = head; return h; };
 
-    /// @brief Convert a point from WCS to Pixel coords. 
-    int         wcsToPix(const double *world, double *pix);
-
-    /// @brief Convert a set of points from WCS to Pixel coords. 
-    int         wcsToPix(const double *world, double *pix, const int npts);
-
-    /// @brief Convert a point from Pixel to WCS coords. 
-    int         pixToWCS(const double *pix, double *world);
-
-    /// @brief Convert a set of points from Pixel to WCS coords. 
-    int         pixToWCS(const double *pix, double *world, const int npts);
-
     //-------------------------------------------
     // FITS-I/O related functions -- not in cubes.cc
     //
@@ -610,49 +598,6 @@ namespace duchamp
     std::vector<Column::Col> logCols;     ///< the list of columns as printed in the log file
 
   };
-
-  ////////////
-  //// Cube inline function definitions
-  ////////////
-
-  inline int Cube::wcsToPix(const double *world, double *pix)
-  {
-    ///  @brief Use the WCS in the FitsHeader to convert from WCS to pixel coords for
-    ///   a single point.
-    ///  \param world The world coordinates.
-    ///  \param pix The returned pixel coordinates.
-    /// 
-    return this->head.wcsToPix(world,pix);
-  } 
-  inline int Cube::wcsToPix(const double *world, double *pix, const int npts)
-  {
-    ///  @brief Use the WCS in the FitsHeader to convert from WCS to pixel coords for
-    ///   a set of points.
-    ///  \param world The world coordinates.
-    ///  \param pix The returned pixel coordinates.
-    ///  \param npts The number of points being converted.
-
-    return this->head.wcsToPix(world,pix,npts);
-  }
-  inline int Cube::pixToWCS(const double *pix, double *world)
-  {
-    ///  @brief Use the WCS in the FitsHeader to convert from pixel to WCS coords for
-    ///   a single point.
-    ///  \param pix The pixel coordinates.
-    ///  \param world The returned world coordinates.
-
-    return this->head.pixToWCS(pix,world);
-  }
-  inline int Cube::pixToWCS(const double *pix, double *world, const int npts)
-  {
-    ///  @brief Use the WCS in the FitsHeader to convert from pixel to WCS coords for
-    ///   a set of points.
-    ///  \param pix The pixel coordinates.
-    ///  \param world The returned world coordinates.
-    ///  \param npts The number of points being converted.
-
-    return this->head.pixToWCS(pix,world,npts);
-  }
 
 
   //============================================================================
