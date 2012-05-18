@@ -48,8 +48,7 @@ void Cube::SmoothSearch()
   ///  to the log file if the user so requests.
 
   if(!this->par.getFlagSmooth()){
-    duchampWarning("SmoothSearch",
-		   "FlagSmooth not set! Using basic CubicSearch.\n");
+    DUCHAMPWARN("SmoothSearch","FlagSmooth not set! Using basic CubicSearch.");
     this->CubicSearch();
   }
   else{    
@@ -117,9 +116,9 @@ void Cube::SpectralSmooth()
 
   if(!this->reconExists && this->par.getSmoothType()=="spectral"){
     //    if(!this->head.isSpecOK())
-    if(!this->head.canUseThirdAxis())
-      duchampWarning("SpectralSmooth",
-		     "There is no spectral axis, so cannot do the spectral smoothing.\n");
+    if(!this->head.canUseThirdAxis()){
+      DUCHAMPWARN("SpectralSmooth","There is no spectral axis, so cannot do the spectral smoothing.");
+    }
     else{
 
       Hanning hann(this->par.getHanningWidth());
@@ -165,9 +164,9 @@ void Cube::SpatialSmooth()
 
   if(!this->reconExists && this->par.getSmoothType()=="spatial"){
 
-    if( this->head.getNumAxes() < 2 )
-      duchampWarning("SpatialSmooth",
-		     "There are not enough axes to do the spatial smoothing.\n");
+    if( this->head.getNumAxes() < 2 ){
+      DUCHAMPWARN("SpatialSmooth","There are not enough axes to do the spatial smoothing.");
+    }
     else{
 
       size_t xySize = this->axisDim[0]*this->axisDim[1];

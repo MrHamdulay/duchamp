@@ -48,9 +48,7 @@ namespace duchamp
     std::ifstream logfile(this->par.getLogFile().c_str());
   
     if(!logfile.is_open()){
-      std::stringstream errmsg;
-      errmsg << "Unable to open log file " << this->par.getLogFile();
-      duchampError("getExistingDetections",errmsg.str());
+      DUCHAMPERROR("getExistingDetections","Unable to open log file " << this->par.getLogFile());
       return FAILURE;
     }
 
@@ -64,10 +62,7 @@ namespace duchamp
     ss.str(temp);
     ss >> temp >> temp >> temp >> temp>> temp >> filename;
     if(filename != this->par.getFullImageFile()){
-      std::stringstream errmsg;
-      errmsg << "The image file given the log file (" << filename
-	     <<") is different to that in the parameter file (" << this->par.getFullImageFile()<<").";
-      duchampError("getExistingDetections", errmsg.str());
+      DUCHAMPERROR("getExistingDetections", "The image file given the log file (" << filename <<") is different to that in the parameter file (" << this->par.getFullImageFile()<<").");
       return FAILURE;
     }
 
@@ -102,7 +97,7 @@ namespace duchamp
     for(int d=0; d<numDets; d++){
       getline(logfile,temp);   // This should be Detection #X:
       if(this->par.isVerbose()) bar.update(d+1);
-      if(temp.substr(0,11)!="Detection #") duchampError("existingDetections","Format of Log file is wrong!");
+      if(temp.substr(0,11)!="Detection #") DUCHAMPERROR("existingDetections","Format of Log file is wrong!");
       Detection obj;
       while(getline(logfile,temp), temp.size()>0){
 	  for(size_t i=0;i<temp.size();i++)

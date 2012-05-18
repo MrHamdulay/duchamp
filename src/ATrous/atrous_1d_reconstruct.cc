@@ -69,11 +69,7 @@ namespace duchamp
     else{
       if((firstTime)&&(maxScale!=0)){
 	firstTime=false;
-	std::stringstream errmsg;
-	errmsg << "The requested value of the parameter scaleMax, \""
-	       << maxScale << "\" is outside the allowed range (1-"
-	       << numScales <<").\nSetting to " << numScales << ".\n";
-	duchampWarning("Reading parameters",errmsg.str());
+	DUCHAMPWARN("Reading parameters","The requested value of the parameter scaleMax, \"" << maxScale << "\" is outside the allowed range (1-"<< numScales <<") -- setting to " << numScales);
       } 
       maxScale = numScales;
     }

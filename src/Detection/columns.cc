@@ -90,10 +90,7 @@ namespace duchamp
 	this->type = COLNAME(num);
       }
       else{
-	std::stringstream errmsg;
-	errmsg << "Incorrect value for Col(num) --> num="<<num
-	       << ", should be between 0 and " << numColumns-1 << ".\n";
-	duchampError("Column constructor", errmsg.str());
+	DUCHAMPERROR("Column constructor", "Incorrect value for Col(num) --> num="<<num << ", should be between 0 and " << numColumns-1);
 	this->width = 1;
 	this->precision = 0;
 	this->name = " ";

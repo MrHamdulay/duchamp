@@ -113,9 +113,7 @@ namespace duchamp
     }
 
     if(doWarning){
-      std::stringstream errmsg;
-      errmsg << "Header beam keywords not present. Using parameter "<< paramName <<" to determine size of beam.\n";
-      duchampWarning("Beam definition",errmsg.str());
+      DUCHAMPWARN("Beam definition","Header beam keywords not present. Using parameter "<< paramName <<" to determine size of beam.");
     }
   }
     
@@ -154,21 +152,21 @@ namespace duchamp
       strcpy(keyword,"BMAJ");
       float val=this->itsMaj*this->itsPixelScale;
       if (fits_update_key(fptr, TFLOAT, keyword, &val, NULL, &status)){
-	duchampError("Writing beam","Error writing beam info:");
+	DUCHAMPERROR("Writing beam","Error writing beam info:");
 	fits_report_error(stderr, status);
       }
       status = 0;
       strcpy(keyword,"BMIN");
       val=this->itsMin*this->itsPixelScale;
       if (fits_update_key(fptr, TFLOAT, keyword, &val, NULL, &status)){
-	duchampError("Writing beam","Error writing beam info:");
+	DUCHAMPERROR("Writing beam","Error writing beam info:");
 	fits_report_error(stderr, status);
       }
       status = 0;
       strcpy(keyword,"BPA");
       val=this->itsPA;
       if (fits_update_key(fptr, TFLOAT, keyword, &val, NULL, &status)){
-	duchampError("Writing beam","Error writing beam info:");
+	DUCHAMPERROR("Writing beam","Error writing beam info:");
 	fits_report_error(stderr, status);
       }
     }

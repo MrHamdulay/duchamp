@@ -77,7 +77,7 @@ vector<Detection> readAndSearch(Param &par)
   status = 0;
   fits_close_file(fptr, &status);
   if (status){
-    duchampWarning("readAndSearch","Error closing file: ");
+    DUCHAMPWARN("readAndSearch","Error closing file: ");
     fits_report_error(stderr, status);
   }
 
@@ -133,19 +133,19 @@ vector<Detection> readAndSearch(Param &par)
  
     status = 0;
     if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
-      duchampWarning("readAndSearch","Error opening file: ");
+      DUCHAMPWARN("readAndSearch","Error opening file: ");
       fits_report_error(stderr, status);
     }
     status = 0;
     fits_read_subset(fptr, TFLOAT, fpixel, lpixel, inc, NULL, bigarray, &anynul, &status);
     if(status){
-      duchampError("readAndSearch","There was an error reading in the data array:");
+      DUCHAMPERROR("readAndSearch","There was an error reading in the data array:");
       fits_report_error(stderr, status);
     }
     status = 0;
     fits_close_file(fptr, &status);
     if (status){
-      duchampWarning("readAndSearch","Error closing file: ");
+      DUCHAMPWARN("readAndSearch","Error closing file: ");
       fits_report_error(stderr, status);
     }
 

@@ -31,6 +31,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <sstream>
 
 // need to undef these in case other packages have them defined.
 #undef PACKAGE_BUGREPORT
@@ -104,17 +105,21 @@ Selavy re-analyses and re-plots objects found by Duchamp.\n\
   // Macro to handle warnings, specifying the origin of the warning and taking a streamed input
 #define DUCHAMPWARN(origin,stream) \
   {                                \
-    std::ostringstream oss;        \
+  do {                               \
+   std::ostringstream oss;        \
     oss << stream;                 \
-    std::cerr << "WARNING <" << origin << ">: " << oss.str()<<"\n"; \
+    std::cerr << "WARNING <" << origin << "> : " << oss.str()<<"\n"; \
+ } while(0);                        \
   }     
   
   // Macro to handle errors, with origin and streamed input. No exception is thrown (use DUCHAMPTHROW instead)
 #define DUCHAMPERROR(origin,stream) \
 {                                   \
+ do {                               \
   std::ostringstream oss;           \
   oss << stream;                    \
-  std::cerr << "ERROR <" << origin << ">: " << oss.str() << "\n"; \
+  std::cerr << "ERROR <" << origin << "> : " << oss.str() << "\n"; \
+ } while(0);                        \
 }
 
 #define DUCHAMPTHROW(origin,stream) \

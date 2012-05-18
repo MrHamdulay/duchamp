@@ -77,8 +77,7 @@ namespace duchamp
     int flag = newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
 
     if(flag<=0){
-      duchampError("Plot Detection Map", 
-		   "Could not open PGPlot device " + pgDestination + ".\n");
+      DUCHAMPERROR("Plot Detection Map", "Could not open PGPlot device " << pgDestination);
     }
     else{
 
@@ -206,9 +205,9 @@ namespace duchamp
       plotFlag[i] = plotList[i].setUpPlot(pgDestination[i],
 					  float(xdim),float(ydim));
        
-      if(plotFlag[i]<=0) duchampError("Plot Moment Map", 
-				      "Could not open PGPlot device " 
-				      + pgDestination[i] + ".\n");
+      if(plotFlag[i]<=0){
+	DUCHAMPERROR("Plot Moment Map", "Could not open PGPlot device " << pgDestination[i]);
+      }
       else{
 	doPlot[i] = true;
 	plotNeeded = true;

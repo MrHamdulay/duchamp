@@ -54,13 +54,11 @@ namespace duchamp
     int status = 0;
 
     if(!this->par.getFlagSmoothExists()){
-      duchampWarning("readSmoothCube",
-		     "flagSmoothExists is not set. Not reading anything in!\n");
+      DUCHAMPWARN("readSmoothCube","flagSmoothExists is not set. Not reading anything in!");
       return FAILURE;
     }
     else if(!this->par.getFlagSmooth()){
-      duchampWarning("readSmoothCube",
-		     "flagSmooth is not set. Don't need to read in smoothed array!\n");
+      DUCHAMPWARN("readSmoothCube", "flagSmooth is not set. Don't need to read in smoothed array!");
       return FAILURE;
     }
     else {
@@ -72,32 +70,28 @@ namespace duchamp
       // Check to see whether the parameter smoothFile is defined
       bool smoothGood = false;
       int exists;
-      std::stringstream errmsg;
       if(this->par.getSmoothFile() != ""){
 	smoothGood = true;
 	fits_file_exists(this->par.getSmoothFile().c_str(),&exists,&status);
 	if(exists<=0){
 	  fits_report_error(stderr, status);
-	  errmsg<< "Cannot find requested SmoothFile. Trying with parameters.\n"
-		<< "Bad smoothFile was: "<<this->par.getSmoothFile() <<std::endl;
-	  duchampWarning("readSmoothCube", errmsg.str());
+	  DUCHAMPWARN("readSmoothCube", "Cannot find requested SmoothFile. Trying with parameters. Bad smoothFile was: "<<this->par.getSmoothFile());
 	  smoothGood = false;
 	}
       }
       else{
-	errmsg<< "SmoothFile not specified. Working out name from parameters.\n";
+	DUCHAMPWARN("readSmoothCube", "SmoothFile not specified. Working out name from parameters.");
       }
   
       if(!smoothGood){ // if bad, need to look at parameters
 
 	std::string smoothFile = this->par.outputSmoothFile();
-	errmsg << "Trying file " << smoothFile << std::endl;
-	duchampWarning("readSmoothCube", errmsg.str() );
+	DUCHAMPWARN("readSmoothCube", "Trying file " << smoothFile );
 	smoothGood = true;
 	fits_file_exists(smoothFile.c_str(),&exists,&status);
 	if(exists<=0){
 	  fits_report_error(stderr, status);
-	  // 	duchampWarning("readSmoothCube","SmoothFile not present.\n");
+	  // 	DUCHAMPWARN("readSmoothCube","SmoothFile not present.\n");
 	  smoothGood = false;
 	}
 
@@ -107,7 +101,7 @@ namespace duchamp
 	  this->par.setSmoothFile(smoothFile);
 	}
 	else { // if STILL bad, give error message and exit.
-	  duchampError("readSmoothCube","Cannot find Smoothed file.\n");
+	  DUCHAMPERROR("readSmoothCube","Cannot find Smoothed file.");
 	  return FAILURE;
 	}
 
@@ -133,20 +127,13 @@ namespace duchamp
       }
 
       if(numAxesNew != this->numDim){
-	std::stringstream errmsg;
-	errmsg << "Smoothed cube has a different number of axes to original!"
-	       << " (" << numAxesNew << " cf. " << this->numDim << ")\n";
-	duchampError("readSmoothCube", errmsg.str());
+	DUCHAMPERROR("readSmoothCube", "Smoothed cube has a different number of axes to original!" << " (" << numAxesNew << " cf. " << this->numDim << ")");
 	return FAILURE;
       }
 
       for(int i=0;i<numAxesNew;i++){
 	if(dimAxesNew[i]!=int(this->axisDim[i])){
-	  std::stringstream errmsg;
-	  errmsg << "Smoothed cube has different axis dimensions to original!"
-		 << "\nAxis #" << i+1 << " has size " << dimAxesNew[i] 
-		 << " cf. " << this->axisDim[i] <<" in original.\n";	
-	  duchampError("readSmoothCube", errmsg.str());
+	  DUCHAMPERROR("readSmoothCube", "Smoothed cube has different axis dimensions to original! Axis #" << i+1 << " has size " << dimAxesNew[i] << " cf. " << this->axisDim[i] <<" in original.");
 	  return FAILURE;
 	}
       }
@@ -159,17 +146,12 @@ namespace duchamp
 	fits_read_key(fptr, TSTRING, (char *)keyword_subsection.c_str(), 
 		      subsection, comment, &status);
 	if(status){
-	  duchampError("readSmoothCube", 
-		       "subsection keyword not present in smoothFile.\n");
+	  DUCHAMPERROR("readSmoothCube", "subsection keyword not present in smoothFile.");
 	  return FAILURE;
 	}
 	else{
 	  if(this->par.getSubsection() != subsection){
-	    std::stringstream errmsg;
-	    errmsg << "subsection keyword in smoothFile (" << subsection 
-		   << ") does not match that requested (" 
-		   << this->par.getSubsection() << ").\n";
-	    duchampError("readSmoothCube", errmsg.str());
+	    DUCHAMPERROR("readSmoothCube", "subsection keyword in smoothFile (" << subsection << ") does not match that requested (" << this->par.getSubsection() << ").");
 	    return FAILURE;
 	  }
 	}
@@ -183,11 +165,7 @@ namespace duchamp
 	fits_read_key(fptr, TINT, (char *)keyword_hanningwidth.c_str(), 
 		      &hannWidth, comment, &status);
 	if(hannWidth != this->par.getHanningWidth()){
-	  std::stringstream errmsg;
-	  errmsg << keyword_hanningwidth << " keyword in smoothFile (" 
-		 << hannWidth << ") does not match the hanningWidth parameter (" 
-		 << this->par.getHanningWidth() << ").\n";
-	  duchampError("readSmoothCube", errmsg.str());
+	  DUCHAMPERROR("readSmoothCube", keyword_hanningwidth << " keyword in smoothFile (" << hannWidth << ") does not match the hanningWidth parameter (" << this->par.getHanningWidth() << ").");
 	  return FAILURE;
 	}
 
@@ -199,33 +177,21 @@ namespace duchamp
 	fits_read_key(fptr, TFLOAT, (char *)keyword_kernmaj.c_str(), 
 		      &maj, comment, &status);
 	if(maj != this->par.getKernMaj()){
-	  std::stringstream errmsg;
-	  errmsg << keyword_kernmaj << " keyword in smoothFile (" 
-		 << maj << ") does not match the kernMaj parameter (" 
-		 << this->par.getKernMaj() << ").\n";
-	  duchampError("readSmoothCube", errmsg.str());
+	  DUCHAMPERROR("readSmoothCube", keyword_kernmaj << " keyword in smoothFile (" << maj << ") does not match the kernMaj parameter (" << this->par.getKernMaj() << ").");
 	  return FAILURE;
 	}
 	status = 0;
 	fits_read_key(fptr, TFLOAT, (char *)keyword_kernmin.c_str(), 
 		      &min, comment, &status);
 	if(min != this->par.getKernMin()){
-	  std::stringstream errmsg;
-	  errmsg << keyword_kernmin << " keyword in smoothFile (" 
-		 << maj << ") does not match the kernMin parameter (" 
-		 << this->par.getKernMin() << ").\n";
-	  duchampError("readSmoothCube", errmsg.str());
+	  DUCHAMPERROR("readSmoothCube", keyword_kernmin << " keyword in smoothFile (" << maj << ") does not match the kernMin parameter (" << this->par.getKernMin() << ").");
 	  return FAILURE;
 	}
 	status = 0;
 	fits_read_key(fptr, TFLOAT, (char *)keyword_kernpa.c_str(), 
 		      &pa, comment, &status);
 	if(pa != this->par.getKernPA()){
-	  std::stringstream errmsg;
-	  errmsg << keyword_kernpa << " keyword in smoothFile (" 
-		 << maj << ") does not match the kernPA parameter (" 
-		 << this->par.getKernPA() << ").\n";
-	  duchampError("readSmoothCube", errmsg.str());
+	  DUCHAMPERROR("readSmoothCube", keyword_kernpa << " keyword in smoothFile (" << maj << ") does not match the kernPA parameter (" << this->par.getKernPA() << ").");
 	  return FAILURE;
 	}
 
@@ -237,7 +203,7 @@ namespace duchamp
       std::string fluxunits;
       fits_read_key(fptr, TSTRING, (char *)header.c_str(), unit, comment, &status);
       if (status){
-	duchampWarning("Cube Reader","Error reading BUNIT keyword: ");
+	DUCHAMPWARN("Cube Reader","Error reading BUNIT keyword: ");
 	fits_report_error(stderr, status);
 	return FAILURE;
       }
@@ -257,7 +223,7 @@ namespace duchamp
       status = 0;
       fits_close_file(fptr, &status);
       if (status){
-	duchampWarning("readSmoothCube", "Error closing file: ");
+	DUCHAMPWARN("readSmoothCube", "Error closing file: ");
 	fits_report_error(stderr, status);
       }
 

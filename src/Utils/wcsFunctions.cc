@@ -35,6 +35,8 @@
 #include <duchamp/duchamp.hh>
 #include <duchamp/Utils/utils.hh>
 
+using namespace duchamp;
+
 int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
 {
   ///  @details
@@ -70,10 +72,7 @@ int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
   status=wcsp2s(wcs, npts, naxis, newpix, imgcrd, 
 		phi, theta, tempworld, stat);
   if(status>0){
-    std::stringstream errmsg;
-    errmsg << "WCS Error Code = " << status <<": " << wcs_errmsg[status] 
-	   << "\nstat value is " << stat[0] << std::endl;
-    duchamp::duchampError("pixToWCSSingle",errmsg.str());
+    DUCHAMPTHROW("pixToWCSSingle","WCS Error Code = " << status <<": stat="<<stat[0] << " : " << wcs_errmsg[status]);
   }
 
   //return just the spatial/velocity information
@@ -125,10 +124,7 @@ int wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix)
 		phi, theta, imgcrd, temppix, stat);
 
   if( status > 0 ){
-    std::stringstream errmsg;
-    errmsg << "WCS Error Code = " <<status<<": " << wcs_errmsg[status] 
-	   << "\nstat value is " << stat[0] << std::endl;
-    duchamp::duchampError("wcsToPixSingle",errmsg.str());
+    DUCHAMPTHROW("wcsToPixSingle","WCS Error Code = " << status <<": stat="<<stat[0] << " : " << wcs_errmsg[status]);
   }
 
   pix[0] = temppix[wcs->lng] - 1.;
@@ -185,10 +181,7 @@ int pixToWCSMulti(struct wcsprm *wcs, const double *pix,
   status=wcsp2s(wcs, npts, naxis, newpix, imgcrd, 
 		phi, theta, tempworld, stat);
   if(status>0){
-    std::stringstream errmsg;
-    errmsg << "WCS Error Code = " <<status<<": " << wcs_errmsg[status] 
-	   << "\nstat value is " << stat[0] << std::endl;
-    duchamp::duchampError("pixToWCSMulti",errmsg.str());
+    DUCHAMPTHROW("pixToWCSMulti","WCS Error Code = " << status <<": stat="<<stat[0] << " : " << wcs_errmsg[status]);
   }
   else{
     //return just the spatial/velocity information, keeping the
@@ -253,10 +246,7 @@ int wcsToPixMulti(struct wcsprm *wcs, const double *world,
   status=wcss2p(wcs,npts,naxis,tempworld,phi,theta,
 		imgcrd,temppix,stat);
   if(status>0){
-    std::stringstream errmsg;
-    errmsg << "WCS Error Code = " <<status<<": " <<wcs_errmsg[status] 
-	   << "\nstat value is " << stat[0] << std::endl;
-    duchamp::duchampError("wcsToPixMulti",errmsg.str());
+    DUCHAMPTHROW("wcsToPixMulti","WCS Error Code = " << status <<": stat="<<stat[0] << " : " << wcs_errmsg[status]);
   }
   else{
     // correct from 1-indexed to 0-indexed pixel array 
@@ -314,10 +304,7 @@ double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z,
   status=wcsp2s(wcs, 1, naxis, pixcrd, imgcrd, 
 		phi, theta, world, stat);
   if(status>0){
-    std::stringstream errmsg;
-    errmsg <<"WCS Error Code = "<<status<<": "<<wcs_errmsg[status] 
-	   << "\nstat value is "<<stat[0]<<std::endl;
-    duchamp::duchampError("pixelToVelocity",errmsg.str());
+    DUCHAMPTHROW("pixelToVelocity","WCS Error Code = " << status <<": stat="<<stat[0] << " : " << wcs_errmsg[status]);
   }
 
   double vel = coordToVel(wcs, world[specAxis], velUnits);
@@ -361,8 +348,8 @@ double coordToVel(struct wcsprm *wcs, const double coord,
       if(status == 10) errmsg << "\nTried to get conversion from " 
 			      << wcs->cunit[specIndex]
 			      << " to " << outputUnits.c_str();
-      errmsg << "\nUsing coordinate value instead.\n";
-      duchamp::duchampError("coordToVel", errmsg.str());
+      //      errmsg << "\nUsing coordinate value instead.\n";
+      DUCHAMPERROR("coordToVel", errmsg);
       errflag = 1;
     }
     return coord;
@@ -393,9 +380,9 @@ double velToCoord(struct wcsprm *wcs, const float velocity,
 
   if(status > 0){
     std::stringstream errmsg;
-    errmsg << "WCSUNITS Error Code = " << status << ":"
-	   << wcsunits_errmsg[status] << "\nUsing coordinate value instead.\n";
-    duchamp::duchampError("velToCoord",errmsg.str());
+    errmsg << "WCSUNITS Error Code = " << status << ":" << wcsunits_errmsg[status];
+// << "\nUsing coordinate value instead.\n";
+    DUCHAMPERROR("velToCoord",errmsg.str());
     return velocity;
   }
   else return (pow(velocity, 1./power) - offset) / scale;

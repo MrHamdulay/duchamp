@@ -60,8 +60,9 @@ namespace duchamp
     ///    if the WCS for the Cube is valid).
     /// \param object The Detection to be drawn.
 
-    if(!cpgtest())
-      duchampError("Draw Cutout","There is no PGPlot device open!\n");
+    if(!cpgtest()){
+      DUCHAMPERROR("Draw Cutout","There is no PGPlot device open.");
+    }
     else{
 
       long size = (object.getXmax()-object.getXmin()+1);
@@ -191,8 +192,9 @@ namespace duchamp
     ///  \param channel Which channel to base WCS calculations on: needed
     ///  as the positions could theoretically change with channel.
 
-    if(!cpgtest())
-      duchampError("Draw Cutout","There is no PGPlot device open!\n");
+    if(!cpgtest()){
+      DUCHAMPERROR("Draw Cutout","There is no PGPlot device open.");
+    }
     else{
 
       if(this->head.isWCS()){  // can only do this if the WCS is good!
@@ -299,8 +301,9 @@ namespace duchamp
     /// \param xoffset The offset from 0 of the x-axis of the plotting window
     /// \param yoffset The offset from 0 of the y-axis of the plotting window
 
-    if(!cpgtest())
-      duchampError("Draw Borders","There is no PGPlot device open!\n");
+    if(!cpgtest()){
+      DUCHAMPERROR("Draw Borders","There is no PGPlot device open.");
+    }
     else{
 
       float x1,x2,y1,y2;
@@ -312,8 +315,9 @@ namespace duchamp
 
       cpgswin(0,xsize-1,0,ysize-1);
 
-      if(vertexSet.size()%4 != 0)
-	duchampError("drawBorders","Vertex set wrong size!");
+      if(vertexSet.size()%4 != 0){
+	DUCHAMPERROR("drawBorders","Vertex set wrong size!");
+      }
       else{
 	for(size_t i=0;i<vertexSet.size()/4;i++){
 	  cpgmove(vertexSet[i*4]-xoffset,vertexSet[i*4+1]-yoffset);
@@ -333,8 +337,9 @@ namespace duchamp
     /// drawn in yellow at 0 and the values of xdim & ydim.  There must
     /// be a PGPLOT window open, else an error message is returned.
 
-    if(!cpgtest())
-      duchampError("Draw Cutout","There is no PGPlot device open!\n");
+    if(!cpgtest()){
+      DUCHAMPERROR("Draw Cutout","There is no PGPlot device open.");
+    }
     else{
       int ci;
       cpgqci(&ci);

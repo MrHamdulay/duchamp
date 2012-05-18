@@ -86,9 +86,7 @@ std::vector <Detection> search3DArray(size_t *dim, float *Array, Param &par,
   else if(par.getSearchType()=="spatial")
     return search3DArraySpatial(dim,Array,par,stats);
   else{
-    std::stringstream ss;
-    ss << "Unknown search type : " << par.getSearchType();
-    duchampError("search3DArray",ss.str());
+    DUCHAMPERROR("search3DArray","Unknown search type : " << par.getSearchType());
     return std::vector<Detection>(0);
   }
 }

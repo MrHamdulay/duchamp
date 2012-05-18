@@ -342,9 +342,7 @@ namespace duchamp
 	case 'p':
 	  file = optarg;
 	  if(this->readParams(file)==FAILURE){
-	    std::stringstream errmsg;
-	    errmsg << "Could not open parameter file " << file << ".\n";
-	    duchampError(progname,errmsg.str());
+	    DUCHAMPERROR(progname,"Could not open parameter file " << file);
 	  }
 	  else returnValue = SUCCESS;
 	  break;
@@ -370,8 +368,7 @@ namespace duchamp
       if(changeX){
 	if(returnValue == SUCCESS) this->setFlagXOutput(false);
 	else {
-	  duchampError(progname,
-		       "You need to specify either a parameter file or FITS image.\n");
+	  DUCHAMPERROR(progname, "You need to specify either a parameter file or FITS image.\n");
 	  std::cout << "\n" << ERR_USAGE_MSG;
 	}
       }
@@ -437,15 +434,15 @@ namespace duchamp
 
   bool Param::isStatOK(int x, int y, int z)
   {
-   /// Test whether a given pixel position lies within the subsection
-   /// given by the statSec parameter. Only tested if the flagSubsection
-   /// parameter is true -- if it isn't, we just return true since all
-   /// pixels are therefore available for statstical calculations.
-   /// \param x X-value of pixel being tested.
-   /// \param y Y-value of pixel being tested.
-   /// \param z Z-value of pixel being tested.
-   /// \return True if pixel is able to be used for statistical
-   /// calculations. False otherwise.
+    /// Test whether a given pixel position lies within the subsection
+    /// given by the statSec parameter. Only tested if the flagSubsection
+    /// parameter is true -- if it isn't, we just return true since all
+    /// pixels are therefore available for statstical calculations.
+    /// \param x X-value of pixel being tested.
+    /// \param y Y-value of pixel being tested.
+    /// \param z Z-value of pixel being tested.
+    /// \return True if pixel is able to be used for statistical
+    /// calculations. False otherwise.
 
     int xval=x,yval=y,zval=z;
     if(flagSubsection){
@@ -668,25 +665,16 @@ namespace duchamp
 	// Dealing with deprecated parameters.
 	if(arg=="flagblankpix"){
 	  this->flagTrim = readFlag(ss);
-	  std::stringstream errmsg;
-	  errmsg <<"The parameter flagBlankPix is deprecated. "
-		 <<"Please use the flagTrim parameter in future.\n"
-		 <<"Setting flagTrim = " << stringize(this->flagTrim) << ".\n";
-	  duchampWarning("Reading parameters",errmsg.str());
+	  DUCHAMPWARN("Reading parameters","The parameter flagBlankPix is deprecated. Please use the flagTrim parameter in future.");
+	  DUCHAMPWARN("Reading parameters","Setting flagTrim = " << stringize(this->flagTrim));
 	}
 	if(arg=="blankpixvalue"){
-	  std::stringstream errmsg;
-	  errmsg <<"The parameter blankPixValue is deprecated.\n"
-		 <<"This value is only taken from the FITS header.\n";
-	  duchampWarning("Reading parameters",errmsg.str());
+	  DUCHAMPWARN("Reading parameters","The parameter blankPixValue is deprecated. This value is only taken from the FITS header.");
 	}
 	if(arg=="beamsize"){
 	  this->areaBeam = readFval(ss);
-	  std::stringstream errmsg;
-	  errmsg <<"The parameter beamSize is deprecated.\n"
-		 <<"You can specify the beam size by beamArea or beamFWHM.\n"
-		 <<"Setting beamArea = " << this->areaBeam << ".\n";
-	  duchampWarning("Reading parameters",errmsg.str());
+	  DUCHAMPWARN("Reading parameters","The parameter beamSize is deprecated. You can specify the beam size by beamArea or beamFWHM.");
+	  DUCHAMPWARN("Reading parameters","Setting beamArea = " << this->areaBeam);
 	}
 
       }
@@ -715,7 +703,7 @@ namespace duchamp
     // If pgplot was not included in the compilation, need to set flagXOutput to false
     if(!USE_PGPLOT){
       if(this->flagXOutput || this->flagMaps || this->flagPlotSpectra)
-	duchampWarning("Reading parameters","PGPlot has not been enabled, so setting flagXOutput, flagMaps and flagPlotSpectra to false.\n");
+	DUCHAMPWARN("Reading parameters","PGPlot has not been enabled, so setting flagXOutput, flagMaps and flagPlotSpectra to false.");
       this->flagXOutput = false;
       this->flagMaps = false;
       this->flagPlotSpectra = false;
@@ -728,10 +716,7 @@ namespace duchamp
 
     // Can only have "spatial" or "spectral" as search types
     if(this->searchType != "spatial" && this->searchType != "spectral"){
-      std::stringstream errmsg;
-      errmsg << "You have requested a search type of \""<<this->searchType<<"\".\n"
-	     << "Only \"spectral\" and \"spatial\" are accepted. Setting to \"spatial\".\n";
-      duchampWarning("Reading parameters",errmsg.str());
+      DUCHAMPWARN("Reading parameters","You have requested a search type of \""<<this->searchType<<"\" -- Only \"spectral\" and \"spatial\" are accepted, so setting to \"spatial\".");
       this->searchType = "spatial";
     }
 
@@ -743,20 +728,14 @@ namespace duchamp
       // If we specify a manual threshold, need to also specify a manual growth threshold
       // If we haven't done so, turn growing off
       if(this->flagGrowth && !this->flagUserGrowthThreshold){
-	std::stringstream errmsg;
-	errmsg << "You have specified a manual search threshold, but not a manual growth threshold.\n"
-	       << "You need to do so using the \"growthThreshold\" parameter.\n"
-	       << "The growth function is being turned off.\n";
-	duchampWarning("Reading parameters",errmsg.str());
+	DUCHAMPWARN("Reading parameters","You have specified a manual search threshold, but not a manual growth threshold. You need to do so using the \"growthThreshold\" parameter.");
+	DUCHAMPWARN("Reading parameters","The growth function is being turned off.");
 	this->flagGrowth = false;
       }
 
       // If we specify a manual threshold, we don't need the FDR method, so turn it off if requested.
       if(this->flagFDR){
-	std::stringstream errmsg;
-	errmsg << "You have specified a manual search threshold, so we don't need to use the FDR method.\n"
-	       << "Setting \"flagFDR=false\".\n";
-	duchampWarning("Reading parameters",errmsg.str());
+	DUCHAMPWARN("Reading parameters","You have specified a manual search threshold, so we don't need to use the FDR method. Setting \"flagFDR=false\".");
 	this->flagFDR = false;
       }
 
@@ -769,40 +748,33 @@ namespace duchamp
       if(this->flagUserThreshold &&
 	 ( (this->threshold < this->growthThreshold)
 	   || (this->snrCut < this->growthCut) ) ){
-	errmsg << "Your \"growthThreshold\" parameter is larger than your \"threshold\".\n"
-	       << "The growth function is being turned off.\n";
+	errmsg << "Your \"growthThreshold\" parameter" << this->growthThreshold <<" is larger than your \"threshold\"" << this->threshold;
 	doWarn = true;
       }
       
       if(!this->flagUserThreshold &&
 	 (this->snrCut < this->growthCut)) {
-	errmsg << "Your \"growthCut\" parameter is larger than your \"snrCut\".\n"
-	       << "The growth function is being turned off.\n";
+	errmsg << "Your \"growthCut\" parameter " << this->growthCut << " is larger than your \"snrCut\"" << this->snrCut;
 	doWarn = true;
       }
 
-      if(doWarn) duchampWarning("Reading parameters",errmsg.str());
+      if(doWarn){
+	DUCHAMPWARN("Reading parameters",errmsg);
+	DUCHAMPWARN("Reading parameters","The growth function is being turned off.");
 
+      }
     }
 
     // Make sure the annnotationType is an acceptable option -- default is "borders"
     if((this->annotationType != "borders") && (this->annotationType!="circles")){
-      std::stringstream errmsg;
-      errmsg << "The requested value of the parameter annotationType, \""
-	     << this->annotationType << "\", is invalid.\n"
-	     << "Changing to \"borders\".\n";
-      duchampWarning("Reading parameters",errmsg.str());
+      DUCHAMPWARN("Reading parameters","The requested value of the parameter annotationType, \"" << this->annotationType << "\", is invalid -- changing to \"borders\".");
       this->annotationType = "borders";
     }
       
     // Make sure smoothType is an acceptable type -- default is "spectral"
     if((this->smoothType!="spectral")&&
        (this->smoothType!="spatial")){
-      std::stringstream errmsg;
-      errmsg << "The requested value of the parameter smoothType, \""
-	     << this->smoothType << "\", is invalid.\n"
-	     << "Changing to \"spectral\".\n";
-      duchampWarning("Reading parameters",errmsg.str());
+      DUCHAMPWARN("Reading parameters","The requested value of the parameter smoothType, \"" << this->smoothType << "\", is invalid -- changing to \"spectral\".");
       this->smoothType = "spectral";
     }
     // If kernMin has not been given, or is negative, make it equal to kernMaj
@@ -811,23 +783,15 @@ namespace duchamp
     // Make sure spectralMethod is an acceptable type -- default is "peak"
     if((this->spectralMethod!="peak")&&
        (this->spectralMethod!="sum")){
-      std::stringstream errmsg;
-      errmsg << "The requested value of the parameter spectralMethod, \""
-	     << this->spectralMethod << "\", is invalid.\n"
-	     << "Changing to \"peak\".\n";
-      duchampWarning("Reading parameters",errmsg.str());
+      DUCHAMPWARN("Reading parameters","The requested value of the parameter spectralMethod, \"" << this->spectralMethod << "\", is invalid -- changing to \"peak\".");
       this->spectralMethod = "peak";
     }
 
-    // Make sure pixelCentre is an acceptable type -- default is "peak"
+    // make sure pixelCentre is an acceptable type -- default is "peak"
     if((this->pixelCentre!="centroid")&&
        (this->pixelCentre!="average") &&
        (this->pixelCentre!="peak")       ){
-      std::stringstream errmsg;
-      errmsg << "The requested value of the parameter pixelCentre, \""
-	     << this->pixelCentre << "\", is invalid.\n"
-	     << "Changing to \"centroid\".\n";
-      duchampWarning("Reading parameters",errmsg.str());
+      DUCHAMPWARN("Reading parameters","The requested value of the parameter pixelCentre, \"" << this->pixelCentre << "\", is invalid -- changing to \"centroid\".");
       this->pixelCentre = "centroid";
     }
 
@@ -836,11 +800,7 @@ namespace duchamp
     for(int i=0;i<numSortingParamOptions;i++) 
       OK = OK || this->sortingParam==sortingParamOptions[i];
     if(!OK){
-      std::stringstream errmsg;
-      errmsg << "The requested value of the parameter sortingParam, \""
-	     << this->sortingParam << "\", is invalid.\n"
-	     << "Changing to \"vel\".\n";
-      duchampWarning("Reading parameters",errmsg.str());
+      DUCHAMPWARN("Reading parameters","The requested value of the parameter sortingParam, \"" << this->sortingParam << "\", is invalid. -- changing to \"vel\".");
       this->sortingParam = "vel";
     }
       
@@ -963,7 +923,7 @@ namespace duchamp
       else  recordParam(theStream, "[beamArea]", "Area of Beam (pixels)", par.beamAsUsed.area());
     }
     else{
-      duchampError("Parameter output","Unknown value for origin of beam");
+      recordParam(theStream, "[beam info]", "Size & shape of beam", "No information available!");
     }
     recordParam(theStream, "[flagBaseline]", "Removing baselines before search?", stringize(par.getFlagBaseline()));
     recordParam(theStream, "[flagSmooth]", "Smoothing data prior to searching?", stringize(par.getFlagSmooth()));

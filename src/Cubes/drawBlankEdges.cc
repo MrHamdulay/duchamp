@@ -53,8 +53,9 @@ namespace duchamp
 
     if(par.getFlagBlankPix()){
 
-      if(!cpgtest())
-	duchampError("Draw Blank Edges","There is no PGPlot device open!\n");
+      if(!cpgtest()){
+	DUCHAMPERROR("Draw Blank Edges","There is no PGPlot device open.");
+      }
       else{
 
 	int colour;

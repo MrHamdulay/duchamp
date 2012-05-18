@@ -279,7 +279,7 @@ namespace duchamp
     // have a 1-1 correspondence
 
     if(!this->voxelListCovered(voxelList)){
-      duchampError("Detection::calcFluxes","Voxel list provided does not match");
+      DUCHAMPERROR("Detection::calcFluxes","Voxel list provided does not match");
       return;
     }
 
@@ -331,7 +331,7 @@ namespace duchamp
     std::vector<Voxel>::iterator vox;
     for(vox=voxelList.begin();vox<voxelList.end();vox++){
       if(voxelMap.find(*vox) == voxelMap.end()){
-	duchampError("Detection::calcFluxes","Voxel list provided does not match");
+	DUCHAMPERROR("Detection::calcFluxes","Voxel list provided does not match");
 	return;
       }	
       else {
@@ -445,10 +445,11 @@ namespace duchamp
       pixcrd[8] = this->getZmax();
       int flag = head.pixToWCS(pixcrd, world, 5);
       delete [] pixcrd;
-      if(flag!=0) duchampError("calcWCSparams",
-			       "Error in calculating the WCS for this object.\n");
+      if(flag!=0) {
+	DUCHAMPERROR("calcWCSparams", "Error in calculating the WCS for this object.");
+      }
       else{
-
+	
 	// world now has the WCS coords for the five points 
 	//    -- use this to work out WCS params
   
@@ -514,7 +515,7 @@ namespace duchamp
     const int border = 1;
 
     if(!this->voxelListCovered(voxelList)){
-      duchampError("Detection::calcIntegFlux","Voxel list provided does not match");
+      DUCHAMPERROR("Detection::calcIntegFlux","Voxel list provided does not match");
       return;
     }
 
@@ -630,7 +631,7 @@ namespace duchamp
       std::vector<Voxel>::iterator vox;
       for(vox=voxelList.begin();vox<voxelList.end();vox++){
 	if(voxelMap.find(*vox) == voxelMap.end()){
-	  duchampError("Detection::calcIntegFlux","Voxel list provided does not match");
+	  DUCHAMPERROR("Detection::calcIntegFlux","Voxel list provided does not match");
 	  return;
 	}	
 	else {
@@ -837,7 +838,7 @@ namespace duchamp
     std::vector<Voxel>::iterator vox;
     for(vox=voxelList.begin();vox<voxelList.end();vox++){
       if(voxelMap.find(*vox) == voxelMap.end()){
-	duchampError("Detection::calcVelWidths","Voxel list provided does not match");
+	DUCHAMPERROR("Detection::calcVelWidths","Voxel list provided does not match");
 	return;
       }	
       else {
@@ -856,10 +857,10 @@ namespace duchamp
   void Detection::calcVelWidths(size_t zdim, float *intSpec, FitsHeader &head)
   {
 
-      // finding the 20% & 50% points.  Start at the velmin & velmax
-      //  points. Then, if the int flux there is above the 20%/50%
-      //  limit, go out, otherwise go in. This is to deal with the
-      //  problems from double- (or multi-) peaked sources.
+    // finding the 20% & 50% points.  Start at the velmin & velmax
+    //  points. Then, if the int flux there is above the 20%/50%
+    //  limit, go out, otherwise go in. This is to deal with the
+    //  problems from double- (or multi-) peaked sources.
 
     this->haveParams = true;
 

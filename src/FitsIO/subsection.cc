@@ -109,15 +109,6 @@ namespace duchamp
       int numAxes,status = 0;  /* MUST initialize status */
       fitsfile *fptr;         
 
-      // Make sure the FITS file exists
-      // int exists;
-      // fits_file_exists(this->imageFile.c_str(),&exists,&status);
-      // if(exists<=0){
-      // 	fits_report_error(stderr, status);
-      // 	//	duchampError("Cube Reader", "Requested image does not exist!\n");
-      // 	DUCHAMPTHROW("Cube Reader","Requested image " << this->imageFile << " does not exist!");
-      // 	return FAILURE;
-      // }
       if(this->checkImageExists()==FAILURE) return FAILURE;
 
       // Open the FITS file
@@ -142,7 +133,7 @@ namespace duchamp
       status = 0;
       fits_close_file(fptr, &status);
       if (status){
-	duchampWarning("Cube Reader","Error closing file: ");
+	DUCHAMPWARN("Cube Reader","Error closing file: ");
 	fits_report_error(stderr, status);
       }
 
@@ -180,7 +171,7 @@ namespace duchamp
     this->pixelSec = this->pixelSec.intersect(dim);
     if(this->pixelSec.parse(dim)==FAILURE) return FAILURE;
     if(!this->pixelSec.isValid()){
-      duchampError("parseSubsections","pixel section does not include any pixels\n");
+      DUCHAMPERROR("parseSubsections","pixel section does not include any pixels");
       return FAILURE;
     }
     
@@ -189,13 +180,13 @@ namespace duchamp
       this->statSec = this->statSec.intersect(dim);
       if(this->statSec.parse(dim)==FAILURE) return FAILURE;
       if(!this->statSec.isValid()){
-	duchampError("parseSubsections","StatSec does not include any pixels\n");
+	DUCHAMPERROR("parseSubsections","StatSec does not include any pixels");
 	return FAILURE;
       }
       this->statSec = this->statSec.intersect(this->pixelSec);
       if(this->statSec.parse(dim)==FAILURE) return FAILURE;
       if(!this->statSec.isValid()){
-	duchampError("parseSubsections","StatSec does not intersect with pixel subsection\n");
+	DUCHAMPERROR("parseSubsections","StatSec does not intersect with pixel subsection");
 	return FAILURE;
       }
       if(this->statSec.parse(dim)==FAILURE) return FAILURE;

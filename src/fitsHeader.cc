@@ -247,7 +247,7 @@ namespace duchamp
 		 << this->wcs->spec + 1 <<" keyword to make this work.\n";
 	  this->spectralUnits = "SPC";
 	}
-	duchampError("fixUnits", errmsg.str());
+	DUCHAMPERROR("fixUnits", errmsg.str());
       }
       // else{
       // 	std::cerr << "Converted " << this->wcs->cunit[this->wcs->spec] << " to " << this->spectralUnits << " and got offset="<<of << ", scale="<<sc <<", and power="<<po <<"\n";

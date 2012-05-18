@@ -115,10 +115,7 @@ namespace duchamp
     // First Make sure subsection has [ and ] at ends
     if((this->subsection[0]!='[') || 
        (this->subsection[this->subsection.size()-1]!=']')){
-      errmsg.str("");
-      errmsg << "Subsection needs to be delimited by square brackets\n"
-	     << "You provided: " << this->subsection << std::endl;
-      duchampError("Section parsing",errmsg.str());
+      DUCHAMPERROR("Section parsing","Subsection needs to be delimited by square brackets -- You provided: " << this->subsection);
       return FAILURE;
     }
 
@@ -130,12 +127,7 @@ namespace duchamp
       if(this->subsection[i]==',') this->numSections++;
 
     if(numSections!=dimAxes.size()){
-      errmsg.str("");
-      errmsg << "Subsection has "<<numSections
-	     <<" sections, compared to a cube with "
-	     << dimAxes.size() << " axes\n"
-	     << "Subsection provided was: " << this->subsection << std::endl;
-      duchampError("Section parsing",errmsg.str());
+      DUCHAMPERROR("Section parsing","Subsection " << this->subsection << " has "<<numSections <<" sections, compared to a cube with " << dimAxes.size() << " axes");
       return FAILURE;
     }
 
@@ -187,12 +179,7 @@ namespace duchamp
 	case 0: // borders case -- so many off each border
 	  readString >> a;
 	  if(a>=dimAxes[str]/2){
-	    errmsg.str("");
-	    errmsg<< "You requested the subsection " << this->subsection
-		  << " but axis #" << str+1 
-		  <<" has zero size, since its dimension is " << dimAxes[str]
-		  <<".\nI'm not going to parse this! Go and fix it.\n";
-	    duchampError("Section parsing", errmsg.str());
+	    DUCHAMPERROR("Section parsing", "You requested the subsection " << this->subsection << " but axis #" << str+1 <<" has zero size, since its dimension is " << dimAxes[str]);
 	    return FAILURE;
 	  }
 	  this->starts[str] = a;
@@ -233,8 +220,8 @@ namespace duchamp
     }
 
     if(removeStep){
-      errmsg << this->subsection << std::endl;
-      duchampWarning("Section parsing", errmsg.str());
+      errmsg << this->subsection;
+      DUCHAMPWARN("Section parsing", errmsg);
     }
 
     this->flagParsed = true;
@@ -273,7 +260,7 @@ namespace duchamp
     /// afterwards.
     
     if(this->numSections != other.numSections){
-      duchampError("Section::intersect", "Sizes of sections not equal - returning initial section");
+      DUCHAMPERROR("Section::intersect", "Sizes of sections not equal - returning initial section");
       return *this;
     }
 
@@ -327,7 +314,7 @@ namespace duchamp
     if(lhs.numSections != rhs.numSections){
       std::stringstream ss;
       ss << "Sizes of sections not equal - you requested " << lhs.subsection << " * " << rhs.subsection << ", with " << lhs.numSections << " and " << rhs.numSections << " sections each.\n";
-      duchampError("Section::operator*", ss.str());
+      DUCHAMPERROR("Section::operator*", "Sizes of sections not equal - you requested " << lhs.subsection << " * " << rhs.subsection << ", with " << lhs.numSections << " and " << rhs.numSections << " sections each.");
       return lhs;
     }
 

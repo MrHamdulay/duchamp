@@ -40,6 +40,8 @@
 #endif
 #include <duchamp/Utils/GaussSmooth2D.hh>
 
+using namespace duchamp;
+
 template <class Type>
 void GaussSmooth2D<Type>::defaults()
 {
@@ -125,9 +127,7 @@ void GaussSmooth2D<Type>::define(float maj, float min, float pa)
 
   if(this->kernWidth < 0) this->kernWidth = 2*kernelHW + 1;
   else if(this->kernWidth < 2*kernelHW + 1){
-    std::stringstream ss;
-    ss << "You have provided a kernel smaller than optimal (" << this->kernWidth << " cf. " << 2*kernelHW + 1 <<")";
-    duchamp::duchampWarning("GaussSmooth2D::define",ss.str());
+    DUCHAMPWARN("GaussSmooth2D::define","You have provided a kernel smaller than optimal (" << this->kernWidth << " cf. " << 2*kernelHW + 1 <<")");
   }
 
   if(this->allocated) delete [] this->kernel;

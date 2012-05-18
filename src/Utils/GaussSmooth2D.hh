@@ -28,6 +28,7 @@
 // -----------------------------------------------------------------------
 #ifndef GAUSSSMOOTH2D_H
 #define GAUSSSMOOTH2D_H
+#include <duchamp/duchamp.hh>
 
 /// @brief How the edges of the array are dealt with
 enum EDGES { EQUALTOEDGE,       ///< All pixels are used and treated equally

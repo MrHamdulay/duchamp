@@ -53,13 +53,11 @@ namespace duchamp
     int status = 0;
 
     if(!this->par.getFlagReconExists()){
-      duchampWarning("readReconCube",
-		     "reconExists flag is not set. Not reading anything in!\n");
+      DUCHAMPWARN("readReconCube", "reconExists flag is not set. Not reading anything in!");
       return FAILURE;
     }
     else if(!this->par.getFlagATrous()){
-      duchampWarning("readReconCube",
-		     "flagATrous is not set. Don't need to read in recon array!\n");
+      DUCHAMPWARN("readReconCube","flagATrous is not set. Don't need to read in recon array!");
       return FAILURE;
     }
     else {
@@ -67,32 +65,28 @@ namespace duchamp
       // Check to see whether the parameters reconFile and/or residFile are defined
       bool reconGood = false;
       int exists;
-      std::stringstream errmsg;
       if(this->par.getReconFile() != ""){
 	reconGood = true;
 	fits_file_exists(this->par.getReconFile().c_str(),&exists,&status);
 	if(exists<=0){
 	  fits_report_error(stderr, status);
-	  errmsg<< "Cannot find requested ReconFile. Trying with parameters.\n"
-		<< "Bad reconFile was: "<<this->par.getReconFile() << std::endl;
-	  duchampWarning("readReconCube", errmsg.str());
+	  DUCHAMPWARN("readReconCube", "Cannot find requested ReconFile. Trying with parameters. Bad reconFile was: "<<this->par.getReconFile());
 	  reconGood = false;
 	}
       }
       else{
-	errmsg<< "ReconFile not specified. Working out name from parameters.\n";
+	DUCHAMPWARN("readReconCube", "ReconFile not specified. Working out name from parameters.");
       }
   
       if(!reconGood){ // if bad, need to look at parameters
 
 	std::string reconFile = this->par.outputReconFile();
-	errmsg << "Trying file " << reconFile << std::endl;
-	duchampWarning("readReconCube", errmsg.str() );
+	DUCHAMPWARN("readReconCube", "Trying file " << reconFile );
 	reconGood = true;
 	fits_file_exists(reconFile.c_str(),&exists,&status);
 	if(exists<=0){
 	  fits_report_error(stderr, status);
-	  // 	duchampWarning("readReconCube","ReconFile not present.\n");
+	  // 	DUCHAMPWARNING("readReconCube","ReconFile not present.");
 	  reconGood = false;
 	}
 
@@ -102,7 +96,7 @@ namespace duchamp
 	  this->par.setReconFile(reconFile);
 	}
 	else { // if STILL bad, give error message and exit.
-	  duchampError("readReconCube","Cannot find reconstructed file.\n");
+	  DUCHAMPERROR("readReconCube","Cannot find reconstructed file.");
 	  return FAILURE;
 	}
 
@@ -128,20 +122,13 @@ namespace duchamp
       }
 
       if(numAxesNew != this->numDim){
-	std::stringstream errmsg;
-	errmsg << "Reconstructed cube has a different number of axes to original!"
-	       << " (" << numAxesNew << " cf. " << this->numDim << ")\n";
-	duchampError("readReconCube", errmsg.str());
+	DUCHAMPERROR("readReconCube", "Reconstructed cube has a different number of axes to original!" << " (" << numAxesNew << " cf. " << this->numDim << ")");
 	return FAILURE;
       }
 
       for(int i=0;i<numAxesNew;i++){
 	if(dimAxesNew[i]!=int(this->axisDim[i])){
-	  std::stringstream errmsg;
-	  errmsg << "Reconstructed cube has different axis dimensions to original!"
-		 << "\nAxis #" << i+1 << " has size " << dimAxesNew[i] 
-		 << " cf. " << this->axisDim[i] <<" in original.\n";	
-	  duchampError("readReconCube", errmsg.str());
+	  DUCHAMPERROR("readReconCube", "Reconstructed cube has different axis dimensions to original! Axis #" << i+1 << " has size " << dimAxesNew[i] << " cf. " << this->axisDim[i] <<" in original.");
 	  return FAILURE;
 	}
       }
@@ -154,17 +141,12 @@ namespace duchamp
 	fits_read_key(fptr, TSTRING, (char *)keyword_subsection.c_str(), 
 		      subsection, comment, &status);
 	if(status){
-	  duchampError("readReconCube", 
-		       "subsection keyword not present in reconFile.\n");
+	  DUCHAMPERROR("readReconCube", "subsection keyword not present in reconFile.");
 	  return FAILURE;
 	}
 	else{
 	  if(this->par.getSubsection() != subsection){
-	    std::stringstream errmsg;
-	    errmsg << "subsection keyword in reconFile (" << subsection 
-		   << ") does not match that requested (" 
-		   << this->par.getSubsection() << ").\n";
-	    duchampError("readReconCube", errmsg.str());
+	    DUCHAMPERROR("readReconCube", "subsection keyword in reconFile (" << subsection << ") does not match that requested (" << this->par.getSubsection() << ").");
 	    return FAILURE;
 	  }
 	}
@@ -178,44 +160,28 @@ namespace duchamp
       fits_read_key(fptr, TINT, (char *)keyword_reconDim.c_str(), 
 		    &reconDim, comment, &status);
       if(reconDim != this->par.getReconDim()){
-	std::stringstream errmsg;
-	errmsg << "reconDim keyword in reconFile (" << reconDim
-	       << ") does not match that requested (" 
-	       << this->par.getReconDim() << ").\n";
-	duchampError("readReconCube", errmsg.str());
+	DUCHAMPERROR("readReconCube", "reconDim keyword in reconFile (" << reconDim << ") does not match that requested (" << this->par.getReconDim() << ").");
 	return FAILURE;
       }
       status = 0;
       fits_read_key(fptr, TINT, (char *)keyword_filterCode.c_str(), 
 		    &filterCode, comment, &status);
       if(filterCode != this->par.getFilterCode()){
-	std::stringstream errmsg;
-	errmsg << "filterCode keyword in reconFile (" << filterCode
-	       << ") does not match that requested (" 
-	       << this->par.getFilterCode() << ").\n";
-	duchampError("readReconCube", errmsg.str());
+	DUCHAMPERROR("readReconCube", "filterCode keyword in reconFile (" << filterCode << ") does not match that requested (" << this->par.getFilterCode() << ").");
 	return FAILURE;
       }
       status = 0;
       fits_read_key(fptr, TFLOAT, (char *)keyword_snrRecon.c_str(), 
 		    &snrRecon, comment, &status);
       if(snrRecon != this->par.getAtrousCut()){
-	std::stringstream errmsg;
-	errmsg << "snrRecon keyword in reconFile (" << snrRecon
-	       << ") does not match that requested (" 
-	       << this->par.getAtrousCut() << ").\n";
-	duchampError("readReconCube", errmsg.str());
+	DUCHAMPERROR("readReconCube", "snrRecon keyword in reconFile (" << snrRecon << ") does not match that requested (" << this->par.getAtrousCut() << ").");
 	return FAILURE;
       }
       status = 0;
       fits_read_key(fptr, TINT, (char *)keyword_scaleMin.c_str(), 
 		    &scaleMin, comment, &status);
       if(scaleMin != this->par.getMinScale()){
-	std::stringstream errmsg;
-	errmsg << "scaleMin keyword in reconFile (" << scaleMin
-	       << ") does not match that requested (" 
-	       << this->par.getMinScale() << ").\n";
-	duchampError("readReconCube", errmsg.str());
+	DUCHAMPERROR("readReconCube", "scaleMin keyword in reconFile (" << scaleMin << ") does not match that requested (" << this->par.getMinScale() << ").");
 	return FAILURE;
       }
 
@@ -225,7 +191,7 @@ namespace duchamp
       std::string fluxunits;
       fits_read_key(fptr, TSTRING, (char *)header.c_str(), unit, comment, &status);
       if (status){
-	duchampWarning("Cube Reader","Error reading BUNIT keyword: ");
+	DUCHAMPWARN("Cube Reader","Error reading BUNIT keyword: ");
 	fits_report_error(stderr, status);
 	return FAILURE;
       }
@@ -245,7 +211,7 @@ namespace duchamp
       status = 0;
       fits_close_file(fptr, &status);
       if (status){
-	duchampWarning("readReconCube", "Error closing file: ");
+	DUCHAMPWARN("readReconCube", "Error closing file: ");
 	fits_report_error(stderr, status);
       }
 

@@ -65,15 +65,15 @@ namespace duchamp
 //     else SortByZ(*this->objectList);
     if(!this->head.isWCS()){
       if(this->par.getSortingParam()=="ra"){
-	duchampWarning("sortDetections","No good WCS, so sorting by x-value");
+	DUCHAMPWARN("sortDetections","No good WCS, so sorting by x-value");
 	SortDetections(*this->objectList, "x-value");
       }
       else if(this->par.getSortingParam()=="dec"){
-	duchampWarning("sortDetections","No good WCS, so sorting by y-value");
+	DUCHAMPWARN("sortDetections","No good WCS, so sorting by y-value");
 	SortDetections(*this->objectList, "y-value");
       }
       else if(this->par.getSortingParam()=="vel" || this->par.getSortingParam()=="w50"){
-	duchampWarning("sortDetections","No good WCS, so sorting by z-value");
+	DUCHAMPWARN("sortDetections","No good WCS, so sorting by z-value");
 	SortDetections(*this->objectList, "z-value");
       }
       else {
@@ -100,10 +100,7 @@ namespace duchamp
     if( this->par.getFlagReconExists() && this->par.getFlagATrous() ){
       std::cout << "Reading reconstructed array: "<<std::endl;
       if( this->readReconCube() == FAILURE){
-	std::stringstream errmsg;
-	errmsg <<"Could not read in existing reconstructed array.\n"
-	       <<"Will perform reconstruction using assigned parameters.\n";
-	duchampWarning("Duchamp", errmsg.str());
+	DUCHAMPWARN("Duchamp", "Could not read in existing reconstructed array. Will perform reconstruction using assigned parameters.");
 	this->par.setFlagReconExists(false);
       }
       else std::cout << "Reconstructed array available.\n";
@@ -112,10 +109,7 @@ namespace duchamp
     if( this->par.getFlagSmoothExists() && this->par.getFlagSmooth() ){
       std::cout << "Reading smoothed array: "<<std::endl;
       if( this->readSmoothCube() == FAILURE){
-	std::stringstream errmsg;
-	errmsg <<"Could not read in existing smoothed array.\n"
-	       <<"Will smooth the cube using assigned parameters.\n";
-	duchampWarning("Duchamp", errmsg.str());
+	DUCHAMPWARN("Duchamp", "Could not read in existing smoothed array. Will smooth the cube using assigned parameters.");
 	this->par.setFlagSmoothExists(false);
       }
       else std::cout << "Smoothed array available.\n";

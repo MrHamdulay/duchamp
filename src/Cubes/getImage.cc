@@ -58,9 +58,7 @@ namespace duchamp
     // fits_file_exists(fname.c_str(),&exists,&status);
     // if(exists<=0){
     //   fits_report_error(stderr, status);
-    //   std::stringstream errmsg;
-    //   errmsg << "Requested image (" << fname << ") does not exist!\n";
-    //   duchampError("Cube Reader", errmsg.str());
+    //   DUCHAMPERROR("Cube Reader", Requested image (" << fname << ") does not exist!);
     //   return FAILURE;
     // }
     if(this->par.checkImageExists() == FAILURE) return FAILURE;
@@ -103,9 +101,7 @@ namespace duchamp
       fits_report_error(stderr, status);
       if(((status==URL_PARSE_ERROR)||(status==BAD_NAXIS))
 	 &&(this->pars().getFlagSubsection()))
-	duchampError("Cube Reader",
-		     "It may be that the subsection you've entered is invalid.\n\
-Either it has the wrong number of axes, or one axis has too large a range.\n");
+	DUCHAMPERROR("Cube Reader", "It may be that the subsection you've entered is invalid. Either it has the wrong number of axes, or one axis has too large a range.");
       return FAILURE;
     }
 
@@ -128,7 +124,7 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
     status = 0;
     fits_close_file(fptr, &status);
     if (status){
-      duchampWarning("Cube Reader","Error closing file: ");
+      DUCHAMPWARN("Cube Reader","Error closing file: ");
       fits_report_error(stderr, status);
     }
 
@@ -149,7 +145,7 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
     if(this->head.readHeaderInfo(fname, this->par) == FAILURE) return FAILURE;
 
     if(!this->head.isWCS()) 
-      duchampWarning("Cube Reader","WCS is not good enough to be used.\n");
+      DUCHAMPWARN("Cube Reader","WCS is not good enough to be used.\n");
 
     // allocate the dimension array in the Cube.
     if(this->initialiseCube(dimAxes,false) == FAILURE) return FAILURE;
@@ -256,11 +252,8 @@ Either it has the wrong number of axes, or one axis has too large a range.\n");
 	  }
 	}
 	else{
-	  std::stringstream ss;
-	  ss << "Could not convert units from " << oldUnit << " to " << newUnit
-	     << ".\nLeaving BUNIT as " << oldUnit << "\n";
 	  if(this->par.isVerbose()) std::cout << "\n";
-	  duchampWarning("convertFluxUnits", ss.str());
+	  DUCHAMPWARN("convertFluxUnits", "Could not convert units from " << oldUnit << " to " << newUnit << ". Leaving BUNIT as " << oldUnit);
 	}
       }
     }

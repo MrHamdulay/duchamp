@@ -88,8 +88,7 @@ namespace duchamp
     status = 0;
     fits_hdr2str(fptr, noComments, NULL, nExc, &hdr, &nkeys, &status);
     if( status ){
-      duchampWarning("Cube Reader",
-		     "Error whilst reading FITS header to string: ");
+      DUCHAMPWARN("Cube Reader","Error whilst reading FITS header to string: ");
       fits_report_error(stderr, status);
       return FAILURE;
     }
@@ -98,7 +97,7 @@ namespace duchamp
     status = 0;
     fits_close_file(fptr, &status);
     if (status){
-      duchampWarning("Cube Reader","Error closing file: ");
+      DUCHAMPWARN("Cube Reader","Error closing file: ");
       fits_report_error(stderr, status);
     }
   
@@ -110,10 +109,7 @@ namespace duchamp
     // Initialise this temporary wcsprm structure
     status = wcsini(true, numAxes, localwcs);
     if(status){
-      std::stringstream errmsg;
-      errmsg << "wcsini failed! Code=" << status
-	     << ": " << wcs_errmsg[status] << std::endl;
-      duchampError("Cube Reader",errmsg.str());
+      DUCHAMPERROR("Cube Reader","wcsini failed! Code=" << status << ": " << wcs_errmsg[status]);
       return FAILURE;
     }
 
@@ -128,10 +124,7 @@ namespace duchamp
     status=wcspih(hdr, nkeys, relax, ctrl, &nreject, &localnwcs, &localwcs);
     if(status){
       // if here, something went wrong -- report what.
-      std::stringstream errmsg;
-      errmsg << "wcspih failed!\nWCSLIB error code=" << status
-	     << ": " << wcs_errmsg[status] << std::endl;
-      duchampWarning("Cube Reader",errmsg.str());
+      DUCHAMPWARN("Cube Reader","wcspih failed!\nWCSLIB error code=" << status << ": " << wcs_errmsg[status]);
     }
     else{  
       int stat[NWCSFIX];
@@ -140,22 +133,17 @@ namespace duchamp
       status = wcsfix(1, (const int*)dimAxes, localwcs, stat);
       if(status) {
 	std::stringstream errmsg;
-	errmsg << "wcsfix failed:\n";
-	errmsg << "Function status returns are:\n";
+	errmsg << "wcsfix failed with function status returns of:\n";
 	for(int i=0; i<NWCSFIX; i++)
 	  if (stat[i] > 0) 
 	    errmsg << i+1 << ": WCSFIX error code=" << stat[i] << ": "
 		   << wcsfix_errmsg[stat[i]] << std::endl;
-	duchampWarning("Cube Reader", errmsg.str() );
+	DUCHAMPWARN("Cube Reader", errmsg);
       }
       // Set up the wcsprm struct. Report if something goes wrong.
       status = wcsset(localwcs);
       if(status){
-	std::stringstream errmsg;
-	errmsg<<"wcsset failed!\n"
-	      <<"WCSLIB error code=" << status 
-	      <<": "<<wcs_errmsg[status] << std::endl;
-	duchampWarning("Cube Reader",errmsg.str());
+	DUCHAMPWARN("Cube Reader","wcsset failed with error code=" << status <<": "<<wcs_errmsg[status]);
       }
       else{
 
@@ -164,13 +152,12 @@ namespace duchamp
 	status = wcsfix(1, (const int*)dimAxes, localwcs, stat);
 	if(status) {
 	  std::stringstream errmsg;
-	  errmsg << "wcsfix failed:\n";
-	  errmsg << "Function status returns are:\n";
+	  errmsg << "wcsfix failed with function status returns of:\n";
 	  for(int i=0; i<NWCSFIX; i++)
 	    if (stat[i] > 0) 
 	      errmsg << i+1 << ": WCSFIX error code=" << stat[i] << ": "
 		     << wcsfix_errmsg[stat[i]] << std::endl;
-	  duchampWarning("Cube Reader", errmsg.str() );
+	  DUCHAMPWARN("Cube Reader", errmsg );
 	}
 
 	if(localwcs->spec>=0){ //if there is a spectral axis
@@ -196,13 +183,11 @@ namespace duchamp
 	  else if (shortType=="FREQ" && localwcs->restfrq!=0){
 	    // No rest frequency defined, so put spectral dimension in frequency. 
 	    // Set the spectral axis to a standard specification: FREQ
-	    duchampWarning("Cube Reader",
-			   "No rest frequency defined. Using frequency units in spectral axis.\n");
+	    DUCHAMPWARN("Cube Reader", "No rest frequency defined. Using frequency units in spectral axis.");
 	    desiredType = duchampFrequencyType;
 	    par.setSpectralUnits("MHz");
 	    if(strcmp(localwcs->cunit[index],"")==0){
-	      duchampWarning("Cube Reader",
-			     "No frequency unit given. Assuming frequency axis is in Hz.\n");
+	      DUCHAMPWARN("Cube Reader", "No frequency unit given. Assuming frequency axis is in Hz.");
 	      strcpy(localwcs->cunit[index],"Hz");
 	    }
 	    this->spectralDescription = duchampSpectralDescription[FREQUENCY];
@@ -211,8 +196,7 @@ namespace duchamp
 	    desiredType = duchampFrequencyType;
 	    par.setSpectralUnits("MHz");
 	    if(strcmp(localwcs->cunit[index],"")==0){
-	      duchampWarning("Cube Reader",
-			     "No frequency unit given. Assuming frequency axis is in Hz.\n");
+	      DUCHAMPWARN("Cube Reader", "No frequency unit given. Assuming frequency axis is in Hz.");
 	      strcpy(localwcs->cunit[index],"Hz");
 	    }
 	    this->spectralDescription = duchampSpectralDescription[FREQUENCY];
@@ -240,13 +224,7 @@ namespace duchamp
 	
 	    status = wcssptr(localwcs, &index, (char *)desiredType.c_str());
 	    if(status){
-	      std::stringstream errmsg;
-	      errmsg<< "WCSSPTR failed! Code=" << status << ": "
-		    << wcs_errmsg[status] << std::endl
-		    << "(wanted to convert from type \"" << specType
-		    << "\" to type \"" << desiredType << "\")\n";
-	      duchampWarning("Cube Reader",errmsg.str());
-
+	      DUCHAMPWARN("Cube Reader","WCSSPTR failed when converting from type \"" << specType << "\" to type \"" << desiredType << " with code=" << status << ": " << wcs_errmsg[status]);
 	    }
 
 	  }

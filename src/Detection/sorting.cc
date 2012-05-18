@@ -174,9 +174,7 @@ namespace duchamp
     for(int i=0;i<numSortingParamOptions;i++) 
       OK = OK || (parameter==sortingParamOptions[i]);
     if(!OK){
-      std::stringstream errmsg;
-      errmsg << "Invalid sorting parameter: " << parameter << "\nNot doing any sorting.";
-      duchampError("SortDetections", errmsg.str());
+      DUCHAMPERROR("SortDetections", "Invalid sorting parameter: " << parameter << " -- Not doing any sorting.");
       return;
     }
 

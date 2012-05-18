@@ -114,8 +114,7 @@ namespace duchamp
     if(fits_read_subset_flt(fptr, colnum, numAxes, dimAxes,
 			    fpixel, lpixel, inc, 
 			    this->par.getBlankPixVal(), this->array, &anynul, &status)){
-      duchampError("Cube Reader",
-		   "There was an error reading in the data array:");
+      DUCHAMPERROR("Cube Reader", "There was an error reading in the data array:");
       fits_report_error(stderr, status);
       return FAILURE;
     }
@@ -128,8 +127,7 @@ namespace duchamp
       // no blank pixels, so don't bother with any trimming or checking...
       if(this->par.getFlagTrim()) {  
 	// if user requested fixing, inform them of change.
-	duchampWarning("Cube Reader",
-		       "No blank pixels, so setting flagTrim to false.\n");
+	DUCHAMPWARN("Cube Reader", "No blank pixels, so setting flagTrim to false.");
       }
       this->par.setFlagBlankPix(false); 
       this->par.setFlagTrim(false);
@@ -141,7 +139,7 @@ namespace duchamp
     status = 0;
     fits_close_file(fptr, &status);
     if (status){
-      duchampWarning("Cube Reader","Error closing file: ");
+      DUCHAMPWARN("Cube Reader","Error closing file: ");
       fits_report_error(stderr, status);
     }
 

@@ -53,8 +53,7 @@ namespace duchamp
     ///  to the log file if the user so requests.
 
     if(!this->par.getFlagATrous()){
-      duchampWarning("ReconSearch",
-		     "You've requested a reconSearch, but not allocated space for the reconstructed array.\nDoing the basic CubicSearch.\n");
+      DUCHAMPWARN("ReconSearch","You've requested a reconSearch, but not allocated space for the reconstructed array. Doing the basic CubicSearch.");
       this->CubicSearch();
     }
     else {
@@ -105,7 +104,7 @@ namespace duchamp
       errmsg << "You requested a " << dimRecon << "-dimensional reconstruction,"
 	     << " but the FITS file is only " << numGoodDim << "-dimensional.\n"
 	     << "Changing reconDim to " << numGoodDim << ".\n";
-      duchampWarning("Reconstruction",errmsg.str());
+      DUCHAMPWARN("Reconstruction","You requested a " << dimRecon << "-dimensional reconstruction, but the FITS file is only " << numGoodDim << "-dimensional. Changing reconDim to " << numGoodDim );
     }
 
     switch(dimRecon)
@@ -115,19 +114,13 @@ namespace duchamp
       case 3: this->ReconCube3D(); break;
       default:
 	if(dimRecon<=0){
-	  std::stringstream errmsg;
-	  errmsg << "reconDim (" << dimRecon
-		 << ") is less than 1. Performing 1-D reconstruction.\n";
-	  duchampWarning("Reconstruction", errmsg.str());
+	  DUCHAMPWARN("Reconstruction", "reconDim (" << dimRecon << ") is less than 1. Performing 1-D reconstruction.");
 	  this->par.setReconDim(1);
 	  this->ReconCube1D();
 	}
 	else if(dimRecon>3){ 
 	  //this probably won't happen with new code above, but just in case...
-	  std::stringstream errmsg;
-	  errmsg << "reconDim (" << dimRecon
-		 << ") is more than 3. Performing 3-D reconstruction.\n";
-	  duchampWarning("Reconstruction", errmsg.str());
+	  DUCHAMPWARN("Reconstruction", "reconDim (" << dimRecon << ") is more than 3. Performing 3-D reconstruction.");
 	  this->par.setReconDim(3);
 	  this->ReconCube3D();
 	}
@@ -255,9 +248,7 @@ namespace duchamp
   else if(par.getSearchType()=="spatial")
     return searchReconArraySpatial(dim,originalArray,reconArray,par,stats);
   else{
-    std::stringstream ss;
-    ss << "Unknown search type : " << par.getSearchType();
-    duchampError("searchReconArray",ss.str());
+    DUCHAMPERROR("searchReconArray","Unknown search type : " << par.getSearchType());
     return std::vector<Detection>(0);
   }
   }

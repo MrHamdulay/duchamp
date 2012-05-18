@@ -64,7 +64,7 @@ namespace duchamp
   void duchampFITSerror(int status, std::string subroutine, std::string error)
   {
     if(status){
-      duchampWarning(subroutine,error);
+      DUCHAMPWARN(subroutine,error);
       fits_report_error(stderr, status);
     }
   }
@@ -92,7 +92,7 @@ namespace duchamp
     else {
 
       if(this->writeBasicHeader(fptr, newbitpix,true)==FAILURE){
-	duchampWarning("write Recon Cube", "Failure writing to header");
+	DUCHAMPWARN("write Recon Cube", "Failure writing to header");
 	return FAILURE;
       }
 
@@ -149,7 +149,7 @@ namespace duchamp
     }
     else {
       if(this->writeBasicHeader(fptrNew, newbitpix)==FAILURE){
-	duchampWarning("write Recon Cube", "Failure writing to header");
+	DUCHAMPWARN("write Recon Cube", "Failure writing to header");
 	return FAILURE;
       }
 
@@ -229,7 +229,7 @@ namespace duchamp
       else {
 
 	  if(this->writeBasicHeader(fptrNew, -32)==FAILURE){
-	    duchampWarning("write Smoothed Cube", "Failure writing to header");
+	    DUCHAMPWARN("write Smoothed Cube", "Failure writing to header");
 	    return FAILURE;
 	  }
 
@@ -269,7 +269,7 @@ namespace duchamp
     float blankval = this->par.getBlankPixVal();
 
     if(!this->reconAllocated){
-      duchampError("saveReconCube","Have not allocated reconstructed array, so cannot save");
+      DUCHAMPERROR("saveReconCube","Have not allocated reconstructed array, so cannot save");
       return FAILURE;
     }
 
@@ -289,7 +289,7 @@ namespace duchamp
 	{
 
 	  if(this->writeBasicHeader(fptrNew, -32)==FAILURE){
-	    duchampWarning("write Recon Cube", "Failure writing to header");
+	    DUCHAMPWARN("write Recon Cube", "Failure writing to header");
 	    return FAILURE;
 	  }
 	  
@@ -333,7 +333,7 @@ namespace duchamp
 	{
 
 	  if(this->writeBasicHeader(fptrNew, -32)==FAILURE){
-	    duchampWarning("write Recon Cube", "Failure writing to header");
+	    DUCHAMPWARN("write Recon Cube", "Failure writing to header");
 	    return FAILURE;
 	  }
 
@@ -415,7 +415,7 @@ namespace duchamp
       explanation = "Duchamp: This is the RESIDUAL cube";
       ReconResid = "RESID";
     }
-    else duchampWarning("write_header_info","explanation not present!\n");
+    else DUCHAMPWARN("write_header_info","explanation not present");
     fits_write_comment(fptr, (char *)explanation.c_str(), &status);
     fits_write_key(fptr, TSTRING, (char *)keyword_ReconResid.c_str(), 
 		   (char *)ReconResid.c_str(), 
@@ -555,16 +555,14 @@ namespace duchamp
     status = 0;
     strcpy(keyname,"BUNIT");
     if (fits_update_key(fptr, TSTRING, keyname, (char *)this->head.getFluxUnits().c_str(), NULL, &status)){
-      duchampWarning("saveImage","Error writing bunit info:");
+      DUCHAMPWARN("saveImage","Error writing bunit info:");
       fits_report_error(stderr, status);
       return FAILURE;
     }
 
     // convert the wcsprm struct to a set of 80-char keys
     if ((status = wcshdo(WCSHDO_all, this->head.getWCS(), &nkeyrec, &header))) {
-      std::stringstream errmsg;
-      errmsg << "Could not convert WCS information to FITS header.\nWCS Error Code = "<<status<<": "<<wcs_errmsg[status];
-      duchampWarning("saveImage",errmsg.str());
+      DUCHAMPWARN("saveImage","Could not convert WCS information to FITS header. WCS Error Code = "<<status<<": "<<wcs_errmsg[status]);
       return FAILURE;
     }
 
@@ -573,7 +571,7 @@ namespace duchamp
     for (i = 0; i < nkeyrec; i++, hptr += 80) {
       status=0;
       if(fits_update_card(fptr,keyname,hptr,&status)){
-	duchampWarning("saveImage","Error writing header card");
+	DUCHAMPWARN("saveImage","Error writing header card");
 	fits_report_error(stderr,status);
 	return FAILURE;
       }

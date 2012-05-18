@@ -87,7 +87,7 @@ namespace duchamp
     std::string header("BUNIT");
     fits_read_key(fptr, TSTRING, (char *)header.c_str(), unit, comment, &status);
     if (status){
-      duchampWarning("Cube Reader","Error reading BUNIT keyword: ");
+      DUCHAMPWARN("Cube Reader","Error reading BUNIT keyword: ");
       fits_report_error(stderr, status);
       return FAILURE;
     }
@@ -101,7 +101,7 @@ namespace duchamp
     status = 0;
     fits_close_file(fptr, &status);
     if (status){
-      duchampWarning("Cube Reader","Error closing file: ");
+      DUCHAMPWARN("Cube Reader","Error closing file: ");
       fits_report_error(stderr, status);
     }
 
@@ -160,12 +160,11 @@ namespace duchamp
       if(par.getFlagTrim()){
 	par.setFlagTrim(false);
 	std::stringstream errmsg;
-	if(status == KEY_NO_EXIST)
-	  duchampWarning("Cube Reader", 
-			 "There is no BLANK keyword present. Not doing any trimming.\n");
+	if(status == KEY_NO_EXIST){
+	  DUCHAMPWARN("Cube Reader", "There is no BLANK keyword present. Not doing any trimming.");
+	}
 	else{
-	  duchampWarning("Cube Reader", 
-			 "Error reading BLANK keyword, so not doing any trimming.");
+	  DUCHAMPWARN("Cube Reader", "Error reading BLANK keyword, so not doing any trimming.");
 	  fits_report_error(stderr, status);
 	}
       }
@@ -192,7 +191,7 @@ namespace duchamp
     status = 0;
     fits_close_file(fptr, &status);
     if (status){
-      duchampWarning("Cube Reader","Error closing file: ");
+      DUCHAMPWARN("Cube Reader","Error closing file: ");
       fits_report_error(stderr, status);
     }
   
@@ -229,7 +228,7 @@ namespace duchamp
     status=0;
     fits_close_file(fptr, &status);
     if (status){
-      duchampWarning("Cube Reader","Error closing file: ");
+      DUCHAMPWARN("Cube Reader","Error closing file: ");
       fits_report_error(stderr, status);
     }
 

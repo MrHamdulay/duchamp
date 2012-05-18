@@ -142,12 +142,12 @@ namespace duchamp
 
     this->axisDimAllocated = false;
     this->arrayAllocated = false;
-    if(size<0)
-      duchampError("DataArray(nDim,size)",
-		   "Negative size -- could not define DataArray");
-    else if(nDim<0)
-      duchampError("DataArray(nDim,size)",
-		   "Negative number of dimensions: could not define DataArray");
+    if(size<0){
+      DUCHAMPERROR("DataArray(nDim,size)", "Negative size -- could not define DataArray");
+    }
+    else if(nDim<0){
+      DUCHAMPERROR("DataArray(nDim,size)", "Negative number of dimensions: could not define DataArray");
+    }
     else {
       if(size>0){
 	this->array = new float[size];
@@ -175,15 +175,15 @@ namespace duchamp
 
     this->axisDimAllocated = false;
     this->arrayAllocated = false;
-    if(nDim<0)
-      duchampError("DataArray(nDim,dimArray)",
-		   "Negative number of dimensions: could not define DataArray");
+    if(nDim<0){
+      DUCHAMPERROR("DataArray(nDim,dimArray)", "Negative number of dimensions: could not define DataArray");
+    }
     else {
       int size = dimensions[0];
       for(int i=1;i<nDim;i++) size *= dimensions[i];
-      if(size<0)
-	duchampError("DataArray(nDim,dimArray)",
-		     "Negative size: could not define DataArray");
+      if(size<0){
+	DUCHAMPERROR("DataArray(nDim,dimArray)", "Negative size: could not define DataArray");
+      }
       else{
 	this->numPixels = size;
 	if(size>0){
@@ -268,9 +268,9 @@ namespace duchamp
     /// \param input The array of values to be saved.
     /// \param size The size of input.
 
-    if(size != this->numPixels)
-      duchampError("DataArray::saveArray",
-		   "Input array different size to existing array. Cannot save.");
+    if(size != this->numPixels){
+      DUCHAMPERROR("DataArray::saveArray", "Input array different size to existing array. Cannot save.");
+    }
     else {
       if(this->numPixels>0 && this->arrayAllocated) delete [] this->array;
       this->numPixels = size;
@@ -391,8 +391,9 @@ namespace duchamp
     this->axisDimAllocated = false;
     this->arrayAllocated = false;
     this->numPixels = this->numDim = 0;
-    if(size<0)
-      duchampError("Cube(size)","Negative size -- could not define Cube");
+    if(size<0){
+      DUCHAMPERROR("Cube(size)","Negative size -- could not define Cube");
+    }
     else{
       if(size>0){
 	this->array = new float[size];
@@ -428,8 +429,9 @@ namespace duchamp
     this->axisDimAllocated = false;
     this->arrayAllocated = false;
     this->numPixels = this->numDim = 0;
-    if((size<0) || (imsize<0) )
-      duchampError("Cube(dimArray)","Negative size -- could not define Cube");
+    if((size<0) || (imsize<0) ){
+      DUCHAMPERROR("Cube(dimArray)","Negative size -- could not define Cube");
+    }
     else{
       this->numPixels = size;
       if(size>0){
@@ -542,10 +544,10 @@ namespace duchamp
 	  for(size_t x=0;x<output->axisDim[0];x++){
 	    size_t impos=x+y*output->axisDim[0];
 	    size_t pos=impos+z*output->axisDim[0]*output->axisDim[1]; 
-	    if(pos>=output->numPixels) duchampError("cube slicer","Out of bounds in new Cube");
+	    if(pos>=output->numPixels) DUCHAMPERROR("cube slicer","Out of bounds in new Cube");
 	    size_t imposIn=(x+subsection.getStart(0)) + (y+subsection.getStart(1))*this->axisDim[0];
 	    size_t posIn=imposIn + (z+subsection.getStart(2))*this->axisDim[0]*this->axisDim[1];
-	    if(posIn>=this->numPixels) duchampError("cube slicer","Out of bounds in new Cube");
+	    if(posIn>=this->numPixels) DUCHAMPERROR("cube slicer","Out of bounds in new Cube");
 	    output->array[pos] = this->array[posIn];
 	    output->detectMap[impos] = this->detectMap[imposIn];
 	    if(this->reconAllocated) output->recon[pos] = this->recon[posIn];
@@ -556,7 +558,7 @@ namespace duchamp
        std::cout << this->par << "\n"<<output->par <<"\n";
     }
     else{
-      duchampError("cube slicer","Subsection does not parse");
+      DUCHAMPERROR("cube slicer","Subsection does not parse");
     }
 
     return output;
@@ -640,8 +642,7 @@ namespace duchamp
     }
 
     if((size<0) || (imsize<0) ) {
-      duchampError("Cube::initialiseCube(dimArray)",
-		   "Negative size -- could not define Cube.\n");
+      DUCHAMPERROR("Cube::initialiseCube(dimArray)", "Negative size -- could not define Cube.");
       return FAILURE;
     }
     else{
@@ -661,20 +662,18 @@ namespace duchamp
 
       if(this->par.getFlagSmooth()){
 	if(this->par.getSmoothType()=="spectral" && numNondegDim==2){
-	  duchampWarning("Cube::initialiseCube", "Spectral smooth requested, but have a 2D image. Setting flagSmooth=false");
+	  DUCHAMPWARN("Cube::initialiseCube", "Spectral smooth requested, but have a 2D image. Setting flagSmooth=false");
 	  this->par.setFlagSmooth(false);
 	}
 	if(this->par.getSmoothType()=="spatial" && numNondegDim==1){
-	  duchampWarning("Cube::initialiseCube", "Spatial smooth requested, but have a 1D image. Setting flagSmooth=false");
+	  DUCHAMPWARN("Cube::initialiseCube", "Spatial smooth requested, but have a 1D image. Setting flagSmooth=false");
 	  this->par.setFlagSmooth(false);
 	}
       }
       if(this->par.getFlagATrous()){
 	for(int d=3; d>=1; d--){
 	  if(this->par.getReconDim()==d && numNondegDim==(d-1)){
-	    std::stringstream ss;
-	    ss << d << "D reconstruction requested, but image is " << d-1 <<"D. Setting flagAtrous=false";
-	    duchampWarning("Cube::initialiseCube", ss.str());
+	    DUCHAMPWARN("Cube::initialiseCube", d << "D reconstruction requested, but image is " << d-1 <<"D. Setting flagAtrous=false");
 	    this->par.setFlagATrous(false);
 	  }
 	}
@@ -767,10 +766,7 @@ namespace duchamp
   void Cube::saveArray(float *input, size_t size)
   {
     if(size != this->numPixels){
-      std::stringstream errmsg;
-      errmsg << "Input array different size to existing array ("
-	     << size << " cf. " << this->numPixels << "). Cannot save.\n";
-      duchampError("Cube::saveArray",errmsg.str());
+      DUCHAMPERROR("Cube::saveArray","Input array different size to existing array (" << size << " cf. " << this->numPixels << "). Cannot save.");
     }
     else {
       if(this->numPixels>0 && this->arrayAllocated) delete [] array;
@@ -791,10 +787,7 @@ namespace duchamp
     /// \param input The array of values to be saved.
 
     if(input.size() != this->numPixels){
-      std::stringstream errmsg;
-      errmsg << "Input array different size to existing array ("
-	     << input.size() << " cf. " << this->numPixels << "). Cannot save.\n";
-      duchampError("Cube::saveArray",errmsg.str());
+      DUCHAMPERROR("Cube::saveArray","Input array different size to existing array (" << input.size() << " cf. " << this->numPixels << "). Cannot save.");
     }
     else {
       if(this->numPixels>0 && this->arrayAllocated) delete [] this->array;
@@ -819,10 +812,7 @@ namespace duchamp
     /// \param size The size of input.
 
     if(size != this->numPixels){
-      std::stringstream errmsg;
-      errmsg << "Input array different size to existing array ("
-	     << size << " cf. " << this->numPixels << "). Cannot save.\n";
-      duchampError("Cube::saveRecon",errmsg.str());
+      DUCHAMPERROR("Cube::saveRecon","Input array different size to existing array (" << size << " cf. " << this->numPixels << "). Cannot save.");
     }
     else {
       if(this->numPixels>0){
@@ -931,9 +921,9 @@ namespace duchamp
 	// just get mean & median from orig array, and rms & madfm from
 	// residual recompute array values to be residuals & then find
 	// stddev & madfm
-	if(!this->reconExists)
-	  duchampError("setCubeStats",
-		       "Reconstruction not yet done!\nCannot calculate stats!\n");
+	if(!this->reconExists){
+	  DUCHAMPERROR("setCubeStats", "Reconstruction not yet done! Cannot calculate stats!");
+	}
 	else{
 	  float *tempArray = new float[goodSize];
 
@@ -986,8 +976,9 @@ namespace duchamp
 	// smoothed data. This can just be done with the
 	// StatsContainer::calculate function, using the mask generated
 	// earlier.
-	if(!this->reconExists)
-	  duchampError("setCubeStats","Smoothing not yet done!\nCannot calculate stats!\n");
+	if(!this->reconExists){
+	  DUCHAMPERROR("setCubeStats","Smoothing not yet done! Cannot calculate stats!");
+	}
 	else this->Stats.calculate(this->recon,this->numPixels,mask);
       }
       else{
@@ -1046,15 +1037,13 @@ namespace duchamp
     if(this->par.getFlagSmooth()) 
       if(this->reconExists) this->setupFDR(this->recon);
       else{
-	duchampError("setupFDR",
-		     "Smoothing not done properly! Using original array for defining threshold.\n");
+	DUCHAMPERROR("setupFDR", "Smoothing not done properly! Using original array for defining threshold.");
 	this->setupFDR(this->array);
       }
     else if( this->par.getFlagATrous() ){
       if(this->reconExists) this->setupFDR(this->recon);
       else{
-	duchampError("setupFDR",
-		     "Reconstruction not done properly! Using original array for defining threshold.\n");
+	DUCHAMPERROR("setupFDR", "Reconstruction not done properly! Using original array for defining threshold.");
 	this->setupFDR(this->array);
       }
     }
@@ -1628,8 +1617,9 @@ namespace duchamp
     // need error handling in case size<0 !!!
     this->numPixels = this->numDim = 0;
     this->minSize = 2;
-    if(size<0)
-      duchampError("Image(size)","Negative size -- could not define Image");
+    if(size<0){
+      DUCHAMPERROR("Image(size)","Negative size -- could not define Image");
+    }
     else{
       if(size>0 && !this->arrayAllocated){
 	this->array = new float[size];
@@ -1648,8 +1638,9 @@ namespace duchamp
     this->numPixels = this->numDim = 0;
     this->minSize = 2;
     int size = dimensions[0] * dimensions[1];
-    if(size<0)
-      duchampError("Image(dimArray)","Negative size -- could not define Image");
+    if(size<0){
+      DUCHAMPERROR("Image(dimArray)","Negative size -- could not define Image");
+    }
     else{
       this->numPixels = size;
       if(size>0){
@@ -1688,9 +1679,9 @@ namespace duchamp
     /// \param input The array of values to be saved.
     /// \param size The size of input.
 
-    if(size != this->numPixels)
-      duchampError("Image::saveArray",
-		   "Input array different size to existing array. Cannot save.");
+    if(size != this->numPixels){
+      DUCHAMPERROR("Image::saveArray", "Input array different size to existing array. Cannot save.");
+    }
     else {
       if(this->numPixels>0 && this->arrayAllocated) delete [] array;
       this->numPixels = size;
@@ -1716,12 +1707,12 @@ namespace duchamp
     /// \param dim The array of dimension values.
     /// \param pixel The spatial pixel that contains the desired spectrum.
 
-    if((pixel<0)||(pixel>=dim[0]*dim[1]))
-      duchampError("Image::extractSpectrum",
-		   "Requested spatial pixel outside allowed range. Cannot save.");
-    else if(dim[2] != this->numPixels)
-      duchampError("Image::extractSpectrum",
-		   "Input array different size to existing array. Cannot save.");
+    if((pixel<0)||(pixel>=dim[0]*dim[1])){
+      DUCHAMPERROR("Image::extractSpectrum", "Requested spatial pixel outside allowed range. Cannot save.");
+    }
+    else if(dim[2] != this->numPixels){
+      DUCHAMPERROR("Image::extractSpectrum", "Input array different size to existing array. Cannot save.");
+    }
     else {
       if(this->numPixels>0 && this->arrayAllocated) delete [] array;
       this->numPixels = dim[2];
@@ -1746,12 +1737,12 @@ namespace duchamp
 
     size_t zdim = cube.getDimZ();
     size_t spatSize = cube.getDimX()*cube.getDimY();
-    if((pixel<0)||(pixel>=spatSize))
-      duchampError("Image::extractSpectrum",
-		   "Requested spatial pixel outside allowed range. Cannot save.");
-    else if(zdim != this->numPixels)
-      duchampError("Image::extractSpectrum",
-		   "Input array different size to existing array. Cannot save.");
+    if((pixel<0)||(pixel>=spatSize)){
+      DUCHAMPERROR("Image::extractSpectrum", "Requested spatial pixel outside allowed range. Cannot save.");
+    }
+    else if(zdim != this->numPixels){
+      DUCHAMPERROR("Image::extractSpectrum", "Input array different size to existing array. Cannot save.");
+    }
     else {
       if(this->numPixels>0 && this->arrayAllocated) delete [] array;
       this->numPixels = zdim;
@@ -1779,12 +1770,12 @@ namespace duchamp
     /// \param channel The spectral channel that contains the desired image.
 
     size_t spatSize = dim[0]*dim[1];
-    if((channel<0)||(channel>=dim[2]))
-      duchampError("Image::extractImage",
-		   "Requested channel outside allowed range. Cannot save.");
-    else if(spatSize != this->numPixels)
-      duchampError("Image::extractImage",
-		   "Input array different size to existing array. Cannot save.");
+    if((channel<0)||(channel>=dim[2])){
+      DUCHAMPERROR("Image::extractImage", "Requested channel outside allowed range. Cannot save.");
+    }
+    else if(spatSize != this->numPixels){
+      DUCHAMPERROR("Image::extractImage", "Input array different size to existing array. Cannot save.");
+    }
     else {
       if(this->numPixels>0 && this->arrayAllocated) delete [] array;
       this->numPixels = spatSize;
@@ -1809,12 +1800,12 @@ namespace duchamp
     /// \param channel The spectral channel that contains the desired image.
 
     size_t spatSize = cube.getDimX()*cube.getDimY();
-    if((channel<0)||(channel>=cube.getDimZ()))
-      duchampError("Image::extractImage",
-		   "Requested channel outside allowed range. Cannot save.");
-    else if(spatSize != this->numPixels)
-      duchampError("Image::extractImage",
-		   "Input array different size to existing array. Cannot save.");
+    if((channel<0)||(channel>=cube.getDimZ())){
+      DUCHAMPERROR("Image::extractImage", "Requested channel outside allowed range. Cannot save.");
+    }
+    else if(spatSize != this->numPixels){
+      DUCHAMPERROR("Image::extractImage", "Input array different size to existing array. Cannot save.");
+    }
     else {
       if(this->numPixels>0 && this->arrayAllocated) delete [] array;
       this->numPixels = spatSize;
@@ -1881,9 +1872,9 @@ namespace duchamp
       duchamp::Section sec = obj->getBoundingSection();
       subcube->pars().setSubsection( sec.getSection() );
       if(subcube->pars().verifySubsection() == FAILURE)
-	duchampError("get object voxel list","Unable to verify the subsection - something's wrong!");
+	DUCHAMPERROR("get object voxel list","Unable to verify the subsection - something's wrong!");
       if(subcube->getCube() == FAILURE)
-	duchampError("get object voxel list","Unable to read the FITS file - something's wrong!");
+	DUCHAMPERROR("get object voxel list","Unable to read the FITS file - something's wrong!");
       std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
       std::vector<PixelInfo::Voxel>::iterator vox;
       for(vox=voxlist.begin(); vox<voxlist.end(); vox++){
