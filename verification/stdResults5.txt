@@ -1,4 +1,4 @@
-Results of the Duchamp source finder v.1.1.12: Sun Apr 10 21:36:51 2011
+Results of the Duchamp source finder v.1.1.13: Fri May 18 10:26:05 2012
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits[35:64,35:64,1:128]
@@ -37,7 +37,7 @@ Summary of statistics:
 Detection threshold = 4.1253 Jy/beam
 Noise level = 0.0343318, Noise spread = 1.02274
 Full stats:
-Mean   = 0.0629985	Std.Dev. = 1.10346
+Mean   = 0.0629985	Std.Dev. = 1.10347
 Median = 0.0343318	MADFM    = 0.689828 (= 1.02274 as std.dev.)
 --------------------
 Total number of detections = 1

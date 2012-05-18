@@ -1,4 +1,4 @@
-Results of the Duchamp source finder v.1.1.12: Sun Apr 10 21:36:49 2011
+Results of the Duchamp source finder v.1.1.13: Fri May 18 10:26:02 2012
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
@@ -44,7 +44,7 @@ Noise level = 0.0148019, Noise spread = 1.00927 in smoothed cube.
 Noise properties for the original cube are:
 Noise level = 0.0148019, Noise spread = 1.00927
 Full stats:
-Mean   = 0.0279632	Std.Dev. = 1.04723
+Mean   = 0.0279632	Std.Dev. = 1.04764
 Median = 0.0148019	MADFM    = 0.68074 (= 1.00927 as std.dev.)
 --------------------
 Total number of detections = 5
