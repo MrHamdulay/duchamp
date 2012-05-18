@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// VOParam.hh: Output of the detected objects to a VOTable
+// VOParam.hh: Specification of a parameter for output to a VOTable
 // -----------------------------------------------------------------------
 // Copyright (C) 2006, Matthew Whiting, ATNF
 //
@@ -30,18 +30,7 @@
 #define VOPARAM_HH
 
 #include <iostream>
-#include <sstream>
-#include <fstream>
-#include <iomanip>
 #include <string>
-#include <vector>
-#include <time.h>
-#include <duchamp/param.hh>
-#include <duchamp/fitsHeader.hh>
-#include <duchamp/Cubes/cubes.hh> 
-#include <duchamp/Detection/detection.hh>
-#include <duchamp/Detection/columns.hh>
- 
 
 namespace duchamp
 {

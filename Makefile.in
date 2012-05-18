@@ -61,7 +61,6 @@ HEADS = $(BASE)/duchamp.hh\
 	$(DETECTIONDIR)/ObjectGrower.hh\
 	$(CUBESDIR)/cubes.hh\
 	$(CUBESDIR)/plots.hh\
-	$(CUBESDIR)/VOTable.hh\
 	$(FITSIODIR)/Beam.hh\
 	$(FITSIODIR)/DuchampBeam.hh\
 	$(UTILDIR)/Hanning.hh\
@@ -71,7 +70,9 @@ HEADS = $(BASE)/duchamp.hh\
 	$(UTILDIR)/Statistics.hh\
 	$(UTILDIR)/utils.hh\
 	$(UTILDIR)/feedback.hh\
-	$(UTILDIR)/mycpgplot.hh
+	$(UTILDIR)/mycpgplot.hh\
+	$(UTILDIR)/VOField.hh\
+	$(UTILDIR)/VOParam.hh
 
 OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(BASE)/duchamp.o\
@@ -125,6 +126,8 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(UTILDIR)/feedback.o\
 	$(UTILDIR)/GaussSmooth1D.o\
 	$(UTILDIR)/Hanning.o\
+	$(UTILDIR)/VOField.o\
+	$(UTILDIR)/VOParam.o\
 	$(UTILDIR)/getStats.o\
 	$(UTILDIR)/getNormalStats.o\
 	$(UTILDIR)/getRobustStats.o\

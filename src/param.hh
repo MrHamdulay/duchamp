@@ -35,6 +35,7 @@
 #include <wcslib/wcs.h>
 #include <wcslib/wcshdr.h>
 #include <duchamp/Utils/Section.hh>
+#include <duchamp/Utils/VOParam.hh>
 #include <duchamp/ATrous/filter.hh>
 #include <duchamp/FitsIO/DuchampBeam.hh>
 
@@ -118,6 +119,8 @@ namespace duchamp
     /// @brief Print the parameter set in a readable fashion. 
     friend std::ostream& operator<< ( std::ostream& theStream, Param& par);
     friend class Image;
+
+    std::vector<VOParam> getVOParams();
 
     //------------------
     // Functions in FitsIO/subsection.cc

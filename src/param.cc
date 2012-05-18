@@ -42,6 +42,7 @@
 #include <duchamp/ATrous/filter.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/Section.hh>
+#include <duchamp/Utils/VOParam.hh>
 #include <duchamp/Detection/columns.hh>
 
 namespace duchamp
@@ -994,6 +995,87 @@ namespace duchamp
     //  theStream.unsetf(std::ios::boolalpha);
     return theStream;
   }
+
+  std::vector<VOParam> Param::getVOParams()
+  {
+    std::vector<VOParam> vopars;
+    vopars.push_back(VOParam("imageFile","meta.file;meta.fits","char",this->imageFile,this->imageFile.size(),""));
+    vopars.push_back(VOParam("flagSubsection","meta.code","char",stringize(this->flagSubsection),stringize(this->flagSubsection).size(),""));
+    if(this->flagSubsection)
+      vopars.push_back(VOParam("subsection","","char",this->pixelSec.getSection(),this->pixelSec.getSection().size(),""));
+    vopars.push_back(VOParam("flagStatSec","meta.code","char",stringize(this->flagStatSec),stringize(this->flagStatSec).size(),""));
+    if(this->flagSubsection)
+      vopars.push_back(VOParam("StatSec","","char",this->statSec.getSection(),this->statSec.getSection().size(),""));
+    if(this->flagReconExists)
+      vopars.push_back(VOParam("reconfile","meta.file;meta.fits","char",this->reconFile, this->reconFile.size(),""));
+    if(this->flagSmoothExists)
+      vopars.push_back(VOParam("smoothfile","meta.file;meta.fits","char",this->smoothFile, this->smoothFile.size(),""));
+    if(this->usePrevious)
+      vopars.push_back(VOParam("objectlist","","char",this->objectList,this->objectList.size(),""));
+
+    vopars.push_back(VOParam("searchType","meta.note","char",this->searchType,this->searchType.size(),""));
+    vopars.push_back(VOParam("flagNegative","meta.code","char",stringize(this->flagNegative),stringize(this->flagNegative).size(),""));
+    vopars.push_back(VOParam("flagBaseline","meta.code","char",stringize(this->flagBaseline),stringize(this->flagBaseline).size(),""));
+    vopars.push_back(VOParam("flagRobustStats","meta.code","char",stringize(this->flagRobustStats),stringize(this->flagRobustStats).size(),""));
+    vopars.push_back(VOParam("flagFDR","meta.code","char",stringize(this->flagFDR),stringize(this->flagFDR).size(),""));
+    if(this->flagFDR){
+      vopars.push_back(VOParam("alphaFDR","stat.param","float",this->alphaFDR,0,""));
+      vopars.push_back(VOParam("FDRnumCorChan","stat.param","int",this->FDRnumCorChan,0,""));
+    }
+    else{
+      if(this->flagUserThreshold)
+	    vopars.push_back(VOParam("threshold","phot.flux;stat.min","float",this->threshold,0,""));
+      else
+	vopars.push_back(VOParam("snrCut","stat.snr;phot;stat.min","float",this->snrCut,0,""));
+    }
+    vopars.push_back(VOParam("flagGrowth","meta.code","char",stringize(this->flagGrowth),stringize(this->flagGrowth).size(),""));
+    if(this->flagGrowth){
+      if(this->flagUserGrowthThreshold)
+	vopars.push_back(VOParam("growthThreshold","phot.flux;stat.min","float",this->growthThreshold,0,""));
+      else
+	vopars.push_back(VOParam("growthCut","stat.snr;phot;stat.min","float",this->growthCut,0,""));
+    }
+    vopars.push_back(VOParam("minVoxels","","int",minVoxels,0,""));
+    vopars.push_back(VOParam("minPix","","int",minPix,0,""));
+    vopars.push_back(VOParam("minChannels","","int",minChannels,0,""));
+    vopars.push_back(VOParam("flagAdjacent","meta.code","char",stringize(this->flagAdjacent),stringize(this->flagAdjacent).size(),""));
+    if(!this->flagAdjacent)
+      vopars.push_back(VOParam("threshSpatial","","float",this->threshSpatial,0,""));
+    vopars.push_back(VOParam("threshVelocity","","float",this->threshSpatial,0,""));
+    vopars.push_back(VOParam("flagRejectBeforeMerge","","char",stringize(this->flagRejectBeforeMerge),stringize(this->flagRejectBeforeMerge).size(),""));
+    vopars.push_back(VOParam("flagTwoStageMerging","","char",stringize(this->flagTwoStageMerging),stringize(this->flagTwoStageMerging).size(),""));
+    vopars.push_back(VOParam("pixelCentre","","char",this->pixelCentre,this->pixelCentre.size(),""));
+    vopars.push_back(VOParam("flagSmooth","meta.code","char",stringize(this->flagSmooth),stringize(this->flagSmooth).size(),""));
+    if(this->flagSmooth){
+      vopars.push_back(VOParam("smoothType","","char",this->smoothType,this->smoothType.size(),""));
+      if(this->smoothType=="spectral")
+	vopars.push_back(VOParam("hanningWidth","","int",this->hanningWidth,0,""));
+      else{
+	vopars.push_back(VOParam("kernMaj","","float",this->kernMaj,0,""));
+	vopars.push_back(VOParam("kernMin","","float",this->kernMin,0,""));
+	vopars.push_back(VOParam("kernPA","","float",this->kernPA,0,""));
+      }
+    }
+    vopars.push_back(VOParam("flagATrous","meta.code","char",stringize(this->flagATrous),stringize(this->flagATrous).size(),""));
+    if(this->flagATrous){
+      vopars.push_back(VOParam("reconDim","","int",this->reconDim,0,""));
+      vopars.push_back(VOParam("scaleMin","","int",this->scaleMin,0,""));
+      if(this->scaleMax>0)
+	vopars.push_back(VOParam("scaleMax","","int",this->scaleMax,0,""));
+      vopars.push_back(VOParam("snrRecon","","float",this->snrRecon,0,""));
+      vopars.push_back(VOParam("filterCode","","int",this->filterCode,0,""));
+    }
+    if(this->beamAsUsed.origin()==PARAM){
+      if(this->fwhmBeam>0)
+	vopars.push_back(VOParam("beamFWHM","","float",this->fwhmBeam,0,""));
+      else
+	vopars.push_back(VOParam("beamArea","","float",this->areaBeam,0,""));
+    }
+
+    return vopars;
+
+  }
+
 
 
   void Param::copyHeaderInfo(FitsHeader &head)
