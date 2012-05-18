@@ -559,7 +559,7 @@ namespace duchamp
       double integrated = 0.;
       for(size_t pix=0; pix<spatsize; pix++){ // loop over each spatial pixel.
 	for(size_t z=0; z<zsize; z++){
-	  int pos =  z*xsize*ysize + pix;
+	  size_t pos =  z*xsize*ysize + pix;
 	  if(isObj[pos]){ // if it's an object pixel...
 	    double deltaVel;
 	    if(z==0) 
@@ -658,7 +658,7 @@ namespace duchamp
       double integrated = 0.;
       for(size_t pix=0; pix<spatsize; pix++){ // loop over each spatial pixel.
 	for(size_t z=0; z<zsize; z++){
-	  int pos =  z*xsize*ysize + pix;
+	  size_t pos =  z*xsize*ysize + pix;
 	  if(isObj[pos]){ // if it's an object pixel...
 	    double deltaVel;
 	    if(z==0) 
@@ -748,7 +748,7 @@ namespace duchamp
       double integrated = 0.;
       for(size_t pix=0; pix<xsize*ysize; pix++){ // loop over each spatial pixel.
 	for(size_t z=0; z<zsize; z++){
-	  int pos =  z*xsize*ysize + pix;
+	  size_t pos =  z*xsize*ysize + pix;
 	  if(isObj[pos]){ // if it's an object pixel...
 	    double deltaVel;
 	    if(z==0) 
@@ -1017,7 +1017,7 @@ namespace duchamp
     std::vector<bool> isObj(xsize*ysize,false);
     std::vector<Voxel>::iterator vox;
     for(vox=voxlist.begin();vox<voxlist.end();vox++){
-      int pos = (vox->getX()-xmin) + 
+      size_t pos = (vox->getX()-xmin) + 
 	(vox->getY()-ymin)*xsize;
       isObj[pos] = true;
     }

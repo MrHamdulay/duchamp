@@ -46,14 +46,14 @@ vector <Detection> cubicSearchNMerge(long *dim, float *Array, Param &par)
 
   vector <Detection> outputList;
   int zdim = dim[2];
-  int xySize = dim[0] * dim[1];
-  int fullSize = zdim * xySize;
+  size_t xySize = dim[0] * dim[1];
+  size_t fullSize = zdim * xySize;
   int num=0;
 
   //  bool flagBlank=par.getFlagBlankPix();
   float blankPixValue = par.getBlankPixVal();
   bool *isGood = new bool[fullSize];
-  for(int pos=0;pos<fullSize;pos++) 
+  for(size_t pos=0;pos<fullSize;pos++) 
     isGood[pos] = !par.isBlank(Array[pos]);
     //    isGood[pos] = (!flagBlank) || (Array[pos]!=blankPixValue);
   

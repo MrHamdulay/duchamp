@@ -259,13 +259,13 @@ namespace duchamp
 	}
 
 // 	bool *isObj = new bool[xdim*ydim*zdim];
-// 	for(int i=0;i<xdim*ydim*zdim;i++) isObj[i] = false;
+// 	for(size_t i=0;i<xdim*ydim*zdim;i++) isObj[i] = false;
 // 	for(size_t i=0;i<this->objectList->size();i++){
 // 	  if(objectChoice[i]){
 // 	    std::vector<Voxel> voxlist = this->objectList->at(i).getPixelSet();
 // 	    std::vector<Voxel>::iterator vox;
 // 	    for(vox=voxlist.begin();vox<voxlist.end();vox++){
-// 	      int pixelpos = vox->getX() + xdim*vox->getY() + xdim*ydim*vox->getZ();
+// 	      size_t pixelpos = vox->getX() + xdim*vox->getY() + xdim*ydim*vox->getZ();
 // 	      isObj[pixelpos] = true;
 // 	    }
 // 	  }
@@ -296,7 +296,7 @@ namespace duchamp
 // 	   double * world = this->head.pixToVel(x,y,zArray,zdim);
       
 // 	    for(int z=0; z<zdim; z++){      
-// 	      int pos =  z*xdim*ydim + pix;  // the voxel in the cube
+// 	      size_t pos =  z*xdim*ydim + pix;  // the voxel in the cube
 // 	      if(isObj[pos]){ // if it's an object pixel...
 // 		// delta-vel is half the distance between adjacent channels.
 // 		// if at end, then just use 0-1 or (zdim-1)-(zdim-2) distance
@@ -324,7 +324,7 @@ namespace duchamp
 // 	  if(momentMap[i]>0.){
 // 	    float logmm = log10(momentMap[i]);
 // 	    bool addPixel = false;
-// 	    for(int z=0;z<zdim;z++) addPixel = addPixel || isObj[z*xdim*ydim+i];
+// 	    for(size_t z=0;z<zdim;z++) addPixel = addPixel || isObj[z*xdim*ydim+i];
 // 	    if(addPixel){
 // 	      if(count==0) z1 = z2 = logmm;
 // 	      else{
@@ -338,7 +338,7 @@ namespace duchamp
 
 // 	for(int i=0;i<xdim*ydim;i++) {
 // 	  bool addPixel = false;
-// 	  for(int z=0;z<zdim;z++) addPixel = addPixel || isObj[z*xdim*ydim+i];
+// 	  for(size_t z=0;z<zdim;z++) addPixel = addPixel || isObj[z*xdim*ydim+i];
 // 	  addPixel = addPixel && (momentMap[i]>0.);
 // 	  if(!addPixel) momentMap[i] = z1-1.;
 // 	  else momentMap[i] = log10(momentMap[i]);

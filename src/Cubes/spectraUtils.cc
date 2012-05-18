@@ -136,11 +136,17 @@ namespace duchamp
     ///   \param mask A mask array indicating whether given pixels are valid
     ///   \param spec The peak spectrum for the object -- must be allocated first
 
-    size_t xySize = dimArray[0]*dimArray[1];
-    int pos = object.getXPeak() + dimArray[0]*object.getYPeak();
-    for(size_t z=0;z<dimArray[2];z++){
-      if(mask[pos + z*xySize])
-	spec[z] = fluxArray[pos + z*xySize];
+    if((object.getXPeak()<0 || object.getXPeak()>=dimArray[0]) || (object.getYPeak()<0 || object.getYPeak()>=dimArray[1])){
+      DUCHAMPWARN("getPeakSpec","Object peak outside array boundaries");
+      for (size_t z=0;z<dimArray[2];z++) spec[z]=0.;
+    }
+    else{
+      size_t xySize = dimArray[0]*dimArray[1];
+      size_t pos = object.getXPeak() + dimArray[0]*object.getYPeak();
+      for(size_t z=0;z<dimArray[2];z++){
+	if(mask[pos + z*xySize])
+	  spec[z] = fluxArray[pos + z*xySize];
+      }
     }
   }
   //--------------------------------------------------------------------
@@ -217,7 +223,7 @@ namespace duchamp
       delete [] done;
     }
     else {// if(par.getSpectralMethod()=="peak"){
-      int pos = this->objectList->at(objNum).getXPeak() +
+      size_t pos = this->objectList->at(objNum).getXPeak() +
 	xdim*this->objectList->at(objNum).getYPeak();
       for(size_t z=0;z<zdim;z++){
 	specy[z] = this->array[pos + z*xdim*ydim];

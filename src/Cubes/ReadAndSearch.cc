@@ -119,7 +119,8 @@ vector<Detection> readAndSearch(Param &par)
   specdim[0] = dimAxes[2]; specdim[1]=1;
  
   float median,sigma;
-  int pos,frac;
+  size_t pos;
+  int frac;
 
   Image *spectrum = new Image(specdim);
   spectrum->saveParam(par);
