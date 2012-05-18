@@ -176,7 +176,7 @@ namespace duchamp
         std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
         std::vector<PixelInfo::Voxel>::iterator vox;
         for(vox=voxlist.begin();vox<voxlist.end();vox++){
-          int pixelpos = vox->getX() + this->axisDim[0]*vox->getY() + 
+          size_t pixelpos = vox->getX() + this->axisDim[0]*vox->getY() + 
             this->axisDim[0]*this->axisDim[1]*vox->getZ();
           if(this->par.getFlagMaskWithObjectNum()) mask[pixelpos] = obj->getID();
 	  else mask[pixelpos] = 1;
