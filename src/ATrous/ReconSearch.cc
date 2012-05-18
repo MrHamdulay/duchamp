@@ -100,10 +100,6 @@ namespace duchamp
     if(numGoodDim<dimRecon){
       dimRecon = numGoodDim;
       this->par.setReconDim(dimRecon);
-      std::stringstream errmsg;
-      errmsg << "You requested a " << dimRecon << "-dimensional reconstruction,"
-	     << " but the FITS file is only " << numGoodDim << "-dimensional.\n"
-	     << "Changing reconDim to " << numGoodDim << ".\n";
       DUCHAMPWARN("Reconstruction","You requested a " << dimRecon << "-dimensional reconstruction, but the FITS file is only " << numGoodDim << "-dimensional. Changing reconDim to " << numGoodDim );
     }
 

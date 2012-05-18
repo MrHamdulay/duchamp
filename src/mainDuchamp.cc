@@ -54,19 +54,14 @@ int main(int argc, char * argv[])
   if(cube->getopts(argc,argv)==FAILURE) return FAILURE;
 
   if(cube->pars().getImageFile().empty()){
-    std::stringstream errmsg;
-    errmsg << "No input image has been given!\n"
-	   << "Use the imageFile parameter in " 
-	   << paramFile << " to specify the FITS file.";
-    duchampError("Duchamp", errmsg.str());
+    DUCHAMPTHROW("Duchamp", "No input image has been given!. Use the imageFile parameter in the parameter file to specify the FITS file.");
     return FAILURE;
   }
 
   if(cube->pars().getFlagSubsection() || cube->pars().getFlagStatSec()){
     // make sure the subsection is OK.
     if(cube->pars().verifySubsection() == FAILURE){
-      duchampError("Duchamp", 
-		   "Unable to use the subsection provided.");
+      DUCHAMPTHROW("Duchamp", "Unable to use the subsection provided.");
       return FAILURE;
     }
   }      
@@ -75,9 +70,7 @@ int main(int argc, char * argv[])
 	    << cube->pars().getFullImageFile() << std::endl;
 
   if( cube->getCube() == FAILURE){
-    std::stringstream errmsg;
-    errmsg << "Unable to open image file "<< cube->pars().getFullImageFile();
-    duchampError("Duchamp", errmsg.str());
+    DUCHAMPTHROW("Duchamp", "Unable to open image file "<< cube->pars().getFullImageFile());
     return FAILURE;
   }
   else std::cout << "Opened successfully." << std::endl; 
@@ -95,8 +88,7 @@ int main(int argc, char * argv[])
   if(cube->pars().getFlagUsePrevious()){
     std::cout << "Reading detections from existing log file... \n";
     if(cube->getExistingDetections() == FAILURE){
-      duchampError("Duchamp", 
-		   "Could not read detections from log file");
+      DUCHAMPTHROW("Duchamp", "Could not read detections from log file");
       return FAILURE;
     }
     else std::cout << "Done.\n";

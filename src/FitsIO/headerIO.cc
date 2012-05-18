@@ -159,7 +159,6 @@ namespace duchamp
 
       if(par.getFlagTrim()){
 	par.setFlagTrim(false);
-	std::stringstream errmsg;
 	if(status == KEY_NO_EXIST){
 	  DUCHAMPWARN("Cube Reader", "There is no BLANK keyword present. Not doing any trimming.");
 	}

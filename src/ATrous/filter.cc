@@ -95,8 +95,6 @@ namespace duchamp
 	  // 	  duchampWarning("Filter::define", errmsg.str());
 	  // 	}
 	  // 	else {
-	  std::stringstream errmsg;
-	  errmsg << "Filter code " << filtercode << " undefined. Using B3 spline.\n";
 	  DUCHAMPWARN("Wavelet Filter", "Filter code " << filtercode << " undefined. Using B3 spline.");
 	  // 	}
 	}

@@ -34,23 +34,6 @@
 namespace duchamp
 {
 
-  void duchampWarning(std::string subroutine, std::string warning)
-  {
-    /**
-     * Prints a WARNING message to the standard error stream, quoting
-     * the subroutine that the problem occurred in, and a descriptive
-     * warning text.
-     *
-     * Format: WARNING \<function\> : Something happened that you should be aware of.
-     */
-    std::string preamble = "WARNING <" + subroutine + "> : ";
-    std::cerr << preamble;
-    for(size_t i=0;i<warning.size();i++){
-      std::cerr << warning[i];
-      if((i!=warning.size()-1)&&(warning[i]=='\n')) 
-	std::cerr << std::setw(preamble.size()) <<": ";
-    }
-  }
 
   DuchampError::DuchampError(const std::string& message)
     : std::runtime_error(message)
@@ -59,34 +42,5 @@ namespace duchamp
   DuchampError::~DuchampError() throw()
   {}
 
-  void duchampError(std::string subroutine, std::string error)
-  {
-    /**
-     * Prints an ERROR message to the standard error stream, quoting
-     * the subroutine that the problem occurred in, a descriptive
-     * warning text, and sounding the bell.
-     *
-     * Format: ERROR \<function\> : Something bad happened.
-     */
-    std::string preamble = "\aERROR <" + subroutine + "> : ";
-    std::cerr << preamble;
-    for(size_t i=0;i<error.size();i++){
-      std::cerr << error[i];
-      if((i!=error.size()-1)&&(error[i]=='\n'))
-	std::cerr << std::setw(preamble.size()-1) <<": ";
-    }
-
-    size_t loc=0;
-    //    std::cout << "|"<<error<<"|\n";
-    while (loc=error.find('\n',loc+1),
-	   //	   std::cout << loc << " " << error.size() << " " << std::string::npos << "\n",
-	   loc!=std::string::npos){
-      if(loc!=error.size()-1) error.replace(loc,1," -- ");
-      else error[loc]=' ';
-      //      std::cout << "|"<<error<<"|\n";
-    }
-
-    throw DuchampError(error);
-  }
 
 }

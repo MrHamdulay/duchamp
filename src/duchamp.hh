@@ -86,12 +86,6 @@ Selavy re-analyses and re-plots objects found by Duchamp.\n\
   /// The program version 
   const std::string VERSION = PACKAGE_VERSION;
 
-  // Specialised functions to report warnings and errors -- in duchamp.cc
-  /// Print a warning message to the stderr 
-  void duchampWarning(std::string subroutine, std::string warning);
-  /// Print an error message to the stderr and sound the bell 
-  void duchampError(std::string subroutine, std::string error);
-
   /// Define the duchamp exception class.
   class DuchampError: public std::runtime_error
   {
