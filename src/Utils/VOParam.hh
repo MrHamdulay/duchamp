@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// VOTable.hh: Output of the detected objects to a VOTable
+// VOParam.hh: Output of the detected objects to a VOTable
 // -----------------------------------------------------------------------
 // Copyright (C) 2006, Matthew Whiting, ATNF
 //
@@ -26,8 +26,8 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 
-#ifndef VOTABLE_HH
-#define VOTABLE_HH
+#ifndef VOPARAM_HH
+#define VOPARAM_HH
 
 #include <iostream>
 #include <sstream>
@@ -46,60 +46,33 @@
 namespace duchamp
 {
 
-  ///  @brief A class that holds information for a <FIELD > entry in a
-  ///  VOTable. 
-  ///  @details It also provides useful functions to store and print
-  ///  that information.
-
-  class VOField
+  ///  @brief A class that holds information for a <PARAM > entry in a
+  ///  VOTable. @details It also provides useful functions to store
+  ///  and print that information.
+  class VOParam
   {
   public:
-    /// @brief Define a FIELD by individual parameters 
-    void define(std::string i, std::string n, std::string U, std::string u, std::string d, std::string r, int w, int p);
-    /// @brief Define a FIELD by individual parameters, using a Column::Col object 
-    void define(Column::Col column, std::string i, std::string U, std::string d, std::string r);
-    /// @brief Define a FIELD for a particular Column::Col object 
-    void define(Column::Col);
-
-    void setUCD(std::string u){UCD=u;};
-
-    /// @brief Print the FIELD entry 
-    void printField(std::ostream &stream);
+    VOParam();
+    template <class T> VOParam(std::string n, std::string U, std::string d, T v, int w, std::string u);
+    VOParam(const VOParam& other);
+    VOParam& operator= (const VOParam& other);
+    virtual ~VOParam(){};
+    // /// @brief Define a PARAM by individual parameters 
+    //    template <class T> void define(std::string n, std::string U, std::string d, T v, int w, std::string u);
+ 
+    /// @brief Print the PARAM entry 
+    void printParam(std::ostream &stream);
     
   private:
-    std::string ID;
     std::string name;
     std::string UCD;
-    std::string unit;
     std::string datatype;
-    std::string ref;
+    std::string value;
     int width;
-    int precision;
-
+    std::string units;
+    
   };
-
-  // ///  @brief A class that holds information for a <PARAM > entry in a
-  // ///  VOTable. @details It also provides useful functions to store
-  // ///  and print that information.
-  // class VOParam
-  // {
-  // public:
-  //   /// @brief Define a PARAM by individual parameters 
-  //   template <class T> void define(std::string n, std::string U, std::string d, T v, int w, std::string u);
- 
-  //   /// @brief Print the PARAM entry 
-  //   void printParam(std::ostream &stream);
-    
-  // private:
-  //   std::string name;
-  //   std::string UCD;
-  //   std::string datatype;
-  //   std::string value;
-  //   int width;
-  //   std::string units;
-    
-  // };
 
 }
 
-#endif //VOTABLE_HH
+#endif //VOPARAM_HH

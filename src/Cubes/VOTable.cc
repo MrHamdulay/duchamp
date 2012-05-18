@@ -40,6 +40,7 @@
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Detection/columns.hh>
 #include <duchamp/Utils/utils.hh>
+#include <duchamp/Utils/VOParam.hh>
 
 namespace duchamp
 {
@@ -241,56 +242,56 @@ namespace duchamp
   //------------------------------------------------
 
 
-  template <class T> void VOParam::define(std::string n, std::string U, std::string d, T v, int w, std::string u)
-  {
-    /// @details
-    /// A basic definition function, defining each parameter
-    /// individually. The value (v) is written to a stringstream, and
-    /// from there stored as a string.
-    /// \param n The name
-    /// \param U The UCD
-    /// \param d The datatype
-    /// \param v The value
-    /// \param w The width
-    /// \param u The units
+  // template <class T> void VOParam::define(std::string n, std::string U, std::string d, T v, int w, std::string u)
+  // {
+  //   /// @details
+  //   /// A basic definition function, defining each parameter
+  //   /// individually. The value (v) is written to a stringstream, and
+  //   /// from there stored as a string.
+  //   /// \param n The name
+  //   /// \param U The UCD
+  //   /// \param d The datatype
+  //   /// \param v The value
+  //   /// \param w The width
+  //   /// \param u The units
 
-    this->name = n;
-    this->UCD = U;
-    this->datatype = d;
-    this->width = w;
-    std::stringstream ss;
-    ss << v;
-    this->value = ss.str();
-    this->units = u;
-  }
-  template void VOParam::define<int>(std::string n, std::string U, std::string d, int v, int w, std::string u);
-  template void VOParam::define<long>(std::string n, std::string U, std::string d, long v, int w, std::string u);
-  template void VOParam::define<float>(std::string n, std::string U, std::string d, float v, int w, std::string u);
-  template void VOParam::define<double>(std::string n, std::string U, std::string d, double v, int w, std::string u);
-  template void VOParam::define<std::string>(std::string n, std::string U, std::string d, std::string v, int w, std::string u);
+  //   this->name = n;
+  //   this->UCD = U;
+  //   this->datatype = d;
+  //   this->width = w;
+  //   std::stringstream ss;
+  //   ss << v;
+  //   this->value = ss.str();
+  //   this->units = u;
+  // }
+  // template void VOParam::define<int>(std::string n, std::string U, std::string d, int v, int w, std::string u);
+  // template void VOParam::define<long>(std::string n, std::string U, std::string d, long v, int w, std::string u);
+  // template void VOParam::define<float>(std::string n, std::string U, std::string d, float v, int w, std::string u);
+  // template void VOParam::define<double>(std::string n, std::string U, std::string d, double v, int w, std::string u);
+  // template void VOParam::define<std::string>(std::string n, std::string U, std::string d, std::string v, int w, std::string u);
 
-  void VOParam::printParam(std::ostream &stream)
-  {
-    /// @details
-    /// Print the Param entry with appropriate formatting.
-    /// \param stream The output stream to send the text to.
+  // void VOParam::printParam(std::ostream &stream)
+  // {
+  //   /// @details
+  //   /// Print the Param entry with appropriate formatting.
+  //   /// \param stream The output stream to send the text to.
 
-    stream << "<PARAM name=\"" <<this->name
-	   << "\" ucd=\"" << this->UCD
-	   << "\" datatype=\"" << this->datatype;
-    if(this->units!="")
-      stream << "\" units=\"" << this->units;
-    if(this->width!=0){
-      if(datatype=="char")
-	stream << "\" arraysize=\"" << this->width;
-      else
-	stream << "\" width=\"" << this->width;
-    }
-    stream << "\" value=\"" << this->value
-	   << "\"/>\n";
-  }
+  //   stream << "<PARAM name=\"" <<this->name
+  // 	   << "\" ucd=\"" << this->UCD
+  // 	   << "\" datatype=\"" << this->datatype;
+  //   if(this->units!="")
+  //     stream << "\" units=\"" << this->units;
+  //   if(this->width!=0){
+  //     if(datatype=="char")
+  // 	stream << "\" arraysize=\"" << this->width;
+  //     else
+  // 	stream << "\" width=\"" << this->width;
+  //   }
+  //   stream << "\" value=\"" << this->value
+  // 	   << "\"/>\n";
+  // }
 
-  //------------------------------------------------
+  // //------------------------------------------------
 
 
   
@@ -320,46 +321,46 @@ namespace duchamp
     std::string fname = this->par.getImageFile();
     if(this->par.getFlagSubsection()) fname+=this->par.getSubsection();
     
-    singleParam.define("FITS file","meta.file;meta.fits","char",fname,fname.size(),"");
+    singleParam = VOParam("FITS file","meta.file;meta.fits","char",fname,fname.size(),"");
     paramList.push_back(singleParam);
     if(this->par.getFlagFDR())
-      singleParam.define("FDR Significance","stat.param","float",this->par.getAlpha(),0,"");
+      singleParam = VOParam("FDR Significance","stat.param","float",this->par.getAlpha(),0,"");
     else
-      singleParam.define("Threshold (SNR)","stat.snr","float",this->par.getCut(),0,"");
+      singleParam = VOParam("Threshold (SNR)","stat.snr","float",this->par.getCut(),0,"");
     paramList.push_back(singleParam);
-    singleParam.define("Flux Threshold","phot.flux;stat.min","float",this->Stats.getThreshold(),0,this->head.getFluxUnits());
+    singleParam = VOParam("Flux Threshold","phot.flux;stat.min","float",this->Stats.getThreshold(),0,this->head.getFluxUnits());
     paramList.push_back(singleParam);
     
     if(this->par.getFlagATrous()){
       std::string note = "The a trous reconstruction method was used, with the following parameters.";
-      singleParam.define("ATrous note","meta.note","char",note,note.size(),"");
+      singleParam = VOParam("ATrous note","meta.note","char",note,note.size(),"");
       paramList.push_back(singleParam);
-      singleParam.define("ATrous Dimension","meta.code;stat","int",this->par.getReconDim(),0,"");
+      singleParam = VOParam("ATrous Dimension","meta.code;stat","int",this->par.getReconDim(),0,"");
       paramList.push_back(singleParam);
-      singleParam.define("ATrous Threshold","stat.snr","float",this->par.getAtrousCut(),0,"");
+      singleParam = VOParam("ATrous Threshold","stat.snr","float",this->par.getAtrousCut(),0,"");
       paramList.push_back(singleParam);
-      singleParam.define("ATrous Minimum Scale","stat.param","int",this->par.getMinScale(),0,"");
+      singleParam = VOParam("ATrous Minimum Scale","stat.param","int",this->par.getMinScale(),0,"");
       paramList.push_back(singleParam);
-      singleParam.define("ATrous Filter","meta.code;stat","char",this->par.getFilterName(),this->par.getFilterName().size(),"");
+      singleParam = VOParam("ATrous Filter","meta.code;stat","char",this->par.getFilterName(),this->par.getFilterName().size(),"");
       paramList.push_back(singleParam);
     }
     if(this->par.getFlagSmooth()){
       if(this->par.getSmoothType()=="spectral"){
 	std::string note = "The cube was smoothed spectrally with a Hanning filter, with the following parameters.";
-	singleParam.define("Smoothing note","meta.note","char",note,note.size(),"");
+	singleParam = VOParam("Smoothing note","meta.note","char",note,note.size(),"");
 	paramList.push_back(singleParam);
-	singleParam.define("Hanning filter width","meta.code;stat","int",this->par.getHanningWidth(),0,"");
+	singleParam = VOParam("Hanning filter width","meta.code;stat","int",this->par.getHanningWidth(),0,"");
 	paramList.push_back(singleParam);
       }
       else if(this->par.getSmoothType()=="spatial"){
 	std::string note = "The cube was smoothed spatially with a Gaussian kernel, with the following parameters.";
-	singleParam.define("Smoothing note","meta.note","char",note,note.size(),"");
+	singleParam = VOParam("Smoothing note","meta.note","char",note,note.size(),"");
 	paramList.push_back(singleParam);
-	singleParam.define("Gaussian kernel major-axis FWHM","meta.code;stat","int",this->par.getKernMaj(),0,"");
+	singleParam = VOParam("Gaussian kernel major-axis FWHM","meta.code;stat","int",this->par.getKernMaj(),0,"");
 	paramList.push_back(singleParam);
-	singleParam.define("Gaussian kernel minor-axis FWHM","meta.code;stat","int",this->par.getKernMin(),0,"");
+	singleParam = VOParam("Gaussian kernel minor-axis FWHM","meta.code;stat","int",this->par.getKernMin(),0,"");
 	paramList.push_back(singleParam);
-	singleParam.define("Gaussian kernel position angle","meta.code;stat","int",this->par.getKernPA(),0,"");
+	singleParam = VOParam("Gaussian kernel position angle","meta.code;stat","int",this->par.getKernPA(),0,"");
 	paramList.push_back(singleParam);
       }    
     }
