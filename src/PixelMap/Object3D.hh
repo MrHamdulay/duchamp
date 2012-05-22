@@ -103,7 +103,7 @@ namespace PixelInfo
     long getNumChanMap(){return chanlist.size();};
 
     /// @brief Return the number of spatial pixels -- ie. the number of distinct (x,y) sets in the Object. 
-    unsigned long getSpatialSize();
+    unsigned long getSpatialSize(){return spatialMap.getSize();};
 
     /// @brief Return a vector set of all voxels in the Object. 
     std::vector<Voxel> getPixelSet();
@@ -120,7 +120,7 @@ namespace PixelInfo
     Object2D getChanMap(long z);
 
     /// @brief Return an Object2D showing the spatial (x,y) distribution of voxels in the Object 
-    Object2D getSpatialMap();
+    Object2D getSpatialMap(){return spatialMap;};
 
     /// @brief Add constant offsets to each of the dimensions, changing the parameters at the same time. 
     virtual void addOffsets(long xoff, long yoff, long zoff);
@@ -140,6 +140,7 @@ namespace PixelInfo
   protected:
     std::map<long,Object2D> chanlist;  ///< The list of 2D channel maps
     unsigned long           numVox;    ///< How many voxels in the Object?
+    Object2D                spatialMap;///< The 2D spatial map of the Object
     float                   xSum;      ///< Sum of the x-values
     float                   ySum;      ///< Sum of the y-values
     float                   zSum;      ///< Sum of the z-values

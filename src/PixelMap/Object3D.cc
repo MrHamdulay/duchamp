@@ -31,6 +31,7 @@
 #include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Object2D.hh>
 #include <duchamp/PixelMap/Object3D.hh>
+#include <duchamp/Utils/Section.hh>
 #include <vector>
 #include <map>
 
@@ -57,6 +58,7 @@ namespace PixelInfo
     if(this == &o) return *this;
     this->chanlist = o.chanlist;
     this->numVox  = o.numVox;
+    this->spatialMap = o.spatialMap;
     this->xSum    = o.xSum;
     this->ySum    = o.ySum;
     this->zSum    = o.zSum;
@@ -166,6 +168,8 @@ namespace PixelInfo
       // already in the list
     }
 
+    this->spatialMap.addPixel(x,y);
+
   }
   //--------------------------------------------
 
@@ -231,26 +235,11 @@ namespace PixelInfo
       if(obj.ymin<this->ymin) this->ymin = obj.ymin;
       if(obj.ymax>this->ymax) this->ymax = obj.ymax;
     }
+
+    this->spatialMap = this->spatialMap + obj;
+
   }
 
-  //--------------------------------------------
-
-  unsigned long Object3D::getSpatialSize()
-  {
-    Object2D spatialMap = this->getSpatialMap();
-    return spatialMap.getSize();
-  }
-  //--------------------------------------------
-
-  Object2D Object3D::getSpatialMap()
-  {
-    Object2D spatialMap;
-    for(std::map<long, Object2D>::iterator it = this->chanlist.begin(); 
-	it!=this->chanlist.end();it++){
-      spatialMap = spatialMap + it->second;
-    }
-    return spatialMap;
-  }
   //--------------------------------------------
   
   void Object3D::calcParams()
