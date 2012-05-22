@@ -92,7 +92,6 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(DETECTIONDIR)/columns.o\
 	$(DETECTIONDIR)/ObjectGrower.o\
 	$(DETECTIONDIR)/areClose.o\
-	$(DETECTIONDIR)/growObject.o\
 	$(DETECTIONDIR)/lutz_detect.o\
 	$(DETECTIONDIR)/mergeIntoList.o\
 	$(DETECTIONDIR)/outputDetection.o\

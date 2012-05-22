@@ -45,9 +45,6 @@ namespace duchamp
   // Prototypes for functions that use assorted Duchamp classes
   //////////////////////////////////////////////////////////////
 
-  /// @brief Grow an object to a lower threshold 
-  void growObject(Detection &object, Cube &cube);
-
   /// @brief Draw the edge of the BLANK region on a map.
   void drawBlankEdges(float *dataArray, size_t xdim, size_t ydim, Param &par);
 
