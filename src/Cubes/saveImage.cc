@@ -541,9 +541,9 @@ namespace duchamp
     char *header, *hptr, keyname[9];
     int  i, nkeyrec, status = 0;
     
-    long naxis=this->numDim;
-    long naxes[this->numDim];
-    for(int i=0;i<naxis;i++) naxes[i]=this->axisDim[i];
+    const size_t naxis=this->numDim;
+    long* naxes = new long[this->numDim];
+    for(size_t i=0;i<naxis;i++) naxes[i]=this->axisDim[i];
     if(is2D) naxes[this->head.WCS().spec]=1;
     // write the required header keywords 
     fits_write_imghdr(fptr, bitpix, naxis, naxes,  &status);
@@ -602,6 +602,8 @@ namespace duchamp
 	}
       }
     }
+
+    delete [] naxes;
 
     return SUCCESS;
 

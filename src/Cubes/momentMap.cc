@@ -122,7 +122,7 @@ namespace duchamp
     }
 
     // Array containing the moment map, initialised to zero
-    for(int i=0;i<xdim*ydim;i++) momentMap[i] = 0.;
+    for(size_t i=0;i<xdim*ydim;i++) momentMap[i] = 0.;
 
     // Bool vector containing yes/no on whether a given spatial pixel has a detected object.
     // Initialise this to false everywhere.
@@ -137,9 +137,9 @@ namespace duchamp
     double x,y;
 
     double *zArray  = new double[zdim];
-    for(int z=0; z<zdim; z++) zArray[z] = double(z);
+    for(size_t z=0; z<zdim; z++) zArray[z] = double(z);
     
-    for(int pix=0; pix<xdim*ydim; pix++){ 
+    for(size_t pix=0; pix<xdim*ydim; pix++){ 
 
       x = double(pix%xdim);
       y = double(pix/xdim);
@@ -149,7 +149,7 @@ namespace duchamp
 
 	double * world = this->head.pixToVel(x,y,zArray,zdim);
       
-	for(int z=0; z<zdim; z++){      
+	for(size_t z=0; z<zdim; z++){      
 	  size_t pos =  z*xdim*ydim + pix;  // the voxel in the cube
 	  if(isObj[pos]){ // if it's an object pixel...
 	    // delta-vel is half the distance between adjacent channels.
