@@ -82,7 +82,7 @@ std::string getIAUNameGAL(double lon, double lat)
   ss.setf(std::ios::fixed);
   ss<<"G";
   double goodlon=lon;
-  if(lon<0.) lon += 360.;
+  if(lon<0.) goodlon += 360.;
   ss<<setw(7)<<setfill('0')<<setprecision(3)<<goodlon;
   ss.setf(std::ios::showpos);
   ss.setf(std::ios::internal);
