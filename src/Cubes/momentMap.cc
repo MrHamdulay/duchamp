@@ -101,9 +101,9 @@ namespace duchamp
     /// @param momentMap The array holding the moment map values. Needs to be allocated beforehand.
     /// @param detectedPixel The map showing which spatial pixels contain an object.
 
-    long xdim=this->axisDim[0];
-    long ydim=this->axisDim[1];
-    long zdim=this->axisDim[2];
+    size_t xdim=this->axisDim[0];
+    size_t ydim=this->axisDim[1];
+    size_t zdim=this->axisDim[2];
 
     // get the list of objects that should be plotted. 
     std::vector<bool> objectChoice = this->par.getObjectChoices(this->objectList->size());

@@ -136,7 +136,7 @@ namespace duchamp
     ///   \param mask A mask array indicating whether given pixels are valid
     ///   \param spec The peak spectrum for the object -- must be allocated first
 
-    if((object.getXPeak()<0 || object.getXPeak()>=dimArray[0]) || (object.getYPeak()<0 || object.getYPeak()>=dimArray[1])){
+    if((object.getXPeak()<0 || object.getXPeak()>=int(dimArray[0])) || (object.getYPeak()<0 || object.getYPeak()>=int(dimArray[1]))){
       DUCHAMPWARN("getPeakSpec","Object peak outside array boundaries");
       for (size_t z=0;z<dimArray[2];z++) spec[z]=0.;
     }
@@ -180,7 +180,7 @@ namespace duchamp
     size_t ydim = this->axisDim[1];
     size_t zdim = this->axisDim[2];
 	
-    for(int i=0;i<zdim;i++){
+    for(size_t i=0;i<zdim;i++){
       specy[i]     = 0.;
       specRecon[i] = 0.;
       specBase[i]  = 0.;

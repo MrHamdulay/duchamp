@@ -283,14 +283,14 @@ namespace duchamp
     void   setFlagTrim(bool b){flagTrim=b;};
     bool   getFlagCubeTrimmed(){return hasBeenTrimmed;};
     void   setFlagCubeTrimmed(bool flag){hasBeenTrimmed = flag;};
-    long   getBorderLeft(){return borderLeft;};
-    void   setBorderLeft(long b){borderLeft = b;};
-    long   getBorderRight(){return borderRight;};
-    void   setBorderRight(long b){borderRight = b;};
-    long   getBorderBottom(){return borderBottom;};
-    void   setBorderBottom(long b){borderBottom = b;};
-    long   getBorderTop(){return borderTop;};
-    void   setBorderTop(long b){borderTop = b;};
+    size_t getBorderLeft(){return borderLeft;};
+    void   setBorderLeft(size_t b){borderLeft = b;};
+    size_t getBorderRight(){return borderRight;};
+    void   setBorderRight(size_t b){borderRight = b;};
+    size_t getBorderBottom(){return borderBottom;};
+    void   setBorderBottom(size_t b){borderBottom = b;};
+    size_t getBorderTop(){return borderTop;};
+    void   setBorderTop(size_t b){borderTop = b;};
     //
     long   getXOffset(){return xSubOffset;};
     void   setXOffset(long o){xSubOffset = o;};
@@ -459,10 +459,10 @@ namespace duchamp
     // Trim-related
     bool        flagTrim;        ///< Does the user want the cube trimmed?
     bool        hasBeenTrimmed;  ///< Has the cube been trimmed of excess BLANKs around the edge?
-    long        borderLeft;      ///< The number of BLANK pixels trimmed from the left of the cube;
-    long        borderRight;     ///< The number trimmed from the Right of the cube;
-    long        borderBottom;    ///< The number trimmed from the Bottom of the cube;
-    long        borderTop;       ///< The number trimmed from the Top of the cube;
+    size_t      borderLeft;      ///< The number of BLANK pixels trimmed from the left of the cube;
+    size_t      borderRight;     ///< The number trimmed from the Right of the cube;
+    size_t      borderBottom;    ///< The number trimmed from the Bottom of the cube;
+    size_t      borderTop;       ///< The number trimmed from the Top of the cube;
 
     // Subsection offsets
     long       *offsets;         ///< The array of offsets for each FITS axis.

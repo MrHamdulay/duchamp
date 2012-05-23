@@ -178,7 +178,7 @@ namespace duchamp
 	  break;
 	case 0: // borders case -- so many off each border
 	  readString >> a;
-	  if(a>=dimAxes[str]/2){
+	  if(a>=int(dimAxes[str])/2){
 	    DUCHAMPERROR("Section parsing", "You requested the subsection " << this->subsection << " but axis #" << str+1 <<" has zero size, since its dimension is " << dimAxes[str]);
 	    return FAILURE;
 	  }

@@ -1523,7 +1523,7 @@ namespace duchamp
       // loop over each pixel in the object, until we find an edge pixel.
       for(int dx=-1;dx<=1;dx+=2){
 	if( ((voxlist[pix].getX()+dx)<0) || 
-	    ((voxlist[pix].getX()+dx)>=this->axisDim[0]) ) 
+	    ((voxlist[pix].getX()+dx)>=int(this->axisDim[0])) ) 
 	  atEdge = true;
 	else if(this->isBlank(voxlist[pix].getX()+dx,
 			      voxlist[pix].getY(),
@@ -1532,7 +1532,7 @@ namespace duchamp
       }
       for(int dy=-1;dy<=1;dy+=2){
 	if( ((voxlist[pix].getY()+dy)<0) || 
-	    ((voxlist[pix].getY()+dy)>=this->axisDim[1]) ) 
+	    ((voxlist[pix].getY()+dy)>=int(this->axisDim[1])) ) 
 	  atEdge = true;
 	else if(this->isBlank(voxlist[pix].getX(),
 			      voxlist[pix].getY()+dy,
@@ -1563,7 +1563,7 @@ namespace duchamp
       // loop over each pixel in the object, until we find an edge pixel.
       for(int dz=-1;dz<=1;dz+=2){
 	if( ((voxlist[pix].getZ()+dz)<0) || 
-	    ((voxlist[pix].getZ()+dz)>=this->axisDim[2])) 
+	    ((voxlist[pix].getZ()+dz)>=int(this->axisDim[2])) ) 
 	  atEdge = true;
 	else if(this->isBlank(voxlist[pix].getX(),
 			      voxlist[pix].getY(),

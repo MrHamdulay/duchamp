@@ -341,10 +341,10 @@ namespace duchamp
 
     std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
     // Need to deal with possibility of trimmed array
-    long left = this->par.getBorderLeft();
-    long right = this->par.getBorderRight();
-    long top = this->par.getBorderTop();
-    long bottom = this->par.getBorderBottom();
+    size_t left = this->par.getBorderLeft();
+    size_t right = this->par.getBorderRight();
+    size_t top = this->par.getBorderTop();
+    size_t bottom = this->par.getBorderBottom();
     size_t *tempDim = new size_t[3];
     tempDim[0] = (this->axisDim[0] + left + right);
     tempDim[1] = (this->axisDim[1] + bottom + top);

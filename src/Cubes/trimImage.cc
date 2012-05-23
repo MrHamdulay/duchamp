@@ -49,16 +49,16 @@ namespace duchamp
     //   if(this->par.getFlagBlankPix()) {
     if(this->par.getFlagTrim()) {
 
-      long xdim = this->axisDim[0];
-      long ydim = this->axisDim[1];
-      long zdim = this->axisDim[2];
-      const long ZCHAN = 0;
+      size_t xdim = this->axisDim[0];
+      size_t ydim = this->axisDim[1];
+      size_t zdim = this->axisDim[2];
+      const size_t ZCHAN = 0;
 
-      int left,right,top,bottom;
+      size_t left,right,top,bottom;
 
-      for(int z = 0; z < zdim; z++){
+      for(size_t z = 0; z < zdim; z++){
 
-	for(int row=0;row<ydim;row++){
+	for(size_t row=0;row<ydim;row++){
 	  left=0;
 	  right=0;
 	  while((left<xdim)&&
@@ -77,7 +77,7 @@ namespace duchamp
 
 	}
     
-	for(int col=0;col<xdim;col++){
+	for(size_t col=0;col<xdim;col++){
 	  bottom=0;
 	  top=0;
 	  while((bottom<ydim)&&
@@ -105,7 +105,7 @@ namespace duchamp
       this->axisDim[2] = zdim;
       this->numPixels = this->axisDim[0]*this->axisDim[1]*this->axisDim[2];
 
-      long oldpos,newpos;
+      size_t oldpos,newpos;
     
       // Do the trimming, but only if we need to -- is there a border of Blanks?
       if((left>0)||(right>0)||(bottom>0)||(top>0)) {
@@ -191,14 +191,14 @@ namespace duchamp
 
     if(this->par.getFlagCubeTrimmed()){
 
-      long left = this->par.getBorderLeft();
-      long right = this->par.getBorderRight();
-      long top = this->par.getBorderTop();
-      long bottom = this->par.getBorderBottom();
+      size_t left = this->par.getBorderLeft();
+      size_t right = this->par.getBorderRight();
+      size_t top = this->par.getBorderTop();
+      size_t bottom = this->par.getBorderBottom();
 
-      long smallXDim = this->axisDim[0];
-      long smallYDim = this->axisDim[1];
-      long smallZDim = this->axisDim[2];
+      size_t smallXDim = this->axisDim[0];
+      size_t smallYDim = this->axisDim[1];
+      size_t smallZDim = this->axisDim[2];
 
       // first correct the dimension sizes 
       this->axisDim[0] = smallXDim + left + right; 
