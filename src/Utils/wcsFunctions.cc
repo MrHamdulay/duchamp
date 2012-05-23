@@ -72,10 +72,7 @@ int pixToWCSSingle(struct wcsprm *wcs, const double *pix, double *world)
   status=wcsp2s(wcs, npts, naxis, newpix, imgcrd, 
 		phi, theta, tempworld, stat);
   if(status>0){
-    std::stringstream statstr;
-    statstr<<"|";
-    for(int i=0;i<naxis;i++) statstr<<stat[i]<<"|";
-    DUCHAMPTHROW("pixToWCSSingle","WCS Error Code = " << status <<": stat values="<<statstr.str() << " : " << wcs_errmsg[status]);
+    DUCHAMPTHROW("pixToWCSSingle","WCS Error Code = " << status <<": stat="<<stat[0] << " : " << wcs_errmsg[status]);
   }
 
   //return just the spatial/velocity information
@@ -127,10 +124,7 @@ int wcsToPixSingle(struct wcsprm *wcs, const double *world, double *pix)
 		phi, theta, imgcrd, temppix, stat);
 
   if( status > 0 ){
-    std::stringstream statstr;
-    statstr<<"|";
-    for(int i=0;i<naxis;i++) statstr<<stat[i]<<"|";
-    DUCHAMPTHROW("wcsToPixSingle","WCS Error Code = " << status <<": stat values="<<statstr.str() << " : " << wcs_errmsg[status]);
+    DUCHAMPTHROW("wcsToPixSingle","WCS Error Code = " << status <<": stat="<<stat[0] << " : " << wcs_errmsg[status]);
   }
 
   pix[0] = temppix[wcs->lng] - 1.;
@@ -189,8 +183,8 @@ int pixToWCSMulti(struct wcsprm *wcs, const double *pix,
   if(status>0){
     std::stringstream statstr;
     statstr<<"|";
-    for(int i=0;i<naxis;i++) statstr<<stat[i]<<"|";
-    DUCHAMPTHROW("pixToWCSMulti","WCS Error Code = " << status <<": stat values="<<statstr.str() << " : " << wcs_errmsg[status]);
+    for(int i=0;i<npts;i++) statstr<<stat[i]<<"|";
+    DUCHAMPTHROW("pixToWCSMulti","WCS Error Code = " << status <<": stat="<<statstr.str() << " : " << wcs_errmsg[status]);
   }
   else{
     //return just the spatial/velocity information, keeping the
@@ -257,8 +251,8 @@ int wcsToPixMulti(struct wcsprm *wcs, const double *world,
   if(status>0){
     std::stringstream statstr;
     statstr<<"|";
-    for(int i=0;i<naxis;i++) statstr<<stat[i]<<"|";
-    DUCHAMPTHROW("wcsToPixMulti","WCS Error Code = " << status <<": stat values="<<statstr.str() << " : " << wcs_errmsg[status]);
+    for(int i=0;i<npts;i++) statstr<<stat[i]<<"|";
+    DUCHAMPTHROW("wcsToPixMulti","WCS Error Code = " << status <<": stat="<<statstr.str() << " : " << wcs_errmsg[status]);
   }
   else{
     // correct from 1-indexed to 0-indexed pixel array 
@@ -319,7 +313,7 @@ double pixelToVelocity(struct wcsprm *wcs, double &x, double &y, double &z,
     std::stringstream statstr;
     statstr<<"|";
     for(int i=0;i<naxis;i++) statstr<<stat[i]<<"|";
-    DUCHAMPTHROW("pixelToVelocity","WCS Error Code = " << status <<": stat values="<<statstr.str() << " : " << wcs_errmsg[status]);
+    DUCHAMPTHROW("pixelToVelocity","WCS Error Code = " << status <<": stat="<<stat[0] << " : " << wcs_errmsg[status]);
   }
 
   double vel = coordToVel(wcs, world[specAxis], velUnits);
