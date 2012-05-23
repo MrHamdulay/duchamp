@@ -29,7 +29,6 @@
 #include <sstream>
 #include <cpgplot.h>
 #include <math.h>
-#include <wcslib/wcs.h>
 #include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
@@ -65,8 +64,8 @@ namespace duchamp
     }
     else{
 
-      long size = (object.getXmax()-object.getXmin()+1);
-      if(size<(object.getYmax()-object.getYmin()+1)) 
+      size_t size = (object.getXmax()-object.getXmin()+1);
+      if(size<size_t(object.getYmax()-object.getYmin()+1)) 
 	size = object.getYmax()-object.getYmin()+1;
       size += MIN_WIDTH;
 
@@ -78,20 +77,20 @@ namespace duchamp
       long zmax = object.getZmax();
 
       bool *isGood = new bool[size*size];
-      for(int i=0;i<size*size;i++) isGood[i]=true;
+      for(size_t i=0;i<size*size;i++) isGood[i]=true;
       for(int z=zmin; z<=zmax; z++){
 	for(int x=xmin; x<=xmax; x++){
 	  for(int y=ymin; y<=ymax; y++){
 	    isGood[(y-ymin) * size + (x-xmin)] = 
-	      ((x>=0)&&(x<this->axisDim[0]))    // if inside the boundaries
-	      && ((y>=0)&&(y<this->axisDim[1])) // if inside the boundaries
+	      ((x>=0)&&(x<int(this->axisDim[0])))    // if inside the boundaries
+	      && ((y>=0)&&(y<int(this->axisDim[1]))) // if inside the boundaries
 	      && !this->isBlank(x,y,z);         // if not blank
 	  }
 	}
       }
 
       float *image = new float[size*size];
-      for(int i=0;i<size*size;i++) image[i]=0.;
+      for(size_t i=0;i<size*size;i++) image[i]=0.;
 
       int imPos,cubePos;
       for(int z=zmin; z<=zmax; z++){
@@ -108,7 +107,7 @@ namespace duchamp
 	}
       }
 
-      for(int i=0;i<size*size;i++){
+      for(size_t i=0;i<size*size;i++){
 	// if there is some signal on this pixel, normalise by the velocity width
 	if(isGood[i]) image[i] /= float(zmax-zmin+1); 
       }
@@ -119,7 +118,7 @@ namespace duchamp
       int ct=0;
       while(!isGood[ct]) ct++; // move to first non-blank pixel
       z1 = z2 = image[ct];
-      for(int i=1;i<size*size;i++){
+      for(size_t i=1;i<size*size;i++){
 	if(isGood[i]){
 	  if(image[i]<z1) z1=image[i];
 	  if(image[i]>z2) z2=image[i];
@@ -127,7 +126,7 @@ namespace duchamp
       }
 
       // adjust the values of the blank and extra-image pixels
-      for(int i=0;i<size*size;i++)
+      for(size_t i=0;i<size*size;i++)
 	if(!isGood[i]) image[i] = z1 - 1.;
 
 
@@ -239,8 +238,8 @@ namespace duchamp
 	double *pix2   = new double[3];
 	double *world1 = new double[3];
 	double *world2 = new double[3];
-	pix1[0] = pix2[0] = xstart + this->par.getXOffset();
-	pix1[1] = pix2[1] = ystart + this->par.getYOffset();
+	pix1[0] = pix2[0] = xstart;
+	pix1[1] = pix2[1] = ystart;
 	pix1[2] = pix2[2] = channel;
 	this->head.pixToWCS(pix1,world1);
 
@@ -261,8 +260,8 @@ namespace duchamp
 	  pix2[0] += step;
 	}while(error>0.05); // look for 1% change
 
-	float tickpt1 = pix1[0] - this->par.getXOffset();
-	float tickpt2 = pix2[0] - this->par.getXOffset();
+	float tickpt1 = pix1[0];
+	float tickpt2 = pix2[0];
 	float tickpt3 = ystart;
 	int colour;
 	cpgqci(&colour);
