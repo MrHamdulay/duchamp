@@ -117,7 +117,7 @@ else
 
   for INCDIR in $PGPLOTINCDIRS ; do
     AC_CHECK_FILE([$INCDIR/cpgplot.h], [PGPLOTINC=-I$INCDIR; break])
-    AC_CHECK_FILE([$INCDIR/pgplot/cpgplot.h], [PGPLOTINC=-I$INCDIR/pglot; break])
+    AC_CHECK_FILE([$INCDIR/pgplot/cpgplot.h], [PGPLOTINC=-I$INCDIR/pgplot; break])
     AC_CHECK_FILE([$INCDIR/include/cpgplot.h], [PGPLOTINC=-I$INCDIR/include; break])
   done
   

@@ -4663,7 +4663,7 @@ eval ac_res=\$$as_ac_File
 	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
 $as_echo "$ac_res" >&6; }
 if eval test \"x\$"$as_ac_File"\" = x"yes"; then :
-  PGPLOTINC=-I$INCDIR/pglot; break
+  PGPLOTINC=-I$INCDIR/pgplot; break
 fi
 
     as_ac_File=`$as_echo "ac_cv_file_$INCDIR/include/cpgplot.h" | $as_tr_sh`
