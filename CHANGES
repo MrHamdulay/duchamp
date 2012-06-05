@@ -3,6 +3,39 @@ Duchamp version 1.1.14 (2012/05/XX)
 
 Bug fixes:
 
+* The absence of a BLANK keyword when trimming will now not trigger a
+  failure, only a warning message.
+
+* The flux unit conversion (eg. from Jy/beam to mJy/beam) was not
+  being applied correctly when an existing reconstructed or smoothed
+  array was being read in. This is now applied properly.
+
+* When saving reconstructed or smoothed arrays, the data type is now
+  set to FLOAT, so that the correct values are written (and
+  subsequently read in). The previous version was potentially saving
+  to a FITS file with integer data type (this depended on the type of
+  the input array), which potentially led to conversion errors.
+
+* For certain cases, the reconstruction attempted to use a very large
+  number of scales. This has been fixed.
+
+* When saving a mask image while using a subsection of a cube, the
+  offsets for the subsection were not being accounted for
+  correctly. This is now fixed.
+
+* The RA & Dec now have appropriate precision, rather than an
+  arbitrary 2 decimal places on the seconds value. The RA will be one
+  decimal place more than the Dec, and they will reflect the degree of
+  precision in the image pixels.
+
+* A number of data type conversions (typically ints to floats) led to
+  errors in some calculations, such as WCS conversions. Care has been
+  taken to make sure all indexing is done appropriately with no
+  overflow, and that all conversions (where necessary) are done
+  appropriately.
+
+* It was possible to get world positions looking like 11:59:60.0! Not
+  any more.
 
 New features:
 
