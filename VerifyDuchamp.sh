@@ -46,8 +46,8 @@ for (( i=0; i<${#number[@]}; i++ )); do
     echo "Done. Comparison to standard result:"
     numDet=`grep "Total number" $res | cut -f 6 -d " "`
     if [ $numDet == ${ndet[i]} ]; then
-	tail -5 $res | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
-	tail -5 $Sres | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
+	tail -${numDet} $res | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
+	tail -${numDet} $Sres | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
 	if [ `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ]; then
 	    echo "  Found correct number of sources, but positions differ."
 	    echo "  ERROR: Differences in positions of sources:"
