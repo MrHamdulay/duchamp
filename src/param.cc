@@ -804,6 +804,12 @@ namespace duchamp
       DUCHAMPWARN("Reading parameters","The requested value of the parameter sortingParam, \"" << this->sortingParam << "\", is invalid. -- changing to \"vel\".");
       this->sortingParam = "vel";
     }
+
+    // Make sure minVoxels is appropriate given minChannels & minPixels
+    if(this->minVoxels < (this->minPix + this->minChannels - 1) ){
+      DUCHAMPWARN("Reading parameters","Changing minVoxels to " << this->minPix + this->minChannels - 1 << " given minPix="<<this->minPix << " and minChannels="<<this->minChannels);
+      this->minVoxels = this->minPix + this->minChannels - 1;
+    }
       
   }
 
