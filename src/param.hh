@@ -300,7 +300,7 @@ namespace duchamp
     void   setZOffset(long o){zSubOffset = o;};
     //
     unsigned int   getMinPix(){return minPix;};
-    void   setMinPix(int m){minPix=m;};
+    void   setMinPix(unsigned int m){minPix=m;};
     //	 
     bool   getFlagGrowth(){return flagGrowth;};
     void   setFlagGrowth(bool flag){flagGrowth=flag;};
@@ -369,8 +369,8 @@ namespace duchamp
     void   setThreshS(float t){threshSpatial=t;};
     float  getThreshV(){return threshVelocity;};
     void   setThreshV(float t){threshVelocity=t;};
-    int    getMinChannels(){return minChannels;};
-    void   setMinChannels(int n){minChannels=n;};
+    unsigned int getMinChannels(){return minChannels;};
+    void   setMinChannels(unsigned int n){minChannels=n;};
     unsigned int getMinVoxels(){return minVoxels;};
     void   setMinVoxels(unsigned int n){minVoxels=n;};
     bool   getFlagRejectBeforeMerge(){return flagRejectBeforeMerge;};
@@ -475,7 +475,7 @@ namespace duchamp
     bool        flagBaseline;    ///< Whether to do baseline subtraction before reconstruction and/or searching.
 
     // Detection-related
-    int         minPix;          ///< Minimum number of pixels for a detected object to be counted
+    unsigned int minPix;         ///< Minimum number of pixels for a detected object to be counted
     float       areaBeam;        ///< Size (area) of the beam in pixels.
     float       fwhmBeam;        ///< FWHM of the beam in pixels.
     DuchampBeam beamAsUsed;      ///< A copy of the beam as used in FitsHeader - only used here for output
@@ -521,8 +521,8 @@ namespace duchamp
     bool   flagAdjacent;    ///< Whether to use the adjacent criterion for judging if objects are to be merged.
     float  threshSpatial;   ///< Maximum spatial separation between objects
     float  threshVelocity;  ///< Maximum channels separation between objects
-    int    minChannels;     ///< Minimum no. of channels to make an object 
-    unsigned int    minVoxels;       ///< Minimum no. of voxels required in an object
+    unsigned int minChannels;     ///< Minimum no. of channels to make an object 
+    unsigned int minVoxels;       ///< Minimum no. of voxels required in an object
     bool   flagRejectBeforeMerge; ///< Whether to reject sources before merging
     bool   flagTwoStageMerging;  ///< Whether to do a partial merge when the objects are found, via the mergeIntoList function.
 

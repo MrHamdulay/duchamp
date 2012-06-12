@@ -31,6 +31,7 @@
 #include <iomanip>
 #include <math.h>
 #include <vector>
+#include <duchamp/param.hh>
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Cubes/cubeUtils.hh>
