@@ -112,6 +112,7 @@ namespace duchamp
       fits_report_error(stderr, status);
       return FAILURE;
     }
+    this->head.setNumAxes(numAxes);
     long *dimAxes = new long[numAxes];
     for(int i=0;i<numAxes;i++) dimAxes[i]=1;
     status = 0;
