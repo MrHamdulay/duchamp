@@ -100,8 +100,7 @@ namespace duchamp
 	
       long size = this->axisDim[0] * this->axisDim[1];
       float *momentMap = new float[size];
-      std::vector<bool> detectionMap;
-      this->getMomentMap(momentMap,detectionMap);
+      std::vector<bool> detectionMap = this->getMomentMap(momentMap);
       status=0;
       if(fits_write_pix(fptr, TFLOAT, fpixel, size, momentMap, &status)){
 	duchampFITSerror(status,"saveMomentMapImage","Error writing data");

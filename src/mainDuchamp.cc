@@ -217,14 +217,6 @@ int main(int argc, char * argv[])
       else 
 	std::cout << "done.\n";
     }
-    if(cube->pars().getFlagOutputMask()){
-      std::cout << "Saving mask cube to "
-		<< cube->pars().outputMaskFile() << "... " <<std::flush;
-      if(cube->saveMaskCube() == FAILURE)
-	std::cout << "Failed!\n";
-      else 
-	std::cout << "done.\n";
-    }
     if(cube->pars().getFlagOutputMomentMap()){
       std::cout << "Saving 0th moment map image to "
 		<< cube->pars().outputMomentMapFile() << "... " <<std::flush;
@@ -243,6 +235,15 @@ int main(int argc, char * argv[])
 
   }
 
+  if(cube->pars().getFlagOutputMask()){
+    std::cout << "Saving mask cube to "
+	      << cube->pars().outputMaskFile() << "... " <<std::flush;
+    if(cube->saveMaskCube() == FAILURE)
+      std::cout << "Failed!\n";
+    else 
+      std::cout << "done.\n";
+  }
+  
   if(cube->pars().getFlagVOT()){
     std::ofstream votfile(cube->pars().getVOTFile().c_str());
     cube->outputDetectionsVOTable(votfile);

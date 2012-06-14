@@ -57,8 +57,7 @@ namespace duchamp
     long xdim=this->axisDim[0];
     long ydim=this->axisDim[1];
 
-    std::vector<bool> detectedPixels;
-    this->getMomentMap(momentMap, detectedPixels);
+    std::vector<bool> detectedPixels = this->getMomentMap(momentMap);
 
     int count=0;
     for(int i=0;i<xdim*ydim;i++) {
@@ -85,21 +84,21 @@ namespace duchamp
 
   }
 
-  void Cube::getMomentMap(float *momentMap, std::vector<bool> &detectedPixels)
+  std::vector<bool> Cube::getMomentMap(float *momentMap)
   {
 
-    /// @details This returns the moment-0 map (ie. the map of
+    /// @details This populates the moment-0 map (ie. the map of
     /// integrated flux) for the cube. The momentMap array needs to be
     /// allocated before calling this function - it should be of the
-    /// same spatial dimensions as the cube. The function also returns
+    /// same spatial dimensions as the cube. The function returns
     /// a map showing which spatial pixels are detected. This provides
     /// a way of telling whether a given pixel is affected, as
     /// although the momentMap is initialised to zero, it is
     /// conceivable that a pixel with detections in its spectrum could
     /// yield a value of zero. The detection map is stored as a
     /// vector<bool> for compactness.
-    /// @param momentMap The array holding the moment map values. Needs to be allocated beforehand.
-    /// @param detectedPixel The map showing which spatial pixels contain an object.
+    /// @param momentMap Pointer to the array holding the moment map values, which needs to be allocated beforehand.
+    /// @return detectedPixel The map showing which spatial pixels contain an object.
 
     size_t xdim=this->axisDim[0];
     size_t ydim=this->axisDim[1];
@@ -126,7 +125,7 @@ namespace duchamp
 
     // Bool vector containing yes/no on whether a given spatial pixel has a detected object.
     // Initialise this to false everywhere.
-    detectedPixels = std::vector<bool>(xdim*ydim,false);
+    std::vector<bool> detectedPixels = std::vector<bool>(xdim*ydim,false);
 
     // if we are looking for negative features, we need to invert the 
     //  detected pixels for the moment map
@@ -173,6 +172,8 @@ namespace duchamp
     
     delete [] zArray;
     delete [] isObj;
+
+    return detectedPixels;
 
   }
 

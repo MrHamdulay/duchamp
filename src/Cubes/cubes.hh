@@ -540,7 +540,7 @@ namespace duchamp
     // Calculation of overall moment maps
 
     /// @brief Return a moment-0 map plus a map of where the object pixels are
-    void       getMomentMap(float *momentMap, std::vector<bool> &detectedPixels);
+    std::vector<bool> getMomentMap(float *momentMap);
     /// @brief Return a moment-0 map formatted for logarithmic greyscale plotting, with greyscale limits
     void       getMomentMapForPlot(float *momentMap, float &z1, float &z2);
 
