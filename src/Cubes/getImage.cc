@@ -143,7 +143,9 @@ namespace duchamp
     if(this->head.defineWCS(fname, this->par) == FAILURE) return FAILURE;
 
     // Read the necessary header information, and copy some of it into the Param.
-    if(this->head.readHeaderInfo(fname, this->par) == FAILURE) return FAILURE;
+    if(this->head.readHeaderInfo(fname, this->par) == FAILURE){
+      DUCHAMPWARN("Cube Reader", "Problems with metadata, but will press on...");
+    }
 
     if(!this->head.isWCS()) 
       DUCHAMPWARN("Cube Reader","WCS is not good enough to be used.\n");

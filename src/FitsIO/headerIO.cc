@@ -49,15 +49,19 @@ namespace duchamp
 
     // Get the brightness unit, so that we can set the units for the 
     //  integrated flux when we go to fixUnits.
-    if(this->readBUNIT(fname) == FAILURE) return FAILURE;
+    OUTCOME bunitResult = this->readBUNIT(fname);
   
     // if(this->readBLANKinfo(fname, par)==FAILURE)
     //   duchampWarning("Cube Reader", "Reading BLANK info failed\n");
-    OUTCOME blankResult=this->readBLANKinfo(fname,par);
+    OUTCOME blankResult = this->readBLANKinfo(fname,par);
   
-    if(this->readBeamInfo(fname, par)==FAILURE) returnValue=FAILURE;
+    OUTCOME beamResult = this->readBeamInfo(fname, par);
 
     if(this->wcs->spec>=0) this->fixUnits(par);
+
+    if(bunitResult == FAILURE || blankResult==FAILURE || beamResult==FAILURE ){
+      DUCHAMPWARN("Cube Reader","Header could not be read completely");
+    }
 
     return returnValue;
   }
@@ -79,8 +83,9 @@ namespace duchamp
     // Open the FITS file
     status = 0;
     if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
+      DUCHAMPWARN("Cube Reader","Error opening file "<<fname<<": ");
       fits_report_error(stderr, status);
-      return FAILURE;
+      returnStatus = FAILURE;
     }
 
     // Read the BUNIT keyword, and translate to standard unit format if needs be
@@ -89,20 +94,22 @@ namespace duchamp
     if (status){
       DUCHAMPWARN("Cube Reader","Error reading BUNIT keyword: ");
       fits_report_error(stderr, status);
-      return FAILURE;
+      returnStatus =  FAILURE;
     }
     else{
       wcsutrn(0,unit);
       this->fluxUnits = unit;
       this->originalFluxUnits = unit;
+      returnStatus = SUCCESS;
     }
 
     // Close the FITS file
     status = 0;
     fits_close_file(fptr, &status);
     if (status){
-      DUCHAMPWARN("Cube Reader","Error closing file: ");
+      DUCHAMPWARN("Cube Reader","Error closing file "<<fname<<": ");
       fits_report_error(stderr, status);
+      returnStatus = FAILURE;
     }
 
     delete [] comment;
@@ -140,6 +147,7 @@ namespace duchamp
     
     // Open the FITS file.
     if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
+      DUCHAMPWARN("Cube Reader","Error opening file "<<fname<<": ");
       fits_report_error(stderr, status);
       return FAILURE;
     }
@@ -166,8 +174,8 @@ namespace duchamp
 	  DUCHAMPWARN("Cube Reader", "Error reading BLANK keyword, so not doing any trimming.");
 	  fits_report_error(stderr, status);
 	}
+	returnStatus = FAILURE; //only return a failure if we care whether the BLANK keyword is present, which is only if the Trim flag is set.
       }
-      returnStatus = FAILURE;
     }
     else{
       status = 0;
@@ -217,6 +225,7 @@ namespace duchamp
 
     // Open the FITS file
     if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
+      DUCHAMPWARN("Cube Reader","Error opening file "<<fname<<": ");
       fits_report_error(stderr, status);
       return FAILURE;
     }
