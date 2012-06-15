@@ -1,5 +1,50 @@
-Duchamp version 1.1.14 (2012/05/XX)
+Duchamp version 1.1.14 (2012/06/XX)
 -------------------------------------
+
+Key changes:
+
+* The way the wavelet reconstruction is done in the presence of BLANK
+  voxels is slightly different, specifically when there were BLANK
+  voxels on the edge. While BLANK voxels are always ignored by the
+  reconstruction (and left in place), the previous approach dealt with
+  BLANKS on the edge by moving the effective edge of the image inwards
+  until the first non-blank voxel. This meant that the size of the
+  dimensions used to determine the number of scales, and the location
+  where boundary reflections took place where different to the input
+  image size.
+
+  However, this meant that BLANK voxels on the edge were treated
+  differently to those not on the edge, so this inconsistency was
+  removed. The full image dimensions are always used to calculate the
+  number of scales, and reflections (which is how the reconstruction
+  deals with the boundaries) will occur at the actual image edges.
+
+  If your data has this property (BLANK pixels at the image
+  boundaries), then any reconstruction will be affected (most likely
+  only in a small way) and potentially any subsequent searching. You
+  are advised to check this.
+
+* Since v1.1.13 was released, the journal paper describing Duchamp has
+  been published. It can be found at MNRAS 421, 3242 (2012), or
+  http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2966.2012.20548.x/full. It
+  includes descriptions of the various algorithms used for Duchamp, as
+  well as some indicative comparisons of the relative completeness &
+  reliability. Please cite this paper when describing Duchamp.
+
+Other new features:
+
+* The XML VOTable output now includes a more complete list of
+  parameters, matching the output given in text form in the results &
+  log output files. Only those parameters affecting the results are
+  included - things like the output file names and so on are left out.
+
+* The minVoxels parameter is now adjusted to be at least (minPix +
+  minChannels - 1). If it is changed, a warning message is triggered.
+
+* The warning/error reporting has been overhauled, with an improved
+  interface for developers. Also, some ERROR instances that previously
+  resulted in the program terminating now allow it to continue
+  (provided that is possible given the error).
 
 Bug fixes:
 
@@ -14,7 +59,9 @@ Bug fixes:
   set to FLOAT, so that the correct values are written (and
   subsequently read in). The previous version was potentially saving
   to a FITS file with integer data type (this depended on the type of
-  the input array), which potentially led to conversion errors.
+  the input array). In this case, the full precision of data values
+  would not be preserved, so reading back in and doing an identical
+  search could yield different sources.
 
 * For certain cases, the reconstruction attempted to use a very large
   number of scales. This has been fixed.
@@ -39,8 +86,23 @@ Bug fixes:
 
 New features:
 
+* 
 
 Code base development notes:
+
+* Most instances of integer overflow due to insufficient precision
+  have been tracked down - many of these were indexing variables of
+  type int, which have been changed to size_t.
+
+* Object3D now carries its spatial map with it, rather than
+  calculating it on the fly when requested. This saves a lot of
+  unnecessary computational effort.
+
+* The warning/error interface has improved, making use of C++
+  exception handling. This should be compatible with external logging
+  infrastructure (such as log4cxx).
+
+* 
 
 
 
