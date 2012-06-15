@@ -1,0 +1,14 @@
+imageFile	verification/verificationCube.fits
+flagMW		false
+flagTrim	false
+flagAtrous	false
+snrCut		4
+minChannels     2
+flagMaps        false
+flagLog         true
+logFile         verification/log9.txt
+outFile         verification/results9.txt
+spectraFile     verification/spectra9.ps
+spectralType    VRAD
+restFrequency   1.665e9
+spectralUnits   km/s
