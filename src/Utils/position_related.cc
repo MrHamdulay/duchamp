@@ -110,9 +110,10 @@ std::string decToDMS(const double dec, const std::string type, int decPrecision)
    * \return String with angle in desired format.
    */
 
-  double dec_abs,sec;
+  double dec_abs,degD,minD,minDint,sec;
   int deg,min;
-  const double onemin=1./60.;
+  const double minPerHour=60.;
+  const double degPerHour=15.;
   double thisDec = dec;
   std::string sign="";
   int degSize = 2; // number of figures in the degrees part of the output.
@@ -125,7 +126,7 @@ std::string decToDMS(const double dec, const std::string type, int decPrecision)
     // Make these modulo 360.;
     while (thisDec < 0.) { thisDec += 360.; }
     while (thisDec >= 360.) { thisDec -= 360.; }
-    if(type=="RA") thisDec /= 15.;  // Convert to hours.
+    if(type=="RA") thisDec /= degPerHour;  // Convert to hours.
   }
   else if((type=="DEC")||(type=="GLAT")){
     if(thisDec<0.) sign = "-";
@@ -136,14 +137,17 @@ std::string decToDMS(const double dec, const std::string type, int decPrecision)
 	      << type << "). Defaulting to using RA.\n";
     while (thisDec < 0.) { thisDec += 360.; }
     while (thisDec >= 360.) { thisDec -= 360.; }
-    thisDec /= 15.;
+    thisDec /= degPerHour;
   }
   
   dec_abs = fabs(thisDec);
-  deg = int(dec_abs);
-  min = int(fmod(dec_abs,1.)*60.);
-  sec = fmod(dec_abs,onemin)*3600.;
-  if(fabs(sec-60.)<pow(10,precision)){ // to prevent rounding errors stuffing things up
+  minD = modf(dec_abs, &degD) * minPerHour;
+  sec = modf(minD, &minDint) * minPerHour;
+  deg = int(degD);
+  min = int(minDint);
+
+  if(fabs(sec-minPerHour)<pow(10,-precision)){ // to prevent rounding errors stuffing things up
+    std::cerr << "!\n";
     sec=0.;
     min++;
     if(min==60){
@@ -151,6 +155,7 @@ std::string decToDMS(const double dec, const std::string type, int decPrecision)
       deg++;
     }
   }
+
   std::stringstream ss(std::stringstream::out);
   ss.setf(std::ios::showpoint);
   ss.setf(std::ios::fixed);
@@ -160,11 +165,9 @@ std::string decToDMS(const double dec, const std::string type, int decPrecision)
   if(precision>0)
     ss<<setw(precision+3)<<setprecision(precision)<<sec;
   else {
-    //ss.unsetf(std::ios::showpoint);
-    //    ss.unsetf(std::ios::fixed);
     ss << setw(2) << int(sec);
-    //    ss<<setw(2)<<setfill('0')<<setprecision(precision)<<sec;
   }
+
   return ss.str();
 }
 

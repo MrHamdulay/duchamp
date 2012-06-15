@@ -213,23 +213,23 @@ namespace duchamp
     void        setName(std::string s){name=s;};
     std::string getRAs(){return raS;};
     std::string getDecs(){return decS;};
-    float       getRA(){return ra;};
-    float       getDec(){return dec;};
-    float       getRAWidth(){return raWidth;};
-    float       getDecWidth(){return decWidth;};
-    float       getMajorAxis(){return majorAxis;};
-    float       getMinorAxis(){return minorAxis;};
-    float       getPositionAngle(){return posang;};
-    float       getVel(){return vel;};
-    float       getVelWidth(){return velWidth;};
-    float       getVelMin(){return velMin;};
-    float       getVelMax(){return velMax;};
-    float       getW20(){return w20;};
-    float       getV20Min(){return v20min;};
-    float       getV20Max(){return v20max;};
-    float       getW50(){return w50;};
-    float       getV50Min(){return v50min;};
-    float       getV50Max(){return v50max;};
+    double      getRA(){return ra;};
+    double      getDec(){return dec;};
+    double      getRAWidth(){return raWidth;};
+    double      getDecWidth(){return decWidth;};
+    double      getMajorAxis(){return majorAxis;};
+    double      getMinorAxis(){return minorAxis;};
+    double      getPositionAngle(){return posang;};
+    double      getVel(){return vel;};
+    double      getVelWidth(){return velWidth;};
+    double      getVelMin(){return velMin;};
+    double      getVelMax(){return velMax;};
+    double      getW20(){return w20;};
+    double      getV20Min(){return v20min;};
+    double      getV20Max(){return v20max;};
+    double      getW50(){return w50;};
+    double      getV50Min(){return v50min;};
+    double      getV50Max(){return v50max;};
     int         getID(){return id;};
     void        setID(int i){id = i;};
     //
@@ -272,13 +272,13 @@ namespace duchamp
     bool           flagWCS;        ///< A flag indicating whether the WCS parameters have been set.
     std::string    raS;	           ///< Right Ascension (or Longitude) of pixel centre in form 12:34:23
     std::string    decS;	   ///< Declination (or Latitude) of pixel centre, in form -12:23:34
-    float          ra;	           ///< Central Right Ascension in degrees
-    float          dec;	           ///< Central Declination in degrees
-    float          raWidth;        ///< Width of detection in RA direction in arcmin
-    float          decWidth;       ///< Width of detection in Dec direction in arcmin
-    float          majorAxis;      ///< Major axis length in arcmin
-    float          minorAxis;      ///< Minor axis length in arcmin
-    float          posang;         ///< Position angle of the major axis, in degrees
+    double         ra;	           ///< Central Right Ascension in degrees
+    double         dec;	           ///< Central Declination in degrees
+    double         raWidth;        ///< Width of detection in RA direction in arcmin
+    double         decWidth;       ///< Width of detection in Dec direction in arcmin
+    double         majorAxis;      ///< Major axis length in arcmin
+    double         minorAxis;      ///< Minor axis length in arcmin
+    double         posang;         ///< Position angle of the major axis, in degrees
     bool           specOK;         ///< Is the spectral dimension valid?
     std::string    specUnits;      ///< Units of the spectral dimension
     std::string    specType;       ///< WCS ctype code for the spectral dimension
@@ -286,16 +286,16 @@ namespace duchamp
     std::string    intFluxUnits;   ///< Units of integrated flux
     std::string    lngtype;        ///< Type of longitude axis (RA/GLON)
     std::string    lattype;        ///< Type of latitude axis (DEC/GLAT)
-    float          vel;	           ///< Central velocity (from zCentre)
-    float          velWidth;       ///< Full velocity width
-    float          velMin;         ///< Minimum velocity
-    float          velMax;         ///< Maximum velocity
-    float          v20min;         ///< Minimum velocity at 20% of peak flux
-    float          v20max;         ///< Maximum velocity at 20% of peak flux
-    float          w20;            ///< Velocity width at 20% of peak flux  
-    float          v50min;         ///< Minimum velocity at 50% of peak flux
-    float          v50max;         ///< Maximum velocity at 50% of peak flux
-    float          w50;            ///< Velocity width at 50% of peak flux  
+    double         vel;	           ///< Central velocity (from zCentre)
+    double         velWidth;       ///< Full velocity width
+    double         velMin;         ///< Minimum velocity
+    double         velMax;         ///< Maximum velocity
+    double         v20min;         ///< Minimum velocity at 20% of peak flux
+    double         v20max;         ///< Maximum velocity at 20% of peak flux
+    double         w20;            ///< Velocity width at 20% of peak flux  
+    double         v50min;         ///< Minimum velocity at 50% of peak flux
+    double         v50max;         ///< Maximum velocity at 50% of peak flux
+    double         w50;            ///< Velocity width at 50% of peak flux  
     /// @brief  The next six are the precision of values printed in the headers of the spectral plots
     ///	@name 
     /// @{ 
