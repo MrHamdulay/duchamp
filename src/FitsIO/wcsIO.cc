@@ -244,6 +244,13 @@ namespace duchamp
 	if(par.getSpectralType()!=""){ // User wants to convert the spectral type
 
 	  std::string desiredType = par.getSpectralType();
+	  
+	  status = spctype((char *)desiredType.c_str(),stype,scode,sname,units,&ptype,&xtype,&restreq,&err);
+	  if(status){
+	    DUCHAMPERROR("Cube Reader", "Spectral type " << desiredType << " is not a valid spectral type. No translation done.");
+	  }
+	  else{
+
 	  if(desiredType.size()<4){
 	    DUCHAMPERROR("Cube Reader", "Spectral Type " << desiredType << " requested, but this is too short. No translation done");
 	  }
@@ -253,13 +260,6 @@ namespace duchamp
 	      else while (desiredType.size()<8) desiredType+="?";
 	    }
 	  }
-	  
-	  status = spctype((char *)desiredType.c_str(),stype,scode,sname,units,&ptype,&xtype,&restreq,&err);
-	  if(status){
-	    DUCHAMPERROR("Cube Reader", "Spectral type " << desiredType << " is not a valid spectral type. No translation done.");
-	  }
-	  else{
-
 	    // 	  std::cerr << "User requested type " << par.getSpectralType() << " which we interpret as " << desiredType << "\n";
 	    if(par.getRestFrequency()>0.){
 	      // 	    std::cerr << "Changing rest frequency from " << localwcs->restfrq << " to " << par.getRestFrequency() <<"\n";
@@ -271,6 +271,7 @@ namespace duchamp
 			  << "\" to type \"" << desiredType << " with code=" << status << ": " << wcs_errmsg[status]);
 	    }
 	    else if(par.getRestFrequency()>0.) par.setFlagRestFrequencyUsed(true);
+
 
 	  }
 

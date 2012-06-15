@@ -189,7 +189,7 @@ namespace duchamp
     this->spectralType      = "";
     this->restFrequency     = -1.;
     this->restFrequencyUsed = false;
-    this->spectralUnits     = "km/s";
+    this->spectralUnits     = "";
     this->pixelCentre       = "centroid";
     this->sortingParam      = "vel";
     this->borders           = true;
@@ -664,7 +664,7 @@ namespace duchamp
 	if(arg=="spectralmethod")  this->spectralMethod=makelower(readSval(ss));
 	if(arg=="spectraltype")    this->spectralType = readSval(ss);
 	if(arg=="restfrequency")   this->restFrequency = readFval(ss);
-	if(arg=="spectralunits")   this->spectralUnits = makelower(readSval(ss));
+	if(arg=="spectralunits")   this->spectralUnits = readSval(ss);
 	if(arg=="pixelcentre")     this->pixelCentre = makelower(readSval(ss));
 	if(arg=="sortingparam")    this->sortingParam = makelower(readSval(ss));
 	if(arg=="drawborders")     this->borders = readFlag(ss); 

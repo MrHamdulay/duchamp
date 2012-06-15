@@ -95,7 +95,7 @@ namespace duchamp
     std::string  getIAUName(double ra, double dec);
 
     /// @brief Correct the units for the spectral axis 
-    void    fixUnits(Param &par);
+    void    fixSpectralUnits(std::string units);
     
     /// @brief Define the units for integrated flux 
     void    setIntFluxUnits();

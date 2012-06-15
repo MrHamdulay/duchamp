@@ -202,7 +202,7 @@ namespace duchamp
       return getIAUNameGAL(ra, dec);
   }
 
-  void FitsHeader::fixUnits(Param &par)
+  void FitsHeader::fixSpectralUnits(std::string units)
   {
     ///  Put the units for the FITS header into some sort of standard form.
     /// 
@@ -220,44 +220,36 @@ namespace duchamp
     ///  \param par The parameter set telling us what the desired
     ///             spectral units are.
 
-    // define spectral units from the param set
-    this->spectralUnits = par.getSpectralUnits();
+
     double sc=1.;
     double of=0.;
     double po=1.;
-    //   if((this->wcsIsGood) && (this->naxis>2)){
-    if(this->wcsIsGood){
-      int status = wcsunits( this->wcs->cunit[this->wcs->spec], 
-			     (char *)this->spectralUnits.c_str(), 
-			     &sc, &of, &po);
-      if(status > 0){
-	std::stringstream errmsg;
-	errmsg << "WCSUNITS Error, Code = " << status
-	       << ": " << wcsunits_errmsg[status] << "\n";
-	if(status == 10) 
-	  errmsg << "Tried to get conversion from \"" 
-		 << this->wcs->cunit[this->wcs->spec] << "\" to \"" 
-		 << this->spectralUnits.c_str() << "\".\n";
-	this->spectralUnits = this->wcs->cunit[this->wcs->spec];
-	if(this->spectralUnits==""){
-	  errmsg << "Spectral units not specified. "
-		 << "For data presentation, we will use dummy units of \"SPC\"."
-		 << "\n"
-		 << "Please report this occurence -- it should not happen now! "
-		 << "In the meantime, you may want to set the CUNIT"
-		 << this->wcs->spec + 1 <<" keyword to make this work.\n";
-	  this->spectralUnits = "SPC";
+  
+    this->spectralUnits = this->wcs->cunit[this->wcs->spec];
+
+    if(units != ""){
+
+      if(this->wcsIsGood){
+ 
+	int status = wcsunits( this->wcs->cunit[this->wcs->spec], units.c_str(), &sc, &of, &po);
+
+	if(status > 0){
+	  DUCHAMPERROR("fixSpectralUnits","Conversion of spectral units from '" << this->wcs->cunit[this->wcs->spec] << "' to '" << units 
+		       << "' failed, wcslib code = " << status << ": " << wcsunits_errmsg[status]);
+	  if(this->spectralUnits==""){
+	    DUCHAMPERROR("fixSpectralUnits", "Spectral units not specified. For data presentation, we will use dummy units of \"SPC\".\n"
+			 << "Please report this occurence -- it should not happen! In the meantime, you may want to set the CUNIT"
+			 << this->wcs->spec + 1 <<" keyword to make this work.");
+	    this->spectralUnits = "SPC";
+	  }
 	}
-	DUCHAMPERROR("fixUnits", errmsg.str());
+	else this->spectralUnits = units;
       }
-      // else{
-      // 	std::cerr << "Converted " << this->wcs->cunit[this->wcs->spec] << " to " << this->spectralUnits << " and got offset="<<of << ", scale="<<sc <<", and power="<<po <<"\n";
-      // }
     }
     this->scale = sc;
     this->offset= of;
     this->power = po;
-
+    
     this->setIntFluxUnits();
 
   }
