@@ -80,6 +80,7 @@ namespace duchamp
     this->minorAxis = 0.;
     this->posang = 0.;
     this->specUnits = "";
+    this->specType = "";
     this->fluxUnits = "";
     this->intFluxUnits = "";
     this->lngtype = "RA";
@@ -154,6 +155,7 @@ namespace duchamp
     this->minorAxis    = d.minorAxis;
     this->posang       = d.posang;
     this->specUnits    = d.specUnits;
+    this->specType     = d.specType;
     this->fluxUnits    = d.fluxUnits;
     this->intFluxUnits = d.intFluxUnits;
     this->lngtype      = d.lngtype;
@@ -459,6 +461,7 @@ namespace duchamp
 	this->lngtype = head.WCS().lngtyp;
 	this->lattype = head.WCS().lattyp;
 	this->specUnits = head.getSpectralUnits();
+	this->specType  = head.getSpectralType();
 	this->fluxUnits = head.getFluxUnits();
 	// if fluxUnits are eg. Jy/beam, make intFluxUnits = Jy km/s
 	this->intFluxUnits = head.getIntFluxUnits();

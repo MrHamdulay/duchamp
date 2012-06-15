@@ -344,7 +344,7 @@ namespace duchamp
 	ss << std::setprecision(this->velPrec);
 	ss << ", W\\d50\\u="    << this->w50      << " "   << this->specUnits;
 	ss << ", W\\d20\\u="    << this->w20      << " "   << this->specUnits;
-	ss << ", W\\dVel\\u="   << this->velWidth << " "   << this->specUnits;
+	ss << ", W\\d"<<this->specType<<"\\u="   << this->velWidth << " "   << this->specUnits;
       }
       output = ss.str();
     }

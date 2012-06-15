@@ -82,6 +82,7 @@ namespace duchamp
     this->naxis         = h.naxis;
     this->flag2D        = h.flag2D;
     this->spectralUnits = h.spectralUnits;
+    this->spectralType  = h.spectralType;
     this->spectralDescription = h.spectralDescription;
     this->originalFluxUnits = h.originalFluxUnits;
     this->fluxUnits     = h.fluxUnits;

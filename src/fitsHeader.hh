@@ -137,6 +137,8 @@ namespace duchamp
     void    setNumAxes(int i){wcs->naxis=i;};
     std::string  getSpectralUnits(){return spectralUnits;};
     void    setSpectralUnits(std::string s){spectralUnits=s;};
+    std::string  getSpectralType(){return spectralType;};
+    void    setSpectralType(std::string s){spectralType=s;};
     std::string  getSpectralDescription(){return spectralDescription;};
     void    setSpectralDescription(std::string s){spectralDescription=s;};
     std::string  getOrigFluxUnits(){return originalFluxUnits;};
@@ -170,6 +172,7 @@ namespace duchamp
     int            naxis;               ///< How many axes are in the header?
     bool           flag2D;              ///< Is the image only a 2D one (leaving out redundant dimensions of size 1)?
     std::string    spectralUnits;       ///< The units of the spectral dimension
+    std::string    spectralType;        ///< The spectral type - first 4 letters of the WCS ctype code. Used for the results output.
     std::string    spectralDescription; ///< The description of the spectral dimension (Frequency, Velocity, ...)
     std::string    originalFluxUnits;   ///< The units of pixel flux in the original image
     std::string    fluxUnits;           ///< The units of pixel flux as used (either from image or from parameter set)

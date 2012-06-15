@@ -361,8 +361,12 @@ namespace duchamp
 	    if(head.WCS().spec < 0)  // if it's not a spectral axis
 	      newset[VEL].setName( head.WCS().ctype[2] );
 // 	    else if(head.WCS().restfrq == 0) // using frequency, not velocity
-	    else if(head.getSpectralDescription()==duchamp::duchampSpectralDescription[FREQUENCY]) // using frequency, not velocity
-	      newset[VEL].setName("FREQ");
+// 	    else if(head.getSpectralDescription()==duchamp::duchampSpectralDescription[FREQUENCY]) // using frequency, not velocity
+// 	      newset[VEL].setName("FREQ");
+	    else 
+	      newset[VEL].setName(head.getSpectralType());
+	    tempwidth = newset[VEL].getName().size() + 1;
+	    for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
 	    if(head.getSpectralUnits().size()>0)
 	      newset[VEL].setUnits("[" + head.getSpectralUnits() + "]");
 	    tempwidth = newset[VEL].getUnits().size() + 1;
@@ -438,9 +442,11 @@ namespace duchamp
 	  if(head.canUseThirdAxis()){
 	    if(head.WCS().spec < 0) // if it's not a spectral axis
 	      newset[WVEL].setName( std::string("w_") + head.WCS().ctype[2] );
-// 	    else if(head.WCS().restfrq == 0) // using frequency, not velocity
-	    else if(head.getSpectralDescription()==duchamp::duchampSpectralDescription[FREQUENCY]) // using frequency, not velocity
-	      newset[WVEL].setName("w_FREQ");
+// // 	    else if(head.WCS().restfrq == 0) // using frequency, not velocity
+// 	    else if(head.getSpectralDescription()==duchamp::duchampSpectralDescription[FREQUENCY]) // using frequency, not velocity
+// 	      newset[WVEL].setName("w_FREQ");
+	    else
+	      newset[WVEL].setName(std::string("w_")+head.getSpectralType());
 	    if(head.getSpectralUnits().size()>0)
 	      newset[WVEL].setUnits("[" + head.getSpectralUnits() + "]");
 	    tempwidth = newset[WVEL].getUnits().size() + 1;

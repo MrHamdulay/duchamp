@@ -281,6 +281,7 @@ namespace duchamp
     float          posang;         ///< Position angle of the major axis, in degrees
     bool           specOK;         ///< Is the spectral dimension valid?
     std::string    specUnits;      ///< Units of the spectral dimension
+    std::string    specType;       ///< WCS ctype code for the spectral dimension
     std::string    fluxUnits;      ///< Units of flux
     std::string    intFluxUnits;   ///< Units of integrated flux
     std::string    lngtype;        ///< Type of longitude axis (RA/GLON)
