@@ -186,6 +186,9 @@ namespace duchamp
     this->flagTwoStageMerging = true;
     // Input-Output related
     this->spectralMethod    = "peak";
+    this->spectralType      = "";
+    this->restFrequency     = -1.;
+    this->restFrequencyUsed = false;
     this->spectralUnits     = "km/s";
     this->pixelCentre       = "centroid";
     this->sortingParam      = "vel";
@@ -308,6 +311,9 @@ namespace duchamp
     this->flagRejectBeforeMerge = p.flagRejectBeforeMerge;
     this->flagTwoStageMerging = p.flagTwoStageMerging;
     this->spectralMethod    = p.spectralMethod;
+    this->spectralType      = p.spectralType;
+    this->restFrequency     = p.restFrequency;
+    this->restFrequencyUsed = p.restFrequencyUsed;
     this->spectralUnits     = p.spectralUnits;
     this->pixelCentre       = p.pixelCentre;
     this->sortingParam      = p.sortingParam;
@@ -656,6 +662,8 @@ namespace duchamp
 	if(arg=="flagtwostagemerging") this->flagTwoStageMerging = readFlag(ss); 
 
 	if(arg=="spectralmethod")  this->spectralMethod=makelower(readSval(ss));
+	if(arg=="spectraltype")    this->spectralType = readSval(ss);
+	if(arg=="restfrequency")   this->restFrequency = readFval(ss);
 	if(arg=="spectralunits")   this->spectralUnits = makelower(readSval(ss));
 	if(arg=="pixelcentre")     this->pixelCentre = makelower(readSval(ss));
 	if(arg=="sortingparam")    this->sortingParam = makelower(readSval(ss));
@@ -864,6 +872,9 @@ namespace duchamp
       recordParam(theStream, "[imageFile]", "Image to be analysed", par.getImageFile()<<par.getSubsection());
     else 
       recordParam(theStream, "[imageFile]", "Image to be analysed", par.getImageFile());
+    if(par.getFlagRestFrequencyUsed()){
+      recordParam(theStream, "[restFrequency]","Rest frequency as used", par.getRestFrequency());
+    }
     if(par.getFlagReconExists() && par.getFlagATrous()){
       recordParam(theStream, "[reconExists]", "Reconstructed array exists?", stringize(par.getFlagReconExists()));
       recordParam(theStream, "[reconFile]", "FITS file containing reconstruction", par.getReconFile());
@@ -1076,6 +1087,9 @@ namespace duchamp
 	vopars.push_back(VOParam("beamFWHM","","float",this->fwhmBeam,0,""));
       else
 	vopars.push_back(VOParam("beamArea","","float",this->areaBeam,0,""));
+    }
+    if(this->restFrequencyUsed){
+      vopars.push_back(VOParam("restFrequency","em.freq","float",this->restFrequency,0,"Hz"));
     }
 
     return vopars;

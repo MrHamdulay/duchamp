@@ -236,13 +236,50 @@ namespace duchamp
 // 	  this->spectralDescription = wcs->ctype[2];
 
 // 	}
-	  
+
 	char stype[5],scode[5],sname[22],units[8],ptype,xtype;
 	int restreq;
 	struct wcserr *err;
-	spctype(localwcs->ctype[localwcs->spec],stype,scode,sname,units,&ptype,&xtype,&restreq,&err);
-	std::cerr << localwcs->ctype[localwcs->spec] << " --> " << stype << "|" << scode << "|" << sname << "|"
-		  << units << "|" << ptype << "|" << xtype << "|" << restreq << "\n";
+
+	if(par.getSpectralType()!=""){ // User wants to convert the spectral type
+
+	  std::string desiredType = par.getSpectralType();
+	  if(desiredType.size()<4){
+	    DUCHAMPERROR("Cube Reader", "Spectral Type " << desiredType << " requested, but this is too short. No translation done");
+	  }
+	  else{
+	    if(desiredType.size()<8){
+	      if(desiredType.size()==4) desiredType+="-???";
+	      else while (desiredType.size()<8) desiredType+="?";
+	    }
+	  }
+	  
+	  status = spctype((char *)desiredType.c_str(),stype,scode,sname,units,&ptype,&xtype,&restreq,&err);
+	  if(status){
+	    DUCHAMPERROR("Cube Reader", "Spectral type " << desiredType << " is not a valid spectral type. No translation done.");
+	  }
+	  else{
+
+	    // 	  std::cerr << "User requested type " << par.getSpectralType() << " which we interpret as " << desiredType << "\n";
+	    if(par.getRestFrequency()>0.){
+	      // 	    std::cerr << "Changing rest frequency from " << localwcs->restfrq << " to " << par.getRestFrequency() <<"\n";
+	      localwcs->restfrq = par.getRestFrequency();
+	    }
+	    status = wcssptr(localwcs, &(localwcs->spec), (char *)desiredType.c_str());
+	    if(status){
+	      DUCHAMPWARN("Cube Reader","WCSSPTR failed when converting from type \"" << localwcs->ctype[localwcs->spec] 
+			  << "\" to type \"" << desiredType << " with code=" << status << ": " << wcs_errmsg[status]);
+	    }
+	    else if(par.getRestFrequency()>0.) par.setFlagRestFrequencyUsed(true);
+
+	  }
+
+	}
+
+	  
+	status = spctype(localwcs->ctype[localwcs->spec],stype,scode,sname,units,&ptype,&xtype,&restreq,&err);
+// 	std::cerr << localwcs->ctype[localwcs->spec] << " --> " << stype << "|" << scode << "|" << sname << "|"
+// 		  << units << "|" << ptype << "|" << xtype << "|" << restreq << "\n";
 
 	this->spectralType  = stype;
 	this->spectralDescription = sname;

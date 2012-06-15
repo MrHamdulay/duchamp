@@ -380,6 +380,12 @@ namespace duchamp
     //
     std::string getSpectralMethod(){return spectralMethod;};
     void   setSpectralMethod(std::string s){spectralMethod=s;};
+    std::string getSpectralType(){return spectralType;};
+    void   setSpectralType(std::string s){spectralType=s;};
+    float  getRestFrequency(){return restFrequency;};
+    void   setRestFrequency(float f){restFrequency=f;};
+    bool    getFlagRestFrequencyUsed(){return restFrequencyUsed;};
+    void    setFlagRestFrequencyUsed(bool b){restFrequencyUsed=b;};
     std::string getSpectralUnits(){return spectralUnits;};
     void   setSpectralUnits(std::string s){spectralUnits=s;};
     std::string getPixelCentre(){return pixelCentre;};
@@ -528,12 +534,15 @@ namespace duchamp
 
     // Input-Output related
     std::string spectralMethod; ///< A string indicating choice of spectral plotting method: choices are "peak" (default) or "sum"
-    std::string spectralUnits;   ///< A string indicating what units the spectral axis should be quoted in.
-    std::string pixelCentre;///< A string indicating which type of centre to give the results in: "average", "centroid", or "peak"(flux).
-    std::string sortingParam; ///< A string indicating the parameter to sort the detection list on.
-    bool   borders;         ///< Whether to draw a border around the individual pixels of a detection in the spectral display
-    bool   blankEdge;       ///< Whether to draw a border around the BLANK pixel region in the moment maps and cutout images
-    bool   verbose;         ///< Whether to use maximum verbosity -- use progress indicators in the reconstruction & merging steps.
+    std::string spectralType;   ///< The requested CTYPE that the spectral axis be converted to
+    float  restFrequency;       ///< The rest frequency that should be used when converting - overrides that in the FITS file
+    bool   restFrequencyUsed;   ///< A flag indicating whether the spectral type has been converted from that in the FITS file
+    std::string spectralUnits;  ///< A string indicating what units the spectral axis should be quoted in.
+    std::string pixelCentre;    ///< A string indicating which type of centre to give the results in: "average", "centroid", or "peak"(flux).
+    std::string sortingParam;   ///< A string indicating the parameter to sort the detection list on.
+    bool   borders;             ///< Whether to draw a border around the individual pixels of a detection in the spectral display
+    bool   blankEdge;           ///< Whether to draw a border around the BLANK pixel region in the moment maps and cutout images
+    bool   verbose;             ///< Whether to use maximum verbosity -- use progress indicators in the reconstruction & merging steps.
 
   };
 
