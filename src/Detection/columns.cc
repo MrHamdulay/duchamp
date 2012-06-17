@@ -294,6 +294,7 @@ namespace duchamp
 	std::string tempstr;
 	int tempwidth;
 	float val,minval;
+	double valD,minvalD;
 
 	// Obj#
 	tempwidth = int( log10(obj->getID()) + 1) + 1;
@@ -344,15 +345,15 @@ namespace duchamp
 	  // RA decimal degrees -- assign correct title. Check width but should be OK
 	  tempstr = head.WCS().lngtyp;
 	  newset[RAJD].setName(tempstr);
-	  val = obj->getRA();
-	  tempwidth = int( log10(fabs(val)) + 1) + newset[RAJD].getPrecision() + 2;
+	  valD = obj->getRA();
+	  tempwidth = int( log10(fabs(valD)) + 1) + newset[RAJD].getPrecision() + 2;
 	  for(int i=newset[RAJD].getWidth();i<tempwidth;i++) newset[RAJD].widen();
       
 	  // Dec decimal degrees -- assign correct title. Check width but should be OK
 	  tempstr = head.WCS().lattyp;
 	  newset[DECJD].setName(tempstr);
-	  val = obj->getDec();
-	  tempwidth = int( log10(fabs(val)) + 1) + newset[DECJD].getPrecision() + 2;
+	  valD = obj->getDec();
+	  tempwidth = int( log10(fabs(valD)) + 1) + newset[DECJD].getPrecision() + 2;
 	  for(int i=newset[DECJD].getWidth();i<tempwidth;i++) newset[DECJD].widen();
 
 	  // Vel -- check width, title and units.
@@ -372,38 +373,38 @@ namespace duchamp
 	    tempwidth = newset[VEL].getUnits().size() + 1;
 	    for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
 	
-	    val = obj->getVel();
-	    if((fabs(val) < 1.)&&(val>0.)){
-	      minval = pow(10, -1. * (newset[VEL].getPrecision()+1)); 
-	      if(val < minval) newset[VEL].upPrec();
+	    valD = obj->getVel();
+	    if((fabs(valD) < 1.)&&(valD>0.)){
+	      minvalD = pow(10, -1. * (newset[VEL].getPrecision()+1)); 
+	      if(valD < minvalD) newset[VEL].upPrec();
 	    }
-	    tempwidth = int(log10(fabs(val)) + 1) + newset[VEL].getPrecision() + 2;
-	    if(val<0) tempwidth++;
+	    tempwidth = int(log10(fabs(valD)) + 1) + newset[VEL].getPrecision() + 2;
+	    if(valD<0) tempwidth++;
 	    for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
 	  }
 
 	  // w_RA -- check width & title. leave units for the moment.
 	  tempwidth = newset[RA].getUnits().size() + 1;
 	  for(int i=newset[RA].getWidth();i<tempwidth;i++) newset[RA].widen();
-	  val = obj->getRAWidth();
-	  if((fabs(val) < 1.)&&(val>0.)){
-	    minval = pow(10, -1. * (newset[WRA].getPrecision()+1)); 
-	    if(val < minval) newset[WRA].upPrec();
+	  valD = obj->getRAWidth();
+	  if((fabs(valD) < 1.)&&(valD>0.)){
+	    minvalD = pow(10, -1. * (newset[WRA].getPrecision()+1)); 
+	    if(valD < minvalD) newset[WRA].upPrec();
 	  }
-	  tempwidth = int( log10(fabs(val)) + 1) + newset[WRA].getPrecision() + 2;
-	  if(val<0) tempwidth++;
+	  tempwidth = int( log10(fabs(valD)) + 1) + newset[WRA].getPrecision() + 2;
+	  if(valD<0) tempwidth++;
 	  for(int i=newset[WRA].getWidth();i<tempwidth;i++) newset[WRA].widen();
 
 	  // w_DEC -- check width & title. leave units for the moment.
 	  tempwidth = newset[DEC].getUnits().size() + 1;
 	  for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
-	  val = obj->getDecWidth();
-	  if((fabs(val) < 1.)&&(val>0.)){
-	    minval = pow(10, -1. * (newset[WDEC].getPrecision()+1)); 
-	    if(val < minval) newset[WDEC].upPrec();
+	  valD = obj->getDecWidth();
+	  if((fabs(valD) < 1.)&&(valD>0.)){
+	    minvalD = pow(10, -1. * (newset[WDEC].getPrecision()+1)); 
+	    if(valD < minvalD) newset[WDEC].upPrec();
 	  }
-	  tempwidth = int( log10(fabs(val)) + 1) + newset[WDEC].getPrecision() + 2;
-	  if(val<0) tempwidth++;
+	  tempwidth = int( log10(fabs(valD)) + 1) + newset[WDEC].getPrecision() + 2;
+	  if(valD<0) tempwidth++;
 	  for(int i=newset[WDEC].getWidth();i<tempwidth;i++) newset[WDEC].widen();
 
 	  // w_50 -- check width, title and units.
@@ -412,13 +413,13 @@ namespace duchamp
 	      newset[W50].setUnits("[" + head.getSpectralUnits() + "]");
 	    tempwidth = newset[W50].getUnits().size() + 1;
 	    for(int i=newset[W50].getWidth();i<tempwidth;i++) newset[W50].widen();
-	    val = obj->getW50();
-	    if((fabs(val) < 1.)&&(val>0.)){
-	      minval = pow(10, -1. * (newset[W50].getPrecision()+1)); 
-	      if(val < minval) newset[W50].upPrec();
+	    valD = obj->getW50();
+	    if((fabs(valD) < 1.)&&(valD>0.)){
+	      minvalD = pow(10, -1. * (newset[W50].getPrecision()+1)); 
+	      if(valD < minvalD) newset[W50].upPrec();
 	    }
-	    tempwidth = int( log10(fabs(val)) + 1) + newset[W50].getPrecision() + 2;
-	    if(val<0) tempwidth++;
+	    tempwidth = int( log10(fabs(valD)) + 1) + newset[W50].getPrecision() + 2;
+	    if(valD<0) tempwidth++;
 	    for(int i=newset[W50].getWidth();i<tempwidth;i++) newset[W50].widen();
 	  }
 
@@ -428,13 +429,13 @@ namespace duchamp
 	      newset[W20].setUnits("[" + head.getSpectralUnits() + "]");
 	    tempwidth = newset[W20].getUnits().size() + 1;
 	    for(int i=newset[W20].getWidth();i<tempwidth;i++)newset[W20].widen();
-	    val = obj->getW20();
-	    if((fabs(val) < 1.)&&(val>0.)){
-	      minval = pow(10, -1. * (newset[W20].getPrecision()+1)); 
-	      if(val < minval) newset[W20].upPrec();
+	    valD = obj->getW20();
+	    if((fabs(valD) < 1.)&&(valD>0.)){
+	      minvalD = pow(10, -1. * (newset[W20].getPrecision()+1)); 
+	      if(valD < minvalD) newset[W20].upPrec();
 	    }
-	    tempwidth = int( log10(fabs(val)) + 1) + newset[W20].getPrecision() + 2;
-	    if(val<0) tempwidth++;
+	    tempwidth = int( log10(fabs(valD)) + 1) + newset[W20].getPrecision() + 2;
+	    if(valD<0) tempwidth++;
 	    for(int i=newset[W20].getWidth();i<tempwidth;i++) newset[W20].widen();
 	  }
 
@@ -453,13 +454,13 @@ namespace duchamp
 	    for(int i=newset[WVEL].getWidth();i<tempwidth;i++)newset[WVEL].widen();
 	    tempwidth = newset[WVEL].getName().size() + 1;
 	    for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
-	    val = obj->getVelWidth();
-	    if((fabs(val) < 1.)&&(val>0.)){
-	      minval = pow(10, -1. * (newset[WVEL].getPrecision()+1)); 
-	      if(val < minval) newset[WVEL].upPrec();
+	    valD = obj->getVelWidth();
+	    if((fabs(valD) < 1.)&&(valD>0.)){
+	      minvalD = pow(10, -1. * (newset[WVEL].getPrecision()+1)); 
+	      if(valD < minvalD) newset[WVEL].upPrec();
 	    }
-	    tempwidth = int( log10(fabs(val)) + 1) + newset[WVEL].getPrecision() + 2;
-	    if(val<0) tempwidth++;
+	    tempwidth = int( log10(fabs(valD)) + 1) + newset[WVEL].getPrecision() + 2;
+	    if(valD<0) tempwidth++;
 	    for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
 	  }
 
@@ -468,14 +469,14 @@ namespace duchamp
 	    newset[FINT].setUnits("[" + head.getIntFluxUnits() + "]");
 	  tempwidth = newset[FINT].getUnits().size() + 1;
 	  for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
-	  val = obj->getIntegFlux();
-	  if((fabs(val) < 1.)// &&(val>0.)
+	  valD = obj->getIntegFlux();
+	  if((fabs(valD) < 1.)// &&(valD>0.)
 	     ){
-	    int minprec = int(fabs(log10(fabs(val))))+2;
+	    int minprec = int(fabs(log10(fabs(valD))))+2;
 	    for(int i=newset[FINT].getPrecision();i<minprec;i++) newset[FINT].upPrec();
 	  }
-	  tempwidth = int( log10(fabs(val)) + 1) + newset[FINT].getPrecision() + 2;
-	  if(val<0) tempwidth++;
+	  tempwidth = int( log10(fabs(valD)) + 1) + newset[FINT].getPrecision() + 2;
+	  if(valD<0) tempwidth++;
 	  for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
       
 	}
