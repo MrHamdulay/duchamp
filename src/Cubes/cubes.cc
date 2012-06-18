@@ -1577,6 +1577,24 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
+  bool Cube::objNextToMW(Detection obj)
+  {
+    ///   @details A function to test whether the object obj lies
+    ///   adjacent to the MW range or straddles it (conceivably, you
+    ///   could have disconnected channels in your object that don't
+    ///   touch the MW range, but lie either side - in this case we
+    ///   want the flag). If flagMW=false we will always return false.
+    /// 
+    ///   \param obj The Detection under consideration.
+
+    bool isNext = this->par.getFlagMW() &&
+      ((obj.getZmin() <= this->par.getMaxMW()+1) && (obj.getZmax() >= this->par.getMinMW()-1));
+    
+    return isNext;
+
+  }
+  //--------------------------------------------------------------------
+
   void Cube::setObjectFlags()
   {
     /// @details
@@ -1599,6 +1617,9 @@ namespace duchamp
 
       if( this->objAtSpectralEdge(*obj) && (this->axisDim[2] > 2)) 
 	obj->addToFlagText("S");
+
+      if( this->objNextToMW(*obj) )
+	obj->addToFlagText("M");
 
       if(obj->getFlagText()=="") obj->addToFlagText("-");
 

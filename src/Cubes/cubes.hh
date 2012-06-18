@@ -358,6 +358,9 @@ namespace duchamp
     /// @brief Is the object at an end of the spectrum? 
     bool        objAtSpectralEdge(Detection obj);
 
+    /// @brief Is the object next to the MW range?
+    bool        objNextToMW(Detection obj);
+
     /// @brief Set warning flags for the detections. 
     void        setObjectFlags();
 
