@@ -147,7 +147,6 @@ std::string decToDMS(const double dec, const std::string type, int decPrecision)
   min = int(minDint);
 
   if(fabs(sec-minPerHour)<pow(10,-precision)){ // to prevent rounding errors stuffing things up
-    std::cerr << "!\n";
     sec=0.;
     min++;
     if(min==60){
