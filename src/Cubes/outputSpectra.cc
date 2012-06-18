@@ -49,7 +49,7 @@ namespace duchamp
 {
 
   void drawSpectralRange(Plot::SpectralPlot &plot, Detection &obj, FitsHeader &head);
-  void getSmallVelRange(Detection &obj, FitsHeader &head, float *minvel, float *maxvel);
+  void getSmallVelRange(Detection &obj, FitsHeader &head, double *minvel, double *maxvel);
   void getSmallZRange(Detection &obj, float *minz, float *maxz);
 
   std::string getIndivPlotName(std::string baseName, int objNum, int maxNumObj)
@@ -362,7 +362,7 @@ namespace duchamp
   }
 
   void getSmallVelRange(Detection &obj, FitsHeader &head, 
-			float *minvel, float *maxvel)
+			double *minvel, double *maxvel)
   {
     ///  @details
     ///  Routine to calculate the velocity range for the zoomed-in region.
