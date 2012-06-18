@@ -156,32 +156,31 @@ namespace duchamp
     /// A Function that takes a list of Detections and sorts them in 
     ///  order of increasing value of the parameter given.
     ///
-    /// Every member of the vector needs to have WCS defined, (and if
-    /// so, then parameter in question is assumed to be defined for
-    /// all), otherwise no sorting is done. The exception is the
-    /// z-value, in which case sorting is always done.
-    /// 
-    /// We use the std::stable_sort function, so that the order of
-    /// objects with the same parameter value is preserved.
+    /// For parameters that need the WCS (iflux, vel, ra, dec, w50), a
+    /// check is made that the WCS is valid, using
+    /// Detection::isWCS(). If it is not, the list is returned
+    /// unsorted.
     /// 
     /// \param inputList List of Detections to be sorted.
     /// \param parameter The name of the parameter to be sorted
-    ///        on. Options are "zvalue", "vel", "ra", "dec", "iflux",
-    ///        "pflux".
+    ///        on. Options are listed in the param.hh file
     /// \return The inputList is returned with the elements sorted,
     ///         unless the WCS is not good for at least one element,
     ///         in which case it is returned unaltered.
 
-    bool OK = false;
+    bool OK = false, reverseSort=(parameter[0]=='-');
+    std::string checkParam;
+    if(reverseSort) checkParam = parameter.substr(1);
+    else checkParam = parameter;
     for(int i=0;i<numSortingParamOptions;i++) 
-      OK = OK || (parameter==sortingParamOptions[i]);
+      OK = OK || (checkParam == sortingParamOptions[i]);
     if(!OK){
       DUCHAMPERROR("SortDetections", "Invalid sorting parameter: " << parameter << " -- Not doing any sorting.");
       return;
     }
 
     bool isGood = true;
-    if(parameter!="zvalue" && parameter!="pflux" && parameter!="snr" && parameter!="xvalue" && parameter!="yvalue"){
+    if(checkParam!="zvalue" && checkParam!="pflux" && checkParam!="snr" && checkParam!="xvalue" && checkParam!="yvalue"){
       for(size_t i=0;i<inputList.size();i++) isGood = isGood && inputList[i].isWCS();
     }
 
@@ -190,34 +189,36 @@ namespace duchamp
       std::vector<Detection> sorted;
       std::vector<Detection>::iterator det;
 
-      if(parameter=="xvalue" || parameter=="yvalue" || parameter=="zvalue" || parameter=="iflux" || parameter=="pflux" || parameter=="snr"){
+      if(checkParam=="xvalue" || checkParam=="yvalue" || checkParam=="zvalue" || checkParam=="iflux" || checkParam=="pflux" || checkParam=="snr"){
 
 	std::multimap<float, size_t> complist;
 	std::multimap<float, size_t>::iterator comp;
 	size_t ct=0;
+	float reverse = reverseSort ? -1. : 1.;
 	for (det=inputList.begin();det<inputList.end();det++){
-	  if(parameter=="xvalue")      complist.insert(std::pair<float, size_t>(det->getXcentre(),   ct++));
-	  else if(parameter=="yvalue") complist.insert(std::pair<float, size_t>(det->getYcentre(),   ct++));
-	  else if(parameter=="zvalue") complist.insert(std::pair<float, size_t>(det->getZcentre(),   ct++));
-	  else if(parameter=="iflux")  complist.insert(std::pair<float, size_t>(det->getIntegFlux(), ct++));
-	  else if(parameter=="pflux")  complist.insert(std::pair<float, size_t>(det->getPeakFlux(),  ct++));
-	  else if(parameter=="snr")    complist.insert(std::pair<float, size_t>(det->getPeakSNR(),   ct++));
+	  if(checkParam=="xvalue")      complist.insert(std::pair<float, size_t>(reverse*det->getXcentre(),   ct++));
+	  else if(checkParam=="yvalue") complist.insert(std::pair<float, size_t>(reverse*det->getYcentre(),   ct++));
+	  else if(checkParam=="zvalue") complist.insert(std::pair<float, size_t>(reverse*det->getZcentre(),   ct++));
+	  else if(checkParam=="iflux")  complist.insert(std::pair<float, size_t>(reverse*det->getIntegFlux(), ct++));
+	  else if(checkParam=="pflux")  complist.insert(std::pair<float, size_t>(reverse*det->getPeakFlux(),  ct++));
+	  else if(checkParam=="snr")    complist.insert(std::pair<float, size_t>(reverse*det->getPeakSNR(),   ct++));
 	}
 	
 	for (comp = complist.begin(); comp != complist.end(); comp++) 
 	  sorted.push_back(inputList[comp->second]);
 	
       }
-      else if(parameter=="ra" || parameter=="dec" || parameter=="vel" || parameter=="w50"){
+      else if(checkParam=="ra" || checkParam=="dec" || checkParam=="vel" || checkParam=="w50"){
 
 	std::multimap<double, size_t> complist;
 	std::multimap<double, size_t>::iterator comp;
 	size_t ct=0;
+	double reverse = reverseSort ? -1. : 1.;
 	for (det=inputList.begin();det<inputList.end();det++){
-	  if(parameter=="ra")       complist.insert(std::pair<double, size_t>(det->getRA(),  ct++));
-	  else if(parameter=="dec") complist.insert(std::pair<double, size_t>(det->getDec(), ct++));
-	  else if(parameter=="vel") complist.insert(std::pair<double, size_t>(det->getVel(), ct++));
-	  else if(parameter=="w50") complist.insert(std::pair<double, size_t>(det->getW50(), ct++));
+	  if(checkParam=="ra")       complist.insert(std::pair<double, size_t>(reverse*det->getRA(),  ct++));
+	  else if(checkParam=="dec") complist.insert(std::pair<double, size_t>(reverse*det->getDec(), ct++));
+	  else if(checkParam=="vel") complist.insert(std::pair<double, size_t>(reverse*det->getVel(), ct++));
+	  else if(checkParam=="w50") complist.insert(std::pair<double, size_t>(reverse*det->getW50(), ct++));
 	}
 	
 	for (comp = complist.begin(); comp != complist.end(); comp++) 

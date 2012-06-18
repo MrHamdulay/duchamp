@@ -806,8 +806,9 @@ namespace duchamp
 
     // Make sure sortingParam is an acceptable type -- default is "vel"
     bool OK = false;
+    int loc=(this->sortingParam[0]=='-') ? 1 : 0;
     for(int i=0;i<numSortingParamOptions;i++) 
-      OK = OK || this->sortingParam==sortingParamOptions[i];
+      OK = OK || this->sortingParam.substr(loc)==sortingParamOptions[i];
     if(!OK){
       DUCHAMPWARN("Reading parameters","The requested value of the parameter sortingParam, \"" << this->sortingParam << "\", is invalid. -- changing to \"vel\".");
       this->sortingParam = "vel";
