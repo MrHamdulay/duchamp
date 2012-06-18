@@ -28,6 +28,5 @@ void AnnotationKarma::fileHeader(Param &par)
 {
     stream << "COLOR RED \n";
     stream << "COORD W \n";
-    stream << "#FONT lucidasans-12 \n";
 
 }
