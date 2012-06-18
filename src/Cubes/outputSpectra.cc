@@ -50,7 +50,7 @@ namespace duchamp
 
   void drawSpectralRange(Plot::SpectralPlot &plot, Detection &obj, FitsHeader &head);
   void getSmallVelRange(Detection &obj, FitsHeader &head, double *minvel, double *maxvel);
-  void getSmallZRange(Detection &obj, float *minz, float *maxz);
+  void getSmallZRange(Detection &obj, double *minz, double *maxz);
 
   std::string getIndivPlotName(std::string baseName, int objNum, int maxNumObj)
   {
@@ -284,7 +284,7 @@ namespace duchamp
     /**************************/
     // ZOOM IN SPECTRALLY ON THE DETECTION.
 
-    float minvel,maxvel;
+    double minvel,maxvel;
     if(this->head.isWCS()) getSmallVelRange(this->objectList->at(objNum),this->head,&minvel,&maxvel);
     else getSmallZRange(this->objectList->at(objNum),&minvel,&maxvel);
 
@@ -415,7 +415,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void getSmallZRange(Detection &obj, float *minz, float *maxz)
+  void getSmallZRange(Detection &obj, double *minz, double *maxz)
   {
     ///  @details
     ///  Routine to calculate the pixel range for the zoomed-in spectrum.
