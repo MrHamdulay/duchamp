@@ -29,6 +29,7 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <map>
 #include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>
 #include <duchamp/Detection/detection.hh>
@@ -84,22 +85,22 @@ namespace duchamp
     /// \param inputList List of Detections to be sorted.
     /// \return The inputList is returned with the elements sorted.
 
-    long size = inputList.size();
-    Pair *info = new Pair[size];
-  
-    for(int i=0;i<size;i++) info[i].define(inputList[i].getZcentre(), float(i));
+    std::multimap<float, size_t> complist;
+    std::vector<Detection> sorted;
+    std::multimap<float, size_t>::iterator comp;
+    std::vector<Detection>::iterator det;
+    size_t ct=0;
+    for (det=inputList.begin();det<inputList.end();det++){
+      complist.insert(std::pair<float, size_t>(det->getZcentre(), ct++));
+    }
 
-    std::stable_sort(info,info+size);
-  
-    std::vector <Detection> sorted;
-    for(int i=0;i<size;i++) sorted.push_back( inputList[int(info[i].get2())] );
-
-    delete [] info;
+    for (comp = complist.begin(); comp != complist.end(); comp++) 
+      sorted.push_back(inputList[comp->second]);
 
     inputList.clear();
-    for(int i=0;i<size;i++) inputList.push_back( sorted[i] );
+    for (det=sorted.begin();det<sorted.end();det++) inputList.push_back( *det );
     sorted.clear();
-  
+	  
   }
 
   //======================================================================
@@ -126,22 +127,23 @@ namespace duchamp
 
     if(isGood){
 
-      long size = inputList.size();
-      Pair *info = new Pair[size];
-    
-      for(int i=0;i<size;i++) info[i].define(inputList[i].getVel(), float(i));
+      std::multimap<double, size_t> complist;
+      std::vector<Detection> sorted;
+      std::multimap<double, size_t>::iterator comp;
+      std::vector<Detection>::iterator det;
+      size_t ct=0;
+      for (det=inputList.begin();det<inputList.end();det++){
+	complist.insert(std::pair<double, size_t>(det->getVel(), ct++));
+      }
 
-      std::stable_sort(info, info+size);
-  
-      std::vector <Detection> sorted;
-      for(int i=0;i<size;i++) sorted.push_back( inputList[int(info[i].get2())] );
-
-      delete [] info;
+      for (comp = complist.begin(); comp != complist.end(); comp++) 
+	sorted.push_back(inputList[comp->second]);
 
       inputList.clear();
-      for(int i=0;i<size;i++) inputList.push_back( sorted[i] );
+      for (det=sorted.begin();det<sorted.end();det++) inputList.push_back( *det );
       sorted.clear();
-  
+
+ 
     }
 
   }  
@@ -185,33 +187,48 @@ namespace duchamp
 
     if(isGood){
 
-      long size = inputList.size();
-      Pair *info = new Pair[size];
-    
-      for(int i=0;i<size;i++){
-	if(parameter=="xvalue")	     info[i].define(inputList[i].getXcentre(), float(i));	
-	else if(parameter=="yvalue") info[i].define(inputList[i].getYcentre(), float(i));	
-	else if(parameter=="zvalue") info[i].define(inputList[i].getZcentre(), float(i));	
-	else if(parameter=="ra")     info[i].define(inputList[i].getRA(), float(i));
-	else if(parameter=="dec")    info[i].define(inputList[i].getDec(), float(i));
-	else if(parameter=="vel")    info[i].define(inputList[i].getVel(), float(i));
-	else if(parameter=="w50")    info[i].define(inputList[i].getW50(), float(i));
-	else if(parameter=="iflux")  info[i].define(inputList[i].getIntegFlux(), float(i));
-	else if(parameter=="pflux")  info[i].define(inputList[i].getPeakFlux(), float(i));
-	else if(parameter=="snr")    info[i].define(inputList[i].getPeakSNR(), float(i));
+      std::vector<Detection> sorted;
+      std::vector<Detection>::iterator det;
+
+      if(parameter=="xvalue" || parameter=="yvalue" || parameter=="zvalue" || parameter=="iflux" || parameter=="pflux" || parameter=="snr"){
+
+	std::multimap<float, size_t> complist;
+	std::multimap<float, size_t>::iterator comp;
+	size_t ct=0;
+	for (det=inputList.begin();det<inputList.end();det++){
+	  if(parameter=="xvalue")      complist.insert(std::pair<float, size_t>(det->getXcentre(),   ct++));
+	  else if(parameter=="yvalue") complist.insert(std::pair<float, size_t>(det->getYcentre(),   ct++));
+	  else if(parameter=="zvalue") complist.insert(std::pair<float, size_t>(det->getZcentre(),   ct++));
+	  else if(parameter=="iflux")  complist.insert(std::pair<float, size_t>(det->getIntegFlux(), ct++));
+	  else if(parameter=="pflux")  complist.insert(std::pair<float, size_t>(det->getPeakFlux(),  ct++));
+	  else if(parameter=="snr")    complist.insert(std::pair<float, size_t>(det->getPeakSNR(),   ct++));
+	}
+	
+	for (comp = complist.begin(); comp != complist.end(); comp++) 
+	  sorted.push_back(inputList[comp->second]);
+	
+      }
+      else if(parameter=="ra" || parameter=="dec" || parameter=="vel" || parameter=="w50"){
+
+	std::multimap<double, size_t> complist;
+	std::multimap<double, size_t>::iterator comp;
+	size_t ct=0;
+	for (det=inputList.begin();det<inputList.end();det++){
+	  if(parameter=="ra")       complist.insert(std::pair<double, size_t>(det->getRA(),  ct++));
+	  else if(parameter=="dec") complist.insert(std::pair<double, size_t>(det->getDec(), ct++));
+	  else if(parameter=="vel") complist.insert(std::pair<double, size_t>(det->getVel(), ct++));
+	  else if(parameter=="w50") complist.insert(std::pair<double, size_t>(det->getW50(), ct++));
+	}
+	
+	for (comp = complist.begin(); comp != complist.end(); comp++) 
+	  sorted.push_back(inputList[comp->second]);
+	
       }
 
-      std::stable_sort(info, info+size);
-  
-      std::vector <Detection> sorted;
-      for(int i=0;i<size;i++) sorted.push_back( inputList[int(info[i].get2())] );
-
-      delete [] info;
-
       inputList.clear();
-      for(int i=0;i<size;i++) inputList.push_back( sorted[i] );
+      for (det=sorted.begin();det<sorted.end();det++) inputList.push_back( *det );
       sorted.clear();
-  
+ 
     }
 
   }  
