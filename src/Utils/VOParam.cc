@@ -59,6 +59,7 @@ namespace duchamp {
     this->value = ss.str();
     // this->units = u;
   }
+  template VOParam::VOParam(std::string n, std::string U, std::string d, bool v, int w, std::string u);
   template VOParam::VOParam(std::string n, std::string U, std::string d, int v, int w, std::string u);
   template VOParam::VOParam(std::string n, std::string U, std::string d, unsigned int v, int w, std::string u);
   template VOParam::VOParam(std::string n, std::string U, std::string d, long v, int w, std::string u);

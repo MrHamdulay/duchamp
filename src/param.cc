@@ -1018,10 +1018,10 @@ namespace duchamp
   {
     std::vector<VOParam> vopars;
     vopars.push_back(VOParam("imageFile","meta.file;meta.fits","char",this->imageFile,this->imageFile.size(),""));
-    vopars.push_back(VOParam("flagSubsection","meta.code","char",stringize(this->flagSubsection),stringize(this->flagSubsection).size(),""));
+    vopars.push_back(VOParam("flagSubsection","meta.code","boolean",this->flagSubsection,0,""));
     if(this->flagSubsection)
       vopars.push_back(VOParam("subsection","","char",this->pixelSec.getSection(),this->pixelSec.getSection().size(),""));
-    vopars.push_back(VOParam("flagStatSec","meta.code","char",stringize(this->flagStatSec),stringize(this->flagStatSec).size(),""));
+    vopars.push_back(VOParam("flagStatSec","meta.code","boolean",this->flagStatSec,0,""));
     if(this->flagSubsection)
       vopars.push_back(VOParam("StatSec","","char",this->statSec.getSection(),this->statSec.getSection().size(),""));
     if(this->flagReconExists)
@@ -1032,10 +1032,10 @@ namespace duchamp
       vopars.push_back(VOParam("objectlist","","char",this->objectList,this->objectList.size(),""));
 
     vopars.push_back(VOParam("searchType","meta.note","char",this->searchType,this->searchType.size(),""));
-    vopars.push_back(VOParam("flagNegative","meta.code","char",stringize(this->flagNegative),stringize(this->flagNegative).size(),""));
-    vopars.push_back(VOParam("flagBaseline","meta.code","char",stringize(this->flagBaseline),stringize(this->flagBaseline).size(),""));
-    vopars.push_back(VOParam("flagRobustStats","meta.code","char",stringize(this->flagRobustStats),stringize(this->flagRobustStats).size(),""));
-    vopars.push_back(VOParam("flagFDR","meta.code","char",stringize(this->flagFDR),stringize(this->flagFDR).size(),""));
+    vopars.push_back(VOParam("flagNegative","meta.code","boolean",this->flagNegative,0,""));
+    vopars.push_back(VOParam("flagBaseline","meta.code","boolean",this->flagBaseline,0,""));
+    vopars.push_back(VOParam("flagRobustStats","meta.code","boolean",this->flagRobustStats,0,""));
+    vopars.push_back(VOParam("flagFDR","meta.code","boolean",this->flagFDR,0,""));
     if(this->flagFDR){
       vopars.push_back(VOParam("alphaFDR","stat.param","float",this->alphaFDR,0,""));
       vopars.push_back(VOParam("FDRnumCorChan","stat.param","int",this->FDRnumCorChan,0,""));
@@ -1046,7 +1046,7 @@ namespace duchamp
       else
 	vopars.push_back(VOParam("snrCut","stat.snr;phot;stat.min","float",this->snrCut,0,""));
     }
-    vopars.push_back(VOParam("flagGrowth","meta.code","char",stringize(this->flagGrowth),stringize(this->flagGrowth).size(),""));
+    vopars.push_back(VOParam("flagGrowth","meta.code","boolean",this->flagGrowth,0,""));
     if(this->flagGrowth){
       if(this->flagUserGrowthThreshold)
 	vopars.push_back(VOParam("growthThreshold","phot.flux;stat.min","float",this->growthThreshold,0,""));
@@ -1056,14 +1056,14 @@ namespace duchamp
     vopars.push_back(VOParam("minVoxels","","int",minVoxels,0,""));
     vopars.push_back(VOParam("minPix","","int",minPix,0,""));
     vopars.push_back(VOParam("minChannels","","int",minChannels,0,""));
-    vopars.push_back(VOParam("flagAdjacent","meta.code","char",stringize(this->flagAdjacent),stringize(this->flagAdjacent).size(),""));
+    vopars.push_back(VOParam("flagAdjacent","meta.code","boolean",this->flagAdjacent,0,""));
     if(!this->flagAdjacent)
       vopars.push_back(VOParam("threshSpatial","","float",this->threshSpatial,0,""));
     vopars.push_back(VOParam("threshVelocity","","float",this->threshSpatial,0,""));
-    vopars.push_back(VOParam("flagRejectBeforeMerge","","char",stringize(this->flagRejectBeforeMerge),stringize(this->flagRejectBeforeMerge).size(),""));
-    vopars.push_back(VOParam("flagTwoStageMerging","","char",stringize(this->flagTwoStageMerging),stringize(this->flagTwoStageMerging).size(),""));
+    vopars.push_back(VOParam("flagRejectBeforeMerge","","boolean",this->flagRejectBeforeMerge,0,""));
+    vopars.push_back(VOParam("flagTwoStageMerging","","boolean",this->flagTwoStageMerging,0,""));
     vopars.push_back(VOParam("pixelCentre","","char",this->pixelCentre,this->pixelCentre.size(),""));
-    vopars.push_back(VOParam("flagSmooth","meta.code","char",stringize(this->flagSmooth),stringize(this->flagSmooth).size(),""));
+    vopars.push_back(VOParam("flagSmooth","meta.code","boolean",this->flagSmooth,0,""));
     if(this->flagSmooth){
       vopars.push_back(VOParam("smoothType","","char",this->smoothType,this->smoothType.size(),""));
       if(this->smoothType=="spectral")
@@ -1074,7 +1074,7 @@ namespace duchamp
 	vopars.push_back(VOParam("kernPA","","float",this->kernPA,0,""));
       }
     }
-    vopars.push_back(VOParam("flagATrous","meta.code","char",stringize(this->flagATrous),stringize(this->flagATrous).size(),""));
+    vopars.push_back(VOParam("flagATrous","meta.code","boolean",this->flagATrous,0,""));
     if(this->flagATrous){
       vopars.push_back(VOParam("reconDim","","int",this->reconDim,0,""));
       vopars.push_back(VOParam("scaleMin","","int",this->scaleMin,0,""));
