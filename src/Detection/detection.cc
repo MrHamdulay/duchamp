@@ -458,8 +458,8 @@ namespace duchamp
 	this->haveParams = true;
 
 	this->specOK = head.canUseThirdAxis();
-	this->lngtype = head.WCS().lngtyp;
-	this->lattype = head.WCS().lattyp;
+	this->lngtype = head.lngtype();
+	this->lattype = head.lattype();
 	this->specUnits = head.getSpectralUnits();
 	this->specType  = head.getSpectralType();
 	this->fluxUnits = head.getFluxUnits();

@@ -331,26 +331,26 @@ namespace duchamp
 
 	if(head.isWCS()){  
 	  // RA -- assign correct title. Check width but should be ok by definition
-	  tempstr = head.WCS().lngtyp;
+	  tempstr = head.lngtype();
 	  newset[RA].setName(tempstr);
 	  tempwidth = obj->getRAs().size() + 1;
 	  for(int i=newset[RA].getWidth();i<tempwidth;i++) newset[RA].widen();
       
 	  // Dec -- assign correct title. Check width, should be ok by definition
-	  tempstr = head.WCS().lattyp;
+	  tempstr = head.lattype();
 	  newset[DEC].setName(tempstr);
 	  tempwidth = obj->getDecs().size() + 1;
 	  for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
 
 	  // RA decimal degrees -- assign correct title. Check width but should be OK
-	  tempstr = head.WCS().lngtyp;
+	  tempstr = head.lngtype();
 	  newset[RAJD].setName(tempstr);
 	  valD = obj->getRA();
 	  tempwidth = int( log10(fabs(valD)) + 1) + newset[RAJD].getPrecision() + 2;
 	  for(int i=newset[RAJD].getWidth();i<tempwidth;i++) newset[RAJD].widen();
       
 	  // Dec decimal degrees -- assign correct title. Check width but should be OK
-	  tempstr = head.WCS().lattyp;
+	  tempstr = head.lattype();
 	  newset[DECJD].setName(tempstr);
 	  valD = obj->getDec();
 	  tempwidth = int( log10(fabs(valD)) + 1) + newset[DECJD].getPrecision() + 2;
@@ -384,8 +384,10 @@ namespace duchamp
 	  }
 
 	  // w_RA -- check width & title. leave units for the moment.
+	  tempstr = "w_" + head.lngtype();
+	  newset[WRA].setName(tempstr);
 	  tempwidth = newset[RA].getUnits().size() + 1;
-	  for(int i=newset[RA].getWidth();i<tempwidth;i++) newset[RA].widen();
+	  for(int i=newset[WRA].getWidth();i<tempwidth;i++) newset[WRA].widen();
 	  valD = obj->getRAWidth();
 	  if((fabs(valD) < 1.)&&(valD>0.)){
 	    minvalD = pow(10, -1. * (newset[WRA].getPrecision()+1)); 
@@ -396,8 +398,10 @@ namespace duchamp
 	  for(int i=newset[WRA].getWidth();i<tempwidth;i++) newset[WRA].widen();
 
 	  // w_DEC -- check width & title. leave units for the moment.
+	  tempstr = "w_" + head.lattype();
+	  newset[WDEC].setName(tempstr);
 	  tempwidth = newset[DEC].getUnits().size() + 1;
-	  for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
+	  for(int i=newset[WDEC].getWidth();i<tempwidth;i++) newset[WDEC].widen();
 	  valD = obj->getDecWidth();
 	  if((fabs(valD) < 1.)&&(valD>0.)){
 	    minvalD = pow(10, -1. * (newset[WDEC].getPrecision()+1)); 

@@ -156,6 +156,8 @@ namespace duchamp
     void    setBzeroKeyword(float f){bzeroKeyword=f;};
     float   getBscaleKeyword(){return bscaleKeyword;};
     void    setBscaleKeyword(float f){bscaleKeyword=f;};
+    std::string lngtype();
+    std::string lattype();
 
     /// @brief Return the average pixel scale (eg arcmin/pix) of the two spatial axes. 
     float   getAvPixScale(){

@@ -290,6 +290,24 @@ namespace duchamp
 
   }
 
+  std::string FitsHeader::lngtype()
+  {
+    std::string lngtyp(this->wcs->lngtyp);
+    if(removeLeadingBlanks(lngtyp)==""){
+      lngtyp = this->wcs->ctype[this->wcs->lng];
+      return lngtyp.substr(0,4);
+    }
+    else return lngtyp;
+  }
 
+  std::string FitsHeader::lattype()
+  {
+    std::string lattyp(this->wcs->lattyp);
+    if(removeLeadingBlanks(lattyp)==""){
+      lattyp = this->wcs->ctype[this->wcs->lat];
+      return lattyp.substr(0,4);
+    }
+    else return lattyp;
+  }
 
 }
