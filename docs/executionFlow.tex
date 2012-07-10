@@ -45,11 +45,12 @@ as an array in a special C++ class. This class keeps track of the list
 of detected objects, as well as any reconstructed arrays that are made
 (see \S\ref{sec-recon}). The World Coordinate System
 (WCS)\footnote{This is the information necessary for translating the
-pixel locations to quantities such as position on the sky, frequency,
-velocity, and so on.} information for the cube is also obtained from
-the FITS header by \textsc{wcslib} functions \citep{greisen02,
-calabretta02}, and this information, in the form of a \texttt{wcsprm}
-structure, is also stored in the same class.
+  pixel locations to quantities such as position on the sky,
+  frequency, velocity, and so on.} information for the cube is also
+obtained from the FITS header by \textsc{wcslib} functions
+\citep{greisen02, calabretta02,greisen06}, and this information, in
+the form of a \texttt{wcsprm} structure, is also stored in the same
+class. See Sec.~\ref{sec-wcs} for more details.
 
 A sub-section of a cube can be requested by defining the subsection
 with the \texttt{subsection} parameter and setting
@@ -99,6 +100,39 @@ parameter. The units must be directly translatable from the existing
 ones -- for instance, if BUNIT is Jy/beam, you cannot specify mJy, it
 must be mJy/beam. If an incompatible unit is given, the BUNIT value is
 used instead.
+
+\secB{World Coordinate System}
+\label{sec-wcs}
+
+\duchamp uses the \textsc{wcslib} package to handle the conversions
+between pixel and world coordinates. This package uses the
+transformations described in the WCS papers
+\citep{greisen02,calabretta02,greisen06}. The same package handles the
+WCS axes in the spatial plots. The conversions used are governed by
+the information in the FITS header -- this is parsed by
+\textsc{wcslib} to create the appropriate transformations.
+
+For the spectral axis, however, \duchamp provides the ability to change the
+type of transformation used, so that different spectral quantities can
+be calculated. By using the parameter \texttt{spectralType}, the user
+can change from the type given in the FITS header. This should be done
+in line with the conventions outlined in \citet{greisen06}. The
+spectral type can be either a full 8-character string (\eg
+'VELO-F2V'), or simply the 4-character ``S-type'' (\eg 'VELO'), in
+which case \textsc{wcslib} will handle the conversion.
+
+The rest frequency can be provided as well. This may be necessary, if
+the FITS header does not specify one and you wish to transform to
+velocity. Alternatively, you may want to make your measurements based
+on a different spectral line (\eg OH1665 instead of
+H\textsc{i}-21cm). The input parameter \texttt{restFrequency} is used,
+and this will override the FITS header value.
+
+Finally, the user may also request different spectral units from those
+in the FITS file, or from the defaults arising from the
+\textsc{wcslib} transformation. The input parameter
+\texttt{spectralUnits} should be used, and \citet{greisen02} should be
+consulted to ensure the syntax is appropriate.
 
 \secB{Image modification}
 \label{sec-modify}
@@ -185,7 +219,7 @@ channel numbers in the full cube, before any subsection is applied.
 
 The user can direct \duchamp to reconstruct the data cube using the
 \atrous wavelet procedure. A good description of the procedure can be
-found in \citet{starck02:book}. The reconstruction is an effective way
+found in \citet{starck02a}. The reconstruction is an effective way
 of removing a lot of the noise in the image, allowing one to search
 reliably to fainter levels, and reducing the number of spurious
 detections. This is an optional step, but one that greatly enhances
@@ -674,7 +708,8 @@ to a third.
 
 \secC{Growing}
 
-Once the detections have been merged, they may be ``grown''. This is a
+Once the detections have been merged, they may be ``grown'' (this is
+essentially the process known elsewhere as ``floodfill''). This is a
 process of increasing the size of the detection by adding nearby
 pixels (according to the \texttt{threshSpatial} and
 \texttt{threshVelocity} parameters) that are above some secondary
@@ -687,7 +722,8 @@ input parameters. It can be given in terms of the noise statistics via
 be directly given via \texttt{growthThreshold}. Note that if you have
 given the detection threshold with the \texttt{threshold} parameter,
 the growth threshold \textbf{must} be given with
-\texttt{growthThreshold}.
+\texttt{growthThreshold}. If \texttt{growthThreshold} is not provided
+in this situation, the growing will not be done.
 
 The use of the growth algorithm is controlled by the
 \texttt{flagGrowth} parameter -- the default value of which is
@@ -699,22 +735,28 @@ other).
 \secC{Rejecting}
 \label{sec-reject}
 
-Finally, to be accepted, the detections must span \emph{both} a
-minimum number of channels (enabling the removal of any spurious
-single-channel spikes that may be present), and a minimum number of
-spatial pixels. These numbers, as for the original detection step, are
-set with the \texttt{minChannels}, \texttt{minPix} parameters and
-\texttt{minVoxels}. The channel requirement means a source must have
-at least one set of \texttt{minChannels} consecutive channels to be
-accepted. The spatial pixels (\texttt{minPix}) requirement refers to
-distinct spatial pixels (which are possibly in different channels),
+Finally, to be accepted, the detections must satisfy minimum size
+criteria, relating to the number of channels, spatial pixels and
+voxels occupied by the object. These criteria are set using the
+\texttt{minChannels}, \texttt{minPix} and \texttt{minVoxels}
+parameters respectively. The channel requirement means a source must
+have at least one set of \texttt{minChannels} consecutive channels to
+be accepted. The spatial pixels (\texttt{minPix}) requirement refers
+to distinct spatial pixels (which are possibly in different channels),
 while the voxels requirement refers to the total number of voxels
-detected.
+detected. If the \texttt{minVoxels} parameter is not provided, it
+defaults to \texttt{minPix}$+$\texttt{minChannels}-1.
 
 It is possible to do this rejection stage before the main merging and
 growing stage. This could be done to remove narrow (hopefully
 spurious) sources from the list before growing them, to reduce the
 number of false positives in the final list. This mode can be selected
-by setting the input parameter \texttt{flagRejectBeforeMerge=true} -
+by setting the input parameter \texttt{flagRejectBeforeMerge=true} --
 caution is urged if you use this in conjunction with
-\texttt{flagTwoStageMerging=false}.
+\texttt{flagTwoStageMerging=false}, as you can throw away parts of
+objects that you may otherwise wish to keep.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Guide"
+%%% End: 

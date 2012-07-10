@@ -327,8 +327,10 @@ not matter, they are grouped here in logical sections.
   single detection to be counted.
 \item[{minChannels [3]}] At least one contiguous set of this many
   channels must be present in the detection for it to be accepted.
-\item[{minVoxels [4]}] A detection must have at least this many voxels
-  in it to be counted.
+\item[{minVoxels [minPix $+$ minChannels - 1]}] The minimum size of
+  the object, in terms of the total number of voxels, for it to be
+  accepted. This will be \textit{at least} minPix$+$minChannels$-$1,
+  but can be set higher.
 \item[{flagRejectBeforeMerge [false]}] A flag indicating whether to
   reject sources that fail to meet the \texttt{minPix} or
   \texttt{minChannels} criteria \textbf{before} the merging
@@ -349,6 +351,25 @@ not matter, they are grouped here in logical sections.
   one. 
 \end{Lentry}
 
+\secC*{WCS parameters}
+\begin{Lentry}
+\item[{spectralType []}] The user can specify an alternative WCS
+  spectral type that the spectral axis can be expressed in. This
+  specification should conform to the standards described in
+  \citet{greisen06}, although it is possible to provide just the first
+  four letters (the ``S-type'', \eg 'VELO').
+\item[{restFrequency [-1]}] If provided, this will be used in
+  preference to the rest frequency given in the FITS header to
+  calculate velocities and related quantities. A negative value (such
+  as the default) will mean this is not used and the FITS header
+  value, if present, is used instead.
+\item[{spectralUnits []}] The user can specify the units of
+  the spectral axis, overriding those given in the FITS header. If the
+  spectral type is being changed, these units should be appropriate
+  for that quantity. If not provided, the FITS header information is
+  used. 
+\end{Lentry}
+
 \secC*{Other parameters}
 \begin{Lentry}
 \item[{spectralMethod [peak]}] This indicates which method is used
@@ -356,20 +377,16 @@ not matter, they are grouped here in logical sections.
   containing the detection's peak pixel; \texttt{sum} means sum the
   spectra of each detected spatial pixel, and correct for the beam
   size. Any other choice defaults to \texttt{peak}.
-\item[{spectralUnits [km/s]}] The user can specify the units of
-  the spectral axis. Assuming the WCS of the FITS file is valid, the
-  spectral axis is transformed into velocity, and put into these units
-  for all output and for calculations such as the integrated flux of a
-  detection.
 \item[{pixelCentre [centroid]}] Which of the three ways of
   expressing the ``centre'' of a detection (see \S\ref{sec-results}
   for a description of the options) to use for the X, Y, \& Z
   columns in the output list. Alternatives are: \texttt{centroid, peak,
   average}.
 \item[{sortingParam [vel]}] The parameter on which to sort the output
-  list of detected objects. Options are: x-value, y-value, z-value,
-  ra, dec, vel, w50, iflux,  pflux (integrated and peak flux
-  respectively), or snr. 
+  list of detected objects. Options are: xvalue, yvalue, zvalue, ra,
+  dec, vel, w50, iflux, pflux (integrated and peak flux respectively),
+  or snr. If the parameter begins with a '-' (\eg '-vel'), the order
+  of the sort is reversed.
 \item[{drawBorders [true]}] A flag indicating whether to draw
   borders around the detected objects in the moment maps included in
   the output (see for example Fig.~\ref{fig-spect}).
@@ -381,3 +398,8 @@ not matter, they are grouped here in logical sections.
   reconstruction, searching or merging algorithms) to the screen.
 \end{Lentry}
 
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Guide"
+%%% End: 

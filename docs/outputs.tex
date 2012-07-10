@@ -37,7 +37,13 @@ consists of self-explanatory messages about the particular stage the
 program is up to. The relevant parameters are printed to the screen at
 the start (once the file has been successfully read in), so the user
 is able to make a quick check that the setup is correct (see
-Appendix~{app-input} for an example).
+Appendix~\ref{app-input} for an example).
+
+The extent of memory allocation made at the start is indicated. This
+will include the arrays needed for the pixel array, the reconstruction
+or smoothed array, and the 2D detection map, but \emph{not} additional
+space needed for working within individual algorithms, nor storage
+needed for the detected objects.
 
 \duchamp will report the amount of memory that is allocated when the
 image is read in. This includes the storage for the array as well as
@@ -82,9 +88,11 @@ Warning messages occur when something happens that is unexpected (for
 instance, a desired keyword is not present in the FITS header), but
 not detrimental to the execution. An Error message is something more
 serious, and indicates some part of the program was not able to
-complete its task. The message will also indicate which function or
-subroutine generated it -- this is primarily a tool for debugging, but
-can be useful in determining what went wrong.
+complete its task. This is not necessary fatal, but it may mean the
+full functionality requested will not be achieved. The message will
+also indicate which function or subroutine generated it -- this is
+primarily a tool for debugging, but can be useful in determining what
+went wrong.
 
 \secB{Text-based output files}
 
@@ -94,13 +102,18 @@ can be useful in determining what went wrong.
 Finally, we get to the results -- the reason for running \duchamp in
 the first place. Once the detection list is finalised, it is sorted
 according to the value of the \texttt{sortingParam}. This can take the
-value ``x-value'', ``y-value'', ``z-value'', ``ra'', ``dec'', ``vel'',
+value ``xvalue'', ``yvalue'', ``zvalue'', ``ra'', ``dec'', ``vel'',
 ``w50'', ``iflux'' (for integrated flux), or ``pflux'' (for peak
-flux), or ``snr''. The default value is ``vel''. If no good WCS
-exists, the mean pixel position equivalent is used (``ra'' is replaced
-by ``x-value'', ``dec'' by ``y-value'', ``vel'' and ``w50'' by
-``z-value''). The results are then printed to the screen and to the
-output file, given by the \texttt{OutFile} parameter.
+flux), or ``snr''. The default value is ``vel'' (which means the
+spectral WCS value -- this could be frequency or wavelength depending
+on the nature of the FITS file). If no good WCS exists, the mean pixel
+position equivalent is used (``ra'' is replaced by ``xvalue'', ``dec''
+by ``yvalue'', ``vel'' and ``w50'' by ``zvalue''). The sense of the
+sorting will be increasing value with position in the list. To sort in
+the opposite sense, prepend the parameter name with a '-' (\eg
+``-vel'' instead of ``vel''). The results are then printed to the
+screen and to the output file, given by the \texttt{OutFile}
+parameter.
 
 The output consists of two sections. First, a list of the parameters
 are printed to the output file, for future reference. Next, the
@@ -136,15 +149,18 @@ Equatorial and Galactic projection cases).
   of the object.
 \item[{DEC/GLAT}] The Declination or Galactic Latitude of the centre of
   the object.
-\item[{VEL}] The mean velocity of the object [units given by the
-  \texttt{spectralUnits} parameter].
+\item[{VEL}] The mean spectral coordinate of the object [units given by the
+  \texttt{spectralUnits} parameter]. The actual values here will
+  depend on the WCS of the FITS file, and the name of the column will
+  come from the CTYPE of the spectral axis (specifically, the
+  4-character S-type code).
 \item[{w\_RA/w\_GLON}] The width of the object in Right Ascension or
   Galactic Longitude (depending on FITS coordinates) [arcmin].
 \item[{w\_DEC/w\_GLAT}] The width of the object in Declination Galactic
   Latitude [arcmin].
-\item[{w\_50}] The velocity width of the detection at 50\% of the peak
-  flux (the measured full-width at half-maximum, FWHM), in velocity
-  units [see note below].
+\item[{w\_50}] The spectral width of the detection at 50\% of the peak
+  flux (the measured full-width at half-maximum, FWHM), in the
+  appropriate spectral units [see note below].
 \item[{F\_int}] The integrated flux over the object, in the units of
   flux times velocity, corrected for the beam if necessary. See below
   for a discussion on this correction.
@@ -163,10 +179,10 @@ alternative ways of calculating the total flux, the position and
 velocity width, however, and so additional parameters are written to
 the output file:
 \begin{Lentry}
-\item[{w\_20}] The velocity width of the detection at 20\% of the peak
-  flux, in velocity units [see note below].
-\item[{w\_VEL}] The full velocity width of the detection (max channel
-  $-$ min channel, in velocity units).
+\item[{w\_20}] The spectral width of the detection at 20\% of the peak
+  flux, in spectral units [see note below].
+\item[{w\_VEL}] The full spectral width of the detection (max channel
+  $-$ min channel, in the appropriate spectral units).
 \item[{F\_tot}] The sum of the flux values of all detected voxels.
 \item[{X\_av, Y\_av, Z\_av}] The average pixel value in each
   axis direction \ie X\_av is the average of the $x$-values of all
@@ -194,21 +210,21 @@ for the VOTable (see below).
 The \texttt{Name} is derived from the WCS position. For instance, a
 source that is centred on the RA,Dec position 12$^h$53$^m$45$^s$,
 -36$^\circ$24$'$12$''$ will be given the name J125345$-$362412, if the
-epoch is J2000, or the name B125345$-$362412 if it is B1950. An
-alternative form is used for Galactic coordinates: a source centred on
-the position ($l$,$b$) = (323.1245, 5.4567) will be called
+epoch is J2000, or the name B125345$-$362412 if it is B1950. The
+precision of the RA and Dec values is determined by the pixel size,
+such that sufficient precision is used to uniquely define a
+position. The RA value will have one figure greater precision than
+Dec. An alternative form is used for Galactic coordinates: a source
+centred on the position ($l$,$b$) = (323.1245, 5.4567) will be called
 G323.124$+$05.457. If the WCS is not valid (\ie is not present or does
 not have all the necessary information), the \texttt{Name, RA, DEC,
-VEL} and related columns are not printed, but the pixel coordinates
+  VEL} and related columns are not printed, but the pixel coordinates
 are still provided.
 
 The velocity units can be specified by the user, using the parameter
 \texttt{spectralUnits} (enter it as a single string with no
-spaces). The default value is km/s, which should be suitable for most
-users. These units are also used to give the units of integrated
-flux. Note that if there is no rest frequency specified in the FITS
-header, the \duchamp output will instead default to using Frequency,
-with units of MHz.
+spaces). The default value comes from the FITS header. These units are
+also used to give the units of integrated flux. 
 
 When the cube brightness units are quoted per beam (\eg Jy/beam), then
 the integrated flux \texttt{F\_int} includes a correction for
@@ -252,7 +268,9 @@ The \texttt{Flag} column contains any warning flags, such as:
 \item \textbf{E} -- The detection is next to the spatial edge of the image,
 meaning either the limit of the pixels, or the limit of the non-BLANK
 pixel region.
-\item \textbf{S} -- The detection lies at the edge of the spectral region. 
+\item \textbf{S} -- The detection lies at the edge of the spectral region.
+\item \textbf{M} -- The detection is adjacent to, or overlaps the
+  ``Milky Way'' range of channels (see Sec.~\ref{sec-MW}).
 \item \textbf{N} -- The total flux, summed over all the (non-BLANK)
 pixels in the smallest box that completely encloses the detection, is
 negative. Note that this sum is likely to include non-detected
@@ -507,3 +525,9 @@ filenames will follow the format of \texttt{SpectraFile}: if,
 \texttt{file-03.ps}. To give a list of sources, use the
 \texttt{objectList} parameter, and provide a string with individual
 object numbers or object ranges: \eg 1,2,4-7,8,11.
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Guide"
+%%% End: 

@@ -86,6 +86,8 @@ reconstructions are \emph{not} susceptible in the same way, since the
 spectral direction does not generally exhibit these BLANK edges, and
 so we recommend the use of either of these.
 
+{\bf *** 3D  ONE MAY BE DIFFERENT}
+
 If one chooses the reconstruction method, a further decision is
 required on the signal-to-noise cutoff used in determining acceptable
 wavelet coefficients. A larger value will remove more noise from the
@@ -121,14 +123,14 @@ an apparently large cutoff will still result in a not-insignificant
 number of detections simply due to random fluctuations of the noise
 background. For instance, a $4\sigma$ threshold on a cube of Gaussian
 noise of size $100\times100\times1024$ will result in $\sim340$
-detections. This is where the minimum channel and pixel requirements
-are important in rejecting spurious detections.
+single-pixel detections. This is where the minimum channel and pixel
+requirements are important in rejecting spurious detections.
 
-Finally, as \duchamp is still undergoing development, there are some
-elements that are not fully developed. In particular, it is not as
-clever as I would like at avoiding interference. The ability to place
-requirements on the minimum number of channels and pixels partially
-circumvents this problem, but work is being done to make \duchamp
-smarter at rejecting signals that are clearly (to a human eye at
-least) interference. See the following section for further
-improvements that are planned.
+%Finally, as \duchamp is still undergoing development, there are some
+%elements that are not fully developed. In particular, it is not as
+%clever as I would like at avoiding interference. The ability to place
+%requirements on the minimum number of channels and pixels partially
+%circumvents this problem, but work is being done to make \duchamp
+%smarter at rejecting signals that are clearly (to a human eye at
+%least) interference. See the following section for further
+%improvements that are planned.
