@@ -72,15 +72,15 @@ purposes)\\
 \end{quote}
 
 This default setup will search in standard locations for the necessary
-libraries, and install the executable (\texttt{``Duchamp''}) in
-\texttt{/usr/local/bin} (a copy will also be in the current
-directory). The library (if you've made it) will be installed in
-\texttt{/usr/local/lib}, and the full set of header files will be
-installed in \texttt{/usr/local/include/duchamp} and subdirectories
-thereof.  If you want these to go somewhere else, \eg if you don't
-have write-access to that directory, or you need to tweak the
-libraries, see the next section. Otherwise, jump to the testing
-section.
+libraries, and install the executable (\texttt{``Duchamp-\version''})
+in \texttt{/usr/local/bin}, along with a \texttt{``Duchamp''} symbolic
+link (a copy will also be in the current directory). The library (if
+you've made it) will be installed in \texttt{/usr/local/lib}, and the
+full set of header files will be installed in
+\texttt{/usr/local/include/duchamp} and subdirectories thereof.  If
+you want these to go somewhere else, \eg if you don't have
+write-access to that directory, or you need to tweak the libraries,
+see the next section. Otherwise, jump to the testing section.
 
 \secC{Tweaking the installation process}
 
@@ -88,7 +88,7 @@ The \texttt{configure} script allows the user to tailor the
 installation according to the particular requirements of their
 system. 
 
-To install Duchamp in a directory other than \texttt{/usr/local/bin},
+To install \duchamp in a directory other than \texttt{/usr/local/bin},
 use the \texttt{--prefix} option with configure, specifying the
 directory above the \texttt{bin/} directory \eg
 \begin{quote}
@@ -261,3 +261,8 @@ releases, but it will certainly work in the basic cases that I use to
 test it during development. So feel free to give it a try -- the
 \texttt{CHANGES} file will usually detail what is different to the last
 numbered release.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Guide"
+%%% End: 
