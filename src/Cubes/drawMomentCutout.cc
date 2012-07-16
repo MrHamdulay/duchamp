@@ -92,7 +92,7 @@ namespace duchamp
       float *image = new float[size*size];
       for(size_t i=0;i<size*size;i++) image[i]=0.;
 
-      int imPos,cubePos;
+      size_t imPos,cubePos;
       for(int z=zmin; z<=zmax; z++){
 	for(int x=xmin; x<=xmax; x++){
 	  for(int y=ymin; y<=ymax; y++){
