@@ -99,7 +99,7 @@ void spectralSelection(std::vector<float> &xvalues,
       specy[ct] = 0.;
       for(int x=xpos-offset;x<=xpos+offset;x++){
 	for(int y=ypos-offset;y<=ypos+offset;y++){
-	  int cubepos = y * cube->getDimX() + x 
+	  size_t cubepos = y * cube->getDimX() + x 
 	    + zpos * cube->getDimX() * cube->getDimY();
 	  specy[ct] += array[cubepos];
 	}
