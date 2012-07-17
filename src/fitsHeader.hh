@@ -107,13 +107,16 @@ namespace duchamp
     OUTCOME     readHeaderInfo(std::string fname, Param &par);
 
     /// @brief Read BUNIT keyword 
-    OUTCOME     readBUNIT(std::string fname);
+    // OUTCOME     readBUNIT(std::string fname);
+    OUTCOME     readBUNIT(fitsfile *fptr);
 
     /// @brief Read BLANK & related keywords 
-    OUTCOME     readBLANKinfo(std::string fname, Param &par);
+    // OUTCOME     readBLANKinfo(std::string fname, Param &par);
+    OUTCOME     readBLANKinfo(fitsfile *fptr, Param &par);
 
     /// @brief Read beam-related keywords 
-    OUTCOME     readBeamInfo(std::string fname, Param &par);
+    // OUTCOME     readBeamInfo(std::string fname, Param &par);
+    OUTCOME     readBeamInfo(fitsfile *fptr, Param &par);
  
     //--------------------
     // Function in FitsIO/wcsIO.cc

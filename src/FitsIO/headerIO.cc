@@ -47,48 +47,61 @@ namespace duchamp
 
     OUTCOME returnValue = SUCCESS;
 
-    // Get the brightness unit, so that we can set the units for the 
-    //  integrated flux when we go to fixUnits.
-    OUTCOME bunitResult = this->readBUNIT(fname);
-  
-    // if(this->readBLANKinfo(fname, par)==FAILURE)
-    //   duchampWarning("Cube Reader", "Reading BLANK info failed\n");
-    OUTCOME blankResult = this->readBLANKinfo(fname,par);
-  
-    OUTCOME beamResult = this->readBeamInfo(fname, par);
-
-    if(this->wcs->spec>=0) this->fixSpectralUnits(par.getSpectralUnits());
-
-    if(bunitResult == FAILURE || blankResult==FAILURE || beamResult==FAILURE ){
-      DUCHAMPWARN("Cube Reader","Header could not be read completely");
+    // Open the FITS file
+    fitsfile *fptr;         
+    int status = 0;
+    if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
+      DUCHAMPWARN("Cube Reader","Error opening file "<<fname<<": ");
+      fits_report_error(stderr, status);
+      returnValue = FAILURE;
     }
+    else{
 
+      // Get the brightness unit, so that we can set the units for the 
+      //  integrated flux when we go to fixUnits.
+      OUTCOME bunitResult = this->readBUNIT(fptr);
+      
+      // if(this->readBLANKinfo(fname, par)==FAILURE)
+      //   duchampWarning("Cube Reader", "Reading BLANK info failed\n");
+      OUTCOME blankResult = this->readBLANKinfo(fptr,par);
+      
+      //    OUTCOME beamResult = this->readBeamInfo(fptr, par);
+      this->itsBeam.readFromFITS(fptr, par, this->getAvPixScale());
+      
+      if(this->wcs->spec>=0) this->fixSpectralUnits(par.getSpectralUnits());
+      
+      // if(bunitResult == FAILURE || blankResult==FAILURE || beamResult==FAILURE ){
+      if(bunitResult == FAILURE || blankResult==FAILURE ){
+	DUCHAMPWARN("Cube Reader","Header could not be read completely");
+	returnValue=FAILURE;
+      }
+      
+      // Close the FITS file.
+      status = 0;
+      fits_close_file(fptr, &status);
+      if (status){
+	DUCHAMPWARN("Cube Reader","Error closing file: ");
+	fits_report_error(stderr, status);
+      }
+    }
+  
     return returnValue;
   }
 
 
   //////////////////////////////////////////////////
 
-  OUTCOME FitsHeader::readBUNIT(std::string fname)
+  OUTCOME FitsHeader::readBUNIT(fitsfile *fptr)
   {
     ///   Read the BUNIT header keyword, to store the units of brightness (flux).
     ///  \param fname The name of the FITS file.
 
-    fitsfile *fptr;         
     char *comment = new char[FLEN_COMMENT];
     char *unit = new char[FLEN_VALUE];
     OUTCOME returnStatus=SUCCESS;
     int status = 0;
 
-    // Open the FITS file
-    status = 0;
-    if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
-      DUCHAMPWARN("Cube Reader","Error opening file "<<fname<<": ");
-      fits_report_error(stderr, status);
-      returnStatus = FAILURE;
-    }
-
-    // Read the BUNIT keyword, and translate to standard unit format if needs be
+     // Read the BUNIT keyword, and translate to standard unit format if needs be
     std::string header("BUNIT");
     fits_read_key(fptr, TSTRING, (char *)header.c_str(), unit, comment, &status);
     if (status){
@@ -103,15 +116,6 @@ namespace duchamp
       returnStatus = SUCCESS;
     }
 
-    // Close the FITS file
-    status = 0;
-    fits_close_file(fptr, &status);
-    if (status){
-      DUCHAMPWARN("Cube Reader","Error closing file "<<fname<<": ");
-      fits_report_error(stderr, status);
-      returnStatus = FAILURE;
-    }
-
     delete [] comment;
     delete [] unit;
 
@@ -120,7 +124,7 @@ namespace duchamp
 
   //////////////////////////////////////////////////
 
-  OUTCOME FitsHeader::readBLANKinfo(std::string fname, Param &par)
+  OUTCOME FitsHeader::readBLANKinfo(fitsfile *fptr, Param &par)
   {
     ///    Reading in the Blank pixel value keywords, which is only done
     ///    if requested via the flagBlankPix parameter.
@@ -140,18 +144,10 @@ namespace duchamp
     OUTCOME returnStatus = SUCCESS;
     int status = 0;
 
-    fitsfile *fptr;         
     char *comment = new char[FLEN_COMMENT];
     int blank;
     float bscale, bzero;
-    
-    // Open the FITS file.
-    if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
-      DUCHAMPWARN("Cube Reader","Error opening file "<<fname<<": ");
-      fits_report_error(stderr, status);
-      return FAILURE;
-    }
-
+ 
     // Read the BLANK keyword. 
     //  If this isn't present, make sure flagTrim is false (if it is
     //  currently true, let the user know you're doing this) and set
@@ -194,14 +190,6 @@ namespace duchamp
       par.setBlankPixVal( blank*bscale + bzero );
     }
   
-    // Close the FITS file.
-    status = 0;
-    fits_close_file(fptr, &status);
-    if (status){
-      DUCHAMPWARN("Cube Reader","Error closing file: ");
-      fits_report_error(stderr, status);
-    }
-  
     delete [] comment;
 
     return returnStatus;
@@ -210,7 +198,7 @@ namespace duchamp
 
   //////////////////////////////////////////////////
 
-  OUTCOME FitsHeader::readBeamInfo(std::string fname, Param &par)
+  OUTCOME FitsHeader::readBeamInfo(fitsfile *fptr, Param &par)
   {
     ///   Reading in the beam parameters from the header.
     ///   Use these, plus the basic WCS parameters to calculate the size of
@@ -221,24 +209,9 @@ namespace duchamp
     /// \param par The Param set.
 
     int status=0;
-    fitsfile *fptr;         
-
-    // Open the FITS file
-    if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
-      DUCHAMPWARN("Cube Reader","Error opening file "<<fname<<": ");
-      fits_report_error(stderr, status);
-      return FAILURE;
-    }
     
     this->itsBeam.readFromFITS(fptr, par, this->getAvPixScale());
    
-    // Close the FITS file.
-    status=0;
-    fits_close_file(fptr, &status);
-    if (status){
-      DUCHAMPWARN("Cube Reader","Error closing file: ");
-      fits_report_error(stderr, status);
-    }
 
     return SUCCESS;
   }
