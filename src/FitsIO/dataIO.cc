@@ -41,6 +41,53 @@ namespace duchamp
 
   OUTCOME Cube::getFITSdata(std::string fname)
   {
+    OUTCOME returnValue = SUCCESS;
+
+    int status = 0;  /* MUST initialize status */
+    fitsfile *fptr;  
+    // Open the FITS file
+    status = 0;
+    if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
+      fits_report_error(stderr, status);
+      returnValue = FAILURE;
+    }
+    else { 
+
+      returnValue = this->getFITSdata(fptr);
+
+      // Close the FITS file -- not needed any more in this function.
+      status = 0;
+      fits_close_file(fptr, &status);
+      if (status){
+	DUCHAMPWARN("Cube Reader","Error closing file: ");
+	fits_report_error(stderr, status);
+      }
+
+    }
+
+    return returnValue;    
+
+  }
+
+  OUTCOME Cube::getFITSdata()
+  {
+
+   OUTCOME returnValue = SUCCESS;
+   if(this->head.FPTR() == 0) {
+     returnValue = FAILURE;
+     DUCHAMPERROR("Cube Reader", "FITS file not opened.");
+    }
+    else {
+      returnValue = this->getFITSdata(this->head.FPTR());
+    }
+    return returnValue;
+
+
+  }
+
+
+  OUTCOME Cube::getFITSdata(fitsfile *fptr)
+  {
     /// This function retrieves the data array from the FITS file at the 
     ///   location given by the string argument.
     ///  Only the two spatial axes and the one spectral axis are stored in the
@@ -50,14 +97,6 @@ namespace duchamp
     ///   fits_read_subsetnull_flt function
 
     int numAxes, status = 0;  /* MUST initialize status */
-    fitsfile *fptr;  
-
-    // Open the FITS file
-    status = 0;
-    if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
-      fits_report_error(stderr, status);
-      return FAILURE;
-    }
 
     // Read the size of the FITS file -- number and sizes of the axes
     status = 0;
@@ -136,14 +175,6 @@ namespace duchamp
     }
 
     delete [] dimAxes;
-
-    // Close the FITS file -- not needed any more in this function.
-    status = 0;
-    fits_close_file(fptr, &status);
-    if (status){
-      DUCHAMPWARN("Cube Reader","Error closing file: ");
-      fits_report_error(stderr, status);
-    }
 
     return SUCCESS;
 

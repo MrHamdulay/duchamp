@@ -47,6 +47,49 @@ namespace duchamp
 
   OUTCOME FitsHeader::defineWCS(std::string fname, Param &par)
   {
+
+    OUTCOME returnValue=SUCCESS;
+    fitsfile *fptr;
+    int status = 0;
+    // Open the FITS file
+    if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
+      fits_report_error(stderr, status);
+      returnValue = FAILURE;
+    }
+    else {
+
+      returnValue = this->defineWCS(fptr,par);
+
+      // Close the FITS file 
+      status = 0;
+      fits_close_file(fptr, &status);
+      if (status){
+	DUCHAMPWARN("Cube Reader","Error closing file: ");
+	fits_report_error(stderr, status);
+      }
+ 
+    }
+    return returnValue;
+
+  }
+
+  OUTCOME FitsHeader::defineWCS(Param &par)
+  {
+    OUTCOME returnValue=SUCCESS;
+    if(this->fptr == 0) {
+      returnValue = FAILURE;
+      DUCHAMPERROR("Cube Reader", "FITS file not opened.");
+    }
+    else {
+      returnValue = this->defineWCS(this->fptr, par);
+    }
+    return returnValue;
+  }
+
+
+
+  OUTCOME FitsHeader::defineWCS(fitsfile *fptr, Param &par)
+  {
     ///   A function that reads the WCS header information from the 
     ///    FITS file given by fname
     ///   It will also sort out the spectral axis, and covert to the correct 
@@ -54,18 +97,11 @@ namespace duchamp
     /// \param fname Fits file to read.
     /// \param par Param set to help fix the units with.
 
-    fitsfile *fptr;
     int numAxes;
     int noComments = 1; //so that fits_hdr2str will ignore COMMENT, HISTORY etc
     int nExc = 0,nkeys;
-    char *hdr;
-
-    // Open the FITS file
     int status = 0;
-    if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
-      fits_report_error(stderr, status);
-      return FAILURE;
-    }
+    char *hdr;
 
     // Get the dimensions of the FITS file -- number of axes and size of each.
     status = 0;
@@ -90,15 +126,7 @@ namespace duchamp
       fits_report_error(stderr, status);
       return FAILURE;
     }
-
-    // Close the FITS file -- not needed any more in this function.
-    status = 0;
-    fits_close_file(fptr, &status);
-    if (status){
-      DUCHAMPWARN("Cube Reader","Error closing file: ");
-      fits_report_error(stderr, status);
-    }
-  
+ 
     // Define a temporary, local version of the WCS
     struct wcsprm *localwcs;
     localwcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));

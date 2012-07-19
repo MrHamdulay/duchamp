@@ -105,6 +105,8 @@ namespace duchamp
     //
     /// @brief Read all header info. 
     OUTCOME     readHeaderInfo(std::string fname, Param &par);
+    OUTCOME     readHeaderInfo(Param &par);
+    OUTCOME     readHeaderInfo(fitsfile *fptr, Param &par);
 
     /// @brief Read BUNIT keyword 
     // OUTCOME     readBUNIT(std::string fname);
@@ -123,10 +125,15 @@ namespace duchamp
     //
     /// @brief Read the WCS information from a file. 
     OUTCOME     defineWCS(std::string fname, Param &par);
+    OUTCOME     defineWCS(Param &par);
+    OUTCOME     defineWCS(fitsfile *fptr, Param &par);
 
     //--------------------
     // Basic inline accessor functions
     //
+    fitsfile *FPTR(){return fptr;};
+    int     openFITS(std::string name);
+    int     closeFITS();
     /// @brief Is the WCS good enough to be used? 
     bool    isWCS(){return wcsIsGood;};
     /// @brief Is the spectral axis OK to be used? 
@@ -171,6 +178,7 @@ namespace duchamp
     bool    needBeamSize();
 
   private:
+    fitsfile      *fptr;                ///< A pointer to the FITS file that can be used by the cftisio library.
     struct wcsprm *wcs;                 ///< The WCS parameters for the cube in a struct from the wcslib library.
     int            nwcs;                ///< The number of WCS parameters
     bool           wcsIsGood;           ///< A flag indicating whether there is a valid WCS present.

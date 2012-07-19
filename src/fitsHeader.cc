@@ -41,6 +41,7 @@ namespace duchamp
 
   FitsHeader::FitsHeader()
   {
+    this->fptr = 0;
     this->wcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
     this->wcs->flag=-1;
     wcsini(true, 3, this->wcs); 
@@ -72,6 +73,7 @@ namespace duchamp
   FitsHeader& FitsHeader::operator= (const FitsHeader& h)
   {
     if(this == &h) return *this;
+    this->fptr = h.fptr;
     this->wcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
     this->wcs->flag     = -1;
     wcsini(true, h.wcs->naxis, this->wcs); 
@@ -95,6 +97,30 @@ namespace duchamp
     this->offset        = h.offset;
     this->power         = h.power;
     return *this;
+  }
+
+  int FitsHeader::openFITS(std::string name)
+  {
+    int status = 0;
+    if( fits_open_file(&this->fptr,name.c_str(),READONLY,&status) ){
+      fits_report_error(stderr, status);
+      // if(((status==URL_PARSE_ERROR)||(status==BAD_NAXIS))
+      // 	 &&(this->pars().getFlagSubsection()))
+      // 	DUCHAMPERROR("Cube Reader", "It may be that the subsection you've entered is invalid. Either it has the wrong number of axes, or one axis has too large a range.");
+    }
+    return status;
+  }
+
+  int FitsHeader::closeFITS()
+  {
+    int status=0;
+    fits_close_file(this->fptr, &status);
+    if (status){
+      DUCHAMPWARN("Cube Reader","Error closing file: ");
+      fits_report_error(stderr, status);
+    }
+    return status;
+
   }
 
   void FitsHeader::setWCS(struct wcsprm *w)

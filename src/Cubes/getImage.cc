@@ -66,12 +66,16 @@ namespace duchamp
     std::string fname = par.getImageFile();
     if(par.getFlagSubsection()) fname+=par.getSubsection();
 
+    this->head.openFITS(fname);
+
     OUTCOME result = getMetadata(fname);
     
     if(result==SUCCESS){
       // Convert the flux Units if the user has so requested
       this->convertFluxUnits(this->head.getFluxUnits(),this->par.getNewFluxUnits());
     }
+
+    this->head.closeFITS();
 
     return result;
   }
@@ -95,38 +99,39 @@ namespace duchamp
     int numAxes, status = 0;  /* MUST initialize status */
     fitsfile *fptr;         
 
-    // Open the FITS file -- make sure it exists
-    status = 0;
-    if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
-      fits_report_error(stderr, status);
-      if(((status==URL_PARSE_ERROR)||(status==BAD_NAXIS))
-	 &&(this->pars().getFlagSubsection()))
-	DUCHAMPERROR("Cube Reader", "It may be that the subsection you've entered is invalid. Either it has the wrong number of axes, or one axis has too large a range.");
-      return FAILURE;
-    }
+    // // Open the FITS file -- make sure it exists
+    // std::cerr << "Opening file...";
+    // system("date");
+    // status = 0;
+    // if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
+    //   fits_report_error(stderr, status);
+    //   if(((status==URL_PARSE_ERROR)||(status==BAD_NAXIS))
+    // 	 &&(this->pars().getFlagSubsection()))
+    // 	DUCHAMPERROR("Cube Reader", "It may be that the subsection you've entered is invalid. Either it has the wrong number of axes, or one axis has too large a range.");
+    //   return FAILURE;
+    // }
 
+    // std::cerr << " ..Done. Now reading number of dims...";
+    std::cerr << "Now reading number of dims...";
+    system("date");
     // Read the size information -- number and lengths of all axes.
     // Just use this for reporting purposes.
     status = 0;
-    if(fits_get_img_dim(fptr, &numAxes, &status)){
+    // if(fits_get_img_dim(fptr, &numAxes, &status)){
+    if(fits_get_img_dim(this->head.FPTR(), &numAxes, &status)){
       fits_report_error(stderr, status);
       return FAILURE;
     }
+    std::cerr << " ..Done. Now reading axis sizes...";
+    system("date");
     this->head.setNumAxes(numAxes);
     long *dimAxes = new long[numAxes];
     for(int i=0;i<numAxes;i++) dimAxes[i]=1;
     status = 0;
-    if(fits_get_img_size(fptr, numAxes, dimAxes, &status)){
+    // if(fits_get_img_size(fptr, numAxes, dimAxes, &status)){
+    if(fits_get_img_size(this->head.FPTR(), numAxes, dimAxes, &status)){
       fits_report_error(stderr, status);
       return FAILURE;
-    }
-
-    // Close the FITS file.
-    status = 0;
-    fits_close_file(fptr, &status);
-    if (status){
-      DUCHAMPWARN("Cube Reader","Error closing file: ");
-      fits_report_error(stderr, status);
     }
 
     // Report the size of the FITS file
@@ -140,15 +145,38 @@ namespace duchamp
 
 
     // Get the WCS information
-    if(this->head.defineWCS(fname, this->par) == FAILURE) return FAILURE;
+    std::cerr << "Reading WCS info...";
+    system("date");
+    // if(this->head.defineWCS(fname, this->par) == FAILURE) return FAILURE;
+    // if(this->head.defineWCS(fptr, this->par) == FAILURE) return FAILURE;
+    // if(this->head.defineWCS(this->head.FPTR(), this->par) == FAILURE) return FAILURE;
+    if(this->head.defineWCS(this->par) == FAILURE) return FAILURE;
+    std::cerr << "  ..Done.\n";
 
     // Read the necessary header information, and copy some of it into the Param.
-    if(this->head.readHeaderInfo(fname, this->par) == FAILURE){
-      DUCHAMPWARN("Cube Reader", "Problems with metadata, but will press on...");
+    std::cerr << "Reading header info...";
+    system("date");
+    // if(this->head.readHeaderInfo(fname, this->par) == FAILURE){
+    // if(this->head.readHeaderInfo(fptr, this->par) == FAILURE){
+    // if(this->head.readHeaderInfo(this->head.FPTR(), this->par) == FAILURE){
+    if(this->head.readHeaderInfo(this->par) == FAILURE){
+     DUCHAMPWARN("Cube Reader", "Problems with metadata, but will press on...");
     }
+    std::cerr << " ..Done.\n";
+    system("date");
 
     if(!this->head.isWCS()) 
       DUCHAMPWARN("Cube Reader","WCS is not good enough to be used.\n");
+
+    // std::cerr << " ..Done. Now closing file.\n";
+    // system("date");
+    // Close the FITS file.
+    // status = 0;
+    // fits_close_file(fptr, &status);
+    // if (status){
+    //   DUCHAMPWARN("Cube Reader","Error closing file: ");
+    //   fits_report_error(stderr, status);
+    // }
 
     // allocate the dimension array in the Cube.
     if(this->initialiseCube(dimAxes,false) == FAILURE) return FAILURE;
@@ -171,13 +199,19 @@ namespace duchamp
     ///  \param fname A std::string with name of FITS file.
     ///  \return SUCCESS or FAILURE.
 
+    std::cerr << "Opening file...";
+    system("date");
+    this->head.openFITS(fname);
+
     if(this->getMetadata(fname) == FAILURE) return FAILURE;
 
     // Get the data array from the FITS file.
     // Report the dimensions of the data array that was read (this can be
     //   different to the full FITS array).
     if(this->par.isVerbose()) std::cout << "Reading data ... "<<std::flush;
-    if(this->getFITSdata(fname) == FAILURE) return FAILURE;
+    // if(this->getFITSdata(fname) == FAILURE) return FAILURE;
+    // if(this->getFITSdata(this->head.FPTR()) == FAILURE) return FAILURE;
+    if(this->getFITSdata() == FAILURE) return FAILURE;
 
     if(this->axisDim[2] == 1){
       this->par.setMinChannels(0);
@@ -193,6 +227,10 @@ namespace duchamp
 
     // Convert the flux Units if the user has so requested
     this->convertFluxUnits(this->head.getFluxUnits(),this->par.getNewFluxUnits(),ARRAY);
+
+    std::cerr << " ..Done. Now closing file.\n";
+    system("date");
+    this->head.closeFITS();
 
     return SUCCESS;    
 

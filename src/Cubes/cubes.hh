@@ -386,6 +386,8 @@ namespace duchamp
 
     /// @brief Function to retrieve FITS data array 
     OUTCOME         getFITSdata(std::string fname);   // in FitsIO/dataIO.cc
+    OUTCOME         getFITSdata();   // in FitsIO/dataIO.cc
+    OUTCOME         getFITSdata(fitsfile *fptr);   // in FitsIO/dataIO.cc
 
     OUTCOME         writeBasicHeader(fitsfile *fptr, int bitpix, bool is2D=false);
 

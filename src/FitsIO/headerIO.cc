@@ -42,8 +42,6 @@ namespace duchamp
 
   OUTCOME FitsHeader::readHeaderInfo(std::string fname, Param &par)
   {
-    ///  A simple front-end function to the three header access
-    ///   functions defined below.
 
     OUTCOME returnValue = SUCCESS;
 
@@ -55,36 +53,80 @@ namespace duchamp
       fits_report_error(stderr, status);
       returnValue = FAILURE;
     }
-    else{
+    else {
+      returnValue = this->readHeaderInfo(fptr,par);
 
-      // Get the brightness unit, so that we can set the units for the 
-      //  integrated flux when we go to fixUnits.
-      OUTCOME bunitResult = this->readBUNIT(fptr);
-      
-      // if(this->readBLANKinfo(fname, par)==FAILURE)
-      //   duchampWarning("Cube Reader", "Reading BLANK info failed\n");
-      OUTCOME blankResult = this->readBLANKinfo(fptr,par);
-      
-      //    OUTCOME beamResult = this->readBeamInfo(fptr, par);
-      this->itsBeam.readFromFITS(fptr, par, this->getAvPixScale());
-      
-      if(this->wcs->spec>=0) this->fixSpectralUnits(par.getSpectralUnits());
-      
-      // if(bunitResult == FAILURE || blankResult==FAILURE || beamResult==FAILURE ){
-      if(bunitResult == FAILURE || blankResult==FAILURE ){
-	DUCHAMPWARN("Cube Reader","Header could not be read completely");
-	returnValue=FAILURE;
-      }
-      
       // Close the FITS file.
       status = 0;
       fits_close_file(fptr, &status);
       if (status){
-	DUCHAMPWARN("Cube Reader","Error closing file: ");
-	fits_report_error(stderr, status);
+    	DUCHAMPWARN("Cube Reader","Error closing file: ");
+    	fits_report_error(stderr, status);
       }
+      
+    }  
+    return returnValue;
+  }
+
+  OUTCOME FitsHeader::readHeaderInfo(Param &par)
+  {
+    OUTCOME returnValue = SUCCESS;
+    if(this->fptr == 0) {
+      returnValue = FAILURE;
+      DUCHAMPERROR("Cube Reader", "FITS file not opened.");
     }
+    else {
+      returnValue = this->readHeaderInfo(this->fptr, par);
+    }
+    return returnValue;
+  }
+
+
+  OUTCOME FitsHeader::readHeaderInfo(fitsfile *fptr, Param &par)
+  // OUTCOME FitsHeader::readHeaderInfo(std::string fname, Param &par)
+  {
+    ///  A simple front-end function to the three header access
+    ///   functions defined below.
+
+    OUTCOME returnValue = SUCCESS;
+
+    // // Open the FITS file
+    // fitsfile *fptr;         
+    // int status = 0;
+    // if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
+    //   DUCHAMPWARN("Cube Reader","Error opening file "<<fname<<": ");
+    //   fits_report_error(stderr, status);
+    //   returnValue = FAILURE;
+    // }
+    // else {
+
+    // Get the brightness unit, so that we can set the units for the 
+    //  integrated flux when we go to fixUnits.
+    OUTCOME bunitResult = this->readBUNIT(fptr);
+      
+    // if(this->readBLANKinfo(fname, par)==FAILURE)
+    //   duchampWarning("Cube Reader", "Reading BLANK info failed\n");
+    OUTCOME blankResult = this->readBLANKinfo(fptr, par);
   
+    OUTCOME beamResult = this->readBeamInfo(fptr, par);
+
+    if(this->wcs->spec>=0) this->fixSpectralUnits(par.getSpectralUnits());
+
+    if(bunitResult == FAILURE || blankResult==FAILURE || beamResult==FAILURE ){
+      DUCHAMPWARN("Cube Reader","Header could not be read completely");
+      returnValue = FAILURE;
+    }
+    // else{
+
+    //   // Close the FITS file.
+    //   status = 0;
+    //   fits_close_file(fptr, &status);
+    //   if (status){
+    //   	DUCHAMPWARN("Cube Reader","Error closing file: ");
+    //   	fits_report_error(stderr, status);
+    //   }
+
+    // }  
     return returnValue;
   }
 
@@ -101,7 +143,7 @@ namespace duchamp
     OUTCOME returnStatus=SUCCESS;
     int status = 0;
 
-     // Read the BUNIT keyword, and translate to standard unit format if needs be
+    // Read the BUNIT keyword, and translate to standard unit format if needs be
     std::string header("BUNIT");
     fits_read_key(fptr, TSTRING, (char *)header.c_str(), unit, comment, &status);
     if (status){
@@ -208,11 +250,9 @@ namespace duchamp
     /// \param fname The name of the FITS file.
     /// \param par The Param set.
 
-    int status=0;
-    
     this->itsBeam.readFromFITS(fptr, par, this->getAvPixScale());
    
-
+ 
     return SUCCESS;
   }
 
