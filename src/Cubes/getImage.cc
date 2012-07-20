@@ -97,7 +97,6 @@ namespace duchamp
     ///  \return SUCCESS or FAILURE.
 
     int numAxes, status = 0;  /* MUST initialize status */
-    fitsfile *fptr;         
 
     // Read the size information -- number and lengths of all axes.
     // Just use this for reporting purposes.
@@ -106,8 +105,7 @@ namespace duchamp
       fits_report_error(stderr, status);
       return FAILURE;
     }
-    std::cerr << " ..Done. Now reading axis sizes...";
-    system("date");
+
     this->head.setNumAxes(numAxes);
     long *dimAxes = new long[numAxes];
     for(int i=0;i<numAxes;i++) dimAxes[i]=1;
