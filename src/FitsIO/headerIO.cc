@@ -90,22 +90,11 @@ namespace duchamp
 
     OUTCOME returnValue = SUCCESS;
 
-    // // Open the FITS file
-    // fitsfile *fptr;         
-    // int status = 0;
-    // if( fits_open_file(&fptr,fname.c_str(),READONLY,&status) ){
-    //   DUCHAMPWARN("Cube Reader","Error opening file "<<fname<<": ");
-    //   fits_report_error(stderr, status);
-    //   returnValue = FAILURE;
-    // }
-    // else {
-
     // Get the brightness unit, so that we can set the units for the 
     //  integrated flux when we go to fixUnits.
     OUTCOME bunitResult = this->readBUNIT(fptr);
       
     // if(this->readBLANKinfo(fname, par)==FAILURE)
-    //   duchampWarning("Cube Reader", "Reading BLANK info failed\n");
     OUTCOME blankResult = this->readBLANKinfo(fptr, par);
   
     OUTCOME beamResult = this->readBeamInfo(fptr, par);
@@ -116,17 +105,7 @@ namespace duchamp
       DUCHAMPWARN("Cube Reader","Header could not be read completely");
       returnValue = FAILURE;
     }
-    // else{
 
-    //   // Close the FITS file.
-    //   status = 0;
-    //   fits_close_file(fptr, &status);
-    //   if (status){
-    //   	DUCHAMPWARN("Cube Reader","Error closing file: ");
-    //   	fits_report_error(stderr, status);
-    //   }
-
-    // }  
     return returnValue;
   }
 
