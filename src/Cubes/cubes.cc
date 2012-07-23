@@ -657,22 +657,22 @@ namespace duchamp
       if(this->head.canUseThirdAxis() && numAxes>spc) this->axisDim[2] = dimensions[spc];
       else this->axisDim[2] = 1;
 
-      int numNondegDim=0;
-      for(int i=0;i<3;i++) if(this->axisDim[i]>1) numNondegDim++;
+      this->numNondegDim=0;
+      for(int i=0;i<3;i++) if(this->axisDim[i]>1) this->numNondegDim++;
 
-      if(this->par.getFlagSmooth()){
-	if(this->par.getSmoothType()=="spectral" && numNondegDim==2){
+       if(this->par.getFlagSmooth()){
+	if(this->par.getSmoothType()=="spectral" && this->numNondegDim==2){
 	  DUCHAMPWARN("Cube::initialiseCube", "Spectral smooth requested, but have a 2D image. Setting flagSmooth=false");
 	  this->par.setFlagSmooth(false);
 	}
-	if(this->par.getSmoothType()=="spatial" && numNondegDim==1){
+	if(this->par.getSmoothType()=="spatial" && this->numNondegDim==1){
 	  DUCHAMPWARN("Cube::initialiseCube", "Spatial smooth requested, but have a 1D image. Setting flagSmooth=false");
 	  this->par.setFlagSmooth(false);
 	}
       }
       if(this->par.getFlagATrous()){
 	for(int d=3; d>=1; d--){
-	  if(this->par.getReconDim()==d && numNondegDim==(d-1)){
+	  if(this->par.getReconDim()==d && this->numNondegDim==(d-1)){
 	    DUCHAMPWARN("Cube::initialiseCube", d << "D reconstruction requested, but image is " << d-1 <<"D. Setting flagAtrous=false");
 	    this->par.setFlagATrous(false);
 	  }

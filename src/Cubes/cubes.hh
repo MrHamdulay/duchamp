@@ -218,7 +218,7 @@ namespace duchamp
     Cube* slice(Section subsection);
     
 
-
+    short int   nondegDim(){return numNondegDim;};
     bool        is2D();
     void        checkDim(){head.set2D(is2D());};
     void        reportMemorySize(std::ostream &theStream, bool allocateArrays);
@@ -591,6 +591,7 @@ namespace duchamp
     void        drawFieldEdge();
 
   private: 
+    short int   numNondegDim;     ///< Number of non-degenerate dimensions (ie. with size>1)
     float      *recon;            ///< reconstructed array - used when doing a trous reconstruction.
     bool        reconExists;      ///< flag saying whether there is a reconstruction
     short      *detectMap;        ///< "moment map" - x,y locations of detected pixels
