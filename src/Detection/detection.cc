@@ -716,9 +716,9 @@ namespace duchamp
       this->haveParams = true;
 
       // include one pixel either side in each direction
-      size_t xsize = std::min((this->xmax-this->xmin+3),dim[0]);
-      size_t ysize = std::min((this->ymax-this->ymin+3),dim[1]);
-      size_t zsize = std::min((this->zmax-this->zmin+3),dim[2]); 
+      size_t xsize = std::min(size_t(this->xmax-this->xmin+3),dim[0]);
+      size_t ysize = std::min(size_t(this->ymax-this->ymin+3),dim[1]);
+      size_t zsize = std::min(size_t(this->zmax-this->zmin+3),dim[2]); 
       size_t spatsize = xsize*ysize;
       size_t size = xsize*ysize*zsize;
       std::vector <bool> isObj(size,false);
