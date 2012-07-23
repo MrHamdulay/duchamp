@@ -534,9 +534,9 @@ namespace duchamp
       this->haveParams = true;
 
       const int border = 1;  // include one pixel either side in each direction
-      size_t xsize = std::min(size_t(this->xmax-this->xmin+2*border+1),dim[0]);
-      size_t ysize = std::min(size_t(this->ymax-this->ymin+2*border+1),dim[1]);
-      size_t zsize = std::min(size_t(this->zmax-this->zmin+2*border+1),dim[2]);
+      size_t xsize = size_t(this->xmax-this->xmin+2*border+1);
+      size_t ysize = size_t(this->ymax-this->ymin+2*border+1);
+      size_t zsize = size_t(this->zmax-this->zmin+2*border+1);
       size_t xzero = size_t(std::max(0L,this->xmin-border));
       size_t yzero = size_t(std::max(0L,this->ymin-border));
       size_t zzero = size_t(std::max(0L,this->zmin-border));
@@ -549,7 +549,7 @@ namespace duchamp
       std::vector<Voxel>::iterator vox;
       for(vox=voxelList.begin();vox<voxelList.end();vox++){
 	if(this->isInObject(*vox)){
-	  size_t pos=(v->getX()-xzero) + (v->getY()-yzero)*xsize + (v->getZ()-zzero)*spatsize;
+	  size_t pos=(vox->getX()-xzero) + (vox->getY()-yzero)*xsize + (vox->getZ()-zzero)*spatsize;
 	  localFlux[pos] = vox->getF();
 	  isObj[pos] = true;
 	}
@@ -625,9 +625,9 @@ namespace duchamp
       this->haveParams = true;
 
        const int border = 1; // include one pixel either side in each direction
-      size_t xsize = std::min(size_t(this->xmax-this->xmin+2*border+1),dim[0]);
-      size_t ysize = std::min(size_t(this->ymax-this->ymin+2*border+1),dim[1]);
-      size_t zsize = std::min(size_t(this->zmax-this->zmin+2*border+1),dim[2]);
+      size_t xsize = size_t(this->xmax-this->xmin+2*border+1);
+      size_t ysize = size_t(this->ymax-this->ymin+2*border+1);
+      size_t zsize = size_t(this->zmax-this->zmin+2*border+1);
       size_t xzero = size_t(std::max(0L,this->xmin-border));
       size_t yzero = size_t(std::max(0L,this->ymin-border));
       size_t zzero = size_t(std::max(0L,this->zmin-border));
@@ -645,7 +645,7 @@ namespace duchamp
 	  return;
 	}	
 	else {
-	  size_t pos=(v->getX()-xzero) + (v->getY()-yzero)*xsize + (v->getZ()-zzero)*spatsize;
+	  size_t pos=(vox->getX()-xzero) + (vox->getY()-yzero)*xsize + (vox->getZ()-zzero)*spatsize;
 	  localFlux[pos] = voxelMap[*vox];
 	  isObj[pos] = true;
 	}
