@@ -157,25 +157,25 @@ namespace duchamp
 	else column.printBlank(stream);
 	break;
       case W50:
-	if(this->flagWCS) {
+// 	if(this->flagWCS) {
 	  if(this->specOK) column.printEntry(stream,this->w50);
 	  else column.printEntry(stream,0.);
-	}
-	else column.printBlank(stream);
+// 	}
+// 	else column.printBlank(stream);
 	break;
       case W20:
-	if(this->flagWCS) {
+// 	if(this->flagWCS) {
 	  if(this->specOK) column.printEntry(stream,this->w20);
 	  else column.printEntry(stream,0.);
-	}
-	else column.printBlank(stream);
+// 	}
+// 	else column.printBlank(stream);
 	break;
       case WVEL:
-	if(this->flagWCS) {
+// 	if(this->flagWCS) {
 	  if(this->specOK) column.printEntry(stream,this->velWidth);
 	  else column.printEntry(stream,0.);
-	}
-	else column.printBlank(stream);
+// 	}
+// 	else column.printBlank(stream);
 	break;
       case FINT:
 	column.printEntry(stream,this->intFlux);

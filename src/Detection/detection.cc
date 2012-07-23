@@ -492,6 +492,15 @@ namespace duchamp
       delete [] world;
 
     }
+    else {
+      double x=this->getXcentre(),y=this->getYcentre(),z=this->getZmin();
+      this->velMin = head.pixToVel(x,y,z);
+      z=this->getZmax();
+      this->velMax = head.pixToVel(x,y,z);
+      this->velWidth = fabs(this->velMax - this->velMin);
+    }
+
+      
   }
   //--------------------------------------------------------------------
 
@@ -515,8 +524,6 @@ namespace duchamp
     ///  \param voxelList The list of Voxels with flux information
     ///  \param head FitsHeader object that contains the WCS information.
 
-    const double border = 1.;
-
     if(!this->voxelListCovered(voxelList)){
       DUCHAMPERROR("Detection::calcIntegFlux","Voxel list provided does not match");
       return;
@@ -526,10 +533,13 @@ namespace duchamp
 
       this->haveParams = true;
 
-      // include one pixel either side in each direction
-      size_t xsize = (this->getXmax()-this->getXmin()+border*2+1);
-      size_t ysize = (this->getYmax()-this->getYmin()+border*2+1);
-      size_t zsize = (this->getZmax()-this->getZmin()+border*2+1); 
+      const int border = 1;  // include one pixel either side in each direction
+      size_t xsize = std::min(size_t(this->xmax-this->xmin+2*border+1),dim[0]);
+      size_t ysize = std::min(size_t(this->ymax-this->ymin+2*border+1),dim[1]);
+      size_t zsize = std::min(size_t(this->zmax-this->zmin+2*border+1),dim[2]);
+      size_t xzero = size_t(std::max(0L,this->xmin-border));
+      size_t yzero = size_t(std::max(0L,this->ymin-border));
+      size_t zzero = size_t(std::max(0L,this->zmin-border));
       size_t spatsize=xsize*ysize;
       size_t size = xsize*ysize*zsize;
       std::vector <bool> isObj(size,false);
@@ -539,11 +549,7 @@ namespace duchamp
       std::vector<Voxel>::iterator vox;
       for(vox=voxelList.begin();vox<voxelList.end();vox++){
 	if(this->isInObject(*vox)){
-	  long x = vox->getX();
-	  long y = vox->getY();
-	  long z = vox->getZ();
-	  size_t pos = (x-this->getXmin()+border) + (y-this->getYmin()+border)*xsize
-	    + (z-this->getZmin()+border)*xsize*ysize;
+	  size_t pos=(v->getX()-xzero) + (v->getY()-yzero)*xsize + (v->getZ()-zzero)*spatsize;
 	  localFlux[pos] = vox->getF();
 	  isObj[pos] = true;
 	}
@@ -614,16 +620,17 @@ namespace duchamp
     ///  \param voxelList The list of Voxels with flux information
     ///  \param head FitsHeader object that contains the WCS information.
 
-    const double border = 1.;
-
     if(!head.is2D()){
 
       this->haveParams = true;
 
-      // include one pixel either side in each direction
-      size_t xsize = (this->getXmax()-this->getXmin()+border*2+1);
-      size_t ysize = (this->getYmax()-this->getYmin()+border*2+1);
-      size_t zsize = (this->getZmax()-this->getZmin()+border*2+1); 
+       const int border = 1; // include one pixel either side in each direction
+      size_t xsize = std::min(size_t(this->xmax-this->xmin+2*border+1),dim[0]);
+      size_t ysize = std::min(size_t(this->ymax-this->ymin+2*border+1),dim[1]);
+      size_t zsize = std::min(size_t(this->zmax-this->zmin+2*border+1),dim[2]);
+      size_t xzero = size_t(std::max(0L,this->xmin-border));
+      size_t yzero = size_t(std::max(0L,this->ymin-border));
+      size_t zzero = size_t(std::max(0L,this->zmin-border));
       size_t spatsize=xsize*ysize;
       size_t size = xsize*ysize*zsize;
       std::vector <bool> isObj(size,false);
@@ -638,11 +645,7 @@ namespace duchamp
 	  return;
 	}	
 	else {
-	  long x = vox->getX();
-	  long y = vox->getY();
-	  long z = vox->getZ();
-	  size_t pos = (x-this->getXmin()+border) + (y-this->getYmin()+border)*xsize
-	    + (z-this->getZmin()+border)*xsize*ysize;
+	  size_t pos=(v->getX()-xzero) + (v->getY()-yzero)*xsize + (v->getZ()-zzero)*spatsize;
 	  localFlux[pos] = voxelMap[*vox];
 	  isObj[pos] = true;
 	}
@@ -715,10 +718,13 @@ namespace duchamp
 
       this->haveParams = true;
 
-      // include one pixel either side in each direction
-      size_t xsize = std::min(size_t(this->xmax-this->xmin+3),dim[0]);
-      size_t ysize = std::min(size_t(this->ymax-this->ymin+3),dim[1]);
-      size_t zsize = std::min(size_t(this->zmax-this->zmin+3),dim[2]); 
+      const int border=1; // include one pixel either side in each direction
+      size_t xsize = std::min(size_t(this->xmax-this->xmin+2*border+1),dim[0]);
+      size_t ysize = std::min(size_t(this->ymax-this->ymin+2*border+1),dim[1]);
+      size_t zsize = std::min(size_t(this->zmax-this->zmin+2*border+1),dim[2]);
+      size_t xzero = size_t(std::max(0L,this->xmin-border));
+      size_t yzero = size_t(std::max(0L,this->ymin-border));
+      size_t zzero = size_t(std::max(0L,this->zmin-border));
       size_t spatsize = xsize*ysize;
       size_t size = xsize*ysize*zsize;
       std::vector <bool> isObj(size,false);
@@ -727,8 +733,7 @@ namespace duchamp
       // work out which pixels are object pixels
       std::vector<Voxel> voxlist = this->getPixelSet();
       for(std::vector<Voxel>::iterator v=voxlist.begin();v<voxlist.end();v++){
-	size_t pos=(v->getX()-this->xmin+1) + (v->getY()-this->ymin+1)*xsize
-	  + (v->getZ()-this->zmin+1)*spatsize;
+	size_t pos=(v->getX()-xzero) + (v->getY()-yzero)*xsize + (v->getZ()-zzero)*spatsize;
 	localFlux[pos] = fluxArray[v->arrayIndex(dim)];
 	isObj[pos] = true;
       }
@@ -740,9 +745,9 @@ namespace duchamp
       for(size_t z=0;z<zsize;z++){
 	for(size_t y=0;y<ysize;y++){
 	  for(size_t x=0;x<xsize;x++){
-	    xpt=double(this->xmin - 1. + x);
-	    ypt=double(this->ymin - 1. + y);
-	    zpt=double(this->zmin - 1. + z);
+	    xpt=double(this->xmin - border + x);
+	    ypt=double(this->ymin - border + y);
+	    zpt=double(this->zmin - border + z);
 	    world[i++] = head.pixToVel(xpt,ypt,zpt);
 	  }
 	}
@@ -922,8 +927,7 @@ namespace duchamp
 
     this->w20 = fabs(this->v20min - this->v20max);
     this->w50 = fabs(this->v50min - this->v50max);
-
-
+    
   }
   //--------------------------------------------------------------------
 
