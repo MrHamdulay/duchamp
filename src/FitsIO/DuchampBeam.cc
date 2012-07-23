@@ -140,6 +140,7 @@ namespace duchamp
       par.setBeamAsUsed(*this);
       this->itsPixelScale = pixelScale;
     }
+    delete [] comment;
   }
 
   
