@@ -65,16 +65,16 @@ namespace duchamp
 //     else SortByZ(*this->objectList);
     if(!this->head.isWCS()){
       if(this->par.getSortingParam()=="ra"){
-	DUCHAMPWARN("sortDetections","No good WCS, so sorting by x-value");
-	SortDetections(*this->objectList, "x-value");
+	DUCHAMPWARN("sortDetections","No good WCS, so sorting by xvalue");
+	SortDetections(*this->objectList, "xvalue");
       }
       else if(this->par.getSortingParam()=="dec"){
-	DUCHAMPWARN("sortDetections","No good WCS, so sorting by y-value");
-	SortDetections(*this->objectList, "y-value");
+	DUCHAMPWARN("sortDetections","No good WCS, so sorting by yvalue");
+	SortDetections(*this->objectList, "yvalue");
       }
       else if(this->par.getSortingParam()=="vel" || this->par.getSortingParam()=="w50"){
-	DUCHAMPWARN("sortDetections","No good WCS, so sorting by z-value");
-	SortDetections(*this->objectList, "z-value");
+	DUCHAMPWARN("sortDetections","No good WCS, so sorting by zvalue");
+	SortDetections(*this->objectList, "zvalue");
       }
       else {
 	SortDetections(*this->objectList, this->par.getSortingParam());
