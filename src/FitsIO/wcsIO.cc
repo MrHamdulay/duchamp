@@ -246,7 +246,7 @@ namespace duchamp
     else{
       int numDim=0;
       for(int i=0;i<numAxes;i++) if(dimAxes[i]>1) numDim++;
-      this->flag2D = (numDim<=2);
+      this->flag2D = (numDim==2);
     }
 
     // clean up allocated memory
