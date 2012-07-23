@@ -90,7 +90,8 @@ namespace duchamp
     }
     stream << "#\n";
     stream << "COLOR RED" << endl;
-    stream << "COORD W" << endl;
+    if(this->head.isWCS()) stream << "COORD W" << endl;
+    else stream << "COORD P" << endl;
     stream << std::setprecision(6);
     stream.setf(std::ios::fixed);
     double *pix = new double[3];
@@ -104,12 +105,20 @@ namespace duchamp
 	  pix[0] = vertexSet[i*4]-0.5;
 	  pix[1] = vertexSet[i*4+1]-0.5;
 	  pix[2] = obj->getZcentre();
-	  this->head.pixToWCS(pix,wld);
-	  stream << "LINE " << wld[0] << " " << wld[1];
+	  if(this->head.isWCS()){
+	    this->head.pixToWCS(pix,wld);
+	    stream << "LINE " << wld[0] << " " << wld[1];
+	  }
+	  else
+	    stream << "LINE " << pix[0] << " " << pix[1];
 	  pix[0] = vertexSet[i*4+2]-0.5;
 	  pix[1] = vertexSet[i*4+3]-0.5;
-	  this->head.pixToWCS(pix,wld);
-	  stream << " " << wld[0] << " " << wld[1] << "\n";
+	  if(this->head.isWCS()){
+	    this->head.pixToWCS(pix,wld);
+	    stream << " " << wld[0] << " " << wld[1] << "\n";
+	  }
+	  else
+	    stream << " " << pix[0] << " " << pix[1] << "\n";
 	}
       }
       else if(this->par.getAnnotationType()=="circles"){
