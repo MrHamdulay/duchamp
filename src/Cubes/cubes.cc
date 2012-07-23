@@ -660,7 +660,11 @@ namespace duchamp
       this->numNondegDim=0;
       for(int i=0;i<3;i++) if(this->axisDim[i]>1) this->numNondegDim++;
 
-       if(this->par.getFlagSmooth()){
+      if(this->numNondegDim == 1){
+	std::swap(this->axisDim[0],this->axisDim[2]);
+      }
+
+      if(this->par.getFlagSmooth()){
 	if(this->par.getSmoothType()=="spectral" && this->numNondegDim==2){
 	  DUCHAMPWARN("Cube::initialiseCube", "Spectral smooth requested, but have a 2D image. Setting flagSmooth=false");
 	  this->par.setFlagSmooth(false);

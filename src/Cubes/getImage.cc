@@ -174,7 +174,7 @@ namespace duchamp
     if(this->par.isVerbose()){
       std::cout << "Done. Data array has dimensions: ";
       std::cout << this->axisDim[0];
-      if(this->axisDim[1]>1) std::cout  <<"x"<< this->axisDim[1];
+      std::cout  <<"x"<< this->axisDim[1];
       if(this->axisDim[2]>1) std::cout  <<"x"<< this->axisDim[2];
       std::cout << "\n";
     }   
