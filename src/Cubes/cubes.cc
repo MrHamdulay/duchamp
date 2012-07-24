@@ -661,10 +661,29 @@ namespace duchamp
       for(int i=0;i<3;i++) if(this->axisDim[i]>1) this->numNondegDim++;
 
       if(this->numNondegDim == 1){
-	std::swap(this->axisDim[0],this->axisDim[2]);
+	if(!head.isWCS()) std::swap(this->axisDim[0],this->axisDim[2]);
 	imsize=this->axisDim[2];
       }
 
+      bool haveChanged=false;
+      int change=0;
+      if(this->par.getMinPix() > this->axisDim[0]*this->axisDim[1]){
+	DUCHAMPWARN("Cube::initialiseCube", "The value of minPix ("<<this->par.getMinPix()<<") is greater than the image size. Setting to "<<this->axisDim[0]*this->axisDim[1]);
+	change=this->par.getMinPix() - this->axisDim[0]*this->axisDim[1];
+	haveChanged=true;
+	this->par.setMinPix(this->axisDim[0]*this->axisDim[1]);
+      }
+      if(this->par.getMinChannels() > this->axisDim[2]){
+	DUCHAMPWARN("Cube::initialiseCube", "The value of minChannels ("<<this->par.getMinChannels()<<") is greater than the spectral size. Setting to "<<this->axisDim[2]);
+	change=this->par.getMinPix() - this->axisDim[0]*this->axisDim[1];
+	haveChanged=true;
+	this->par.setMinChannels(this->axisDim[2]);
+      }
+      if(haveChanged){
+	DUCHAMPWARN("Cube::initialiseCube","Reducing minVoxels to "<<this->par.getMinVoxels() - change<<" to accomodate these changes" );
+	this->par.setMinVoxels(this->par.getMinVoxels() - change);
+      }
+      
       if(this->par.getFlagSmooth()){
 	if(this->par.getSmoothType()=="spectral" && this->numNondegDim==2){
 	  DUCHAMPWARN("Cube::initialiseCube", "Spectral smooth requested, but have a 2D image. Setting flagSmooth=false");
@@ -1277,7 +1296,7 @@ namespace duchamp
 	//      obj->calcWCSparams(this->array,this->axisDim,this->head);
 	obj->calcWCSparams(this->head);
 	obj->calcIntegFlux(this->array,this->axisDim,this->head);
-	
+
 	if(this->par.getFlagUserThreshold())
 	  obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
 	else

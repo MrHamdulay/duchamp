@@ -117,7 +117,6 @@ namespace duchamp
 	width = max - min;
 	max += width * 0.15;
 	min -= width * 0.05;
-	float xDetect=max-width*0.05;
 	width = vmax - vmin;
 	vmax += width * 0.01;
 	vmin -= width * 0.01;
@@ -150,16 +149,11 @@ namespace duchamp
 	  spPlot.drawMWRange(minMWvel,maxMWvel);
 	}
 
-	int lw;
-	cpgqlw(&lw);
-	cpgslw(2);
 	for(int z=1;z<=zdim;z++){
 	  if(this->detectMap[z-1]>0){
-	    cpgmove(z-0.5,xDetect);
-	    cpgdraw(z+0.5,xDetect);
+	    spPlot.drawDetectPixel(z-1,this->head);
 	  }
 	}
-	cpgslw(lw);
 
 	for(size_t i=0;i<this->getNumObj();i++){
 	  drawSpectralRange(spPlot,this->objectList->at(i),this->head);

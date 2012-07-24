@@ -31,6 +31,7 @@
 #include <math.h>
 #include <cpgplot.h>
 #include <duchamp/param.hh>
+#include <duchamp/fitsHeader.hh>
 #include <duchamp/duchamp.hh>
 #include <duchamp/Utils/mycpgplot.hh>
 #include <duchamp/Cubes/plots.hh>
@@ -390,6 +391,31 @@ namespace duchamp
       cpgsch(2.);
       cpgswin(x1,x2,y1,y2);
       cpgbox("1bcnst",0.,0,"bcnst1v",0.,0);
+    }
+    //----------------------------------------------------------
+    void SimpleSpectralPlot::drawDetectPixel(int z, FitsHeader &head)
+    {
+      float v1,v2;
+      double zero=0.;
+      if(head.isWCS()){
+	double zpt=double(z-0.5);
+	v1=head.pixToVel(zero,zero,zpt);
+	zpt=double(z+0.5);
+	v2=head.pixToVel(zero,zero,zpt);
+      }
+      else{
+	v1=float(z-0.5);
+	v2=float(z+0.5);
+      }
+      float x1,x2,y1,y2;
+      cpgqwin(&x1,&x2,&y1,&y2);
+      float y=y2-0.05*(y2-y1);
+      int lw;
+      cpgqlw(&lw);
+      cpgslw(3);
+      cpgmove(v1,y);
+      cpgdraw(v2,y);
+      cpgslw(lw);
     }
     //----------------------------------------------------------
     void SimpleSpectralPlot::drawVelRange(float v1, float v2)

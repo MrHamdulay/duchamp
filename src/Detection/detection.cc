@@ -742,12 +742,12 @@ namespace duchamp
       double *world  = new double[size];
       double xpt,ypt,zpt;
       size_t i=0;
-      for(size_t z=0;z<zsize;z++){
-	for(size_t y=0;y<ysize;y++){
-	  for(size_t x=0;x<xsize;x++){
-	    xpt=double(this->xmin - border + x);
-	    ypt=double(this->ymin - border + y);
-	    zpt=double(this->zmin - border + z);
+      for(size_t z=zzero;z<zzero+zsize;z++){
+	for(size_t y=yzero;y<yzero+ysize;y++){
+	  for(size_t x=xzero;x<xzero+xsize;x++){
+ 	    xpt=double(x);
+	    ypt=double(y);
+	    zpt=double(z);
 	    world[i++] = head.pixToVel(xpt,ypt,zpt);
 	  }
 	}
