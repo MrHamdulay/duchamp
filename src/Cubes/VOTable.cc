@@ -58,7 +58,22 @@ namespace duchamp
     stream<<"<VOTABLE version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n";
     stream<<" xsi:noNamespaceSchemaLocation=\"http://www.ivoa.net/xml/VOTable/VOTable/v1.1\">\n";
 
-    stream<<"  <COOSYS ID=\"J2000\" equinox=\"J2000.\" epoch=\"J2000.\" system=\"eq_FK5\"/>\n";
+    std::string ID,equinox,system;
+    if(std::string(this->head.WCS().lngtyp)=="RA") { //J2000 or B1950
+      if(this->head.WCS().equinox==2000.){
+	ID=equinox= "J2000";
+	system="eq_FK5";
+      }
+      else{
+	ID=equinox="B1950";
+	system="eq_FK4";
+      }
+      stream <<"  <COOSYS ID=\""<<ID<<"\" equinox=\""<<equinox<<"\" system=\""<<system<<"\"/>\n";
+    }
+    else{
+      ID=system="galactic";
+      stream <<"  <COOSYS ID=\""<<ID<<"\" system=\""<<system<<"\"/>\n";
+    }
     stream<<"  <RESOURCE name=\"Duchamp Output\">\n";
     stream<<"    <TABLE name=\"Detections\">\n";
     stream<<"      <DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>\n";
