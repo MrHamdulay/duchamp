@@ -662,6 +662,7 @@ namespace duchamp
 
       if(this->numNondegDim == 1){
 	std::swap(this->axisDim[0],this->axisDim[2]);
+	imsize=this->axisDim[2];
       }
 
       if(this->par.getFlagSmooth()){
@@ -1417,9 +1418,12 @@ namespace duchamp
     ///  \param obj A Detection object that is being incorporated into the map.
 
     std::vector<Voxel> vlist = obj.getPixelSet();
-    for(std::vector<Voxel>::iterator vox=vlist.begin();vox<vlist.end();vox++) 
-      this->detectMap[vox->getX()+vox->getY()*this->axisDim[0]]++;
-
+    for(std::vector<Voxel>::iterator vox=vlist.begin();vox<vlist.end();vox++) {
+      if(this->numNondegDim==1)
+	this->detectMap[vox->getZ()]++;
+      else
+	this->detectMap[vox->getX()+vox->getY()*this->axisDim[0]]++;
+    }
   }
   //--------------------------------------------------------------------
 

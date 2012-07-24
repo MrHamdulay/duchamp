@@ -35,6 +35,8 @@ namespace duchamp {
 
     /// @brief Set up the class with parameters & pointers from the cube
     void define(Cube *theCube);
+    /// @brief Update a Cube's detectMap based on the flag array
+    void updateDetectMap(short *map);
     /// @brief Grow an object
     void grow(Detection *theObject);
     /// @brief Grow out from a single voxel, returning the list of new voxels.
@@ -42,7 +44,7 @@ namespace duchamp {
 
   protected:
     std::vector<STATE> itsFlagArray;                   ///< The array of pixel flags
-    std::vector<long> itsArrayDim;                     ///< The dimensions of the array
+    std::vector<size_t> itsArrayDim;                     ///< The dimensions of the array
     Statistics::StatsContainer<float> itsGrowthStats;  ///< The statistics used to determine membership of an object
     int itsSpatialThresh;                              ///< The spatial threshold for merging
     int itsVelocityThresh;                             ///< The spectral threshold for merging

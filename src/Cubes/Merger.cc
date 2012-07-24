@@ -88,6 +88,7 @@ namespace duchamp
 	  }
 	  grower.grow(&currentList[i]);
 	}
+  	grower.updateDetectMap(this->detectMap);
 	std::cout.unsetf(std::ios::left);
 
 	// and do the merging again to pick up objects that have

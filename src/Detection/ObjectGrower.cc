@@ -51,7 +51,7 @@ namespace duchamp {
     if(theCube->isRecon()) this->itsFluxArray = theCube->getRecon();
     else this->itsFluxArray = theCube->getArray();
 
-    this->itsArrayDim = std::vector<long>(3);
+    this->itsArrayDim = std::vector<size_t>(3);
     this->itsArrayDim[0]=theCube->getDimX();
     this->itsArrayDim[1]=theCube->getDimY();
     this->itsArrayDim[2]=theCube->getDimZ();
@@ -87,6 +87,32 @@ namespace duchamp {
 
   }
 
+
+  void ObjectGrower::updateDetectMap(short *map)
+  {
+
+    int numNondegDim=0;
+    for(int i=0;i<3;i++) if(this->itsArrayDim[i]>1) numNondegDim++;
+
+    if(numNondegDim>1){
+      size_t spatsize=this->itsArrayDim[0]*this->itsArrayDim[1];
+      for(size_t xy=0;xy<spatsize;xy++){
+	short ct=0;
+	for(size_t z=0;z<this->itsArrayDim[2];z++){
+	  if(this->itsFlagArray[xy+z*spatsize] == DETECTED) ct++;
+	}
+	map[xy]=ct;
+      }
+    }
+    else{
+      for(size_t z=0;z<this->itsArrayDim[2];z++){
+	map[z] = (this->itsFlagArray[z] == DETECTED) ? 1 : 0;
+      }
+    }
+
+  }
+
+
   void ObjectGrower::grow(Detection *theObject)
   {
     /// @details This function grows the provided object out to the
@@ -100,12 +126,12 @@ namespace duchamp {
     /// parameters that belong to PixelInfo::Object3D are
     /// recalculated.
 
-    long spatsize=this->itsArrayDim[0]*this->itsArrayDim[1];
+    size_t spatsize=this->itsArrayDim[0]*this->itsArrayDim[1];
     long zero = 0;
     std::vector<Voxel> voxlist = theObject->getPixelSet();
     size_t origSize = voxlist.size();
     long xpt,ypt,zpt;
-    int xmin,xmax,ymin,ymax,zmin,zmax,x,y,z;
+    long xmin,xmax,ymin,ymax,zmin,zmax,x,y,z;
     size_t pos;
     for(size_t i=0; i<voxlist.size(); i++){
       
@@ -116,12 +142,12 @@ namespace duchamp {
       ypt=voxlist[i].getY();
       zpt=voxlist[i].getZ();
       
-      xmin = std::max(xpt - this->itsSpatialThresh, zero);
-      xmax = std::min(xpt + this->itsSpatialThresh, this->itsArrayDim[0]-1);
-      ymin = std::max(ypt - this->itsSpatialThresh, zero);
-      ymax = std::min(ypt + this->itsSpatialThresh, this->itsArrayDim[1]-1);
-      zmin = std::max(zpt - this->itsVelocityThresh, zero);
-      zmax = std::min(zpt + this->itsVelocityThresh, this->itsArrayDim[2]-1);
+      xmin = size_t(std::max(xpt - this->itsSpatialThresh, zero));
+      xmax = size_t(std::min(xpt + this->itsSpatialThresh, long(this->itsArrayDim[0])-1));
+      ymin = size_t(std::max(ypt - this->itsSpatialThresh, zero));
+      ymax = size_t(std::min(ypt + this->itsSpatialThresh, long(this->itsArrayDim[1])-1));
+      zmin = size_t(std::max(zpt - this->itsVelocityThresh, zero));
+      zmax = size_t(std::min(zpt + this->itsVelocityThresh, long(this->itsArrayDim[2])-1));
       
       //loop over surrounding pixels.
       for(x=xmin; x<=xmax; x++){
@@ -166,11 +192,11 @@ namespace duchamp {
     // std::cerr << "--> " << xpt << " " << ypt << " " << zpt << "\n";
 
     int xmin = std::max(xpt - this->itsSpatialThresh, zero);
-    int xmax = std::min(xpt + this->itsSpatialThresh, this->itsArrayDim[0]-1);
+    int xmax = std::min(xpt + this->itsSpatialThresh, long(this->itsArrayDim[0])-1);
     int ymin = std::max(ypt - this->itsSpatialThresh, zero);
-    int ymax = std::min(ypt + this->itsSpatialThresh, this->itsArrayDim[1]-1);
+    int ymax = std::min(ypt + this->itsSpatialThresh, long(this->itsArrayDim[1])-1);
     int zmin = std::max(zpt - this->itsVelocityThresh, zero);
-    int zmax = std::min(zpt + this->itsVelocityThresh, this->itsArrayDim[2]-1);
+    int zmax = std::min(zpt + this->itsVelocityThresh, long(this->itsArrayDim[2])-1);
       
     // std::cerr << xmin << " " << xmax << "  " << ymin << " " << ymax << "  " << zmin << " " << zmax << "\n";
     //loop over surrounding pixels.
