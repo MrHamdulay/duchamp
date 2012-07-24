@@ -38,6 +38,7 @@
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Cubes/cubeUtils.hh>
 #include <duchamp/Cubes/plots.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/mycpgplot.hh>
@@ -47,10 +48,6 @@ using namespace PixelInfo;
 
 namespace duchamp
 {
-
-  void drawSpectralRange(Plot::SpectralPlot &plot, Detection &obj, FitsHeader &head);
-  void getSmallVelRange(Detection &obj, FitsHeader &head, double *minvel, double *maxvel);
-  void getSmallZRange(Detection &obj, double *minz, double *maxz);
 
   std::string getIndivPlotName(std::string baseName, int objNum, int maxNumObj)
   {
@@ -322,8 +319,10 @@ namespace duchamp
     /**************************/
 
     // DRAW THE MOMENT MAP OF THE DETECTION -- SUMMED OVER ALL CHANNELS
-    plot.gotoMap();
-    this->drawMomentCutout(this->objectList->at(objNum));
+    if(this->numNondegDim>1){
+      plot.gotoMap();
+      this->drawMomentCutout(this->objectList->at(objNum));
+    }
 
     delete [] specx;
     delete [] specy;
@@ -333,112 +332,6 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void drawSpectralRange(Plot::SpectralPlot &plot, Detection &obj, FitsHeader &head)
-  {
-    /// @details
-
-    /// A front-end to drawing the lines delimiting the spectral
-    /// extent of the detection. This takes into account the channel
-    /// widths, offsetting outwards by half a channel (for instance, a
-    /// single-channel detection will not have the separation of one
-    /// channel).
-    /// If the world coordinate is being plotted, the correct offset
-    /// is calcuated by transforming from the central spatial
-    /// positions and the offsetted min/max z-pixel extents
-
-    if(head.isWCS()){
-      double x=obj.getXcentre(),y=obj.getYcentre(),z;
-      z=obj.getZmin()-0.5;
-      float vmin=head.pixToVel(x,y,z);
-      z=obj.getZmax()+0.5;
-      float vmax=head.pixToVel(x,y,z);
-      plot.drawVelRange(vmin,vmax);
-    }
-    else{
-      plot.drawVelRange(obj.getZmin()-0.5,obj.getZmax()+0.5);
-    }
-
-
-  }
-
-  void getSmallVelRange(Detection &obj, FitsHeader &head, 
-			double *minvel, double *maxvel)
-  {
-    ///  @details
-    ///  Routine to calculate the velocity range for the zoomed-in region.
-    ///  This range should be the maximum of 20 pixels, or 3x the wdith of 
-    ///   the detection.
-    ///  Need to :
-    ///      Calculate pixel width of a 3x-detection-width region.
-    ///      If smaller than 20, calculate velocities of central vel +- 10 pixels
-    ///      If not, use the 3x-detection-width
-    ///  Range returned via "minvel" and "maxvel" parameters.
-    ///  \param obj Detection under examination.
-    ///  \param head FitsHeader, containing the WCS information.
-    ///  \param minvel Returned value of minimum velocity
-    ///  \param maxvel Returned value of maximum velocity
-
-    double *pixcrd = new double[3];
-    double *world  = new double[3];
-    float minpix,maxpix;
-    // define new velocity extrema 
-    //    -- make it 3x wider than the width of the detection.
-    *minvel = 0.5*(obj.getVelMin()+obj.getVelMax()) - 1.5*obj.getVelWidth();
-    *maxvel = 0.5*(obj.getVelMin()+obj.getVelMax()) + 1.5*obj.getVelWidth();
-    // Find velocity range in number of pixels:
-    world[0] = obj.getRA();
-    world[1] = obj.getDec();
-    world[2] = head.velToSpec(*minvel);
-    head.wcsToPix(world,pixcrd);
-    minpix = pixcrd[2];
-    world[2] = head.velToSpec(*maxvel);
-    head.wcsToPix(world,pixcrd);
-    maxpix = pixcrd[2];
-    if(maxpix<minpix) std::swap(maxpix,minpix);
-    
-    if((maxpix - minpix + 1) < 20){
-      pixcrd[0] = double(obj.getXcentre());
-      pixcrd[1] = double(obj.getYcentre());
-      pixcrd[2] = obj.getZcentre() - 10.;
-      head.pixToWCS(pixcrd,world);
-      //    *minvel = setVel_kms(wcs,world[2]);
-      *minvel = head.specToVel(world[2]);
-      pixcrd[2] = obj.getZcentre() + 10.;
-      head.pixToWCS(pixcrd,world);
-      //     *maxvel = setVel_kms(wcs,world[2]);
-      *maxvel = head.specToVel(world[2]);
-      if(*maxvel<*minvel) std::swap(*maxvel,*minvel);
-    }
-    delete [] pixcrd;
-    delete [] world;
-
-  }
-  //--------------------------------------------------------------------
-
-  void getSmallZRange(Detection &obj, double *minz, double *maxz)
-  {
-    ///  @details
-    ///  Routine to calculate the pixel range for the zoomed-in spectrum.
-    ///  This range should be the maximum of 20 pixels, or 3x the width 
-    ///   of the detection.
-    ///  Need to :
-    ///      Calculate pixel width of a 3x-detection-width region.
-    ///       If smaller than 20, use central pixel +- 10 pixels
-    ///  Range returned via "minz" and "maxz" parameters.
-    ///  \param obj Detection under examination.
-    ///  \param minz Returned value of minimum z-pixel coordinate
-    ///  \param maxz Returned value of maximum z-pixel coordinate
-
-    *minz = 2.*obj.getZmin() - obj.getZmax();
-    *maxz = 2.*obj.getZmax() - obj.getZmin();
-    
-    if((*maxz - *minz + 1) < 20){
-      *minz = obj.getZcentre() - 10.;
-      *maxz = obj.getZcentre() + 10.;
-    }
-
-  }
-  //--------------------------------------------------------------------
 
   void Cube::plotSource(Detection obj, Plot::CutoutPlot &plot)
   {

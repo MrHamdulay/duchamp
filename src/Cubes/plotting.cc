@@ -73,85 +73,198 @@ namespace duchamp
 
     long xdim=this->axisDim[0];
     long ydim=this->axisDim[1];
-    Plot::ImagePlot newplot;
-    int flag = newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
+    long zdim=this->axisDim[2];
 
-    if(flag<=0){
-      DUCHAMPERROR("Plot Detection Map", "Could not open PGPlot device " << pgDestination);
-    }
-    else{
-
-      // get the list of objects that should be plotted. Only applies to outlines and labels.
-      std::vector<bool> objectChoice = this->par.getObjectChoices(this->objectList->size());
-
-      std::string filename=this->pars().getImageFile();
-      newplot.makeTitle(filename.substr(filename.rfind('/')+1,filename.size()));
-
-      newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,
-			 boxYmin+0.5,boxYmin+ydim+0.5,
-			 "X pixel","Y pixel");
-
-      //     if(this->objectList.size()>0){ 
-      // if there are no detections, there will be nothing to plot here
-
-      // Define a float equivalent of this->detectMap that can be plotted by cpggray.
-      // Also find the maximum value, so that we can get the greyscale right and plot a colour wedge.
-      float *detectionMap = new float[xdim*ydim];
-      int maxNum = this->detectMap[0];
-      detectionMap[0] = float(maxNum);
-      for(int pix=1;pix<xdim*ydim;pix++){
-	detectionMap[pix] = float(this->detectMap[pix]);  
-	if(this->detectMap[pix] > maxNum)  maxNum = this->detectMap[pix];
-      }
-
-      if(maxNum>0){ // if there are no detections, it will be 0.
-
-	maxNum = 5 * ((maxNum-1)/5 + 1);  // move to next multiple of 5
-
-	float tr[6] = {boxXmin,1.,0.,boxYmin,0.,1.};
-	cpggray(detectionMap,xdim,ydim,1,xdim,1,ydim,maxNum,0,tr);  
-	cpgbox("bcnst",0.,0,"bcnst",0.,0);
-	cpgsch(1.5);
-	cpgwedg("rg",3.2,2,maxNum,0,"Number of detected channels");
-      }
-
-      delete [] detectionMap;
+    if( this->numNondegDim == 1){
       
-      drawBlankEdges(this->array,this->axisDim[0],this->axisDim[1],this->par);
-      
-      if(this->head.isWCS()) this->plotWCSaxes();
-  
-      if(this->objectList->size()>0){ 
-	// now show and label each detection, drawing over the WCS lines.
-
-	cpgsch(1.0);
-	cpgslw(2);    
-	float xoff=0.;
-	float yoff=newplot.cmToCoord(0.5);
-	if(this->par.drawBorders()){
-	  cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
-	  for(size_t i=0;i<this->objectList->size();i++) 
-	    if(objectChoice[i]) this->objectList->at(i).drawBorders(0,0);
+      float *specx  = new float[zdim];
+      float *specy  = new float[zdim];
+      float *specy2 = new float[zdim];
+      float *base   = new float[zdim];
+      Plot::SimpleSpectralPlot spPlot;
+      int flag = spPlot.setUpPlot(pgDestination.c_str());
+//       int flag=cpgopen(pgDestination.c_str());
+//       cpgpap(spPlot.getPaperWidth(),spPlot.getAspectRatio());
+//       cpgsch(Plot::spLabelSize);
+      if(flag <= 0){
+	DUCHAMPERROR("Plot Detection Map", "Could not open PGPlot device " << pgDestination);
+      }
+      else{
+	
+	this->getSpectralArrays(-1,specx,specy,specy2,base);
+	float vmax,vmin,width;
+	vmax = vmin = specx[0];
+	for(int i=1;i<zdim;i++){
+	  if(specx[i]>vmax) vmax=specx[i];
+	  if(specx[i]<vmin) vmin=specx[i];
 	}
-	cpgsci(DUCHAMP_ID_TEXT_COLOUR);
-	std::stringstream label;
-	cpgslw(1);
-	for(size_t i=0;i<this->objectList->size();i++){
-	  if(objectChoice[i]) {
-	    cpgpt1(this->par.getXOffset()+this->objectList->at(i).getXPeak(), 
-		   this->par.getYOffset()+this->objectList->at(i).getYPeak(), 
-		   CROSS);
-	    label.str("");
-	    label << this->objectList->at(i).getID();
-	    cpgptxt(this->par.getXOffset()+this->objectList->at(i).getXPeak()-xoff, 
-		    this->par.getYOffset()+this->objectList->at(i).getYPeak()-yoff, 
-		    0, 0.5, label.str().c_str());
+      
+	float max,min;
+	int loc=0;
+	if(this->par.getMinMW()>0) max = min = specy[0];
+	else max = min = specy[this->par.getMaxMW()+1];
+	for(int i=0;i<zdim;i++){
+	  if(!this->par.isInMW(i)){
+	    if(specy[i]>max) max=specy[i];
+	    if(specy[i]<min){
+	      min=specy[i];
+	      loc = i;
+	    }
 	  }
 	}
+	// widen the ranges slightly so that the top & bottom & edges don't 
+	// lie on the axes.
+	width = max - min;
+	max += width * 0.15;
+	min -= width * 0.05;
+	float xDetect=max-width*0.05;
+	width = vmax - vmin;
+	vmax += width * 0.01;
+	vmin -= width * 0.01;
+	std::string label,fluxLabel = "Flux ["+this->head.getFluxUnits()+"]";
+	if(this->head.isWCS()){
+	  label = this->head.getSpectralDescription() + " [" + 
+	    this->head.getSpectralUnits() + "]";
+	}
+	else label="Spectral pixel";
+	std::string filename=this->pars().getImageFile();
+	filename = filename.substr(filename.rfind('/')+1);
+	spPlot.label(label,fluxLabel,"Detection summary : " + filename);
+	spPlot.gotoMainSpectrum(vmin,vmax,min,max);
+	cpgline(zdim,specx,specy);
+	if(this->par.getFlagBaseline()){
+	  cpgsci(DUCHAMP_BASELINE_SPECTRA_COLOUR);
+	  cpgline(zdim,specx,base);
+	  cpgsci(FOREGND);
+	}
+	if(this->reconExists){
+	  cpgsci(DUCHAMP_RECON_SPECTRA_COLOUR);
+	  cpgline(zdim,specx,specy2);    
+	  cpgsci(FOREGND);
+	}
+	if(this->par.getFlagMW()){
+	  double zval = double(this->par.getMinMW()),zero=0.;
+	  double minMWvel = this->head.pixToVel(zero,zero,zval);
+	  zval = double(this->par.getMaxMW());
+	  double maxMWvel = this->head.pixToVel(zero,zero,zval);
+	  spPlot.drawMWRange(minMWvel,maxMWvel);
+	}
 
+	int lw;
+	cpgqlw(&lw);
+	cpgslw(2);
+	for(int z=1;z<=zdim;z++){
+	  if(this->detectMap[z-1]>0){
+	    cpgmove(z-0.5,xDetect);
+	    cpgdraw(z+0.5,xDetect);
+	  }
+	}
+	cpgslw(lw);
+
+	for(size_t i=0;i<this->getNumObj();i++){
+	  drawSpectralRange(spPlot,this->objectList->at(i),this->head);
+	}
+
+	cpgsci(RED);
+	cpgsls(DASHED);
+	float thresh = this->Stats.getThreshold();
+	if(this->par.getFlagNegative()) thresh *= -1.;
+	cpgmove(vmin,thresh);
+	cpgdraw(vmax,thresh);
+	if(this->par.getFlagGrowth()){
+	  if(this->par.getFlagUserGrowthThreshold()) thresh= this->par.getGrowthThreshold();
+	  else thresh= this->Stats.snrToValue(this->par.getGrowthCut());
+	  if(this->par.getFlagNegative()) thresh *= -1.;	
+	  cpgsls(DOTTED);
+	  cpgmove(vmin,thresh);
+	  cpgdraw(vmax,thresh);
+	}
       }
 
-      cpgclos();
+      spPlot.close();
+    }
+    else {
+
+      Plot::ImagePlot newplot;
+      int flag = newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
+
+      if(flag<=0){
+	DUCHAMPERROR("Plot Detection Map", "Could not open PGPlot device " << pgDestination);
+      }
+      else{
+
+	// get the list of objects that should be plotted. Only applies to outlines and labels.
+	std::vector<bool> objectChoice = this->par.getObjectChoices(this->objectList->size());
+
+	std::string filename=this->pars().getImageFile();
+	newplot.makeTitle(filename.substr(filename.rfind('/')+1,filename.size()));
+
+	newplot.drawMapBox(boxXmin+0.5,boxXmin+xdim+0.5,
+			   boxYmin+0.5,boxYmin+ydim+0.5,
+			   "X pixel","Y pixel");
+
+	//     if(this->objectList.size()>0){ 
+	// if there are no detections, there will be nothing to plot here
+
+	// Define a float equivalent of this->detectMap that can be plotted by cpggray.
+	// Also find the maximum value, so that we can get the greyscale right and plot a colour wedge.
+	float *detectionMap = new float[xdim*ydim];
+	int maxNum = this->detectMap[0];
+	detectionMap[0] = float(maxNum);
+	for(int pix=1;pix<xdim*ydim;pix++){
+	  detectionMap[pix] = float(this->detectMap[pix]);  
+	  if(this->detectMap[pix] > maxNum)  maxNum = this->detectMap[pix];
+	}
+
+	if(maxNum>0){ // if there are no detections, it will be 0.
+
+	  maxNum = 5 * ((maxNum-1)/5 + 1);  // move to next multiple of 5
+
+	  float tr[6] = {boxXmin,1.,0.,boxYmin,0.,1.};
+	  cpggray(detectionMap,xdim,ydim,1,xdim,1,ydim,maxNum,0,tr);  
+	  cpgbox("bcnst",0.,0,"bcnst",0.,0);
+	  cpgsch(1.5);
+	  cpgwedg("rg",3.2,2,maxNum,0,"Number of detected channels");
+	}
+
+	delete [] detectionMap;
+      
+	drawBlankEdges(this->array,this->axisDim[0],this->axisDim[1],this->par);
+      
+	if(this->head.isWCS()) this->plotWCSaxes();
+  
+	if(this->objectList->size()>0){ 
+	  // now show and label each detection, drawing over the WCS lines.
+
+	  cpgsch(1.0);
+	  cpgslw(2);    
+	  float xoff=0.;
+	  float yoff=newplot.cmToCoord(0.5);
+	  if(this->par.drawBorders()){
+	    cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
+	    for(size_t i=0;i<this->objectList->size();i++) 
+	      if(objectChoice[i]) this->objectList->at(i).drawBorders(0,0);
+	  }
+	  cpgsci(DUCHAMP_ID_TEXT_COLOUR);
+	  std::stringstream label;
+	  cpgslw(1);
+	  for(size_t i=0;i<this->objectList->size();i++){
+	    if(objectChoice[i]) {
+	      cpgpt1(this->par.getXOffset()+this->objectList->at(i).getXPeak(), 
+		     this->par.getYOffset()+this->objectList->at(i).getYPeak(), 
+		     CROSS);
+	      label.str("");
+	      label << this->objectList->at(i).getID();
+	      cpgptxt(this->par.getXOffset()+this->objectList->at(i).getXPeak()-xoff, 
+		      this->par.getYOffset()+this->objectList->at(i).getYPeak()-yoff, 
+		      0, 0.5, label.str().c_str());
+	    }
+	  }
+
+	}
+
+	newplot.close();
+      }
     }
   }
 
@@ -410,7 +523,7 @@ namespace duchamp
   
       for(int iplot=0; iplot<numPlots; iplot++){
 	plotList[iplot].goToPlot();
-	cpgclos();
+	plotList[iplot].close();
       }
     
     }

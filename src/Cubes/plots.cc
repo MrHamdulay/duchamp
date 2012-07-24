@@ -50,6 +50,7 @@ namespace duchamp
 
     SpectralPlot::SpectralPlot(){
       this->paperWidth=a4width/inchToCm - 2*psHoffset; 
+      this->aspectRatio = M_SQRT2;
       this->spectraCount=0;
       this->numOnPage = 5;
     }
@@ -71,6 +72,7 @@ namespace duchamp
       for(int i=0;i<4;i++) this->mapCoords[i] = p.mapCoords[i]; 
       this->paperWidth = p.paperWidth;    
       this->paperHeight = p.paperHeight;   
+      this->aspectRatio = p.aspectRatio;
       this->identifier = p.identifier;    
       return *this;
     }
@@ -89,15 +91,20 @@ namespace duchamp
       /// \return The value returned by mycpgopen. If <= 0, then an error
       /// has occurred.
 
-      this->paperHeight = this->paperWidth*M_SQRT2; 
+      this->paperHeight = this->paperWidth*this->aspectRatio; 
       if(this->paperHeight+2*Plot::psVoffset > Plot::a4height){
 	this->paperHeight = Plot::a4height - 2*Plot::psVoffset;
-	this->paperWidth = this->paperHeight / M_SQRT2;
+	this->paperWidth = this->paperHeight / this->aspectRatio;
       }
       this->identifier = mycpgopen(pgDestination);
-      if(this->identifier>0) cpgpap(this->paperWidth, this->paperHeight/this->paperWidth); 
+      if(this->identifier>0) cpgpap(this->paperWidth, this->aspectRatio); 
       // make paper size to fit on A4.
       return this->identifier;
+    }
+    //----------------------------------------------------------
+    void SpectralPlot::close()
+    {
+      cpgclos();
     }
     //----------------------------------------------------------
     void SpectralPlot::calcCoords()
@@ -293,6 +300,147 @@ namespace duchamp
     void  SpectralPlot::goToPlot(){cpgslct(this->identifier);}
 
     //----------------------------------------------------------
+    // SimpleSpectralPlot functions
+    //----------------------------------------------------------
+
+    SimpleSpectralPlot::SimpleSpectralPlot(){
+      this->paperWidth=a4width/inchToCm - 2*psHoffset; 
+      this->aspectRatio = M_SQRT2/5.;
+    }
+
+    SimpleSpectralPlot::~SimpleSpectralPlot(){}
+
+    SimpleSpectralPlot::SimpleSpectralPlot(const SimpleSpectralPlot& p)
+    {
+      operator=(p);
+    }
+
+    SimpleSpectralPlot& SimpleSpectralPlot::operator=(const SimpleSpectralPlot& p)
+    {
+      if(this==&p) return *this;
+      for(int i=0;i<4;i++) this->mainCoords[i] = p.mainCoords[i]; 
+      this->paperWidth = p.paperWidth;    
+      this->paperHeight = p.paperHeight;   
+      this->aspectRatio = p.aspectRatio;
+      this->identifier = p.identifier;    
+      return *this;
+    }
+
+    //----------------------------------------------------------
+    int SimpleSpectralPlot::setUpPlot(std::string pgDestination)
+    {
+      ///  @details
+      /// Opens the designated pgplot device.  Scales the paper so that
+      /// it fits on an A4 sheet (using known values of the default
+      /// pgplot offsets).  
+      /// 
+      /// \param pgDestination The std::string indicating the PGPLOT device to
+      /// be written to.
+      /// 
+      /// \return The value returned by mycpgopen. If <= 0, then an error
+      /// has occurred.
+
+      if(pgDestination == "/xs") this->paperWidth=12.;
+
+      this->paperHeight = this->paperWidth*this->aspectRatio; 
+      this->identifier = mycpgopen(pgDestination);
+      if(this->identifier>0) cpgpap(this->paperWidth, this->aspectRatio); 
+      // make paper size to fit on A4.
+      float scaling = this->paperWidth*inchToCm / a4width;
+      this->mainCoords[0] = Plot::spMainX1/inchToCm * scaling;
+      this->mainCoords[1] = (Plot::spMapX1+Plot::spMainY2-Plot::spMainY1)/inchToCm * scaling;
+      this->mainCoords[2] = Plot::spMainY1/inchToCm * scaling;
+      this->mainCoords[3] = Plot::spMainY2/inchToCm * scaling;
+      return this->identifier;
+    }
+    //----------------------------------------------------------
+    void SimpleSpectralPlot::close()
+    {
+      cpgclos();
+    }
+    void SimpleSpectralPlot::label(std::string xlabel,std::string ylabel, std::string title)
+    {
+      /// @details 
+      /// Calls calcCoords, to calculate correct coordinates for this spectrum.
+      /// Defines the region for the header information, making it centred
+      ///  on the page.
+      /// Also writes the velocity (x axis) label, given by the string argument.
+      /// \param xlabel Label to go on the velocity/spectral axis.
+
+      cpgvsiz(this->mainCoords[0],this->mainCoords[1],this->mainCoords[2],this->mainCoords[3]);
+      cpgsch(2.);
+      cpgmtxt("B",3.,0.5,0.5,xlabel.c_str());
+      cpgmtxt("L",4.,0.5,0.5,ylabel.c_str());
+      cpgmtxt("T",2.,0.5,0.5,title.c_str());
+    }
+    //----------------------------------------------------------
+    void SimpleSpectralPlot::gotoMainSpectrum(float x1, float x2, float y1, float y2)
+    {
+      /// @details
+      ///  Defines the region for the main spectrum.
+      ///  Draws the box, with tick marks, and 
+      ///   writes the flux (y axis) label, given by the string argument.
+      /// \param x1 Minimum X-coordinate of box.
+      /// \param x2 Maximum X-coordinate of box.
+      /// \param y1 Minimum Y-coordinate of box.
+      /// \param y2 Maximum Y-coordinate of box.
+      /// \param ylabel Label for the flux (Y) axis.
+
+      cpgvsiz(this->mainCoords[0],this->mainCoords[1],this->mainCoords[2],this->mainCoords[3]);
+      cpgsch(2.);
+      cpgswin(x1,x2,y1,y2);
+      cpgbox("1bcnst",0.,0,"bcnst1v",0.,0);
+    }
+    //----------------------------------------------------------
+    void SimpleSpectralPlot::drawVelRange(float v1, float v2)
+    {
+      /// @details
+      /// Draws two vertical lines at the limits of velocity 
+      ///  given by the arguments.
+      /// \param v1 Minimum velocity. 
+      /// \param v2 Maximum velocity.
+
+      int ci,ls;
+      float dud,min,max;
+      cpgqwin(&dud,&dud,&min,&max);
+      cpgqci(&ci);
+      cpgqls(&ls);
+      cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
+      cpgsls(DASHED);
+      cpgmove(v1,min);  cpgdraw(v1,max);
+      cpgmove(v2,min);  cpgdraw(v2,max);
+      cpgsci(ci);
+      cpgsls(ls);
+    }
+    //----------------------------------------------------------
+    void SimpleSpectralPlot::drawMWRange(float v1, float v2)
+    {
+      ///  @details
+      /// Draws a box showing the extent of channels masked by the 
+      ///  Milky Way parameters
+      /// \param v1 Minimum velocity of the Milky Way range.
+      /// \param v2 Maximum velocity of the Milky Way range.
+
+      int ci,fs;
+      float dud,min,max,height;
+      cpgqwin(&dud,&dud,&min,&max);
+      height = max-min;
+      max += 0.01*height;
+      min -= 0.01*height;
+      cpgqci(&ci);
+      cpgqfs(&fs);
+      setDarkGreen();
+      cpgsci(DUCHAMP_MILKY_WAY_COLOUR);
+      cpgsfs(HATCHED);
+      cpgrect(v1,v2,min,max);
+      cpgsfs(OUTLINE);
+      cpgrect(v1,v2,min,max);
+      cpgsci(ci);
+      cpgsfs(fs);
+    }
+
+
+    //----------------------------------------------------------
     //----------------------------------------------------------
     // ImagePlot functions
     //----------------------------------------------------------
@@ -361,6 +509,11 @@ namespace duchamp
       this->identifier = mycpgopen(pgDestination);
       if(this->identifier>0) cpgpap(this->paperWidth, this->aspectRatio);
       return this->identifier;
+    }
+    //----------------------------------------------------------
+    void ImagePlot::close()
+    {
+      cpgclos();
     }
     //----------------------------------------------------------
     void ImagePlot::drawMapBox(float x1, float x2, float y1, float y2, 

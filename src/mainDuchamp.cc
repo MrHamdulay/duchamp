@@ -180,12 +180,16 @@ int main(int argc, char * argv[])
   if(USE_PGPLOT){
     std::cout<<"Creating the maps...  "<<std::flush;
     std::vector<std::string> devices;
-    if(cube->pars().getFlagXOutput()) devices.push_back("/xs");
-    if(cube->pars().getFlagMaps()) 
-      devices.push_back(cube->pars().getMomentMap()+"/vcps");
-    cube->plotMomentMap(devices);
-    if(cube->pars().getFlagMaps())
+    if(cube->nondegDim()>1){
+      if(cube->pars().getFlagXOutput()) devices.push_back("/xs");
+      if(cube->pars().getFlagMaps()) 
+	devices.push_back(cube->pars().getMomentMap()+"/vcps");
+      cube->plotMomentMap(devices);
+    }
+    if(cube->pars().getFlagMaps()){
+      if(cube->nondegDim()==1) cube->plotDetectionMap("/xs");
       cube->plotDetectionMap(cube->pars().getDetectionMap()+"/vcps");
+    }
     std::cout << "Done.\n";
     
     if(cube->getNumObj()>0){

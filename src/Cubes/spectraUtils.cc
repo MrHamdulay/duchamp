@@ -166,7 +166,9 @@ namespace duchamp
     ///  Note that the arrays need to be allocated prior to calling
     ///  this function.
     /// 
-    ///  \param objNum The number of the object under consideration
+    ///  \param objNum The number of the object under
+    ///         consideration. If negative, we extract the single
+    ///         spectrum at (x,y)=(0,0) (useful for the 1D case).
     ///  \param specx The array of frequency/velocity/channel/etc
     ///         values (the x-axis on the spectral plot).
     ///  \param specy The array of flux values, matching the specx
@@ -186,11 +188,28 @@ namespace duchamp
       specBase[i]  = 0.;
     }
 
+    double xloc,yloc;
+    size_t spatpos=0;
+    std::vector<Voxel> voxlist;
+    if(objNum>=0){
+      if(this->par.getSpectralMethod()=="sum"){
+	xloc=double(this->objectList->at(objNum).getXcentre());
+	yloc=double(this->objectList->at(objNum).getYcentre());
+	voxlist = this->objectList->at(objNum).getPixelSet();
+      }
+      else{
+	spatpos = this->objectList->at(objNum).getXPeak() +
+	xdim*this->objectList->at(objNum).getYPeak();
+      }
+    }
+
     if(this->head.isWCS()){
-      double xval = double(this->objectList->at(objNum).getXcentre());
-      double yval = double(this->objectList->at(objNum).getYcentre());
+//       double xval = double(this->objectList->at(objNum).getXcentre());
+//       double yval = double(this->objectList->at(objNum).getYcentre());
+//       for(double zval=0;zval<zdim;zval++)
+// 	specx[int(zval)] = this->head.pixToVel(xval,yval,zval);
       for(double zval=0;zval<zdim;zval++)
-	specx[int(zval)] = this->head.pixToVel(xval,yval,zval);
+	specx[int(zval)] = this->head.pixToVel(xloc,yloc,zval);
     }
     else
       for(double zval=0;zval<zdim;zval++) specx[int(zval)] = zval;
@@ -200,22 +219,22 @@ namespace duchamp
       beamCorrection = this->head.beam().area();
     else beamCorrection = 1.;
 	
-    if(this->par.getSpectralMethod()=="sum"){
+    if(objNum>=0 && this->par.getSpectralMethod()=="sum"){
       bool *done = new bool[xdim*ydim];
       for(size_t i=0;i<xdim*ydim;i++) done[i]=false;
-      std::vector<Voxel> voxlist = this->objectList->at(objNum).getPixelSet();
+//       std::vector<Voxel> voxlist = this->objectList->at(objNum).getPixelSet();
       std::vector<Voxel>::iterator vox;
       for(vox=voxlist.begin();vox<voxlist.end();vox++){
-	size_t pos = vox->getX() + xdim * vox->getY();
-	if(!done[pos]){
-	  done[pos] = true;
+	spatpos = vox->getX() + xdim * vox->getY();
+	if(!done[spatpos]){
+	  done[spatpos] = true;
 	  for(size_t z=0;z<zdim;z++){
-	    if(!(this->isBlank(pos+z*xdim*ydim))){
-	      specy[z] += this->array[pos + z*xdim*ydim] / beamCorrection;
+	    if(!(this->isBlank(spatpos+z*xdim*ydim))){
+	      specy[z] += this->array[spatpos + z*xdim*ydim] / beamCorrection;
 	      if(this->reconExists)
-		specRecon[z] += this->recon[pos + z*xdim*ydim] / beamCorrection;
+		specRecon[z] += this->recon[spatpos + z*xdim*ydim] / beamCorrection;
 	      if(this->par.getFlagBaseline())
-		specBase[z] += this->baseline[pos + z*xdim*ydim] / beamCorrection;
+		specBase[z] += this->baseline[spatpos + z*xdim*ydim] / beamCorrection;
 	    }       
 	  }
 	}
@@ -223,48 +242,151 @@ namespace duchamp
       delete [] done;
     }
     else {// if(par.getSpectralMethod()=="peak"){
-      size_t pos = this->objectList->at(objNum).getXPeak() +
-	xdim*this->objectList->at(objNum).getYPeak();
+//       size_t spatpos = this->objectList->at(objNum).getXPeak() +
+// 	xdim*this->objectList->at(objNum).getYPeak();
       for(size_t z=0;z<zdim;z++){
-	specy[z] = this->array[pos + z*xdim*ydim];
+	specy[z] = this->array[spatpos + z*xdim*ydim];
 	if(this->reconExists)
-	  specRecon[z] = this->recon[pos + z*xdim*ydim];
+	  specRecon[z] = this->recon[spatpos + z*xdim*ydim];
 	if(this->par.getFlagBaseline())
-	  specBase[z] = this->baseline[pos + z*xdim*ydim];
+	  specBase[z] = this->baseline[spatpos + z*xdim*ydim];
       }
     }
 
-//     size_t zdim = this->axisDim[2];
-//     Detection obj = this->objectList->at(objNum);
-//     getSpecAbscissae(obj, this->head, zdim, specx);
+  }
+  //--------------------------------------------------------------------
 
-//     float beamCorrection;
-//     if(this->header().needBeamSize())
-//       beamCorrection = this->par.getBeamSize();
-//     else beamCorrection = 1.;
+  void drawSpectralRange(Plot::SpectralPlot &plot, Detection &obj, FitsHeader &head)
+  {
+    /// @details
 
-//     bool *mask = this->makeBlankMask();
-//     if(!this->reconExists) 
-//       for(int i=0;i<this->axisDim[2];i++) specRecon[i] = 0.;
-//     if(!this->par.getFlagBaseline())
-//       for(int i=0;i<this->axisDim[2];i++) specBase[i]  = 0.;
+    /// A front-end to drawing the lines delimiting the spectral
+    /// extent of the detection. This takes into account the channel
+    /// widths, offsetting outwards by half a channel (for instance, a
+    /// single-channel detection will not have the separation of one
+    /// channel).
+    /// If the world coordinate is being plotted, the correct offset
+    /// is calcuated by transforming from the central spatial
+    /// positions and the offsetted min/max z-pixel extents
 
-//     if(this->par.getSpectralMethod()=="sum"){
-//       getIntSpec(obj, this->array, this->axisDim, mask, beamCorrection, specy);
-//       if(this->reconExists){
-// 	getIntSpec(obj, this->recon, this->axisDim, mask, beamCorrection, specRecon);
-//       }
-//       if(this->par.getFlagBaseline()){
-// 	getIntSpec(obj, this->baseline, this->axisDim, mask, beamCorrection, specBase);
-//       }
-//     }
-//     else{ // if(.getSpectralMethod()=="peak"){
-//       getPeakSpec(obj, this->array, this->axisDim, mask, specy);
-//       if(this->reconExists)
-// 	getPeakSpec(obj, this->recon, this->axisDim, mask, specRecon);
-//       if(this->par.getFlagBaseline())
-// 	getPeakSpec(obj, this->baseline, this->axisDim, mask, specBase);
-//     }
+    if(head.isWCS()){
+      double x=obj.getXcentre(),y=obj.getYcentre(),z;
+      z=obj.getZmin()-0.5;
+      float vmin=head.pixToVel(x,y,z);
+      z=obj.getZmax()+0.5;
+      float vmax=head.pixToVel(x,y,z);
+      plot.drawVelRange(vmin,vmax);
+    }
+    else{
+      plot.drawVelRange(obj.getZmin()-0.5,obj.getZmax()+0.5);
+    }
+
+
+  }
+
+  void drawSpectralRange(Plot::SimpleSpectralPlot &plot, Detection &obj, FitsHeader &head)
+  {
+    /// @details
+
+    /// A front-end to drawing the lines delimiting the spectral
+    /// extent of the detection. This takes into account the channel
+    /// widths, offsetting outwards by half a channel (for instance, a
+    /// single-channel detection will not have the separation of one
+    /// channel).
+    /// If the world coordinate is being plotted, the correct offset
+    /// is calcuated by transforming from the central spatial
+    /// positions and the offsetted min/max z-pixel extents
+
+    if(head.isWCS()){
+      double x=obj.getXcentre(),y=obj.getYcentre(),z;
+      z=obj.getZmin()-0.5;
+      float vmin=head.pixToVel(x,y,z);
+      z=obj.getZmax()+0.5;
+      float vmax=head.pixToVel(x,y,z);
+      plot.drawVelRange(vmin,vmax);
+    }
+    else{
+      plot.drawVelRange(obj.getZmin()-0.5,obj.getZmax()+0.5);
+    }
+
+
+  }
+
+  void getSmallVelRange(Detection &obj, FitsHeader &head, 
+			double *minvel, double *maxvel)
+  {
+    ///  @details
+    ///  Routine to calculate the velocity range for the zoomed-in region.
+    ///  This range should be the maximum of 20 pixels, or 3x the wdith of 
+    ///   the detection.
+    ///  Need to :
+    ///      Calculate pixel width of a 3x-detection-width region.
+    ///      If smaller than 20, calculate velocities of central vel +- 10 pixels
+    ///      If not, use the 3x-detection-width
+    ///  Range returned via "minvel" and "maxvel" parameters.
+    ///  \param obj Detection under examination.
+    ///  \param head FitsHeader, containing the WCS information.
+    ///  \param minvel Returned value of minimum velocity
+    ///  \param maxvel Returned value of maximum velocity
+
+    double *pixcrd = new double[3];
+    double *world  = new double[3];
+    float minpix,maxpix;
+    // define new velocity extrema 
+    //    -- make it 3x wider than the width of the detection.
+    *minvel = 0.5*(obj.getVelMin()+obj.getVelMax()) - 1.5*obj.getVelWidth();
+    *maxvel = 0.5*(obj.getVelMin()+obj.getVelMax()) + 1.5*obj.getVelWidth();
+    // Find velocity range in number of pixels:
+    world[0] = obj.getRA();
+    world[1] = obj.getDec();
+    world[2] = head.velToSpec(*minvel);
+    head.wcsToPix(world,pixcrd);
+    minpix = pixcrd[2];
+    world[2] = head.velToSpec(*maxvel);
+    head.wcsToPix(world,pixcrd);
+    maxpix = pixcrd[2];
+    if(maxpix<minpix) std::swap(maxpix,minpix);
+    
+    if((maxpix - minpix + 1) < 20){
+      pixcrd[0] = double(obj.getXcentre());
+      pixcrd[1] = double(obj.getYcentre());
+      pixcrd[2] = obj.getZcentre() - 10.;
+      head.pixToWCS(pixcrd,world);
+      //    *minvel = setVel_kms(wcs,world[2]);
+      *minvel = head.specToVel(world[2]);
+      pixcrd[2] = obj.getZcentre() + 10.;
+      head.pixToWCS(pixcrd,world);
+      //     *maxvel = setVel_kms(wcs,world[2]);
+      *maxvel = head.specToVel(world[2]);
+      if(*maxvel<*minvel) std::swap(*maxvel,*minvel);
+    }
+    delete [] pixcrd;
+    delete [] world;
+
+  }
+  //--------------------------------------------------------------------
+
+  void getSmallZRange(Detection &obj, double *minz, double *maxz)
+  {
+    ///  @details
+    ///  Routine to calculate the pixel range for the zoomed-in spectrum.
+    ///  This range should be the maximum of 20 pixels, or 3x the width 
+    ///   of the detection.
+    ///  Need to :
+    ///      Calculate pixel width of a 3x-detection-width region.
+    ///       If smaller than 20, use central pixel +- 10 pixels
+    ///  Range returned via "minz" and "maxz" parameters.
+    ///  \param obj Detection under examination.
+    ///  \param minz Returned value of minimum z-pixel coordinate
+    ///  \param maxz Returned value of maximum z-pixel coordinate
+
+    *minz = 2.*obj.getZmin() - obj.getZmax();
+    *maxz = 2.*obj.getZmax() - obj.getZmin();
+    
+    if((*maxz - *minz + 1) < 20){
+      *minz = obj.getZcentre() - 10.;
+      *maxz = obj.getZcentre() + 10.;
+    }
 
   }
   //--------------------------------------------------------------------

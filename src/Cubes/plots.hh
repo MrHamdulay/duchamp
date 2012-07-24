@@ -105,6 +105,9 @@ namespace duchamp
       /// @brief Set up PGPLOT output.
       int setUpPlot(std::string pgDestination); 
 
+      /// @brief Close the PGPLOT device
+      void close();
+
       /// @brief Calculate boundaries for boxes.
       void calcCoords();
       /// @brief Set up the header & write the X-label.
@@ -147,6 +150,8 @@ namespace duchamp
       void  setPaperWidth(float f);  ///< Set width of plottable region.
       float getPaperHeight();        ///< Return height of plottable region.
       void  setPaperHeight(float f); ///< Set height of plottable region.
+      float getAspectRatio();        ///< Return aspect ratio
+      void  setAspectRatio(float f); ///< Set aspect ratio
       void  goToPlot();              ///< Goes to the plot when more than one are open.
 
     private:
@@ -157,6 +162,7 @@ namespace duchamp
       float mapCoords[4];  ///< Boundaries for the map box [inches]
       float paperWidth;    ///< Width of plottable region of the paper [inches]
       float paperHeight;   ///< Height of plottable region of the paper [inches]
+      float aspectRatio;   ///< Aspect ratio height/width (as used by PGPlot calls)
       int   identifier;    ///< The identifier code used by cpgslct.
     
     };
@@ -167,6 +173,71 @@ namespace duchamp
     inline void  SpectralPlot::setPaperWidth(float f){paperWidth=f;}
     inline float SpectralPlot::getPaperHeight(){return paperHeight;}
     inline void  SpectralPlot::setPaperHeight(float f){paperHeight=f;}
+    inline float SpectralPlot::getAspectRatio(){return aspectRatio;}
+    inline void  SpectralPlot::setAspectRatio(float f){aspectRatio=f;}
+
+    //***************************************************************************
+    //***************************************************************************
+
+    ///  @brief A class for plotting a single spectrum.
+    ///  @details This class is designed to hold the dimensions and
+    ///  set up for the plotting of the spectra (including the full
+    ///  spectra, the zoomed in part, and the moment map).  The
+    ///  physical dimensions (in inches) of the plot and the elements
+    ///  within it are stored, on the assumption that the plot will go
+    ///  on an A4 page.  Simple accessor functions are provided to
+    ///  enable access to quantities needed for pgplot routines.
+
+    class SimpleSpectralPlot
+    {
+    public:
+      SimpleSpectralPlot();    ///< Constructor
+      virtual ~SimpleSpectralPlot(); ///< Destructor
+      SimpleSpectralPlot(const SimpleSpectralPlot& p);
+      SimpleSpectralPlot& operator=(const SimpleSpectralPlot& p);
+
+      /// @brief Set up PGPLOT output.
+      int setUpPlot(std::string pgDestination); 
+
+      /// @brief Close the PGPLOT device
+      void close();
+
+      /// @brief Write the labels
+      void label(std::string xlabel, std::string ylabel, std::string title);
+
+      /// @brief Set up main spectral plotting region.
+      void gotoMainSpectrum(float x1, float x2, float y1, float y2);
+
+      /// @brief Draw lines indicating velocity range.
+      void drawVelRange(float v1, float v2); 
+
+      /// @brief Draw box showing excluded range due to Milky Way.
+      void drawMWRange(float v1, float v2);
+    
+      float getPaperWidth();         ///< Return width of plottable region.
+      void  setPaperWidth(float f);  ///< Set width of plottable region.
+      float getPaperHeight();        ///< Return height of plottable region.
+      void  setPaperHeight(float f); ///< Set height of plottable region.
+      float getAspectRatio();        ///< Return aspect ratio
+      void  setAspectRatio(float f); ///< Set aspect ratio
+      void  goToPlot();              ///< Goes to the plot when more than one are open.
+
+    private:
+      float mainCoords[4]; ///< Boundaries for the main spectrum [inches]
+      float paperWidth;    ///< Width of plottable region of the paper [inches]
+      float paperHeight;   ///< Height of plottable region of the paper [inches]
+      float aspectRatio;   ///< Aspect ratio height/width (as used by PGPlot calls)
+      int   identifier;    ///< The identifier code used by cpgslct.
+  
+    };
+  
+    inline float SimpleSpectralPlot::getPaperWidth(){return paperWidth;}
+    inline void  SimpleSpectralPlot::setPaperWidth(float f){paperWidth=f;}
+    inline float SimpleSpectralPlot::getPaperHeight(){return paperHeight;}
+    inline void  SimpleSpectralPlot::setPaperHeight(float f){paperHeight=f;}
+    inline float SimpleSpectralPlot::getAspectRatio(){return aspectRatio;}
+    inline void  SimpleSpectralPlot::setAspectRatio(float f){aspectRatio=f;}
+
 
     //***************************************************************************
     //***************************************************************************
@@ -190,6 +261,9 @@ namespace duchamp
   
       /// @brief Set up PGPLOT output.
       int   setUpPlot(std::string pgDestination, float x, float y); 
+
+      /// @brief Close the PGPLOT device
+      void close();
 
       /// @brief Defines and draws box.
       void  drawMapBox(float x1, float x2, float y1, float y2, 

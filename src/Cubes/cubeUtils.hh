@@ -54,6 +54,11 @@ namespace duchamp
   void getIntSpec(Detection &object, float *fluxArray, size_t *dimArray, std::vector<bool> mask, float beamCorrection, float *output);
   void getPeakSpec(Detection &object, float *fluxArray, size_t *dimArray, bool *mask, float *output);
 
+  void drawSpectralRange(Plot::SpectralPlot &plot, Detection &obj, FitsHeader &head);
+  void drawSpectralRange(Plot::SimpleSpectralPlot &plot, Detection &obj, FitsHeader &head);
+  void getSmallVelRange(Detection &obj, FitsHeader &head, double *minvel, double *maxvel);
+  void getSmallZRange(Detection &obj, double *minz, double *maxz);
+
 }
 
 #endif
