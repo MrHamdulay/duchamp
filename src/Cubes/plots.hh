@@ -34,7 +34,10 @@
 #include <string>
 #include <math.h>
 #include <duchamp/duchamp.hh>
+#include <duchamp/param.hh>
+#include <duchamp/fitsHeader.hh>
 #include <duchamp/pgheader.hh>
+#include <duchamp/Utils/Statistics.hh>
 
 namespace duchamp
 {
@@ -141,6 +144,9 @@ namespace duchamp
       /// @brief Draw box showing excluded range due to Milky Way.
       void drawMWRange(float v1, float v2);
     
+      /// @brief Draw thresholds
+      void drawThresholds(Param &par, Statistics::StatsContainer<float> &stats);
+
       /// @brief Return number of spectra that go on a page.
       int   getNumOnPage();
 

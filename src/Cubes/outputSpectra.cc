@@ -278,6 +278,9 @@ namespace duchamp
     if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
     drawSpectralRange(plot,this->objectList->at(objNum),this->head);
 
+    if(this->par.getSpectralMethod()=="peak")
+      plot.drawThresholds(this->par,this->Stats);
+
     /**************************/
     // ZOOM IN SPECTRALLY ON THE DETECTION.
 
@@ -316,6 +319,9 @@ namespace duchamp
     if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
     drawSpectralRange(plot,this->objectList->at(objNum),this->head);
     
+    if(this->par.getSpectralMethod()=="peak")
+      plot.drawThresholds(this->par,this->Stats);
+
     /**************************/
 
     // DRAW THE MOMENT MAP OF THE DETECTION -- SUMMED OVER ALL CHANNELS

@@ -34,6 +34,7 @@
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/duchamp.hh>
 #include <duchamp/Utils/mycpgplot.hh>
+#include <duchamp/Utils/Statistics.hh>
 #include <duchamp/Cubes/plots.hh>
 
 using std::stringstream;
@@ -273,6 +274,30 @@ namespace duchamp
       cpgrect(v1,v2,min,max);
       cpgsci(ci);
       cpgsfs(fs);
+    }
+    //----------------------------------------------------------
+    void SpectralPlot::drawThresholds(Param &par, Statistics::StatsContainer<float> &stats)
+    {
+
+      float dud,vmin,vmax;
+      cpgqwin(&vmin,&vmax,&dud,&dud);
+	cpgsci(RED);
+	cpgsls(DASHED);
+	float thresh = stats.getThreshold();
+	if(par.getFlagNegative()) thresh *= -1.;
+	cpgmove(vmin,thresh);
+	cpgdraw(vmax,thresh);
+	if(par.getFlagGrowth()){
+	  if(par.getFlagUserGrowthThreshold()) thresh= par.getGrowthThreshold();
+	  else thresh= stats.snrToValue(par.getGrowthCut());
+	  if(par.getFlagNegative()) thresh *= -1.;	
+	  cpgsls(DOTTED);
+	  cpgmove(vmin,thresh);
+	  cpgdraw(vmax,thresh);
+	}
+	cpgsci(FOREGND);
+	cpgsls(SOLID);
+
     }
     //----------------------------------------------------------
     // SpectralPlot functions...
