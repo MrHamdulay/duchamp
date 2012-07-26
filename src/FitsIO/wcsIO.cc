@@ -189,13 +189,12 @@ namespace duchamp
 
 	char stype[5],scode[5],sname[22],units[8],ptype,xtype;
 	int restreq;
-	struct wcserr *err;
 
 	if(par.getSpectralType()!=""){ // User wants to convert the spectral type
 
 	  std::string desiredType = par.getSpectralType();
 	  
-	  status = spctype((char *)desiredType.c_str(),stype,scode,sname,units,&ptype,&xtype,&restreq,&err);
+	  status = spctyp((char *)desiredType.c_str(),stype,scode,sname,units,&ptype,&xtype,&restreq);
 	  if(status){
 	    DUCHAMPERROR("Cube Reader", "Spectral type " << desiredType << " is not a valid spectral type. No translation done.");
 	  }
@@ -226,7 +225,7 @@ namespace duchamp
 	}
 
 	  
-	status = spctype(localwcs->ctype[localwcs->spec],stype,scode,sname,units,&ptype,&xtype,&restreq,&err);
+	status = spctyp(localwcs->ctype[localwcs->spec],stype,scode,sname,units,&ptype,&xtype,&restreq);
 
 	this->spectralType  = stype;
 	this->spectralDescription = sname;
