@@ -35,41 +35,6 @@
 #include <duchamp/Detection/detection.hh>
 
 
-/// @brief
-/// A class to match things pair-wise (useful for sorting).
-/// 
-/// @details This class is deigned to match two quantities to each
-/// other.  It was devised to find a way of taking a pair of lists
-/// that are matched, and sorting one list while keeping the second
-/// matched pair-wise.
-/// 
-/// The elements are currently just assumed to be floats. This could be
-/// extended by templating, but at this stage we don't need to...
-class Pair
-{
-public:
-  Pair(){};
-  virtual ~Pair(){};
-  friend bool operator< (const Pair& lhs, const Pair& rhs){
-    ///  A comparison operator for pairs.  Compare the primary elements
-    ///  of the two pairs, using the basic < operator.
-    return (lhs.primary < rhs.primary);
-  };
-  void define(float p, float m){
-    /// Basic assignment function.
-    primary=p; matching=m;
-  };
-  float get1(){return primary;};
-  float get2(){return matching;};
-private:
-  float primary;  ///< The main element -- this will be the one that
-		  ///can be compared.
-  float matching; ///< The secondary element -- this cannot be
-		  ///compared with other objects, it just tracks the
-		  ///primary.
-};
-
-//======================================================================
 
 namespace duchamp
 {
