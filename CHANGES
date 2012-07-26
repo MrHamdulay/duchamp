@@ -46,6 +46,30 @@ Other new features:
   resulted in the program terminating now allow it to continue
   (provided that is possible given the error).
 
+* The way one-dimensional arrays were dealt with was unsatisfactory,
+  both with the way positions were registered and the format of the
+  graphical output. Improvements have been made such that a 1D data
+  structure is assumed to be a spectrum, and so positions in the
+  spectrum are reported as z-pixels (or the equivalent world
+  coordinate). Instead of a 2D moment map, the X-windows display will
+  show the spectrum with all detected pixels plus the final list of
+  detections highlighted, along with the detection and growth
+  thresholds. This plot will also be written to the "detectionMap" image. 
+
+* All spectral plots will now show the detection (and growth, if
+  applicable) thresholds when plotting the peak flux spectrum.
+
+* Accessing FITS files when a subsection string is provided has been
+  streamlined. The cfitsio package, which handles the FITS access,
+  creates a temporary file containing this image section, and this
+  meant the previous approach was slow, particularly for large
+  files/sections. Now the file is only opened once and the overhead of
+  creating the temporary file is only encountered once.
+
+* Several aspects of the processing & output did not handle a
+  non-existent WCS well. This has been improved, so that all stages of
+  execution will proceed without errors.
+
 Bug fixes:
 
 * The absence of a BLANK keyword when trimming will now not trigger a
@@ -70,6 +94,9 @@ Bug fixes:
   offsets for the subsection were not being accounted for
   correctly. This is now fixed.
 
+* The detection map plots were not recording pixels added from the
+  growing stage. This has been fixed.
+
 * The RA & Dec now have appropriate precision, rather than an
   arbitrary 2 decimal places on the seconds value. The RA will be one
   decimal place more than the Dec, and they will reflect the degree of
@@ -84,9 +111,6 @@ Bug fixes:
 * It was possible to get world positions looking like 11:59:60.0! Not
   any more.
 
-New features:
-
-* 
 
 Code base development notes:
 
