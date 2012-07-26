@@ -25,11 +25,11 @@
 %                    Epping NSW 1710
 %                    AUSTRALIA
 % -----------------------------------------------------------------------
-\begin{landscape}
+%\begin{landscape}
 \secA{Example VOTable output}
 \label{app-votable}
-This is part of the VOTable, in XML format, corresponding to a basic
-FDR search.
+This is part of the VOTable, in XML format, corresponding to a search
+with wavelet reconstruction.
 
 %\begin{sideways}
 %\begin{minipage}[b]{180mm}
@@ -38,37 +38,64 @@ FDR search.
 <?xml version="1.0"?>
 <VOTABLE version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:noNamespaceSchemaLocation="http://www.ivoa.net/xml/VOTable/VOTable/v1.1">
-  <COOSYS ID="J2000" equinox="J2000." epoch="J2000." system="eq_FK5"/>
+  <COOSYS ID="J2000" equinox="J2000" system="eq_FK5"/>
   <RESOURCE name="Duchamp Output">
     <TABLE name="Detections">
       <DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>
-      <PARAM name="FITS file" datatype="char" ucd="meta.file;meta.fits" value="/DATA/SITAR_1/whi550/ObsData/cubes/H201_abcde_luther_chop.fits" arraysize="62"/>
-      <PARAM name="FDR Significance" datatype="float" ucd="stat.param" value="0.1"/>
-      <FIELD name="ID" ID="col01" ucd="meta.id" datatype="int" width="5" unit="--"/>
-      <FIELD name="Name" ID="col02" ucd="meta.id;meta.main" datatype="char" arraysize="15" unit="--"/>
-      <FIELD name="RA" ID="col03" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" width="13" precision="6" unit="deg"/>
-      <FIELD name="DEC" ID="col04" ucd="pos.galactic.lon;meta.main" ref="J2000" datatype="float" width="13" precision="6" unit="deg"/>
-      <FIELD name="w_RA" ID="col05" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" width="9" precision="2" unit="arcmin"/>
-      <FIELD name="w_DEC" ID="col06" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" width="9" precision="2" unit="arcmin"/>
-      <FIELD name="Vel" ID="col07" ucd="phys.veloc;src.dopplerVeloc" datatype="float" width="9" precision="3" unit="km/s"/>
-      <FIELD name="w_Vel" ID="col08" ucd="phys.veloc;src.dopplerVeloc;spect.line.width" datatype="float" width="9" precision="3" unit="km/s"/>
-      <FIELD name="Integrated_Flux" ID="col09" ucd="phot.flux;spect.line.intensity" datatype="float" width="10" precision="3" unit="Jy.km/s"/>
-      <FIELD name="Peak_Flux" ID="col10" ucd="phot.flux;spect.line.intensity" datatype="float" width="10" precision="3" unit="Jy/beam"/>
-      <FIELD name="Flag" ID="col11" ucd="meta.code.qual" datatype="char" arraysize="3" unit="--"/>
-      <FIELD name="X_Centroid" ID="col12" ucd="pos.cartesian.x" datatype="float" width="7" precision="1" unit=""/>
-      <FIELD name="Y_Centroid" ID="col13" ucd="pos.cartesian.y" datatype="float" width="7" precision="1" unit=""/>
-      <FIELD name="Z_Centroid" ID="col14" ucd="pos.cartesian.z" datatype="float" width="7" precision="1" unit=""/>
-      <FIELD name="X_Av" ID="col15" ucd="pos.cartesian.x" datatype="float" width="6" precision="1" unit=""/>
-      <FIELD name="Y_Av" ID="col16" ucd="pos.cartesian.y" datatype="float" width="6" precision="1" unit=""/>
-      <FIELD name="Z_Av" ID="col17" ucd="pos.cartesian.z" datatype="float" width="6" precision="1" unit=""/>
-      <FIELD name="X_Peak" ID="col18" ucd="pos.cartesian.x" datatype="int" width="7" precision="1" unit=""/>
-      <FIELD name="Y_Peak" ID="col19" ucd="pos.cartesian.y" datatype="int" width="7" precision="1" unit=""/>
-      <FIELD name="Z_Peak" ID="col20" ucd="pos.cartesian.z" datatype="int" width="7" precision="1" unit=""/>
+      <PARAM name="imageFile" ucd="meta.file;meta.fits" datatype="char" arraysize="63" value="/home/mduchamp/fountain.fits"/>
+      <PARAM name="flagSubsection" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="flagStatSec" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="searchType" ucd="meta.note" datatype="char" arraysize="8" value="spectral"/>
+      <PARAM name="flagNegative" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="flagBaseline" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="flagRobustStats" ucd="meta.code" datatype="boolean" value="1"/>
+      <PARAM name="flagFDR" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="snrCut" ucd="stat.snr;phot;stat.min" datatype="float" value="3"/>
+      <PARAM name="flagGrowth" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="minVoxels" ucd="" datatype="int" value="7"/>
+      <PARAM name="minPix" ucd="" datatype="int" value="5"/>
+      <PARAM name="minChannels" ucd="" datatype="int" value="3"/>
+      <PARAM name="flagAdjacent" ucd="meta.code" datatype="boolean" value="1"/>
+      <PARAM name="threshVelocity" ucd="" datatype="float" value="3"/>
+      <PARAM name="flagRejectBeforeMerge" ucd="" datatype="boolean" value="0"/>
+      <PARAM name="flagTwoStageMerging" ucd="" datatype="boolean" value="0"/>
+      <PARAM name="pixelCentre" ucd="" datatype="char" arraysize="8" value="centroid"/>
+      <PARAM name="flagSmooth" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="flagATrous" ucd="meta.code" datatype="boolean" value="1"/>
+      <PARAM name="reconDim" ucd="" datatype="int" value="1"/>
+      <PARAM name="scaleMin" ucd="" datatype="int" value="1"/>
+      <PARAM name="snrRecon" ucd="" datatype="float" value="3"/>
+      <PARAM name="filterCode" ucd="" datatype="int" value="1"/>
+      <FIELD name="Obj#" ID="col01" ucd="meta.id" datatype="int" units="" width="5"/>
+      <FIELD name="Name" ID="col02" ucd="meta.id;meta.main" datatype="char" units="" arraysize="15"/>
+      <FIELD name="RA" ID="col03" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" units="deg" width="11" precision="6"/>
+      <FIELD name="DEC" ID="col04" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" units="deg" width="11" precision="6"/>
+      <FIELD name="VELO" ID="col05" ucd="phys.veloc;src.dopplerVeloc" datatype="float" units="km/s" width="9" precision="3"/>
+      <FIELD name="w_RA" ID="col06" ucd="pos.eq.dec;meta.main" ref="J2000" datatype="float" units="arcmin" width="9" precision="2"/>
+      <FIELD name="w_DEC" ID="col07" ucd="phys.angSize;pos.eq.dec" ref="J2000" datatype="float" units="arcmin" width="9" precision="2"/>
+      <FIELD name="w_50" ID="col08" ucd="phys.veloc;src.dopplerVeloc;spect.line.width" datatype="float" units="km/s" width="8" precision="3"/>
+      <FIELD name="w_20" ID="col09" ucd="phys.veloc;src.dopplerVeloc;spect.line.width" datatype="float" units="km/s" width="8" precision="3"/>
+      <FIELD name="w_VELO" ID="col10" ucd="phys.veloc;src.dopplerVeloc;spect.line.width" datatype="float" units="km/s" width="8" precision="3"/>
+      <FIELD name="Integrated_Flux" ID="col11" ucd="phot.flux;spect.line.intensity" datatype="float" units="Jy.km/s" width="10" precision="3"/>
+      <FIELD name="Peak_Flux" ID="col12" ucd="phot.flux;spect.line.intensity" datatype="float" units="Jy/beam" width="10" precision="3"/>
+      <FIELD name="S/Nmax" ID="col13" ucd="phot.flux;stat.snr" datatype="float" units="" width="7" precision="2"/>
+      <FIELD name="Flag" ID="col14" ucd="meta.code.qual" datatype="char" units="" arraysize="5"/>
+      <FIELD name="X_av" ID="col15" ucd="pos.cartesian.x" datatype="float" units="" width="6" precision="1"/>
+      <FIELD name="Y_av" ID="col16" ucd="pos.cartesian.y" datatype="float" units="" width="6" precision="1"/>
+      <FIELD name="Z_av" ID="col17" ucd="pos.cartesian.z" datatype="float" units="" width="6" precision="1"/>
+      <FIELD name="X_Centroid" ID="col18" ucd="pos.cartesian.x" datatype="float" units="" width="7" precision="1"/>
+      <FIELD name="Y_Centroid" ID="col19" ucd="pos.cartesian.y" datatype="float" units="" width="7" precision="1"/>
+      <FIELD name="Z_Centroid" ID="col20" ucd="pos.cartesian.z" datatype="float" units="" width="7" precision="1"/>
+      <FIELD name="X_peak" ID="col21" ucd="pos.cartesian.x" datatype="int" units="" width="7"/>
+      <FIELD name="Y_peak" ID="col22" ucd="pos.cartesian.y" datatype="int" units="" width="7"/>
+      <FIELD name="Z_peak" ID="col23" ucd="pos.cartesian.z" datatype="int" units="" width="7"/>
       <DATA>
         <TABLEDATA>
         <TR>
-          <TD>    1</TD><TD> J060925-215712</TD><TD>    92.356613</TD><TD>   -21.953545</TD><TD>    44.51</TD><TD>    39.49</TD><TD>  223.351</TD><TD>   52.765</TD><TD>    14.564</TD>
-<TD>     0.213</TD><TD>     </TD><TD> 59.175</TD><TD>140.463</TD><TD>114.439</TD><TD>59.554</TD><TD>140.580</TD><TD>114.536</TD><TD>     59</TD><TD>    140</TD><TD>    114</TD>
+          <TD>    1</TD><TD> J060946-215932</TD><TD>  92.444503</TD><TD> -21.992234</TD><TD>  225.640</TD><TD>    20.32</TD>
+<TD>    23.76</TD><TD>  25.442</TD><TD>  41.038</TD><TD>  26.403</TD><TD>     4.621</TD><TD>     0.213</TD><TD>  16.41</TD>
+<TD>    M</TD><TD>  57.9</TD><TD> 139.8</TD><TD> 115.0</TD><TD>   58.0</TD><TD>  139.9</TD><TD>  114.6</TD><TD>     59</TD>
+<TD>    140</TD><TD>    114</TD>
         </TR>
 ... truncated ...
         </TABLEDATA>
@@ -80,4 +107,4 @@ FDR search.
 }
 %\end{minipage}
 %\end{sideways}
-\end{landscape}
+%\end{landscape}

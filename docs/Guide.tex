@@ -25,7 +25,8 @@
 %                    Epping NSW 1710
 %                    AUSTRALIA
 % -----------------------------------------------------------------------
-\documentclass[11pt,a4paper]{article}
+%\documentclass[11pt,a4paper]{article}
+\documentclass[10pt,a4paper]{article}
 %\documentclass[12pt,a4paper]{report}
 
 %%%%%% LINE SPACING %%%%%%%%%%%%
@@ -188,7 +189,7 @@ Matthew Whiting\\
 Australia Telescope National Facility\\
 CSIRO\\[3ex]} 
 Duchamp version~\version\\
-April 10, 2011
+July 31, 2012
 \end{minipage}}
 
 \begin{figure}[!h]
@@ -217,21 +218,21 @@ April 10, 2011
 \newpage
 \input{future} %Future developments
 
-\newpage
-%\bibliographystyle{plainnat}
-\bibliographystyle{mn2e}
-\bibliography{mnemonic,MasterBibliography}
-%\bibliography{Guide-new}
-
 %\newpage
-%\ifPDF
-%\pdfbookmark[1]{References}{references}
-%\fi
-%\ifPDF
-%\input{Guide-URL-bib}
-%\else
-%\input{Guide-noURL-bib}
-%\fi
+%%\bibliographystyle{plainnat}
+%\bibliographystyle{mn2e}
+%\bibliography{mnemonic,MasterBibliography}
+%%\bibliography{Guide-new}
+
+\newpage
+\ifPDF
+\pdfbookmark[1]{References}{references}
+\fi
+\ifPDF
+\input{Guide-URL-bib}
+\else
+\input{Guide-noURL-bib}
+\fi
 
 \appendix
 \newpage
