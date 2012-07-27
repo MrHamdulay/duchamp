@@ -234,7 +234,8 @@ The steps in the \atrous reconstruction are as follows:
 \item The input array is discretely convolved with a given filter
   function. This is determined from the parameter file via the
   \texttt{filterCode} parameter -- see Appendix~\ref{app-param} for
-  details on the filters available.
+  details on the filters available. Edges are dealt with by assuming
+  reflection at the boundary.
 \item The wavelet coefficients are calculated by taking the difference
   between the convolved array and the input array.
 \item If the wavelet coefficients at a given point are above the
