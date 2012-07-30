@@ -97,25 +97,30 @@ namespace duchamp
     for(int d=0; d<numDets; d++){
       getline(logfile,temp);   // This should be Detection #X:
       if(this->par.isVerbose()) bar.update(d+1);
-      if(temp.substr(0,11)!="Detection #") DUCHAMPERROR("existingDetections","Format of Log file is wrong!");
+      if(temp.substr(0,11)!="Detection #") DUCHAMPTHROW("existingDetections","Format of Log file is wrong - \""<<temp.substr(0,11)<<"\" should be \"Detection #\"!");
       Detection obj;
-      while(getline(logfile,temp), temp.size()>0){
-	  for(size_t i=0;i<temp.size();i++)
-	    if(temp[i]=='-' || temp[i]==',') temp[i] = ' ';
-	  std::stringstream ss;
-	  ss.str(temp);
-	  ss >> x1 >> x2 >> ypix >> zpix;
-	  Scan scn(ypix-this->par.getYOffset(),x1-this->par.getXOffset(),x2-x1+1);
-	  obj.addScan(scn,zpix-this->par.getZOffset());
+      getline(logfile,temp);
+      while(temp.size()>0){
+	for(size_t i=0;i<temp.size();i++)
+	  if(temp[i]=='-' || temp[i]==',') temp[i] = ' ';
+	std::stringstream ss;
+	ss.str(temp);
+	ss >> x1 >> x2 >> ypix >> zpix;
+	Scan scn(ypix-this->par.getYOffset(),x1-this->par.getXOffset(),x2-x1+1);
+	obj.addScan(scn,zpix-this->par.getZOffset());
+	getline(logfile,temp);
       }
+      
       obj.setOffsets(this->par);
       if(obj.getSize()>0){
 	obj.calcParams();
 	this->addObject(obj);
       }
-      getline(logfile,temp);
+
     }
     logfile.close();
+
+    this->updateDetectMap();
 
     if(this->par.isVerbose()){
       bar.remove();
