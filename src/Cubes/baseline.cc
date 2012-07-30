@@ -47,11 +47,11 @@ namespace duchamp
 
     float *spec     = new float[this->axisDim[2]];
     float *thisBaseline = new float[this->axisDim[2]];
-    int numSpec = this->axisDim[0]*this->axisDim[1];
+    size_t numSpec = this->axisDim[0]*this->axisDim[1];
 
     ProgressBar bar;
     if(this->par.isVerbose()) bar.init(numSpec);
-    for(int pix=0; pix<numSpec; pix++){ // for each spatial pixel...
+    for(size_t pix=0; pix<numSpec; pix++){ // for each spatial pixel...
 
       if(this->par.isVerbose() ) bar.update(pix+1);
 
