@@ -153,7 +153,7 @@ namespace duchamp
     bool  *makeBlankMask(float *array, int size);
 
     /// @brief Make a mask array -- an array saying whether each pixel is able to be used for statistics calculations
-    bool *makeStatMask(float *array, long *dim);
+    bool *makeStatMask(float *array, size_t *dim);
 
     //--------------------
     // Basic inline accessor functions

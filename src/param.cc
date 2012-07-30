@@ -395,19 +395,19 @@ namespace duchamp
       (this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword));
   }
 
-  bool *Param::makeBlankMask(float *array, int size)
+  bool *Param::makeBlankMask(float *array, size_t size)
   {
     ///  This returns an array of bools, saying whether each pixel in the
     ///  given array is BLANK or not. If the pixel is BLANK, set mask to
     ///  false, else set to true. The array is allocated by the function.
 
     bool *mask = new bool[size];
-    for(int i=0;i<size;i++) mask[i] = !this->isBlank(array[i]);
+    for(size_t i=0;i<size;i++) mask[i] = !this->isBlank(array[i]);
     return mask;
   }
 
 
-  bool *Param::makeStatMask(float *array, long *dim)
+  bool *Param::makeStatMask(float *array, size_t *dim)
   {
     ///  This returns an array of bools, saying whether each pixel in
     ///  the given array is suitable for a stats calculation. It needs
@@ -415,10 +415,10 @@ namespace duchamp
     ///  channel. The array is allocated by the function with a 'new' call. 
 
     bool *mask = new bool[dim[0]*dim[1]*dim[2]];
-    for(int x=0;x<dim[0];x++) {
-      for(int y=0;y<dim[1];y++) {
-	for(int z=0;z<dim[2];z++) {
-	  int i = x+y*dim[0]+z*dim[0]*dim[1];
+    for(size_t x=0;x<dim[0];x++) {
+      for(size_t y=0;y<dim[1];y++) {
+	for(size_t z=0;z<dim[2];z++) {
+	  size_t i = x+y*dim[0]+z*dim[0]*dim[1];
 	  mask[i] = !this->isBlank(array[i]) && !this->isInMW(z) && this->isStatOK(x,y,z);
 	}
       }
