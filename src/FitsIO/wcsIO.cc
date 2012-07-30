@@ -139,10 +139,6 @@ namespace duchamp
       return FAILURE;
     }
 
-    this->naxis=0;
-    for(int i=0;i<numAxes;i++)
-      if(dimAxes[i]>1) this->naxis++;
-
     int relax=1; // for wcspih -- admit all recognised informal WCS extensions
     int ctrl=2;  // for wcspih -- report each rejected card and its reason for rejection
     int localnwcs, nreject;

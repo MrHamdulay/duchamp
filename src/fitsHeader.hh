@@ -182,7 +182,6 @@ namespace duchamp
     struct wcsprm *wcs;                 ///< The WCS parameters for the cube in a struct from the wcslib library.
     int            nwcs;                ///< The number of WCS parameters
     bool           wcsIsGood;           ///< A flag indicating whether there is a valid WCS present.
-    int            naxis;               ///< How many axes are in the header?
     bool           flag2D;              ///< Is the image only a 2D one (leaving out redundant dimensions of size 1)?
     std::string    spectralUnits;       ///< The units of the spectral dimension
     std::string    spectralType;        ///< The spectral type - first 4 letters of the WCS ctype code. Used for the results output.

@@ -81,7 +81,6 @@ namespace duchamp
     wcsset(this->wcs);
     this->nwcs          = h.nwcs;
     this->wcsIsGood     = h.wcsIsGood;
-    this->naxis         = h.naxis;
     this->flag2D        = h.flag2D;
     this->spectralUnits = h.spectralUnits;
     this->spectralType  = h.spectralType;
