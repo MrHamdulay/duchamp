@@ -91,7 +91,7 @@ namespace duchamp
     OUTCOME returnValue = SUCCESS;
 
     // Get the brightness unit, so that we can set the units for the 
-    //  integrated flux when we go to fixUnits.
+    //  integrated flux when we go to fixSpectralUnits.
     OUTCOME bunitResult = this->readBUNIT(fptr);
       
     // if(this->readBLANKinfo(fname, par)==FAILURE)
