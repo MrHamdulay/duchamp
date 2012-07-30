@@ -150,7 +150,7 @@ namespace duchamp
     bool   isStatOK(int x, int y, int z);
 
     /// @brief Make a mask array -- an array saying whether each pixel is BLANK or not
-    bool  *makeBlankMask(float *array, int size);
+    bool  *makeBlankMask(float *array, size_t size);
 
     /// @brief Make a mask array -- an array saying whether each pixel is able to be used for statistics calculations
     bool *makeStatMask(float *array, size_t *dim);
