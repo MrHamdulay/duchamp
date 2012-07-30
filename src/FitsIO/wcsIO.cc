@@ -146,7 +146,8 @@ namespace duchamp
     status=wcspih(hdr, nkeys, relax, ctrl, &nreject, &localnwcs, &localwcs);
     if(status){
       // if here, something went wrong -- report what.
-      DUCHAMPWARN("Cube Reader","wcspih failed!\nWCSLIB error code=" << status << ": " << wcs_errmsg[status]);
+      DUCHAMPERROR("Cube Reader","Could not parse header with wcspih!\nWCSLIB error code=" << status << ": " << wcs_errmsg[status]);
+      return FAILURE;
     }
     else{  
       int stat[NWCSFIX];
