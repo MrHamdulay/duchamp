@@ -257,62 +257,6 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void drawSpectralRange(Plot::SpectralPlot &plot, Detection &obj, FitsHeader &head)
-  {
-    /// @details
-
-    /// A front-end to drawing the lines delimiting the spectral
-    /// extent of the detection. This takes into account the channel
-    /// widths, offsetting outwards by half a channel (for instance, a
-    /// single-channel detection will not have the separation of one
-    /// channel).
-    /// If the world coordinate is being plotted, the correct offset
-    /// is calcuated by transforming from the central spatial
-    /// positions and the offsetted min/max z-pixel extents
-
-    if(head.isWCS()){
-      double x=obj.getXcentre(),y=obj.getYcentre(),z;
-      z=obj.getZmin()-0.5;
-      float vmin=head.pixToVel(x,y,z);
-      z=obj.getZmax()+0.5;
-      float vmax=head.pixToVel(x,y,z);
-      plot.drawVelRange(vmin,vmax);
-    }
-    else{
-      plot.drawVelRange(obj.getZmin()-0.5,obj.getZmax()+0.5);
-    }
-
-
-  }
-
-  void drawSpectralRange(Plot::SimpleSpectralPlot &plot, Detection &obj, FitsHeader &head)
-  {
-    /// @details
-
-    /// A front-end to drawing the lines delimiting the spectral
-    /// extent of the detection. This takes into account the channel
-    /// widths, offsetting outwards by half a channel (for instance, a
-    /// single-channel detection will not have the separation of one
-    /// channel).
-    /// If the world coordinate is being plotted, the correct offset
-    /// is calcuated by transforming from the central spatial
-    /// positions and the offsetted min/max z-pixel extents
-
-    if(head.isWCS()){
-      double x=obj.getXcentre(),y=obj.getYcentre(),z;
-      z=obj.getZmin()-0.5;
-      float vmin=head.pixToVel(x,y,z);
-      z=obj.getZmax()+0.5;
-      float vmax=head.pixToVel(x,y,z);
-      plot.drawVelRange(vmin,vmax);
-    }
-    else{
-      plot.drawVelRange(obj.getZmin()-0.5,obj.getZmax()+0.5);
-    }
-
-
-  }
-
   void getSmallVelRange(Detection &obj, FitsHeader &head, 
 			double *minvel, double *maxvel)
   {
