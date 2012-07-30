@@ -322,7 +322,7 @@ namespace PixelInfo
 
   //--------------------------------------------------------------------
 
-  std::vector<Voxel> Object3D::getPixelSet(float *array, long *dim)
+  std::vector<Voxel> Object3D::getPixelSet(float *array, size_t *dim)
   {
     /// @details Returns a vector of Voxels with the flux values for each voxel
     /// taken from the array provided. No check is made as to whether
