@@ -97,63 +97,117 @@ namespace duchamp
     /// \param fname Fits file to read.
     /// \param par Param set to help fix the units with.
 
-    int numAxes;
+    OUTCOME returnValue=SUCCESS;
+
+    int numAxes=0;
+    long *dimAxes = 0;
     int noComments = 1; //so that fits_hdr2str will ignore COMMENT, HISTORY etc
     int nExc = 0,nkeys;
     int status = 0;
-    char *hdr;
+    char *hdr=0;
+    struct wcsprm *localwcs;
+    int localnwcs;
 
     // Get the dimensions of the FITS file -- number of axes and size of each.
     status = 0;
     if(fits_get_img_dim(fptr, &numAxes, &status)){
       fits_report_error(stderr, status);
-      return FAILURE;
-    }
-    long *dimAxes = new long[numAxes];
-    for(int i=0;i<numAxes;i++) dimAxes[i]=1;
-    status = 0;
-    if(fits_get_img_size(fptr, numAxes, dimAxes, &status)){
-      fits_report_error(stderr, status);
-      return FAILURE;
+      returnValue = FAILURE;
     }
 
-    // Read in the entire PHU of the FITS file to a std::string.
-    // This will be read by the wcslib functions to extract the WCS.
-    status = 0;
-    fits_hdr2str(fptr, noComments, NULL, nExc, &hdr, &nkeys, &status);
-    if( status ){
-      DUCHAMPWARN("Cube Reader","Error whilst reading FITS header to string: ");
-      fits_report_error(stderr, status);
-      return FAILURE;
+    if(returnValue == SUCCESS){
+      dimAxes = new long[numAxes];
+      for(int i=0;i<numAxes;i++) dimAxes[i]=1;
+      status = 0;
+      if(fits_get_img_size(fptr, numAxes, dimAxes, &status)){
+	fits_report_error(stderr, status);
+	returnValue = FAILURE;
+      }
+    }
+
+    if(returnValue == SUCCESS){
+      // Read in the entire PHU of the FITS file to a std::string.
+      // This will be read by the wcslib functions to extract the WCS.
+      status = 0;
+      fits_hdr2str(fptr, noComments, NULL, nExc, &hdr, &nkeys, &status);
+      if( status ){
+	DUCHAMPWARN("Cube Reader","Error whilst reading FITS header to string: ");
+	fits_report_error(stderr, status);
+	return FAILURE;
+      }
     }
  
-    // Define a temporary, local version of the WCS
-    struct wcsprm *localwcs;
-    localwcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
-    localwcs->flag=-1;
-
-    // Initialise this temporary wcsprm structure
-    status = wcsini(true, numAxes, localwcs);
-    if(status){
-      DUCHAMPERROR("Cube Reader","wcsini failed! Code=" << status << ": " << wcs_errmsg[status]);
-      return FAILURE;
+    if(returnValue == SUCCESS){
+      // Define a temporary, local version of the WCS
+      localwcs = (struct wcsprm *)calloc(1,sizeof(struct wcsprm));
+      localwcs->flag=-1;
+      
+      // Initialise this temporary wcsprm structure
+      status = wcsini(true, numAxes, localwcs);
+      if(status){
+	DUCHAMPERROR("Cube Reader","wcsini failed! Code=" << status << ": " << wcs_errmsg[status]);
+	returnValue = FAILURE;
+      }
+      else{
+	int relax=1; // for wcspih -- admit all recognised informal WCS extensions
+	int ctrl=2;  // for wcspih -- report each rejected card and its reason for rejection
+	int nreject;
+	// Parse the FITS header to fill in the wcsprm structure
+	status=wcspih(hdr, nkeys, relax, ctrl, &nreject, &localnwcs, &localwcs);
+	if(status){
+	  // if here, something went wrong -- report what.
+	  DUCHAMPERROR("Cube Reader","Could not parse header with wcspih!\nWCSLIB error code=" << status << ": " << wcs_errmsg[status]);
+	  returnValue = FAILURE;
+	}
+	else  returnValue = this->defineWCS(localwcs, localnwcs, dimAxes, par);
+	
+      }
     }
 
-    int relax=1; // for wcspih -- admit all recognised informal WCS extensions
-    int ctrl=2;  // for wcspih -- report each rejected card and its reason for rejection
-    int localnwcs, nreject;
-    // Parse the FITS header to fill in the wcsprm structure
-    status=wcspih(hdr, nkeys, relax, ctrl, &nreject, &localnwcs, &localwcs);
-    if(status){
-      // if here, something went wrong -- report what.
-      DUCHAMPERROR("Cube Reader","Could not parse header with wcspih!\nWCSLIB error code=" << status << ": " << wcs_errmsg[status]);
+    // clean up allocated memory
+    if(localwcs > 0){
+      wcsvfree(&localnwcs,&localwcs);
+      wcsfree(localwcs);
+      free(localwcs);
+    }
+    if(hdr>0) free(hdr);
+    if(dimAxes>0) {
+      delete [] dimAxes;
+    }
+
+    return returnValue;
+
+  }
+
+  OUTCOME FitsHeader::defineWCS(wcsprm *theWCS, int nWCS, long *dimAxes, Param &par)
+  {
+  
+    int status=0;
+    int stat[NWCSFIX];
+    // Applies all necessary corrections to the wcsprm structure
+    //  (missing cards, non-standard units or spectral types, ...)
+    status = wcsfix(1, (const int*)dimAxes, theWCS, stat);
+    if(status) {
+      std::stringstream errmsg;
+      errmsg << "wcsfix failed with function status returns of:\n";
+      for(int i=0; i<NWCSFIX; i++)
+	if (stat[i] > 0) 
+	  errmsg << i+1 << ": WCSFIX error code=" << stat[i] << ": "
+		 << wcsfix_errmsg[stat[i]] << std::endl;
+      DUCHAMPWARN("Cube Reader", errmsg);
       return FAILURE;
     }
-    else{  
+    // Set up the wcsprm struct. Report if something goes wrong.
+    status = wcsset(theWCS);
+    if(status){
+      DUCHAMPWARN("Cube Reader","wcsset failed with error code=" << status <<": "<<wcs_errmsg[status]);
+      return FAILURE;
+    }
+    else{
+
       int stat[NWCSFIX];
-      // Applies all necessary corrections to the wcsprm structure
-      //  (missing cards, non-standard units or spectral types, ...)
-      status = wcsfix(1, (const int*)dimAxes, localwcs, stat);
+      // Re-do the corrections to account for things like NCP projections
+      status = wcsfix(1, (const int*)dimAxes, theWCS, stat);
       if(status) {
 	std::stringstream errmsg;
 	errmsg << "wcsfix failed with function status returns of:\n";
@@ -161,99 +215,73 @@ namespace duchamp
 	  if (stat[i] > 0) 
 	    errmsg << i+1 << ": WCSFIX error code=" << stat[i] << ": "
 		   << wcsfix_errmsg[stat[i]] << std::endl;
-	DUCHAMPWARN("Cube Reader", errmsg);
+	DUCHAMPWARN("Cube Reader", errmsg );
       }
-      // Set up the wcsprm struct. Report if something goes wrong.
-      status = wcsset(localwcs);
-      if(status){
-	DUCHAMPWARN("Cube Reader","wcsset failed with error code=" << status <<": "<<wcs_errmsg[status]);
-      }
-      else{
-
-	int stat[NWCSFIX];
-	// Re-do the corrections to account for things like NCP projections
-	status = wcsfix(1, (const int*)dimAxes, localwcs, stat);
-	if(status) {
-	  std::stringstream errmsg;
-	  errmsg << "wcsfix failed with function status returns of:\n";
-	  for(int i=0; i<NWCSFIX; i++)
-	    if (stat[i] > 0) 
-	      errmsg << i+1 << ": WCSFIX error code=" << stat[i] << ": "
-		     << wcsfix_errmsg[stat[i]] << std::endl;
-	  DUCHAMPWARN("Cube Reader", errmsg );
-	}
 
 
-	char stype[5],scode[5],sname[22],units[8],ptype,xtype;
-	int restreq;
+      char stype[5],scode[5],sname[22],units[8],ptype,xtype;
+      int restreq;
 
-	if(par.getSpectralType()!=""){ // User wants to convert the spectral type
+      if(par.getSpectralType()!=""){ // User wants to convert the spectral type
 
-	  std::string desiredType = par.getSpectralType();
+	std::string desiredType = par.getSpectralType();
 	  
-	  status = spctyp((char *)desiredType.c_str(),stype,scode,sname,units,&ptype,&xtype,&restreq);
-	  if(status){
-	    DUCHAMPERROR("Cube Reader", "Spectral type " << desiredType << " is not a valid spectral type. No translation done.");
+	status = spctyp((char *)desiredType.c_str(),stype,scode,sname,units,&ptype,&xtype,&restreq);
+	if(status){
+	  DUCHAMPERROR("Cube Reader", "Spectral type " << desiredType << " is not a valid spectral type. No translation done.");
+	}
+	else{
+
+	  if(desiredType.size()<4){
+	    DUCHAMPERROR("Cube Reader", "Spectral Type " << desiredType << " requested, but this is too short. No translation done");
 	  }
 	  else{
-
-	    if(desiredType.size()<4){
-	      DUCHAMPERROR("Cube Reader", "Spectral Type " << desiredType << " requested, but this is too short. No translation done");
+	    if(desiredType.size()<8){
+	      if(desiredType.size()==4) desiredType+="-???";
+	      else while (desiredType.size()<8) desiredType+="?";
 	    }
-	    else{
-	      if(desiredType.size()<8){
-		if(desiredType.size()==4) desiredType+="-???";
-		else while (desiredType.size()<8) desiredType+="?";
-	      }
-	    }
-	    if(par.getRestFrequency()>0.){
-	      localwcs->restfrq = par.getRestFrequency();
-	    }
-	    status = wcssptr(localwcs, &(localwcs->spec), (char *)desiredType.c_str());
-	    if(status){
-	      DUCHAMPWARN("Cube Reader","WCSSPTR failed when converting from type \"" << localwcs->ctype[localwcs->spec] 
-			  << "\" to type \"" << desiredType << " with code=" << status << ": " << wcs_errmsg[status]);
-	    }
-	    else if(par.getRestFrequency()>0.) par.setFlagRestFrequencyUsed(true);
-
-
 	  }
+	  if(par.getRestFrequency()>0.){
+	    theWCS->restfrq = par.getRestFrequency();
+	  }
+	  status = wcssptr(theWCS, &(theWCS->spec), (char *)desiredType.c_str());
+	  if(status){
+	    DUCHAMPWARN("Cube Reader","WCSSPTR failed when converting from type \"" << theWCS->ctype[theWCS->spec] 
+			<< "\" to type \"" << desiredType << " with code=" << status << ": " << wcs_errmsg[status]);
+	  }
+	  else if(par.getRestFrequency()>0.) par.setFlagRestFrequencyUsed(true);
+
 
 	}
 
-	  
-	status = spctyp(localwcs->ctype[localwcs->spec],stype,scode,sname,units,&ptype,&xtype,&restreq);
-
-	this->spectralType  = stype;
-	this->spectralDescription = sname;
-
-	// Save the wcs to the FitsHeader class that is running this function
-	this->setWCS(localwcs);
-	this->setNWCS(localnwcs);
- 
-	// Now that the WCS is defined, use it to set the offsets in the Param set
-	par.setOffsets(localwcs);
-
       }
+
+      status = spctyp(theWCS->ctype[theWCS->spec],stype,scode,sname,units,&ptype,&xtype,&restreq);
+
+      this->spectralType  = stype;
+      this->spectralDescription = sname;
+
+      // Save the wcs to the FitsHeader class that is running this function
+      this->setWCS(theWCS);
+      this->setNWCS(nWCS);
+ 
+      // Now that the WCS is defined, use it to set the offsets in the Param set
+      par.setOffsets(theWCS);
+
     }
 
     // work out whether the array is 2dimensional
-    if(localwcs->naxis==2) this->flag2D = true;
+    if(theWCS->naxis==2) this->flag2D = true;
     else{
       int numDim=0;
-      for(int i=0;i<numAxes;i++) if(dimAxes[i]>1) numDim++;
+      for(int i=0;i<wcs->naxis;i++) if(dimAxes[i]>1) numDim++;
       this->flag2D = (numDim==2);
     }
-
-    // clean up allocated memory
-    wcsvfree(&localnwcs,&localwcs);
-    wcsfree(localwcs);
-    free(localwcs);
-    free(hdr);
-    delete [] dimAxes;
-
+   
     return SUCCESS;
 
+    
   }
+
 
 }

@@ -127,6 +127,7 @@ namespace duchamp
     OUTCOME     defineWCS(std::string fname, Param &par);
     OUTCOME     defineWCS(Param &par);
     OUTCOME     defineWCS(fitsfile *fptr, Param &par);
+    OUTCOME     defineWCS(wcsprm *theWCS, int nWCS, long *dimAxes, Param &par);
 
     //--------------------
     // Basic inline accessor functions
