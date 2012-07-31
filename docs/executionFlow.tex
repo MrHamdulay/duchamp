@@ -483,6 +483,54 @@ given above.
 \secB{Searching the image}
 \label{sec-detection}
 
+\secC{Representation of detected objects}
+\label{sec-scan}
+
+\begin{figure}
+\includegraphics[width=\textwidth]{exampleObject}
+\caption{An example of the run-length encoding method of storing
+pixel information. The scans used to encode the image are listed
+alongside the relevant row. The pixels are colour-coded by
+nominal pixel values, but note that the pixel values themselves
+do not form part of the encoding and are not kept as part of the
+object class. }
+\label{fig-objExample}
+\end{figure}
+
+The principle aim of \duchamp is to provide a catalogue of sources
+located in the image. While running, \duchamp needs to maintain for
+each source several data structures that will contribute to the memory
+footprint: a record of which pixels contribute to the source; a set of
+measured parameters that will go into the catalogue; and a separate
+two-dimensional map showing the spatial location of detected pixels
+(carrying this around makes the computation of detection maps easier
+-- see Section~\ref{sec-spatialmaps}).
+
+To keep track of the set of detected pixels, \duchamp
+employs specialised techniques that keep the memory usage
+manageable. A naive method could be to store each single pixel, but
+this results in a lot of redundant information being stored in memory.
+
+To reduce the storage requirements, the run-length encoding method is
+used for storing the spatial information. In this fashion, an object
+in 2D is stored as a series of ``runs'', encoded by a row number (the
+$y$-value), the starting column (the minimum $x$-value) and the run
+length ($\ell_x$: the number of contiguous pixels in that row
+connected to the starting pixel). A single set of $(y,x,\ell_x)$
+values is called a ``scan''. A two-dimensional image is therefore made
+up of a set of scans. An example can be seen in
+Fig.~\ref{fig-objExample}. Note that the object shown has fourteen
+pixels, and so would require 28 integers to record the positions of
+all pixels. The run-length encoding uses just 18 integers to record
+the same information. The longer the runs are in each scan, the
+greater the saving of storage over the naive method.
+
+A 3D object is stored as a set of channel maps, with a channel map
+being a 2D plane with constant $z$-value. Each channel map is itself a
+set of scans showing the $(x,y)$ position of the pixels. The
+additional detection map is stored as a separate channel map, also
+made up of scans.
+
 \secC{Technique}
 
 The basic idea behind detection in \duchamp is to locate sets of

@@ -33,7 +33,64 @@ In using \duchamp, the user has to make a number of decisions about
 the way the program runs. This section is designed to give the user
 some idea about what to choose.
 
+\secB{Memory usage}
+
+A lot of attention has been paid to the memory usage in \duchamp,
+recognising that data cubes are going to be increasing in size with
+new generation correlators and wider fields of view. However, users
+with large cubes should be aware of the likely usage for different
+modes of operation and plan their \duchamp execution carefully. 
+
+At the start of the program, memory is allocated sufficient for:
+\begin{itemize}
+\item The entire pixel array (as requested, subject to any
+subsection).
+\item The spatial extent, which holds the map of detected pixels (for
+output into the detection map).
+\item If smoothing or reconstruction has been selected, another array
+of the same size as the pixel array. This will hold the
+smoothed/reconstructed array (the original needs to be kept to do the
+correct parameterisation of detected sources).
+\item If baseline-subtraction has been selected, a further array of
+the same size as the pixel array. This holds the baseline values,
+which need to be added back in prior to parameterisation.
+\end{itemize}
+All of these will be float type, except for the detection map, which
+is short.
+
+There will, of course, be additional allocation during the course of
+the program. The detection list will progressively grow, with each
+detection having a memory footprint as described in
+Section~\ref{sec-scan}. But perhaps more important and with a larger
+impact will be the temporary space allocated for various algorithms.
+
+The largest of these will be the wavelet reconstruction. This will
+require an additional allocation of twice the size of the array being
+reconstructed, one for the coefficients and one for the wavelets -
+each scale will overwrite the previous one. So, for the 1D case, this
+means an additional allocation of twice the spectral dimension (since
+we only reconstruct one spectrum at a time), but the 3D case will
+require an additional allocation of twice the cube size (this means
+there needs to be available at least four times the size of the input
+cube for 3D reconstruction, plus the additional overheads of
+detections and so forth).
+
+The smoothing has less of an impact, since it only operates on the
+lower dimensions, but it will make an additional allocation of twice
+the relevant size (spectral dimension for spectral smoothing, or
+spatial image size for the spatial Gaussian smoothing).
+
+The other large allocation of temporary space will be for calculating
+robust statistics. The median-based calculations require at least
+partial sorting of the data, and so cannot be done on the original
+image cube. This is done for the entire cube and so the temporary
+memory increase can be large.
+
+
+
 \secB{Preprocessing}
+
+\secC{Should I do any preprocessing?}
 
 The main choice is whether to alter the cube to try and enhance the
 detectability of objects, by either smoothing or reconstructing via
@@ -68,6 +125,8 @@ the ragged edges that objects in the raw cube possess are smoothed by
 the removal of most of the noise. This enables better determination of
 the shapes and characteristics of objects.
 
+\secC{Reconstruction vs Smoothing}
+
 While the time overhead is larger for the reconstruction case, it will
 potentially provide a better recovery of real sources than the
 smoothing case. This is because it probes the full range of scales
@@ -83,12 +142,17 @@ artefacts in the reconstruction that mimic the edges and can lead
 (depending on the selection threshold) to some spurious
 sources. Caution is advised with such data -- the user is advised to
 check carefully the reconstructed cube for the presence of such
-artefacts. Note, however, that the 1- and 3-dimensional
-reconstructions are \emph{not} susceptible in the same way, since the
-spectral direction does not generally exhibit these BLANK edges, and
-so we recommend the use of either of these.
+artefacts. 
 
-{\bf *** 3D  ONE MAY BE DIFFERENT}
+A more important effect that can be important for 2D reconstructions
+is the fact that the pixels in the spatial domain typically exhibit
+some correlation due to the beam. Since each channel is reconstructed
+independently, beam-sized noise fluctuations can rise above the
+reconstruction threshold more frequency than in the 1D case, providing
+a greater number of spurious single-channel spikes in a given
+reconstructed spectrum. This effect will also be present in 3D
+reconstructions, although to a lesser degree since information in the
+spectral direction is also taken into account.
 
 If one chooses the reconstruction method, a further decision is
 required on the signal-to-noise cutoff used in determining acceptable
