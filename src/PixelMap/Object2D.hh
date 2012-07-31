@@ -62,7 +62,7 @@ namespace PixelInfo
     void  cleanup();
 
     /// @brief Add a pixel to the Object, making sure no scans overlap afterwards. 
-    void  addPixel(long &x, long &y);
+    void  addPixel(long x, long y);
     // /// @brief Add the (x,y) part of a Voxel to the Object, using addPixel(long,long)
     // void  addPixel(Voxel &v){this->addPixel(v.getX(),v.getY());};
     // /// @brief Add a Pixel to the Object, using addPixel(long,long)

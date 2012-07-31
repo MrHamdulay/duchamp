@@ -70,7 +70,7 @@ public:
 namespace duchamp
 {
 
-  std::vector<Object2D> lutz_detect(std::vector<bool> &array, long xdim, long ydim, unsigned int minSize) 
+  std::vector<Object2D> lutz_detect(std::vector<bool> &array, size_t xdim, size_t ydim, unsigned int minSize) 
   {
     /// @details
     ///  A detection algorithm for 2-dimensional images based on that of
@@ -86,20 +86,20 @@ namespace duchamp
     STATUS *status  = new STATUS[2];
     Object2D *store = new Object2D[xdim+1];
     char *marker    = new char[xdim+1];
-    for(int i=0; i<(xdim+1); i++) marker[i] = NULLMARKER;
+    for(size_t i=0; i<(xdim+1); i++) marker[i] = NULLMARKER;
     std::vector<FoundObject> oS;
     std::vector<STATUS>      psS;
 
     Pixel pix;
     size_t loc=0;
 
-    for(long posY=0;posY<(ydim+1);posY++){
+    for(size_t posY=0;posY<(ydim+1);posY++){
       // Loop over each row -- consider rows one at a time
     
       status[PRIOR] = COMPLETE;
       status[CURRENT] = NONOBJECT;
 
-      for(long posX=0;posX<(xdim+1);posX++){
+      for(size_t posX=0;posX<(xdim+1);posX++){
 	// Now the loop for a given row, looking at each column individually.
 
 	char currentMarker = marker[posX];
@@ -230,7 +230,7 @@ namespace duchamp
 	} // end of PROCESSMARKER section ( if(currentMarker!=NULLMARKER) )
 
 	if (isObject){
-	  oS.back().info.addPixel(posX,posY);
+	  oS.back().info.addPixel(long(posX),long(posY));
 	}
 	else{
 	  // 

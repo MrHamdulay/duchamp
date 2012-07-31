@@ -71,7 +71,7 @@ namespace PixelInfo
   }
 
   //------------------------------------------------------
-  void Object2D::addPixel(long &x, long &y)
+  void Object2D::addPixel(long x, long y)
   {
     ///  This function has three parts to it:
     ///  <ul><li> First, it searches through the existing scans to see if 
