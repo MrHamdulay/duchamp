@@ -298,7 +298,8 @@ namespace duchamp
       delete [] specdim;
       spectrum->saveParam(par);
       spectrum->saveStats(stats);
-      spectrum->setMinSize(par.getMinChannels());
+//       spectrum->setMinSize(par.getMinChannels());
+      spectrum->setMinSize(1);
       // NB the beam is not used after this point
       // spectrum->pars().setBeamSize(2.); 
       // // beam size: for spectrum, only neighbouring channels correlated
