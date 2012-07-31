@@ -129,7 +129,7 @@ namespace duchamp
 	  
 	    if(oS.back().start==NULLSTART){
 	      marker[posX] = 'S';
-	      oS.back().start = posX;
+	      oS.back().start = int(posX);
 	    }
 	    else  marker[posX] = 's';
 	  }
@@ -137,7 +137,7 @@ namespace duchamp
 	    psS.push_back(status[PRIOR]);  //PUSH PS onto PSSTACK;
 	    marker[posX] = 'S';
 	    oS.resize(oS.size()+1);        //PUSH OBSTACK;
-	    oS.back().start = posX;
+	    oS.back().start = int(posX);
 
 	    status[PRIOR] = COMPLETE;
 	  }
@@ -247,7 +247,7 @@ namespace duchamp
 
 	    if(status[PRIOR] != COMPLETE){
 	      marker[posX] = 'f';
-	      oS.back().end = posX;
+	      oS.back().end = int(posX);
 	    }
 	    else{
 	      status[PRIOR] = psS.back();
