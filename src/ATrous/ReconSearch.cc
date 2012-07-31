@@ -286,7 +286,7 @@ namespace duchamp
 	doPixel[npix] = false;
 	for(size_t z=0;z<zdim;z++) {
 	  doPixel[npix] = doPixel[npix] || 
-	    (!par.isBlank(originalArray[npix]) && !par.isInMW(z));
+	    (!par.isBlank(originalArray[npix+xySize*z]) && !par.isInMW(z));
 	}
 	// doPixel[i] is false only when there are no good pixels in spectrum
 	//  of pixel #i.

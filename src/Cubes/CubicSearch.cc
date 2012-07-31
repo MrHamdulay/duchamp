@@ -124,7 +124,7 @@ std::vector <Detection> search3DArraySpectral(size_t *dim, float *Array, Param &
       doPixel[npix] = false;
       for(size_t z=0;z<zdim;z++){
 	doPixel[npix] = doPixel[npix] || 
-	  (!par.isBlank(Array[npix]) && !par.isInMW(z));
+	  (!par.isBlank(Array[npix+xySize*z]) && !par.isInMW(z));
       }
       // doPixel[i] is false only when there are no good pixels in spectrum
       //  of pixel #i.
