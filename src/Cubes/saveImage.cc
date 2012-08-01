@@ -131,8 +131,6 @@ namespace duchamp
     ///  objects. Pixels not in a detected object have the value 0.
 
     int newbitpix = SHORT_IMG;
-    char *comment = new char[FLEN_COMMENT];
-    strcpy(comment,"");
     long *fpixel = new long[this->head.WCS().naxis];
     for(int i=0;i<this->header().WCS().naxis;i++) fpixel[i]=1;
     int status = 0;  /* MUST initialize status */
@@ -148,12 +146,14 @@ namespace duchamp
     }
     else {
       if(this->writeBasicHeader(fptrNew, newbitpix)==FAILURE){
-	DUCHAMPWARN("write Recon Cube", "Failure writing to header");
+	DUCHAMPWARN("write Mask Cube", "Failure writing to header");
 	return FAILURE;
       }
 
       writeMaskHeaderInfo(fptrNew, this->par);
 
+      char *comment = new char[FLEN_COMMENT];
+      strcpy(comment,"");
       char *keyword = new char[FLEN_KEYWORD];
       std::string newunits;
       if(this->par.getFlagMaskWithObjectNum())
@@ -164,7 +164,6 @@ namespace duchamp
       if(fits_update_key(fptrNew, TSTRING, keyword, (char *)newunits.c_str(), comment, &status)){
 	duchampFITSerror(status,"saveMask","Error writing BUNIT header:");
       }
-
       delete [] comment;
       delete [] keyword;
 	
