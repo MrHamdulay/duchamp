@@ -92,7 +92,7 @@ not matter, they are grouped here in logical sections.
   containing spectra of all detected objects. If PGPlot has not been
   enabled, this parameter defaults to \texttt{false}.
 \item[{SpectraFile [duchamp-\\Spectra.ps]}] The postscript file
-  containing the resulting integrated spectra and images of the
+  that contains the resulting integrated spectra and images of the
   detections.
 \item[{flagTextSpectra [false]}] A flag to say whether the spectra
   should be saved in text form in a single file. See below for a
@@ -105,10 +105,10 @@ not matter, they are grouped here in logical sections.
 \item[{flagLog [false]}] A flag to indicate whether the
   details of intermediate detections should be logged.
 \item[{LogFile [duchamp-\\Logfile.txt]}] The file in which
-  intermediate detections are logged. These are detections that have
-  not been merged. This is primarily for use in debugging and
-  diagnostic purposes: normal use of the program will probably not
-  require it.
+  intermediate detections and the pixel content of the final list of
+  detections are logged. These are detections that have not been
+  merged. This is primarily for use in debugging and diagnostic
+  purposes: normal use of the program will probably not require it.
 \item[{flagOutputMomentMap [false]}] A flag to say whether or not to save a
   FITS file containing the moment-0 map. 
 \item[fileOutputMomentMap{ [see text]}] The file to which the moment-0 array is
@@ -158,8 +158,8 @@ not matter, they are grouped here in logical sections.
   centre of the object with radius large enough to encompass all
   spatial pixels.
 \item[{flagMaps [true]}] A flag to say whether to save postscript
-  files showing the 0th moment map of the whole cube (parameter
-  \texttt{momentMap}) and the detection image
+  files showing the 0th moment map of the whole cube
+  (\texttt{momentMap}) and the detection image
   (\texttt{detectionMap}). If PGPlot has not been enabled, this
   parameter defaults to \texttt{false}.
 \item[{momentMap [duchamp-\\MomentMap.ps]}] A postscript file
@@ -177,7 +177,7 @@ not matter, they are grouped here in logical sections.
   defaults to \texttt{false}.
 \item[{newFluxUnits [no default]}] Flux units that the pixel values
   should be converted into. These should be directly compatible with
-  the existing units, given by the BUNIT keyword.
+  the units in the FITS header, given by the BUNIT keyword.
 \item[{precFlux [3]}] The desired precision (\ie number of decimal
   places) for flux values given in the output files and tables.
 \item[{precVel [3]}] The desired precision (\ie number of decimal
@@ -212,9 +212,10 @@ not matter, they are grouped here in logical sections.
 
 \secC*{General detection}
 \begin{Lentry}
-\item[{searchType [spatial]}] How the searches are done. A value of
-  ``spatial'' means each 2D channel map is searched, whereas
-  ``spectral'' means each 1D spectrum is searched.
+\item[{searchType [spatial]}] How the searches are done. Only
+  ``spatial'' and ``spectral'' are accepted. A value of ``spatial''
+  means each 2D channel map is searched, whereas ``spectral'' means
+  each 1D spectrum is searched.
 \item[{flagStatSec [false]}] A flag indicating whether the
   statistics should be calculated on a subsection of the cube, rather
   than the full cube. Note that this only applies to the statistics
@@ -225,8 +226,8 @@ not matter, they are grouped here in logical sections.
  the subsection format. Only used if \texttt{flagStatSec=true}.
 \item[{flagRobustStats [true]}] A flag indicating whether to use the
   robust statistics (median and MADFM) to estimate the noise
-  parameters, rather than the mean and rms. See \S\ref{sec-stats} for
-  details. 
+  parameters of the cube, rather than the mean and rms. See
+  \S\ref{sec-stats} for details.
 \item[{flagNegative [false]}] A flag indicating that the
   features of interest are negative. The cube is inverted prior to
   searching.
@@ -276,8 +277,8 @@ not matter, they are grouped here in logical sections.
   given is larger than this calculated value, the calculated value is
   used instead.
 \item[{snrRecon [4]}] The thresholding cutoff used in the
-  reconstruction -- only wavelet coefficients this many $\sigma$ above
-  the mean (or greater) are included in the reconstruction. 
+  reconstruction -- only wavelet coefficients at least this many $\sigma$ above
+  the mean are included in the reconstruction. 
 \item[{filterCode [1]}] The code number of the filter to use in
   the reconstruction. The options are:
   \begin{itemize}

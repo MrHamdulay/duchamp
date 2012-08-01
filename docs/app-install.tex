@@ -72,8 +72,8 @@ purposes)\\
 \end{quote}
 
 This default setup will search in standard locations for the necessary
-libraries, and install the executable (\texttt{``Duchamp-\version''})
-in \texttt{/usr/local/bin}, along with a \texttt{``Duchamp''} symbolic
+libraries, and install the executable (\texttt{Duchamp-\version})
+in \texttt{/usr/local/bin}, along with a \texttt{Duchamp} symbolic
 link (a copy will also be in the current directory). The library (if
 you've made it) will be installed in \texttt{/usr/local/lib}, and the
 full set of header files will be installed in
@@ -100,14 +100,14 @@ directory above the \texttt{bin/} directory \eg
 and then run \texttt{make}, (\texttt{make lib} if you like), and
 \texttt{make install} as stated above. This will put the binary in the
 directory \texttt{/home/mduchamp/bin}. The library, if made, will be
-put in \texttt{/home/mduchamp/lib} and the header files in
+put in \texttt{/home/mduchamp/lib} and the header files will be put in
 \texttt{/home/mduchamp/include/duchamp} and subdirectories.
 
 If the above-mentioned libraries have been installed in non-standard
 locations, or you have more than one version installed on your system,
-you can specify specific locations by using the
+you can specify specific locations by using the \texttt{configure} flags
 \texttt{--with-cfitsio=<dir>}, \texttt{--with-wcslib=<dir>} or
-\texttt{--with-pgplot=<dir>} flags. For example:
+\texttt{--with-pgplot=<dir>}. For example:
 \begin{quote}
 {\footnotesize
 \texttt{%
@@ -118,7 +118,8 @@ you can specify specific locations by using the
 Duchamp can be compiled without \textsc{pgplot} if it is not installed
 on your system -- the searching and text-based output remains the
 same, but you will not have any graphical output.  To manually specify
-this option, use the \texttt{--without-pgplot} flag:
+this option, you can either give \texttt{--without-pgplot} or
+\texttt{--with-pgplot=no} as arguments to \texttt{configure}:
 \begin{quote}
 {\footnotesize
 \texttt{%
