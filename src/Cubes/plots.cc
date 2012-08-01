@@ -434,13 +434,16 @@ namespace duchamp
       }
       float x1,x2,y1,y2;
       cpgqwin(&x1,&x2,&y1,&y2);
-      float y=y2-0.05*(y2-y1);
-      int lw;
+      float ymax=y2-0.04*(y2-y1);
+      float ymin=y2-0.06*(y2-y1);
+      int lw,fs;
       cpgqlw(&lw);
+      cpgqfs(&fs);
       cpgslw(3);
-      cpgmove(v1,y);
-      cpgdraw(v2,y);
+      cpgsfs(1);
+      cpgrect(v1,v2,ymin,ymax);
       cpgslw(lw);
+      cpgsfs(fs);
     }
     //----------------------------------------------------------
     void SimpleSpectralPlot::drawVelRange(float v1, float v2)
