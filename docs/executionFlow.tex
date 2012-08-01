@@ -467,10 +467,10 @@ needs to set \texttt{flagAtrous = true} (obviously, if this is
 \texttt{false}, the reconstruction is not needed).
 
 To save the smoothed array, set \texttt{flagOutputSmooth = true}. As
-for the reconstructed/residual arrays, the
-name of the file can given by the \texttt{fileOutputSmooth} parameter,
-but this can be ignored and \duchamp will present a name based on the
-method of smoothing used. It will be either
+for the reconstructed/residual arrays, the name of the file can given
+by the parameter \texttt{fileOutputSmooth}, but this can be ignored
+and \duchamp will present a name that indicates the both the type and
+the details of the smoothing method used. It will be either
 \texttt{image.SMOOTH-1D-a.fits}, where a is replaced by the Hanning
 width used, or \texttt{image.SMOOTH-2D-a-b-c.fits}, where the Gaussian
 kernel parameters are a,b,c. Similarly to the reconstruction case, a
@@ -535,16 +535,17 @@ made up of scans.
 
 The basic idea behind detection in \duchamp is to locate sets of
 contiguous voxels that lie above some threshold. No size or shape
-requirement is imposed upon the detections -- that is, \duchamp does
-not fit \eg a Gaussian profile to each source. All it does is find
-connected groups of bright voxels.
+requirement is imposed upon the detections, and no fitting (for
+instance, fitting Gaussian profiles) is done on the sources. All
+\duchamp does is find connected groups of bright voxels and report
+their locations and basic parameters.
 
 One threshold is calculated for the entire cube, enabling calculation
 of signal-to-noise ratios for each source (see
 Section~\ref{sec-output} for details). The user can manually specify a
 value (using the parameter \texttt{threshold}) for the threshold,
 which will override the calculated value. Note that this option
-overrides any settings of \texttt{snrCut} or FDR options (see below). 
+overrides any settings of \texttt{snrCut} or FDR options (see below).
 
 The cube can be searched in one of two ways, governed by the input
 parameter \texttt{searchType}. If \texttt{searchType=spatial}, the

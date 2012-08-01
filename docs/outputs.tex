@@ -362,46 +362,6 @@ this log file can be prevented by setting \texttt{flagLog = false}
 
 \secB{Graphical output}
 
-\begin{figure}[t]
-  \begin{center}
-    \includegraphics[width=\textwidth]{example_spectrum}
-  \end{center}
-  \caption{\footnotesize An example of the spectral output. Note several
-    of the features discussed in the text: the red lines indicating the
-    reconstructed spectrum; the blue dashed lines indicating the
-    spectral extent of the detection; the green hashed area indicating
-    the Milky Way channels that are ignored by the searching algorithm;
-    the blue border showing its spatial extent on the 0th moment map;
-    and the 15~arcmin-long scale bar.}
-  \label{fig-spect}
-\end{figure}
-
-\begin{figure}[!t]
-  \begin{center}
-    \includegraphics[width=\textwidth]{example_moment_map}
-  \end{center}
-  \caption{\footnotesize An example of the moment map created by
-    \duchamp. The full extent of the cube is covered, and the 0th moment
-    of each object is shown (integrated individually over all the
-    detected channels). The purple line indicates the limit of the
-    non-BLANK pixels.}
-  \label{fig-moment}
-\end{figure}
-
-\secC{Mask image}
-\label{sec-maskOut}
-
-It is possible to create a FITS file containing a mask array. This
-array is designed to indicate the location of detected objects. The
-value of the detected pixels is determined by the
-\texttt{flagMaskWithObjectNum} parameter: if \texttt{true}, the value
-of the pixels is given by the corresponding object ID number; if
-\texttt{false}, they take the value 1 for all objects. Pixels not in a
-detected object have the value 0. To create this FITS file, set the
-input parameter \texttt{flagOutputMask=true}. The file will be named
-according to the \texttt{fileOutputMask} parameter, or, if this is not
-given, \texttt{image.MASK.fits} (where the input image is called
-\texttt{image.fits}).
 
 \secC{Spectral plots}
 
@@ -421,9 +381,28 @@ The spectrum that is plotted is governed by the
 \texttt{spectralMethod} parameter. It can be either \texttt{peak} (the
 default), where the spectrum is from the spatial pixel containing the
 detection's peak flux; or \texttt{sum}, where the spectrum is summed
-over all spatial pixels, and then corrected for the beam size.  The
-spectral extent of the detection is indicated with blue lines, and a
-zoom is shown in a separate window.
+over all spatial pixels, and then corrected for the beam size. If the
+\texttt{peak} method is used, the detection threshold (and growth
+threshold, if used) are indicated by dashed (and dotted) lines. These
+cannot be plotted on the integrated spectrum. The spectral extent of
+the detection is indicated with blue lines, and a zoom is shown in a
+separate window.
+
+\begin{figure}[t]
+  \begin{center}
+    \includegraphics[width=\textwidth]{example_spectrum}
+  \end{center}
+  \caption{\footnotesize An example of the spectral output. Note
+    several of the features discussed in the text: the red solid lines
+    indicating the reconstructed spectrum; the red dashed and dotted
+    horizontal lines indicating the detection and growth thresholds
+    respectively; the blue dashed lines indicating the spectral extent
+    of the detection; the green hashed area indicating the Milky Way
+    channels that are ignored by the searching algorithm; the blue
+    border showing its spatial extent on the 0th moment map; and the
+    15~arcmin-long scale bar.}
+  \label{fig-spect}
+\end{figure}
 
 The cutout image can optionally include a border around the spatial
 pixels that are in the detection (turned on and off by the
@@ -445,7 +424,7 @@ obviously whether there are any BLANK pixel present.
 Note that the creation of the spectral plots can be prevented by
 setting \texttt{flagPlotSpectra = false}.
 
-\secC{Output for 2-dimensional images}
+%\secC{Output for 2-dimensional images}
 
 When the input image is two-dimensional, with no spectral dimension,
 this spectral plot would not make much sense. Instead, \duchamp
@@ -454,14 +433,31 @@ headers as well as the 0th-moment map of the detection. As for the
 normal spectral case, this file will be written to the filename given
 by the \texttt{spectralFile} parameter.
 
+When the input image is one-dimensional, the spectral plot is
+identical save for the absence of the cutout image.
+
 \secC{Spatial maps}
 \label{sec-spatialmaps}
 
-Finally, a couple of images are optionally produced: a 0th moment map
-of the cube, combining just the detected channels in each object,
-showing the integrated flux in grey-scale; and a ``detection image'',
-a grey-scale image where the pixel values are the number of channels
-that spatial pixel is detected in. In both cases, if
+\begin{figure}[!t]
+  \begin{center}
+    \includegraphics[width=\textwidth]{example_moment_map}
+  \end{center}
+  \caption{\footnotesize An example of the moment map created by
+    \duchamp. The full extent of the cube is covered, and the 0th moment
+    of each object is shown (integrated individually over all the
+    detected channels). The purple line indicates the limit of the
+    non-BLANK pixels.}
+  \label{fig-moment}
+\end{figure}
+
+Additionally, two types of spatial images are optionally produced: a
+combined 0th-moment map of the cube, combining just the detected
+channels in each object, showing the integrated flux in grey-scale;
+and a ``detection image'', a grey-scale image where the pixel values
+are the number of channels in which that spatial pixel is
+detected. These detections include pixels that are subsequently
+discarded (due to the minimum-size criteria). In both cases, if
 \texttt{drawBorders = true}, a border is drawn around the spatial
 extent of each detection, and if \texttt{drawBlankEdges = true}, the
 purple line dividing BLANK and non-BLANK pixels (as described above)
@@ -475,15 +471,33 @@ setting \texttt{flagXOutput = false} -- this might be useful if
 running \duchamp on a terminal with no window display capability, or
 if you have set up a script to run it in a batch mode.
 
-The moment map can also be written to a FITS file, so that it can be
-examined more closely, and have annotation files overlaid. This works
-in the same way as for the mask image. To create the FITS file, set the
-input parameter \texttt{flagOutputMomentMap=true}. The file will be named
-according to the \texttt{fileOutputMomentMap} parameter, or, if this is not
-given, \texttt{image.MOM0.fits} (where the input image is called
-\texttt{image.fits}).
+If the input image is one-dimensional, such a spatial map is not
+possible. Instead, the detection map becomes a detection
+spectrum. This shows the full spectral range, indicating (as for the
+spectral plots above) the detection and growth thresholds, as well as
+the `Milky Way' range and every detection that appears in the final
+catalogue. It also indicates all pixels that were detected, including
+those subsequently discarded, by thick black lines above the
+spectrum. An example can be see in
+Fig.~\ref{fig-1D-detection-spectrum}. Again, this plot is also
+displayed in a PGPlot XWindow.
 
-The purpose of these images are to provide a visual guide to where the
+\begin{figure}[!t]
+  \begin{center}
+    \includegraphics[width=\textwidth]{example_detection_spectrum}
+  \end{center}
+  \caption{\footnotesize An example of the one-dimensional detection
+    spectrum plot, indicating detected sources and detected pixels,
+    including those subsquently discarded due to the minimum-size
+    criteria. The detection threshold is low to show the effect of
+    detecting lots of single-pixel channels, which are then discarded,
+    leaving just the two detections delimited by the blue lines.}
+  \label{fig-1D-detection-spectrum}
+\end{figure}
+
+
+
+The purpose of these images is to provide a visual guide to where the
 detections have been made, and, particularly in the case of the moment
 map, to provide an indication of the strength of the source. In both
 cases, the detections are numbered (in the same sense as the output
@@ -494,6 +508,34 @@ are saved as postscript files (given by the parameters
 latter also displayed in a \textsc{pgplot} window (regardless of the
 state of \texttt{flagMaps}).
 
+\secB{FITS output}
+
+\secC{Moment map}
+
+The moment map described above can also be written to a FITS file, so
+that it can be examined more closely, and have annotation files
+overlaid. This works in the same way as for the mask image. To create
+the FITS file, set the input parameter
+\texttt{flagOutputMomentMap=true}. The file will be named according to
+the \texttt{fileOutputMomentMap} parameter, or, if this is not given,
+\texttt{image.MOM0.fits} (where the input image is called
+\texttt{image.fits}).
+
+\secC{Mask image}
+\label{sec-maskOut}
+
+It is also possible to write the mask array to a FITS file, for use in
+other forms of post-processing. This array is designed to indicate the
+location of detected objects. The value of the detected pixels is
+determined by the input parameter \texttt{flagMaskWithObjectNum}: if
+\texttt{true}, the value of the pixels is given by the corresponding
+object ID number; if \texttt{false}, they take the value 1 for all
+objects. Pixels not in a detected object have the value 0. To create
+this FITS file, set the input parameter
+\texttt{flagOutputMask=true}. The file will be named according to the
+\texttt{fileOutputMask} parameter, or, if this is not given,
+\texttt{image.MASK.fits} (where the input image is called
+\texttt{image.fits}).
 
 
 \secB{Re-using previous detections}
