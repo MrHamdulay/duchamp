@@ -49,7 +49,7 @@ namespace duchamp{
   // }
 
   
-  void atrousTransform(unsigned long &length, int &numScales, float *spectrum, double *coeffs, double *wavelet, duchamp::Param &par)
+  void atrousTransform(size_t &length, int &numScales, float *spectrum, double *coeffs, double *wavelet, duchamp::Param &par)
   {
     duchamp::Filter reconFilter = par.filter();
     int filterHW = reconFilter.width()/2;
@@ -83,7 +83,7 @@ namespace duchamp{
 
   }
 
-  void atrousTransform(unsigned long &length, float *spectrum, float *coeffs, float *wavelet, duchamp::Param &par)
+  void atrousTransform(size_t &length, float *spectrum, float *coeffs, float *wavelet, duchamp::Param &par)
   {
     duchamp::Filter reconFilter = par.filter();
     int filterHW = reconFilter.width()/2;
@@ -129,7 +129,7 @@ namespace duchamp{
   /////  2-DIMENSIONAL TRANSFORM
   /***********************************************************************/
 
-  void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet, duchamp::Param &par)
+  void atrousTransform2D(size_t &xdim, size_t &ydim, int &numScales, float *input, double *coeffs, double *wavelet, duchamp::Param &par)
   {
     duchamp::Filter reconFilter = par.filter();
     float blankPixValue = par.getBlankPixVal();
@@ -142,7 +142,7 @@ namespace duchamp{
       }
     }
 
-    long size = xdim * ydim;
+    size_t size = xdim * ydim;
     float *oldcoeffs = new float[size];
 
     // locating the borders of the image -- ignoring BLANK pixels
@@ -325,13 +325,13 @@ namespace duchamp{
   /////  3-DIMENSIONAL TRANSFORM
   /***********************************************************************/
 
-  void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *&input, float *&coeffs, float *&wavelet, duchamp::Param &par)
+  void atrousTransform3D(size_t &xdim, size_t &ydim, size_t &zdim, int &numScales, float *&input, float *&coeffs, float *&wavelet, duchamp::Param &par)
   {
     duchamp::Filter reconFilter = par.filter();
     float blankPixValue = par.getBlankPixVal();
     int filterHW = reconFilter.width()/2;
 
-    long size = xdim * ydim * zdim;
+    size_t size = xdim * ydim * zdim;
     float *oldcoeffs = new float[size];
 
     std::cerr << "%";

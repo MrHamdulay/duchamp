@@ -41,7 +41,7 @@ std::string twoblMenu();
 std::string b1555Menu();
 void spectralSelection(std::vector<float> &xvalues, 
 		       std::vector<float> &yvalues, 
-		       unsigned long &zdim);
+		       size_t &zdim);
 
 // trimmed histogram statistics -- in trimStats.cc
 void findTrimmedHistStats(float *array, const int size, float &tmean, float &tsigma);
@@ -51,12 +51,12 @@ void findTrimmedHistStats2(float *array, const int size, float &tmean, float &ts
 // Atrous tranform functions not used in duchamp code
 namespace duchamp {
   class Param;
-  void atrousTransform(unsigned long &length, int &numScales, float *spectrum, double *coeffs, double *wavelet, Param &par);
-  void atrousTransform(unsigned long &length, float *spectrum, float *coeffs, float *wavelet, Param &par);
-  void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet, Param &par);
-  void atrousTransform2D(long &xdim, long &ydim, int &numScales, float *input, double *coeffs, double *wavelet);
-  void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *&input, float *&coeffs, float *&wavelet, Param &par);
-  void atrousTransform3D(long &xdim, long &ydim, long &zdim, int &numScales, float *input, float *coeffs, float *wavelet);
+  void atrousTransform(size_t &length, int &numScales, float *spectrum, double *coeffs, double *wavelet, Param &par);
+  void atrousTransform(size_t &length, float *spectrum, float *coeffs, float *wavelet, Param &par);
+  void atrousTransform2D(size_t &xdim, size_t &ydim, int &numScales, float *input, double *coeffs, double *wavelet, Param &par);
+  void atrousTransform2D(size_t &xdim, size_t &ydim, int &numScales, float *input, double *coeffs, double *wavelet);
+  void atrousTransform3D(size_t &xdim, size_t &ydim, size_t &zdim, int &numScales, float *&input, float *&coeffs, float *&wavelet, Param &par);
+  void atrousTransform3D(size_t &xdim, size_t &ydim, size_t &zdim, int &numScales, float *input, float *coeffs, float *wavelet);
 }
 
 // Calculating the sigma factors for the atrous reconstruction

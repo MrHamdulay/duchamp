@@ -40,7 +40,7 @@ using namespace duchamp;
 
 void spectralSelection(std::vector<float> &xvalues, 
 		       std::vector<float> &yvalues, 
-		       unsigned long &zdim)
+		       size_t &zdim)
 {
   std::cout << "Do you want:\t 1) HI Cubes?\n";
   std::cout << "\t\t 2) PHFS quasar spectra?\n";
