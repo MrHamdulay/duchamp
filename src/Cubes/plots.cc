@@ -36,6 +36,7 @@
 #include <duchamp/Utils/mycpgplot.hh>
 #include <duchamp/Utils/Statistics.hh>
 #include <duchamp/Cubes/plots.hh>
+#include <duchamp/Cubes/cubes.hh>
 
 using std::stringstream;
 using namespace mycpgplot;
@@ -418,32 +419,44 @@ namespace duchamp
       cpgbox("1bcnst",0.,0,"bcnst1v",0.,0);
     }
     //----------------------------------------------------------
-    void SimpleSpectralPlot::drawDetectPixel(int z, FitsHeader &head)
+    void SimpleSpectralPlot::markDetectedPixels(short *detectMap, size_t size, FitsHeader &head)
     {
-      float v1,v2;
-      double zero=0.;
-      if(head.isWCS()){
-	double zpt=double(z-0.5);
-	v1=head.pixToVel(zero,zero,zpt);
-	zpt=double(z+0.5);
-	v2=head.pixToVel(zero,zero,zpt);
+      size_t dim[2]; dim[0]=size; dim[1]=1;
+      Image detIm(dim);
+      detIm.setMinSize(1);
+      for(size_t z=0;z<size;z++){
+	detIm.setPixValue(z,float(detectMap[z]));
+	if(detectMap[z]>0) std::cerr << "Detected " << z <<"\n";
       }
-      else{
-	v1=float(z-0.5);
-	v2=float(z+0.5);
+      detIm.stats().setThreshold(0.5);
+      std::vector<PixelInfo::Scan> detlist=detIm.findSources1D();
+      std::cerr << "Number of sources = " << detlist.size() << "\n";
+      for(std::vector<PixelInfo::Scan>::iterator sc=detlist.begin();sc<detlist.end();sc++){
+	float v1,v2;
+	double zero=0.;
+	if(head.isWCS()){
+	  double zpt=double(sc->getX()-0.5);
+	  v1=head.pixToVel(zero,zero,zpt);
+	  zpt=double(sc->getXmax()+0.5);
+	  v2=head.pixToVel(zero,zero,zpt);
+	}
+	else{
+	  v1=float(sc->getX()-0.5);
+	  v2=float(sc->getXmax()+0.5);
+	}
+	float x1,x2,y1,y2;
+	cpgqwin(&x1,&x2,&y1,&y2);
+	float ymax=y2-0.04*(y2-y1);
+	float ymin=y2-0.06*(y2-y1);
+	int lw,fs;
+	cpgqlw(&lw);
+	cpgqfs(&fs);
+	cpgslw(3);
+	cpgsfs(1);
+	cpgrect(v1,v2,ymin,ymax);
+	cpgslw(lw);
+	cpgsfs(fs);
       }
-      float x1,x2,y1,y2;
-      cpgqwin(&x1,&x2,&y1,&y2);
-      float ymax=y2-0.04*(y2-y1);
-      float ymin=y2-0.06*(y2-y1);
-      int lw,fs;
-      cpgqlw(&lw);
-      cpgqfs(&fs);
-      cpgslw(3);
-      cpgsfs(1);
-      cpgrect(v1,v2,ymin,ymax);
-      cpgslw(lw);
-      cpgsfs(fs);
     }
     //----------------------------------------------------------
     void SimpleSpectralPlot::drawVelRange(float v1, float v2)

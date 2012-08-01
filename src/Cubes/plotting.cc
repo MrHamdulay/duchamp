@@ -149,11 +149,7 @@ namespace duchamp
 	  spPlot.drawMWRange(minMWvel,maxMWvel);
 	}
 
-	for(int z=1;z<=zdim;z++){
-	  if(this->detectMap[z-1]>0){
-	    spPlot.drawDetectPixel(z-1,this->head);
-	  }
-	}
+	spPlot.markDetectedPixels(this->detectMap,zdim,this->head);
 
 	for(size_t i=0;i<this->getNumObj();i++){
 	  drawSpectralRange(spPlot,this->objectList->at(i),this->head);

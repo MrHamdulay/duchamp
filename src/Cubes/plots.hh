@@ -214,8 +214,8 @@ namespace duchamp
       /// @brief Set up main spectral plotting region.
       void gotoMainSpectrum(float x1, float x2, float y1, float y2);
 
-      /// @brief Draw a line indicating the relevant pixel is detected
-      void drawDetectPixel(int z, FitsHeader &head);
+      /// @brief Draw a line indicating the pixels that have been detected
+      void markDetectedPixels(short *detectMap, size_t size, FitsHeader &head);
 
       /// @brief Draw lines indicating velocity range.
       void drawVelRange(float v1, float v2); 
