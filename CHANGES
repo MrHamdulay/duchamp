@@ -111,12 +111,27 @@ Bug fixes:
 * It was possible to get world positions looking like 11:59:60.0! Not
   any more.
 
+* Reading previous detections from the log file (via the use of the
+  usePrevious parameter) did result in error messages due to slightly
+  incompatible formats. These have been fixed, and all graphical
+  output should work properly.
+
+* When using a spectral search, having a blank pixel in the first
+  channel could lead to that entire spectrum being ignored, leading to
+  inconsistent results between spectral and spatial searches. This
+  issue has been fixed, with both types of searches returning the same
+  catalogue.
+
 
 Code base development notes:
 
 * Most instances of integer overflow due to insufficient precision
   have been tracked down - many of these were indexing variables of
   type int, which have been changed to size_t.
+
+* Importantly, for code interfacing with the duchamp::Cube and related
+  classes, axisDim is now an array of size_t elements, rather than
+  long.
 
 * Object3D now carries its spatial map with it, rather than
   calculating it on the fly when requested. This saves a lot of
