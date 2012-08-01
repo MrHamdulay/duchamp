@@ -424,13 +424,9 @@ namespace duchamp
       size_t dim[2]; dim[0]=size; dim[1]=1;
       Image detIm(dim);
       detIm.setMinSize(1);
-      for(size_t z=0;z<size;z++){
-	detIm.setPixValue(z,float(detectMap[z]));
-	if(detectMap[z]>0) std::cerr << "Detected " << z <<"\n";
-      }
+      for(size_t z=0;z<size;z++) detIm.setPixValue(z,float(detectMap[z]));
       detIm.stats().setThreshold(0.5);
       std::vector<PixelInfo::Scan> detlist=detIm.findSources1D();
-      std::cerr << "Number of sources = " << detlist.size() << "\n";
       for(std::vector<PixelInfo::Scan>::iterator sc=detlist.begin();sc<detlist.end();sc++){
 	float v1,v2;
 	double zero=0.;
