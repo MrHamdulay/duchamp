@@ -79,9 +79,6 @@ int main(int argc, char * argv[])
   if(!cube->pars().getFlagUsePrevious()) 
     cube->readSavedArrays();
 
-  // special case for 2D images -- ignore the minChannels requirement
-  if(cube->getDimZ()==1) cube->pars().setMinChannels(0);  
-
   // Write the parameters to screen.
   std::cout << cube->pars();
 

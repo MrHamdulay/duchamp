@@ -167,10 +167,6 @@ namespace duchamp
     if(this->par.isVerbose()) std::cout << "Reading data ... "<<std::flush;
     if(this->getFITSdata() == FAILURE) return FAILURE;
 
-    if(this->axisDim[2] == 1){
-      this->par.setMinChannels(0);
-    }
-
     if(this->par.isVerbose()){
       std::cout << "Done. Data array has dimensions: ";
       std::cout << this->axisDim[0];

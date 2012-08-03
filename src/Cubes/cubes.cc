@@ -675,7 +675,7 @@ namespace duchamp
       }
       if(this->par.getMinChannels() > this->axisDim[2]){
 	DUCHAMPWARN("Cube::initialiseCube", "The value of minChannels ("<<this->par.getMinChannels()<<") is greater than the spectral size. Setting to "<<this->axisDim[2]);
-	change=this->par.getMinPix() - this->axisDim[0]*this->axisDim[1];
+	change=this->par.getMinChannels() - this->axisDim[2];
 	haveChanged=true;
 	this->par.setMinChannels(this->axisDim[2]);
       }
