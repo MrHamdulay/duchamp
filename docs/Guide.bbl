@@ -1,53 +1,92 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{11}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[\protect\citeauthoryear{{Calabretta} \& {Greisen}}{{Calabretta} \&
-  {Greisen}}{2002}]{calabretta02}
-{Calabretta} M.,  {Greisen} E.,  2002, Astron. Astrophys., 395, 1077
+\bibitem[{Calabretta} and {Greisen}(2002)]{calabretta02}
+M.R. {Calabretta} and E.W. {Greisen}.
+\newblock {Representations of celestial coordinates in FITS}.
+\newblock \emph{Astron. Astrophys.}, 395:\penalty0 1077--1122, December 2002.
+\newblock \doi{10.1051/0004-6361:20021327}.
+\newblock URL
+  \url{http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2002A%26A...395.1077C&db_key=AST}.
 
-\bibitem[\protect\citeauthoryear{{Greisen} \& {Calabretta}}{{Greisen} \&
-  {Calabretta}}{2002}]{greisen02}
-{Greisen} E.,  {Calabretta} M.,  2002, Astron. Astrophys., 395, 1061
+\bibitem[{Greisen} and {Calabretta}(2002)]{greisen02}
+E.W. {Greisen} and M.R. {Calabretta}.
+\newblock {Representations of world coordinates in FITS}.
+\newblock \emph{Astron. Astrophys.}, 395:\penalty0 1061--1075, December 2002.
+\newblock \doi{10.1051/0004-6361:20021326}.
+\newblock URL
+  \url{http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2002A%26A...395.1061G&db_key=AST}.
 
-\bibitem[\protect\citeauthoryear{{Greisen}, {Calabretta}, Valdes \&
-  Allen}{{Greisen} et~al.}{2006}]{greisen06}
-{Greisen} E.,  {Calabretta} M.,  Valdes F.,    Allen S.,  2006, Astron.
-  Astrophys., 446, 747
+\bibitem[{Greisen} et~al.(2006){Greisen}, {Calabretta}, Valdes, and
+  Allen]{greisen06}
+E.W. {Greisen}, M.R. {Calabretta}, F.G. Valdes, and S.L. Allen.
+\newblock {Representations of spectral coordinates in FITS}.
+\newblock \emph{Astron. Astrophys.}, 446:\penalty0 747--771, 2006.
+\newblock URL \url{http://adsabs.harvard.edu/abs/2006A%26A...446..747G}.
 
-\bibitem[\protect\citeauthoryear{{Hanisch}, {Farris}, {Greisen}, {Pence},
-  {Schlesinger}, {Teuben}, {Thompson} \& {Warnock}}{{Hanisch}
-  et~al.}{2001}]{hanisch01}
-{Hanisch} R.,  {Farris} A.,  {Greisen} E.,  {Pence} W.,  {Schlesinger} B.,
-  {Teuben} P.,  {Thompson} R.,    {Warnock} A.,  2001, Astron. Astrophys., 376,
-  359
+\bibitem[{Hanisch} et~al.(2001){Hanisch}, {Farris}, {Greisen}, {Pence},
+  {Schlesinger}, {Teuben}, {Thompson}, and {Warnock}]{hanisch01}
+R.J. {Hanisch}, A.~{Farris}, E.W. {Greisen}, W.D. {Pence}, B.M. {Schlesinger},
+  P.J. {Teuben}, R.W. {Thompson}, and A.~{Warnock}.
+\newblock {Definition of the Flexible Image Transport System (FITS)}.
+\newblock \emph{Astron. Astrophys.}, 376:\penalty0 359--380, September 2001.
+\newblock \doi{10.1051/0004-6361:20010923}.
+\newblock URL
+  \url{http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2001A%26A...376..359H&db_key=AST}.
 
-\bibitem[\protect\citeauthoryear{{Hopkins}, {Miller}, {Connolly}, {Genovese},
-  {Nichol} \& {Wasserman}}{{Hopkins} et~al.}{2002}]{hopkins02}
-{Hopkins} A.,  {Miller} C.,  {Connolly} A.,  {Genovese} C.,  {Nichol} R.,
-  {Wasserman} L.,  2002, Astron. J., 123, 1086
+\bibitem[{Hopkins} et~al.(2002){Hopkins}, {Miller}, {Connolly}, {Genovese},
+  {Nichol}, and {Wasserman}]{hopkins02}
+A.M. {Hopkins}, C.J. {Miller}, A.J. {Connolly}, C.~{Genovese}, R.C. {Nichol},
+  and L.~{Wasserman}.
+\newblock {A New Source Detection Algorithm Using the False-Discovery Rate}.
+\newblock \emph{Astron. J.}, 123:\penalty0 1086--1094, February 2002.
+\newblock URL
+  \url{http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2002AJ....123.1086H&db_key=AST}.
 
-\bibitem[\protect\citeauthoryear{Lutz}{Lutz}{1980}]{lutz80}
-Lutz R.,  1980, The Computer Journal, 23, 262
+\bibitem[Lutz(1980)]{lutz80}
+R.K. Lutz.
+\newblock {An algorithm for the real time analysis of digitised images}.
+\newblock \emph{The Computer Journal}, 23:\penalty0 262--269, 1980.
 
-\bibitem[\protect\citeauthoryear{{Meyer} et~al.,}{{Meyer}
-  et~al.}{2004}]{meyer04-alt}
-{Meyer} M.,  et~al., 2004, Mon. Not. R. Astron. Soc., 350, 1195
+\bibitem[{Meyer} et~al.(2004)]{meyer04-alt}
+M.J. {Meyer} et~al.
+\newblock {The HIPASS catalogue - {\sc I}. Data presentation}.
+\newblock \emph{Mon. Not. R. Astron. Soc.}, 350:\penalty0 1195--1209, June
+  2004.
+\newblock \doi{10.1111/j.1365-2966.2004.07710.x}.
+\newblock URL
+  \url{http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2004MNRAS.350.1195M&db_key=AST}.
 
-\bibitem[\protect\citeauthoryear{{Miller}, {Genovese}, {Nichol}, {Wasserman},
-  {Connolly}, {Reichart}, {Hopkins}, {Schneider} \& {Moore}}{{Miller}
-  et~al.}{2001}]{miller01}
-{Miller} C.,  {Genovese} C.,  {Nichol} R.,  {Wasserman} L.,  {Connolly} A.,
-  {Reichart} D.,  {Hopkins} A.,  {Schneider} J.,    {Moore} A.,  2001, Astron.
-  J., 122, 3492
+\bibitem[{Miller} et~al.(2001){Miller}, {Genovese}, {Nichol}, {Wasserman},
+  {Connolly}, {Reichart}, {Hopkins}, {Schneider}, and {Moore}]{miller01}
+C.J. {Miller}, C.~{Genovese}, R.C. {Nichol}, L.~{Wasserman}, A.~{Connolly},
+  D.~{Reichart}, A.~{Hopkins}, J.~{Schneider}, and A.~{Moore}.
+\newblock {Controlling the False-Discovery Rate in Astrophysical Data
+  Analysis}.
+\newblock \emph{Astron. J.}, 122:\penalty0 3492--3505, December 2001.
+\newblock URL
+  \url{http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2001AJ....122.3492M&db_key=AST}.
 
-\bibitem[\protect\citeauthoryear{Minchin}{Minchin}{1999}]{minchin99}
-Minchin R.,  1999, Proc. Astron. Soc. Aust., 16, 12
+\bibitem[Minchin(1999)]{minchin99}
+R.F. Minchin.
+\newblock {Finding the Bivariate Brightness Distribution of Galaxies from an HI
+  Selected Sample}.
+\newblock \emph{Proc. Astron. Soc. Aust.}, 16:\penalty0 12--17, 1999.
 
-\bibitem[\protect\citeauthoryear{Starck \& Murtagh}{Starck \&
-  Murtagh}{2002}]{starck02a}
-Starck J.-L.,  Murtagh F.,  2002, {Astronomical Image and Data Analysis}.
-Springer
+\bibitem[Starck and Murtagh(2002)]{starck02a}
+J.-L. Starck and F.~Murtagh.
+\newblock \emph{{Astronomical Image and Data Analysis}}.
+\newblock Springer, 2002.
 
-\bibitem[\protect\citeauthoryear{Whiting}{Whiting}{2012}]{whiting12}
-Whiting M.~T.,  2012, Mon. Not. R. Astron. Soc., 421, 3242
+\bibitem[Whiting(2012)]{whiting12}
+M.~T. Whiting.
+\newblock {\textsc{duchamp}: a 3D source finder for spectral-line data}.
+\newblock \emph{Mon. Not. R. Astron. Soc.}, 421:\penalty0 3242--3256, 2012.
+\newblock \doi{10.1111/j.1365-2966.2012.20548.x}.
+\newblock arXiv:1201.2710.
 
 \end{thebibliography}

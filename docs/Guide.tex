@@ -54,6 +54,7 @@
 \usepackage{xspace}
 \usepackage[sort]{natbib}
 \bibpunct[,]{(}{)}{;}{a}{}{,}
+%\usepackage{biblabelurl}
 
 %\newcommand{\secA}{\chapter}
 %\newcommand{\secB}{\section}
@@ -218,21 +219,25 @@ July 31, 2012
 \newpage
 \input{future} %Future developments
 
-%\newpage
-%%\bibliographystyle{plainnat}
-%\bibliographystyle{mn2e}
-%\bibliography{mnemonic,MasterBibliography}
-%%\bibliography{Guide-new}
-
 \newpage
 \ifPDF
 \pdfbookmark[1]{References}{references}
 \fi
-\ifPDF
-\input{Guide-URL-bib}
-\else
-\input{Guide-noURL-bib}
-\fi
+\bibliographystyle{plainnat}
+%\bibliographystyle{plainnaturl}
+%\bibliographystyle{mn2e}
+\bibliography{mnemonic,MasterBibliography}
+%\bibliography{Guide-new}
+
+%\newpage
+%\ifPDF
+%\pdfbookmark[1]{References}{references}
+%\fi
+%\ifPDF
+%\input{Guide-URL-bib}
+%\else
+%\input{Guide-noURL-bib}
+%\fi
 
 \appendix
 \newpage
