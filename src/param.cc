@@ -173,6 +173,7 @@ namespace duchamp
     this->scaleMin          = 1;
     this->scaleMax          = 0;
     this->snrRecon          = 4.;
+    this->reconConvergence  = 0.005;
     this->filterCode        = 1;
     this->reconFilter.define(this->filterCode);
     // Volume-merging parameters
@@ -300,6 +301,7 @@ namespace duchamp
     this->scaleMin          = p.scaleMin;
     this->scaleMax          = p.scaleMax;
     this->snrRecon          = p.snrRecon;
+    this->reconConvergence  = p.reconConvergence;
     this->filterCode        = p.filterCode;
     this->reconFilter       = p.reconFilter;
     this->flagAdjacent      = p.flagAdjacent;
@@ -648,10 +650,8 @@ namespace duchamp
 	if(arg=="scalemin")        this->scaleMin = readIval(ss); 
 	if(arg=="scalemax")        this->scaleMax = readIval(ss); 
 	if(arg=="snrrecon")        this->snrRecon = readFval(ss); 
-	if(arg=="filtercode"){
-	  this->filterCode = readIval(ss); 
-	  this->reconFilter.define(this->filterCode);
-	}
+	if(arg=="reconconvergence") this->reconConvergence = readFval(ss);
+	if(arg=="filtercode")      this->filterCode = readIval(ss); 
 
 	if(arg=="flagadjacent")    this->flagAdjacent = readFlag(ss); 
 	if(arg=="threshspatial")   this->threshSpatial = readFval(ss); 
@@ -731,6 +731,32 @@ namespace duchamp
 
     // The wavelet reconstruction takes precendence over the smoothing.
     if(this->flagATrous) this->flagSmooth = false;
+
+    // Check validity of recon parameters
+    if(this->flagATrous){
+      if(this->reconConvergence < 0.){
+	DUCHAMPWARN("Reading Parameters","Your reconConvergence value is negative ("<<this->reconConvergence<<") - setting to " << -this->reconConvergence <<".");
+	this->reconConvergence *= -1.;
+      }
+
+      this->reconFilter.define(this->filterCode);
+
+      if((this->scaleMax) > 0 && (this->scaleMax < this->scaleMin)){
+	DUCHAMPWARN("Reading Parameters","Reconstruction scaleMax ("<<this->scaleMax<<") is less than scaleMin ("<<this->scaleMin<<"): setting both to "<<this->scaleMin);
+	this->scaleMax = this->scaleMin;
+      }
+
+      if( (this->reconDim < 1) || (this->reconDim > 3) ){
+	DUCHAMPWARN("Reading Parameters", "You requested a " << this->reconDim << " dimensional reconstruction. Setting reconDim to 1");
+	this->reconDim = 1;
+      }
+
+      if( this->snrRecon < 0.){
+	DUCHAMPWARN("Reading Parameters", "Your snrRecon value is negative (" << this->snrRecon<<"). Turning reconstruction off -- fix your parameter file!");
+	this->flagATrous = false;
+      }
+
+    }
 
     if(this->flagUserThreshold){
 
@@ -966,6 +992,7 @@ namespace duchamp
 	recordParam(theStream, "[scaleMin]", "Minimum scale in reconstruction", par.getMinScale());
       }
       recordParam(theStream, "[snrRecon]", "SNR Threshold within reconstruction", par.getAtrousCut());
+      recordParam(theStream, "[reconConvergence]", "Residual convergence criterion", par.getReconConvergence());
       recordParam(theStream, "[filterCode]", "Filter being used for reconstruction", par.getFilterCode()<<" ("<<par.getFilterName()<<")");
     }	     					       
     recordParam(theStream, "[flagRobustStats]", "Using Robust statistics?", stringize(par.getFlagRobustStats()));
@@ -1081,6 +1108,7 @@ namespace duchamp
       if(this->scaleMax>0)
 	vopars.push_back(VOParam("scaleMax","","int",this->scaleMax,0,""));
       vopars.push_back(VOParam("snrRecon","","float",this->snrRecon,0,""));
+      vopars.push_back(VOParam("reconConvergence","","float",this->reconConvergence,0,""));
       vopars.push_back(VOParam("filterCode","","int",this->filterCode,0,""));
     }
     if(this->beamAsUsed.origin()==PARAM){
@@ -1194,6 +1222,7 @@ namespace duchamp
 	 << "-"       << this->filterCode
 	 << "-"       << this->snrRecon
 	 << "-"       << this->scaleMin
+	 << "-"       << this->reconConvergence
 	 << ".fits";
       return ss.str();
     }
@@ -1217,6 +1246,7 @@ namespace duchamp
 	 << "-"       << this->filterCode
 	 << "-"       << this->snrRecon
 	 << "-"       << this->scaleMin
+	 << "-"       << this->reconConvergence
 	 << ".fits";
       return ss.str();
     }

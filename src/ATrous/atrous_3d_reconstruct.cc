@@ -62,12 +62,25 @@ namespace duchamp
     ///  \param output The returned reconstructed spectrum. This array needs to be declared beforehand.
     ///  \param par The Param set.
 
+    const float SNR_THRESH=par.getAtrousCut();
+    unsigned int MIN_SCALE=par.getMinScale();
+    unsigned int MAX_SCALE=par.getMaxScale();
+
     size_t size = xdim * ydim * zdim;
     size_t spatialSize = xdim * ydim;
-    unsigned long mindim = xdim;
+    size_t mindim = xdim;
     if (ydim<mindim) mindim = ydim;
     if (zdim<mindim) mindim = zdim;
+
     unsigned int numScales = par.filter().getNumScales(mindim);
+    if((MAX_SCALE>0)&&(MAX_SCALE<=numScales))
+      MAX_SCALE = std::min(MAX_SCALE,numScales);
+    else{
+      if(MAX_SCALE!=0)
+	DUCHAMPWARN("Reading parameters","The requested value of the parameter scaleMax, \"" << par.getMaxScale() << "\" is outside the allowed range (1-"<< numScales <<") -- setting to " << numScales);
+      MAX_SCALE = numScales;
+      par.setMaxScale(MAX_SCALE);
+    }
 
     double *sigmaFactors = new double[numScales+1];
     for(size_t i=0;i<=numScales;i++){
@@ -264,7 +277,7 @@ namespace duchamp
 	  for(size_t pos=0;pos<size;pos++) coeffs[pos] = coeffs[pos] - wavelet[pos];
 
 	  // Have found wavelet coeffs for this scale -- now threshold
-	  if(scale>=par.getMinScale()){
+	  if(scale>=MIN_SCALE && scale <=MAX_SCALE){
 	    if(par.getFlagRobustStats())
 	      // findMedianStats(wavelet,size,isGood,mean,sigma);
 	      mean = findMedian<float>(wavelet,isGood,size);
@@ -272,8 +285,7 @@ namespace duchamp
 	      //findNormalStats(wavelet,size,isGood,mean,sigma);
 	      mean = findMean<float>(wavelet,isGood,size);
 	      
-	    threshold = mean + 
-	      par.getAtrousCut()*originalSigma*sigmaFactors[scale];
+	    threshold = mean + SNR_THRESH*originalSigma*sigmaFactors[scale];
 	    for(size_t pos=0;pos<size;pos++){
 	      if(!isGood[pos]){
 		output[pos] = input[pos]; 
@@ -304,7 +316,7 @@ namespace duchamp
 	if(par.isVerbose()) printBackSpace(15);
 
       } while( (iteration==1) || 
-	       (fabs(oldsigma-newsigma)/newsigma > reconTolerance) );
+	       (fabs(oldsigma-newsigma)/newsigma > par.getReconConvergence()) );
 
       if(par.isVerbose()) std::cout << "Completed "<<iteration<<" iterations. ";
 

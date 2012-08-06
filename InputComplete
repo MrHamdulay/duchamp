@@ -170,6 +170,8 @@ searchType      spatial
 #              is <=0 then the maximum scale is calculated from the size of 
 #              the array being reconstructed.
 # snrRecon -- The threshold used in filtering the wavelet coefficient arrays.
+# reconConvergence -- The relative change in the residual rms must be
+#                     less than this to stop the a trous iterations.
 # filterCode -- The code number for the choice of filter to be used in the 
 #               reconstruction:  1 = B3-spline filter, 2 = Triangle function, 
 #                                3 = Haar wavelet. Other numbers default to 2.
@@ -179,6 +181,7 @@ reconDim        1
 scaleMin	1
 scaleMax        0
 snrRecon	4.
+reconConvergence 0.005
 filterCode      1
 
 # SMOOTHING

@@ -59,19 +59,20 @@ namespace duchamp
     ///  \param par The Param set.
 
     const float SNR_THRESH=par.getAtrousCut();
-    const unsigned int MIN_SCALE=par.getMinScale();
-    static bool firstTime = true;
+    unsigned int MIN_SCALE=par.getMinScale();
+    unsigned int MAX_SCALE=par.getMaxScale();
+    static bool firstTime = true;  // need this static in case we do two reconstructions - e.g. baseline subtraction
 
     unsigned int numScales = par.filter().getNumScales(xdim);
-    unsigned int maxScale = par.getMaxScale();
-    if((maxScale>0)&&(maxScale<=numScales))
-      maxScale = std::min(maxScale,numScales);
+    if((MAX_SCALE>0)&&(MAX_SCALE<=numScales))
+      MAX_SCALE = std::min(MAX_SCALE,numScales);
     else{
-      if((firstTime)&&(maxScale!=0)){
+      if((firstTime)&&(MAX_SCALE!=0)){
 	firstTime=false;
-	DUCHAMPWARN("Reading parameters","The requested value of the parameter scaleMax, \"" << maxScale << "\" is outside the allowed range (1-"<< numScales <<") -- setting to " << numScales);
+	DUCHAMPWARN("Reading parameters","The requested value of the parameter scaleMax, \"" << par.getMaxScale() << "\" is outside the allowed range (1-"<< numScales <<") -- setting to " << numScales);
       } 
-      maxScale = numScales;
+      MAX_SCALE = numScales;
+      par.setMaxScale(MAX_SCALE);
     }
     double *sigmaFactors = new double[numScales+1];
     for(size_t i=0;i<=numScales;i++){
@@ -112,6 +113,7 @@ namespace duchamp
 
       // No trimming done in 1D case.
 
+      float threshold;
       int iteration=0;
       newsigma = 1.e9;
       do{
@@ -172,18 +174,18 @@ namespace duchamp
 	  for(size_t pos=0;pos<xdim;pos++) coeffs[pos] = coeffs[pos] - wavelet[pos];
 
 	  // Have found wavelet coeffs for this scale -- now threshold
-	  if(scale>=MIN_SCALE){
+	  if(scale>=MIN_SCALE && scale <=MAX_SCALE){
 	    // 	    findMedianStats(wavelet,xdim,isGood,mean,sigma);
 	    if(par.getFlagRobustStats())
 	      mean = findMedian<float>(wavelet,isGood,xdim);
 	    else
 	      mean = findMean<float>(wavelet,isGood,xdim);
-	
+
+	    threshold = mean+SNR_THRESH*originalSigma*sigmaFactors[scale];
 	    for(size_t pos=0;pos<xdim;pos++){
 	      // preserve the Blank pixel values in the output.
 	      if(!isGood[pos]) output[pos] = input[pos];
-	      else if( fabs(wavelet[pos]) > 
-		       (mean+SNR_THRESH*originalSigma*sigmaFactors[scale]) )
+	      else if( fabs(wavelet[pos]) > threshold )
 		output[pos] += wavelet[pos];
 	    }
 	  }
@@ -208,7 +210,7 @@ namespace duchamp
 	if(par.isVerbose()) printBackSpace(26);
 
       } while( (iteration==1) || 
-	       (fabs(oldsigma-newsigma)/newsigma > reconTolerance) );
+	       (fabs(oldsigma-newsigma)/newsigma > par.getReconConvergence()) );
 
       if(par.isVerbose()) std::cout << "Completed "<<iteration<<" iterations. ";
 

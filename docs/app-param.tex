@@ -279,6 +279,10 @@ not matter, they are grouped here in logical sections.
 \item[{snrRecon [4]}] The thresholding cutoff used in the
   reconstruction -- only wavelet coefficients at least this many $\sigma$ above
   the mean are included in the reconstruction. 
+\item[{reconConvergence} [0.005]}] The convergence criterion used in
+  the reconstruction. The \atrous algorithm iterates until the
+  relative change in the standard deviation of the residuals is less
+  than this amount.
 \item[{filterCode [1]}] The code number of the filter to use in
   the reconstruction. The options are:
   \begin{itemize}

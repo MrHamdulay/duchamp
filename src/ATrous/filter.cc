@@ -105,9 +105,10 @@ namespace duchamp
   }
   //-----------------------------------------------------------------------
 
-  unsigned int Filter::getNumScales(long length)
+  unsigned int Filter::getNumScales(size_t length)
   {
     unsigned int num;
+    if(length==0) return 0;
     switch(this->filter1D.size()){
     case 5: 
       num = int(log(double(length-1))/M_LN2) - 1;

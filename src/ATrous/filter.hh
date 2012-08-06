@@ -60,7 +60,7 @@ namespace duchamp
     void   define(int code);
 
     /// @brief Calculate the number of scales possible with a given filter and data size. 
-    unsigned int    getNumScales(long length);
+    unsigned int    getNumScales(size_t length);
 
     /// @brief Calculate the maximum number of pixels able to be analysed with a filter at a given scale. 
     unsigned int    getMaxSize(int scale);

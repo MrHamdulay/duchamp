@@ -352,12 +352,14 @@ namespace duchamp
     void   setFlagATrous(bool flag){flagATrous=flag;};
     int    getReconDim(){return reconDim;};
     void   setReconDim(int i){reconDim=i;};
-    unsigned int    getMinScale(){return scaleMin;};
-    void   setMinScale(int s){scaleMin=s;};
-    int    getMaxScale(){return scaleMax;};
-    void   setMaxScale(int s){scaleMax=s;};
+    unsigned int getMinScale(){return scaleMin;};
+    void   setMinScale(unsigned int s){scaleMin=s;};
+    unsigned int getMaxScale(){return scaleMax;};
+    void   setMaxScale(unsigned int s){scaleMax=s;};
     float  getAtrousCut(){return snrRecon;};
     void   setAtrousCut(float c){snrRecon=c;};
+    float  getReconConvergence(){return reconConvergence;};
+    void   setReconConvergence(float f){reconConvergence = f;};
     int    getFilterCode(){return filterCode;};
     void   setFilterCode(int c){filterCode=c;};
     std::string getFilterName(){return reconFilter.getName();};
@@ -518,8 +520,9 @@ namespace duchamp
     bool   flagATrous;      ///< Are we using the a trous reconstruction?
     int    reconDim;        ///< How many dimensions to use for the reconstruction?
     unsigned int    scaleMin;        ///< Min scale used in a trous reconstruction
-    int    scaleMax;        ///< Max scale used in a trous reconstruction
+    unsigned int    scaleMax;        ///< Max scale used in a trous reconstruction
     float  snrRecon;        ///< SNR cutoff used in a trous reconstruction (only wavelet coefficients that survive this threshold are kept)
+    float  reconConvergence;///< Convergence criterion for reconstruction - maximum fractional change in residual standard deviation
     Filter reconFilter;     ///< The filter used for reconstructions.
     int    filterCode;      ///< The code number for the filter to be used (saves having to parse names)
 

@@ -46,6 +46,12 @@ Other new features:
   resulted in the program terminating now allow it to continue
   (provided that is possible given the error).
 
+* It is now possible to give the convergence criterion for the wavelet
+  reconstruction via the parameter reconConvergence. When the relative
+  change in standard deviation of the residuals from the
+  reconstruction falls below this value, the a trous algorithm stops
+  iterating.
+
 * The way one-dimensional arrays were dealt with was unsatisfactory,
   both with the way positions were registered and the format of the
   graphical output. Improvements have been made such that a 1D data
@@ -89,6 +95,10 @@ Bug fixes:
 
 * For certain cases, the reconstruction attempted to use a very large
   number of scales. This has been fixed.
+
+* The maximum scale for the reconstruction was not always being
+  applied. The scale ranges are now enforced for all types of
+  reconstructions.
 
 * When saving a mask image while using a subsection of a cube, the
   offsets for the subsection were not being accounted for
