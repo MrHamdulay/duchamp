@@ -1222,6 +1222,7 @@ namespace duchamp
 	 << "-"       << this->filterCode
 	 << "-"       << this->snrRecon
 	 << "-"       << this->scaleMin
+	 << "-"       << this->scaleMax
 	 << "-"       << this->reconConvergence
 	 << ".fits";
       return ss.str();
@@ -1246,6 +1247,7 @@ namespace duchamp
 	 << "-"       << this->filterCode
 	 << "-"       << this->snrRecon
 	 << "-"       << this->scaleMin
+	 << "-"       << this->scaleMax
 	 << "-"       << this->reconConvergence
 	 << ".fits";
       return ss.str();
