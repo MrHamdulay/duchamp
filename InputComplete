@@ -152,7 +152,7 @@ flagStatSec     false
 StatSec         [*,*,*]
 flagRobustStats true
 flagNegative    false
-snrCut		3.
+snrCut		5.
 threshold	0.
 flagGrowth	false
 growthCut	3.

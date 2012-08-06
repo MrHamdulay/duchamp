@@ -157,7 +157,7 @@ namespace duchamp
     this->flagStatSec       = false;
     this->statSec.setSection(defaultSection);
     this->flagRobustStats   = true;
-    this->snrCut            = 3.;
+    this->snrCut            = 5.;
     this->threshold         = 0.;
     this->flagUserThreshold = false;
     // Smoothing 
