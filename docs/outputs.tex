@@ -537,6 +537,16 @@ this FITS file, set the input parameter
 \texttt{image.MASK.fits} (where the input image is called
 \texttt{image.fits}).
 
+\secC{Smoothed or Reconstructed image}
+\label{sec-reconOut}
+
+As discussed in \S\ref{sec-reconIO}, the reconstructed array, its
+residual, or the smoothed array can be saved to a FITS file. This
+allows examination of them offline, as well as their re-use by
+\duchamp to save the expense of re-calculating. This behaviour is
+controlled by \texttt{flagOutputRecon}, \texttt{flagOutputResid} and
+\texttt{flagOutputSmooth}. Consult \S\ref{sec-reconIO} for further
+details.
 
 \secB{Re-using previous detections}
 \label{sec-reuse}

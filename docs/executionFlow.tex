@@ -205,26 +205,32 @@ detections.
 The use of this feature is controlled by the \texttt{flagMW}
 parameter, and the exact channels concerned are able to be set by the
 user (using \texttt{maxMW} and \texttt{minMW} -- these give an
-inclusive range of channels). When employed, these channels are
-ignored for the searching, and the scaling of the spectral output (see
-Fig.~\ref{fig-spect}) will not take them into account. They will be
-present in the reconstructed array, however, and so will be included
-in the saved FITS file (see \S\ref{sec-reconIO}). When the final
-spectra are plotted, the range of channels covered by these parameters
-is indicated by a green hashed box. Note that these channels refer to
-channel numbers in the full cube, before any subsection is applied.
+inclusive range of channels). These channels refer to the channel
+numbers of \textbf{the full cube}, before any subsection is applied.
+
+The effect is to ignore detections that lie within these channels. If
+a spatial search is being conducted (\ie one channel map at a time),
+these channels are simply not searched. If a spectral search is being
+conducted, those channels will be flagged so that no detection is made
+within them. The spectral output (see Fig.~\ref{fig-spect}) will
+ignore them as far as scaling the plot goes, and the channel range
+will be indicated by a green hatched box.
+
+Note that these channels will be included in any smoothing or
+reconstruction that is done on the array, and so will be included in
+any saved FITS file (see \S\ref{sec-reconIO}).
 
 \secB{Image reconstruction}
 \label{sec-recon}
 
 The user can direct \duchamp to reconstruct the data cube using the
-\atrous wavelet procedure. A good description of the procedure can be
-found in \citet{starck02a}. The reconstruction is an effective way
-of removing a lot of the noise in the image, allowing one to search
-reliably to fainter levels, and reducing the number of spurious
-detections. This is an optional step, but one that greatly enhances
-the source-detection process, with the payoff that it can be
-relatively time- and memory-intensive.
+multi-resolution \atrous wavelet algorithm. A good description of the
+procedure can be found in \citet{starck02a}. The reconstruction is an
+effective way of removing a lot of the noise in the image, allowing
+one to search reliably to fainter levels, and reducing the number of
+spurious detections. This is an optional step, but one that greatly
+enhances the source-detection process, at the cost of additional CPU
+and memory usage (see \S\ref{sec-notes} for discussion).
 
 \secC{Algorithm}
 
@@ -239,9 +245,10 @@ The steps in the \atrous reconstruction are as follows:
 \item The wavelet coefficients are calculated by taking the difference
   between the convolved array and the input array.
 \item If the wavelet coefficients at a given point are above the
-  requested threshold (given by \texttt{snrRecon} as the number of
-  $\sigma$ above the mean and adjusted to the current scale -- see
-  Appendix~\ref{app-scaling}), add these to the reconstructed array.
+  requested reconstruction threshold (given by \texttt{snrRecon} as
+  the number of $\sigma$ above the mean and adjusted to the current
+  scale -- see Appendix~\ref{app-scaling}), add these to the
+  reconstructed array.
 \item The separation between the filter coefficients is doubled. (Note
   that this step provides the name of the procedure\footnote{\atrous
   means ``with holes'' in French.}, as gaps or holes are created in
@@ -272,9 +279,10 @@ makes a first pass at the wavelet reconstruction (the process outlined
 in the 8 stages above), but the residual array will likely have some
 structure still in it, so the wavelet filtering is done on the
 residual, and any significant wavelet terms are added to the final
-reconstruction. This step is repeated until the change in the measured
-standard deviation of the background (see note below on the evaluation
-of this quantity) is less than some fiducial amount.
+reconstruction. This step is repeated until the relative change in the
+measured standard deviation of the residual (see note below on the
+evaluation of this quantity) is less than some value, given by the
+\texttt{reconConvergence} parameter.
 
 It is important to note that the \atrous decomposition is an example
 of a ``redundant'' transformation. If no thresholding is performed,
@@ -334,11 +342,17 @@ these choices are discussed in \S\ref{sec-notes}, but it should be
 noted that a 2-dimensional reconstruction can be susceptible to edge
 effects if the spatial shape of the pixel array is not rectangular.
 
-The user can also select the minimum scale to be used in the
-reconstruction. The first scale exhibits the highest frequency
+The user can also select the minimum and maximum scales to be used in
+the reconstruction. The first scale exhibits the highest frequency
 variations, and so ignoring this one can sometimes be beneficial in
 removing excess noise. The default is to use all scales
 (\texttt{minscale = 1}).
+
+The convergence of the \atrous iterations is governed by the
+\texttt{reconConvergence} parameter, which is the fractional decrease
+in the standard deviation of the residuals from one iteration to the
+next. \duchamp will do at least two iterations, and then continue
+until the decrease is less than the value of this parameter.
 
 Finally, the filter that is used for the convolution can be selected
 by using \texttt{filterCode} and the relevant code number -- the
@@ -351,11 +365,11 @@ filter is used to construct a 2- or 3-dimensional equivalent.
 \label{sec-smoothing}
 
 An alternative to doing the wavelet reconstruction is to smooth the
-cube.  This technique can be useful in reducing the noise level
-slightly (at the cost of making neighbouring pixels correlated and
-blurring any signal present), and is particularly well suited to the
-case where a particular signal size (\ie a certain channel width or
-spatial size) is believed to be present in the data.
+cube.  This technique can be useful in reducing the noise level (at
+the cost of making neighbouring pixels correlated and blurring any
+signal present), and is particularly well suited to the case where a
+particular signal size (\ie a certain channel width or spatial size)
+is believed to be present in the data.
 
 There are two alternative methods that can be used: spectral
 smoothing, using the Hanning filter; or spatial smoothing, using a 2D
@@ -442,14 +456,14 @@ from the input filename, with extra information detailing the
 reconstruction that has been done. For example, suppose
 \texttt{image.fits} has been reconstructed using a 3-dimensional
 reconstruction with filter \#2, thresholded at $4\sigma$ using all
-scales. The output filename will then be
-\texttt{image.RECON-3-2-4-1.fits} (\ie it uses the four parameters
-relevant for the \atrous reconstruction as listed in
-Appendix~\ref{app-param}). The new FITS file will also have these
-parameters as header keywords. If a subsection of the input image has
-been used (see \S\ref{sec-input}), the format of the output filename
-will be \texttt{image.sub.RECON-3-2-4-1.fits}, and the subsection that
-has been used is also stored in the FITS header.
+scales from 1 to 5, with a convergence criterion of 0.005. The output
+filename will then be \texttt{image.RECON-3-2-4-1-5-0.005.fits} (\ie
+it uses the six parameters relevant for the \atrous reconstruction as
+listed in Appendix~\ref{app-param}). The new FITS file will also have
+these parameters as header keywords. If a subsection of the input
+image has been used (see \S\ref{sec-input}), the format of the output
+filename will be \texttt{image.sub.RECON-3-2-4-1-5-0.005.fits}, and the
+subsection that has been used is also stored in the FITS header.
 
 Likewise, the residual image, defined as the difference between the
 input and reconstructed arrays, can also be saved in the same manner
@@ -504,7 +518,7 @@ footprint: a record of which pixels contribute to the source; a set of
 measured parameters that will go into the catalogue; and a separate
 two-dimensional map showing the spatial location of detected pixels
 (carrying this around makes the computation of detection maps easier
--- see Section~\ref{sec-spatialmaps}).
+-- see \S\ref{sec-spatialmaps}).
 
 To keep track of the set of detected pixels, \duchamp
 employs specialised techniques that keep the memory usage
@@ -531,6 +545,14 @@ set of scans showing the $(x,y)$ position of the pixels. The
 additional detection map is stored as a separate channel map, also
 made up of scans.
 
+Note that these pixel map representations do not carry the flux
+information with them. They store just the pixel locations and need to
+be combined with an array of flux values to provide parameters such as
+integrated flux. The advantage of this approach is that the pixel
+locations can be easily applied to different flux arrays as the need
+permits (for instance, defining them using the reconstructed array,
+yet evaluating parameters on the original array).
+
 \secC{Technique}
 
 The basic idea behind detection in \duchamp is to locate sets of
@@ -542,7 +564,7 @@ their locations and basic parameters.
 
 One threshold is calculated for the entire cube, enabling calculation
 of signal-to-noise ratios for each source (see
-Section~\ref{sec-output} for details). The user can manually specify a
+\S\ref{sec-output} for details). The user can manually specify a
 value (using the parameter \texttt{threshold}) for the threshold,
 which will override the calculated value. Note that this option
 overrides any settings of \texttt{snrCut} or FDR options (see below).
@@ -574,8 +596,10 @@ interested instead in negative features (such as absorption lines),
 set the parameter \texttt{flagNegative = true}. This will invert the
 cube (\ie multiply all pixels by $-1$) prior to the search, and then
 re-invert the cube (and the fluxes of any detections) after searching
-is complete. All outputs are done in the same manner as normal, so
-that fluxes of detections will be negative.
+is complete. If the reconstructed or smoothed array has been read in
+from disk, this will also be inverted at the same time. All outputs
+are done in the same manner as normal, so that fluxes of detections
+will be negative.
 
 \secC{Calculating statistics}
 \label{sec-stats}
