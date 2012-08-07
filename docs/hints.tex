@@ -122,7 +122,7 @@ to complete the high-threshold search.
 The wavelet reconstruction time primarily depended on the
 dimensionality of the reconstruction, with the 1D taking 20~s, the 2D
 taking 30 - 40~s and the 3D taking 2 - 4~min. The spread in times for
-a given dimensionality was caused by the different reconstruction
+a given dimensionality was caused by different reconstruction
 thresholds, with lower thresholds taking longer (since more pixels are
 above the threshold and so need to be added to the final spectrum). In
 all cases the reconstruction time dominated the total time for the
@@ -130,24 +130,95 @@ low-threshold search, since the number of sources found was again
 smaller than the basic searches.
 
 
-\secB{Should there be preprocessing?}
+\secB{Why do preprocessing?}
 
-Why do preprocessing? Effect on completeness and reliability. Cite
-results from MNRAS paper and given basic summary of what each does.
+The preprocessing options provided by \duchamp, particularly the
+ability to smooth or reconstruct via multi-resolution wavelet
+decomposition, provide an opportunity to beat the effects of the
+random noise that will be present in the data. This noise will
+ultimately limit ones ability to detect objects and form a complete
+and reliable catalogue. Two effects are important here. First, the
+noise reduces the completeness of the final catalogue by suppressing
+the flux of real sources such that they fall below the detection
+threshold. Secondly, the noise provides false positive detections
+through noise peaks that fall above the threshold, thereby reducing
+the reliability of the catalogue.
+
+\citet{whiting12} examined the effect on completeness and reliability
+for the reconstruction and smoothing (1D cases only) when applied to a
+simple simulated dataset. Both had the effect of reducing the number
+of spurious sources, which means the searches can be done to fainter
+thresholds. This led to completeness levels of about one flux unit
+(equal to one standard-deviation of the noise) fainter than searches
+without pre-processing, with $>95\%$ reliability. The smoothing did
+slightly better, with the completeness level nearly half a flux unit
+fainter than the reconstruction, although this was helped by the
+sources in the simulation all having the same spectral size.
 
 \secB{Reconstruction considerations}
 
-Several things:
-\begin{itemize}
-\item Beam effects and residual noise
-\item Memory and time recap
-\item Details on how it works. 
-\item Effect of subsectioning
-\end{itemize}
+The \atrous wavelet reconstruction approach is designed to remove a
+large amount of random noise while preserving as much structure as
+possible on the full range of spatial and/or spectral scales present
+in the data. While it is relatively more expensive in terms of memory
+and CPU usage (see previous sections), its effect on, in particular,
+the reliability of the final catalogue makes it worth investigating.
+
+There are, however, a number of subtleties to it that need to be
+considered by potential users. \citet{whiting12} shows a set of
+examples of reconstruction applied to simulated and real data. The
+real data, in this case a HIPASS cube, shows differences in the
+quality of the reconstructed spectrum depending on the dimensionality
+of the reconstruction. The two-dimensional reconstruction (where the
+cube is reconstructed one channel map at a time) shows much larger
+channel-to-channel noise, with a number of narrow peaks surviving the
+reconstruction process. The problem here is that there are spatial
+correlations between pixels due to the beam, which allow beam-sized
+noise fluctuations to rise above the threshold more frequently in
+one-dimension. The other effect is that when compared to a spectrum
+from the 1D reconstruction, each channel is independently
+reconstructed, and does not depend on its neighbouring channels. This
+is also why the 3D reconstruction (which also suffers from the beam
+effects) has improved noise in the output spectrum, since the
+information on neighbouring channels is taken into account.
+
+Caution is also advised when looking at subsections of a cube. Due to
+the multi-scale nature of the algorithm, the wavelet coefficients at a
+given pixel are influenced by pixels at very large separations,
+particularly given that edges are dealt with by assuming reflection
+(so the whole array is visible to all pixels). Also, if one decreases
+the dimensions of the array being reconstructed, there may be fewer
+scales used in the reconstruction. These points mean that the
+reconstruction of a subsection of a cube will differ from the same
+subsection of the reconstructed cube. The difference may be small
+(depending on the relative size difference and the amount of structure
+at large scales), but there will be differences at some level.
+
+Note also that BLANK pixels have no effect on the reconstruction: they
+remain as BLANK in the output, and do not contribute to the discrete
+convolution when they otherwise would. The use of the Milky Way
+channel range, however, has no effect on the reconstruction -- these
+are applied after the preprocessing, either in the searching or the
+rejection stage.
 
 \secB{Smoothing considerations}
 
-Anything here? Edge effects?
+The smoothing approach differs from the wavelet reconstruction in that
+it has a single scale associated with it. The user has two choices to
+make - which dimension to smooth in (spatially or spectrally), and
+what size kernel to smooth with. \citet{whiting12} show examples of
+how different smoothing widths (in one-dimension in this case) can
+highlight sources of different sizes. If one has some \textit{a
+  priori} idea of the typical size scale of objects one wishes to
+detect, then choosing a single smoothing scale can be quite
+beneficial.
+
+Note also that beam effects can be important here too, when smoothing
+spatial data on scales close to that of the beam. This can enhance
+beam-sized noise fluctuations and potentially introduce spurious
+sources. As always, examining the smoothed array (after saving via
+\texttt{flagOutputSmooth}) is a good idea.
+
 
 \secB{Threshold method}
 
