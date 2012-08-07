@@ -8,16 +8,14 @@
 \bibitem[{Calabretta} and {Greisen}(2002)]{calabretta02}
 M.R. {Calabretta} and E.W. {Greisen}.
 \newblock {Representations of celestial coordinates in FITS}.
-\newblock \emph{Astron. Astrophys.}, 395:\penalty0 1077--1122, December 2002.
-\newblock \doi{10.1051/0004-6361:20021327}.
+\newblock \emph{A\&A}, 395:\penalty0 1077--1122, December 2002.
 \newblock URL
   \url{http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2002A%26A...395.1077C&db_key=AST}.
 
 \bibitem[{Greisen} and {Calabretta}(2002)]{greisen02}
 E.W. {Greisen} and M.R. {Calabretta}.
 \newblock {Representations of world coordinates in FITS}.
-\newblock \emph{Astron. Astrophys.}, 395:\penalty0 1061--1075, December 2002.
-\newblock \doi{10.1051/0004-6361:20021326}.
+\newblock \emph{A\&A}, 395:\penalty0 1061--1075, December 2002.
 \newblock URL
   \url{http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2002A%26A...395.1061G&db_key=AST}.
 
@@ -25,16 +23,15 @@ E.W. {Greisen} and M.R. {Calabretta}.
   Allen]{greisen06}
 E.W. {Greisen}, M.R. {Calabretta}, F.G. Valdes, and S.L. Allen.
 \newblock {Representations of spectral coordinates in FITS}.
-\newblock \emph{Astron. Astrophys.}, 446:\penalty0 747--771, 2006.
+\newblock \emph{A\&A}, 446:\penalty0 747--771, 2006.
 \newblock URL \url{http://adsabs.harvard.edu/abs/2006A%26A...446..747G}.
 
 \bibitem[{Hanisch} et~al.(2001){Hanisch}, {Farris}, {Greisen}, {Pence},
   {Schlesinger}, {Teuben}, {Thompson}, and {Warnock}]{hanisch01}
 R.J. {Hanisch}, A.~{Farris}, E.W. {Greisen}, W.D. {Pence}, B.M. {Schlesinger},
   P.J. {Teuben}, R.W. {Thompson}, and A.~{Warnock}.
-\newblock {Definition of the Flexible Image Transport System (FITS)}.
-\newblock \emph{Astron. Astrophys.}, 376:\penalty0 359--380, September 2001.
-\newblock \doi{10.1051/0004-6361:20010923}.
+\newblock {``Definition of the Flexible Image Transport System (FITS)''}.
+\newblock \emph{A\&A}, 376:\penalty0 359--380, September 2001.
 \newblock URL
   \url{http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2001A%26A...376..359H&db_key=AST}.
 
@@ -43,7 +40,7 @@ R.J. {Hanisch}, A.~{Farris}, E.W. {Greisen}, W.D. {Pence}, B.M. {Schlesinger},
 A.M. {Hopkins}, C.J. {Miller}, A.J. {Connolly}, C.~{Genovese}, R.C. {Nichol},
   and L.~{Wasserman}.
 \newblock {A New Source Detection Algorithm Using the False-Discovery Rate}.
-\newblock \emph{Astron. J.}, 123:\penalty0 1086--1094, February 2002.
+\newblock \emph{AJ}, 123:\penalty0 1086--1094, February 2002.
 \newblock URL
   \url{http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2002AJ....123.1086H&db_key=AST}.
 
@@ -55,9 +52,7 @@ R.K. Lutz.
 \bibitem[{Meyer} et~al.(2004)]{meyer04-alt}
 M.J. {Meyer} et~al.
 \newblock {The HIPASS catalogue - {\sc I}. Data presentation}.
-\newblock \emph{Mon. Not. R. Astron. Soc.}, 350:\penalty0 1195--1209, June
-  2004.
-\newblock \doi{10.1111/j.1365-2966.2004.07710.x}.
+\newblock \emph{MNRAS}, 350:\penalty0 1195--1209, June 2004.
 \newblock URL
   \url{http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2004MNRAS.350.1195M&db_key=AST}.
 
@@ -67,7 +62,7 @@ C.J. {Miller}, C.~{Genovese}, R.C. {Nichol}, L.~{Wasserman}, A.~{Connolly},
   D.~{Reichart}, A.~{Hopkins}, J.~{Schneider}, and A.~{Moore}.
 \newblock {Controlling the False-Discovery Rate in Astrophysical Data
   Analysis}.
-\newblock \emph{Astron. J.}, 122:\penalty0 3492--3505, December 2001.
+\newblock \emph{AJ}, 122:\penalty0 3492--3505, December 2001.
 \newblock URL
   \url{http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2001AJ....122.3492M&db_key=AST}.
 
@@ -75,7 +70,7 @@ C.J. {Miller}, C.~{Genovese}, R.C. {Nichol}, L.~{Wasserman}, A.~{Connolly},
 R.F. Minchin.
 \newblock {Finding the Bivariate Brightness Distribution of Galaxies from an HI
   Selected Sample}.
-\newblock \emph{Proc. Astron. Soc. Aust.}, 16:\penalty0 12--17, 1999.
+\newblock \emph{PASA}, 16:\penalty0 12--17, 1999.
 
 \bibitem[{Pence}(1999)]{pence99}
 W.~{Pence}.
@@ -93,8 +88,9 @@ J.-L. Starck and F.~Murtagh.
 \bibitem[Whiting(2012)]{whiting12}
 M.~T. Whiting.
 \newblock {\textsc{duchamp}: a 3D source finder for spectral-line data}.
-\newblock \emph{Mon. Not. R. Astron. Soc.}, 421:\penalty0 3242--3256, 2012.
-\newblock \doi{10.1111/j.1365-2966.2012.20548.x}.
+\newblock \emph{MNRAS}, 421:\penalty0 3242--3256, 2012.
+\newblock URL
+  \url{http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2966.2012.20548.x/full}.
 \newblock arXiv:1201.2710.
 
 \end{thebibliography}
