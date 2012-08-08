@@ -8,6 +8,7 @@ smoothType      spatial
 kernMaj         3
 kernMin         3
 kernPA          0
+snrCut          3
 flagMaps        false
 flagLog         true
 logFile         verification/log3.txt
