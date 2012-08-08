@@ -1,4 +1,4 @@
-Duchamp version 1.2 (2012/06/XX)
+Duchamp version 1.2 (2012/08/08)
 --------------------------------
 
 Key changes:
@@ -22,7 +22,18 @@ Key changes:
   If your data has this property (BLANK pixels at the image
   boundaries), then any reconstruction will be affected (most likely
   only in a small way) and potentially any subsequent searching. You
-  are advised to check this.
+  are advised to check this (for instance by saving the results of the
+  resonstruction from 1.1.13 and 1.2 and comparing).
+
+* The way the spectral world coordinate system is dealt with has been
+  improved. Previously Duchamp tried to convert to a velocity axis,
+  and got a bit grumpy if that didn't work well. Now it will express
+  the spectral units in the axis type indicated by the FITS
+  header. Duchamp will also allow you to change this type by providing
+  an appropriate WCS type as an input parameter. You may also provide
+  a rest frequency in the parameter file and this will be used to
+  calculate velocities. And, as before, you can provide specific units
+  for the spectral quantities to be converted into.
 
 * Since v1.1.13 was released, the journal paper describing Duchamp has
   been published. It can be found at MNRAS 421, 3242 (2012), or
@@ -32,6 +43,10 @@ Key changes:
   reliability. Please cite this paper when describing Duchamp.
 
 Other new features:
+
+* The default value of snrCut has changed from 3 to 5. This is
+  espeically important if you use the -f option, but also if you don't
+  provide snrCut in your parameter file.
 
 * The XML VOTable output now includes a more complete list of
   parameters, matching the output given in text form in the results &
@@ -60,7 +75,8 @@ Other new features:
   coordinate). Instead of a 2D moment map, the X-windows display will
   show the spectrum with all detected pixels plus the final list of
   detections highlighted, along with the detection and growth
-  thresholds. This plot will also be written to the "detectionMap" image. 
+  thresholds. This plot will also be written to the "detectionMap"
+  image.
 
 * All spectral plots will now show the detection (and growth, if
   applicable) thresholds when plotting the peak flux spectrum.
@@ -151,7 +167,8 @@ Code base development notes:
   exception handling. This should be compatible with external logging
   infrastructure (such as log4cxx).
 
-* 
+* The interface to the FitsHeader & WCS structures for external code
+  has been improved, so that the WCS can be set up via function calls.
 
 
 
