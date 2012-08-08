@@ -247,7 +247,7 @@ namespace PixelInfo
  
     if(s1.getX() > s2.getXmax()) return hypot(s1.getX()-s2.getXmax(),s1.getY()-s2.getY());
     else if(s2.getX() > s1.getXmax()) return hypot(s2.getX()-s1.getXmax(),s1.getY()-s2.getY());
-    else return fabsf(s1.getY()-s2.getY());
+    else return fabs(s1.getY()-s2.getY());
    
   }
   //------------------------------------------------------
