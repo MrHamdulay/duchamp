@@ -65,6 +65,8 @@ namespace duchamp
     void define(std::string i, std::string n, std::string U, std::string u, std::string d, std::string r, int w, int p);
     /// @brief Define a FIELD by individual parameters, using a Column::Col object 
     void define(Column::Col column, std::string i, std::string U, std::string d, std::string r);
+    /// @brief Define a FIELD by individual parameters, using only a Column::Col object 
+    void define(Column::Col column);
 
     void setUCD(std::string u){UCD=u;};
 

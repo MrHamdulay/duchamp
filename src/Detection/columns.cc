@@ -51,6 +51,10 @@ namespace duchamp
       this->name=" "; 
       this->units=" ";
       this->type=UNKNOWN;
+      this->UCD = "";
+      this->datatype = "";
+      this->extraInfo="";
+      this->colID="";
     }
 
     Col::~Col(){}
@@ -68,6 +72,10 @@ namespace duchamp
       this->name = c.name;
       this->units = c.units;
       this->type = c.type;
+      this->UCD = c.UCD;
+      this->datatype = c.datatype;
+      this->extraInfo = c.extraInfo;
+      this->colID = c.colID;
       return *this;
     }
 
@@ -88,6 +96,10 @@ namespace duchamp
 	this->name      = defaultName[num];
 	this->units     = defaultUnits[num];
 	this->type = COLNAME(num);
+	this->UCD = defaultUCDs[num];
+	this->datatype = defaultDatatype[num];
+	this->extraInfo = defaultExtraInfo[num];
+	this->colID = defaultColID[num];
       }
       else{
 	DUCHAMPERROR("Column constructor", "Incorrect value for Col(num) --> num="<<num << ", should be between 0 and " << numColumns-1);
@@ -96,10 +108,15 @@ namespace duchamp
 	this->name = " ";
 	this->units = " ";
 	this->type=UNKNOWN;
+	this->UCD="";
+	this->datatype="";
+	this->extraInfo="";
+	this->colID="";
       }
     }
 
-    Col::Col(std::string name, std::string units, int width, int prec)
+    Col::Col(std::string name, std::string units, int width, int prec, std::string ucd, std::string datatype, std::string extraInfo):
+      width(width), precision(prec), name(name), units(units), UCD(ucd), datatype(datatype), extraInfo(extraInfo)
     {
       /// A generic constructor designed to make a Column other than
       /// the predefined ones listed in the Column namespace
@@ -108,10 +125,10 @@ namespace duchamp
       /// \param width The starting width
       /// \param prec The starting precision
 
-      this->width = width;
-      this->precision = prec;
-      this->name = name;
-      this->units = units;
+      // this->width = width;
+      // this->precision = prec;
+      // this->name = name;
+      // this->units = units;
       this->type = UNKNOWN;
     }
 
@@ -361,9 +378,6 @@ namespace duchamp
 	  if(head.canUseThirdAxis()){
 	    if(head.WCS().spec < 0)  // if it's not a spectral axis
 	      newset[VEL].setName( head.WCS().ctype[2] );
-// 	    else if(head.WCS().restfrq == 0) // using frequency, not velocity
-// 	    else if(head.getSpectralDescription()==duchamp::duchampSpectralDescription[FREQUENCY]) // using frequency, not velocity
-// 	      newset[VEL].setName("FREQ");
 	    else 
 	      newset[VEL].setName(head.getSpectralType());
 	    tempwidth = newset[VEL].getName().size() + 1;

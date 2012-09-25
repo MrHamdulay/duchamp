@@ -157,6 +157,18 @@ namespace duchamp
        "Nch", "Sp_size",
        " "};
 
+    /// @brief The column ID (for use in a VOTable)
+    const std::string defaultColID[numColumns+1]=
+      {"col_objnum","col_name","col_x","col_y","col_z",
+       "col_ra","col_dec","col_rajd","col_decjd","col_vel",
+       "col_wra","col_wdec","col_w50","col_w20","col_wvel",
+       "col_fint","col_ftot","col_fpeak", "col_snrmax",
+       "col_x1","col_x2","col_y1","col_y2","col_z1","col_z2","col_npix","col_flag",
+       "col_xav", "col_yav", "col_zav", "col_xcent", "col_ycent", "col_zcent",
+       "col_xpeak", "col_ypeak", "col_zpeak",
+       "col_nch", "col_spsize",
+       ""};
+
     /// @brief Default units of all columns. 
     const std::string defaultUnits[numColumns+1]=
       {"","","","","",
@@ -168,6 +180,42 @@ namespace duchamp
        "","",
        ""}; 
 
+    /// @brief Default UCDs for all columns
+    const std::string defaultUCDs[numColumns+1] = 
+      {"meta.id", "meta.id;meta.main", "pos.cartesian.x", "pos.cartesian.y", "pos.cartesian.z",
+       "", "", "", "", "", 
+       "", "", "", "", "", 
+       "phot.flux;spect.line.intensity", "phot.flux;spect.line.intensity", "phot.flux;spect.line.intensity", "phot.flux;stat.snr",
+       "pos.cartesian.x;stat.min", "pos.cartesian.y;stat.min", "pos.cartesian.z;stat.min", "pos.cartesian.x;stat.max", "pos.cartesian.y;stat.max", "pos.cartesian.z;stat.max", "", "meta.code.qual",
+       "pos.cartesian.x", "pos.cartesian.y", "pos.cartesian.z", "pos.cartesian.x", "pos.cartesian.y", "pos.cartesian.z",
+       "pos.cartesian.x", "pos.cartesian.y", "pos.cartesian.z",
+       "",""
+       ""};
+
+    ///@brief The datatype of each column
+    const std::string defaultDatatype[numColumns+1] = 
+      {"int", "char", "float", "float", "float",
+       "char", "char", "float", "float", "float",
+       "float", "float", "float", "float", "float",
+       "float", "float", "float", "float",
+       "int", "int", "int", "int", "int", "int", "int", "char",
+       "float", "float", "float", "float", "float", "float",
+       "int", "int", "int", 
+       "int", "int", 
+       ""};
+
+    const std::string coordRef="J2000";
+    /// @brief Default values for the VOTable reference string
+    const std::string defaultExtraInfo[numColumns+1] =
+      {"", "", "", "", "",
+       coordRef, coordRef, coordRef, coordRef, "",
+       coordRef, coordRef, "", "", "",
+       "", "", "", "", 
+       "", "", "", "", "", "", "", "", 
+       "", "", "", "", "", "", 
+       "", "", "", 
+       "", "", 
+       ""};
 
     ///  @brief Class to store information about a single column.
     ///
@@ -180,7 +228,7 @@ namespace duchamp
     public:
       Col();          ///< Basic constructor
       Col(int num, int prec=-1);   ///< Specific constructor
-      Col(std::string name, std::string units, int width, int prec); ///< Generic constructor
+      Col(std::string name, std::string units, int width, int prec, std::string ucd="", std::string datatype="", std::string extraInfo=""); ///< Generic constructor
       Col(const Col& c);///< Assignment constructor
       Col& operator=(const Col& c); ///< Copy constructor
       virtual ~Col(); ///< Default destructor;
@@ -197,6 +245,14 @@ namespace duchamp
       void   setUnits(std::string s){units=s;}; 
       COLNAME getType(){return type;};
       void   setType(COLNAME coltype){type=coltype;};
+      std::string getUCD(){return UCD;};
+      void        setUCD(std::string s){UCD=s;};
+      std::string getDatatype(){return datatype;};
+      void        setDatatype(std::string s){datatype=s;};
+      std::string getColID(){return colID;};
+      void        setColID(std::string s){colID=s;};
+      std::string getExtraInfo(){return extraInfo;};
+      void        setExtraInfo(std::string s){extraInfo=s;};
 
       //--------------
       // other functions
@@ -236,6 +292,10 @@ namespace duchamp
       int precision;      ///< What precision should be used to print the values? (If 0, the setprecision command is not used.)
       std::string name;   ///< The title of the column
       std::string units;  ///< The units that the values in the column are expressed in.
+      std::string UCD;    ///< The UCD associated with the value
+      std::string datatype; ///< What datatype do the values take?
+      std::string extraInfo; ///< Any other info? This can be the 'ref' entry for a VOTable field.
+      std::string colID;  ///< The column ID
       COLNAME type;       ///< The type of the column
     };
 
