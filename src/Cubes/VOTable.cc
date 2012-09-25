@@ -115,8 +115,8 @@ namespace duchamp
 	// field.define(*col);
 	VOField field(*col); 
 	if(col->getType()==Column::RAJD)  field.setUCD(posUCD[0]);
-	if(col->getType()==Column::WRA)   field.setUCD(posUCD[1]);
-	if(col->getType()==Column::DECJD) field.setUCD(posUCD[2]);
+	if(col->getType()==Column::WRA)   field.setUCD(posUCD[2]);
+	if(col->getType()==Column::DECJD) field.setUCD(posUCD[1]);
 	if(col->getType()==Column::WDEC)  field.setUCD(posUCD[3]);	
 	stream << "      ";
 	field.printField(stream);
