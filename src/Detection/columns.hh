@@ -43,6 +43,10 @@ namespace duchamp
 
   namespace Column
   {
+
+    /// @brief An enumeration designed to cover the different output types
+    enum DESTINATION {FILE, SCREEN, LOG, VOTABLE};
+
     // First, define some basic quantities.
     // The default values for the columns, and default values for
     //  the precision of different types of columns.
@@ -284,7 +288,7 @@ namespace duchamp
       template <class T> void printEntry(std::ostream &stream, T value);
 
       /// @brief Decides whether the column is used for a given table type 
-      bool   doCol(std::string type, bool flagFint=true);
+      bool   doCol(DESTINATION type, bool flagFint=true);
 
 
     private:

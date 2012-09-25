@@ -127,7 +127,7 @@ namespace duchamp
     std::string outputLabelWidths(); 
 
     /// @brief Print all required values for the Detection to a table.
-    void printTableRow(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType);
+    void printTableRow(std::ostream &stream, std::vector<Column::Col> columns, Column::DESTINATION tableType);
 
     /// @brief Print a particular value for the Detection to a table.
     void printTableEntry(std::ostream &stream, Column::Col column);
@@ -350,7 +350,7 @@ namespace duchamp
   void ObjectMerger(std::vector<Detection> &objList, Param &par);
 
   /// @brief Print the header information to a particular table 
-  void outputTableHeader(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType, bool flagWCS);
+  void outputTableHeader(std::ostream &stream, std::vector<Column::Col> columns, Column::DESTINATION tableType, bool flagWCS);
 
 }
 

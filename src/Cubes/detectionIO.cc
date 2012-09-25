@@ -251,12 +251,12 @@ namespace duchamp
 
     if(this->objectList->size()>0){
       this->setupColumns();
-      outputTableHeader(output,this->fullCols,"file",this->head.isWCS());
-      outputTableHeader(std::cout,this->fullCols,"screen",this->head.isWCS());
+      outputTableHeader(output,this->fullCols,Column::FILE,this->head.isWCS());
+      outputTableHeader(std::cout,this->fullCols,Column::SCREEN,this->head.isWCS());
       std::vector<Detection>::iterator obj;
       for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
-	obj->printTableRow(output,this->fullCols,"file");
-	obj->printTableRow(std::cout,this->fullCols,"screen");
+	obj->printTableRow(output,this->fullCols,Column::FILE);
+	obj->printTableRow(std::cout,this->fullCols,Column::SCREEN);
       }
     }
 
@@ -305,7 +305,7 @@ namespace duchamp
       std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
       if(calcFluxes) this->calcObjectFluxes();
       this->setupColumns();
-      outputTableHeader(fout,this->fullCols,"log",this->head.isWCS());
+      outputTableHeader(fout,this->fullCols,Column::LOG,this->head.isWCS());
 
       if(this->par.getFlagBaseline()){
 	for(size_t i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
@@ -320,7 +320,7 @@ namespace duchamp
 	}
 	if(calcFluxes) obj.calcFluxes(this->array, this->axisDim);
 	obj.setID(objCtr+1);
-	obj.printTableRow(fout,this->fullCols,"log");
+	obj.printTableRow(fout,this->fullCols,Column::LOG);
       }
 
       if(this->par.getFlagBaseline()){
@@ -386,7 +386,7 @@ namespace duchamp
       obj.addOffsets(left,bottom,0);
     }
     obj.calcFluxes(temparray, this->axisDim);
-    obj.printTableRow(fout,this->fullCols,"log");
+    obj.printTableRow(fout,this->fullCols,Column::LOG);
     delete [] temparray;
     delete [] tempDim;
     fout.close();

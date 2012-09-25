@@ -44,7 +44,7 @@ namespace duchamp
 
   using namespace Column;
 
-  void outputTableHeader(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType, bool flagWCS)
+  void outputTableHeader(std::ostream &stream, std::vector<Column::Col> columns, Column::DESTINATION tableType, bool flagWCS)
   {
     /// @details
     ///  Prints the header row for a table of detections. The columns
@@ -77,7 +77,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::printTableRow(std::ostream &stream, std::vector<Column::Col> columns, std::string tableType)
+  void Detection::printTableRow(std::ostream &stream, std::vector<Column::Col> columns, Column::DESTINATION tableType)
   {
     /// @details
     ///  Print a row of values for the current Detection into an output
@@ -85,8 +85,8 @@ namespace duchamp
     ///  using the Column::doCol() function as a determinant.
     /// \param stream Where the output is written
     /// \param columns The vector list of Column objects
-    /// \param tableType A string saying what format to use: one of
-    /// "file", "log", "screen" or "votable" (although the latter
+    /// \param tableType A Column::DESTINATION label saying what format to use: one of
+    /// FILE, LOG, SCREEN or VOTABLE (although the latter
     /// shouldn't be used with this function).
 
     stream.setf(std::ios::fixed);  

@@ -196,12 +196,12 @@ namespace duchamp
     template void Col::printEntry<std::string>(std::ostream &stream, std::string value);
 
  
-    bool Col::doCol(std::string tableType, bool flagFint)
+    bool Col::doCol(DESTINATION tableType, bool flagFint)
     {
       ///  @details Uses the info in the isFile etc arrays to
       ///  determine whether a given column, referenced by the
       ///  enumeration COLNAME, is used for a given table type.
-      /// \param tableType The type of table: one of file, screen, log, votable.
+      /// \param tableType The type of table: one of FILE, SCREEN, LOG, VOTABLE.
       /// \param flagFint Whether to use FINT (true) or FTOT
       /// (false). This defaults to true, so need not be given. It only
       /// applies to the screen and votable cases -- both are written for the
@@ -209,14 +209,14 @@ namespace duchamp
       /// \return True if column is used for given table type. False
       /// otherwise. False if tableType not one of four listed.
       
-      if(tableType == "file") return isFile[this->type];
-      else if(tableType == "screen"){
+      if(tableType == FILE) return isFile[this->type];
+      else if(tableType == SCREEN){
 	if(flagFint && this->type==FTOT) return false;
 	if(!flagFint && this->type==FINT) return false;
 	return isScreen[this->type];
       }
-      else if(tableType == "log") return isLog[this->type];
-      else if(tableType == "votable"){
+      else if(tableType == LOG) return isLog[this->type];
+      else if(tableType == VOTABLE){
 	if(flagFint && this->type==FTOT) return false;
 	if(!flagFint && this->type==FINT) return false;
 	return isVOTable[this->type];

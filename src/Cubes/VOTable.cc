@@ -113,7 +113,7 @@ namespace duchamp
     std::vector<Column::Col>::iterator col;
     for(col=this->fullCols.begin();col<this->fullCols.end();col++){
 
-      if(col->doCol("votable",this->head.isSpecOK())){
+      if(col->doCol(Column::VOTABLE,this->head.isSpecOK())){
 	// VOField field;
 	// field.define(*col);
 	VOField field(*col); 
@@ -143,7 +143,7 @@ namespace duchamp
       stream<<"          ";
       std::vector<Column::Col>::iterator col;
       for(col=this->fullCols.begin();col<this->fullCols.end();col++){
-	if(col->doCol("votable",this->head.isSpecOK())){
+	if(col->doCol(Column::VOTABLE,this->head.isSpecOK())){
 	  stream<<"<TD>";
 	  obj->printTableEntry(stream, *col);
 	  stream<<"</TD>";
