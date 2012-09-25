@@ -198,7 +198,7 @@ namespace duchamp
 	   << "\" ucd=\"" << this->UCD;
     if(this->ref!="") stream << "\" ref=\"" << this->ref;
     stream << "\" datatype=\"" << this->datatype;
-    stream << "\" units=\"" << this->units;
+    stream << "\" unit=\"" << this->units;
     if(datatype=="char")
       stream << "\" arraysize=\"" << this->width;
     else{
