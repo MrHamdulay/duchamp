@@ -157,25 +157,16 @@ namespace duchamp
 	else column.printBlank(stream);
 	break;
       case W50:
-// 	if(this->flagWCS) {
-	  if(this->specOK) column.printEntry(stream,this->w50);
-	  else column.printEntry(stream,0.);
-// 	}
-// 	else column.printBlank(stream);
+	if(this->specOK) column.printEntry(stream,this->w50);
+	else column.printEntry(stream,0.);
 	break;
       case W20:
-// 	if(this->flagWCS) {
-	  if(this->specOK) column.printEntry(stream,this->w20);
-	  else column.printEntry(stream,0.);
-// 	}
-// 	else column.printBlank(stream);
+	if(this->specOK) column.printEntry(stream,this->w20);
+	else column.printEntry(stream,0.);
 	break;
       case WVEL:
-// 	if(this->flagWCS) {
-	  if(this->specOK) column.printEntry(stream,this->velWidth);
-	  else column.printEntry(stream,0.);
-// 	}
-// 	else column.printBlank(stream);
+	if(this->specOK) column.printEntry(stream,this->velWidth);
+	else column.printEntry(stream,0.);
 	break;
       case FINT:
 	column.printEntry(stream,this->intFlux);
@@ -208,22 +199,18 @@ namespace duchamp
 	column.printEntry(stream,this->getZmax() + this->zSubOffset);
 	break;
       case NPIX:
-// 	column.printEntry(stream,int(this->pixelArray.getSize()));
 	column.printEntry(stream,int(this->getSize()));
 	break;
       case FLAG:
 	column.printEntry(stream,this->flagText);
 	break;
       case XAV:
-// 	column.printEntry(stream,this->getXAverage() + this->xSubOffset);
 	column.printEntry(stream,this->getXaverage() + this->xSubOffset);
 	break;
       case YAV:
-// 	column.printEntry(stream,this->getYAverage() + this->ySubOffset);
 	column.printEntry(stream,this->getYaverage() + this->ySubOffset);
 	break;
       case ZAV:
-// 	column.printEntry(stream,this->getZAverage() + this->zSubOffset);
 	column.printEntry(stream,this->getZaverage() + this->zSubOffset);
 	break;
       case XCENT:
