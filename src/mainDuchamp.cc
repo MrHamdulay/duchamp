@@ -246,9 +246,10 @@ int main(int argc, char * argv[])
   }
   
   if(cube->pars().getFlagVOT()){
-    std::ofstream votfile(cube->pars().getVOTFile().c_str());
-    cube->outputDetectionsVOTable(votfile);
-    votfile.close();
+    // std::ofstream votfile(cube->pars().getVOTFile().c_str());
+    // cube->outputDetectionsVOTable(votfile);
+    // votfile.close();
+    cube->outputDetectionsVOTable();
   }
 
   if(cube->pars().getFlagKarma()){

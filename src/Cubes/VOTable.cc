@@ -41,10 +41,27 @@
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/VOParam.hh>
 #include <duchamp/Utils/VOField.hh>
+#include <duchamp/Outputs/VOTableCatalogueWriter.hh>
 
 namespace duchamp
 {
   
+  void Cube::outputDetectionsVOTable()
+  {
+    VOTableCatalogueWriter writer(this->pars().getVOTFile());
+    writer.setup(this);
+    writer.setTableName("Detections");
+    writer.setTableDescription("Detected sources and parameters from running the Duchamp source finder.");
+    writer.openCatalogue();
+    writer.writeHeader();
+    writer.writeParameters();
+    writer.writeTableHeader();
+    writer.writeEntries();
+    writer.writeFooter();
+    writer.closeCatalogue();
+
+  }
+
   void Cube::outputDetectionsVOTable(std::ostream &stream)
   {
     /// @details

@@ -261,8 +261,10 @@ namespace duchamp
     void        setReconFlag(bool f){reconExists = f;};
 
     std::vector<Column::Col> getLogCols(){return logCols;};
+    std::vector<Column::Col> *pLogCols(){return &logCols;};
     void        setLogCols(std::vector<Column::Col> C){logCols=C;};
     std::vector<Column::Col> getFullCols(){return fullCols;};
+    std::vector<Column::Col> *pFullCols(){return &fullCols;};
     void        setFullCols(std::vector<Column::Col> C){fullCols=C;};
 
     // additional functions -- in Cubes/cubes.cc
@@ -539,6 +541,7 @@ namespace duchamp
 
     /// @brief Output detections to a VOTable. 
     void        outputDetectionsVOTable(std::ostream &stream);
+    void        outputDetectionsVOTable();
 
 
     // ----------------------------------

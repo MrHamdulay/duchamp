@@ -2,24 +2,23 @@
 #define DUCHAMP_ASCII_CATALOGUE_WRITER_H_
 
 #include <duchamp/Outputs/CatalogueWriter.hh>
-#include <duchamp/param.hh>
+#include <duchamp/Detection/columns.hh>
 #include <duchamp/Detection/detection.hh>
 #include <iostream>
+#include <fstream>
 
 namespace duchamp {
-
-  enum DESTINATION {FILE, SCREEN, LOG};
 
   class ASCIICatalogueWriter : public CatalogueWriter
   {
   public:
     ASCIICatalogueWriter();
     ASCIICatalogueWriter(std::string name);
-    ASCIICatalogueWriter(DESTINATION dest);
-    ASCIICatalogueWriter(std::string name, DESTINATION dest);
+    ASCIICatalogueWriter(Column::DESTINATION dest);
+    ASCIICatalogueWriter(std::string name, Column::DESTINATION dest);
     ASCIICatalogueWriter(const ASCIICatalogueWriter& other);
     ASCIICatalogueWriter& operator= (const ASCIICatalogueWriter& other);
-    virtual ~ASCIICatalogueWriter();
+    virtual ~ASCIICatalogueWriter(){};
     
     /// @brief open the catalogue for writing
     bool openCatalogue();
@@ -27,18 +26,22 @@ namespace duchamp {
     /// @brief Write header information - not including parameters
     void writeHeader();
 
-    void writeParameters(Param &par);
-
+    void writeParameters();
+    void writeStats();
     void writeTableHeader();
-    void writeEntry(Detection &object);
+    void writeEntries();
+    void writeEntry(Detection *object);
 
-    void writeFooter();
+    void writeFooter(){};
 
     bool closeCatalogue();
 
+
   protected:
-    std::ostream *itsFileStream;
-    DESTINATION itsDestination;
+    std::ostream *itsStream;
+    std::ofstream *itsFileStream;
+    Column::DESTINATION itsDestination;
+     
 
   };
 

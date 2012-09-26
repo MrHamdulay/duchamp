@@ -71,11 +71,11 @@ namespace duchamp
       this->precision = c.precision;
       this->name = c.name;
       this->units = c.units;
-      this->type = c.type;
       this->UCD = c.UCD;
       this->datatype = c.datatype;
       this->extraInfo = c.extraInfo;
       this->colID = c.colID;
+      this->type = c.type;
       return *this;
     }
 

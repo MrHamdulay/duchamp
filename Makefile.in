@@ -43,6 +43,7 @@ DETECTIONDIR = $(BASE)/Detection
 CUBESDIR = $(BASE)/Cubes
 FITSIODIR = $(BASE)/FitsIO
 UTILDIR = $(BASE)/Utils
+OUTPUTSDIR = $(BASE)/Outputs
 TESTDIR = ./verification
 
 HEADS = $(BASE)/duchamp.hh\
@@ -72,7 +73,10 @@ HEADS = $(BASE)/duchamp.hh\
 	$(UTILDIR)/feedback.hh\
 	$(UTILDIR)/mycpgplot.hh\
 	$(UTILDIR)/VOField.hh\
-	$(UTILDIR)/VOParam.hh
+	$(UTILDIR)/VOParam.hh\
+	$(OUTPUTSDIR)/CatalogueWriter.hh\
+	$(OUTPUTSDIR)/ASCIICatalogueWriter.hh\
+	$(OUTPUTSDIR)/VOTableCatalogueWriter.hh
 
 OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(BASE)/duchamp.o\
@@ -135,7 +139,10 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(UTILDIR)/sort.o\
 	$(UTILDIR)/string_related.o\
 	$(UTILDIR)/wcsFunctions.o\
-	$(UTILDIR)/zscale.o
+	$(UTILDIR)/zscale.o\
+	$(OUTPUTSDIR)/CatalogueWriter.o\
+	$(OUTPUTSDIR)/ASCIICatalogueWriter.o\
+	$(OUTPUTSDIR)/VOTableCatalogueWriter.o
 
 ifeq ($(strip $(PGPLOTLIB)),)
   OBJECTS = $(OBJECTS-NOPG)
