@@ -5,6 +5,7 @@
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/VOField.hh>
 #include <duchamp/Utils/VOParam.hh>
+#include <ios>
 #include <iostream>
 #include <fstream>
 
@@ -42,14 +43,14 @@ namespace duchamp {
     return *this;
   }
   
-  bool VOTableCatalogueWriter::openCatalogue()
+  bool VOTableCatalogueWriter::openCatalogue(std::ios_base::openmode mode)
   {
     if(this->itsName == ""){
       DUCHAMPERROR("VOTableCatalogueWriter","No catalogue name provided");
       this->itsOpenFlag = false;
     }
     else {
-      this->itsFileStream.open(this->itsName.c_str());
+      this->itsFileStream.open(this->itsName.c_str(),mode);
       //      this->itsOpenFlag = this->itsFileStream.is_open();
       this->itsOpenFlag = !this->itsFileStream.fail();
     }

@@ -518,6 +518,9 @@ namespace duchamp
     // Text outputting of detected objects.
     //   in Cubes/detectionIO.cc
     //
+
+    void        outputCatalogue();
+
     /// @brief Set up the output file with parameters and stats. 
     void        prepareOutputFile();
 
@@ -532,6 +535,8 @@ namespace duchamp
 
     /// @brief Output detections to the log file. 
     void        logDetectionList(bool calcFluxes=true);
+
+    void        logSummary();
 
     /// @brief Output a single detection to the log file. 
     void        logDetection(Detection obj, int counter);

@@ -4,6 +4,7 @@
 #include <duchamp/Outputs/CatalogueWriter.hh>
 #include <duchamp/Detection/columns.hh>
 #include <duchamp/Detection/detection.hh>
+#include <ios>
 #include <iostream>
 #include <fstream>
 
@@ -21,17 +22,18 @@ namespace duchamp {
     virtual ~ASCIICatalogueWriter(){};
     
     /// @brief open the catalogue for writing
-    bool openCatalogue();
+    bool openCatalogue(std::ios_base::openmode mode = std::ios_base::out );
 
     /// @brief Write header information - not including parameters
     void writeHeader();
+    void writeCommandLineEntry(int argc, char *argv[]);
 
     void writeParameters();
     void writeStats();
     void writeTableHeader();
     void writeEntries();
     void writeEntry(Detection *object);
-
+    void writeCubeSummary();
     void writeFooter(){};
 
     bool closeCatalogue();
@@ -39,7 +41,7 @@ namespace duchamp {
 
   protected:
     std::ostream *itsStream;
-    std::ofstream *itsFileStream;
+    std::ofstream itsFileStream;
     Column::DESTINATION itsDestination;
      
 

@@ -1034,7 +1034,7 @@ namespace duchamp
     recordParam(theStream, "[spectralMethod]", "Method of spectral plotting", par.getSpectralMethod());
     recordParam(theStream, "[pixelCentre]", "Type of object centre used in results", par.getPixelCentre());
 
-    theStream  <<"--------------------\n\n";
+    theStream  <<"--------------------\n";
     theStream  << std::setfill(' ');
     theStream.unsetf(std::ios::left);
     //  theStream.unsetf(std::ios::boolalpha);

@@ -80,7 +80,7 @@ int main(int argc, char * argv[])
     cube->readSavedArrays();
 
   // Write the parameters to screen.
-  std::cout << cube->pars();
+  std::cout << cube->pars() << "\n";
 
   if(cube->pars().getFlagUsePrevious()){
     std::cout << "Reading detections from existing log file... \n";
@@ -157,7 +157,7 @@ int main(int argc, char * argv[])
 
   }
 
-  cube->prepareOutputFile();
+  // cube->prepareOutputFile();
 
   if(cube->getNumObj()>0){
 
@@ -172,7 +172,8 @@ int main(int argc, char * argv[])
 
   }
   
-  cube->outputDetectionList();
+  // cube->outputDetectionList();
+  cube->outputCatalogue();
 
   if(USE_PGPLOT){
     std::cout<<"Creating the maps...  "<<std::flush;
@@ -228,10 +229,11 @@ int main(int argc, char * argv[])
     }
 
     if(cube->pars().getFlagLog() && (cube->getNumObj()>0)){
-      std::ofstream logfile(cube->pars().getLogFile().c_str(),std::ios::app);
-      logfile << "=-=-=-=-=-=-=-\nCube summary\n=-=-=-=-=-=-=-\n";
-      logfile << *cube;
-      logfile.close();
+      // std::ofstream logfile(cube->pars().getLogFile().c_str(),std::ios::app);
+      // logfile << "=-=-=-=-=-=-=-\nCube summary\n=-=-=-=-=-=-=-\n";
+      // logfile << *cube;
+      // logfile.close();
+      cube->logSummary();
     }
 
   }

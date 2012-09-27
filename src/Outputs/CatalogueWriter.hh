@@ -1,6 +1,7 @@
 #ifndef DUCHAMP_CATALOGUE_WRITER_H_
 #define DUCHAMP_CATALOGUE_WRITER_H_
 
+#include <ios>
 #include <string>
 #include <vector>
 #include <duchamp/param.hh>
@@ -22,7 +23,7 @@ namespace duchamp {
     virtual ~CatalogueWriter(){};
     
     /// @brief open the catalogue for writing
-    virtual bool openCatalogue()=0;
+    virtual bool openCatalogue(std::ios_base::openmode mode = std::ios_base::out )=0;
 
     /// @brief Write header information - not including parameters
     virtual void writeHeader() = 0;
@@ -54,6 +55,7 @@ namespace duchamp {
     Statistics::StatsContainer<float> *itsStats;
     FitsHeader *itsHead;
     std::vector<Detection> *itsObjectList;
+    size_t *itsCubeDim;
 
   };
 

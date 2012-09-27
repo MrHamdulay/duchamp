@@ -10,6 +10,7 @@ namespace duchamp {
     this->itsStats=0;
     this->itsHead=0;
     this->itsObjectList=0;
+    this->itsCubeDim=0;
   }
 
   CatalogueWriter::CatalogueWriter(std::string name):
@@ -20,6 +21,7 @@ namespace duchamp {
     this->itsStats=0;
     this->itsHead=0;
     this->itsObjectList=0;
+    this->itsCubeDim=0;
   }
   
   CatalogueWriter::CatalogueWriter(const CatalogueWriter& other)
@@ -37,6 +39,7 @@ namespace duchamp {
     this->itsStats=other.itsStats;
     this->itsHead=other.itsHead;
     this->itsObjectList=other.itsObjectList;
+    this->itsCubeDim=other.itsCubeDim;
     return *this;
   }
 
@@ -47,6 +50,7 @@ namespace duchamp {
     this->itsHead = &(cube->header());
     this->itsObjectList = cube->pObjectList();
     this->itsColumnSpecification = cube->pFullCols();
+    this->itsCubeDim = cube->getDimArray();
   }
 
 

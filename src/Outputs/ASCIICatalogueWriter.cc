@@ -7,6 +7,7 @@
 #include <duchamp/Detection/columns.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Utils/Statistics.hh>
+#include <ios>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -17,28 +18,28 @@ namespace duchamp {
     CatalogueWriter()
   {
     this->itsStream=0;
-    this->itsFileStream=0;
+    // this->itsFileStream=0;
   }
 
   ASCIICatalogueWriter::ASCIICatalogueWriter(std::string name):
     CatalogueWriter(name)
   {
     this->itsStream=0;
-    this->itsFileStream=0;
+    // this->itsFileStream=0;
   }
 
   ASCIICatalogueWriter::ASCIICatalogueWriter(Column::DESTINATION dest):
     itsDestination(dest)
   {
     this->itsStream=0;
-    this->itsFileStream=0;
+    // this->itsFileStream=0;
   }
 
   ASCIICatalogueWriter::ASCIICatalogueWriter(std::string name, Column::DESTINATION dest):
     CatalogueWriter(name), itsDestination(dest)
   {
     this->itsStream=0;
-    this->itsFileStream=0;
+    // this->itsFileStream=0;
   }
 
   ASCIICatalogueWriter::ASCIICatalogueWriter(const ASCIICatalogueWriter& other)
@@ -51,14 +52,15 @@ namespace duchamp {
     if(this==&other) return *this;
     ((CatalogueWriter &) *this) = other;
     this->itsStream = other.itsStream;
-    this->itsFileStream = other.itsFileStream;
+    // this->itsFileStream = other.itsFileStream;
+    this->itsOpenFlag = false;
     this->itsDestination = other.itsDestination;
     return *this;
   }
   
-  bool ASCIICatalogueWriter::openCatalogue()
+  bool ASCIICatalogueWriter::openCatalogue(std::ios_base::openmode mode)
   {
-    if(this->itsName == ""){
+    if(this->itsName == "" && this->itsDestination!=Column::SCREEN){
       DUCHAMPERROR("ASCIICatalogueWriter","No catalogue name provided");
       this->itsOpenFlag = false;
     }
@@ -68,9 +70,9 @@ namespace duchamp {
 	this->itsOpenFlag = true;
       }
       else{
-	this->itsFileStream->open(this->itsName.c_str());
-	this->itsStream = this->itsFileStream;
-	this->itsOpenFlag = this->itsFileStream->is_open();
+	this->itsFileStream.open(this->itsName.c_str(),mode);
+	this->itsStream = &this->itsFileStream;
+	this->itsOpenFlag = this->itsFileStream.is_open();
       }
       if(!this->itsOpenFlag) 
 	DUCHAMPERROR("ASCIICatalogueWriter","Could not open file \""<<this->itsName<<"\"");
@@ -87,11 +89,19 @@ namespace duchamp {
     }
   }
 
+  void ASCIICatalogueWriter::writeCommandLineEntry(int argc, char *argv[])
+  {
+    if(this->itsOpenFlag){
+      *this->itsStream << "Executing statement: ";
+       for(int i=0;i<argc;i++) *this->itsStream << argv[i] << " ";
+       *this->itsStream << std::endl;
+    }
+  }
+
   void ASCIICatalogueWriter::writeParameters()
   {
     if(this->itsOpenFlag){
-      *this->itsStream << *this->itsParam;
-      *this->itsStream <<"--------------------\n";
+      *this->itsStream << *this->itsParam << "\n";
     }
   }
 
@@ -99,17 +109,17 @@ namespace duchamp {
   {
     if(this->itsOpenFlag){
 
+      *this->itsStream<<"--------------------\n";
       *this->itsStream<<"Summary of statistics:\n";
       *this->itsStream<<"Detection threshold = " << this->itsStats->getThreshold()
 		      <<" " << this->itsHead->getFluxUnits();
       if(this->itsParam->getFlagFDR())
 	*this->itsStream<<" (or S/N=" << this->itsStats->getThresholdSNR()<<")";
-      if(this->itsParam->getFlagSmooth()){
-	*this->itsStream << " in smoothed cube.";
-	if(!this->itsParam->getFlagUserThreshold())
-	  *this->itsStream<<"\nNoise level = " << this->itsStats->getMiddle()
-			  <<", Noise spread = " << this->itsStats->getSpread()
-			  <<" in smoothed cube.";
+      if(this->itsParam->getFlagSmooth()) *this->itsStream << " in smoothed cube.";
+      if(!this->itsParam->getFlagUserThreshold())
+	*this->itsStream<<"\nNoise level = " << this->itsStats->getMiddle()
+			<<", Noise spread = " << this->itsStats->getSpread();
+      if(this->itsParam->getFlagSmooth()) *this->itsStream  <<" in smoothed cube.";
       
 	// // calculate the stats for the original array, so that we can
 	// // quote S/N values correctly.
@@ -124,11 +134,11 @@ namespace duchamp {
 	// this->itsParam->setFlagSmooth(true);
       
 	// *this->itsStream << "\nNoise properties for the original cube are:";
-      }
+      // }
      
-      if(!this->itsParam->getFlagUserThreshold())
-	*this->itsStream<<"\nNoise level = " << this->itsStats->getMiddle()
-			<<", Noise spread = " << this->itsStats->getSpread();
+      // if(!this->itsParam->getFlagUserThreshold())
+      // 	*this->itsStream<<"\nNoise level = " << this->itsStats->getMiddle()
+      // 			<<", Noise spread = " << this->itsStats->getSpread();
 
       if(this->itsParam->getFlagGrowth()){
 	Statistics::StatsContainer<float> growthStats = *this->itsStats;
@@ -177,12 +187,44 @@ namespace duchamp {
     }
   }
 
+  void ASCIICatalogueWriter::writeCubeSummary()
+  {
+    if(this->itsOpenFlag){
+      
+      *this->itsStream << "=-=-=-=-=-=-=-\nCube summary\n=-=-=-=-=-=-=-\n";
+
+      *this->itsStream<<this->itsCubeDim[0];
+      for(int i=1;i<3;i++) *this->itsStream<<"x"<<this->itsCubeDim[i];
+      *this->itsStream<<std::endl;
+
+      *this->itsStream<<"Threshold\tmiddle\tspread\trobust\n" << this->itsStats->getThreshold() << "\t";
+      if(this->itsParam->getFlagUserThreshold())
+	*this->itsStream << "0.0000\t" << this->itsStats->getThreshold() << "\t"; 
+      else
+	*this->itsStream << this->itsStats->getMiddle() << " " << this->itsStats->getSpread() << "\t";
+      *this->itsStream << this->itsStats->getRobust()<<"\n";
+
+      *this->itsStream<<this->itsObjectList->size()<<" detections:\n--------------\n";
+      std::vector<Detection>::iterator obj;
+      for(obj=this->itsObjectList->begin();obj<this->itsObjectList->end();obj++){
+	*this->itsStream << "Detection #" << obj->getID()<<std::endl;
+	Detection *newobj = new Detection(*obj);
+	newobj->addOffsets();
+	*this->itsStream<<*newobj;
+	delete newobj;
+      }
+      *this->itsStream<<"--------------\n";
+    }
+
+  }
+
+
   bool ASCIICatalogueWriter::closeCatalogue()
   {
     bool returnval=true;
     if(this->itsDestination!=Column::SCREEN){
-      this->itsFileStream->close();
-      returnval=!this->itsFileStream->fail();
+      this->itsFileStream.close();
+      returnval=!this->itsFileStream.fail();
     }
     return returnval;
   }

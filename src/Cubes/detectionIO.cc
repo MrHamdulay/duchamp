@@ -40,6 +40,7 @@
 #include <duchamp/Detection/columns.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/Statistics.hh>
+#include <duchamp/Outputs/ASCIICatalogueWriter.hh>
  
 using std::endl;
 using std::setw;
@@ -139,6 +140,44 @@ namespace duchamp
 
     delete [] pix;
     delete [] wld;
+
+  }
+
+  void Cube::outputCatalogue()
+  {
+    this->setupColumns();
+
+    ASCIICatalogueWriter catWriter(this->par.getOutFile(),Column::FILE);
+    catWriter.setup(this);
+    ASCIICatalogueWriter headerWriter(this->par.getHeaderFile(),Column::FILE);
+    headerWriter.setup(this);
+    ASCIICatalogueWriter screenWriter(Column::SCREEN);
+    screenWriter.setup(this);
+    ASCIICatalogueWriter *writer;
+
+    // write the header information
+    if(this->par.getFlagSeparateHeader()) writer = &headerWriter;
+    else writer=&catWriter;
+
+    writer->openCatalogue();
+    writer->writeHeader();
+    writer->writeParameters();
+    writer->writeStats();
+
+    if(this->par.getFlagSeparateHeader()){
+      writer->closeCatalogue();
+      writer = &catWriter;
+    }
+
+    // write the catalogue
+    writer->writeTableHeader();
+    writer->writeEntries();
+    writer->closeCatalogue();
+
+    screenWriter.openCatalogue();
+    screenWriter.writeTableHeader();
+    screenWriter.writeEntries();
+    screenWriter.closeCatalogue();
 
   }
 
@@ -273,18 +312,25 @@ namespace duchamp
     ///  It also writes the command-line statement, hence the need for
     ///  argv and argc.
 
-    // Open the logfile and write the time on the first line
-    std::ofstream logfile(this->par.getLogFile().c_str());
-    logfile << "New run of the Duchamp source finder v."<<VERSION<<": ";
-    time_t now = time(NULL);
-    logfile << asctime( localtime(&now) );
-    // Write out the command-line statement
-    logfile << "Executing statement : ";
-    for(int i=0;i<argc;i++) logfile << argv[i] << " ";
-    logfile << std::endl;
-    logfile << this->par;
-    logfile.close();
+    // // Open the logfile and write the time on the first line
+    // std::ofstream logfile(this->par.getLogFile().c_str());
+    // logfile << "New run of the Duchamp source finder v."<<VERSION<<": ";
+    // time_t now = time(NULL);
+    // logfile << asctime( localtime(&now) );
+    // // Write out the command-line statement
+    // logfile << "Executing statement : ";
+    // for(int i=0;i<argc;i++) logfile << argv[i] << " ";
+    // logfile << std::endl;
+    // logfile << this->par;
+    // logfile.close();
 
+    ASCIICatalogueWriter logwriter(this->par.getLogFile(),Column::LOG);
+    logwriter.setup(this);
+    logwriter.openCatalogue();
+    logwriter.writeHeader();
+    logwriter.writeCommandLineEntry(argc,argv);
+    logwriter.writeParameters();
+    logwriter.closeCatalogue();
   }
 
 
@@ -299,13 +345,18 @@ namespace duchamp
 
     if(this->objectList->size()>0){
 
+      ASCIICatalogueWriter logwriter(this->par.getLogFile(),Column::LOG);
+      logwriter.setup(this);
+      logwriter.openCatalogue(std::ios::app);
+
       long left = this->par.getBorderLeft();
       long bottom = this->par.getBorderBottom();
 
-      std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
+      // std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
       if(calcFluxes) this->calcObjectFluxes();
       this->setupColumns();
-      outputTableHeader(fout,this->fullCols,Column::LOG,this->head.isWCS());
+      // outputTableHeader(fout,this->fullCols,Column::LOG,this->head.isWCS());
+      logwriter.writeTableHeader();
 
       if(this->par.getFlagBaseline()){
 	for(size_t i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
@@ -320,14 +371,16 @@ namespace duchamp
 	}
 	if(calcFluxes) obj.calcFluxes(this->array, this->axisDim);
 	obj.setID(objCtr+1);
-	obj.printTableRow(fout,this->fullCols,Column::LOG);
+	//	obj.printTableRow(fout,this->fullCols,Column::LOG);
+	logwriter.writeEntry(&obj);
       }
 
       if(this->par.getFlagBaseline()){
 	for(size_t i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
 	  this->array[i] -= this->baseline[i];
       }
-      fout.close();
+      //      fout.close();
+      logwriter.closeCatalogue();
  
     }
 
@@ -392,6 +445,14 @@ namespace duchamp
     fout.close();
   }
 
+  void Cube::logSummary()
+  {
+    ASCIICatalogueWriter logwriter(this->par.getLogFile(),Column::LOG);
+    logwriter.setup(this);
+    logwriter.openCatalogue(std::ios::app);
+    logwriter.writeCubeSummary();
+    logwriter.closeCatalogue();
+  }
 
   void Cube::writeSpectralData()
   {

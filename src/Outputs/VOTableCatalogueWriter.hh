@@ -3,6 +3,7 @@
 
 #include <duchamp/Outputs/CatalogueWriter.hh>
 #include <duchamp/Detection/detection.hh>
+#include <ios>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -19,7 +20,7 @@ namespace duchamp {
     virtual ~VOTableCatalogueWriter(){};
 
         /// @brief open the catalogue for writing
-    bool openCatalogue();
+    bool openCatalogue(std::ios_base::openmode mode = std::ios_base::out);
 
     /// @brief Write header information - not including parameters
     void writeHeader();
