@@ -3,8 +3,8 @@
 
 #include <iostream>
 #include <duchamp/duchamp.hh>
-#include <Detection/detection.hh>
-#include <Cubes/cubes.hh>
+#include <duchamp/Detection/detection.hh>
+#include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Utils/Statistics.hh>
 
 namespace duchamp {

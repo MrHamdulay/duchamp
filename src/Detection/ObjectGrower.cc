@@ -2,9 +2,9 @@
 #include <iostream>
 #include <vector>
 #include <duchamp/duchamp.hh>
-#include <Detection/ObjectGrower.hh>
-#include <Detection/detection.hh>
-#include <Cubes/cubes.hh>
+#include <duchamp/Detection/ObjectGrower.hh>
+#include <duchamp/Detection/detection.hh>
+#include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Utils/Statistics.hh>
 #include <duchamp/PixelMap/Voxel.hh>
 
