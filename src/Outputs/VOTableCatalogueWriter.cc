@@ -14,7 +14,6 @@ namespace duchamp {
    VOTableCatalogueWriter::VOTableCatalogueWriter():
     CatalogueWriter()
   {
-    //    this->itsFileStream=0;
     this->itsTableName="";
     this->itsTableDescription="";
   }
@@ -22,7 +21,6 @@ namespace duchamp {
   VOTableCatalogueWriter::VOTableCatalogueWriter(std::string name):
     CatalogueWriter(name)
   {
-    //    this->itsFileStream=0;
     this->itsTableName="";
     this->itsTableDescription="";
   }
@@ -36,7 +34,6 @@ namespace duchamp {
   {
     if(this==&other) return *this;
     ((CatalogueWriter &) *this) = other;
-    //    this->itsFileStream = other.itsFileStream;
     this->itsOpenFlag=false;
     this->itsTableName=other.itsTableName;
     this->itsTableDescription=other.itsTableDescription;
@@ -51,7 +48,6 @@ namespace duchamp {
     }
     else {
       this->itsFileStream.open(this->itsName.c_str(),mode);
-      //      this->itsOpenFlag = this->itsFileStream.is_open();
       this->itsOpenFlag = !this->itsFileStream.fail();
     }
     if(!this->itsOpenFlag) 
@@ -100,6 +96,24 @@ namespace duchamp {
 	this->itsFileStream << "      ";
 	param->printParam(this->itsFileStream);
       }    
+    }
+  }
+
+  void VOTableCatalogueWriter::writeStats()
+  {
+    if(this->itsOpenFlag){
+      
+      VOParam threshParam("thresholdActual","","float",this->itsStats->getThreshold(),0,this->itsHead->getFluxUnits());
+      this->itsFileStream << "      ";
+      threshParam.printParam(this->itsFileStream);
+      if(!this->itsParam->getFlagUserThreshold()){
+	VOParam middleParam("noiseMeanActual","","float",this->itsStats->getMiddle(),0,this->itsHead->getFluxUnits());
+	this->itsFileStream << "      ";
+	middleParam.printParam(this->itsFileStream);
+	VOParam spreadParam("noiseSpreadActual","","float",this->itsStats->getSpread(),0,this->itsHead->getFluxUnits());
+	this->itsFileStream << "      ";
+	spreadParam.printParam(this->itsFileStream);
+      }
     }
   }
 

@@ -26,7 +26,7 @@ namespace duchamp {
     void writeHeader();
 
     void writeParameters();
-    // void writeStats(); //--> don't have these written to the VOTable yet!
+    void writeStats(); 
     void writeTableHeader();
     void writeEntries();
     void writeEntry(Detection *object);

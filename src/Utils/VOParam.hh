@@ -42,12 +42,10 @@ namespace duchamp
   {
   public:
     VOParam();
-    template <class T> VOParam(std::string n, std::string U, std::string d, T v, int w, std::string u);
+    template <class T> VOParam(std::string name, std::string UCD, std::string datatype, T value, int width, std::string units);
     VOParam(const VOParam& other);
     VOParam& operator= (const VOParam& other);
     virtual ~VOParam(){};
-    // /// @brief Define a PARAM by individual parameters 
-    //    template <class T> void define(std::string n, std::string U, std::string d, T v, int w, std::string u);
  
     /// @brief Print the PARAM entry 
     void printParam(std::ostream &stream);

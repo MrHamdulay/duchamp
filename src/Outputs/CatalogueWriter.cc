@@ -45,6 +45,8 @@ namespace duchamp {
 
   void CatalogueWriter::setup(Cube *cube)
   {
+    /// @details Defines the various pointer members to point to the
+    /// relevant information from the cube in question.
     this->itsParam = &(cube->pars());
     this->itsStats = &(cube->stats());
     this->itsHead = &(cube->header());

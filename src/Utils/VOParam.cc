@@ -36,28 +36,23 @@ namespace duchamp {
   {
   }
   
-  template <class T> VOParam::VOParam(std::string n, std::string U, std::string d, T v, int w, std::string u):
-    name(n),UCD(U),datatype(d),width(w),units(u)
+  template <class T> VOParam::VOParam(std::string name, std::string UCD, std::string datatype, T value, int width, std::string units):
+    name(name),UCD(UCD),datatype(datatype),width(width),units(units)
   {
     /// @details
     /// A basic definition function, defining each parameter
     /// individually. The value (v) is written to a stringstream, and
     /// from there stored as a string.
-    /// \param n The name
-    /// \param U The UCD
-    /// \param d The datatype
-    /// \param v The value
-    /// \param w The width
-    /// \param u The units
+    /// \param name The name
+    /// \param UCD The UCD
+    /// \param datatype The datatype
+    /// \param value The value
+    /// \param width The width
+    /// \param units The units
 
-    // this->name = n;
-    // this->UCD = U;
-    // this->datatype = d;
-    // this->width = w;
     std::stringstream ss;
-    ss << v;
+    ss << value;
     this->value = ss.str();
-    // this->units = u;
   }
   template VOParam::VOParam(std::string n, std::string U, std::string d, bool v, int w, std::string u);
   template VOParam::VOParam(std::string n, std::string U, std::string d, int v, int w, std::string u);

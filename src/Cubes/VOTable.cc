@@ -55,6 +55,7 @@ namespace duchamp
     writer.openCatalogue();
     writer.writeHeader();
     writer.writeParameters();
+    writer.writeStats();
     writer.writeTableHeader();
     writer.writeEntries();
     writer.writeFooter();
