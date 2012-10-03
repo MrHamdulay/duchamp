@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
-#include <FitsIO/Beam.hh>
-#include <duchamp.hh>
+#include <duchamp/FitsIO/Beam.hh>
+#include <duchamp/duchamp.hh>
 
 namespace duchamp
 {

@@ -30,7 +30,7 @@
 #include <vector>
 #include <string>
 #include <duchamp/param.hh>
-#include <ATrous/filter.hh>
+#include <duchamp/ATrous/filter.hh>
 
 // MENU ROUTINES FOR DIGANOSTIC/TEST PROGRAMS
 std::string menu();
