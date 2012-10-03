@@ -875,6 +875,12 @@ namespace duchamp
     double zpt,xpt=double(this->getXcentre()),ypt=double(this->getYcentre());
     bool goLeft;
     
+    if(this->negSource){
+      // if we've inverted the source, need to make the feature
+      // positive for the interpolation/extrapolation to work
+      for(size_t i=0;i<zdim;i++) intSpec[i] *= -1.;
+    }
+
     float peak=0.;
     size_t peakLoc=0;
     for(size_t z=this->getZmin();z<=size_t(this->getZmax());z++) {
@@ -928,6 +934,12 @@ namespace duchamp
     this->w20 = fabs(this->v20min - this->v20max);
     this->w50 = fabs(this->v50min - this->v50max);
     
+    if(this->negSource){
+      // un-do the inversion, in case intSpec is needed elsewhere
+      for(size_t i=0;i<zdim;i++) intSpec[i] *= -1.;
+    }
+
+
   }
   //--------------------------------------------------------------------
 
