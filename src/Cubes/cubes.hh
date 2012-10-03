@@ -337,6 +337,8 @@ namespace duchamp
     /// @brief Sort the list of detections. 
     void        sortDetections();
 
+    short      *getDetectMap(){return detectMap;};
+
     /// @brief Update the map of detected pixels. 
     void        updateDetectMap();
 

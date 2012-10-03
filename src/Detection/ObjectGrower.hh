@@ -38,7 +38,7 @@ namespace duchamp {
     /// @brief Update a Cube's detectMap based on the flag array
     void updateDetectMap(short *map);
     /// @brief Grow an object
-    void grow(Detection *theObject);
+    virtual void grow(Detection *theObject);
     /// @brief Grow out from a single voxel, returning the list of new voxels.
     std::vector<Voxel> growFromPixel(Voxel &vox);
 
