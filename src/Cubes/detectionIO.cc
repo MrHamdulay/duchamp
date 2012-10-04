@@ -167,6 +167,7 @@ namespace duchamp
     if(this->par.getFlagSeparateHeader()){
       writer->closeCatalogue();
       writer = &catWriter;
+      writer->openCatalogue();
     }
 
     // write the catalogue
