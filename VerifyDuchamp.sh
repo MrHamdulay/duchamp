@@ -64,11 +64,11 @@ for (( i=0; i<${#number[@]}; i++ )); do
 	numErrors=$numErrors+1
     fi
 #Test the log files.
-    if [ `diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" -I"spectraFile" -I"flagXOutput" $log $Slog | wc -l` == 0 ]; then
+    if [ `diff -I"flagXOutput" -I"Duchamp" -I"spectraFile" $log $Slog | wc -l` == 0 ]; then
 	echo "  Logfiles correct."
     else
 	echo "  ERROR: Differences in the log files:"
-	diff -I"flagXOutput" -I"New run of the Duchamp source" -I"Executing statement" -I"Duchamp completed:" $log $Slog
+	diff -I"flagXOutput" -I"Duchamp" -I"spectraFile" $log $Slog
 	numErrors=`expr $numErrors + 1`
     fi
 

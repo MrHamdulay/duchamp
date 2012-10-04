@@ -130,7 +130,8 @@ else
                [], [$EXTRAPGLIB $LIBS])
   
   # Search for X11 includes and libraries.
-  AC_PATH_XTRA
+#  AC_PATH_XTRA
+  AC_PATH_X
   AC_MSG_NOTICE([X-library search yielded X_CFLAGS=$X_CFLAGS, X_LIBS=$X_LIBS, X_EXTRA_LIBS=$X_EXTRA_LIBS, X_PRE_LIBS=$X_PRE_LIBS])
   # returns C compiler flags needed for X to X_CFLAGS and the X linker flags to X_LIBS
   if test "x$X_LIBS" != x; then
