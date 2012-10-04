@@ -73,6 +73,23 @@ namespace duchamp
       mergeList(currentList, this->par);
 
       // Do growth stuff
+      this->growSources(currentList);
+
+      if(!this->par.getFlagRejectBeforeMerge()) 
+	finaliseList(currentList, this->par);
+
+      //     *this->objectList = currentList;
+      this->objectList->resize(currentList.size());
+      for(size_t i=0;i<currentList.size();i++)
+	this->objectList->at(i) = currentList[i];
+    
+      currentList.clear();
+
+    }
+  }
+
+  void Cube::growSources(std::vector <Detection> &currentList)
+  {
       if(this->par.getFlagGrowth()) {
 	ObjectGrower grower;
 	grower.define(this);
@@ -96,17 +113,6 @@ namespace duchamp
 	mergeList(currentList, this->par);
       }
 
-      if(!this->par.getFlagRejectBeforeMerge()) 
-	finaliseList(currentList, this->par);
-
-      //     *this->objectList = currentList;
-      this->objectList->resize(currentList.size());
-      for(size_t i=0;i<currentList.size();i++)
-	this->objectList->at(i) = currentList[i];
-    
-      currentList.clear();
-
-    }
   }
 
   void ObjectMerger(vector<Detection> &objList, Param &par)

@@ -511,7 +511,9 @@ namespace duchamp
     // in Cubes/Merger.cc
     /// @brief Merge all objects in the detection list so that only distinct ones are left. 
     void        ObjectMerger();
-  
+    /// @brief Grow the sources out to the secondary threshold
+    void        growSources(std::vector <Detection> &currentList);
+
     // in Cubes/existingDetections.cc
     /// @brief Read a previously-created log file to get the detections without searching 
     OUTCOME     getExistingDetections();
