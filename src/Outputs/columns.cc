@@ -83,7 +83,7 @@ namespace duchamp
     }
 
     Column::Column(std::string type, std::string name, std::string units, int width, int prec, std::string ucd, std::string datatype, std::string colID, std::string extraInfo):
-      itsType(type),itsWidth(width), itsPrecision(prec), itsName(name), itsUnits(units), itsUCD(ucd), itsDatatype(datatype), itsColID(colID), itsExtraInfo(extraInfo)
+      itsType(type), itsName(name), itsUnits(units), itsWidth(width), itsPrecision(prec), itsUCD(ucd), itsDatatype(datatype), itsColID(colID), itsExtraInfo(extraInfo)
     {
       /// A generic constructor designed to make a Column other than
       /// the predefined ones listed in the Column namespace

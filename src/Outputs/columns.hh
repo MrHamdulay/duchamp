@@ -124,15 +124,15 @@ namespace duchamp
 
 
     private:
-      int itsWidth;          ///< How wide is the column (in ascii spaces)
-      int itsPrecision;      ///< What precision should be used to print the values? (If 0, the setprecision command is not used.)
+      std::string itsType;   ///< The type of the column - for reference purposes
       std::string itsName;   ///< The title of the column
       std::string itsUnits;  ///< The units that the values in the column are expressed in.
+      int itsWidth;          ///< How wide is the column (in ascii spaces)
+      int itsPrecision;      ///< What precision should be used to print the values? (If 0, the setprecision command is not used.)
       std::string itsUCD;    ///< The UCD associated with the value
       std::string itsDatatype; ///< What datatype do the values take?
-      std::string itsExtraInfo; ///< Any other info? This can be the 'ref' entry for a VOTable field.
       std::string itsColID;  ///< The column ID
-      std::string itsType;   ///< The type of the column - for reference purposes
+      std::string itsExtraInfo; ///< Any other info? This can be the 'ref' entry for a VOTable field.
     };
 
     Column defaultColumn(std::string type);
