@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<VOTABLE version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="http://www.ivoa.net/xml/VOTable/VOTable/v1.1">
+  <COOSYS ID="J2000" equinox="J2000" system="eq_FK5"/>
+  <RESOURCE name="Duchamp Output">
+    <TABLE name="Detections">
+      <DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>
+      <PARAM name="imageFile" ucd="meta.file;meta.fits" datatype="char" arraysize="34" value="verification/verificationCube.fits"/>
+      <PARAM name="flagSubsection" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="flagStatSec" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="searchType" ucd="meta.note" datatype="char" arraysize="7" value="spatial"/>
+      <PARAM name="flagNegative" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="flagBaseline" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="flagRobustStats" ucd="meta.code" datatype="boolean" value="1"/>
+      <PARAM name="flagFDR" ucd="meta.code" datatype="boolean" value="1"/>
+      <PARAM name="alphaFDR" ucd="stat.param" datatype="float" value="0.05"/>
+      <PARAM name="FDRnumCorChan" ucd="stat.param" datatype="int" value="2"/>
+      <PARAM name="flagGrowth" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="minVoxels" ucd="" datatype="int" value="4"/>
+      <PARAM name="minPix" ucd="" datatype="int" value="2"/>
+      <PARAM name="minChannels" ucd="" datatype="int" value="2"/>
+      <PARAM name="flagAdjacent" ucd="meta.code" datatype="boolean" value="1"/>
+      <PARAM name="threshVelocity" ucd="" datatype="float" value="3"/>
+      <PARAM name="flagRejectBeforeMerge" ucd="" datatype="boolean" value="0"/>
+      <PARAM name="flagTwoStageMerging" ucd="" datatype="boolean" value="1"/>
+      <PARAM name="pixelCentre" ucd="" datatype="char" arraysize="8" value="centroid"/>
+      <PARAM name="flagSmooth" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="flagATrous" ucd="meta.code" datatype="boolean" value="0"/>
+      <PARAM name="thresholdActual" ucd="" datatype="float" units="Jy/beam" value="4.12445"/>
+      <PARAM name="noiseMeanActual" ucd="" datatype="float" units="Jy/beam" value="0.0148019"/>
+      <PARAM name="noiseSpreadActual" ucd="" datatype="float" units="Jy/beam" value="1.00927"/>
+      <FIELD name="Obj#" ID="col_objnum" ucd="meta.id" datatype="int" unit="" width="5"/>
+      <FIELD name="Name" ID="col_name" ucd="meta.id;meta.main" datatype="char" unit="" arraysize="15"/>
+      <FIELD name="RA" ID="col_rajd" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" unit="deg" width="11" precision="6"/>
+      <FIELD name="DEC" ID="col_decjd" ucd="pos.eq.dec;meta.main" ref="J2000" datatype="float" unit="deg" width="11" precision="6"/>
+      <FIELD name="VOPT" ID="col_vel" ucd="phys.veloc;spect.dopplerVeloc.opt;meta.main" datatype="float" unit="m/s" width="12" precision="3"/>
+      <FIELD name="w_RA" ID="col_wra" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
+      <FIELD name="w_DEC" ID="col_wdec" ucd="phys.angSize;pos.eq.dec" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
+      <FIELD name="w_50" ID="col_w50" ucd="spect.line.width;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
+      <FIELD name="w_20" ID="col_w20" ucd="spect.line.width;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
+      <FIELD name="w_VOPT" ID="col_wvel" ucd="spect.line.width;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
+      <FIELD name="Integrated_Flux" ID="col_fint" ucd="phot.flux;spect.line.intensity" datatype="float" unit="Jy.m/s" width="12" precision="3"/>
+      <FIELD name="Peak_Flux" ID="col_fpeak" ucd="phot.flux;spect.line.intensity" datatype="float" unit="Jy/beam" width="10" precision="3"/>
+      <FIELD name="S/Nmax" ID="col_snrmax" ucd="phot.flux;stat.snr" datatype="float" unit="" width="7" precision="2"/>
+      <FIELD name="Flag" ID="col_flag" ucd="meta.code.qual" datatype="char" unit="" arraysize="5"/>
+      <FIELD name="X_av" ID="col_xav" ucd="pos.cartesian.x" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="Y_av" ID="col_yav" ucd="pos.cartesian.y" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="Z_av" ID="col_zav" ucd="pos.cartesian.z" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="X_Centroid" ID="col_xcent" ucd="pos.cartesian.x" datatype="float" unit="" width="7" precision="1"/>
+      <FIELD name="Y_Centroid" ID="col_ycent" ucd="pos.cartesian.y" datatype="float" unit="" width="7" precision="1"/>
+      <FIELD name="Z_Centroid" ID="col_zcent" ucd="pos.cartesian.z" datatype="float" unit="" width="7" precision="1"/>
+      <FIELD name="X_peak" ID="col_xpeak" ucd="pos.cartesian.x" datatype="int" unit="" width="7"/>
+      <FIELD name="Y_peak" ID="col_ypeak" ucd="pos.cartesian.y" datatype="int" unit="" width="7"/>
+      <FIELD name="Z_peak" ID="col_zpeak" ucd="pos.cartesian.z" datatype="int" unit="" width="7"/>
+      <DATA>
+        <TABLEDATA>
+        <TR>
+          <TD>    1</TD><TD> J060912-273501</TD><TD>  92.301818</TD><TD> -27.583783</TD><TD>  277659.135</TD><TD>    52.66</TD><TD>    43.29</TD><TD> 113078.208</TD><TD> 167632.210</TD><TD> 158295.840</TD><TD> 2612586.497</TD><TD>    11.489</TD><TD>  11.37</TD><TD>    -</TD><TD>  25.1</TD><TD>  25.1</TD><TD>  20.1</TD><TD>   25.0</TD><TD>   25.1</TD><TD>   20.0</TD><TD>     26</TD><TD>     25</TD><TD>     21</TD>
+        </TR>
+        <TR>
+          <TD>    2</TD><TD> J055409-273512</TD><TD>  88.539056</TD><TD> -27.586880</TD><TD>  566191.861</TD><TD>    47.23</TD><TD>    48.74</TD><TD> 107954.172</TD><TD> 171506.267</TD><TD> 145104.520</TD><TD> 2533493.872</TD><TD>    11.766</TD><TD>  11.64</TD><TD>    -</TD><TD>  75.1</TD><TD>  25.0</TD><TD>  41.9</TD><TD>   75.1</TD><TD>   25.0</TD><TD>   41.9</TD><TD>     76</TD><TD>     25</TD><TD>     43</TD>
+        </TR>
+        <TR>
+          <TD>    3</TD><TD> J060143-255604</TD><TD>  90.432958</TD><TD> -25.934534</TD><TD>  857340.090</TD><TD>    43.99</TD><TD>    48.03</TD><TD> 109048.197</TD><TD> 167639.214</TD><TD> 158295.840</TD><TD> 2645773.473</TD><TD>    10.926</TD><TD>  10.81</TD><TD>    -</TD><TD>  49.9</TD><TD>  50.0</TD><TD>  64.0</TD><TD>   49.9</TD><TD>   50.0</TD><TD>   64.0</TD><TD>     50</TD><TD>     51</TD><TD>     66</TD>
+        </TR>
+        <TR>
+          <TD>    4</TD><TD> J060900-241502</TD><TD>  92.250421</TD><TD> -24.250717</TD><TD> 1148669.273</TD><TD>    44.67</TD><TD>    51.43</TD><TD> 108414.503</TD><TD> 166604.873</TD><TD> 158295.840</TD><TD> 2539178.838</TD><TD>    10.445</TD><TD>  10.33</TD><TD>    -</TD><TD>  25.1</TD><TD>  75.1</TD><TD>  86.1</TD><TD>   25.1</TD><TD>   75.1</TD><TD>   86.1</TD><TD>     26</TD><TD>     75</TD><TD>     86</TD>
+        </TR>
+        <TR>
+          <TD>    5</TD><TD> J055425-241539</TD><TD>  88.606254</TD><TD> -24.261024</TD><TD> 1439595.587</TD><TD>    43.37</TD><TD>    48.66</TD><TD> 106623.010</TD><TD> 168523.988</TD><TD> 145104.520</TD><TD> 2612247.025</TD><TD>    11.304</TD><TD>  11.19</TD><TD>    -</TD><TD>  74.9</TD><TD>  74.9</TD><TD> 108.2</TD><TD>   74.9</TD><TD>   74.9</TD><TD>  108.1</TD><TD>     74</TD><TD>     75</TD><TD>    107</TD>
+        </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+  </RESOURCE>
+</VOTABLE>
