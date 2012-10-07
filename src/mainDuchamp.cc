@@ -157,8 +157,6 @@ int main(int argc, char * argv[])
 
   }
 
-  // cube->prepareOutputFile();
-
   if(cube->getNumObj()>0){
 
     std::cout << "Calculating final parameters and setting flags...  "<<std::flush;
@@ -172,7 +170,6 @@ int main(int argc, char * argv[])
 
   }
   
-  // cube->outputDetectionList();
   cube->outputCatalogue();
 
   if(USE_PGPLOT){
@@ -229,10 +226,6 @@ int main(int argc, char * argv[])
     }
 
     if(cube->pars().getFlagLog() && (cube->getNumObj()>0)){
-      // std::ofstream logfile(cube->pars().getLogFile().c_str(),std::ios::app);
-      // logfile << "=-=-=-=-=-=-=-\nCube summary\n=-=-=-=-=-=-=-\n";
-      // logfile << *cube;
-      // logfile.close();
       cube->logSummary();
     }
 
@@ -248,9 +241,6 @@ int main(int argc, char * argv[])
   }
   
   if(cube->pars().getFlagVOT()){
-    // std::ofstream votfile(cube->pars().getVOTFile().c_str());
-    // cube->outputDetectionsVOTable(votfile);
-    // votfile.close();
     cube->outputDetectionsVOTable();
   }
 

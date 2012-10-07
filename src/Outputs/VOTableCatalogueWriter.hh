@@ -19,7 +19,7 @@ namespace duchamp {
     VOTableCatalogueWriter& operator= (const VOTableCatalogueWriter& other);
     virtual ~VOTableCatalogueWriter(){};
 
-        /// @brief open the catalogue for writing
+    /// @brief open the catalogue for writing
     bool openCatalogue(std::ios_base::openmode mode = std::ios_base::out);
 
     /// @brief Write header information - not including parameters

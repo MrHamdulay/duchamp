@@ -18,28 +18,24 @@ namespace duchamp {
     CatalogueWriter()
   {
     this->itsStream=0;
-    // this->itsFileStream=0;
   }
 
   ASCIICatalogueWriter::ASCIICatalogueWriter(std::string name):
     CatalogueWriter(name)
   {
     this->itsStream=0;
-    // this->itsFileStream=0;
   }
 
   ASCIICatalogueWriter::ASCIICatalogueWriter(Catalogues::DESTINATION dest):
     itsDestination(dest)
   {
     this->itsStream=0;
-    // this->itsFileStream=0;
   }
 
   ASCIICatalogueWriter::ASCIICatalogueWriter(std::string name, Catalogues::DESTINATION dest):
     CatalogueWriter(name), itsDestination(dest)
   {
     this->itsStream=0;
-    // this->itsFileStream=0;
   }
 
   ASCIICatalogueWriter::ASCIICatalogueWriter(const ASCIICatalogueWriter& other)
@@ -52,7 +48,6 @@ namespace duchamp {
     if(this==&other) return *this;
     ((CatalogueWriter &) *this) = other;
     this->itsStream = other.itsStream;
-    // this->itsFileStream = other.itsFileStream;
     this->itsOpenFlag = false;
     this->itsDestination = other.itsDestination;
     return *this;

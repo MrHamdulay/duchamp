@@ -41,6 +41,7 @@
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/Statistics.hh>
 #include <duchamp/Outputs/ASCIICatalogueWriter.hh>
+#include <duchamp/Outputs/VOTableCatalogueWriter.hh>
  
 using std::endl;
 using std::setw;
@@ -182,6 +183,25 @@ namespace duchamp
 
   }
 
+
+  void Cube::outputDetectionsVOTable()
+  {
+    VOTableCatalogueWriter writer(this->pars().getVOTFile());
+    writer.setup(this);
+    writer.setTableName("Detections");
+    writer.setTableDescription("Detected sources and parameters from running the Duchamp source finder.");
+    writer.openCatalogue();
+    writer.writeHeader();
+    writer.writeParameters();
+    writer.writeStats();
+    writer.writeTableHeader();
+    writer.writeEntries();
+    writer.writeFooter();
+    writer.closeCatalogue();
+
+  }
+
+
   void Cube::prepareOutputFile()
   {
     ///  @details
@@ -268,41 +288,6 @@ namespace duchamp
     output.close();
   }
 
-  void Cube::outputDetectionList()
-  {
-    ///  @details
-    ///  A front-end to writing the full list of detected objects to a results 
-    ///   file and to cout.
-    ///  Leaves the testing of whether the WCS parameters for each object 
-    ///   have been calculated to the printing function.
-
-    std::string outfile;
-    if(this->par.getFlagSeparateHeader()) outfile = this->par.getHeaderFile();
-    else outfile = this->par.getOutFile();
-    std::ofstream output(outfile.c_str(),std::ios::app);
-    output<<"Total number of detections = "<<this->objectList->size()<<endl;
-    output<<"--------------------\n";
-    output.close();
-
-    if(this->par.getFlagSeparateHeader()) 
-      output.open(this->par.getOutFile().c_str());
-    else 
-      output.open(this->par.getOutFile().c_str(),std::ios::app);
-
-    if(this->objectList->size()>0){
-      this->setupColumns();
-      outputTableHeader(output,this->fullCols,Catalogues::FILE,this->head.isWCS());
-      outputTableHeader(std::cout,this->fullCols,Catalogues::SCREEN,this->head.isWCS());
-      std::vector<Detection>::iterator obj;
-      for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
-	obj->printTableRow(output,this->fullCols,Catalogues::FILE);
-	obj->printTableRow(std::cout,this->fullCols,Catalogues::SCREEN);
-      }
-    }
-
-    output.close();
-  }
-
   void Cube::prepareLogFile(int argc, char *argv[])
   {
     /// @details
@@ -312,18 +297,6 @@ namespace duchamp
     /// 
     ///  It also writes the command-line statement, hence the need for
     ///  argv and argc.
-
-    // // Open the logfile and write the time on the first line
-    // std::ofstream logfile(this->par.getLogFile().c_str());
-    // logfile << "New run of the Duchamp source finder v."<<VERSION<<": ";
-    // time_t now = time(NULL);
-    // logfile << asctime( localtime(&now) );
-    // // Write out the command-line statement
-    // logfile << "Executing statement : ";
-    // for(int i=0;i<argc;i++) logfile << argv[i] << " ";
-    // logfile << std::endl;
-    // logfile << this->par;
-    // logfile.close();
 
     ASCIICatalogueWriter logwriter(this->par.getLogFile(),Catalogues::LOG);
     logwriter.setup(this);
@@ -385,65 +358,6 @@ namespace duchamp
  
     }
 
-  }
-
-  void Cube::logDetection(Detection obj, int counter)
-  {
-    /// @details
-    ///  A front-end to writing a detected object to the log file.
-    ///  Does not assume WCS is present.
-    ///  Corrects for changes to positions of pixels and removal of baselines.
-    ///  Designed to be used by searching routines before returning their final 
-    ///   list.
-    ///  \param obj Detection object to be written : passed by value, as we want 
-    ///    to potentially change positions etc, but not for the object in the 
-    ///    calling function.
-    ///  \param counter The number to assign to the object : ideally its number
-    ///    in a list of some kind.
-
-    std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
-    // Need to deal with possibility of trimmed array
-    size_t left = this->par.getBorderLeft();
-    size_t right = this->par.getBorderRight();
-    size_t top = this->par.getBorderTop();
-    size_t bottom = this->par.getBorderBottom();
-    size_t *tempDim = new size_t[3];
-    tempDim[0] = (this->axisDim[0] + left + right);
-    tempDim[1] = (this->axisDim[1] + bottom + top);
-    tempDim[2] = this->axisDim[2];
-    size_t tempsize = tempDim[0] * tempDim[1] * tempDim[2];
-    float *temparray = new float[tempsize];
-    //  for(int i=0;i<this->numPixels;i++){ // loop over this->array
-    for(size_t z=0;z<tempDim[2];z++){
-      for(size_t y=0;y<tempDim[1];y++){
-	for(size_t x=0;x<tempDim[0];x++){
-
-	  bool isDud = (x<left) || (x>=this->axisDim[0]+left) || 
-	    (y<bottom) || (y>=this->axisDim[1]+bottom);
-	
-	  size_t temppos = x + tempDim[0]*y + tempDim[1]*tempDim[0]*z;
-
-	  size_t pos = (x-left) + (y-bottom)*this->axisDim[0] + 
-	    z*this->axisDim[0]*this->axisDim[1];
-
-	  if(isDud) temparray[temppos] = this->par.getBlankPixVal();
-	  else temparray[temppos] = this->array[pos];
-  
-	  if(this->par.getFlagBaseline() && !isDud) 
-	    temparray[temppos] += this->baseline[pos];
-
-	}
-      }
-    }
-
-    if(this->par.getFlagCubeTrimmed()){
-      obj.addOffsets(left,bottom,0);
-    }
-    obj.calcFluxes(temparray, this->axisDim);
-    obj.printTableRow(fout,this->fullCols,Catalogues::LOG);
-    delete [] temparray;
-    delete [] tempDim;
-    fout.close();
   }
 
   void Cube::logSummary()

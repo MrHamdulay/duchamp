@@ -59,20 +59,15 @@ namespace duchamp
     /// \param flagWCS A flag for use with Column::doCol(), specifying
     /// whether to use FINT or FTOT.
 
-    // std::vector<Catalogues::Column>::iterator col;
-    // for(col=columns.begin();col<columns.end();col++)
     for(size_t i=0;i<columns.size();i++)
       if(columns.column(i).doCol(tableType,flagWCS)) columns.column(i).printDash(stream);
     stream << "\n";
-    // for(col=columns.begin();col<columns.end();col++)
     for(size_t i=0;i<columns.size();i++)
       if(columns.column(i).doCol(tableType,flagWCS)) columns.column(i).printTitle(stream);
     stream << "\n";
-    // for(col=columns.begin();col<columns.end();col++)
     for(size_t i=0;i<columns.size();i++)
       if(columns.column(i).doCol(tableType,flagWCS)) columns.column(i).printUnits(stream);
     stream << "\n";
-    // for(col=columns.begin();col<columns.end();col++)
     for(size_t i=0;i<columns.size();i++)
       if(columns.column(i).doCol(tableType,flagWCS)) columns.column(i).printDash(stream);
     stream << "\n";
@@ -93,8 +88,6 @@ namespace duchamp
     /// shouldn't be used with this function).
 
     stream.setf(std::ios::fixed);  
-    // std::vector<Catalogues::Column>::iterator col;
-    // for(col=columns.begin();col<columns.end();col++)
     for(size_t i=0;i<columns.size();i++){
       if(columns.column(i).doCol(tableType,this->flagWCS)) this->printTableEntry(stream, columns.column(i));
     }
@@ -299,7 +292,6 @@ namespace duchamp
     ss <<"("       << this->getXcentre() + this->xSubOffset;
     ss <<", "      << this->getYcentre() + this->ySubOffset;
     ss <<", "      << this->getZcentre() + this->zSubOffset << ")";
-//     ss <<", Size: "<< this->pixelArray.getSize() << " voxels,  ";
     ss <<", Size: "<< this->getSize() << " voxels,  ";
     ss <<"Range: [";
     ss <<             this->getXmin() + this->xSubOffset 

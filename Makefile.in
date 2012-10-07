@@ -117,7 +117,6 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(CUBESDIR)/smoothCube.o\
 	$(CUBESDIR)/spectraUtils.o\
 	$(CUBESDIR)/trimImage.o\
-	$(CUBESDIR)/VOTable.o\
 	$(FITSIODIR)/Beam.o\
 	$(FITSIODIR)/DuchampBeam.o\
 	$(FITSIODIR)/dataIO.o\

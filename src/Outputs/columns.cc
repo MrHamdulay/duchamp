@@ -82,59 +82,6 @@ namespace duchamp
       return *this;
     }
 
-    // Col::Col(int num, int prec)
-    // {
-    //   /// A specialised constructor that defines one of the default 
-    //   ///  columns, as defined in the Column namespace
-    //   /// \param num The number of the column to be constructed. 
-    //   ///            Corresponds to the order of the columns in the const 
-    //   ///            arrays in the Column namespace.
-    //   /// \param prec The precision to use, if not the default. A value
-    //   /// <0 or no value given results in the default being used.
-
-    //   if((num>=0)&&(num<numColumns)){
-    // 	this->width     = defaultWidth[num];
-    // 	if(prec<0) this->precision = defaultPrec[num];
-    // 	else this->precision = prec;
-    // 	this->name      = defaultName[num];
-    // 	this->units     = defaultUnits[num];
-    // 	this->type = COLNAME(num);
-    // 	this->UCD = defaultUCDs[num];
-    // 	this->datatype = defaultDatatype[num];
-    // 	this->extraInfo = defaultExtraInfo[num];
-    // 	this->colID = defaultColID[num];
-    //   }
-    //   else{
-    // 	DUCHAMPERROR("Column constructor", "Incorrect value for Col(num) --> num="<<num << ", should be between 0 and " << numColumns-1);
-    // 	this->width = 1;
-    // 	this->precision = 0;
-    // 	this->name = " ";
-    // 	this->units = " ";
-    // 	this->type=UNKNOWN;
-    // 	this->UCD="";
-    // 	this->datatype="";
-    // 	this->extraInfo="";
-    // 	this->colID="";
-    //   }
-    // }
-
-    // Col::Col(std::string name, std::string units, int width, int prec, std::string ucd, std::string datatype, std::string extraInfo):
-    //   width(width), precision(prec), name(name), units(units), UCD(ucd), datatype(datatype), extraInfo(extraInfo)
-    // {
-    //   /// A generic constructor designed to make a Column other than
-    //   /// the predefined ones listed in the Column namespace
-    //   /// \param name The title of the column
-    //   /// \param units What units the column takes
-    //   /// \param width The starting width
-    //   /// \param prec The starting precision
-
-    //   // this->width = width;
-    //   // this->precision = prec;
-    //   // this->name = name;
-    //   // this->units = units;
-    //   this->type = UNKNOWN;
-    // }
-
     Column::Column(std::string type, std::string name, std::string units, int width, int prec, std::string ucd, std::string datatype, std::string colID, std::string extraInfo):
       itsType(type),itsWidth(width), itsPrecision(prec), itsName(name), itsUnits(units), itsUCD(ucd), itsDatatype(datatype), itsColID(colID), itsExtraInfo(extraInfo)
     {
@@ -144,6 +91,10 @@ namespace duchamp
       /// \param units What units the column takes
       /// \param width The starting width
       /// \param prec The starting precision
+      /// \param ucd The UCD relating to the quantity (VOTable use only)
+      /// \param datatype The datatype (float/char/int/etc) of the quantity (VOTable)
+      /// \param colID The column ID string used in the FIELD entry of a VOTable
+      /// \param extraInfo Other information used in the VOTable (eg. a reference to a COOSYS)
    }
 
     //------------------------------------------------------------
@@ -171,16 +122,9 @@ namespace duchamp
 
     void Column::printUnits(std::ostream &stream)
     {
-      // if(this->itsUnits == ""){
       stream << std::setw(this->itsWidth) 
 	     << std::setfill(' ') 
 	     << this->itsUnits;
-      // }
-      // else {
-      // 	stream << std::setw(this->itsWidth) 
-      // 	       << std::setfill(' ') 
-      // 	       << "["<<this->itsUnits<<"]";
-      // }
     }
   
     void Column::printDash (std::ostream &stream)
@@ -219,9 +163,8 @@ namespace duchamp
  
     bool Column::doCol(DESTINATION tableType, bool flagFint)
     {
-      ///  @details Uses the info in the isFile etc arrays to
-      ///  determine whether a given column, referenced by the
-      ///  enumeration COLNAME, is used for a given table type.
+      ///  @details Determines whether a given column is used for a
+      ///  given table type, based on the Column::type string.
       /// \param tableType The type of table: one of FILE, SCREEN, LOG, VOTABLE.
       /// \param flagFint Whether to use FINT (true) or FTOT
       /// (false). This defaults to true, so need not be given. It only
@@ -230,20 +173,7 @@ namespace duchamp
       /// \return True if column is used for given table type. False
       /// otherwise. False if tableType not one of four listed.
       
-      // if(tableType == FILE) return isFile[this->itsType];
-      // else if(tableType == SCREEN){
-      // 	if(flagFint && this->itsType==FTOT) return false;
-      // 	if(!flagFint && this->itsType==FINT) return false;
-      // 	return isScreen[this->itsType];
-      // }
-      // else if(tableType == LOG) return isLog[this->itsType];
-      // else if(tableType == VOTABLE){
-      // 	if(flagFint && this->itsType==FTOT) return false;
-      // 	if(!flagFint && this->itsType==FINT) return false;
-      // 	return isVOTable[this->itsType];
-      // }
-      // else return false;
-      
+ 
       std::string FileList[34]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","WRA","WDEC",
 				"W50","W20","WVEL","FINT","FTOT","FPEAK","SNRPEAK",
 				"X1","X2","Y1","Y2","Z1","Z2","NPIX","FLAG","XAV","YAV",
@@ -327,9 +257,6 @@ namespace duchamp
 
     }
 
-
-    // std::vector<Column> getFullColSet(std::vector<Detection> &objectList, 
-    // 				      FitsHeader &head)
     CatalogueSpecification getFullColSet(std::vector<Detection> &objectList, FitsHeader &head)
     {
       ///  @details A function that returns a catalogue specification
@@ -352,7 +279,6 @@ namespace duchamp
       /// System.
       /// \return A CatalogueSpecification
 
-      // std::vector<Column> newset;
       CatalogueSpecification newset;
 
       // desired precisions for fluxes, velocities and SNR value
@@ -478,7 +404,6 @@ namespace duchamp
 	  for(int i=newset.column("DECJD").getWidth();i<tempwidth;i++) newset.column("DECJD").widen();
 
 	  // Vel -- check width, title and units.
-	  //if(head.isSpecOK()){
 	  if(head.canUseThirdAxis()){
 	    if(head.WCS().spec < 0)  // if it's not a spectral axis
 	      newset.column("VEL").setName( head.WCS().ctype[2] );
@@ -565,9 +490,6 @@ namespace duchamp
 	  if(head.canUseThirdAxis()){
 	    if(head.WCS().spec < 0) // if it's not a spectral axis
 	      newset.column("WVEL").setName( std::string("w_") + head.WCS().ctype[2] );
-// // 	    else if(head.WCS().restfrq == 0) // using frequency, not velocity
-// 	    else if(head.getSpectralDescription()==duchamp::duchampSpectralDescription[FREQUENCY]) // using frequency, not velocity
-// 	      newset.column("WVEL").setName("w_FREQ");
 	    else
 	      newset.column("WVEL").setName(std::string("w_")+head.getSpectralType());
 	    if(head.getSpectralUnits().size()>0)
@@ -673,7 +595,6 @@ namespace duchamp
 	for(int i=newset.column("NPIX").getWidth();i<tempwidth;i++) newset.column("NPIX").widen();
     
 	// average X position
-// 	val = obj->getXAverage() + obj->getXOffset();
 	val = obj->getXaverage() + obj->getXOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset.column("XAV").getPrecision()+1)); 
@@ -682,7 +603,6 @@ namespace duchamp
 	tempwidth = int( log10(val) + 1) + newset.column("XAV").getPrecision() + 2;
 	for(int i=newset.column("XAV").getWidth();i<tempwidth;i++) newset.column("XAV").widen();
 	// average Y position
-// 	val = obj->getYAverage() + obj->getYOffset();
 	val = obj->getYaverage() + obj->getYOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset.column("YAV").getPrecision()+1)); 
@@ -691,7 +611,6 @@ namespace duchamp
 	tempwidth = int( log10(val) + 1) + newset.column("YAV").getPrecision() + 2;
 	for(int i=newset.column("YAV").getWidth();i<tempwidth;i++) newset.column("YAV").widen();
 	// average Z position
-// 	val = obj->getZAverage() + obj->getZOffset();
 	val = obj->getZaverage() + obj->getZOffset();
 	if((val<1.)&&(val>0.)){
 	  minval = pow(10, -1. * (newset.column("ZAV").getPrecision()+1)); 
@@ -761,49 +680,6 @@ namespace duchamp
 	
       }
       
-      return newset;
-
-    }
-
-   CatalogueSpecification getLogColSet(std::vector<Detection> &objectList, FitsHeader &head)
-    {
-      ///  @details A function that returns a std::vector of Col
-      ///    objects containing information on the columns necessary
-      ///    for logfile output:
-      ///    Obj#,X,Y,Z,F_tot,F_peak,X1,X2,Y1,Y2,Z1,Z2,Npix
-      /// 
-      ///   Each object in the provided objectList is checked to see if 
-      ///    it requires any column to be widened, or for that column to
-      ///    have its precision increased.
-      /// 
-      /// \param objectList A std::vector list of Detection objects that the columns need to fit.
-      /// \param head The FitsHeader object defining the World Coordinate System.
-      /// \return A std::vector list of Col definitions.
-
-      CatalogueSpecification newset,tempset;
-      // std::vector<Column> newset,tempset;
-      
-      // set up the default columns:
-      //  get from FullColSet, and select only the ones we want.
-      tempset = getFullColSet(objectList,head);
-
-      newset.addColumn( tempset.column("NUM") );
-      newset.addColumn( tempset.column("X") );
-      newset.addColumn( tempset.column("Y") );
-      newset.addColumn( tempset.column("Z") );
-      newset.addColumn( tempset.column("FTOT") );
-      newset.addColumn( tempset.column("FPEAK") );
-      newset.addColumn( tempset.column("SNRPEAK") );
-      newset.addColumn( tempset.column("X1") );
-      newset.addColumn( tempset.column("X2") );
-      newset.addColumn( tempset.column("Y1") );
-      newset.addColumn( tempset.column("Y2") );
-      newset.addColumn( tempset.column("Z1") );
-      newset.addColumn( tempset.column("Z2") );
-      newset.addColumn( tempset.column("NPIX") );
-      newset.addColumn( tempset.column("NUMCH") );
-      newset.addColumn( tempset.column("SPATSIZE") );
-
       return newset;
 
     }

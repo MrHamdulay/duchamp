@@ -500,7 +500,6 @@ namespace duchamp
     }
     this->head = c.head;
     this->fullCols = c.fullCols;
-    // this->logCols = c.logCols;
     return *this;
   }
   //--------------------------------------------------------------------
@@ -531,7 +530,6 @@ namespace duchamp
 	output->head.WCS().crpix[output->head.WCS().spec] -= subsection.getStart(output->head.WCS().spec);
       output->Stats = this->Stats;
       output->fullCols = this->fullCols;
-      // output->logCols = this->logCols;
       size_t *dims = new size_t[3];
       for(size_t i=0;i<3;i++){
 	dims[i] = subsection.getDimList()[i];
@@ -1503,23 +1501,9 @@ namespace duchamp
       obj->setSNRPrec( this->par.getPrecSNR() );
     }
   
-    // this->fullCols.clear();
     this->fullCols = getFullColSet(*(this->objectList), this->head);
 
-    // // this->logCols.clear();
-    // this->logCols = getLogColSet(*(this->objectList), this->head);
-
     int vel,fpeak,fint,pos,xyz,snr;
-    // vel = fullCols[VEL].getPrecision();
-    // fpeak = fullCols[FPEAK].getPrecision();
-    // snr = fullCols[SNRPEAK].getPrecision();
-    // xyz = fullCols[X].getPrecision();
-    // xyz = std::max(xyz, fullCols[Y].getPrecision());
-    // xyz = std::max(xyz, fullCols[Z].getPrecision());
-    // if(this->head.isWCS()) fint = fullCols[FINT].getPrecision();
-    // else fint = fullCols[FTOT].getPrecision();
-    // pos = fullCols[WRA].getPrecision();
-    // pos = std::max(pos, fullCols[WDEC].getPrecision());
     vel = fullCols.column("VEL").getPrecision();
     fpeak = fullCols.column("FPEAK").getPrecision();
     snr = fullCols.column("SNRPEAK").getPrecision();

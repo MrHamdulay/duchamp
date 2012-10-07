@@ -142,8 +142,6 @@ namespace duchamp {
     specUCDmap.insert(std::pair<std::string,std::string>("BETA","src.redshift; spect.dopplerVeloc"));
     std::string specUCDbase = specUCDmap[this->itsColumnSpecification->column("VEL").getName()];
 
-    // std::vector<Catalogues::Column>::iterator col;
-    // for(col=this->itsColumnSpecification->begin();col<this->itsColumnSpecification->end();col++){
     for(size_t i=0;i<this->itsColumnSpecification->size();i++){
       
       Catalogues::Column *col = this->itsColumnSpecification->pCol(i);
@@ -181,8 +179,6 @@ namespace duchamp {
 
     this->itsFileStream<<"        <TR>\n";
     this->itsFileStream<<"          ";
-    // std::vector<Catalogues::Column>::iterator col;
-    // for(col=this->itsColumnSpecification->begin();col<this->itsColumnSpecification->end();col++){
     for(size_t i=0;i<this->itsColumnSpecification->size();i++){
       Catalogues::Column *col = this->itsColumnSpecification->pCol(i);
       if(col->doCol(Catalogues::VOTABLE,this->itsHead->isSpecOK())){
