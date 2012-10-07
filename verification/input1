@@ -9,3 +9,6 @@ flagLog         true
 logFile         verification/log1.txt
 outFile         verification/results1.txt
 spectraFile     verification/spectra1.ps
+flagVOT         true
+votFile         verification/results1.xml
+

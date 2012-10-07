@@ -10,3 +10,5 @@ logFile         verification/log8.txt
 outFile         verification/results8.txt
 spectraFile     verification/spectra8.ps
 flagRobustStats false
+flagVOT         true
+votFile         verification/results8.xml

@@ -11,3 +11,5 @@ outFile         verification/results7.txt
 spectraFile     verification/spectra7.ps
 flagGrowth      true
 growthCut       3
+flagVOT         true
+votFile         verification/results7.xml

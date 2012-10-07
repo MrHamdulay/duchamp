@@ -35,7 +35,8 @@ for (( i=0; i<${#number[@]}; i++ )); do
     Sres=${dir}/stdResults${N}.txt
     log=${dir}/log${N}.txt
     Slog=${dir}/stdLog${N}.txt
-    
+    vot=${dir}/results${N}.xml
+    Svot=${dir}/stdResults${N}.xml    
 
     echo "Running the ${number[i]} Duchamp test:"
     echo "  [${explanation[i]}]"
@@ -63,6 +64,7 @@ for (( i=0; i<${#number[@]}; i++ )); do
 	diff  -I"Results of the Duchamp source finder:" $res $Sres
 	numErrors=$numErrors+1
     fi
+
 #Test the log files.
     if [ `diff -I"flagXOutput" -I"Duchamp" -I"spectraFile" $log $Slog | wc -l` == 0 ]; then
 	echo "  Logfiles correct."
@@ -70,6 +72,15 @@ for (( i=0; i<${#number[@]}; i++ )); do
 	echo "  ERROR: Differences in the log files:"
 	diff -I"flagXOutput" -I"Duchamp" -I"spectraFile" $log $Slog
 	numErrors=`expr $numErrors + 1`
+    fi
+
+#Test the VOTable results.
+    if [ `diff $vot $Svot | wc -l` == 0 ]; then
+        echo "  VOTables correct."
+    else
+        echo "  ERROR: Differences in the VOTables:"
+        diff $vot $Svot
+        numErrors=`expr $numErrors + 1`
     fi
 
     echo ""

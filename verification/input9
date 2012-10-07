@@ -12,3 +12,5 @@ spectraFile     verification/spectra9.ps
 spectralType    VRAD
 restFrequency   1.665e9
 spectralUnits   km/s
+flagVOT         true
+votFile         verification/results9.xml

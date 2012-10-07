@@ -11,3 +11,5 @@ flagLog         true
 logFile         verification/log5.txt
 outFile         verification/results5.txt
 spectraFile     verification/spectra5.ps
+flagVOT         true
+votFile         verification/results5.xml

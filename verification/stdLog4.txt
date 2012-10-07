@@ -1,11 +1,12 @@
-New run of the Duchamp source finder v.1.2: Wed Aug  8 10:04:35 2012
-Executing statement : ./Duchamp-1.2 -p ./verification/input4 
+Results of the Duchamp source finder v.1.2: Mon Oct  8 09:20:15 2012
+Executing statement: ./Duchamp-1.2 -p ./verification/input4 
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
 Intermediate Logfile...........................[logFile]  =  verification/log4.txt
 Final Results file.............................[outFile]  =  verification/results4.txt
 Spectrum file..............................[spectraFile]  =  verification/spectra4.ps
+VOTable file...................................[votFile]  =  verification/results4.xml
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 Saving reconstructed cube?.............[flagOutputRecon]  =  false
 Saving residuals from reconstruction?..[flagOutputResid]  =  false
@@ -483,4 +484,4 @@ Detection #5
 75-76, 76,113
 
 --------------
-Duchamp completed: Wed Aug  8 10:04:38 2012
+Duchamp completed: Mon Oct  8 09:20:17 2012
