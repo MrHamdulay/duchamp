@@ -267,9 +267,9 @@ namespace duchamp
     // std::vector<Catalogues::Column> getFullCols(){return fullCols;};
     // std::vector<Catalogues::Column> *pFullCols(){return &fullCols;};
     // void        setFullCols(std::vector<Catalogues::Column> C){fullCols=C;};
-    Catalogues::CatalogueSpecification getLogCols(){return logCols;};
-    Catalogues::CatalogueSpecification *pLogCols(){return &logCols;};
-    void setLogCols(Catalogues::CatalogueSpecification C){logCols=C;};
+    // Catalogues::CatalogueSpecification getLogCols(){return logCols;};
+    // Catalogues::CatalogueSpecification *pLogCols(){return &logCols;};
+    // void setLogCols(Catalogues::CatalogueSpecification C){logCols=C;};
     Catalogues::CatalogueSpecification getFullCols(){return fullCols;};
     Catalogues::CatalogueSpecification *pFullCols(){return &fullCols;};
     void setFullCols(Catalogues::CatalogueSpecification C){fullCols=C;};
@@ -622,7 +622,7 @@ namespace duchamp
     // std::vector<Catalogues::Column> fullCols;    ///< the list of all columns as printed in the results file
     // std::vector<Catalogues::Column> logCols;     ///< the list of columns as printed in the log file
     Catalogues::CatalogueSpecification fullCols;    ///< the list of all columns as printed in the results file
-    Catalogues::CatalogueSpecification logCols;     ///< the list of columns as printed in the log file
+    // Catalogues::CatalogueSpecification logCols;     ///< the list of columns as printed in the log file
   };
 
 
