@@ -40,7 +40,7 @@
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/Cubes/cubes.hh> 
 #include <duchamp/Detection/detection.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
  
 
 namespace duchamp
@@ -55,18 +55,18 @@ namespace duchamp
   {
   public:
     VOField();
-    /// @brief Define a FIELD for a particular Column::Col object  
-    VOField(Column::Col);
+    /// @brief Define a FIELD for a particular Catalogues::Column object  
+    VOField(Catalogues::Column);
     VOField(const VOField& other);
     VOField& operator= (const VOField& other);
     virtual ~VOField(){};
 
     /// @brief Define a FIELD by individual parameters 
     void define(std::string i, std::string n, std::string U, std::string u, std::string d, std::string r, int w, int p);
-    /// @brief Define a FIELD by individual parameters, using a Column::Col object 
-    void define(Column::Col column, std::string i, std::string U, std::string d, std::string r);
-    /// @brief Define a FIELD by individual parameters, using only a Column::Col object 
-    void define(Column::Col column);
+    /// @brief Define a FIELD by individual parameters, using a Catalogues::Column object 
+    void define(Catalogues::Column column, std::string i, std::string U, std::string d, std::string r);
+    /// @brief Define a FIELD by individual parameters, using only a Catalogues::Column object 
+    void define(Catalogues::Column column);
 
     void setUCD(std::string u){UCD=u;};
 

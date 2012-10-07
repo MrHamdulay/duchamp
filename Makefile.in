@@ -57,7 +57,6 @@ HEADS = $(BASE)/duchamp.hh\
 	$(ATROUSDIR)/atrous.hh\
 	$(ATROUSDIR)/filter.hh\
 	$(DETECTIONDIR)/detection.hh\
-	$(DETECTIONDIR)/columns.hh\
 	$(DETECTIONDIR)/finders.hh\
 	$(DETECTIONDIR)/ObjectGrower.hh\
 	$(CUBESDIR)/cubes.hh\
@@ -74,6 +73,8 @@ HEADS = $(BASE)/duchamp.hh\
 	$(UTILDIR)/mycpgplot.hh\
 	$(UTILDIR)/VOField.hh\
 	$(UTILDIR)/VOParam.hh\
+	$(OUTPUTSDIR)/columns.hh\
+	$(OUTPUTSDIR)/CatalogueSpecification.hh\
 	$(OUTPUTSDIR)/CatalogueWriter.hh\
 	$(OUTPUTSDIR)/ASCIICatalogueWriter.hh\
 	$(OUTPUTSDIR)/VOTableCatalogueWriter.hh
@@ -93,7 +94,6 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(ATROUSDIR)/baselineSubtract.o\
 	$(ATROUSDIR)/ReconSearch.o\
 	$(DETECTIONDIR)/detection.o\
-	$(DETECTIONDIR)/columns.o\
 	$(DETECTIONDIR)/ObjectGrower.o\
 	$(DETECTIONDIR)/areClose.o\
 	$(DETECTIONDIR)/lutz_detect.o\
@@ -140,6 +140,8 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(UTILDIR)/string_related.o\
 	$(UTILDIR)/wcsFunctions.o\
 	$(UTILDIR)/zscale.o\
+	$(OUTPUTSDIR)/columns.o\
+	$(OUTPUTSDIR)/CatalogueSpecification.o\
 	$(OUTPUTSDIR)/CatalogueWriter.o\
 	$(OUTPUTSDIR)/ASCIICatalogueWriter.o\
 	$(OUTPUTSDIR)/VOTableCatalogueWriter.o

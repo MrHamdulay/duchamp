@@ -36,15 +36,13 @@
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Utils/utils.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 #include <duchamp/Utils/feedback.hh>
 
 namespace duchamp
 {
 
-  using namespace Column;
-
-  void outputTableHeader(std::ostream &stream, std::vector<Column::Col> columns, Column::DESTINATION tableType, bool flagWCS)
+  void outputTableHeader(std::ostream &stream, std::vector<Catalogues::Column> columns, Catalogues::DESTINATION tableType, bool flagWCS)
   {
     /// @details
     ///  Prints the header row for a table of detections. The columns
@@ -60,7 +58,7 @@ namespace duchamp
     /// \param flagWCS A flag for use with Column::doCol(), specifying
     /// whether to use FINT or FTOT.
 
-    std::vector<Column::Col>::iterator col;
+    std::vector<Catalogues::Column>::iterator col;
     for(col=columns.begin();col<columns.end();col++)
       if(col->doCol(tableType,flagWCS)) col->printDash(stream);
     stream << "\n";
@@ -77,7 +75,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::printTableRow(std::ostream &stream, std::vector<Column::Col> columns, Column::DESTINATION tableType)
+  void Detection::printTableRow(std::ostream &stream, std::vector<Catalogues::Column> columns, Catalogues::DESTINATION tableType)
   {
     /// @details
     ///  Print a row of values for the current Detection into an output
@@ -85,12 +83,12 @@ namespace duchamp
     ///  using the Column::doCol() function as a determinant.
     /// \param stream Where the output is written
     /// \param columns The vector list of Column objects
-    /// \param tableType A Column::DESTINATION label saying what format to use: one of
+    /// \param tableType A Catalogues::DESTINATION label saying what format to use: one of
     /// FILE, LOG, SCREEN or VOTABLE (although the latter
     /// shouldn't be used with this function).
 
     stream.setf(std::ios::fixed);  
-    std::vector<Column::Col>::iterator col;
+    std::vector<Catalogues::Column>::iterator col;
     for(col=columns.begin();col<columns.end();col++)
       if(col->doCol(tableType,this->flagWCS)) this->printTableEntry(stream, *col);
       
@@ -99,148 +97,89 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::printTableEntry(std::ostream &stream, Column::Col column)
+  void Detection::printTableEntry(std::ostream &stream, Catalogues::Column column)
   {
     /// @details
     ///  Print a single value into an output table. The Detection's
-    ///  correct value is extracted according to the Column::COLNAME
+    ///  correct value is extracted according to the Catalogues::COLNAME
     ///  key in the column given.
     /// \param stream Where the output is written
     /// \param column The Column object defining the formatting.
 
-    switch(column.getType())
-      {
-      case NUM:
-	column.printEntry(stream,this->id);
-	break;
-      case NAME:
-	column.printEntry(stream,this->name);
-	break;
-      case X:
-	column.printEntry(stream,this->getXcentre() + this->xSubOffset);
-	break;
-      case Y:
-	column.printEntry(stream,this->getYcentre() + this->ySubOffset);
-	break;
-      case Z:
-	column.printEntry(stream,this->getZcentre() + this->zSubOffset);
-	break;
-      case RA:
-	if(this->flagWCS) column.printEntry(stream,this->raS);
-	else column.printBlank(stream);
-	break;
-      case DEC:
-	if(this->flagWCS) column.printEntry(stream,this->decS);
-	else column.printBlank(stream);
-	break;
-      case RAJD:
-	if(this->flagWCS) column.printEntry(stream,this->ra);
-	else column.printBlank(stream);
-	break;
-      case DECJD:
-	if(this->flagWCS) column.printEntry(stream,this->dec);
-	else column.printBlank(stream);
-	break;
-      case VEL:
-	if(this->flagWCS) {
-	  if(this->specOK) column.printEntry(stream,this->vel);
-	  else column.printEntry(stream,0.);
-	}
-	else column.printBlank(stream);
-	break;
-      case WRA:
-	if(this->flagWCS) column.printEntry(stream,this->raWidth);
-	else column.printBlank(stream);
-	break;
-      case WDEC:
-	if(this->flagWCS) column.printEntry(stream,this->decWidth);
-	else column.printBlank(stream);
-	break;
-      case W50:
-	if(this->specOK) column.printEntry(stream,this->w50);
+    std::string type=column.type();
+
+    if(type=="NUM") column.printEntry(stream,this->id);
+    else if(type=="NAME") column.printEntry(stream,this->name);
+    else if(type=="X") column.printEntry(stream,this->getXcentre() + this->xSubOffset);
+    else if(type=="Y") column.printEntry(stream,this->getYcentre() + this->ySubOffset);
+    else if(type=="Z") column.printEntry(stream,this->getZcentre() + this->zSubOffset);
+    else if(type=="RA"){
+      if(this->flagWCS) column.printEntry(stream,this->raS);
+      else column.printBlank(stream);
+    }
+    else if(type=="DEC"){
+      if(this->flagWCS) column.printEntry(stream,this->decS);
+      else column.printBlank(stream);
+    }
+    else if(type=="RAJD"){
+      if(this->flagWCS) column.printEntry(stream,this->ra);
+      else column.printBlank(stream);
+    }
+    else if(type=="DECJD"){
+      if(this->flagWCS) column.printEntry(stream,this->dec);
+      else column.printBlank(stream);
+    }
+    else if(type=="VEL"){
+      if(this->flagWCS) {
+	if(this->specOK) column.printEntry(stream,this->vel);
 	else column.printEntry(stream,0.);
-	break;
-      case W20:
-	if(this->specOK) column.printEntry(stream,this->w20);
-	else column.printEntry(stream,0.);
-	break;
-      case WVEL:
-	if(this->specOK) column.printEntry(stream,this->velWidth);
-	else column.printEntry(stream,0.);
-	break;
-      case FINT:
-	column.printEntry(stream,this->intFlux);
-	break;
-      case FTOT:
-	column.printEntry(stream,this->totalFlux);
-	break;
-      case FPEAK:
-	column.printEntry(stream,this->peakFlux);
-	break;
-      case SNRPEAK:
-	column.printEntry(stream,this->peakSNR);
-	break;
-      case X1:
-	column.printEntry(stream,this->getXmin() + this->xSubOffset);
-	break;
-      case X2:
-	column.printEntry(stream,this->getXmax() + this->xSubOffset);
-	break;
-      case Y1:
-	column.printEntry(stream,this->getYmin() + this->ySubOffset);
-	break;
-      case Y2:
-	column.printEntry(stream,this->getYmax() + this->ySubOffset);
-	break;
-      case Z1:
-	column.printEntry(stream,this->getZmin() + this->zSubOffset);
-	break;
-      case Z2:
-	column.printEntry(stream,this->getZmax() + this->zSubOffset);
-	break;
-      case NPIX:
-	column.printEntry(stream,int(this->getSize()));
-	break;
-      case FLAG:
-	column.printEntry(stream,this->flagText);
-	break;
-      case XAV:
-	column.printEntry(stream,this->getXaverage() + this->xSubOffset);
-	break;
-      case YAV:
-	column.printEntry(stream,this->getYaverage() + this->ySubOffset);
-	break;
-      case ZAV:
-	column.printEntry(stream,this->getZaverage() + this->zSubOffset);
-	break;
-      case XCENT:
-	column.printEntry(stream,this->getXCentroid() + this->xSubOffset);
-	break;
-      case YCENT:
-	column.printEntry(stream,this->getYCentroid() + this->ySubOffset);
-	break;
-      case ZCENT:
-	column.printEntry(stream,this->getZCentroid() + this->zSubOffset);
-	break;
-      case XPEAK:
-	column.printEntry(stream,this->getXPeak() + this->xSubOffset);
-	break;
-      case YPEAK:
-	column.printEntry(stream,this->getYPeak() + this->ySubOffset);
-	break;
-      case ZPEAK:
-	column.printEntry(stream,this->getZPeak() + this->zSubOffset);
-	break;
-      case NUMCH:
-	column.printEntry(stream,this->getMaxAdjacentChannels());
-	break;
-      case SPATSIZE:
-	column.printEntry(stream,int(this->getSpatialSize()));
-	break;
-      case UNKNOWN:
-      default:
-	break;
-      };
+      }
+      else column.printBlank(stream);
+    }
+    else if(type=="WRA"){
+      if(this->flagWCS) column.printEntry(stream,this->raWidth);
+      else column.printBlank(stream);
+    }
+    else if(type=="WDEC"){
+      if(this->flagWCS) column.printEntry(stream,this->decWidth);
+      else column.printBlank(stream);
+    }
+    else if(type=="W50"){
+      if(this->specOK) column.printEntry(stream,this->w50);
+      else column.printEntry(stream,0.);
+    }
+    else if(type=="W20"){
+      if(this->specOK) column.printEntry(stream,this->w20);
+      else column.printEntry(stream,0.);
+    }
+    else if(type=="WVEL"){
+      if(this->specOK) column.printEntry(stream,this->velWidth);
+      else column.printEntry(stream,0.);
+    }
+    else if(type=="FINT") column.printEntry(stream,this->intFlux);
+    else if(type=="FTOT") column.printEntry(stream,this->totalFlux);
+    else if(type=="FPEAK") column.printEntry(stream,this->peakFlux);
+    else if(type=="SNRPEAK") column.printEntry(stream,this->peakSNR);
+    else if(type=="X1") column.printEntry(stream,this->getXmin() + this->xSubOffset);
+    else if(type=="X2") column.printEntry(stream,this->getXmax() + this->xSubOffset);
+    else if(type=="Y1") column.printEntry(stream,this->getYmin() + this->ySubOffset);
+    else if(type=="Y2") column.printEntry(stream,this->getYmax() + this->ySubOffset);
+    else if(type=="Z1") column.printEntry(stream,this->getZmin() + this->zSubOffset);
+    else if(type=="Z2") column.printEntry(stream,this->getZmax() + this->zSubOffset);
+    else if(type=="NPIX") column.printEntry(stream,int(this->getSize()));
+    else if(type=="FLAG") column.printEntry(stream,this->flagText);
+    else if(type=="XAV") column.printEntry(stream,this->getXaverage() + this->xSubOffset);
+    else if(type=="YAV") column.printEntry(stream,this->getYaverage() + this->ySubOffset);
+    else if(type=="ZAV") column.printEntry(stream,this->getZaverage() + this->zSubOffset);
+    else if(type=="XCENT") column.printEntry(stream,this->getXCentroid() + this->xSubOffset);
+    else if(type=="YCENT") column.printEntry(stream,this->getYCentroid() + this->ySubOffset);
+    else if(type=="ZCENT") column.printEntry(stream,this->getZCentroid() + this->zSubOffset);
+    else if(type=="XPEAK") column.printEntry(stream,this->getXPeak() + this->xSubOffset);
+    else if(type=="YPEAK") column.printEntry(stream,this->getYPeak() + this->ySubOffset);
+    else if(type=="ZPEAK") column.printEntry(stream,this->getZPeak() + this->zSubOffset);
+    else if(type=="NUMCH") column.printEntry(stream,this->getMaxAdjacentChannels());
+    else if(type=="SPATSIZE") column.printEntry(stream,int(this->getSpatialSize()));
+
   }
   //--------------------------------------------------------------------
 

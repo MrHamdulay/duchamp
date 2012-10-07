@@ -1,6 +1,6 @@
 #include <duchamp/Outputs/VOTableCatalogueWriter.hh>
 #include <duchamp/Outputs/CatalogueWriter.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/VOField.hh>
@@ -124,9 +124,9 @@ namespace duchamp {
     posUCDmap.insert(std::pair<std::string,std::string>("dec","pos.eq.dec"));
     posUCDmap.insert(std::pair<std::string,std::string>("glon","pos.galactic.lng"));
     posUCDmap.insert(std::pair<std::string,std::string>("glat","pos.galactic.lat"));
-    Column::Col raCol=this->itsColumnSpecification->at(Column::RAJD);
+    Catalogues::Column raCol=this->itsColumnSpecification->at(Catalogues::RAJD);
     std::string lngUCDbase = posUCDmap[makelower(raCol.getName())];
-    Column::Col decCol=this->itsColumnSpecification->at(Column::DECJD);
+    Catalogues::Column decCol=this->itsColumnSpecification->at(Catalogues::DECJD);
     std::string latUCDbase = posUCDmap[makelower(decCol.getName())];
 
     std::map<std::string,std::string> specUCDmap;
@@ -140,21 +140,21 @@ namespace duchamp {
     specUCDmap.insert(std::pair<std::string,std::string>("AWAV","em.wl"));
     specUCDmap.insert(std::pair<std::string,std::string>("ZOPT","src.redshift"));
     specUCDmap.insert(std::pair<std::string,std::string>("BETA","src.redshift; spect.dopplerVeloc"));
-    std::string specUCDbase = specUCDmap[this->itsColumnSpecification->at(Column::VEL).getName()];
+    std::string specUCDbase = specUCDmap[this->itsColumnSpecification->at(Catalogues::VEL).getName()];
 
-    std::vector<Column::Col>::iterator col;
+    std::vector<Catalogues::Column>::iterator col;
     for(col=this->itsColumnSpecification->begin();col<this->itsColumnSpecification->end();col++){
 
-      if(col->doCol(Column::VOTABLE,this->itsHead->isSpecOK())){
+      if(col->doCol(Catalogues::VOTABLE,this->itsHead->isSpecOK())){
 	VOField field(*col); 
-	if(col->getType()==Column::RAJD)  field.setUCD(lngUCDbase+";meta.main");
-	if(col->getType()==Column::WRA)   field.setUCD("phys.angSize;"+lngUCDbase);
-	if(col->getType()==Column::DECJD) field.setUCD(latUCDbase+";meta.main");
-	if(col->getType()==Column::WDEC)  field.setUCD("phys.angSize;"+latUCDbase);	
-	if(col->getType()==Column::VEL)   field.setUCD(specUCDbase+";meta.main");
-	if(col->getType()==Column::W20)   field.setUCD("spect.line.width;"+specUCDbase);
-	if(col->getType()==Column::W50)   field.setUCD("spect.line.width;"+specUCDbase);
-	if(col->getType()==Column::WVEL)  field.setUCD("spect.line.width;"+specUCDbase);
+	if(col->type()=="RAJD")  field.setUCD(lngUCDbase+";meta.main");
+	if(col->type()=="WRA")   field.setUCD("phys.angSize;"+lngUCDbase);
+	if(col->type()=="DECJD") field.setUCD(latUCDbase+";meta.main");
+	if(col->type()=="WDEC")  field.setUCD("phys.angSize;"+latUCDbase);	
+	if(col->type()=="VEL")   field.setUCD(specUCDbase+";meta.main");
+	if(col->type()=="W20")   field.setUCD("spect.line.width;"+specUCDbase);
+	if(col->type()=="W50")   field.setUCD("spect.line.width;"+specUCDbase);
+	if(col->type()=="WVEL")  field.setUCD("spect.line.width;"+specUCDbase);
 	this->itsFileStream << "      ";
 	field.printField(this->itsFileStream);
       }
@@ -179,9 +179,9 @@ namespace duchamp {
 
     this->itsFileStream<<"        <TR>\n";
     this->itsFileStream<<"          ";
-    std::vector<Column::Col>::iterator col;
+    std::vector<Catalogues::Column>::iterator col;
     for(col=this->itsColumnSpecification->begin();col<this->itsColumnSpecification->end();col++){
-      if(col->doCol(Column::VOTABLE,this->itsHead->isSpecOK())){
+      if(col->doCol(Catalogues::VOTABLE,this->itsHead->isSpecOK())){
 	this->itsFileStream<<"<TD>";
 	object->printTableEntry(this->itsFileStream, *col);
 	this->itsFileStream<<"</TD>";

@@ -34,89 +34,109 @@
 #include <vector> 
 #include <string>
 #include <duchamp/Detection/detection.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 
 namespace duchamp
 {
 
-  namespace Column
+  namespace Catalogues
   {
 
 
-    Col::Col()
+    Column::Column()
     {
       /// @brief Set the default values for the parameters. 
-      this->width=1; 
-      this->precision=0; 
-      this->name=" "; 
-      this->units=" ";
-      this->type=UNKNOWN;
-      this->UCD = "";
-      this->datatype = "";
-      this->extraInfo="";
-      this->colID="";
+      this->itsWidth=1; 
+      this->itsPrecision=0; 
+      this->itsName=" "; 
+      this->itsUnits=" ";
+      this->itsType="";
+      this->itsUCD = "";
+      this->itsDatatype = "";
+      this->itsExtraInfo="";
+      this->itsColID="";
     }
 
-    Col::~Col(){}
+    Column::Column(std::string type)
+    {
+      operator=(defaultColumn(type));
+    }
 
-    Col::Col(const Col& c)
+    Column::Column(const Column& c)
     {
       operator=(c);
     }
 
-    Col& Col::operator=(const Col& c)
+    Column& Column::operator=(const Column& c)
     {
       if(this==&c) return *this;
-      this->width = c.width;
-      this->precision = c.precision;
-      this->name = c.name;
-      this->units = c.units;
-      this->UCD = c.UCD;
-      this->datatype = c.datatype;
-      this->extraInfo = c.extraInfo;
-      this->colID = c.colID;
-      this->type = c.type;
+      this->itsWidth = c.itsWidth;
+      this->itsPrecision = c.itsPrecision;
+      this->itsName = c.itsName;
+      this->itsUnits = c.itsUnits;
+      this->itsUCD = c.itsUCD;
+      this->itsDatatype = c.itsDatatype;
+      this->itsExtraInfo = c.itsExtraInfo;
+      this->itsColID = c.itsColID;
+      this->itsType = c.itsType;
       return *this;
     }
 
-    Col::Col(int num, int prec)
-    {
-      /// A specialised constructor that defines one of the default 
-      ///  columns, as defined in the Column namespace
-      /// \param num The number of the column to be constructed. 
-      ///            Corresponds to the order of the columns in the const 
-      ///            arrays in the Column namespace.
-      /// \param prec The precision to use, if not the default. A value
-      /// <0 or no value given results in the default being used.
+    // Col::Col(int num, int prec)
+    // {
+    //   /// A specialised constructor that defines one of the default 
+    //   ///  columns, as defined in the Column namespace
+    //   /// \param num The number of the column to be constructed. 
+    //   ///            Corresponds to the order of the columns in the const 
+    //   ///            arrays in the Column namespace.
+    //   /// \param prec The precision to use, if not the default. A value
+    //   /// <0 or no value given results in the default being used.
 
-      if((num>=0)&&(num<numColumns)){
-	this->width     = defaultWidth[num];
-	if(prec<0) this->precision = defaultPrec[num];
-	else this->precision = prec;
-	this->name      = defaultName[num];
-	this->units     = defaultUnits[num];
-	this->type = COLNAME(num);
-	this->UCD = defaultUCDs[num];
-	this->datatype = defaultDatatype[num];
-	this->extraInfo = defaultExtraInfo[num];
-	this->colID = defaultColID[num];
-      }
-      else{
-	DUCHAMPERROR("Column constructor", "Incorrect value for Col(num) --> num="<<num << ", should be between 0 and " << numColumns-1);
-	this->width = 1;
-	this->precision = 0;
-	this->name = " ";
-	this->units = " ";
-	this->type=UNKNOWN;
-	this->UCD="";
-	this->datatype="";
-	this->extraInfo="";
-	this->colID="";
-      }
-    }
+    //   if((num>=0)&&(num<numColumns)){
+    // 	this->width     = defaultWidth[num];
+    // 	if(prec<0) this->precision = defaultPrec[num];
+    // 	else this->precision = prec;
+    // 	this->name      = defaultName[num];
+    // 	this->units     = defaultUnits[num];
+    // 	this->type = COLNAME(num);
+    // 	this->UCD = defaultUCDs[num];
+    // 	this->datatype = defaultDatatype[num];
+    // 	this->extraInfo = defaultExtraInfo[num];
+    // 	this->colID = defaultColID[num];
+    //   }
+    //   else{
+    // 	DUCHAMPERROR("Column constructor", "Incorrect value for Col(num) --> num="<<num << ", should be between 0 and " << numColumns-1);
+    // 	this->width = 1;
+    // 	this->precision = 0;
+    // 	this->name = " ";
+    // 	this->units = " ";
+    // 	this->type=UNKNOWN;
+    // 	this->UCD="";
+    // 	this->datatype="";
+    // 	this->extraInfo="";
+    // 	this->colID="";
+    //   }
+    // }
 
-    Col::Col(std::string name, std::string units, int width, int prec, std::string ucd, std::string datatype, std::string extraInfo):
-      width(width), precision(prec), name(name), units(units), UCD(ucd), datatype(datatype), extraInfo(extraInfo)
+    // Col::Col(std::string name, std::string units, int width, int prec, std::string ucd, std::string datatype, std::string extraInfo):
+    //   width(width), precision(prec), name(name), units(units), UCD(ucd), datatype(datatype), extraInfo(extraInfo)
+    // {
+    //   /// A generic constructor designed to make a Column other than
+    //   /// the predefined ones listed in the Column namespace
+    //   /// \param name The title of the column
+    //   /// \param units What units the column takes
+    //   /// \param width The starting width
+    //   /// \param prec The starting precision
+
+    //   // this->width = width;
+    //   // this->precision = prec;
+    //   // this->name = name;
+    //   // this->units = units;
+    //   this->type = UNKNOWN;
+    // }
+
+    Column::Column(std::string type, std::string name, std::string units, int width, int prec, std::string ucd, std::string datatype, std::string extraInfo):
+      itsType(type),itsWidth(width), itsPrecision(prec), itsName(name), itsUnits(units), itsUCD(ucd), itsDatatype(datatype), itsExtraInfo(extraInfo)
     {
       /// A generic constructor designed to make a Column other than
       /// the predefined ones listed in the Column namespace
@@ -124,79 +144,80 @@ namespace duchamp
       /// \param units What units the column takes
       /// \param width The starting width
       /// \param prec The starting precision
-
-      // this->width = width;
-      // this->precision = prec;
-      // this->name = name;
-      // this->units = units;
-      this->type = UNKNOWN;
-    }
+   }
 
     //------------------------------------------------------------
 
-    void Col::changePrec(int p)
+    void Column::changePrec(int p)
     {
       /// A direct way to alter the precision without having to use
-      /// Col::upPrec(). If the precision increases, the width will
+      /// Column::upPrec(). If the precision increases, the width will
       /// increase by the same amount. If it decreases, no change is
       /// made to the width.
       /// \param p The new precision value.
 
-      if(p > this->precision) this->width += (p-this->precision);
-      this->precision = p;
+      if(p > this->itsPrecision) this->itsWidth += (p-this->itsPrecision);
+      this->itsPrecision = p;
 
     }
     
     //------------------------------------------------------------
-    void Col::printTitle(std::ostream &stream)
+    void Column::printTitle(std::ostream &stream)
     {
-      stream << std::setw(this->width) 
+      stream << std::setw(this->itsWidth) 
 	     << std::setfill(' ') 
-	     << this->name;
+	     << this->itsName;
     }
 
-    void Col::printUnits(std::ostream &stream)
+    void Column::printUnits(std::ostream &stream)
     {
-      stream << std::setw(this->width) 
+      // if(this->itsUnits == ""){
+      stream << std::setw(this->itsWidth) 
 	     << std::setfill(' ') 
-	     << this->units;
+	     << this->itsUnits;
+      // }
+      // else {
+      // 	stream << std::setw(this->itsWidth) 
+      // 	       << std::setfill(' ') 
+      // 	       << "["<<this->itsUnits<<"]";
+      // }
     }
   
-    void Col::printDash (std::ostream &stream)
+    void Column::printDash (std::ostream &stream)
     {
-      stream << std::setw(this->width) 
+      stream << std::setw(this->itsWidth) 
 	     << std::setfill('-')
 	     << "" 
 	     << std::setfill(' ');
     }
 
-    void Col::printBlank(std::ostream &stream)
+    void Column::printBlank(std::ostream &stream)
     {
-      stream << std::setw(this->width) 
+      stream << std::setw(this->itsWidth) 
 	     << std::setfill(' ') 
 	     << "";
     }
   
-    template <class T> void Col::printEntry(std::ostream &stream, T value)
+    template <class T> void Column::printEntry(std::ostream &stream, T value)
     {
       ///  \param stream Where the printing is done.
       ///  \param value  The value to be printed.
 
-      stream << std::setprecision(this->precision)
-	     << std::setw(this->width) 
+      stream << std::setprecision(this->itsPrecision)
+	     << std::setw(this->itsWidth) 
 	     << std::setfill(' ')
 	     << value;
     }
-    template void Col::printEntry<int>(std::ostream &stream, int value);
-    template void Col::printEntry<long>(std::ostream &stream, long value);
-    template void Col::printEntry<unsigned int>(std::ostream &stream, unsigned int value);
-    template void Col::printEntry<unsigned long>(std::ostream &stream, unsigned long value);
-    template void Col::printEntry<float>(std::ostream &stream, float value);
-    template void Col::printEntry<double>(std::ostream &stream, double value);
-    template void Col::printEntry<std::string>(std::ostream &stream, std::string value);
+    template void Column::printEntry<int>(std::ostream &stream, int value);
+    template void Column::printEntry<long>(std::ostream &stream, long value);
+    template void Column::printEntry<unsigned int>(std::ostream &stream, unsigned int value);
+    template void Column::printEntry<unsigned long>(std::ostream &stream, unsigned long value);
+    template void Column::printEntry<float>(std::ostream &stream, float value);
+    template void Column::printEntry<double>(std::ostream &stream, double value);
+    template void Column::printEntry<std::string>(std::ostream &stream, std::string value);
 
  
-    bool Col::doCol(DESTINATION tableType, bool flagFint)
+    bool Column::doCol(DESTINATION tableType, bool flagFint)
     {
       ///  @details Uses the info in the isFile etc arrays to
       ///  determine whether a given column, referenced by the
@@ -209,25 +230,106 @@ namespace duchamp
       /// \return True if column is used for given table type. False
       /// otherwise. False if tableType not one of four listed.
       
-      if(tableType == FILE) return isFile[this->type];
+      // if(tableType == FILE) return isFile[this->itsType];
+      // else if(tableType == SCREEN){
+      // 	if(flagFint && this->itsType==FTOT) return false;
+      // 	if(!flagFint && this->itsType==FINT) return false;
+      // 	return isScreen[this->itsType];
+      // }
+      // else if(tableType == LOG) return isLog[this->itsType];
+      // else if(tableType == VOTABLE){
+      // 	if(flagFint && this->itsType==FTOT) return false;
+      // 	if(!flagFint && this->itsType==FINT) return false;
+      // 	return isVOTable[this->itsType];
+      // }
+      // else return false;
+      
+      std::string FileList[34]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","WRA","WSEC",
+				"W50","W20","WVEL","FINT","FTOT","FPEAK","SNRPEAK",
+				"X1","X2","Y1","Y2","Z1","Z2","NPIX","FLAG","XAV","YAV",
+				"ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
+      std::string ScreenList[21]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","WRA","WSEC",
+				  "W50","FPEAK","SNRPEAK","X1","X2","Y1",
+				  "Y2","Z1","Z2","NPIX","FLAG"};
+      std::string LogList[16]={"NUM","X","Y","Z","FTOT","FPEAK","SNRPEAK",
+			       "X1","X2","Y1","Y2","Z1","Z2","NPIX","NUMCH","SPATSIZE"};
+      std::string VOList[22]={"NUM","NAME","RAJD","DECJD","VEL","WRA","WSEC",
+			    "W50","W20","WVEL","FPEAK","SNRPEAK","FLAG","XAV","YAV",
+			    "ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
+
+      bool doIt=false;
+      if(tableType == FILE){
+	for(int i=0;i<34 && !doIt;i++) doIt = doIt || (this->itsType==FileList[i]);
+      }
       else if(tableType == SCREEN){
-	if(flagFint && this->type==FTOT) return false;
-	if(!flagFint && this->type==FINT) return false;
-	return isScreen[this->type];
+      	if(this->itsType=="FTOT") doIt = !flagFint;
+	else if(this->itsType == "FINT") doIt = flagFint;
+	else for(int i=0;i<21 && !doIt;i++) doIt = doIt || (this->itsType==ScreenList[i]);
       }
-      else if(tableType == LOG) return isLog[this->type];
+      else if(tableType == LOG){
+	for(int i=0;i<16 && !doIt;i++) doIt = doIt || (this->itsType==LogList[i]);
+      }
       else if(tableType == VOTABLE){
-	if(flagFint && this->type==FTOT) return false;
-	if(!flagFint && this->type==FINT) return false;
-	return isVOTable[this->type];
+     	if(this->itsType=="FTOT") doIt = !flagFint;
+	else if(this->itsType == "FINT") doIt = flagFint;
+	else for(int i=0;i<21 && !doIt;i++) doIt = doIt || (this->itsType==VOList[i]);
       }
-      else return false;
+      return doIt;
+	
     }
 
-  
+    Column defaultColumn(std::string type)
+    {
+      // type|name|units|width|prec|ucd|datatype|extraInfo
+      if (type == "NUM") return Column(type,"Obj#","",5,0,"meta.id","int","");
+      else if(type=="NAME") return Column(type,"Name","",8,0,"meta.id;meta.main","char","");
+      else if(type=="X") return Column(type,"X","",6,prXYZ,"pos.cartesian.x","float","");
+      else if(type=="Y") return Column(type,"Y","",6,prXYZ,"pos.cartesian.y","float","");
+      else if(type=="Z") return Column(type,"Z","",6,prXYZ,"pos.cartesian.z","float","");
+      else if(type=="RA") return Column(type,"RA","",11,0,"","char",coordRef);
+      else if(type=="DEC") return Column(type,"DEC","",10,0,"","char",coordRef);
+      else if(type=="RAJD") return Column(type,"RAJD","[deg]",11,prPOS,"","float",coordRef);
+      else if(type=="DECJD") return Column(type,"DECJD","[deg]",11,prPOS,"","float",coordRef);
+      else if(type=="VEL") return Column(type,"VEL","",7,prVEL,"","float","");
+      else if(type=="WRA") return Column(type,"w_RA","[arcmin]",9,prWPOS,"","float",coordRef);
+      else if(type=="WDEC") return Column(type,"w_DEC","[arcmin]",9,prWPOS,"","float",coordRef);
+      else if(type=="W50") return Column(type,"w_50","",7,prVEL,"","float","");
+      else if(type=="W20") return Column(type,"w_20","",7,prVEL,"","float","");
+      else if(type=="WVEL") return Column(type,"w_VEL","",7,prVEL,"","float","");
+      else if(type=="FINT") return Column(type,"F_int","",10,prFLUX,"phot.flux;spect.line.intensity","float","");
+      else if(type=="FTOT") return Column(type,"F_tot","",10,prFLUX,"phot.flux;spect.line.intensity","float","");
+      else if(type=="FPEAK") return Column(type,"F_peak","",9,prFLUX,"phot.flux;spect.line.intensity","float","");
+      else if(type=="SNRPEAK") return Column(type,"S/Nmax","",7,prSNR,"phot.flux;stat.snr","float","");
+      else if(type=="X1") return Column(type,"X1","",4,0,"pos.cartesian.x;stat.min","int","");
+      else if(type=="Y1") return Column(type,"Y1","",4,0,"pos.cartesian.y;stat.min","int","");
+      else if(type=="Z1") return Column(type,"Z1","",4,0,"pos.cartesian.z;stat.min","int","");
+      else if(type=="X2") return Column(type,"X2","",4,0,"pos.cartesian.x;stat.max","int","");
+      else if(type=="Y2") return Column(type,"Y2","",4,0,"pos.cartesian.y;stat.max","int","");
+      else if(type=="Z2") return Column(type,"Z2","",4,0,"pos.cartesian.z;stat.max","int","");
+      else if(type=="NPIX") return Column(type,"Npix","[pix]",6,0,"","int","");
+      else if(type=="FLAG") return Column(type,"Flag","",5,0,"meta.code.qual","char","");
+      else if(type=="XAV") return Column(type,"X_av","",6,prXYZ,"pos.cartesian.x","float","");
+      else if(type=="YAV") return Column(type,"X_av","",6,prXYZ,"pos.cartesian.y","float","");
+      else if(type=="ZAV") return Column(type,"X_av","",6,prXYZ,"pos.cartesian.z","float","");
+      else if(type=="XCENT") return Column(type,"X_cent","",7,prXYZ,"pos.cartesian.x","float","");
+      else if(type=="YCENT") return Column(type,"X_cent","",7,prXYZ,"pos.cartesian.y","float","");
+      else if(type=="ZCENT") return Column(type,"X_cent","",7,prXYZ,"pos.cartesian.z","float","");
+      else if(type=="XPEAK") return Column(type,"X_peak","",7,prXYZ,"pos.cartesian.x","int","");
+      else if(type=="YPEAK") return Column(type,"X_peak","",7,prXYZ,"pos.cartesian.y","int","");
+      else if(type=="ZPEAK") return Column(type,"X_peak","",7,prXYZ,"pos.cartesian.z","int","");
+      else if(type=="NUMCH") return Column(type,"Nch","",6,0,"","int","");
+      else if(type=="SPATSIZE") return Column(type,"Sp_size","",8,0,"","int","");
+      else {
+	Column col;
+	col.setType(type);
+	return col;
+      }
 
-    std::vector<Col> getFullColSet(std::vector<Detection> &objectList, 
-				   FitsHeader &head)
+    }
+
+
+    std::vector<Column> getFullColSet(std::vector<Detection> &objectList, 
+				      FitsHeader &head)
     {
       ///  @details A function that returns a std::vector of Col
       ///  objects containing information on the columns necessary for
@@ -249,7 +351,7 @@ namespace duchamp
       /// System.
       /// \return A std::vector list of Col definitions.
 
-      std::vector<Col> newset;
+      std::vector<Column> newset;
 
       // desired precisions for fluxes, velocities and SNR value
       int precVel,precFlux,precSNR;
@@ -265,44 +367,44 @@ namespace duchamp
       }
 
       // set up the default columns 
-      newset.push_back( Col(NUM) );
-      newset.push_back( Col(NAME) );
-      newset.push_back( Col(X) );
-      newset.push_back( Col(Y) );
-      newset.push_back( Col(Z) );
-      newset.push_back( Col(RA) );
-      newset.push_back( Col(DEC) );
-      newset.push_back( Col(RAJD) );
-      newset.push_back( Col(DECJD) );
-      newset.push_back( Col(VEL, precVel) );
-      newset.push_back( Col(WRA) );
-      newset.push_back( Col(WDEC) );
-      newset.push_back( Col(W50, precVel) );
-      newset.push_back( Col(W20, precVel) );
-      newset.push_back( Col(WVEL, precVel) );
-      newset.push_back( Col(FINT, precFlux) );
-      newset.push_back( Col(FTOT, precFlux) );
-      newset.push_back( Col(FPEAK, precFlux) );
-      newset.push_back( Col(SNRPEAK, precSNR) );
-      newset.push_back( Col(X1) );
-      newset.push_back( Col(X2) );
-      newset.push_back( Col(Y1) );
-      newset.push_back( Col(Y2) );
-      newset.push_back( Col(Z1) );
-      newset.push_back( Col(Z2) );
-      newset.push_back( Col(NPIX) );
-      newset.push_back( Col(FLAG) );
-      newset.push_back( Col(XAV) );
-      newset.push_back( Col(YAV) );
-      newset.push_back( Col(ZAV) );
-      newset.push_back( Col(XCENT) );
-      newset.push_back( Col(YCENT) );
-      newset.push_back( Col(ZCENT) );
-      newset.push_back( Col(XPEAK) );
-      newset.push_back( Col(YPEAK) );
-      newset.push_back( Col(ZPEAK) );
-      newset.push_back( Col(NUMCH) );
-      newset.push_back( Col(SPATSIZE) );
+      newset.push_back( Column("NUM") );
+      newset.push_back( Column("NAME") );
+      newset.push_back( Column("X") );
+      newset.push_back( Column("Y") );
+      newset.push_back( Column("Z") );
+      newset.push_back( Column("RA") );
+      newset.push_back( Column("DEC") );
+      newset.push_back( Column("RAJD") );
+      newset.push_back( Column("DECJD") );
+      newset.push_back( Column("VEL") );
+      newset.push_back( Column("WRA") );
+      newset.push_back( Column("WDEC") );
+      newset.push_back( Column("W50") );
+      newset.push_back( Column("W20") );
+      newset.push_back( Column("WVEL") );
+      newset.push_back( Column("FINT") );
+      newset.push_back( Column("FTOT") );
+      newset.push_back( Column("FPEAK") );
+      newset.push_back( Column("SNRPEAK") );
+      newset.push_back( Column("X1") );
+      newset.push_back( Column("X2") );
+      newset.push_back( Column("Y1") );
+      newset.push_back( Column("Y2") );
+      newset.push_back( Column("Z1") );
+      newset.push_back( Column("Z2") );
+      newset.push_back( Column("NPIX") );
+      newset.push_back( Column("FLAG") );
+      newset.push_back( Column("XAV") );
+      newset.push_back( Column("YAV") );
+      newset.push_back( Column("ZAV") );
+      newset.push_back( Column("XCENT") );
+      newset.push_back( Column("YCENT") );
+      newset.push_back( Column("ZCENT") );
+      newset.push_back( Column("XPEAK") );
+      newset.push_back( Column("YPEAK") );
+      newset.push_back( Column("ZPEAK") );
+      newset.push_back( Column("NUMCH") );
+      newset.push_back( Column("SPATSIZE") );
 
 
       // Now test each object against each new column
@@ -661,7 +763,7 @@ namespace duchamp
 
     }
 
-    std::vector<Col> getLogColSet(std::vector<Detection> &objectList, 
+    std::vector<Column> getLogColSet(std::vector<Detection> &objectList, 
 				  FitsHeader &head)
     {
       ///  @details A function that returns a std::vector of Col
@@ -677,7 +779,7 @@ namespace duchamp
       /// \param head The FitsHeader object defining the World Coordinate System.
       /// \return A std::vector list of Col definitions.
 
-      std::vector<Col> newset,tempset;
+      std::vector<Column> newset,tempset;
   
       // set up the default columns:
       //  get from FullColSet, and select only the ones we want.

@@ -30,7 +30,7 @@
 #include <iomanip>
 #include <string>
 #include <duchamp/Utils/VOField.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 
 namespace duchamp
 {
@@ -111,11 +111,11 @@ namespace duchamp
     this->precision = p;
   }
 
-  void VOField::define(Column::Col column, std::string i, std::string U, std::string d, std::string r)
+  void VOField::define(Catalogues::Column column, std::string i, std::string U, std::string d, std::string r)
   {
     /// @details
-    /// Another definition function, using the information in a Column::Col object for some parameters.
-    /// \param column A Column::Col object, used for name, units, width & precision
+    /// Another definition function, using the information in a Catalogues::Column object for some parameters.
+    /// \param column A Catalogues::Column object, used for name, units, width & precision
     /// \param i The ID parameter
     /// \param U The UCD
     /// \param d The datatype
@@ -131,11 +131,11 @@ namespace duchamp
     this->precision = column.getPrecision();
   }
 
-  void VOField::define(Column::Col column)
+  void VOField::define(Catalogues::Column column)
   {
     /// @details
-    /// Another definition function, using the information in a Column::Col object for some parameters.
-    /// \param column A Column::Col object
+    /// Another definition function, using the information in a Catalogues::Column object for some parameters.
+    /// \param column A Catalogues::Column object
 
     this->ID = column.getColID();
     this->name = column.getName();
@@ -147,43 +147,26 @@ namespace duchamp
     this->precision = column.getPrecision();
   }
 
-  VOField::VOField(Column::Col column)
+  VOField::VOField(Catalogues::Column column)
   {
     /// @details
     /// A more useful definition function, using the Column::COLNAME
     /// key to specify particular values for each of the parameters for
     /// different columns.
-    /// \param column A Column::Col object of a particular type. The
+    /// \param column A Catalogues::Column object of a particular type. The
     /// column.getType() function is used to decide which call to
-    /// VOField::define(Column::Col column, std::string i, std::string
+    /// VOField::define(Catalogues::Column column, std::string i, std::string
     /// U, std::string d, std::string r) to use
 
     this->define(column);
 
     // Adjust some of the names for clarity
-    switch(column.getType())
-      {
-      case Column::FINT:
-	this->name = "Integrated_Flux";
-	break;
-      case Column::FTOT:
-	this->name = "Total_Flux";
-	break;
-      case Column::FPEAK:
-	this->name = "Peak_Flux";
-	break;
-      case Column::XCENT:
-	this->name = "X_Centroid";
-	break;
-      case Column::YCENT:
-	this->name = "Y_Centroid";
-	break;
-      case Column::ZCENT:
-	this->name = "Z_Centroid";
-	break;
-      default:
-	break;
-      };
+    if(column.type()=="FINT") this->name = "Integrated_Flux";
+    else if(column.type()=="FTOT") this->name = "Total_Flux";
+    else if(column.type()=="FPEAK") this->name = "Peak_Flux";
+    else if(column.type()=="XCENT") this->name = "X_Centroid";
+    else if(column.type()=="YCENT") this->name = "Y_Centroid";
+    else if(column.type()=="ZCENT") this->name = "Z_Centroid";
 
   }
 

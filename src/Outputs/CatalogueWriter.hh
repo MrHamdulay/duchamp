@@ -7,7 +7,7 @@
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/Detection/detection.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 #include <duchamp/Utils/Statistics.hh>
 #include <duchamp/Cubes/cubes.hh>
 
@@ -53,8 +53,8 @@ namespace duchamp {
     void setName(std::string s){itsName=s;};
     std::string name(){return itsName;};
     bool isOpen(){return itsOpenFlag;};
-    std::vector<Column::Col> columnSpec(){return *itsColumnSpecification;};
-    void setColumnSpec(std::vector<Column::Col> *cols){itsColumnSpecification = cols;};
+    std::vector<Catalogues::Column> columnSpec(){return *itsColumnSpecification;};
+    void setColumnSpec(std::vector<Catalogues::Column> *cols){itsColumnSpecification = cols;};
     void setParam(Param *par){itsParam=par;};
     void setStats(Statistics::StatsContainer<float> *stats){itsStats=stats;};
     void setHead(FitsHeader *head){itsHead=head;};
@@ -69,7 +69,7 @@ namespace duchamp {
     /// @brief Is the output open and suitable for writing
     bool        itsOpenFlag;
     /// @brief A pointer to the list of column specifications
-    std::vector<Column::Col> *itsColumnSpecification;
+    std::vector<Catalogues::Column> *itsColumnSpecification;
     /// @brief A pointer to the set of input parameters
     Param *itsParam;
     /// @brief A pointer to the statistics used by the cube

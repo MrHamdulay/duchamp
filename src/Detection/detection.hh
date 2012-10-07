@@ -34,7 +34,7 @@
 #include <duchamp/param.hh>
 #include <duchamp/PixelMap/Voxel.hh>
 #include <duchamp/PixelMap/Object3D.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 
 using namespace PixelInfo;
 
@@ -127,10 +127,10 @@ namespace duchamp
     std::string outputLabelWidths(); 
 
     /// @brief Print all required values for the Detection to a table.
-    void printTableRow(std::ostream &stream, std::vector<Column::Col> columns, Column::DESTINATION tableType);
+    void printTableRow(std::ostream &stream, std::vector<Catalogues::Column> columns, Catalogues::DESTINATION tableType);
 
     /// @brief Print a particular value for the Detection to a table.
-    void printTableEntry(std::ostream &stream, Column::Col column);
+    void printTableEntry(std::ostream &stream, Catalogues::Column column);
 
     //---------------------------------- 
     // For plotting routines... in Cubes/drawMomentCutout.cc
@@ -350,7 +350,7 @@ namespace duchamp
   void ObjectMerger(std::vector<Detection> &objList, Param &par);
 
   /// @brief Print the header information to a particular table 
-  void outputTableHeader(std::ostream &stream, std::vector<Column::Col> columns, Column::DESTINATION tableType, bool flagWCS);
+  void outputTableHeader(std::ostream &stream, std::vector<Catalogues::Column> columns, Catalogues::DESTINATION tableType, bool flagWCS);
 
 }
 

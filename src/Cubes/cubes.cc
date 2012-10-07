@@ -44,7 +44,7 @@
 #include <duchamp/PixelMap/Voxel.hh>
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Detection/detection.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 #include <duchamp/Detection/finders.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/feedback.hh>
@@ -65,7 +65,7 @@ const bool TESTING=false;
 namespace duchamp
 {
 
-  using namespace Column;
+  using namespace Catalogues;
 
   /****************************************************************/
   ///////////////////////////////////////////////////
@@ -1497,8 +1497,8 @@ namespace duchamp
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
       obj->setVelPrec( this->par.getPrecVel() );
       obj->setFpeakPrec( this->par.getPrecFlux() );
-      obj->setXYZPrec( Column::prXYZ );
-      obj->setPosPrec( Column::prWPOS );
+      obj->setXYZPrec( Catalogues::prXYZ );
+      obj->setPosPrec( Catalogues::prWPOS );
       obj->setFintPrec( this->par.getPrecFlux() );
       obj->setSNRPrec( this->par.getPrecSNR() );
     }

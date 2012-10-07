@@ -37,7 +37,7 @@
 #include <duchamp/Cubes/cubes.hh> 
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Detection/detection.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/Statistics.hh>
 #include <duchamp/Outputs/ASCIICatalogueWriter.hh>
@@ -147,11 +147,11 @@ namespace duchamp
   {
     this->setupColumns();
 
-    ASCIICatalogueWriter catWriter(this->par.getOutFile(),Column::FILE);
+    ASCIICatalogueWriter catWriter(this->par.getOutFile(),Catalogues::FILE);
     catWriter.setup(this);
-    ASCIICatalogueWriter headerWriter(this->par.getHeaderFile(),Column::FILE);
+    ASCIICatalogueWriter headerWriter(this->par.getHeaderFile(),Catalogues::FILE);
     headerWriter.setup(this);
-    ASCIICatalogueWriter screenWriter(Column::SCREEN);
+    ASCIICatalogueWriter screenWriter(Catalogues::SCREEN);
     screenWriter.setup(this);
     ASCIICatalogueWriter *writer;
 
@@ -291,12 +291,12 @@ namespace duchamp
 
     if(this->objectList->size()>0){
       this->setupColumns();
-      outputTableHeader(output,this->fullCols,Column::FILE,this->head.isWCS());
-      outputTableHeader(std::cout,this->fullCols,Column::SCREEN,this->head.isWCS());
+      outputTableHeader(output,this->fullCols,Catalogues::FILE,this->head.isWCS());
+      outputTableHeader(std::cout,this->fullCols,Catalogues::SCREEN,this->head.isWCS());
       std::vector<Detection>::iterator obj;
       for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
-	obj->printTableRow(output,this->fullCols,Column::FILE);
-	obj->printTableRow(std::cout,this->fullCols,Column::SCREEN);
+	obj->printTableRow(output,this->fullCols,Catalogues::FILE);
+	obj->printTableRow(std::cout,this->fullCols,Catalogues::SCREEN);
       }
     }
 
@@ -325,7 +325,7 @@ namespace duchamp
     // logfile << this->par;
     // logfile.close();
 
-    ASCIICatalogueWriter logwriter(this->par.getLogFile(),Column::LOG);
+    ASCIICatalogueWriter logwriter(this->par.getLogFile(),Catalogues::LOG);
     logwriter.setup(this);
     logwriter.openCatalogue();
     logwriter.writeHeader();
@@ -346,7 +346,7 @@ namespace duchamp
 
     if(this->objectList->size()>0){
 
-      ASCIICatalogueWriter logwriter(this->par.getLogFile(),Column::LOG);
+      ASCIICatalogueWriter logwriter(this->par.getLogFile(),Catalogues::LOG);
       logwriter.setup(this);
       logwriter.openCatalogue(std::ios::app);
 
@@ -356,7 +356,7 @@ namespace duchamp
       // std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
       if(calcFluxes) this->calcObjectFluxes();
       this->setupColumns();
-      // outputTableHeader(fout,this->fullCols,Column::LOG,this->head.isWCS());
+      // outputTableHeader(fout,this->fullCols,Catalogues::LOG,this->head.isWCS());
       logwriter.writeTableHeader();
 
       if(this->par.getFlagBaseline()){
@@ -372,7 +372,7 @@ namespace duchamp
 	}
 	if(calcFluxes) obj.calcFluxes(this->array, this->axisDim);
 	obj.setID(objCtr+1);
-	//	obj.printTableRow(fout,this->fullCols,Column::LOG);
+	//	obj.printTableRow(fout,this->fullCols,Catalogues::LOG);
 	logwriter.writeEntry(&obj);
       }
 
@@ -440,7 +440,7 @@ namespace duchamp
       obj.addOffsets(left,bottom,0);
     }
     obj.calcFluxes(temparray, this->axisDim);
-    obj.printTableRow(fout,this->fullCols,Column::LOG);
+    obj.printTableRow(fout,this->fullCols,Catalogues::LOG);
     delete [] temparray;
     delete [] tempDim;
     fout.close();
@@ -448,7 +448,7 @@ namespace duchamp
 
   void Cube::logSummary()
   {
-    ASCIICatalogueWriter logwriter(this->par.getLogFile(),Column::LOG);
+    ASCIICatalogueWriter logwriter(this->par.getLogFile(),Catalogues::LOG);
     logwriter.setup(this);
     logwriter.openCatalogue(std::ios::app);
     logwriter.writeCubeSummary();

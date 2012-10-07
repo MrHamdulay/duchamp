@@ -2,7 +2,7 @@
 #define DUCHAMP_ASCII_CATALOGUE_WRITER_H_
 
 #include <duchamp/Outputs/CatalogueWriter.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 #include <duchamp/Detection/detection.hh>
 #include <ios>
 #include <iostream>
@@ -15,8 +15,8 @@ namespace duchamp {
   public:
     ASCIICatalogueWriter();
     ASCIICatalogueWriter(std::string name);
-    ASCIICatalogueWriter(Column::DESTINATION dest);
-    ASCIICatalogueWriter(std::string name, Column::DESTINATION dest);
+    ASCIICatalogueWriter(Catalogues::DESTINATION dest);
+    ASCIICatalogueWriter(std::string name, Catalogues::DESTINATION dest);
     ASCIICatalogueWriter(const ASCIICatalogueWriter& other);
     ASCIICatalogueWriter& operator= (const ASCIICatalogueWriter& other);
     virtual ~ASCIICatalogueWriter(){};
@@ -42,7 +42,7 @@ namespace duchamp {
   protected:
     std::ostream *itsStream;
     std::ofstream itsFileStream;
-    Column::DESTINATION itsDestination;
+    Catalogues::DESTINATION itsDestination;
      
 
   };

@@ -41,7 +41,7 @@
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Detection/detection.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/mycpgplot.hh>
 #include <duchamp/Utils/Statistics.hh>
@@ -50,8 +50,6 @@ using namespace Statistics;
 
 namespace duchamp
 {
-
-  using namespace Column;
 
   void Cube::sortDetections()
   {

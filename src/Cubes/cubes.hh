@@ -36,7 +36,7 @@
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/Detection/detection.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 #include <duchamp/Cubes/plots.hh>
 #include <duchamp/Utils/Statistics.hh>
 #include <duchamp/PixelMap/Scan.hh>
@@ -260,12 +260,12 @@ namespace duchamp
       recon[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x] = f; };
     void        setReconFlag(bool f){reconExists = f;};
 
-    std::vector<Column::Col> getLogCols(){return logCols;};
-    std::vector<Column::Col> *pLogCols(){return &logCols;};
-    void        setLogCols(std::vector<Column::Col> C){logCols=C;};
-    std::vector<Column::Col> getFullCols(){return fullCols;};
-    std::vector<Column::Col> *pFullCols(){return &fullCols;};
-    void        setFullCols(std::vector<Column::Col> C){fullCols=C;};
+    std::vector<Catalogues::Column> getLogCols(){return logCols;};
+    std::vector<Catalogues::Column> *pLogCols(){return &logCols;};
+    void        setLogCols(std::vector<Catalogues::Column> C){logCols=C;};
+    std::vector<Catalogues::Column> getFullCols(){return fullCols;};
+    std::vector<Catalogues::Column> *pFullCols(){return &fullCols;};
+    void        setFullCols(std::vector<Catalogues::Column> C){fullCols=C;};
 
     // additional functions -- in Cubes/cubes.cc
     /// @brief Allocate memory correctly, with WCS defining the correct axes. 
@@ -612,8 +612,8 @@ namespace duchamp
     bool        reconAllocated;   ///< have we allocated memory for the recon array?
     bool        baselineAllocated;///< have we allocated memory for the baseline array?
     FitsHeader  head;             ///< the WCS and other header information.
-    std::vector<Column::Col> fullCols;    ///< the list of all columns as printed in the results file
-    std::vector<Column::Col> logCols;     ///< the list of columns as printed in the log file
+    std::vector<Catalogues::Column> fullCols;    ///< the list of all columns as printed in the results file
+    std::vector<Catalogues::Column> logCols;     ///< the list of columns as printed in the log file
 
   };
 

@@ -4,7 +4,7 @@
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/Detection/detection.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Utils/Statistics.hh>
 #include <ios>
@@ -28,14 +28,14 @@ namespace duchamp {
     // this->itsFileStream=0;
   }
 
-  ASCIICatalogueWriter::ASCIICatalogueWriter(Column::DESTINATION dest):
+  ASCIICatalogueWriter::ASCIICatalogueWriter(Catalogues::DESTINATION dest):
     itsDestination(dest)
   {
     this->itsStream=0;
     // this->itsFileStream=0;
   }
 
-  ASCIICatalogueWriter::ASCIICatalogueWriter(std::string name, Column::DESTINATION dest):
+  ASCIICatalogueWriter::ASCIICatalogueWriter(std::string name, Catalogues::DESTINATION dest):
     CatalogueWriter(name), itsDestination(dest)
   {
     this->itsStream=0;
@@ -60,12 +60,12 @@ namespace duchamp {
   
   bool ASCIICatalogueWriter::openCatalogue(std::ios_base::openmode mode)
   {
-    if(this->itsName == "" && this->itsDestination!=Column::SCREEN){
+    if(this->itsName == "" && this->itsDestination!=Catalogues::SCREEN){
       DUCHAMPERROR("ASCIICatalogueWriter","No catalogue name provided");
       this->itsOpenFlag = false;
     }
     else {
-      if(this->itsDestination==Column::SCREEN){
+      if(this->itsDestination==Catalogues::SCREEN){
 	this->itsStream = &std::cout;
 	this->itsOpenFlag = true;
       }
@@ -222,7 +222,7 @@ namespace duchamp {
   bool ASCIICatalogueWriter::closeCatalogue()
   {
     bool returnval=true;
-    if(this->itsDestination!=Column::SCREEN){
+    if(this->itsDestination!=Catalogues::SCREEN){
       this->itsFileStream.close();
       returnval=!this->itsFileStream.fail();
     }

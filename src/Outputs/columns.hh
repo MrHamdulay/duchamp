@@ -41,7 +41,7 @@ namespace duchamp
 
   /// A namespace controlling the formatting of columns of output for Duchamp.
 
-  namespace Column
+  namespace Catalogues
   {
 
     /// @brief An enumeration designed to cover the different output types
@@ -228,44 +228,47 @@ namespace duchamp
     ///  the units.  Plus the usual array of accessor functions and so
     ///  on.
 
-    class Col{
+    class Column{
     public:
-      Col();          ///< Basic constructor
-      Col(int num, int prec=-1);   ///< Specific constructor
-      Col(std::string name, std::string units, int width, int prec, std::string ucd="", std::string datatype="", std::string extraInfo=""); ///< Generic constructor
-      Col(const Col& c);///< Assignment constructor
-      Col& operator=(const Col& c); ///< Copy constructor
-      virtual ~Col(); ///< Default destructor;
+      Column();          ///< Basic constructor
+      Column(std::string type); //< calls the default constructor for the given type
+      //?      Col(int num, int prec=-1);   ///< Specific constructor
+      //?      Col(std::string name, std::string units, int width, int prec, std::string ucd="", std::string datatype="", std::string extraInfo=""); ///< Generic constructor
+      Column(std::string type, std::string name, std::string units, int width, int prec, std::string ucd="", std::string datatype="", std::string extraInfo=""); ///< Generic constructor
+      Column(const Column& c);///< Assignment constructor
+      Column& operator=(const Column& c); ///< Copy constructor
+      virtual ~Column(){}; ///< Default destructor;
       //--------------
       // basic accessor functions
       //
-      int    getWidth(){return width;};         
-      void   setWidth(int i){width=i;};    
-      int    getPrecision(){return precision;};     
-      void   setPrecision(int i){precision=i;};
-      std::string getName(){return name;};          
-      void   setName(std::string s){name=s;};  
-      std::string getUnits(){return units;};         
-      void   setUnits(std::string s){units=s;}; 
-      COLNAME getType(){return type;};
-      void   setType(COLNAME coltype){type=coltype;};
-      std::string getUCD(){return UCD;};
-      void        setUCD(std::string s){UCD=s;};
-      std::string getDatatype(){return datatype;};
-      void        setDatatype(std::string s){datatype=s;};
-      std::string getColID(){return colID;};
-      void        setColID(std::string s){colID=s;};
-      std::string getExtraInfo(){return extraInfo;};
-      void        setExtraInfo(std::string s){extraInfo=s;};
+      int    getWidth(){return itsWidth;};         
+      void   setWidth(int i){itsWidth=i;};    
+      int    getPrecision(){return itsPrecision;};     
+      void   setPrecision(int i){itsPrecision=i;};
+      std::string getName(){return itsName;};          
+      void   setName(std::string s){itsName=s;};  
+      std::string getUnits(){return itsUnits;};         
+      void   setUnits(std::string s){itsUnits=s;}; 
+      //? COLNAME getType(){return type;};
+      std::string type(){return itsType;};
+      void   setType(std::string type){itsType=type;};
+      std::string getUCD(){return itsUCD;};
+      void        setUCD(std::string s){itsUCD=s;};
+      std::string getDatatype(){return itsDatatype;};
+      void        setDatatype(std::string s){itsDatatype=s;};
+      std::string getColID(){return itsColID;};
+      void        setColID(std::string s){itsColID=s;};
+      std::string getExtraInfo(){return itsExtraInfo;};
+      void        setExtraInfo(std::string s){itsExtraInfo=s;};
 
       //--------------
       // other functions
       //
       /// @brief Make the column one space wider. 
-      void   widen(){width++;};
+      void   widen(){itsWidth++;};
 
       /// @brief Increase the precision by one, widening the column if necessary. 
-      void   upPrec(){precision++; width++;};
+      void   upPrec(){itsPrecision++; itsWidth++;};
 
       void   changePrec(int p);
 
@@ -288,29 +291,32 @@ namespace duchamp
       template <class T> void printEntry(std::ostream &stream, T value);
 
       /// @brief Decides whether the column is used for a given table type 
-      bool   doCol(DESTINATION type, bool flagFint=true);
+      bool   doCol(DESTINATION dest, bool flagFint=true);
 
 
     private:
-      int width;          ///< How wide is the column (in ascii spaces)
-      int precision;      ///< What precision should be used to print the values? (If 0, the setprecision command is not used.)
-      std::string name;   ///< The title of the column
-      std::string units;  ///< The units that the values in the column are expressed in.
-      std::string UCD;    ///< The UCD associated with the value
-      std::string datatype; ///< What datatype do the values take?
-      std::string extraInfo; ///< Any other info? This can be the 'ref' entry for a VOTable field.
-      std::string colID;  ///< The column ID
-      COLNAME type;       ///< The type of the column
+      int itsWidth;          ///< How wide is the column (in ascii spaces)
+      int itsPrecision;      ///< What precision should be used to print the values? (If 0, the setprecision command is not used.)
+      std::string itsName;   ///< The title of the column
+      std::string itsUnits;  ///< The units that the values in the column are expressed in.
+      std::string itsUCD;    ///< The UCD associated with the value
+      std::string itsDatatype; ///< What datatype do the values take?
+      std::string itsExtraInfo; ///< Any other info? This can be the 'ref' entry for a VOTable field.
+      std::string itsColID;  ///< The column ID
+      //? COLNAME type;       ///< The type of the column
+      std::string itsType;   ///< The type of the column - for reference purposes
     };
 
-  
+    Column defaultColumn(std::string type);
+
+
     /// @brief Returns a vector of Col for results file output.
-    std::vector<Column::Col> getFullColSet(std::vector<Detection> &objectList, 
-					   FitsHeader &head);
+    std::vector<Catalogues::Column> getFullColSet(std::vector<Detection> &objectList, 
+						  FitsHeader &head);
 
     /// @brief Returns a vector of Col for logfile output.
-    std::vector<Column::Col> getLogColSet(std::vector<Detection> &objectList, 
-					  FitsHeader &head);
+    std::vector<Catalogues::Column> getLogColSet(std::vector<Detection> &objectList, 
+						 FitsHeader &head);
 
   }
 

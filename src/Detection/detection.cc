@@ -40,7 +40,7 @@
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Cubes/cubeUtils.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 
 using namespace PixelInfo;
 
@@ -95,12 +95,12 @@ namespace duchamp
     this->w50 = 0.;
     this->v50min = 0.;
     this->v50max = 0.;
-    this->posPrec = Column::prPOS;
-    this->xyzPrec = Column::prXYZ;
-    this->fintPrec = Column::prFLUX;
-    this->fpeakPrec = Column::prFLUX;
-    this->velPrec = Column::prVEL;
-    this->snrPrec = Column::prSNR;
+    this->posPrec = Catalogues::prPOS;
+    this->xyzPrec = Catalogues::prXYZ;
+    this->fintPrec = Catalogues::prFLUX;
+    this->fpeakPrec = Catalogues::prFLUX;
+    this->velPrec = Catalogues::prVEL;
+    this->snrPrec = Catalogues::prSNR;
   }
 
   Detection::Detection():

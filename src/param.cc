@@ -43,7 +43,7 @@
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/Section.hh>
 #include <duchamp/Utils/VOParam.hh>
-#include <duchamp/Detection/columns.hh>
+#include <duchamp/Outputs/columns.hh>
 
 namespace duchamp
 {
@@ -110,9 +110,9 @@ namespace duchamp
     this->detectionMap      = "duchamp-DetectionMap.ps";
     this->momentMap         = "duchamp-MomentMap.ps";
     this->flagXOutput       = true;
-    this->precFlux          = Column::prFLUX;
-    this->precVel           = Column::prVEL;
-    this->precSNR           = Column::prSNR;
+    this->precFlux          = Catalogues::prFLUX;
+    this->precVel           = Catalogues::prVEL;
+    this->precSNR           = Catalogues::prSNR;
     // Cube related parameters 
     this->flagBlankPix      = false;
     this->blankPixValue     = -8.00061;
