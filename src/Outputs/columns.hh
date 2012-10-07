@@ -40,7 +40,6 @@ namespace duchamp
   class FitsHeader;
 
   /// A namespace controlling the formatting of columns of output for Duchamp.
-
   namespace Catalogues
   {
 
@@ -234,7 +233,7 @@ namespace duchamp
       Column(std::string type); //< calls the default constructor for the given type
       //?      Col(int num, int prec=-1);   ///< Specific constructor
       //?      Col(std::string name, std::string units, int width, int prec, std::string ucd="", std::string datatype="", std::string extraInfo=""); ///< Generic constructor
-      Column(std::string type, std::string name, std::string units, int width, int prec, std::string ucd="", std::string datatype="", std::string extraInfo=""); ///< Generic constructor
+      Column(std::string type, std::string name, std::string units, int width, int prec, std::string ucd="", std::string datatype="", std::string colID="", std::string extraInfo=""); ///< Generic constructor
       Column(const Column& c);///< Assignment constructor
       Column& operator=(const Column& c); ///< Copy constructor
       virtual ~Column(){}; ///< Default destructor;
@@ -309,14 +308,6 @@ namespace duchamp
 
     Column defaultColumn(std::string type);
 
-
-    /// @brief Returns a vector of Col for results file output.
-    std::vector<Catalogues::Column> getFullColSet(std::vector<Detection> &objectList, 
-						  FitsHeader &head);
-
-    /// @brief Returns a vector of Col for logfile output.
-    std::vector<Catalogues::Column> getLogColSet(std::vector<Detection> &objectList, 
-						 FitsHeader &head);
 
   }
 

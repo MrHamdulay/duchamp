@@ -29,6 +29,7 @@
 #include <duchamp/Outputs/CatalogueSpecification.hh>
 #include <duchamp/duchamp.hh>
 #include <duchamp/Outputs/columns.hh>
+#include <duchamp/Outputs/CatalogueSpecification.hh>
 #include <vector>
 #include <map>
 #include <string>
@@ -52,11 +53,16 @@ namespace duchamp {
 
     void CatalogueSpecification::addColumn(Column col)
     {
-      if( this->itsTypeMap.find(col.type()) != this->itsTypeMap.end() ) // already in list
-	this->itsColumnList.erase( this->itsColumnList.begin()+this->itsTypeMap[col.type()] );
-
+      this->removeColumn(col.type());
       this->itsColumnList.push_back(col);
       this->itsTypeMap[col.type()] = this->itsColumnList.size() - 1;
+
+    }
+
+    void CatalogueSpecification::removeColumn(std::string type)
+    {
+      if( this->itsTypeMap.find(type) != this->itsTypeMap.end() ) // already in list
+	this->itsColumnList.erase( this->itsColumnList.begin()+this->itsTypeMap[type] );
 
     }
 

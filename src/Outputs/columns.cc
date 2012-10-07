@@ -135,8 +135,8 @@ namespace duchamp
     //   this->type = UNKNOWN;
     // }
 
-    Column::Column(std::string type, std::string name, std::string units, int width, int prec, std::string ucd, std::string datatype, std::string extraInfo):
-      itsType(type),itsWidth(width), itsPrecision(prec), itsName(name), itsUnits(units), itsUCD(ucd), itsDatatype(datatype), itsExtraInfo(extraInfo)
+    Column::Column(std::string type, std::string name, std::string units, int width, int prec, std::string ucd, std::string datatype, std::string colID, std::string extraInfo):
+      itsType(type),itsWidth(width), itsPrecision(prec), itsName(name), itsUnits(units), itsUCD(ucd), itsDatatype(datatype), itsColID(colID), itsExtraInfo(extraInfo)
     {
       /// A generic constructor designed to make a Column other than
       /// the predefined ones listed in the Column namespace
@@ -244,16 +244,16 @@ namespace duchamp
       // }
       // else return false;
       
-      std::string FileList[34]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","WRA","WSEC",
+      std::string FileList[34]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","WRA","WDEC",
 				"W50","W20","WVEL","FINT","FTOT","FPEAK","SNRPEAK",
 				"X1","X2","Y1","Y2","Z1","Z2","NPIX","FLAG","XAV","YAV",
 				"ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
-      std::string ScreenList[21]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","WRA","WSEC",
+      std::string ScreenList[21]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","WRA","WDEC",
 				  "W50","FPEAK","SNRPEAK","X1","X2","Y1",
 				  "Y2","Z1","Z2","NPIX","FLAG"};
       std::string LogList[16]={"NUM","X","Y","Z","FTOT","FPEAK","SNRPEAK",
 			       "X1","X2","Y1","Y2","Z1","Z2","NPIX","NUMCH","SPATSIZE"};
-      std::string VOList[22]={"NUM","NAME","RAJD","DECJD","VEL","WRA","WSEC",
+      std::string VOList[22]={"NUM","NAME","RAJD","DECJD","VEL","WRA","WDEC",
 			    "W50","W20","WVEL","FPEAK","SNRPEAK","FLAG","XAV","YAV",
 			    "ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
 
@@ -272,7 +272,7 @@ namespace duchamp
       else if(tableType == VOTABLE){
      	if(this->itsType=="FTOT") doIt = !flagFint;
 	else if(this->itsType == "FINT") doIt = flagFint;
-	else for(int i=0;i<21 && !doIt;i++) doIt = doIt || (this->itsType==VOList[i]);
+	else for(int i=0;i<22 && !doIt;i++) doIt = doIt || (this->itsType==VOList[i]);
       }
       return doIt;
 	
@@ -281,44 +281,44 @@ namespace duchamp
     Column defaultColumn(std::string type)
     {
       // type|name|units|width|prec|ucd|datatype|extraInfo
-      if (type == "NUM") return Column(type,"Obj#","",5,0,"meta.id","int","");
-      else if(type=="NAME") return Column(type,"Name","",8,0,"meta.id;meta.main","char","");
-      else if(type=="X") return Column(type,"X","",6,prXYZ,"pos.cartesian.x","float","");
-      else if(type=="Y") return Column(type,"Y","",6,prXYZ,"pos.cartesian.y","float","");
-      else if(type=="Z") return Column(type,"Z","",6,prXYZ,"pos.cartesian.z","float","");
-      else if(type=="RA") return Column(type,"RA","",11,0,"","char",coordRef);
-      else if(type=="DEC") return Column(type,"DEC","",10,0,"","char",coordRef);
-      else if(type=="RAJD") return Column(type,"RAJD","[deg]",11,prPOS,"","float",coordRef);
-      else if(type=="DECJD") return Column(type,"DECJD","[deg]",11,prPOS,"","float",coordRef);
-      else if(type=="VEL") return Column(type,"VEL","",7,prVEL,"","float","");
-      else if(type=="WRA") return Column(type,"w_RA","[arcmin]",9,prWPOS,"","float",coordRef);
-      else if(type=="WDEC") return Column(type,"w_DEC","[arcmin]",9,prWPOS,"","float",coordRef);
-      else if(type=="W50") return Column(type,"w_50","",7,prVEL,"","float","");
-      else if(type=="W20") return Column(type,"w_20","",7,prVEL,"","float","");
-      else if(type=="WVEL") return Column(type,"w_VEL","",7,prVEL,"","float","");
-      else if(type=="FINT") return Column(type,"F_int","",10,prFLUX,"phot.flux;spect.line.intensity","float","");
-      else if(type=="FTOT") return Column(type,"F_tot","",10,prFLUX,"phot.flux;spect.line.intensity","float","");
-      else if(type=="FPEAK") return Column(type,"F_peak","",9,prFLUX,"phot.flux;spect.line.intensity","float","");
-      else if(type=="SNRPEAK") return Column(type,"S/Nmax","",7,prSNR,"phot.flux;stat.snr","float","");
-      else if(type=="X1") return Column(type,"X1","",4,0,"pos.cartesian.x;stat.min","int","");
-      else if(type=="Y1") return Column(type,"Y1","",4,0,"pos.cartesian.y;stat.min","int","");
-      else if(type=="Z1") return Column(type,"Z1","",4,0,"pos.cartesian.z;stat.min","int","");
-      else if(type=="X2") return Column(type,"X2","",4,0,"pos.cartesian.x;stat.max","int","");
-      else if(type=="Y2") return Column(type,"Y2","",4,0,"pos.cartesian.y;stat.max","int","");
-      else if(type=="Z2") return Column(type,"Z2","",4,0,"pos.cartesian.z;stat.max","int","");
-      else if(type=="NPIX") return Column(type,"Npix","[pix]",6,0,"","int","");
-      else if(type=="FLAG") return Column(type,"Flag","",5,0,"meta.code.qual","char","");
-      else if(type=="XAV") return Column(type,"X_av","",6,prXYZ,"pos.cartesian.x","float","");
-      else if(type=="YAV") return Column(type,"X_av","",6,prXYZ,"pos.cartesian.y","float","");
-      else if(type=="ZAV") return Column(type,"X_av","",6,prXYZ,"pos.cartesian.z","float","");
-      else if(type=="XCENT") return Column(type,"X_cent","",7,prXYZ,"pos.cartesian.x","float","");
-      else if(type=="YCENT") return Column(type,"X_cent","",7,prXYZ,"pos.cartesian.y","float","");
-      else if(type=="ZCENT") return Column(type,"X_cent","",7,prXYZ,"pos.cartesian.z","float","");
-      else if(type=="XPEAK") return Column(type,"X_peak","",7,prXYZ,"pos.cartesian.x","int","");
-      else if(type=="YPEAK") return Column(type,"X_peak","",7,prXYZ,"pos.cartesian.y","int","");
-      else if(type=="ZPEAK") return Column(type,"X_peak","",7,prXYZ,"pos.cartesian.z","int","");
-      else if(type=="NUMCH") return Column(type,"Nch","",6,0,"","int","");
-      else if(type=="SPATSIZE") return Column(type,"Sp_size","",8,0,"","int","");
+      if (type == "NUM") return Column(type,"Obj#","",5,0,"meta.id","int","col_objnum","");
+      else if(type=="NAME") return Column(type,"Name","",8,0,"meta.id;meta.main","char","col_name","");
+      else if(type=="X") return Column(type,"X","",6,prXYZ,"pos.cartesian.x","float","col_x","");
+      else if(type=="Y") return Column(type,"Y","",6,prXYZ,"pos.cartesian.y","float","col_y","");
+      else if(type=="Z") return Column(type,"Z","",6,prXYZ,"pos.cartesian.z","float","col_z","");
+      else if(type=="RA") return Column(type,"RA","",11,0,"","char","col_ra",coordRef);
+      else if(type=="DEC") return Column(type,"DEC","",10,0,"","char","col_dec",coordRef);
+      else if(type=="RAJD") return Column(type,"RAJD","[deg]",11,prPOS,"","float","col_rajd",coordRef);
+      else if(type=="DECJD") return Column(type,"DECJD","[deg]",11,prPOS,"","float","col_decjd",coordRef);
+      else if(type=="VEL") return Column(type,"VEL","",7,prVEL,"","float","col_vel","");
+      else if(type=="WRA") return Column(type,"w_RA","[arcmin]",9,prWPOS,"","float","col_wra",coordRef);
+      else if(type=="WDEC") return Column(type,"w_DEC","[arcmin]",9,prWPOS,"","float","col_wdec",coordRef);
+      else if(type=="W50") return Column(type,"w_50","",7,prVEL,"","float","col_w50","");
+      else if(type=="W20") return Column(type,"w_20","",7,prVEL,"","float","col_w20","");
+      else if(type=="WVEL") return Column(type,"w_VEL","",7,prVEL,"","float","col_wvel","");
+      else if(type=="FINT") return Column(type,"F_int","",10,prFLUX,"phot.flux;spect.line.intensity","float","col_fint","");
+      else if(type=="FTOT") return Column(type,"F_tot","",10,prFLUX,"phot.flux;spect.line.intensity","float","col_ftot","");
+      else if(type=="FPEAK") return Column(type,"F_peak","",9,prFLUX,"phot.flux;spect.line.intensity","float","col_fpeak","");
+      else if(type=="SNRPEAK") return Column(type,"S/Nmax","",7,prSNR,"phot.flux;stat.snr","float","col_snrmax","");
+      else if(type=="X1") return Column(type,"X1","",4,0,"pos.cartesian.x;stat.min","int","col_x1","");
+      else if(type=="Y1") return Column(type,"Y1","",4,0,"pos.cartesian.y;stat.min","int","col_y1","");
+      else if(type=="Z1") return Column(type,"Z1","",4,0,"pos.cartesian.z;stat.min","int","col_z1","");
+      else if(type=="X2") return Column(type,"X2","",4,0,"pos.cartesian.x;stat.max","int","col_x2","");
+      else if(type=="Y2") return Column(type,"Y2","",4,0,"pos.cartesian.y;stat.max","int","col_y2","");
+      else if(type=="Z2") return Column(type,"Z2","",4,0,"pos.cartesian.z;stat.max","int","col_z2","");
+      else if(type=="NPIX") return Column(type,"Npix","[pix]",6,0,"","int","col_npix","");
+      else if(type=="FLAG") return Column(type,"Flag","",5,0,"meta.code.qual","char","col_flag","");
+      else if(type=="XAV") return Column(type,"X_av","",6,prXYZ,"pos.cartesian.x","float","col_xav","");
+      else if(type=="YAV") return Column(type,"Y_av","",6,prXYZ,"pos.cartesian.y","float","col_yav","");
+      else if(type=="ZAV") return Column(type,"Z_av","",6,prXYZ,"pos.cartesian.z","float","col_zav","");
+      else if(type=="XCENT") return Column(type,"X_cent","",7,prXYZ,"pos.cartesian.x","float","col_xcent","");
+      else if(type=="YCENT") return Column(type,"Y_cent","",7,prXYZ,"pos.cartesian.y","float","col_ycent","");
+      else if(type=="ZCENT") return Column(type,"Z_cent","",7,prXYZ,"pos.cartesian.z","float","col_zcent","");
+      else if(type=="XPEAK") return Column(type,"X_peak","",7,prXYZ,"pos.cartesian.x","int","col_xpeak","");
+      else if(type=="YPEAK") return Column(type,"Y_peak","",7,prXYZ,"pos.cartesian.y","int","col_ypeak","");
+      else if(type=="ZPEAK") return Column(type,"Z_peak","",7,prXYZ,"pos.cartesian.z","int","col_zpeak","");
+      else if(type=="NUMCH") return Column(type,"Nch","",6,0,"","int","col_nch","");
+      else if(type=="SPATSIZE") return Column(type,"Sp_size","",8,0,"","int","col_spsize","");
       else {
 	Column col;
 	col.setType(type);
@@ -328,15 +328,16 @@ namespace duchamp
     }
 
 
-    std::vector<Column> getFullColSet(std::vector<Detection> &objectList, 
-				      FitsHeader &head)
+    // std::vector<Column> getFullColSet(std::vector<Detection> &objectList, 
+    // 				      FitsHeader &head)
+    CatalogueSpecification getFullColSet(std::vector<Detection> &objectList, FitsHeader &head)
     {
-      ///  @details A function that returns a std::vector of Col
-      ///  objects containing information on the columns necessary for
-      ///  output to the results file:
-      ///    Obj#,NAME,X,Y,Z,RA,DEC,VEL,w_RA,w_DEC,w_VEL,F_tot,F_int,F_peak,
-      ///                X1,X2,Y1,Y2,Z1,Z2,Npix,Flag,
-      ///                XAV,YAV,ZAV,XCENT,YCENT,ZCENT,XPEAK,YPEAK,ZPEAK
+      ///  @details A function that returns a catalogue specification
+      ///  containing information on the columns necessary for output
+      ///  to the results file:
+      ///  Obj#,NAME,X,Y,Z,RA,DEC,VEL,w_RA,w_DEC,w_VEL,F_tot,F_int,F_peak,
+      ///  X1,X2,Y1,Y2,Z1,Z2,Npix,Flag,
+      ///  XAV,YAV,ZAV,XCENT,YCENT,ZCENT,XPEAK,YPEAK,ZPEAK
       /// 
       ///   Each object in the provided objectList is checked to see if it
       ///   requires any column to be widened, or for that column to have
@@ -349,9 +350,10 @@ namespace duchamp
       /// columns need to fit.
       /// \param head The FitsHeader object defining the World Coordinate
       /// System.
-      /// \return A std::vector list of Col definitions.
+      /// \return A CatalogueSpecification
 
-      std::vector<Column> newset;
+      // std::vector<Column> newset;
+      CatalogueSpecification newset;
 
       // desired precisions for fluxes, velocities and SNR value
       int precVel,precFlux,precSNR;
@@ -367,44 +369,44 @@ namespace duchamp
       }
 
       // set up the default columns 
-      newset.push_back( Column("NUM") );
-      newset.push_back( Column("NAME") );
-      newset.push_back( Column("X") );
-      newset.push_back( Column("Y") );
-      newset.push_back( Column("Z") );
-      newset.push_back( Column("RA") );
-      newset.push_back( Column("DEC") );
-      newset.push_back( Column("RAJD") );
-      newset.push_back( Column("DECJD") );
-      newset.push_back( Column("VEL") );
-      newset.push_back( Column("WRA") );
-      newset.push_back( Column("WDEC") );
-      newset.push_back( Column("W50") );
-      newset.push_back( Column("W20") );
-      newset.push_back( Column("WVEL") );
-      newset.push_back( Column("FINT") );
-      newset.push_back( Column("FTOT") );
-      newset.push_back( Column("FPEAK") );
-      newset.push_back( Column("SNRPEAK") );
-      newset.push_back( Column("X1") );
-      newset.push_back( Column("X2") );
-      newset.push_back( Column("Y1") );
-      newset.push_back( Column("Y2") );
-      newset.push_back( Column("Z1") );
-      newset.push_back( Column("Z2") );
-      newset.push_back( Column("NPIX") );
-      newset.push_back( Column("FLAG") );
-      newset.push_back( Column("XAV") );
-      newset.push_back( Column("YAV") );
-      newset.push_back( Column("ZAV") );
-      newset.push_back( Column("XCENT") );
-      newset.push_back( Column("YCENT") );
-      newset.push_back( Column("ZCENT") );
-      newset.push_back( Column("XPEAK") );
-      newset.push_back( Column("YPEAK") );
-      newset.push_back( Column("ZPEAK") );
-      newset.push_back( Column("NUMCH") );
-      newset.push_back( Column("SPATSIZE") );
+      newset.addColumn( Column("NUM") );
+      newset.addColumn( Column("NAME") );
+      newset.addColumn( Column("X") );
+      newset.addColumn( Column("Y") );
+      newset.addColumn( Column("Z") );
+      newset.addColumn( Column("RA") );
+      newset.addColumn( Column("DEC") );
+      newset.addColumn( Column("RAJD") );
+      newset.addColumn( Column("DECJD") );
+      newset.addColumn( Column("VEL") );
+      newset.addColumn( Column("WRA") );
+      newset.addColumn( Column("WDEC") );
+      newset.addColumn( Column("W50") );
+      newset.addColumn( Column("W20") );
+      newset.addColumn( Column("WVEL") );
+      newset.addColumn( Column("FINT") );
+      newset.addColumn( Column("FTOT") );
+      newset.addColumn( Column("FPEAK") );
+      newset.addColumn( Column("SNRPEAK") );
+      newset.addColumn( Column("X1") );
+      newset.addColumn( Column("X2") );
+      newset.addColumn( Column("Y1") );
+      newset.addColumn( Column("Y2") );
+      newset.addColumn( Column("Z1") );
+      newset.addColumn( Column("Z2") );
+      newset.addColumn( Column("NPIX") );
+      newset.addColumn( Column("FLAG") );
+      newset.addColumn( Column("XAV") );
+      newset.addColumn( Column("YAV") );
+      newset.addColumn( Column("ZAV") );
+      newset.addColumn( Column("XCENT") );
+      newset.addColumn( Column("YCENT") );
+      newset.addColumn( Column("ZCENT") );
+      newset.addColumn( Column("XPEAK") );
+      newset.addColumn( Column("YPEAK") );
+      newset.addColumn( Column("ZPEAK") );
+      newset.addColumn( Column("NUMCH") );
+      newset.addColumn( Column("SPATSIZE") );
 
 
       // Now test each object against each new column
@@ -417,345 +419,345 @@ namespace duchamp
 
 	// Obj#
 	tempwidth = int( log10(obj->getID()) + 1) + 1;
-	for(int i=newset[NUM].getWidth();i<tempwidth;i++) newset[NUM].widen();
+	for(int i=newset.column("NUM").getWidth();i<tempwidth;i++) newset.column("NUM").widen();
 
 	// Name
 	tempwidth = obj->getName().size() + 1;
-	for(int i=newset[NAME].getWidth();i<tempwidth;i++) newset[NAME].widen();
+	for(int i=newset.column("NAME").getWidth();i<tempwidth;i++) newset.column("NAME").widen();
 
 	// X position
 	val = obj->getXcentre() + obj->getXOffset();
 	if((val<1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset[X].getPrecision()+1)); 
-	  if(val < minval) newset[X].upPrec();
+	  minval = pow(10, -1. * (newset.column("X").getPrecision()+1)); 
+	  if(val < minval) newset.column("X").upPrec();
 	}
-	tempwidth = int( log10(val) + 1) + newset[X].getPrecision() + 2;
-	for(int i=newset[X].getWidth();i<tempwidth;i++) newset[X].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("X").getPrecision() + 2;
+	for(int i=newset.column("X").getWidth();i<tempwidth;i++) newset.column("X").widen();
 	// Y position
 	val = obj->getYcentre() + obj->getYOffset();
 	if((val<1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset[Y].getPrecision()+1)); 
-	  if(val < minval) newset[Y].upPrec();
+	  minval = pow(10, -1. * (newset.column("Y").getPrecision()+1)); 
+	  if(val < minval) newset.column("Y").upPrec();
 	}
-	tempwidth = int( log10(val) + 1) + newset[Y].getPrecision() + 2;
-	for(int i=newset[Y].getWidth();i<tempwidth;i++) newset[Y].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("Y").getPrecision() + 2;
+	for(int i=newset.column("Y").getWidth();i<tempwidth;i++) newset.column("Y").widen();
 	// Z position
 	val = obj->getZcentre() + obj->getZOffset();
 	if((val<1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset[Z].getPrecision()+1)); 
-	  if((val>0.)&&(val < minval)) newset[Z].upPrec();
+	  minval = pow(10, -1. * (newset.column("Z").getPrecision()+1)); 
+	  if((val>0.)&&(val < minval)) newset.column("Z").upPrec();
 	}
-	tempwidth = int( log10(val) + 1) + newset[Z].getPrecision() + 2;
-	for(int i=newset[Z].getWidth();i<tempwidth;i++) newset[Z].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("Z").getPrecision() + 2;
+	for(int i=newset.column("Z").getWidth();i<tempwidth;i++) newset.column("Z").widen();
 
 	if(head.isWCS()){  
 	  // RA -- assign correct title. Check width but should be ok by definition
 	  tempstr = head.lngtype();
-	  newset[RA].setName(tempstr);
+	  newset.column("RA").setName(tempstr);
 	  tempwidth = obj->getRAs().size() + 1;
-	  for(int i=newset[RA].getWidth();i<tempwidth;i++) newset[RA].widen();
+	  for(int i=newset.column("RA").getWidth();i<tempwidth;i++) newset.column("RA").widen();
       
 	  // Dec -- assign correct title. Check width, should be ok by definition
 	  tempstr = head.lattype();
-	  newset[DEC].setName(tempstr);
+	  newset.column("DEC").setName(tempstr);
 	  tempwidth = obj->getDecs().size() + 1;
-	  for(int i=newset[DEC].getWidth();i<tempwidth;i++) newset[DEC].widen();
+	  for(int i=newset.column("DEC").getWidth();i<tempwidth;i++) newset.column("DEC").widen();
 
 	  // RA decimal degrees -- assign correct title. Check width but should be OK
 	  tempstr = head.lngtype();
-	  newset[RAJD].setName(tempstr);
+	  newset.column("RAJD").setName(tempstr);
 	  valD = obj->getRA();
-	  tempwidth = int( log10(fabs(valD)) + 1) + newset[RAJD].getPrecision() + 2;
-	  for(int i=newset[RAJD].getWidth();i<tempwidth;i++) newset[RAJD].widen();
+	  tempwidth = int( log10(fabs(valD)) + 1) + newset.column("RAJD").getPrecision() + 2;
+	  for(int i=newset.column("RAJD").getWidth();i<tempwidth;i++) newset.column("RAJD").widen();
       
 	  // Dec decimal degrees -- assign correct title. Check width but should be OK
 	  tempstr = head.lattype();
-	  newset[DECJD].setName(tempstr);
+	  newset.column("DECJD").setName(tempstr);
 	  valD = obj->getDec();
-	  tempwidth = int( log10(fabs(valD)) + 1) + newset[DECJD].getPrecision() + 2;
-	  for(int i=newset[DECJD].getWidth();i<tempwidth;i++) newset[DECJD].widen();
+	  tempwidth = int( log10(fabs(valD)) + 1) + newset.column("DECJD").getPrecision() + 2;
+	  for(int i=newset.column("DECJD").getWidth();i<tempwidth;i++) newset.column("DECJD").widen();
 
 	  // Vel -- check width, title and units.
 	  //if(head.isSpecOK()){
 	  if(head.canUseThirdAxis()){
 	    if(head.WCS().spec < 0)  // if it's not a spectral axis
-	      newset[VEL].setName( head.WCS().ctype[2] );
+	      newset.column("VEL").setName( head.WCS().ctype[2] );
 	    else 
-	      newset[VEL].setName(head.getSpectralType());
-	    tempwidth = newset[VEL].getName().size() + 1;
-	    for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
+	      newset.column("VEL").setName(head.getSpectralType());
+	    tempwidth = newset.column("VEL").getName().size() + 1;
+	    for(int i=newset.column("VEL").getWidth();i<tempwidth;i++) newset.column("VEL").widen();
 	    if(head.getSpectralUnits().size()>0)
-	      newset[VEL].setUnits("[" + head.getSpectralUnits() + "]");
-	    tempwidth = newset[VEL].getUnits().size() + 1;
-	    for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
+	      newset.column("VEL").setUnits("[" + head.getSpectralUnits() + "]");
+	    tempwidth = newset.column("VEL").getUnits().size() + 1;
+	    for(int i=newset.column("VEL").getWidth();i<tempwidth;i++) newset.column("VEL").widen();
 	
 	    valD = obj->getVel();
 	    if((fabs(valD) < 1.)&&(valD>0.)){
-	      minvalD = pow(10, -1. * (newset[VEL].getPrecision()+1)); 
-	      if(valD < minvalD) newset[VEL].upPrec();
+	      minvalD = pow(10, -1. * (newset.column("VEL").getPrecision()+1)); 
+	      if(valD < minvalD) newset.column("VEL").upPrec();
 	    }
-	    tempwidth = int(log10(fabs(valD)) + 1) + newset[VEL].getPrecision() + 2;
+	    tempwidth = int(log10(fabs(valD)) + 1) + newset.column("VEL").getPrecision() + 2;
 	    if(valD<0) tempwidth++;
-	    for(int i=newset[VEL].getWidth();i<tempwidth;i++) newset[VEL].widen();
+	    for(int i=newset.column("VEL").getWidth();i<tempwidth;i++) newset.column("VEL").widen();
 	  }
 
 	  // w_RA -- check width & title. leave units for the moment.
 	  tempstr = "w_" + head.lngtype();
-	  newset[WRA].setName(tempstr);
-	  tempwidth = newset[RA].getUnits().size() + 1;
-	  for(int i=newset[WRA].getWidth();i<tempwidth;i++) newset[WRA].widen();
+	  newset.column("WRA").setName(tempstr);
+	  tempwidth = newset.column("RA").getUnits().size() + 1;
+	  for(int i=newset.column("WRA").getWidth();i<tempwidth;i++) newset.column("WRA").widen();
 	  valD = obj->getRAWidth();
 	  if((fabs(valD) < 1.)&&(valD>0.)){
-	    minvalD = pow(10, -1. * (newset[WRA].getPrecision()+1)); 
-	    if(valD < minvalD) newset[WRA].upPrec();
+	    minvalD = pow(10, -1. * (newset.column("WRA").getPrecision()+1)); 
+	    if(valD < minvalD) newset.column("WRA").upPrec();
 	  }
-	  tempwidth = int( log10(fabs(valD)) + 1) + newset[WRA].getPrecision() + 2;
+	  tempwidth = int( log10(fabs(valD)) + 1) + newset.column("WRA").getPrecision() + 2;
 	  if(valD<0) tempwidth++;
-	  for(int i=newset[WRA].getWidth();i<tempwidth;i++) newset[WRA].widen();
+	  for(int i=newset.column("WRA").getWidth();i<tempwidth;i++) newset.column("WRA").widen();
 
 	  // w_DEC -- check width & title. leave units for the moment.
 	  tempstr = "w_" + head.lattype();
-	  newset[WDEC].setName(tempstr);
-	  tempwidth = newset[DEC].getUnits().size() + 1;
-	  for(int i=newset[WDEC].getWidth();i<tempwidth;i++) newset[WDEC].widen();
+	  newset.column("WDEC").setName(tempstr);
+	  tempwidth = newset.column("DEC").getUnits().size() + 1;
+	  for(int i=newset.column("WDEC").getWidth();i<tempwidth;i++) newset.column("WDEC").widen();
 	  valD = obj->getDecWidth();
 	  if((fabs(valD) < 1.)&&(valD>0.)){
-	    minvalD = pow(10, -1. * (newset[WDEC].getPrecision()+1)); 
-	    if(valD < minvalD) newset[WDEC].upPrec();
+	    minvalD = pow(10, -1. * (newset.column("WDEC").getPrecision()+1)); 
+	    if(valD < minvalD) newset.column("WDEC").upPrec();
 	  }
-	  tempwidth = int( log10(fabs(valD)) + 1) + newset[WDEC].getPrecision() + 2;
+	  tempwidth = int( log10(fabs(valD)) + 1) + newset.column("WDEC").getPrecision() + 2;
 	  if(valD<0) tempwidth++;
-	  for(int i=newset[WDEC].getWidth();i<tempwidth;i++) newset[WDEC].widen();
+	  for(int i=newset.column("WDEC").getWidth();i<tempwidth;i++) newset.column("WDEC").widen();
 
 	  // w_50 -- check width, title and units.
 	  if(head.canUseThirdAxis()){
 	    if(head.getSpectralUnits().size()>0)
-	      newset[W50].setUnits("[" + head.getSpectralUnits() + "]");
-	    tempwidth = newset[W50].getUnits().size() + 1;
-	    for(int i=newset[W50].getWidth();i<tempwidth;i++) newset[W50].widen();
+	      newset.column("W50").setUnits("[" + head.getSpectralUnits() + "]");
+	    tempwidth = newset.column("W50").getUnits().size() + 1;
+	    for(int i=newset.column("W50").getWidth();i<tempwidth;i++) newset.column("W50").widen();
 	    valD = obj->getW50();
 	    if((fabs(valD) < 1.)&&(valD>0.)){
-	      minvalD = pow(10, -1. * (newset[W50].getPrecision()+1)); 
-	      if(valD < minvalD) newset[W50].upPrec();
+	      minvalD = pow(10, -1. * (newset.column("W50").getPrecision()+1)); 
+	      if(valD < minvalD) newset.column("W50").upPrec();
 	    }
-	    tempwidth = int( log10(fabs(valD)) + 1) + newset[W50].getPrecision() + 2;
+	    tempwidth = int( log10(fabs(valD)) + 1) + newset.column("W50").getPrecision() + 2;
 	    if(valD<0) tempwidth++;
-	    for(int i=newset[W50].getWidth();i<tempwidth;i++) newset[W50].widen();
+	    for(int i=newset.column("W50").getWidth();i<tempwidth;i++) newset.column("W50").widen();
 	  }
 
 	  // w_20 -- check width, title and units.
 	  if(head.canUseThirdAxis()){
 	    if(head.getSpectralUnits().size()>0)
-	      newset[W20].setUnits("[" + head.getSpectralUnits() + "]");
-	    tempwidth = newset[W20].getUnits().size() + 1;
-	    for(int i=newset[W20].getWidth();i<tempwidth;i++)newset[W20].widen();
+	      newset.column("W20").setUnits("[" + head.getSpectralUnits() + "]");
+	    tempwidth = newset.column("W20").getUnits().size() + 1;
+	    for(int i=newset.column("W20").getWidth();i<tempwidth;i++)newset.column("W20").widen();
 	    valD = obj->getW20();
 	    if((fabs(valD) < 1.)&&(valD>0.)){
-	      minvalD = pow(10, -1. * (newset[W20].getPrecision()+1)); 
-	      if(valD < minvalD) newset[W20].upPrec();
+	      minvalD = pow(10, -1. * (newset.column("W20").getPrecision()+1)); 
+	      if(valD < minvalD) newset.column("W20").upPrec();
 	    }
-	    tempwidth = int( log10(fabs(valD)) + 1) + newset[W20].getPrecision() + 2;
+	    tempwidth = int( log10(fabs(valD)) + 1) + newset.column("W20").getPrecision() + 2;
 	    if(valD<0) tempwidth++;
-	    for(int i=newset[W20].getWidth();i<tempwidth;i++) newset[W20].widen();
+	    for(int i=newset.column("W20").getWidth();i<tempwidth;i++) newset.column("W20").widen();
 	  }
 
 	  // w_Vel -- check width, title and units.
 	  if(head.canUseThirdAxis()){
 	    if(head.WCS().spec < 0) // if it's not a spectral axis
-	      newset[WVEL].setName( std::string("w_") + head.WCS().ctype[2] );
+	      newset.column("WVEL").setName( std::string("w_") + head.WCS().ctype[2] );
 // // 	    else if(head.WCS().restfrq == 0) // using frequency, not velocity
 // 	    else if(head.getSpectralDescription()==duchamp::duchampSpectralDescription[FREQUENCY]) // using frequency, not velocity
-// 	      newset[WVEL].setName("w_FREQ");
+// 	      newset.column("WVEL").setName("w_FREQ");
 	    else
-	      newset[WVEL].setName(std::string("w_")+head.getSpectralType());
+	      newset.column("WVEL").setName(std::string("w_")+head.getSpectralType());
 	    if(head.getSpectralUnits().size()>0)
-	      newset[WVEL].setUnits("[" + head.getSpectralUnits() + "]");
-	    tempwidth = newset[WVEL].getUnits().size() + 1;
-	    for(int i=newset[WVEL].getWidth();i<tempwidth;i++)newset[WVEL].widen();
-	    tempwidth = newset[WVEL].getName().size() + 1;
-	    for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
+	      newset.column("WVEL").setUnits("[" + head.getSpectralUnits() + "]");
+	    tempwidth = newset.column("WVEL").getUnits().size() + 1;
+	    for(int i=newset.column("WVEL").getWidth();i<tempwidth;i++)newset.column("WVEL").widen();
+	    tempwidth = newset.column("WVEL").getName().size() + 1;
+	    for(int i=newset.column("WVEL").getWidth();i<tempwidth;i++) newset.column("WVEL").widen();
 	    valD = obj->getVelWidth();
 	    if((fabs(valD) < 1.)&&(valD>0.)){
-	      minvalD = pow(10, -1. * (newset[WVEL].getPrecision()+1)); 
-	      if(valD < minvalD) newset[WVEL].upPrec();
+	      minvalD = pow(10, -1. * (newset.column("WVEL").getPrecision()+1)); 
+	      if(valD < minvalD) newset.column("WVEL").upPrec();
 	    }
-	    tempwidth = int( log10(fabs(valD)) + 1) + newset[WVEL].getPrecision() + 2;
+	    tempwidth = int( log10(fabs(valD)) + 1) + newset.column("WVEL").getPrecision() + 2;
 	    if(valD<0) tempwidth++;
-	    for(int i=newset[WVEL].getWidth();i<tempwidth;i++) newset[WVEL].widen();
+	    for(int i=newset.column("WVEL").getWidth();i<tempwidth;i++) newset.column("WVEL").widen();
 	  }
 
 	  // F_int -- check width & units
 	  if(head.getIntFluxUnits().size()>0)
-	    newset[FINT].setUnits("[" + head.getIntFluxUnits() + "]");
-	  tempwidth = newset[FINT].getUnits().size() + 1;
-	  for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
+	    newset.column("FINT").setUnits("[" + head.getIntFluxUnits() + "]");
+	  tempwidth = newset.column("FINT").getUnits().size() + 1;
+	  for(int i=newset.column("FINT").getWidth();i<tempwidth;i++) newset.column("FINT").widen();
 	  valD = obj->getIntegFlux();
 	  if((fabs(valD) < 1.)// &&(valD>0.)
 	     ){
 	    int minprec = int(fabs(log10(fabs(valD))))+2;
-	    for(int i=newset[FINT].getPrecision();i<minprec;i++) newset[FINT].upPrec();
+	    for(int i=newset.column("FINT").getPrecision();i<minprec;i++) newset.column("FINT").upPrec();
 	  }
-	  tempwidth = int( log10(fabs(valD)) + 1) + newset[FINT].getPrecision() + 2;
+	  tempwidth = int( log10(fabs(valD)) + 1) + newset.column("FINT").getPrecision() + 2;
 	  if(valD<0) tempwidth++;
-	  for(int i=newset[FINT].getWidth();i<tempwidth;i++) newset[FINT].widen();
+	  for(int i=newset.column("FINT").getWidth();i<tempwidth;i++) newset.column("FINT").widen();
       
 	}
 
 	// F_tot
-	newset[FTOT].setUnits("[" + head.getFluxUnits() + "]");
-	tempwidth = newset[FTOT].getUnits().size() + 1;
-	for(int i=newset[FTOT].getWidth();i<tempwidth;i++) newset[FTOT].widen();
+	newset.column("FTOT").setUnits("[" + head.getFluxUnits() + "]");
+	tempwidth = newset.column("FTOT").getUnits().size() + 1;
+	for(int i=newset.column("FTOT").getWidth();i<tempwidth;i++) newset.column("FTOT").widen();
 	val = obj->getTotalFlux();
 	//     std::cerr << val << "\n";
 	if((fabs(val) < 1.)// &&(val>0.)
 	   ){
 	  int minprec = int(fabs(log10(fabs(val))))+2;
-	  for(int i=newset[FTOT].getPrecision();i<minprec;i++) newset[FTOT].upPrec();
+	  for(int i=newset.column("FTOT").getPrecision();i<minprec;i++) newset.column("FTOT").upPrec();
 	}
-	tempwidth = int( log10(fabs(val)) + 1) + newset[FTOT].getPrecision() + 2;
+	tempwidth = int( log10(fabs(val)) + 1) + newset.column("FTOT").getPrecision() + 2;
 	if(val<0) tempwidth++;
-	for(int i=newset[FTOT].getWidth();i<tempwidth;i++) newset[FTOT].widen();
+	for(int i=newset.column("FTOT").getWidth();i<tempwidth;i++) newset.column("FTOT").widen();
 
 	// F_peak
-	newset[FPEAK].setUnits("[" + head.getFluxUnits() + "]");
-	tempwidth = newset[FPEAK].getUnits().size() + 1;
-	for(int i=newset[FPEAK].getWidth();i<tempwidth;i++) newset[FPEAK].widen();
+	newset.column("FPEAK").setUnits("[" + head.getFluxUnits() + "]");
+	tempwidth = newset.column("FPEAK").getUnits().size() + 1;
+	for(int i=newset.column("FPEAK").getWidth();i<tempwidth;i++) newset.column("FPEAK").widen();
 	val = obj->getPeakFlux();
 	if((fabs(val) < 1.)// &&(val>0.)
 	   ){
 	  int minprec = int(fabs(log10(fabs(val))))+2;
-	  for(int i=newset[FPEAK].getPrecision();i<minprec;i++) newset[FPEAK].upPrec();
+	  for(int i=newset.column("FPEAK").getPrecision();i<minprec;i++) newset.column("FPEAK").upPrec();
 	}
-	tempwidth = int( log10(fabs(val)) + 1) + newset[FPEAK].getPrecision() + 2;
+	tempwidth = int( log10(fabs(val)) + 1) + newset.column("FPEAK").getPrecision() + 2;
 	if(val<0) tempwidth++;
-	for(int i=newset[FPEAK].getWidth();i<tempwidth;i++) newset[FPEAK].widen();
+	for(int i=newset.column("FPEAK").getWidth();i<tempwidth;i++) newset.column("FPEAK").widen();
 
 	// S/N_peak
 	val = obj->getPeakSNR();
 	if((fabs(val) < 1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset[SNRPEAK].getPrecision()+1)); 
-	  if(val < minval) newset[SNRPEAK].upPrec();
+	  minval = pow(10, -1. * (newset.column("SNRPEAK").getPrecision()+1)); 
+	  if(val < minval) newset.column("SNRPEAK").upPrec();
 	}
-	tempwidth = int( log10(fabs(val)) + 1) + newset[SNRPEAK].getPrecision() +2;
+	tempwidth = int( log10(fabs(val)) + 1) + newset.column("SNRPEAK").getPrecision() +2;
 	if(val<0) tempwidth++;
-	for(int i=newset[SNRPEAK].getWidth();i<tempwidth;i++) newset[SNRPEAK].widen();
+	for(int i=newset.column("SNRPEAK").getWidth();i<tempwidth;i++) newset.column("SNRPEAK").widen();
 
 	// X1 position
 	val = obj->getXmin() + obj->getXOffset();
-	tempwidth = int( log10(val) + 1) + newset[X1].getPrecision() + 1;
-	for(int i=newset[X1].getWidth();i<tempwidth;i++) newset[X1].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("X1").getPrecision() + 1;
+	for(int i=newset.column("X1").getWidth();i<tempwidth;i++) newset.column("X1").widen();
 	// X2 position
 	val = obj->getXmax() + obj->getXOffset();
-	tempwidth = int( log10(val) + 1) + newset[X2].getPrecision() + 1;
-	for(int i=newset[X2].getWidth();i<tempwidth;i++) newset[X2].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("X2").getPrecision() + 1;
+	for(int i=newset.column("X2").getWidth();i<tempwidth;i++) newset.column("X2").widen();
 	// Y1 position
 	val = obj->getYmin() + obj->getYOffset();
-	tempwidth = int( log10(val) + 1) + newset[Y1].getPrecision() + 1;
-	for(int i=newset[Y1].getWidth();i<tempwidth;i++) newset[Y1].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("Y1").getPrecision() + 1;
+	for(int i=newset.column("Y1").getWidth();i<tempwidth;i++) newset.column("Y1").widen();
 	// Y2 position
 	val = obj->getYmax() + obj->getYOffset();
-	tempwidth = int( log10(val) + 1) + newset[Y2].getPrecision() + 1;
-	for(int i=newset[Y2].getWidth();i<tempwidth;i++) newset[Y2].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("Y2").getPrecision() + 1;
+	for(int i=newset.column("Y2").getWidth();i<tempwidth;i++) newset.column("Y2").widen();
 	// Z1 position
 	val = obj->getZmin() + obj->getZOffset();
-	tempwidth = int( log10(val) + 1) + newset[Z1].getPrecision() + 1;
-	for(int i=newset[Z1].getWidth();i<tempwidth;i++) newset[Z1].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("Z1").getPrecision() + 1;
+	for(int i=newset.column("Z1").getWidth();i<tempwidth;i++) newset.column("Z1").widen();
 	// Z2 position
 	val = obj->getZmax() + obj->getZOffset();
-	tempwidth = int( log10(val) + 1) + newset[Z2].getPrecision() + 1;
-	for(int i=newset[Z2].getWidth();i<tempwidth;i++) newset[Z2].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("Z2").getPrecision() + 1;
+	for(int i=newset.column("Z2").getWidth();i<tempwidth;i++) newset.column("Z2").widen();
 
 	// Npix
 	tempwidth = int( log10(obj->getSize()) + 1) + 
-	  newset[NPIX].getPrecision() + 1;
-	for(int i=newset[NPIX].getWidth();i<tempwidth;i++) newset[NPIX].widen();
+	  newset.column("NPIX").getPrecision() + 1;
+	for(int i=newset.column("NPIX").getWidth();i<tempwidth;i++) newset.column("NPIX").widen();
     
 	// average X position
 // 	val = obj->getXAverage() + obj->getXOffset();
 	val = obj->getXaverage() + obj->getXOffset();
 	if((val<1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset[XAV].getPrecision()+1)); 
-	  if(val < minval) newset[XAV].upPrec();
+	  minval = pow(10, -1. * (newset.column("XAV").getPrecision()+1)); 
+	  if(val < minval) newset.column("XAV").upPrec();
 	}
-	tempwidth = int( log10(val) + 1) + newset[XAV].getPrecision() + 2;
-	for(int i=newset[XAV].getWidth();i<tempwidth;i++) newset[XAV].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("XAV").getPrecision() + 2;
+	for(int i=newset.column("XAV").getWidth();i<tempwidth;i++) newset.column("XAV").widen();
 	// average Y position
 // 	val = obj->getYAverage() + obj->getYOffset();
 	val = obj->getYaverage() + obj->getYOffset();
 	if((val<1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset[YAV].getPrecision()+1)); 
-	  if(val < minval) newset[YAV].upPrec();
+	  minval = pow(10, -1. * (newset.column("YAV").getPrecision()+1)); 
+	  if(val < minval) newset.column("YAV").upPrec();
 	}
-	tempwidth = int( log10(val) + 1) + newset[YAV].getPrecision() + 2;
-	for(int i=newset[YAV].getWidth();i<tempwidth;i++) newset[YAV].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("YAV").getPrecision() + 2;
+	for(int i=newset.column("YAV").getWidth();i<tempwidth;i++) newset.column("YAV").widen();
 	// average Z position
 // 	val = obj->getZAverage() + obj->getZOffset();
 	val = obj->getZaverage() + obj->getZOffset();
 	if((val<1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset[ZAV].getPrecision()+1)); 
-	  if((val>0.)&&(val < minval)) newset[ZAV].upPrec();
+	  minval = pow(10, -1. * (newset.column("ZAV").getPrecision()+1)); 
+	  if((val>0.)&&(val < minval)) newset.column("ZAV").upPrec();
 	}
-	tempwidth = int( log10(val) + 1) + newset[ZAV].getPrecision() + 2;
-	for(int i=newset[ZAV].getWidth();i<tempwidth;i++) newset[ZAV].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("ZAV").getPrecision() + 2;
+	for(int i=newset.column("ZAV").getWidth();i<tempwidth;i++) newset.column("ZAV").widen();
     
 	// X position of centroid
 	val = obj->getXCentroid() + obj->getXOffset();
 	if((val<1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset[XCENT].getPrecision()+1)); 
-	  if(val < minval) newset[XCENT].upPrec();
+	  minval = pow(10, -1. * (newset.column("XCENT").getPrecision()+1)); 
+	  if(val < minval) newset.column("XCENT").upPrec();
 	}
-	tempwidth = int( log10(val) + 1) + newset[XCENT].getPrecision() + 2;
-	for(int i=newset[XCENT].getWidth();i<tempwidth;i++) newset[XCENT].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("XCENT").getPrecision() + 2;
+	for(int i=newset.column("XCENT").getWidth();i<tempwidth;i++) newset.column("XCENT").widen();
 	// Y position of centroid
 	val = obj->getYCentroid() + obj->getYOffset();
 	if((val<1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset[YCENT].getPrecision()+1)); 
-	  if(val < minval) newset[YCENT].upPrec();
+	  minval = pow(10, -1. * (newset.column("YCENT").getPrecision()+1)); 
+	  if(val < minval) newset.column("YCENT").upPrec();
 	}
-	tempwidth = int( log10(val) + 1) + newset[YCENT].getPrecision() + 2;
-	for(int i=newset[YCENT].getWidth();i<tempwidth;i++) newset[YCENT].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("YCENT").getPrecision() + 2;
+	for(int i=newset.column("YCENT").getWidth();i<tempwidth;i++) newset.column("YCENT").widen();
 	// Z position of centroid
 	val = obj->getZCentroid() + obj->getZOffset();
 	if((val<1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset[ZCENT].getPrecision()+1)); 
-	  if((val>0.)&&(val < minval)) newset[ZCENT].upPrec();
+	  minval = pow(10, -1. * (newset.column("ZCENT").getPrecision()+1)); 
+	  if((val>0.)&&(val < minval)) newset.column("ZCENT").upPrec();
 	}
-	tempwidth = int( log10(val) + 1) + newset[ZCENT].getPrecision() + 2;
-	for(int i=newset[ZCENT].getWidth();i<tempwidth;i++) newset[ZCENT].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("ZCENT").getPrecision() + 2;
+	for(int i=newset.column("ZCENT").getWidth();i<tempwidth;i++) newset.column("ZCENT").widen();
     
 	// X position of peak flux
 	val = obj->getXPeak() + obj->getXOffset();
 	if((val<1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset[XPEAK].getPrecision()+1)); 
-	  if(val < minval) newset[XPEAK].upPrec();
+	  minval = pow(10, -1. * (newset.column("XPEAK").getPrecision()+1)); 
+	  if(val < minval) newset.column("XPEAK").upPrec();
 	}
-	tempwidth = int( log10(val) + 1) + newset[XPEAK].getPrecision() + 2;
-	for(int i=newset[XPEAK].getWidth();i<tempwidth;i++) newset[XPEAK].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("XPEAK").getPrecision() + 2;
+	for(int i=newset.column("XPEAK").getWidth();i<tempwidth;i++) newset.column("XPEAK").widen();
 	// Y position of peak flux
 	val = obj->getYPeak() + obj->getYOffset();
 	if((val<1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset[YPEAK].getPrecision()+1)); 
-	  if(val < minval) newset[YPEAK].upPrec();
+	  minval = pow(10, -1. * (newset.column("YPEAK").getPrecision()+1)); 
+	  if(val < minval) newset.column("YPEAK").upPrec();
 	}
-	tempwidth = int( log10(val) + 1) + newset[YPEAK].getPrecision() + 2;
-	for(int i=newset[YPEAK].getWidth();i<tempwidth;i++) newset[YPEAK].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("YPEAK").getPrecision() + 2;
+	for(int i=newset.column("YPEAK").getWidth();i<tempwidth;i++) newset.column("YPEAK").widen();
 	// Z position of peak flux
 	val = obj->getZPeak() + obj->getZOffset();
 	if((val<1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset[ZPEAK].getPrecision()+1)); 
-	  if((val>0.)&&(val < minval)) newset[ZPEAK].upPrec();
+	  minval = pow(10, -1. * (newset.column("ZPEAK").getPrecision()+1)); 
+	  if((val>0.)&&(val < minval)) newset.column("ZPEAK").upPrec();
 	}
-	tempwidth = int( log10(val) + 1) + newset[ZPEAK].getPrecision() + 2;
-	for(int i=newset[ZPEAK].getWidth();i<tempwidth;i++) newset[ZPEAK].widen();
+	tempwidth = int( log10(val) + 1) + newset.column("ZPEAK").getPrecision() + 2;
+	for(int i=newset.column("ZPEAK").getWidth();i<tempwidth;i++) newset.column("ZPEAK").widen();
 
 	//Number of contiguous channels
 	tempwidth = int( log10(obj->getMaxAdjacentChannels()) + 1) + 
-	  newset[NUMCH].getPrecision() + 1;
-	for(int i=newset[NUMCH].getWidth();i<tempwidth;i++) newset[NUMCH].widen();
+	  newset.column("NUMCH").getPrecision() + 1;
+	for(int i=newset.column("NUMCH").getWidth();i<tempwidth;i++) newset.column("NUMCH").widen();
 	//Spatial size
 	tempwidth = int( log10(obj->getSpatialSize()) + 1) + 
-	  newset[SPATSIZE].getPrecision() + 1;
-	for(int i=newset[SPATSIZE].getWidth();i<tempwidth;i++) newset[SPATSIZE].widen();
+	  newset.column("SPATSIZE").getPrecision() + 1;
+	for(int i=newset.column("SPATSIZE").getWidth();i<tempwidth;i++) newset.column("SPATSIZE").widen();
 	
       }
       
@@ -763,8 +765,7 @@ namespace duchamp
 
     }
 
-    std::vector<Column> getLogColSet(std::vector<Detection> &objectList, 
-				  FitsHeader &head)
+   CatalogueSpecification getLogColSet(std::vector<Detection> &objectList, FitsHeader &head)
     {
       ///  @details A function that returns a std::vector of Col
       ///    objects containing information on the columns necessary
@@ -779,28 +780,29 @@ namespace duchamp
       /// \param head The FitsHeader object defining the World Coordinate System.
       /// \return A std::vector list of Col definitions.
 
-      std::vector<Column> newset,tempset;
-  
+      CatalogueSpecification newset,tempset;
+      // std::vector<Column> newset,tempset;
+      
       // set up the default columns:
       //  get from FullColSet, and select only the ones we want.
       tempset = getFullColSet(objectList,head);
 
-      newset.push_back( tempset[NUM] );
-      newset.push_back( tempset[X] );
-      newset.push_back( tempset[Y] );
-      newset.push_back( tempset[Z] );
-      newset.push_back( tempset[FTOT] );
-      newset.push_back( tempset[FPEAK] );
-      newset.push_back( tempset[SNRPEAK] );
-      newset.push_back( tempset[X1] );
-      newset.push_back( tempset[X2] );
-      newset.push_back( tempset[Y1] );
-      newset.push_back( tempset[Y2] );
-      newset.push_back( tempset[Z1] );
-      newset.push_back( tempset[Z2] );
-      newset.push_back( tempset[NPIX] );
-      newset.push_back( tempset[NUMCH] );
-      newset.push_back( tempset[SPATSIZE] );
+      newset.addColumn( tempset.column("NUM") );
+      newset.addColumn( tempset.column("X") );
+      newset.addColumn( tempset.column("Y") );
+      newset.addColumn( tempset.column("Z") );
+      newset.addColumn( tempset.column("FTOT") );
+      newset.addColumn( tempset.column("FPEAK") );
+      newset.addColumn( tempset.column("SNRPEAK") );
+      newset.addColumn( tempset.column("X1") );
+      newset.addColumn( tempset.column("X2") );
+      newset.addColumn( tempset.column("Y1") );
+      newset.addColumn( tempset.column("Y2") );
+      newset.addColumn( tempset.column("Z1") );
+      newset.addColumn( tempset.column("Z2") );
+      newset.addColumn( tempset.column("NPIX") );
+      newset.addColumn( tempset.column("NUMCH") );
+      newset.addColumn( tempset.column("SPATSIZE") );
 
       return newset;
 

@@ -112,8 +112,8 @@ namespace duchamp
     posUCDmap.insert(std::pair<std::string,std::string>("dec","pos.eq.dec"));
     posUCDmap.insert(std::pair<std::string,std::string>("glon","pos.galactic.lng"));
     posUCDmap.insert(std::pair<std::string,std::string>("glat","pos.galactic.lat"));
-    std::string lngUCDbase = posUCDmap[makelower(this->fullCols[Catalogues::RAJD].getName())];
-    std::string latUCDbase = posUCDmap[makelower(this->fullCols[Catalogues::DECJD].getName())];
+    std::string lngUCDbase = posUCDmap[makelower(this->fullCols.column("RAJD").getName())];
+    std::string latUCDbase = posUCDmap[makelower(this->fullCols.column("DECJD").getName())];
 
     std::map<std::string,std::string> specUCDmap;
     specUCDmap.insert(std::pair<std::string,std::string>("VELO","phys.veloc;spect.dopplerVeloc"));
@@ -126,15 +126,17 @@ namespace duchamp
     specUCDmap.insert(std::pair<std::string,std::string>("AWAV","em.wl"));
     specUCDmap.insert(std::pair<std::string,std::string>("ZOPT","src.redshift"));
     specUCDmap.insert(std::pair<std::string,std::string>("BETA","src.redshift; spect.dopplerVeloc"));
-    std::string specUCDbase = specUCDmap[this->fullCols[Catalogues::VEL].getName()];
+    std::string specUCDbase = specUCDmap[this->fullCols.column("VEL").getName()];
 
-    std::vector<Catalogues::Column>::iterator col;
-    for(col=this->fullCols.begin();col<this->fullCols.end();col++){
+    // std::vector<Catalogues::Column>::iterator col;
+    // for(col=this->fullCols.begin();col<this->fullCols.end();col++){
+    for(size_t i=0;i<fullCols.size();i++){
 
+      Catalogues::Column *col = fullCols.pCol(i);
       if(col->doCol(Catalogues::VOTABLE,this->head.isSpecOK())){
 	// VOField field;
 	// field.define(*col);
-	VOField field(*col); 
+	VOField field(fullCols.column(i)); 
 	if(col->type()=="RAJD")  field.setUCD(lngUCDbase+";meta.main");
 	if(col->type()=="WRA")   field.setUCD("phys.angSize;"+lngUCDbase);
 	if(col->type()=="DECJD") field.setUCD(latUCDbase+";meta.main");
@@ -159,8 +161,10 @@ namespace duchamp
 
       stream<<"        <TR>\n";
       stream<<"          ";
-      std::vector<Catalogues::Column>::iterator col;
-      for(col=this->fullCols.begin();col<this->fullCols.end();col++){
+      // std::vector<Catalogues::Column>::iterator col;
+      // for(col=this->fullCols.begin();col<this->fullCols.end();col++){
+      for(size_t i=0;i<fullCols.size();i++){
+	Catalogues::Column *col = fullCols.pCol(i);
 	if(col->doCol(Catalogues::VOTABLE,this->head.isSpecOK())){
 	  stream<<"<TD>";
 	  obj->printTableEntry(stream, *col);

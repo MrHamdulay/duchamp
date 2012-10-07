@@ -124,9 +124,9 @@ namespace duchamp {
     posUCDmap.insert(std::pair<std::string,std::string>("dec","pos.eq.dec"));
     posUCDmap.insert(std::pair<std::string,std::string>("glon","pos.galactic.lng"));
     posUCDmap.insert(std::pair<std::string,std::string>("glat","pos.galactic.lat"));
-    Catalogues::Column raCol=this->itsColumnSpecification->at(Catalogues::RAJD);
+    Catalogues::Column &raCol=this->itsColumnSpecification->column("RAJD");
     std::string lngUCDbase = posUCDmap[makelower(raCol.getName())];
-    Catalogues::Column decCol=this->itsColumnSpecification->at(Catalogues::DECJD);
+    Catalogues::Column &decCol=this->itsColumnSpecification->column("DECJD");
     std::string latUCDbase = posUCDmap[makelower(decCol.getName())];
 
     std::map<std::string,std::string> specUCDmap;
@@ -140,11 +140,13 @@ namespace duchamp {
     specUCDmap.insert(std::pair<std::string,std::string>("AWAV","em.wl"));
     specUCDmap.insert(std::pair<std::string,std::string>("ZOPT","src.redshift"));
     specUCDmap.insert(std::pair<std::string,std::string>("BETA","src.redshift; spect.dopplerVeloc"));
-    std::string specUCDbase = specUCDmap[this->itsColumnSpecification->at(Catalogues::VEL).getName()];
+    std::string specUCDbase = specUCDmap[this->itsColumnSpecification->column("VEL").getName()];
 
-    std::vector<Catalogues::Column>::iterator col;
-    for(col=this->itsColumnSpecification->begin();col<this->itsColumnSpecification->end();col++){
-
+    // std::vector<Catalogues::Column>::iterator col;
+    // for(col=this->itsColumnSpecification->begin();col<this->itsColumnSpecification->end();col++){
+    for(size_t i=0;i<this->itsColumnSpecification->size();i++){
+      
+      Catalogues::Column *col = this->itsColumnSpecification->pCol(i);
       if(col->doCol(Catalogues::VOTABLE,this->itsHead->isSpecOK())){
 	VOField field(*col); 
 	if(col->type()=="RAJD")  field.setUCD(lngUCDbase+";meta.main");
@@ -179,8 +181,10 @@ namespace duchamp {
 
     this->itsFileStream<<"        <TR>\n";
     this->itsFileStream<<"          ";
-    std::vector<Catalogues::Column>::iterator col;
-    for(col=this->itsColumnSpecification->begin();col<this->itsColumnSpecification->end();col++){
+    // std::vector<Catalogues::Column>::iterator col;
+    // for(col=this->itsColumnSpecification->begin();col<this->itsColumnSpecification->end();col++){
+    for(size_t i=0;i<this->itsColumnSpecification->size();i++){
+      Catalogues::Column *col = this->itsColumnSpecification->pCol(i);
       if(col->doCol(Catalogues::VOTABLE,this->itsHead->isSpecOK())){
 	this->itsFileStream<<"<TD>";
 	object->printTableEntry(this->itsFileStream, *col);

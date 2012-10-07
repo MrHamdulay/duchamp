@@ -1503,23 +1503,33 @@ namespace duchamp
       obj->setSNRPrec( this->par.getPrecSNR() );
     }
   
-    this->fullCols.clear();
+    // this->fullCols.clear();
     this->fullCols = getFullColSet(*(this->objectList), this->head);
 
-    this->logCols.clear();
+    // this->logCols.clear();
     this->logCols = getLogColSet(*(this->objectList), this->head);
 
     int vel,fpeak,fint,pos,xyz,snr;
-    vel = fullCols[VEL].getPrecision();
-    fpeak = fullCols[FPEAK].getPrecision();
-    snr = fullCols[SNRPEAK].getPrecision();
-    xyz = fullCols[X].getPrecision();
-    xyz = std::max(xyz, fullCols[Y].getPrecision());
-    xyz = std::max(xyz, fullCols[Z].getPrecision());
-    if(this->head.isWCS()) fint = fullCols[FINT].getPrecision();
-    else fint = fullCols[FTOT].getPrecision();
-    pos = fullCols[WRA].getPrecision();
-    pos = std::max(pos, fullCols[WDEC].getPrecision());
+    // vel = fullCols[VEL].getPrecision();
+    // fpeak = fullCols[FPEAK].getPrecision();
+    // snr = fullCols[SNRPEAK].getPrecision();
+    // xyz = fullCols[X].getPrecision();
+    // xyz = std::max(xyz, fullCols[Y].getPrecision());
+    // xyz = std::max(xyz, fullCols[Z].getPrecision());
+    // if(this->head.isWCS()) fint = fullCols[FINT].getPrecision();
+    // else fint = fullCols[FTOT].getPrecision();
+    // pos = fullCols[WRA].getPrecision();
+    // pos = std::max(pos, fullCols[WDEC].getPrecision());
+    vel = fullCols.column("VEL").getPrecision();
+    fpeak = fullCols.column("FPEAK").getPrecision();
+    snr = fullCols.column("SNRPEAK").getPrecision();
+    xyz = fullCols.column("X").getPrecision();
+    xyz = std::max(xyz, fullCols.column("Y").getPrecision());
+    xyz = std::max(xyz, fullCols.column("Z").getPrecision());
+    if(this->head.isWCS()) fint = fullCols.column("FINT").getPrecision();
+    else fint = fullCols.column("FTOT").getPrecision();
+    pos = fullCols.column("WRA").getPrecision();
+    pos = std::max(pos, fullCols.column("WDEC").getPrecision());
   
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
       obj->setVelPrec(vel);

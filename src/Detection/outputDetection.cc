@@ -37,12 +37,13 @@
 #include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Outputs/columns.hh>
+#include <duchamp/Outputs/CatalogueSpecification.hh>
 #include <duchamp/Utils/feedback.hh>
 
 namespace duchamp
 {
 
-  void outputTableHeader(std::ostream &stream, std::vector<Catalogues::Column> columns, Catalogues::DESTINATION tableType, bool flagWCS)
+  void outputTableHeader(std::ostream &stream, Catalogues::CatalogueSpecification columns, Catalogues::DESTINATION tableType, bool flagWCS)
   {
     /// @details
     ///  Prints the header row for a table of detections. The columns
@@ -58,24 +59,28 @@ namespace duchamp
     /// \param flagWCS A flag for use with Column::doCol(), specifying
     /// whether to use FINT or FTOT.
 
-    std::vector<Catalogues::Column>::iterator col;
-    for(col=columns.begin();col<columns.end();col++)
-      if(col->doCol(tableType,flagWCS)) col->printDash(stream);
+    // std::vector<Catalogues::Column>::iterator col;
+    // for(col=columns.begin();col<columns.end();col++)
+    for(size_t i=0;i<columns.size();i++)
+      if(columns.column(i).doCol(tableType,flagWCS)) columns.column(i).printDash(stream);
     stream << "\n";
-    for(col=columns.begin();col<columns.end();col++)
-      if(col->doCol(tableType,flagWCS)) col->printTitle(stream);
+    // for(col=columns.begin();col<columns.end();col++)
+    for(size_t i=0;i<columns.size();i++)
+      if(columns.column(i).doCol(tableType,flagWCS)) columns.column(i).printTitle(stream);
     stream << "\n";
-    for(col=columns.begin();col<columns.end();col++)
-      if(col->doCol(tableType,flagWCS)) col->printUnits(stream);
+    // for(col=columns.begin();col<columns.end();col++)
+    for(size_t i=0;i<columns.size();i++)
+      if(columns.column(i).doCol(tableType,flagWCS)) columns.column(i).printUnits(stream);
     stream << "\n";
-    for(col=columns.begin();col<columns.end();col++)
-      if(col->doCol(tableType,flagWCS)) col->printDash(stream);
+    // for(col=columns.begin();col<columns.end();col++)
+    for(size_t i=0;i<columns.size();i++)
+      if(columns.column(i).doCol(tableType,flagWCS)) columns.column(i).printDash(stream);
     stream << "\n";
 
   }
   //--------------------------------------------------------------------
 
-  void Detection::printTableRow(std::ostream &stream, std::vector<Catalogues::Column> columns, Catalogues::DESTINATION tableType)
+  void Detection::printTableRow(std::ostream &stream, Catalogues::CatalogueSpecification columns, Catalogues::DESTINATION tableType)
   {
     /// @details
     ///  Print a row of values for the current Detection into an output
@@ -88,10 +93,11 @@ namespace duchamp
     /// shouldn't be used with this function).
 
     stream.setf(std::ios::fixed);  
-    std::vector<Catalogues::Column>::iterator col;
-    for(col=columns.begin();col<columns.end();col++)
-      if(col->doCol(tableType,this->flagWCS)) this->printTableEntry(stream, *col);
-      
+    // std::vector<Catalogues::Column>::iterator col;
+    // for(col=columns.begin();col<columns.end();col++)
+    for(size_t i=0;i<columns.size();i++){
+      if(columns.column(i).doCol(tableType,this->flagWCS)) this->printTableEntry(stream, columns.column(i));
+    }
     stream << "\n";
 
   }

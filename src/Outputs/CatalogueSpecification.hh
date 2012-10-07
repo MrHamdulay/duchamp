@@ -47,7 +47,10 @@ namespace duchamp {
       virtual ~CatalogueSpecification(){};
 
       void addColumn(Column col);
-      Column column(std::string type);
+      Column &column(std::string type){return itsColumnList[itsTypeMap[type]];};
+      Column &column(int i){return itsColumnList[i];};
+      Column *pCol(int i){return &(itsColumnList[i]);};
+      void removeColumn(std::string type);
       size_t size(){return itsColumnList.size();};
       
 
@@ -56,6 +59,12 @@ namespace duchamp {
       std::map<std::string, int> itsTypeMap;
     };
 
+
+    /// @brief Returns a vector of Col for results file output.
+    CatalogueSpecification getFullColSet(std::vector<Detection> &objectList, FitsHeader &head);
+    
+    /// @brief Returns a vector of Col for logfile output.
+    CatalogueSpecification getLogColSet(std::vector<Detection> &objectList, FitsHeader &head);
 
   }
 
