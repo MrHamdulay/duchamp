@@ -87,7 +87,7 @@ for (( i=0; i<${#number[@]}; i++ )); do
 
 #Test the Karma annotation files
     if [ `diff $karma $Skarma | wc -l` == 0 ]; then
-        echo "  Karma annoation files correct."
+        echo "  Karma annotation files correct."
     else
         echo "  ERROR: Differences in the Karma annotation files:"
         diff $karma $Skarma

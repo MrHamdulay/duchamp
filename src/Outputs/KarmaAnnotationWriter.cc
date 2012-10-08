@@ -62,7 +62,7 @@ namespace duchamp {
   void KarmaAnnotationWriter::writeTableHeader()
   {
     if(this->itsOpenFlag){
-      this->itsFileStream << "COLOR RED\n";
+      this->itsFileStream << "COLOR " << this->itsColour<<"\n";
       if(this->itsHead->isWCS()) this->itsFileStream << "COORD W\n";
       else this->itsFileStream << "COORD P\n";
       this->itsFileStream << std::setprecision(6);
@@ -92,6 +92,17 @@ namespace duchamp {
   {
     if(this->itsOpenFlag){
       this->itsFileStream << "ELLIPSE " << x << " " << y << " " << r1 << " " << r2 << " " << angle << "\n";
+    }
+  }
+
+  void KarmaAnnotationWriter::joinTheDots(std::vector<double> x, std::vector<double> y)
+  {
+    if(this->itsOpenFlag){
+      if(x.size()==y.size()){
+	this->itsFileStream << "CLINES";
+	for(size_t i=0;i<x.size();i++) this->itsFileStream <<" " << x[i] << " " << y[i];
+	this->itsFileStream << "\n";
+      }
     }
   }
 

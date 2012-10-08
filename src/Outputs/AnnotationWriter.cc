@@ -29,6 +29,7 @@
 #include <duchamp/Outputs/CatalogueWriter.hh>
 #include <duchamp/Outputs/FileCatalogueWriter.hh>
 #include <duchamp/fitsHeader.hh>
+#include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>
 #include <duchamp/Detection/detection.hh>
 #include <ios>
@@ -43,8 +44,9 @@ namespace duchamp {
   AnnotationWriter::AnnotationWriter():
     FileCatalogueWriter()
   {
-    /// @details Sets the comment string to the default of '#'.
+    /// @details Sets the comment string to the default of '#' and the colour to.
     this->itsComment = "#";
+    this->itsColour = duchamp::annotationColour;
   }
 
   AnnotationWriter::AnnotationWriter(std::string name):
@@ -52,7 +54,8 @@ namespace duchamp {
   {
     /// @details Sets the comment string to the default of '#'.
     this->itsComment = "#";
-  }
+    this->itsColour = duchamp::annotationColour;
+ }
 
   AnnotationWriter::AnnotationWriter(const AnnotationWriter& other)
   {
@@ -64,6 +67,7 @@ namespace duchamp {
     if(this==&other) return *this;
     ((FileCatalogueWriter &) *this) = other;
     this->itsComment = other.itsComment;
+    this->itsColour = other.itsColour;
     return *this;
   }
   

@@ -63,6 +63,8 @@ namespace duchamp {
     void circle(double x, double y, double r);
     /// @brief Annotate with an ellipse
     void ellipse(double x, double y, double r1, double r2, double angle);
+    /// @brief Annotate with a series of lines connecting points
+    void joinTheDots(std::vector<double> x, std::vector<double> y);
 
   };
 

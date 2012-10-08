@@ -30,6 +30,7 @@
 #include <duchamp/Outputs/CatalogueWriter.hh>
 #include <duchamp/Outputs/FileCatalogueWriter.hh>
 #include <duchamp/Detection/detection.hh>
+#include <duchamp/Utils/utils.hh>
 #include <ios>
 #include <iostream>
 #include <iomanip>
@@ -62,7 +63,7 @@ namespace duchamp {
   void DS9AnnotationWriter::writeTableHeader()
   {
     if(this->itsOpenFlag){
-      this->itsFileStream << "global color=red ";
+      this->itsFileStream << "global color=" << makelower(this->itsColour) << " ";
       if(this->itsHead->isWCS()) this->itsFileStream << "wcs=wcs";
       this->itsFileStream << "\n";
       this->itsFileStream.setf(std::ios::fixed);
@@ -95,5 +96,15 @@ namespace duchamp {
     }
   }
 
+  void DS9AnnotationWriter::joinTheDots(std::vector<double> x, std::vector<double> y)
+  {
+    if(this->itsOpenFlag){
+      if(x.size()==y.size()){
+	this->itsFileStream << "polygon";
+	for(size_t i=0;i<x.size();i++) this->itsFileStream <<" " << x[i] << " " << y[i];
+	this->itsFileStream << "\n";
+      }
+    }
+  }
   
 }

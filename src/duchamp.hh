@@ -97,35 +97,35 @@ Selavy re-analyses and re-plots objects found by Duchamp.\n\
   };
 
   // Macro to handle warnings, specifying the origin of the warning and taking a streamed input
-#define DUCHAMPWARN(origin,stream) \
-  {                                \
-  do {                               \
-   std::ostringstream oss;        \
-    oss << stream;                 \
-    std::cerr << "WARNING <" << origin << "> : " << oss.str()<<"\n"; \
- } while(0);                        \
+#define DUCHAMPWARN(origin,stream)					\
+  {									\
+    do {								\
+      std::ostringstream oss;						\
+      oss << stream;							\
+      std::cerr << "WARNING <" << origin << "> : " << oss.str()<<"\n";	\
+    } while(0);								\
   }     
   
   // Macro to handle errors, with origin and streamed input. No exception is thrown (use DUCHAMPTHROW instead)
-#define DUCHAMPERROR(origin,stream) \
-{                                   \
- do {                               \
-  std::ostringstream oss;           \
-  oss << stream;                    \
-  std::cerr << "ERROR <" << origin << "> : " << oss.str() << "\n"; \
- } while(0);                        \
-}
+#define DUCHAMPERROR(origin,stream)					\
+  {									\
+    do {								\
+      std::ostringstream oss;						\
+      oss << stream;							\
+      std::cerr << "ERROR <" << origin << "> : " << oss.str() << "\n";	\
+    } while(0);								\
+  }
 
-#define DUCHAMPTHROW(origin,stream) \
-{                                   \
-  DUCHAMPERROR(origin,"\a"<<stream);\
-  std::ostringstream error;         \
-  error << stream;                  \
-  throw DuchampError(error.str());  \
-}
+#define DUCHAMPTHROW(origin,stream)		\
+  {						\
+    DUCHAMPERROR(origin,"\a"<<stream);		\
+    std::ostringstream error;			\
+    error << stream;				\
+    throw DuchampError(error.str());		\
+  }
 
   /// The spectral type that we want the wcsprm structs to be in. 
-    const char duchampVelocityType[9] = "VOPT-F2W";
+  const char duchampVelocityType[9] = "VOPT-F2W";
   //const char duchampVelocityType[9] = "VELO-F2V";
   /// The spectral type that we want the wcsprm structs to be in when no velocity info is present. 
   const char duchampFrequencyType[9] = "FREQ    ";
@@ -188,41 +188,44 @@ Selavy re-analyses and re-plots objects found by Duchamp.\n\
 
   // Descriptive Headers: for the reconstruction case
   const std::string header_reconHistory1 = 
-    "Reconstructed with a trous wavelet technique";
+	     "Reconstructed with a trous wavelet technique";
   const std::string header_reconHistory2 = 
-    "Reconstruction by " + PROGNAME + " v." + VERSION;
+	     "Reconstruction by " + PROGNAME + " v." + VERSION;
   const std::string header_reconHistory_input = 
-    "Original (input) image used by " + PROGNAME + " follows";
+	     "Original (input) image used by " + PROGNAME + " follows";
   const std::string header_reconSubsection_comment  = 
-    "A subsection of the original was reconstructed by " + PROGNAME;
+	     "A subsection of the original was reconstructed by " + PROGNAME;
   const std::string header_atrous_comment  = 
-    "The following are the Duchamp parameters used in reconstruction";
+	     "The following are the Duchamp parameters used in reconstruction";
 
   // Descriptive Headers: for the Smoothing case
   const std::string header_smoothHistory = 
-    "Smoothed by " + PROGNAME + " v." + VERSION;
+	     "Smoothed by " + PROGNAME + " v." + VERSION;
   const std::string header_smoothHistory_input = 
-    "Original (input) image used by " + PROGNAME + " follows";
+	     "Original (input) image used by " + PROGNAME + " follows";
   const std::string header_smoothSubsection_comment  = 
-    "A subsection of the original was smoothed by " + PROGNAME;
+	     "A subsection of the original was smoothed by " + PROGNAME;
   const std::string header_smoothSpatial = "Spatial, gaussian kernel";
   const std::string header_smoothSpectral= "Spectral, hanning filter";
 
   // Descriptive Headers: for the output Mask image
   const std::string header_maskHistory =
-    "Results of searching by " + PROGNAME + " v." + VERSION;
+	     "Results of searching by " + PROGNAME + " v." + VERSION;
   const std::string header_maskHistory_input = 
-    "Input image used by " + PROGNAME + " follows";
+	     "Input image used by " + PROGNAME + " follows";
   const std::string header_maskSubsection_comment = 
-    "A subsection of the original was searched by " + PROGNAME;
+	     "A subsection of the original was searched by " + PROGNAME;
 
   // Descriptive Headers: for the output Moment-0 image
   const std::string header_moment0History =
-    "Moment-0 map from searching by " + PROGNAME + " v." + VERSION;
+	     "Moment-0 map from searching by " + PROGNAME + " v." + VERSION;
   const std::string header_moment0History_input = 
-    "Input image used by " + PROGNAME + " follows";
+	     "Input image used by " + PROGNAME + " follows";
   const std::string header_moment0Subsection_comment = 
-    "A subsection of the original was searched by " + PROGNAME;
+	     "A subsection of the original was searched by " + PROGNAME;
+
+  // Default colour used for the annotation files
+  const std::string annotationColour = "RED";
 
 }
 

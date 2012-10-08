@@ -64,6 +64,8 @@ namespace duchamp {
 
     /// @brief Define how comments are represented - this string will be placed at the start of a comment line
     void setCommentString(std::string s){itsComment = s;};
+    /// @brief Set the colour string
+    void setColourString(std::string s){itsColour = s;};
 
     /// @brief Write header text describing what the file is for
     virtual void writeHeader();
@@ -87,9 +89,12 @@ namespace duchamp {
     virtual void circle(double x, double y, double r)=0;
     /// @brief Annotate with an ellipse
     virtual void ellipse(double x, double y, double r1, double r2, double angle)=0;
+    /// @brief Annotate with a series of lines connecting points
+    virtual void joinTheDots(std::vector<double> x, std::vector<double> y)=0;
 
   protected:
     std::string itsComment; ///< How comments are denoted in the annotation file (may be just a single char, eg. '#', but make it flexible)
+    std::string itsColour; ///< What colour to make the annotations - set at the start of the file and applies to all annotations
   };
 
 }
