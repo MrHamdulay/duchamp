@@ -196,14 +196,6 @@ namespace duchamp {
     }
   }
 
-  void ASCIICatalogueWriter::writeEntries()
-  {
-    if(this->itsOpenFlag){
-      for(std::vector<Detection>::iterator obj=this->itsObjectList->begin();obj<this->itsObjectList->end();obj++)
-	this->writeEntry(&*obj);
-    }
-  }
-
   void ASCIICatalogueWriter::writeEntry(Detection *object)
   {
     if(this->itsOpenFlag){

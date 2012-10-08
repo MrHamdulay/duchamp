@@ -90,5 +90,13 @@ namespace duchamp {
     this->itsCubeDim = cube->getDimArray();
   }
 
+  void CatalogueWriter::writeEntries()
+  {
+    if(this->itsOpenFlag){
+      for(std::vector<Detection>::iterator obj=this->itsObjectList->begin();obj<this->itsObjectList->end();obj++)
+	this->writeEntry(&*obj);
+    }
+  }
+
 
 }

@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// VOTableCatalogueWriter.hh: Writing output catalogues to VOTable files
+// KarmaAnnotationWriter.hh: Class for writing results to karma annotation files.
 // -----------------------------------------------------------------------
 // Copyright (C) 2006, Matthew Whiting, ATNF
 //
@@ -25,9 +25,9 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
-#ifndef DUCHAMP_VOTABLE_CATALOGUE_WRITER_H_
-#define DUCHAMP_VOTABLE_CATALOGUE_WRITER_H_
-
+#ifndef DUCHAMP_KARMA_ANNOTATION_WRITER_H_
+#define DUCHAMP_KARMA_ANNOTATION_WRITER_H_
+#include <duchamp/Outputs/AnnotationWriter.hh>
 #include <duchamp/Outputs/CatalogueWriter.hh>
 #include <duchamp/Outputs/FileCatalogueWriter.hh>
 #include <duchamp/Detection/detection.hh>
@@ -38,33 +38,25 @@
 
 namespace duchamp {
 
-  class VOTableCatalogueWriter : public FileCatalogueWriter
+  class KarmaAnnotationWriter : public AnnotationWriter
   {
   public:
-    VOTableCatalogueWriter();
-    VOTableCatalogueWriter(std::string name);
-    VOTableCatalogueWriter(const VOTableCatalogueWriter& other);
-    VOTableCatalogueWriter& operator= (const VOTableCatalogueWriter& other);
-    virtual ~VOTableCatalogueWriter(){};
+    KarmaAnnotationWriter();
+    KarmaAnnotationWriter(std::string name);
+    KarmaAnnotationWriter(const KarmaAnnotationWriter& other);
+    KarmaAnnotationWriter& operator= (const KarmaAnnotationWriter& other);
+    virtual ~KarmaAnnotationWriter(){};
 
-    /// @brief Write header information - not including parameters
-    void writeHeader();
-
-    void writeParameters();
-    void writeStats(); 
     void writeTableHeader();
-    void writeEntry(Detection *object);
 
-    void writeFooter();
+    void text(float x, float y, std::string text);
+    void line(float x1, float x2, float y1, float y2);
+    void circle(float x, float y, float r);
+    void ellipse(float x, float y, float r1, float r2, float angle);
 
-    void setTableName(std::string s){itsTableName=s;};
-    void setTableDescription(std::string s){itsTableDescription=s;};
-
-  protected:
-    std::string itsTableName;
-    std::string itsTableDescription;
   };
 
 }
 
 #endif
+

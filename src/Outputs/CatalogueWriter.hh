@@ -66,7 +66,7 @@ namespace duchamp {
     virtual void writeParameters() = 0;
 
     /// @brief Write out the entire catalogue
-    virtual void writeEntries() = 0;
+    virtual void writeEntries();
 
     /// @brief Write a single catalogue entry based on a detected object
     virtual void writeEntry(Detection *object) = 0;

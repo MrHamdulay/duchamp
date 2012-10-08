@@ -177,16 +177,9 @@ namespace duchamp {
 
   }
 
-  void VOTableCatalogueWriter::writeEntries()
-  {
-    this->itsFileStream.setf(std::ios::fixed);  
-
-    for(std::vector<Detection>::iterator obj=this->itsObjectList->begin();obj<this->itsObjectList->end();obj++)
-      this->writeEntry(&*obj);
-  }
-
   void VOTableCatalogueWriter::writeEntry(Detection *object)
   {
+    this->itsFileStream.setf(std::ios::fixed);  
 
     this->itsFileStream<<"        <TR>\n";
     this->itsFileStream<<"          ";

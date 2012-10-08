@@ -60,7 +60,6 @@ namespace duchamp {
     void writeParameters();
     void writeStats();
     void writeTableHeader();
-    void writeEntries();
     void writeEntry(Detection *object);
     void writeCubeSummary();
     void writeFooter(){};
