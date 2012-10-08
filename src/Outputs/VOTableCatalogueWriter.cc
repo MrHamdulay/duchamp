@@ -27,6 +27,7 @@
 // -----------------------------------------------------------------------
 #include <duchamp/Outputs/VOTableCatalogueWriter.hh>
 #include <duchamp/Outputs/CatalogueWriter.hh>
+#include <duchamp/Outputs/FileCatalogueWriter.hh>
 #include <duchamp/Outputs/columns.hh>
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Utils/utils.hh>
@@ -39,14 +40,14 @@
 namespace duchamp {
 
    VOTableCatalogueWriter::VOTableCatalogueWriter():
-    CatalogueWriter()
+    FileCatalogueWriter()
   {
     this->itsTableName="";
     this->itsTableDescription="";
   }
 
   VOTableCatalogueWriter::VOTableCatalogueWriter(std::string name):
-    CatalogueWriter(name)
+    FileCatalogueWriter(name)
   {
     this->itsTableName="";
     this->itsTableDescription="";
@@ -60,29 +61,12 @@ namespace duchamp {
   VOTableCatalogueWriter& VOTableCatalogueWriter::operator= (const VOTableCatalogueWriter& other)
   {
     if(this==&other) return *this;
-    ((CatalogueWriter &) *this) = other;
-    this->itsOpenFlag=false;
+    ((FileCatalogueWriter &) *this) = other;
     this->itsTableName=other.itsTableName;
     this->itsTableDescription=other.itsTableDescription;
     return *this;
   }
   
-  bool VOTableCatalogueWriter::openCatalogue(std::ios_base::openmode mode)
-  {
-    if(this->itsName == ""){
-      DUCHAMPERROR("VOTableCatalogueWriter","No catalogue name provided");
-      this->itsOpenFlag = false;
-    }
-    else {
-      this->itsFileStream.open(this->itsName.c_str(),mode);
-      this->itsOpenFlag = !this->itsFileStream.fail();
-    }
-    if(!this->itsOpenFlag) 
-      DUCHAMPERROR("VOTableCatalogueWriter","Could not open file \""<<this->itsName<<"\"");
-    return this->itsOpenFlag;
-
-  }
-
   void VOTableCatalogueWriter::writeHeader()
   {
     if(this->itsOpenFlag){
@@ -227,12 +211,6 @@ namespace duchamp {
     this->itsFileStream<<"  </RESOURCE>\n";
     this->itsFileStream<<"</VOTABLE>\n";
     resetiosflags(std::ios::fixed);
-  }
-
-  bool VOTableCatalogueWriter::closeCatalogue()
-  {
-    this->itsFileStream.close();
-    return !this->itsFileStream.fail();
   }
 
 

@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// VOTableCatalogueWriter.hh: Writing output catalogues to VOTable files
+// FileCatalogueWriter.hh: Writing output catalogues to disk files
 // -----------------------------------------------------------------------
 // Copyright (C) 2006, Matthew Whiting, ATNF
 //
@@ -25,47 +25,38 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
-#ifndef DUCHAMP_VOTABLE_CATALOGUE_WRITER_H_
-#define DUCHAMP_VOTABLE_CATALOGUE_WRITER_H_
+#ifndef DUCHAMP_FILE_CATALOGUE_WRITER_H_
+#define DUCHAMP_FILE_CATALOGUE_WRITER_H_
 
-#include <duchamp/Outputs/CatalogueWriter.hh>
 #include <duchamp/Outputs/FileCatalogueWriter.hh>
-#include <duchamp/Detection/detection.hh>
+#include <duchamp/Outputs/CatalogueWriter.hh>
 #include <ios>
 #include <iostream>
 #include <fstream>
-#include <string>
 
 namespace duchamp {
 
-  class VOTableCatalogueWriter : public FileCatalogueWriter
+  class FileCatalogueWriter : public CatalogueWriter
   {
   public:
-    VOTableCatalogueWriter();
-    VOTableCatalogueWriter(std::string name);
-    VOTableCatalogueWriter(const VOTableCatalogueWriter& other);
-    VOTableCatalogueWriter& operator= (const VOTableCatalogueWriter& other);
-    virtual ~VOTableCatalogueWriter(){};
+    FileCatalogueWriter();
+    FileCatalogueWriter(std::string name);
+    FileCatalogueWriter(const FileCatalogueWriter& other);
+    FileCatalogueWriter& operator= (const FileCatalogueWriter& other);
+    virtual ~FileCatalogueWriter();
+    
+    /// @brief open the catalogue file for writing
+    bool openCatalogue(std::ios_base::openmode mode = std::ios_base::out );
 
-    /// @brief Write header information - not including parameters
-    void writeHeader();
-
-    void writeParameters();
-    void writeStats(); 
-    void writeTableHeader();
-    void writeEntries();
-    void writeEntry(Detection *object);
-
-    void writeFooter();
-
-    void setTableName(std::string s){itsTableName=s;};
-    void setTableDescription(std::string s){itsTableDescription=s;};
+    /// @brief close the catalogue file
+    bool closeCatalogue();
 
   protected:
-    std::string itsTableName;
-    std::string itsTableDescription;
+    std::ofstream itsFileStream;
+
   };
 
 }
 
 #endif
+

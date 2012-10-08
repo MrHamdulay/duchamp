@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// VOTableCatalogueWriter.hh: Writing output catalogues to VOTable files
+// FileCatalogueWriter.cc: Writing output catalogues to disk files
 // -----------------------------------------------------------------------
 // Copyright (C) 2006, Matthew Whiting, ATNF
 //
@@ -25,47 +25,65 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
-#ifndef DUCHAMP_VOTABLE_CATALOGUE_WRITER_H_
-#define DUCHAMP_VOTABLE_CATALOGUE_WRITER_H_
-
-#include <duchamp/Outputs/CatalogueWriter.hh>
 #include <duchamp/Outputs/FileCatalogueWriter.hh>
-#include <duchamp/Detection/detection.hh>
+#include <duchamp/Outputs/CatalogueWriter.hh>
 #include <ios>
 #include <iostream>
 #include <fstream>
-#include <string>
-
 namespace duchamp {
 
-  class VOTableCatalogueWriter : public FileCatalogueWriter
+  FileCatalogueWriter::FileCatalogueWriter():
+    CatalogueWriter()
   {
-  public:
-    VOTableCatalogueWriter();
-    VOTableCatalogueWriter(std::string name);
-    VOTableCatalogueWriter(const VOTableCatalogueWriter& other);
-    VOTableCatalogueWriter& operator= (const VOTableCatalogueWriter& other);
-    virtual ~VOTableCatalogueWriter(){};
+  }
 
-    /// @brief Write header information - not including parameters
-    void writeHeader();
+  FileCatalogueWriter::FileCatalogueWriter(std::string name):
+    CatalogueWriter(name)
+  {
+  }
 
-    void writeParameters();
-    void writeStats(); 
-    void writeTableHeader();
-    void writeEntries();
-    void writeEntry(Detection *object);
+  FileCatalogueWriter::FileCatalogueWriter(const FileCatalogueWriter& other)
+  {
+    this->operator=(other);
+  }
 
-    void writeFooter();
+  FileCatalogueWriter& FileCatalogueWriter::operator= (const FileCatalogueWriter& other)
+  {
+    if(this==&other) return *this;
+    ((CatalogueWriter &) *this) = other;
+    this->itsOpenFlag=false;
+    return *this;
+  }
+  
+  FileCatalogueWriter::~FileCatalogueWriter()
+  {
+    if(this->itsOpenFlag) this->closeCatalogue();
+  }
 
-    void setTableName(std::string s){itsTableName=s;};
-    void setTableDescription(std::string s){itsTableDescription=s;};
+  bool FileCatalogueWriter::openCatalogue(std::ios_base::openmode mode)
+  {
+    if(this->itsName == ""){
+      DUCHAMPERROR("FileCatalogueWriter","No catalogue name provided");
+      this->itsOpenFlag = false;
+    }
+    else {
+      this->itsFileStream.open(this->itsName.c_str(),mode);
+      this->itsOpenFlag = !this->itsFileStream.fail();
+    }
+    if(!this->itsOpenFlag) 
+      DUCHAMPERROR("FileCatalogueWriter","Could not open file \""<<this->itsName<<"\"");
+    return this->itsOpenFlag;
 
-  protected:
-    std::string itsTableName;
-    std::string itsTableDescription;
-  };
+  }
+
+
+
+  bool FileCatalogueWriter::closeCatalogue()
+  {
+    this->itsFileStream.close();
+    if(!this->itsFileStream.fail()) this->itsOpenFlag = false;
+    return !this->itsFileStream.fail();
+  }
+
 
 }
-
-#endif
