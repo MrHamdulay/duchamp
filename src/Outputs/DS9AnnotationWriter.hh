@@ -41,17 +41,27 @@ namespace duchamp {
   class DS9AnnotationWriter : public AnnotationWriter
   {
   public:
+    /// @brief Default constructor
     DS9AnnotationWriter();
+    /// @brief Constructor with given filename
     DS9AnnotationWriter(std::string name);
+    /// @brief Copy constructor
     DS9AnnotationWriter(const DS9AnnotationWriter& other);
+    /// @brief Copy operator
     DS9AnnotationWriter& operator= (const DS9AnnotationWriter& other);
+    /// @brief Default destructor
     virtual ~DS9AnnotationWriter(){};
 
+    /// @brief Write the global properties for the file (colour, WCS info, ...)
     void writeTableHeader();
 
+    /// @brief Annotate with a text string
     void text(double x, double y, std::string text);
+    /// @brief Annotate with a single line
     void line(double x1, double x2, double y1, double y2);
+    /// @brief Annotate with a circle
     void circle(double x, double y, double r);
+    /// @brief Annotate with an ellipse
     void ellipse(double x, double y, double r1, double r2, double angle);
 
   };

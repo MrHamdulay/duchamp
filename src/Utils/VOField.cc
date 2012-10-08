@@ -76,19 +76,19 @@ namespace duchamp
   VOField& VOField::operator= (const VOField& other)
   {
     if(this==&other) return *this;
-    this->ID = other.ID;
-    this->name = other.name;
-    this->UCD = other.UCD;
-    this->units = other.units;
-    this->datatype=other.datatype;
-    this->ref = other.ref;
-    this->width = other.width;
-    this->precision = other.precision;
+    this->itsID = other.itsID;
+    this->itsName = other.itsName;
+    this->itsUCD = other.itsUCD;
+    this->itsUnits = other.itsUnits;
+    this->itsDatatype=other.itsDatatype;
+    this->itsRef = other.itsRef;
+    this->itsWidth = other.itsWidth;
+    this->itsPrecision = other.itsPrecision;
     return *this;
   }
 
 
-  void VOField::define(std::string i, std::string n, std::string U, std::string u, std::string d, std::string r, int w, int p)
+  void VOField::define(std::string id, std::string name, std::string ucd, std::string units, std::string datatype, std::string ref, int width, int prec)
   {
     /// @details
     /// A basic definition function, defining each parameter individually. 
@@ -101,17 +101,17 @@ namespace duchamp
     /// \param w The width
     /// \param p The precision
 
-    this->ID = i;
-    this->name = n;
-    this->UCD = U;
-    this->units = fixUnitsVOT(u);
-    this->datatype = d;
-    this->ref = r;
-    this->width = w;
-    this->precision = p;
+    this->itsID = id;
+    this->itsName = name;
+    this->itsUCD = ucd;
+    this->itsUnits = fixUnitsVOT(units);
+    this->itsDatatype = datatype;
+    this->itsRef = ref;
+    this->itsWidth = width;
+    this->itsPrecision = prec;
   }
 
-  void VOField::define(Catalogues::Column column, std::string i, std::string U, std::string d, std::string r)
+  void VOField::define(Catalogues::Column column, std::string id, std::string ucd, std::string datatype, std::string ref)
   {
     /// @details
     /// Another definition function, using the information in a Catalogues::Column object for some parameters.
@@ -121,14 +121,14 @@ namespace duchamp
     /// \param d The datatype
     /// \param r The ref
 
-    this->ID = i;
-    this->name = column.getName();
-    this->UCD = U;
-    this->units = fixUnitsVOT(column.getUnits());
-    this->datatype = d;
-    this->ref = r;
-    this->width = column.getWidth();
-    this->precision = column.getPrecision();
+    this->itsID = id;
+    this->itsName = column.getName();
+    this->itsUCD = ucd;
+    this->itsUnits = fixUnitsVOT(column.getUnits());
+    this->itsDatatype = datatype;
+    this->itsRef = ref;
+    this->itsWidth = column.getWidth();
+    this->itsPrecision = column.getPrecision();
   }
 
   void VOField::define(Catalogues::Column column)
@@ -137,14 +137,14 @@ namespace duchamp
     /// Another definition function, using the information in a Catalogues::Column object for some parameters.
     /// \param column A Catalogues::Column object
 
-    this->ID = column.getColID();
-    this->name = column.getName();
-    this->UCD = column.getUCD();
-    this->units = fixUnitsVOT(column.getUnits());
-    this->datatype = column.getDatatype();
-    this->ref = column.getExtraInfo();
-    this->width = column.getWidth();
-    this->precision = column.getPrecision();
+    this->itsID = column.getColID();
+    this->itsName = column.getName();
+    this->itsUCD = column.getUCD();
+    this->itsUnits = fixUnitsVOT(column.getUnits());
+    this->itsDatatype = column.getDatatype();
+    this->itsRef = column.getExtraInfo();
+    this->itsWidth = column.getWidth();
+    this->itsPrecision = column.getPrecision();
   }
 
   VOField::VOField(Catalogues::Column column)
@@ -161,12 +161,12 @@ namespace duchamp
     this->define(column);
 
     // Adjust some of the names for clarity
-    if(column.type()=="FINT") this->name = "Integrated_Flux";
-    else if(column.type()=="FTOT") this->name = "Total_Flux";
-    else if(column.type()=="FPEAK") this->name = "Peak_Flux";
-    else if(column.type()=="XCENT") this->name = "X_Centroid";
-    else if(column.type()=="YCENT") this->name = "Y_Centroid";
-    else if(column.type()=="ZCENT") this->name = "Z_Centroid";
+    if(column.type()=="FINT") this->itsName = "Integrated_Flux";
+    else if(column.type()=="FTOT") this->itsName = "Total_Flux";
+    else if(column.type()=="FPEAK") this->itsName = "Peak_Flux";
+    else if(column.type()=="XCENT") this->itsName = "X_Centroid";
+    else if(column.type()=="YCENT") this->itsName = "Y_Centroid";
+    else if(column.type()=="ZCENT") this->itsName = "Z_Centroid";
 
   }
 
@@ -176,18 +176,18 @@ namespace duchamp
     /// Print the Field entry with appropriate formatting.
     /// \param stream The output stream to send the text to.
 
-    stream << "<FIELD name=\"" <<this->name
-	   << "\" ID=\"" << this->ID
-	   << "\" ucd=\"" << this->UCD;
-    if(this->ref!="") stream << "\" ref=\"" << this->ref;
-    stream << "\" datatype=\"" << this->datatype;
-    stream << "\" unit=\"" << this->units;
-    if(datatype=="char")
-      stream << "\" arraysize=\"" << this->width;
+    stream << "<FIELD name=\"" <<this->itsName
+	   << "\" ID=\"" << this->itsID
+	   << "\" ucd=\"" << this->itsUCD;
+    if(this->itsRef!="") stream << "\" ref=\"" << this->itsRef;
+    stream << "\" datatype=\"" << this->itsDatatype;
+    stream << "\" unit=\"" << this->itsUnits;
+    if(this->itsDatatype=="char")
+      stream << "\" arraysize=\"" << this->itsWidth;
     else{
-      stream << "\" width=\"" << this->width;
-      if(datatype=="float" || datatype=="double")
-	stream << "\" precision=\"" << this->precision;
+      stream << "\" width=\"" << this->itsWidth;
+      if(this->itsDatatype=="float" || this->itsDatatype=="double")
+	stream << "\" precision=\"" << this->itsPrecision;
     }
     stream << "\"/>\n";
 

@@ -49,14 +49,20 @@ namespace duchamp
  
     /// @brief Print the PARAM entry 
     void printParam(std::ostream &stream);
+    std::string name(){return itsName;};
+    std::string UCD(){return itsUCD;};
+    std::string datatype(){return itsDatatype;};
+    std::string value(){return itsValue;};
+    int width(){return itsWidth;};
+    std::string units(){return itsUnits;};
     
   private:
-    std::string name;
-    std::string UCD;
-    std::string datatype;
-    std::string value;
-    int width;
-    std::string units;
+    std::string itsName;
+    std::string itsUCD;
+    std::string itsDatatype;
+    std::string itsValue;
+    int         itsWidth;
+    std::string itsUnits;
     
   };
 

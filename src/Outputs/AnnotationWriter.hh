@@ -51,25 +51,41 @@ namespace duchamp {
   class AnnotationWriter : public FileCatalogueWriter
   {
   public:
+    /// @brief Default constructor
     AnnotationWriter();
+    /// @brief Constructor with given filename
     AnnotationWriter(std::string name);
+    /// @brief Copy constructor
     AnnotationWriter(const AnnotationWriter& other);
+    /// @brief Copy operator
     AnnotationWriter& operator= (const AnnotationWriter& other);
+    /// @brief Default destructor
     virtual ~AnnotationWriter(){};
 
+    /// @brief Define how comments are represented - this string will be placed at the start of a comment line
     void setCommentString(std::string s){itsComment = s;};
 
+    /// @brief Write header text describing what the file is for
     virtual void writeHeader();
+    /// @brief Write a summary of the input parameters
     virtual void writeParameters();
+    /// @brief Write a summary of the statistics used for detection
     virtual void writeStats(); 
+    /// @brief Write the global properties for the file (colour, WCS info, ...)
     virtual void writeTableHeader()=0;
+    /// @brief Write information describing a detected object
     virtual void writeEntry(Detection *object);
 
+    /// @brief Write any information to go at the end of the file
     virtual void writeFooter(){};
 
+    /// @brief Annotate with a text string
     virtual void text(double x, double y, std::string text)=0;
+    /// @brief Annotate with a single line
     virtual void line(double x1, double x2, double y1, double y2)=0;
+    /// @brief Annotate with a circle
     virtual void circle(double x, double y, double r)=0;
+    /// @brief Annotate with an ellipse
     virtual void ellipse(double x, double y, double r1, double r2, double angle)=0;
 
   protected:

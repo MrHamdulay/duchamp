@@ -43,12 +43,14 @@ namespace duchamp {
   AnnotationWriter::AnnotationWriter():
     FileCatalogueWriter()
   {
+    /// @details Sets the comment string to the default of '#'.
     this->itsComment = "#";
   }
 
   AnnotationWriter::AnnotationWriter(std::string name):
     FileCatalogueWriter(name)
   {
+    /// @details Sets the comment string to the default of '#'.
     this->itsComment = "#";
   }
 
@@ -68,49 +70,44 @@ namespace duchamp {
 
   void AnnotationWriter::writeHeader()
   {
+    /// @details Writes, as comments, two lines indicating the file
+    /// comes from Duchamp (giving the version number) and the name of
+    /// the FITS file (with subsection if used).
+
     if(this->itsOpenFlag){
-      this->itsFileStream << "# Duchamp Source Finder v."<< VERSION <<"\n";
+      this->itsFileStream << this->itsComment << " Duchamp Source Finder v."<< VERSION <<"\n";
       this->itsFileStream << this->itsComment << " Results for FITS file: " << this->itsParam->getFullImageFile() << "\n";
     }
   }
 
   void AnnotationWriter::writeParameters()
   {
+    /// @details Writes, as comments, a summary of the parameters used
+    /// in running Duchamp. Uses the VOParam interface (as for
+    /// VOTableCatalogeWriter), taking just the name and the value -
+    /// this provides the effective parameter set that generated the
+    /// detection list
+
     if(this->itsOpenFlag){
       
-      if(this->itsParam->getFlagFDR())
-	this->itsFileStream<<this->itsComment << " FDR Significance = " << this->itsParam->getAlpha() << "\n";
-      else
-	this->itsFileStream<<this->itsComment << " Threshold = " << this->itsParam->getCut() << "\n";
-      if(this->itsParam->getFlagATrous()){
-	this->itsFileStream<<this->itsComment << " The a trous reconstruction method was used, with the following parameters.\n";
-	this->itsFileStream<<this->itsComment << "  Dimension = " << this->itsParam->getReconDim() << "\n";
-	this->itsFileStream<<this->itsComment << "  Threshold = " << this->itsParam->getAtrousCut() << "\n";
-	this->itsFileStream<<this->itsComment << "  Minimum Scale =" << this->itsParam->getMinScale() << "\n";
-	this->itsFileStream<<this->itsComment << "  Filter = " << this->itsParam->getFilterName() << "\n";
+      std::vector<VOParam> paramList = this->itsParam->getVOParams();
+      size_t width=0;
+      for(std::vector<VOParam>::iterator param=paramList.begin();param<paramList.end();param++) width=std::max(width,param->name().size()+2);
+      for(std::vector<VOParam>::iterator param=paramList.begin();param<paramList.end();param++){
+	this->itsFileStream.setf(std::ios::left);
+	this->itsFileStream << this->itsComment << " "<< std::setw(width) << param->name() << param->value() <<"\n";
       }
-      else if(this->itsParam->getFlagSmooth()){
-	this->itsFileStream<<this->itsComment << " The data was smoothed prior to searching, with the following parameters.\n";
-	this->itsFileStream<<this->itsComment << "  Smoothing type = " << this->itsParam->getSmoothType() << "\n";
-	if(this->itsParam->getSmoothType()=="spectral"){
-	  this->itsFileStream << this->itsComment << "  Hanning width = " << this->itsParam->getHanningWidth() << "\n";
-	}
-	else{
-	  this->itsFileStream << this->itsComment << "  Kernel Major axis = " << this->itsParam->getKernMaj() << "\n";
-	  if(this->itsParam->getKernMin()>0) 
-	    this->itsFileStream << this->itsComment << "  Kernel Minor axis = " << this->itsParam->getKernMin() << "\n";
-	  else
-	    this->itsFileStream << this->itsComment << "  Kernel Minor axis = " << this->itsParam->getKernMaj() << "\n";
-	  this->itsFileStream << this->itsComment << "  Kernel Major axis = " << this->itsParam->getKernPA() << "\n";
-	}
-      }
-      this->itsFileStream << this->itsComment << "\n";
 
     }
   }
 
   void AnnotationWriter::writeStats()
   {
+    /// @details Writes, as comments, the detection threshold, plus
+    /// the mean and std.deviation (or their robust estimates) of the
+    /// noise. If robust methods are used, a note is added to that
+    /// effect.
+
     if(this->itsOpenFlag){
       this->itsFileStream << this->itsComment << " Detection threshold used = " << this->itsStats->getThreshold() <<"\n";
       this->itsFileStream << this->itsComment << " Mean of noise background = " << this->itsStats->getMiddle() << "\n";
@@ -122,6 +119,15 @@ namespace duchamp {
 
   void AnnotationWriter::writeEntry(Detection *object)
   {
+    /// @details The given object is written as an annotation. If the
+    /// parameter annotationType = "borders", then vertical &
+    /// horizontal lines are drawn around the spatial extent of the
+    /// detection, otherwise (annotationType = "circles") a circle is
+    /// drawn with radius of (half) the maximum spatial width. A text
+    /// string is also written showing the object ID. In all cases,
+    /// the derived class must define the actual methods for writing
+    /// lines, circles, text.
+
     if(this->itsOpenFlag){
 
       if(this->itsParam->getAnnotationType() == "borders"){

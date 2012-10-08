@@ -68,20 +68,20 @@ namespace duchamp
     /// @brief Define a FIELD by individual parameters, using only a Catalogues::Column object 
     void define(Catalogues::Column column);
 
-    void setUCD(std::string u){UCD=u;};
+    void setUCD(std::string u){itsUCD=u;};
 
     /// @brief Print the FIELD entry 
     void printField(std::ostream &stream);
     
   private:
-    std::string ID;
-    std::string name;
-    std::string UCD;
-    std::string units;
-    std::string datatype;
-    std::string ref;
-    int width;
-    int precision;
+    std::string itsID;
+    std::string itsName;
+    std::string itsUCD;
+    std::string itsUnits;
+    std::string itsDatatype;
+    std::string itsRef;
+    int itsWidth;
+    int itsPrecision;
 
   };
 

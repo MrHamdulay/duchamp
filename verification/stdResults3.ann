@@ -1,12 +1,29 @@
 # Duchamp Source Finder v.1.2
 # Results for FITS file: verification/verificationCube.fits
-# Threshold = 3
-# The data was smoothed prior to searching, with the following parameters.
-#  Smoothing type = spatial
-#  Kernel Major axis = 3
-#  Kernel Minor axis = 3
-#  Kernel Major axis = 0
-#
+# imageFile              verification/verificationCube.fits
+# flagSubsection         0
+# flagStatSec            0
+# searchType             spatial
+# flagNegative           0
+# flagBaseline           0
+# flagRobustStats        1
+# flagFDR                0
+# snrCut                 3
+# flagGrowth             0
+# minVoxels              4
+# minPix                 2
+# minChannels            3
+# flagAdjacent           1
+# threshVelocity         3
+# flagRejectBeforeMerge  0
+# flagTwoStageMerging    1
+# pixelCentre            centroid
+# flagSmooth             1
+# smoothType             spatial
+# kernMaj                3
+# kernMin                3
+# kernPA                 0
+# flagATrous             0
 # Detection threshold used = 3.0426
 # Mean of noise background = 0.0148019
 # Std. Deviation of noise background = 1.00927

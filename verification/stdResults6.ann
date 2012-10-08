@@ -1,12 +1,33 @@
 # Duchamp Source Finder v.1.2
 # Results for FITS file: verification/verificationCube.fits[35:64,35:64,1:128]
-# Threshold = 4
-# The a trous reconstruction method was used, with the following parameters.
-#  Dimension = 1
-#  Threshold = 3
-#  Minimum Scale =1
-#  Filter = B3 spline function
-#
+# imageFile              verification/verificationCube.fits
+# flagSubsection         1
+# subsection             [35:64,35:64,1:128]
+# flagStatSec            0
+# StatSec                [*,*,*]
+# searchType             spatial
+# flagNegative           0
+# flagBaseline           0
+# flagRobustStats        1
+# flagFDR                0
+# snrCut                 4
+# flagGrowth             0
+# minVoxels              4
+# minPix                 2
+# minChannels            2
+# flagAdjacent           1
+# threshVelocity         3
+# flagRejectBeforeMerge  0
+# flagTwoStageMerging    1
+# pixelCentre            centroid
+# flagSmooth             0
+# flagATrous             1
+# reconDim               1
+# scaleMin               1
+# scaleMax               5
+# snrRecon               3
+# reconConvergence       0.005
+# filterCode             1
 # Detection threshold used = 3.94241
 # Mean of noise background = 0.0343318
 # Std. Deviation of noise background = 0.97702

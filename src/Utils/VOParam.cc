@@ -37,7 +37,7 @@ namespace duchamp {
   }
   
   template <class T> VOParam::VOParam(std::string name, std::string UCD, std::string datatype, T value, int width, std::string units):
-    name(name),UCD(UCD),datatype(datatype),width(width),units(units)
+    itsName(name),itsUCD(UCD),itsDatatype(datatype),itsWidth(width),itsUnits(units)
   {
     /// @details
     /// A basic definition function, defining each parameter
@@ -52,7 +52,7 @@ namespace duchamp {
 
     std::stringstream ss;
     ss << value;
-    this->value = ss.str();
+    this->itsValue = ss.str();
   }
   template VOParam::VOParam(std::string n, std::string U, std::string d, bool v, int w, std::string u);
   template VOParam::VOParam(std::string n, std::string U, std::string d, int v, int w, std::string u);
@@ -70,12 +70,12 @@ namespace duchamp {
   VOParam& VOParam::operator= (const VOParam& other)
   {
     if(this==&other) return *this;
-    this->name = other.name;
-    this->UCD = other.UCD;
-    this->datatype=other.datatype;
-    this->width = other.width;
-    this->value = other.value;
-    this->units = other.units;
+    this->itsName = other.itsName;
+    this->itsUCD = other.itsUCD;
+    this->itsDatatype=other.itsDatatype;
+    this->itsWidth = other.itsWidth;
+    this->itsValue = other.itsValue;
+    this->itsUnits = other.itsUnits;
     return *this;
   }
   
@@ -86,18 +86,18 @@ namespace duchamp {
     /// Print the Param entry with appropriate formatting.
     /// \param stream The output stream to send the text to.
 
-    stream << "<PARAM name=\"" <<this->name
-	   << "\" ucd=\"" << this->UCD
-	   << "\" datatype=\"" << this->datatype;
-    if(this->units!="")
-      stream << "\" units=\"" << this->units;
-    if(this->width!=0){
-      if(datatype=="char")
-	stream << "\" arraysize=\"" << this->width;
+    stream << "<PARAM name=\"" <<this->itsName
+	   << "\" ucd=\"" << this->itsUCD
+	   << "\" datatype=\"" << this->itsDatatype;
+    if(this->itsUnits!="")
+      stream << "\" units=\"" << this->itsUnits;
+    if(this->itsWidth!=0){
+      if(this->itsDatatype=="char")
+	stream << "\" arraysize=\"" << this->itsWidth;
       else
-	stream << "\" width=\"" << this->width;
+	stream << "\" width=\"" << this->itsWidth;
     }
-    stream << "\" value=\"" << this->value
+    stream << "\" value=\"" << this->itsValue
 	   << "\"/>\n";
   }
 

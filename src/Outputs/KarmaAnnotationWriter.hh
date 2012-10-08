@@ -41,17 +41,27 @@ namespace duchamp {
   class KarmaAnnotationWriter : public AnnotationWriter
   {
   public:
+    /// @brief Default constructor
     KarmaAnnotationWriter();
+    /// @brief Constructor with given filename
     KarmaAnnotationWriter(std::string name);
+    /// @brief Copy constructor
     KarmaAnnotationWriter(const KarmaAnnotationWriter& other);
+    /// @brief Copy operator
     KarmaAnnotationWriter& operator= (const KarmaAnnotationWriter& other);
+    /// @brief Default destructor
     virtual ~KarmaAnnotationWriter(){};
 
+    /// @brief Write the global properties for the file (colour, WCS info, ...)
     void writeTableHeader();
 
+    /// @brief Annotate with a text string
     void text(double x, double y, std::string text);
+    /// @brief Annotate with a single line
     void line(double x1, double x2, double y1, double y2);
+    /// @brief Annotate with a circle
     void circle(double x, double y, double r);
+    /// @brief Annotate with an ellipse
     void ellipse(double x, double y, double r1, double r2, double angle);
 
   };
