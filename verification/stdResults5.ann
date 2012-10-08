@@ -2,6 +2,10 @@
 # Results for FITS file: verification/verificationCube.fits[35:64,35:64,1:128]
 # Threshold = 4
 #
+# Detection threshold used = 4.1253
+# Mean of noise background = 0.0343318
+# Std. Deviation of noise background = 1.02274
+#  [Using robust methods]
 COLOR RED
 COORD W
 LINE 90.834066 -26.099617 90.759829 -26.099768

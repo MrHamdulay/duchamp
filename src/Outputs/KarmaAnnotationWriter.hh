@@ -49,10 +49,10 @@ namespace duchamp {
 
     void writeTableHeader();
 
-    void text(float x, float y, std::string text);
-    void line(float x1, float x2, float y1, float y2);
-    void circle(float x, float y, float r);
-    void ellipse(float x, float y, float r1, float r2, float angle);
+    void text(double x, double y, std::string text);
+    void line(double x1, double x2, double y1, double y2);
+    void circle(double x, double y, double r);
+    void ellipse(double x, double y, double r1, double r2, double angle);
 
   };
 

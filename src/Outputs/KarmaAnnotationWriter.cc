@@ -33,6 +33,7 @@
 #include <ios>
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <string>
 
 namespace duchamp {
@@ -64,28 +65,30 @@ namespace duchamp {
       this->itsFileStream << "COLOR RED\n";
       if(this->itsHead->isWCS()) this->itsFileStream << "COORD W\n";
       else this->itsFileStream << "COORD P\n";
+      this->itsFileStream << std::setprecision(6);
+      this->itsFileStream.setf(std::ios::fixed);
     }
   }
 
-  void KarmaAnnotationWriter::text(float x, float y, std::string text)
+  void KarmaAnnotationWriter::text(double x, double y, std::string text)
   {
     if(this->itsOpenFlag){
       this->itsFileStream << "TEXT " << x << " " << y << " " << text<<"\n";
     }
   }
-  void KarmaAnnotationWriter::line(float x1, float x2, float y1, float y2)
+  void KarmaAnnotationWriter::line(double x1, double x2, double y1, double y2)
   {
     if(this->itsOpenFlag){
       this->itsFileStream << "LINE " << x1 << " " << y1 << " " << x2 << " " << y2 << "\n";
     }
   }
-  void KarmaAnnotationWriter::circle(float x, float y, float r)
+  void KarmaAnnotationWriter::circle(double x, double y, double r)
   {
     if(this->itsOpenFlag){
       this->itsFileStream << "CIRCLE " << x << " " << y << " " << r << "\n";
     }
   }
-  void KarmaAnnotationWriter::ellipse(float x, float y, float r1, float r2, float angle)
+  void KarmaAnnotationWriter::ellipse(double x, double y, double r1, double r2, double angle)
   {
     if(this->itsOpenFlag){
       this->itsFileStream << "ELLIPSE " << x << " " << y << " " << r1 << " " << r2 << " " << angle << "\n";

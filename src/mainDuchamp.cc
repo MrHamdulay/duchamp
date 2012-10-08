@@ -245,9 +245,10 @@ int main(int argc, char * argv[])
   }
 
   if(cube->pars().getFlagKarma()){
-    std::ofstream karmafile(cube->pars().getKarmaFile().c_str());
-    cube->outputDetectionsKarma(karmafile);
-    karmafile.close();
+    // std::ofstream karmafile(cube->pars().getKarmaFile().c_str());
+    // cube->outputDetectionsKarma(karmafile);
+    // karmafile.close();
+    cube->outputDetectionsKarma();
   }
 
   if(cube->pars().getFlagTextSpectra()){

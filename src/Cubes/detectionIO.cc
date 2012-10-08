@@ -42,6 +42,7 @@
 #include <duchamp/Utils/Statistics.hh>
 #include <duchamp/Outputs/ASCIICatalogueWriter.hh>
 #include <duchamp/Outputs/VOTableCatalogueWriter.hh>
+#include <duchamp/Outputs/KarmaAnnotationWriter.hh>
  
 using std::endl;
 using std::setw;
@@ -51,6 +52,21 @@ using namespace Statistics;
 
 namespace duchamp
 {
+
+  void Cube::outputDetectionsKarma()
+  {
+    KarmaAnnotationWriter writer(this->pars().getKarmaFile());
+    writer.setup(this);
+    writer.openCatalogue();
+    writer.writeHeader();
+    writer.writeParameters();
+    writer.writeStats();
+    writer.writeTableHeader();
+    writer.writeEntries();
+    writer.writeFooter();
+    writer.closeCatalogue();
+
+  }
 
   void Cube::outputDetectionsKarma(std::ostream &stream)
   {

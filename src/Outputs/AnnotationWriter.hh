@@ -63,15 +63,14 @@ namespace duchamp {
     virtual void writeParameters();
     virtual void writeStats(); 
     virtual void writeTableHeader()=0;
-    virtual void writeEntries()=0;
     virtual void writeEntry(Detection *object);
 
     virtual void writeFooter(){};
 
-    virtual void text(float x, float y, std::string text)=0;
-    virtual void line(float x1, float x2, float y1, float y2)=0;
-    virtual void circle(float x, float y, float r)=0;
-    virtual void ellipse(float x, float y, float r1, float r2, float angle)=0;
+    virtual void text(double x, double y, std::string text)=0;
+    virtual void line(double x1, double x2, double y1, double y2)=0;
+    virtual void circle(double x, double y, double r)=0;
+    virtual void ellipse(double x, double y, double r1, double r2, double angle)=0;
 
   protected:
     std::string itsComment; ///< How comments are denoted in the annotation file (may be just a single char, eg. '#', but make it flexible)

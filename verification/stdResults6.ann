@@ -7,6 +7,10 @@
 #  Minimum Scale =1
 #  Filter = B3 spline function
 #
+# Detection threshold used = 3.94241
+# Mean of noise background = 0.0343318
+# Std. Deviation of noise background = 0.97702
+#  [Using robust methods]
 COLOR RED
 COORD W
 LINE 90.759829 -26.099768 90.685592 -26.099882

@@ -7,6 +7,10 @@
 #  Kernel Minor axis = 3
 #  Kernel Major axis = 0
 #
+# Detection threshold used = 3.0426
+# Mean of noise background = 0.0148019
+# Std. Deviation of noise background = 1.00927
+#  [Using robust methods]
 COLOR RED
 COORD W
 LINE 92.873548 -27.747868 92.798181 -27.749060

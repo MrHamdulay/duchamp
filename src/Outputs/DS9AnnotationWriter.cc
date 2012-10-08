@@ -32,6 +32,7 @@
 #include <duchamp/Detection/detection.hh>
 #include <ios>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <string>
 
@@ -64,28 +65,30 @@ namespace duchamp {
       this->itsFileStream << "global color=red ";
       if(this->itsHead->isWCS()) this->itsFileStream << "wcs=wcs";
       this->itsFileStream << "\n";
+      this->itsFileStream.setf(std::ios::fixed);
+      this->itsFileStream << std::setprecision(6);
     }
   }
 
-  void DS9AnnotationWriter::text(float x, float y, std::string text)
+  void DS9AnnotationWriter::text(double x, double y, std::string text)
   {
     if(this->itsOpenFlag){
       this->itsFileStream << "text " << x << " " << y << " {" << text<<"}\n";
     }
   }
-  void DS9AnnotationWriter::line(float x1, float x2, float y1, float y2)
+  void DS9AnnotationWriter::line(double x1, double x2, double y1, double y2)
   {
     if(this->itsOpenFlag){
       this->itsFileStream << "line " << x1 << " " << y1 << " " << x2 << " " << y2 << "\n";
     }
   }
-  void DS9AnnotationWriter::circle(float x, float y, float r)
+  void DS9AnnotationWriter::circle(double x, double y, double r)
   {
     if(this->itsOpenFlag){
       this->itsFileStream << "circle " << x << " " << y << " " << r << "\n";
     }
   }
-  void DS9AnnotationWriter::ellipse(float x, float y, float r1, float r2, float angle)
+  void DS9AnnotationWriter::ellipse(double x, double y, double r1, double r2, double angle)
   {
     if(this->itsOpenFlag){
       this->itsFileStream << "ellipse " << x << " " << y << " " << r1 << " " << r2 << " " << angle << "\n";

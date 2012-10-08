@@ -127,7 +127,7 @@ namespace duchamp {
       if(this->itsParam->getAnnotationType() == "borders"){
 	double *pix = new double[3];
 	double *wld = new double[3];
-	float x1,x2,y1,y2;
+	double x1,x2,y1,y2;
 	std::vector<int> vertexSet = object->getVertexSet();
 	for(size_t i=0;i<vertexSet.size()/4;i++){
 	  pix[0] = vertexSet[i*4]-0.5;
