@@ -11,3 +11,6 @@ outFile         verification/results1.txt
 spectraFile     verification/spectra1.ps
 flagVOT         true
 votFile         verification/results1.xml
+flagKarma       true
+karmaFile       verification/results1.ann
+

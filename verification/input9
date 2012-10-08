@@ -14,3 +14,5 @@ restFrequency   1.665e9
 spectralUnits   km/s
 flagVOT         true
 votFile         verification/results9.xml
+flagKarma       true
+karmaFile       verification/results9.ann

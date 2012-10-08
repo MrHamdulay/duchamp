@@ -36,7 +36,9 @@ for (( i=0; i<${#number[@]}; i++ )); do
     log=${dir}/log${N}.txt
     Slog=${dir}/stdLog${N}.txt
     vot=${dir}/results${N}.xml
-    Svot=${dir}/stdResults${N}.xml    
+    Svot=${dir}/stdResults${N}.xml
+    karma=${dir}/results${N}.ann
+    Skarma=${dir}/stdResults${N}.ann
 
     echo "Running the ${number[i]} Duchamp test:"
     echo "  [${explanation[i]}]"
@@ -80,6 +82,15 @@ for (( i=0; i<${#number[@]}; i++ )); do
     else
         echo "  ERROR: Differences in the VOTables:"
         diff $vot $Svot
+        numErrors=`expr $numErrors + 1`
+    fi
+
+#Test the Karma annotation files
+    if [ `diff $karma $Skarma | wc -l` == 0 ]; then
+        echo "  Karma annoation files correct."
+    else
+        echo "  ERROR: Differences in the Karma annotation files:"
+        diff $karma $Skarma
         numErrors=`expr $numErrors + 1`
     fi
 

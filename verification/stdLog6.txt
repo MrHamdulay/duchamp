@@ -1,4 +1,4 @@
-Results of the Duchamp source finder v.1.2: Mon Oct  8 09:20:17 2012
+Results of the Duchamp source finder v.1.2: Mon Oct  8 16:10:56 2012
 Executing statement: ./Duchamp-1.2 -p ./verification/input6 
 
 ---- Parameters ----
@@ -7,6 +7,7 @@ Intermediate Logfile...........................[logFile]  =  verification/log6.t
 Final Results file.............................[outFile]  =  verification/results6.txt
 Spectrum file..............................[spectraFile]  =  verification/spectra6.ps
 VOTable file...................................[votFile]  =  verification/results6.xml
+Karma annotation file........................[karmaFile]  =  verification/results6.ann
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 Saving reconstructed cube?.............[flagOutputRecon]  =  false
 Saving residuals from reconstruction?..[flagOutputResid]  =  false
@@ -140,4 +141,4 @@ Detection #1
 50-50, 50,70
 
 --------------
-Duchamp completed: Mon Oct  8 09:20:17 2012
+Duchamp completed: Mon Oct  8 16:10:56 2012

@@ -1,4 +1,4 @@
-Results of the Duchamp source finder v.1.2: Mon Oct  8 09:20:10 2012
+Results of the Duchamp source finder v.1.2: Mon Oct  8 16:10:48 2012
 Executing statement: ./Duchamp-1.2 -p ./verification/input3 
 
 ---- Parameters ----
@@ -7,6 +7,7 @@ Intermediate Logfile...........................[logFile]  =  verification/log3.t
 Final Results file.............................[outFile]  =  verification/results3.txt
 Spectrum file..............................[spectraFile]  =  verification/spectra3.ps
 VOTable file...................................[votFile]  =  verification/results3.xml
+Karma annotation file........................[karmaFile]  =  verification/results3.ann
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 Saving smoothed cube?.................[flagOutputSmooth]  =  false
 Saving mask cube?.......................[flagOutputMask]  =  false
@@ -2602,4 +2603,4 @@ Detection #5
 75-75, 74,115
 
 --------------
-Duchamp completed: Mon Oct  8 09:20:15 2012
+Duchamp completed: Mon Oct  8 16:10:54 2012
