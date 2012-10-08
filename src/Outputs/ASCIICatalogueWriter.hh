@@ -30,6 +30,7 @@
 #define DUCHAMP_ASCII_CATALOGUE_WRITER_H_
 
 #include <duchamp/Outputs/CatalogueWriter.hh>
+#include <duchamp/Outputs/FileCatalogueWriter.hh>
 #include <duchamp/Outputs/columns.hh>
 #include <duchamp/Detection/detection.hh>
 #include <ios>
@@ -38,7 +39,7 @@
 
 namespace duchamp {
 
-  class ASCIICatalogueWriter : public CatalogueWriter
+  class ASCIICatalogueWriter : public FileCatalogueWriter
   {
   public:
     ASCIICatalogueWriter();
@@ -69,7 +70,6 @@ namespace duchamp {
 
   protected:
     std::ostream *itsStream;
-    std::ofstream itsFileStream;
     Catalogues::DESTINATION itsDestination;
      
 

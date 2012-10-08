@@ -29,6 +29,7 @@
 
 #include <duchamp/Outputs/ASCIICatalogueWriter.hh>
 #include <duchamp/Outputs/CatalogueWriter.hh>
+#include <duchamp/Outputs/FileCatalogueWriter.hh>
 #include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
@@ -44,13 +45,13 @@
 namespace duchamp {
 
   ASCIICatalogueWriter::ASCIICatalogueWriter():
-    CatalogueWriter()
+    FileCatalogueWriter()
   {
     this->itsStream=0;
   }
 
   ASCIICatalogueWriter::ASCIICatalogueWriter(std::string name):
-    CatalogueWriter(name)
+    FileCatalogueWriter(name)
   {
     this->itsStream=0;
   }
@@ -62,7 +63,7 @@ namespace duchamp {
   }
 
   ASCIICatalogueWriter::ASCIICatalogueWriter(std::string name, Catalogues::DESTINATION dest):
-    CatalogueWriter(name), itsDestination(dest)
+    FileCatalogueWriter(name), itsDestination(dest)
   {
     this->itsStream=0;
   }
@@ -75,9 +76,8 @@ namespace duchamp {
   ASCIICatalogueWriter& ASCIICatalogueWriter::operator= (const ASCIICatalogueWriter& other)
   {
     if(this==&other) return *this;
-    ((CatalogueWriter &) *this) = other;
+    ((FileCatalogueWriter &) *this) = other;
     this->itsStream = other.itsStream;
-    this->itsOpenFlag = false;
     this->itsDestination = other.itsDestination;
     return *this;
   }
@@ -94,10 +94,10 @@ namespace duchamp {
 	this->itsOpenFlag = true;
       }
       else{
-	this->itsFileStream.open(this->itsName.c_str(),mode);
+	FileCatalogueWriter::openCatalogue(mode);
 	this->itsStream = &this->itsFileStream;
-	this->itsOpenFlag = this->itsFileStream.is_open();
       }
+
       if(!this->itsOpenFlag) 
 	DUCHAMPERROR("ASCIICatalogueWriter","Could not open file \""<<this->itsName<<"\"");
     }
@@ -247,8 +247,7 @@ namespace duchamp {
   {
     bool returnval=true;
     if(this->itsDestination!=Catalogues::SCREEN){
-      this->itsFileStream.close();
-      returnval=!this->itsFileStream.fail();
+      FileCatalogueWriter::closeCatalogue();
     }
     return returnval;
   }
