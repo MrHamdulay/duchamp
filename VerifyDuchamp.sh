@@ -85,7 +85,7 @@ for (( i=0; i<${#number[@]}; i++ )); do
 		echo "  Found correct number of sources, but positions differ."
 		echo "  ERROR: Differences in positions of sources:"
 	    fi
-	    diff -I"Results of the Duchamp source finder:" $res $Sres
+	    diff -I"Duchamp:" $res $Sres
 	    numErrors=`expr $numErrors + 1`
 	else
 	    echo "  All detections correct."
