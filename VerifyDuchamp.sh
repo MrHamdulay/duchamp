@@ -1,5 +1,20 @@
 #!/bin/bash
 
+if [ $# -gt 1 ]; then
+
+    if [ $1 == "-f" ]; then
+	fullComp=true
+    else 
+	echo "VerifyDuchamp.sh: A script to run multiple Duchamp runs, testing different algorithms."
+	echo "   Options: -f - Full comparison. This may throw up differences arising merely from precision"
+	echo "                 The default is a basic comparison that won't be affected by precision changes"
+	echo "            -h - This help text."
+    fi
+
+else
+    fullComp=false
+fi
+
 version=`grep VERSION src/config.h | sed '/\"/s///' | sed '/\"/s///' | awk '{print $3}'`
 
 progname=./Duchamp-$version
@@ -42,6 +57,9 @@ for (( i=0; i<${#number[@]}; i++ )); do
     ds9=${dir}/results${N}.reg
     Sds9=${dir}/stdResults${N}.reg
 
+    temp1=/tmp/duchampRes
+    temp2=/tmp/duchampComp
+
     echo "Running the ${number[i]} Duchamp test:"
     echo "  [${explanation[i]}]"
     if  (( ( $i == "2" ) || ( $i == "3" ) )); then
@@ -52,9 +70,14 @@ for (( i=0; i<${#number[@]}; i++ )); do
     echo "Done. Comparison to standard result:"
     numDet=`grep "Total number" $res | cut -f 6 -d " "`
     if [ $numDet == ${ndet[i]} ]; then
-	tail -${numDet} $res | awk '{print $1,$3,$4,$5}' > /tmp/duchampRes
-	tail -${numDet} $Sres | awk '{print $1,$3,$4,$5}' > /tmp/duchampComp
-	if [ `diff /tmp/duchampRes /tmp/duchampComp | wc -l` != 0 ]; then
+	if [ $fullComp == true ]; then
+	    numdiff=`diff -I"Results of the Duchamp source finder:" $res $Sres | wc -l`
+	else
+	    tail -${numDet} $res | awk '{print $1,$3,$4,$5}' > $temp1
+	    tail -${numDet} $Sres | awk '{print $1,$3,$4,$5}' > $temp2
+	    numdiff=`diff $temp1 $temp2 | wc -l`
+	fi
+	if [ $numdiff != 0 ]; then
 	    echo "  Found correct number of sources, but positions differ."
 	    echo "  ERROR: Differences in positions of sources:"
 	    diff -I"Results of the Duchamp source finder:" $res $Sres
@@ -79,29 +102,62 @@ for (( i=0; i<${#number[@]}; i++ )); do
     fi
 
 #Test the VOTable results.
-    if [ `diff $vot $Svot | wc -l` == 0 ]; then
+    if [ $fullComp == true ]; then
+	numdiff=`diff $vot $Svot | wc -l`
+    else
+	head -`grep -n "<TABLEDATA>" $vot | sed -e 's/://g' | cut -f 1 -d ' '` $vot > $temp1
+	head -`grep -n "<TABLEDATA>" $Svot | sed -e 's/://g' | cut -f 1 -d ' '` $vot > $temp2
+	numdiff=`diff $temp1 $temp2 | wc -l`
+    fi
+    if [ $numdiff == 0 ]; then
         echo "  VOTables correct."
     else
         echo "  ERROR: Differences in the VOTables:"
-        diff $vot $Svot
+	if [ $fullComp == true ]; then
+            diff $vot $Svot
+	else
+	    diff $temp1 $temp2
+	fi
         numErrors=`expr $numErrors + 1`
     fi
 
 #Test the Karma annotation files
-    if [ `diff $karma $Skarma | wc -l` == 0 ]; then
+    if [ $fullComp == true ]; then
+	numdiff=`diff $karma $Skarma | wc -l`
+    else
+	grep -e "^#" $karma > $temp1
+	grep -e "^#" $Skarma > $temp2
+	numdiff=`diff $temp1 $temp2 | wc -l`
+    fi
+    if [ $numdiff == 0 ]; then
         echo "  Karma annotation files correct."
     else
         echo "  ERROR: Differences in the Karma annotation files:"
-        diff $karma $Skarma
+	if [ $fullComp == true ]; then
+            diff $karma $Skarma
+	else
+	    diff $temp1 $temp2
+	fi
         numErrors=`expr $numErrors + 1`
     fi
 
 #Test the DS9 annotation files
-    if [ `diff $ds9 $Sds9 | wc -l` == 0 ]; then
+    if [ $fullComp == true ]; then
+	numdiff=`diff $ds9 $Sds9 | wc -l`
+    else
+	grep -e "^#" $ds9 > $temp1
+	grep -e "^#" $Sds9 > $temp2
+	numdiff=`diff $temp1 $temp2 | wc -l`
+    fi
+    if [ $numdiff == 0 ]; then
         echo "  DS9 annotation files correct."
     else
-        echo "  ERROR: Differences in the Ds9 annotation files:"
-        diff $ds9 $Sds9
+        echo "  ERROR: Differences in the DS9 annotation files:"
+	if [ $fullComp == true ]; then
+            diff $ds9 $Sds9
+	else
+	    diff $temp1 $temp2
+	fi
         numErrors=`expr $numErrors + 1`
     fi
 
