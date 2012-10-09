@@ -25,11 +25,11 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
+#include <duchamp/duchamp.hh>
 #include <duchamp/Outputs/AnnotationWriter.hh>
 #include <duchamp/Outputs/CatalogueWriter.hh>
 #include <duchamp/Outputs/FileCatalogueWriter.hh>
 #include <duchamp/fitsHeader.hh>
-#include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>
 #include <duchamp/Detection/detection.hh>
 #include <ios>

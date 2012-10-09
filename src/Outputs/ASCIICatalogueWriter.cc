@@ -27,10 +27,10 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 
+#include <duchamp/duchamp.hh>
 #include <duchamp/Outputs/ASCIICatalogueWriter.hh>
 #include <duchamp/Outputs/CatalogueWriter.hh>
 #include <duchamp/Outputs/FileCatalogueWriter.hh>
-#include <duchamp/duchamp.hh>
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/Detection/detection.hh>
