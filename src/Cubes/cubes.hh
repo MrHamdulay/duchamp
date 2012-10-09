@@ -541,8 +541,13 @@ namespace duchamp
     void        logSummary();
 
     /// @brief Output detections to a Karma annotation file. 
-    void        outputDetectionsKarma(std::ostream &stream);
     void        outputDetectionsKarma();
+
+    /// @brief Output detections to a DS9 annotation file. 
+    void        outputDetectionsDS9();
+
+    /// @brief Write annotation files
+    void        outputAnnotations();
 
     /// @brief Output detections to a VOTable. 
     void        outputDetectionsVOTable();

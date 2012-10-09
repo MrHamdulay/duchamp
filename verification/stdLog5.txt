@@ -1,4 +1,4 @@
-Results of the Duchamp source finder v.1.2: Mon Oct  8 16:10:56 2012
+Results of the Duchamp source finder v.1.2: Tue Oct  9 11:09:58 2012
 Executing statement: ./Duchamp-1.2 -p ./verification/input5 
 
 ---- Parameters ----
@@ -8,6 +8,7 @@ Final Results file.............................[outFile]  =  verification/result
 Spectrum file..............................[spectraFile]  =  verification/spectra5.ps
 VOTable file...................................[votFile]  =  verification/results5.xml
 Karma annotation file........................[karmaFile]  =  verification/results5.ann
+DS9 annotation file............................[ds9File]  =  verification/results5.reg
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 Saving mask cube?.......................[flagOutputMask]  =  false
 Saving 0th moment to FITS file?.........[flagOutputMask]  =  false
@@ -187,4 +188,4 @@ Detection #1
 50-50, 51,70
 
 --------------
-Duchamp completed: Mon Oct  8 16:10:56 2012
+Duchamp completed: Tue Oct  9 11:09:58 2012

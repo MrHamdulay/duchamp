@@ -230,12 +230,16 @@ namespace duchamp
     void   setFlagVOT(bool flag){flagVOT=flag;};
     std::string getVOTFile(){return votFile;};
     void   setVOTFile(std::string fname){votFile = fname;};
-    bool   getFlagKarma(){return flagKarma;};
-    void   setFlagKarma(bool flag){flagKarma=flag;};
     std::string getAnnotationType(){return annotationType;};
     void   setAnnotationType(std::string s){annotationType=s;};
+    bool   getFlagKarma(){return flagKarma;};
+    void   setFlagKarma(bool flag){flagKarma=flag;};
     std::string getKarmaFile(){return karmaFile;};
     void   setKarmaFile(std::string fname){karmaFile = fname;};
+    bool   getFlagDS9(){return flagDS9;};
+    void   setFlagDS9(bool flag){flagDS9=flag;};
+    std::string getDS9File(){return ds9File;};
+    void   setDS9File(std::string fname){ds9File = fname;};
     bool   getFlagMaps(){return flagMaps;};
     void   setFlagMaps(bool flag){flagMaps=flag;};
     std::string getDetectionMap(){return detectionMap;};
@@ -441,6 +445,8 @@ namespace duchamp
     std::string votFile;         ///< Where the VOTable goes.
     bool        flagKarma;       ///< Should we save results in Karma annotation format?
     std::string karmaFile;       ///< Where the Karma annotation file goes.
+    bool        flagDS9;         ///< Should we save results in DS9 annotation format?
+    std::string ds9File;         ///< Where the DS9 annotation file goes.
     std::string annotationType;  ///< Should the annoations be circles or borders?
     bool        flagMaps;        ///< Should we produce detection and moment maps in postscript form?
     std::string detectionMap;    ///< The name of the detection map (postscript file).

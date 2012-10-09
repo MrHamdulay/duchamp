@@ -64,8 +64,11 @@ namespace duchamp {
   {
     if(this->itsOpenFlag){
       this->itsFileStream << "global color=" << makelower(this->itsColour) << " ";
-      if(this->itsHead->isWCS()) this->itsFileStream << "wcs=wcs";
-      this->itsFileStream << "\n";
+      if(this->itsHead->isWCS()){
+	if(this->itsHead->getWCS()->equinox == 1950.) this->itsFileStream << "\nfk4\n";
+	else  this->itsFileStream << "\nfk5\n";
+      }
+      else this->itsFileStream << "\nphysical\n";
       this->itsFileStream.setf(std::ios::fixed);
       this->itsFileStream << std::setprecision(6);
     }

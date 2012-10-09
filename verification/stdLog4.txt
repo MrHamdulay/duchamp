@@ -1,4 +1,4 @@
-Results of the Duchamp source finder v.1.2: Mon Oct  8 16:10:54 2012
+Results of the Duchamp source finder v.1.2: Tue Oct  9 11:09:56 2012
 Executing statement: ./Duchamp-1.2 -p ./verification/input4 
 
 ---- Parameters ----
@@ -8,6 +8,7 @@ Final Results file.............................[outFile]  =  verification/result
 Spectrum file..............................[spectraFile]  =  verification/spectra4.ps
 VOTable file...................................[votFile]  =  verification/results4.xml
 Karma annotation file........................[karmaFile]  =  verification/results4.ann
+DS9 annotation file............................[ds9File]  =  verification/results4.reg
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 Saving reconstructed cube?.............[flagOutputRecon]  =  false
 Saving residuals from reconstruction?..[flagOutputResid]  =  false
@@ -485,4 +486,4 @@ Detection #5
 75-76, 76,113
 
 --------------
-Duchamp completed: Mon Oct  8 16:10:56 2012
+Duchamp completed: Tue Oct  9 11:09:58 2012

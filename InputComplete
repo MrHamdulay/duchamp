@@ -68,6 +68,8 @@ objectList      *
 # votFile -- the file to put it in
 # flagKarma -- make a Karma annotation file of the results?  
 # karmaFile -- the file to put it in
+# flagDS9 -- make a DS9 region file of the results?  
+# ds9File -- the file to put it in
 # flagMaps -- save postscript versions of the detection and 0th moment maps?
 # detectionMap, momentMap -- the postscript files produced.
 # flagXOutput -- display the moment map in a pgplot window
@@ -101,6 +103,8 @@ flagVOT         false
 votFile         duchamp-Results.xml
 flagKarma       false
 karmaFile       duchamp-Results.ann
+flagDS9         false
+ds9File         duchamp-Results.reg
 flagMaps        true
 detectionMap    duchamp-DetectionMap.ps
 momentMap       duchamp-MomentMap.ps

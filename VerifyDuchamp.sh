@@ -39,6 +39,8 @@ for (( i=0; i<${#number[@]}; i++ )); do
     Svot=${dir}/stdResults${N}.xml
     karma=${dir}/results${N}.ann
     Skarma=${dir}/stdResults${N}.ann
+    ds9=${dir}/results${N}.reg
+    Sds9=${dir}/stdResults${N}.reg
 
     echo "Running the ${number[i]} Duchamp test:"
     echo "  [${explanation[i]}]"
@@ -91,6 +93,15 @@ for (( i=0; i<${#number[@]}; i++ )); do
     else
         echo "  ERROR: Differences in the Karma annotation files:"
         diff $karma $Skarma
+        numErrors=`expr $numErrors + 1`
+    fi
+
+#Test the DS9 annotation files
+    if [ `diff $ds9 $Sds9 | wc -l` == 0 ]; then
+        echo "  DS9 annotation files correct."
+    else
+        echo "  ERROR: Differences in the Ds9 annotation files:"
+        diff $ds9 $Sds9
         numErrors=`expr $numErrors + 1`
     fi
 

@@ -105,6 +105,8 @@ namespace duchamp
     this->votFile           = "duchamp-Results.xml";
     this->flagKarma         = false;
     this->karmaFile         = "duchamp-Results.ann";
+    this->flagDS9           = false;
+    this->ds9File           = "duchamp-Results.reg";
     this->annotationType    = "borders";
     this->flagMaps          = true;
     this->detectionMap      = "duchamp-DetectionMap.ps";
@@ -239,6 +241,8 @@ namespace duchamp
     this->votFile           = p.votFile;        
     this->flagKarma         = p.flagKarma;      
     this->karmaFile         = p.karmaFile;      
+    this->flagDS9           = p.flagDS9;      
+    this->ds9File           = p.ds9File;      
     this->annotationType    = p.annotationType;
     this->flagMaps          = p.flagMaps;       
     this->detectionMap      = p.detectionMap;   
@@ -600,6 +604,8 @@ namespace duchamp
 	if(arg=="votfile")         this->votFile = readFilename(ss); 
 	if(arg=="flagkarma")       this->flagKarma = readFlag(ss); 
 	if(arg=="karmafile")       this->karmaFile = readFilename(ss); 
+	if(arg=="flagds9")         this->flagDS9 = readFlag(ss); 
+	if(arg=="ds9file")         this->ds9File = readFilename(ss); 
 	if(arg=="annotationtype")  this->annotationType = readSval(ss); 
 	if(arg=="flagmaps")        this->flagMaps = readFlag(ss); 
 	if(arg=="detectionmap")    this->detectionMap = readFilename(ss); 
@@ -926,6 +932,9 @@ namespace duchamp
     }
     if(par.getFlagKarma()){
       recordParam(theStream, "[karmaFile]", "Karma annotation file" , par.getKarmaFile());
+    }
+    if(par.getFlagDS9()){
+      recordParam(theStream, "[ds9File]", "DS9 annotation file" , par.getDS9File());
     }
     if(USE_PGPLOT && par.getFlagMaps()){
       recordParam(theStream, "[momentMap]", "0th Moment Map", par.getMomentMap());

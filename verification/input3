@@ -18,3 +18,5 @@ flagVOT         true
 votFile         verification/results3.xml
 flagKarma       true
 karmaFile       verification/results3.ann
+flagDS9         true
+ds9File         verification/results3.reg

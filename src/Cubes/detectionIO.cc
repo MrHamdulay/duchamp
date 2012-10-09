@@ -43,6 +43,7 @@
 #include <duchamp/Outputs/ASCIICatalogueWriter.hh>
 #include <duchamp/Outputs/VOTableCatalogueWriter.hh>
 #include <duchamp/Outputs/KarmaAnnotationWriter.hh>
+#include <duchamp/Outputs/DS9AnnotationWriter.hh>
  
 using std::endl;
 using std::setw;
@@ -52,6 +53,12 @@ using namespace Statistics;
 
 namespace duchamp
 {
+
+  void Cube::outputAnnotations()
+  {
+    if(this->pars().getFlagKarma()) this->outputDetectionsKarma();
+    if(this->pars().getFlagDS9())   this->outputDetectionsDS9();
+  }
 
   void Cube::outputDetectionsKarma()
   {
@@ -68,95 +75,18 @@ namespace duchamp
 
   }
 
-  void Cube::outputDetectionsKarma(std::ostream &stream)
+  void Cube::outputDetectionsDS9()
   {
-    /// @details
-    ///  Prints to a stream (provided) the list of detected objects in the cube
-    ///   in the format of an annotation file for the Karma suite of programs.
-    ///  Annotation file draws a box enclosing the detection, and writes the 
-    ///   ID number of the detection to the right of the box.
-
-    std::string fname = this->par.getImageFile();
-    if(this->par.getFlagSubsection()) fname+=this->par.getSubsection();
-    stream << "# Duchamp Source Finder v."<< VERSION << endl;
-    stream << "# Results for FITS file: " << fname << endl;
-    if(this->par.getFlagFDR())
-      stream<<"# FDR Significance = " << this->par.getAlpha() << endl;
-    else
-      stream<<"# Threshold = " << this->par.getCut() << endl;
-    if(this->par.getFlagATrous()){
-      stream<<"# The a trous reconstruction method was used, with the following parameters." << endl;
-      stream<<"#  Dimension = " << this->par.getReconDim() << endl;
-      stream<<"#  Threshold = " << this->par.getAtrousCut() << endl;
-      stream<<"#  Minimum Scale =" << this->par.getMinScale() << endl;
-      stream<<"#  Filter = " << this->par.getFilterName() << endl;
-    }
-    else if(this->par.getFlagSmooth()){
-      stream<<"# The data was smoothed prior to searching, with the following parameters." << endl;
-      stream<<"#  Smoothing type = " << this->par.getSmoothType() << endl;
-      if(this->par.getSmoothType()=="spectral"){
-	stream << "#  Hanning width = " << this->par.getHanningWidth() << endl;
-      }
-      else{
-	stream << "#  Kernel Major axis = " << this->par.getKernMaj() << endl;
-	if(this->par.getKernMin()>0) 
-	  stream << "#  Kernel Minor axis = " << this->par.getKernMin() << endl;
-	else
-	  stream << "#  Kernel Minor axis = " << this->par.getKernMaj() << endl;
-	stream << "#  Kernel Major axis = " << this->par.getKernPA() << endl;
-      }
-    }
-    stream << "#\n";
-    stream << "COLOR RED" << endl;
-    if(this->head.isWCS()) stream << "COORD W" << endl;
-    else stream << "COORD P" << endl;
-    stream << std::setprecision(6);
-    stream.setf(std::ios::fixed);
-    double *pix = new double[3];
-    double *wld = new double[3];
-    std::vector<Detection>::iterator obj;
-    for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
-
-      if(this->par.getAnnotationType()=="borders"){
-	std::vector<int> vertexSet = obj->getVertexSet();
-	for(size_t i=0;i<vertexSet.size()/4;i++){
-	  pix[0] = vertexSet[i*4]-0.5;
-	  pix[1] = vertexSet[i*4+1]-0.5;
-	  pix[2] = obj->getZcentre();
-	  if(this->head.isWCS()){
-	    this->head.pixToWCS(pix,wld);
-	    stream << "LINE " << wld[0] << " " << wld[1];
-	  }
-	  else
-	    stream << "LINE " << pix[0] << " " << pix[1];
-	  pix[0] = vertexSet[i*4+2]-0.5;
-	  pix[1] = vertexSet[i*4+3]-0.5;
-	  if(this->head.isWCS()){
-	    this->head.pixToWCS(pix,wld);
-	    stream << " " << wld[0] << " " << wld[1] << "\n";
-	  }
-	  else
-	    stream << " " << pix[0] << " " << pix[1] << "\n";
-	}
-      }
-      else if(this->par.getAnnotationType()=="circles"){
-        float radius = obj->getRAWidth()/120.;
-        if(obj->getDecWidth()/120.>radius)
-          radius = obj->getDecWidth()/120.;
-        stream << "CIRCLE " 
-               << obj->getRA() << " " 
-               << obj->getDec() << " " 
-               << radius << "\n";
-      }
-
-      stream << "TEXT " 
-	     << obj->getRA() << " " 
-	     << obj->getDec() << " " 
-	     << obj->getID() << "\n\n";
-    }
-
-    delete [] pix;
-    delete [] wld;
+    DS9AnnotationWriter writer(this->pars().getDS9File());
+    writer.setup(this);
+    writer.openCatalogue();
+    writer.writeHeader();
+    writer.writeParameters();
+    writer.writeStats();
+    writer.writeTableHeader();
+    writer.writeEntries();
+    writer.writeFooter();
+    writer.closeCatalogue();
 
   }
 

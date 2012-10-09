@@ -244,12 +244,8 @@ int main(int argc, char * argv[])
     cube->outputDetectionsVOTable();
   }
 
-  if(cube->pars().getFlagKarma()){
-    // std::ofstream karmafile(cube->pars().getKarmaFile().c_str());
-    // cube->outputDetectionsKarma(karmafile);
-    // karmafile.close();
-    cube->outputDetectionsKarma();
-  }
+  // write annotation files, if required.
+  cube->outputAnnotations();
 
   if(cube->pars().getFlagTextSpectra()){
     if(cube->pars().isVerbose()) std::cout << "Saving spectra to text file ... ";
