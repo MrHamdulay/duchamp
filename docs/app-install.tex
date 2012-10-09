@@ -159,6 +159,36 @@ and \texttt{make install} to build \duchamp and put it in the correct
 place (either \texttt{/usr/local/bin} or the location given by the
 \texttt{--prefix} option discussed above).
 
+\secC{Problems building Duchamp}
+
+While the configure script tries to get everything right, it can
+exhibit some quirks. For instance, in getting the X11 library
+configuration right, it will sometimes provide a
+\texttt{-R/path/to/X11} argument for the linking string. This is
+accepted by \texttt{ld}, but not by all versions of \texttt{gfortran}.
+This can cause the final linking step to fail (and for the
+\texttt{-lpgplot} argument to be left off).
+
+To fix this, a shell script is provided to quickly patch the Makefile
+if necessary. If you run make and it fails, due to this error:
+\begin{quote}
+{\footnotesize
+\texttt{%
+   gfortran: error: unrecognized command line option ‘-R’}
+}
+\end{quote}
+ or similar, run 
+\begin{quote}
+{\footnotesize
+\texttt{%
+ > ./fixMakefile.sh}
+}
+\end{quote}
+and try again. If it still fails, you may have to manually edit the
+Makefile. Please log a bug report to let me know!
+
+
+
 \secC{Making sure it all works}
 
 Running make will create the executable \texttt{Duchamp-{\version}}. You can
@@ -172,15 +202,31 @@ script:
 This will use a dummy FITS image in the \texttt{verification/}
 directory -- this image has some Gaussian random noise, with five
 Gaussian sources present, plus a dummy WCS. The script runs
-Duchamp on this image with four different sets of inputs, and
+Duchamp on this image with nine different sets of inputs, and
 compares to known results, looking for differences and reporting
 any. There should be none reported if everything is working
-correctly. You can then install \duchamp on your system via:
+correctly. 
+
+The script performs basic checks on the output files (results, log,
+VOTable, and annotation files), but ignores most of the actual values
+of source parameters (to avoid picking up just differences due to
+precision errors). For complete checks of the files, run
+\begin{quote}
+  {\footnotesize
+    \texttt{> ./VerifyDuchamp.sh -f}
+  }
+\end{quote}
+Be warned that on some systems this could provide a large number of
+apparent errors which may only be due to precision differences.
+
+If everything worked, you can then install \duchamp on your system via:
 \begin{quote}
 {\footnotesize
 \texttt{> make install}
 }
 \end{quote}
+(this may need to be run as sudo depending on your system setup and
+your prefix directory).
 
 \secB{Running \duchamp}
 You can then run \duchamp on your own data. This can be done in one

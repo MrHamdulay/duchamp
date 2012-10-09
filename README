@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
                The Duchamp Source Finder
 -----------------------------------------------------------------------
-Duchamp 1.2 -- an object finder for spectral-line data cubes
+Duchamp 1.2.1 -- an object finder for spectral-line data cubes
 Copyright (C) 2006-2012
 Matthew Whiting, CSIRO Astronomy & Space Science
 
@@ -141,6 +141,26 @@ This is done simply by:
  >  ./configure F77=gfortran ...[other options]...
 
 
+Fixing problems with the Makefile
+---------------------------------
+
+While the configure script tries to get everything right, it can
+exhibit some quirks. For instance, in getting the X11 library
+configuration right, it will sometimes provide a -R/path/to/X11
+argument for the linking string. This is accepted by ld, but not by
+all versions of gfortran. This can cause the final linking step to
+fail (and for the -lpgplot argument to be left off).
+
+To fix this, a shell script is provided to quickly patch the Makefile
+if necessary. If you run make and it fails, due to this error:
+   gfortran: error: unrecognized command line option ‘-R’
+or similar, run 
+
+ > ./fixMakefile.sh
+
+and try again. If it still fails, you may have to manually edit the
+Makefile. Please log a bug report to let me know!
+
 Testing
 =======
 
@@ -155,10 +175,23 @@ correctly. To run, enter the command
 
  >  ./VerifyDuchamp.sh
 
+This performs basic checks on the output files, but ignoring most of
+the actual values of source parameters (to avoid picking up just
+differences due to precision errors). For complete checks of the
+files, run 
+
+ > ./VerifyDuchamp.sh -f
+
+Be warned that on some systems this could provide a large number of
+apparent errors which may only be due to precision differences.
+
 Once you know it is working, you can install Duchamp on your system
 with the command 
 
  > make install
+
+(this may need to be run as sudo depending on your system setup and
+your prefix directory).
 
 You can also use the dummy image for your own testing if you like (for
 instance, testing different thresholds to get a feel for how the
@@ -227,8 +260,13 @@ An earlier conference proceedings paper briefly describing it was:
 Astrophysics & Space Science Proceedings, Springer, 2008, p.343-344
 http://adsabs.harvard.edu/abs/2008glv..book..343W
 
+Those interested in the development of a source-finder for ASKAP
+(known for now as Selavy), which make use of the Duchamp code, should
+read Whiting & Humphreys 2012, PASA 29, 371, which can be found online
+at http://www.publish.csiro.au/paper/AS12028.htm
+
 -------
 Author: 
-  Matthew Whiting, Australia Telescope National Facility, August 2012
+  Matthew Whiting, Australia Telescope National Facility, October 2012
   Matthew.Whiting [at] csiro.au
 

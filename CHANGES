@@ -1,3 +1,48 @@
+Duchamp version 1.2.1 (2012/10/09)
+----------------------------------
+
+New feature:
+
+* Duchamp can now produce region files to annotate images displayed in
+  SAOImage DS9. There are new parameters flagDS9 and ds9File that work
+  in the same way as the Karma annotation file parameters. The region
+  files can also be displayed in (at least some versions of)
+  casaviewer. 
+
+* There is a new script to fix occasional problems with the
+  automatically-detected Makefile, and the verification script has
+  been updated and improved.
+
+Bug fixes:
+
+* The main bug fix for this release corrects a problem with the
+  velocity width measurements made when searching for negative
+  detections. It was possible to get very small (and incorrect) widths
+  in some cases - this was due to the integrated spectrum not being
+  inverted correctly.
+
+* In the case of smoothing, the stats of the full cube that were being
+  reported in the output files were actually those of the un-smoothed
+  (input cube). This only affected the output files, not the detection
+  process itself.
+
+* The units were not being reported in the VOTable. This has been
+  fixed.
+
+* The UCDs for the spectral parameters in the VOTable were not being
+  adapted to the user requests, so didn't always match the types of
+  the parameters. All should be consistent now.
+
+Other changes:
+
+* The codebase relating to the creation of and writing to output files
+  (results, logs, annotation, VOTables) has been overhauled, with a
+  cleaner interface. This was instigated by ASKAP/Selavy development,
+  but also allowed the expansion of output formats to include DS9
+  region files. No change to the user should be visible, but anyone
+  using the software will notice differences. Please get in touch if
+  changes are difficult to follow.
+
 Duchamp version 1.2 (2012/08/08)
 --------------------------------
 
