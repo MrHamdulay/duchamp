@@ -37,11 +37,14 @@ Other changes:
 
 * The codebase relating to the creation of and writing to output files
   (results, logs, annotation, VOTables) has been overhauled, with a
-  cleaner interface. This was instigated by ASKAP/Selavy development,
-  but also allowed the expansion of output formats to include DS9
-  region files. No change to the user should be visible, but anyone
-  using the software will notice differences. Please get in touch if
-  changes are difficult to follow.
+  cleaner interface. Most of this code is in the new subdirectory
+  src/Outputs, to where the columns code has been moved as well.
+
+  This was instigated by ASKAP/Selavy development, but also allowed
+  the expansion of output formats to include DS9 region files. No
+  change to the user should be visible, but anyone using the software
+  will notice differences. Please get in touch if changes are
+  difficult to follow.
 
 Duchamp version 1.2 (2012/08/08)
 --------------------------------

@@ -214,3 +214,6 @@ $(OBJECTS) : $(HEADS)
 
 clean : 
 	rm -f $(BASE)/*.o $(ATROUSDIR)/*.o $(CUBESDIR)/*.o $(FITSIODIR)/*.o $(DETECTIONDIR)/*.o $(UTILDIR)/*.o $(PIXELMAPDIR)/*.o
+
+cleanest: clean
+	rm -rf Makefile config.log config.status src/config.h $(EXEC)
