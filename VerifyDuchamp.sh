@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $# -gt 1 ]; then
+if [ $# -gt 0 ]; then
 
     if [ $1 == "-f" ]; then
 	fullComp=true
@@ -78,8 +78,13 @@ for (( i=0; i<${#number[@]}; i++ )); do
 	    numdiff=`diff $temp1 $temp2 | wc -l`
 	fi
 	if [ $numdiff != 0 ]; then
-	    echo "  Found correct number of sources, but positions differ."
-	    echo "  ERROR: Differences in positions of sources:"
+	    if [ $fullComp == true ]; then
+		echo "  Found correct number of sources, but differences exist in the results table."
+		echo "  ERROR: Differences in results:"
+	    else
+		echo "  Found correct number of sources, but positions differ."
+		echo "  ERROR: Differences in positions of sources:"
+	    fi
 	    diff -I"Results of the Duchamp source finder:" $res $Sres
 	    numErrors=`expr $numErrors + 1`
 	else
