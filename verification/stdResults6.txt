@@ -1,4 +1,4 @@
-Results of the Duchamp source finder v.1.2: Mon Oct  8 09:20:17 2012
+Results of the Duchamp source finder v.1.2: Tue Oct  9 13:37:11 2012
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits[35:64,35:64,1:128]
@@ -6,6 +6,8 @@ Intermediate Logfile...........................[logFile]  =  verification/log6.t
 Final Results file.............................[outFile]  =  verification/results6.txt
 Spectrum file..............................[spectraFile]  =  verification/spectra6.ps
 VOTable file...................................[votFile]  =  verification/results6.xml
+Karma annotation file........................[karmaFile]  =  verification/results6.ann
+DS9 annotation file............................[ds9File]  =  verification/results6.reg
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 Saving reconstructed cube?.............[flagOutputRecon]  =  false
 Saving residuals from reconstruction?..[flagOutputResid]  =  false

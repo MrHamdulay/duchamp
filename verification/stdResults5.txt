@@ -1,4 +1,4 @@
-Results of the Duchamp source finder v.1.2: Mon Oct  8 09:20:17 2012
+Results of the Duchamp source finder v.1.2: Tue Oct  9 13:37:11 2012
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits[35:64,35:64,1:128]
@@ -6,6 +6,8 @@ Intermediate Logfile...........................[logFile]  =  verification/log5.t
 Final Results file.............................[outFile]  =  verification/results5.txt
 Spectrum file..............................[spectraFile]  =  verification/spectra5.ps
 VOTable file...................................[votFile]  =  verification/results5.xml
+Karma annotation file........................[karmaFile]  =  verification/results5.ann
+DS9 annotation file............................[ds9File]  =  verification/results5.reg
 Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
 Saving mask cube?.......................[flagOutputMask]  =  false
 Saving 0th moment to FITS file?.........[flagOutputMask]  =  false
