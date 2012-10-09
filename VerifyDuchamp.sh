@@ -71,7 +71,7 @@ for (( i=0; i<${#number[@]}; i++ )); do
     numDet=`grep "Total number" $res | cut -f 6 -d " "`
     if [ $numDet == ${ndet[i]} ]; then
 	if [ $fullComp == true ]; then
-	    numdiff=`diff -I"Results of the Duchamp source finder:" $res $Sres | wc -l`
+	    numdiff=`diff -I"Duchamp" $res $Sres | wc -l`
 	else
 	    tail -${numDet} $res | awk '{print $1,$3,$4,$5}' > $temp1
 	    tail -${numDet} $Sres | awk '{print $1,$3,$4,$5}' > $temp2
@@ -85,7 +85,7 @@ for (( i=0; i<${#number[@]}; i++ )); do
 		echo "  Found correct number of sources, but positions differ."
 		echo "  ERROR: Differences in positions of sources:"
 	    fi
-	    diff -I"Duchamp:" $res $Sres
+	    diff -I"Duchamp" $res $Sres
 	    numErrors=`expr $numErrors + 1`
 	else
 	    echo "  All detections correct."
@@ -93,7 +93,7 @@ for (( i=0; i<${#number[@]}; i++ )); do
     else
 	echo "  ERROR. Wrong number of sources found."
 	echo "Differences in results:"
-	diff  -I"Results of the Duchamp source finder:" $res $Sres
+	diff  -I"Duchamp" $res $Sres
 	numErrors=$numErrors+1
     fi
 
