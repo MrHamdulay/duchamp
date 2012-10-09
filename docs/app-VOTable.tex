@@ -50,7 +50,7 @@ with wavelet reconstruction.
       <PARAM name="flagBaseline" ucd="meta.code" datatype="boolean" value="0"/>
       <PARAM name="flagRobustStats" ucd="meta.code" datatype="boolean" value="1"/>
       <PARAM name="flagFDR" ucd="meta.code" datatype="boolean" value="0"/>
-      <PARAM name="snrCut" ucd="stat.snr;phot;stat.min" datatype="float" value="3"/>
+      <PARAM name="snrCut" ucd="stat.snr;phot;stat.min" datatype="float" value="4"/>
       <PARAM name="flagGrowth" ucd="meta.code" datatype="boolean" value="0"/>
       <PARAM name="minVoxels" ucd="" datatype="int" value="7"/>
       <PARAM name="minPix" ucd="" datatype="int" value="5"/>
@@ -66,6 +66,9 @@ with wavelet reconstruction.
       <PARAM name="scaleMin" ucd="" datatype="int" value="1"/>
       <PARAM name="snrRecon" ucd="" datatype="float" value="3"/>
       <PARAM name="filterCode" ucd="" datatype="int" value="1"/>
+      <PARAM name="thresholdActual" ucd="" datatype="float" units="Jy/beam" value="4.05187"/>
+      <PARAM name="noiseMeanActual" ucd="" datatype="float" units="Jy/beam" value="0.0148019"/>
+      <PARAM name="noiseSpreadActual" ucd="" datatype="float" units="Jy/beam" value="1.00927"/>
       <FIELD name="Obj#" ID="col01" ucd="meta.id" datatype="int" units="" width="5"/>
       <FIELD name="Name" ID="col02" ucd="meta.id;meta.main" datatype="char" units="" arraysize="15"/>
       <FIELD name="RA" ID="col03" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" units="deg" width="11" precision="6"/>
@@ -108,3 +111,8 @@ with wavelet reconstruction.
 %\end{minipage}
 %\end{sideways}
 %\end{landscape}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Guide"
+%%% End: 

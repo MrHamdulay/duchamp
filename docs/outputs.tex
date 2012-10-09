@@ -30,7 +30,7 @@
 \label{sec-output}
 
 \secB{During execution}
-
+ 
 \duchamp provides the user with feedback whilst it is running, to
 keep the user informed on the progress of the analysis. Most of this
 consists of self-explanatory messages about the particular stage the
@@ -289,28 +289,31 @@ VOTable-format XML file, containing just the RA, Dec, Velocity and the
 corresponding widths of the detections, as well as the fluxes. The
 user should set \texttt{flagVOT = true}, and put the desired filename
 in the parameter \texttt{votFile} -- note that the default is for it
-not to be produced. This file should be compatible with all Virtual
-Observatory tools (such as Aladin%
+not to be produced. An example of VOTable output can be found in
+Appendix~\ref{app-votable}.  This file should be compatible with all
+Virtual Observatory tools (such as Aladin%
 \footnote{%Aladin can be found on the web at
-\href{http://aladin.u-strasbg.fr/}{http://aladin.u-strasbg.fr/}}
-or TOPCAT\footnote{%Tool for OPerations on Catalogues And Tables:
-\href{http://www.star.bristol.ac.uk/~mbt/topcat/}%
-{http://www.star.bristol.ac.uk/~mbt/topcat/}}). 
+  \href{http://aladin.u-strasbg.fr/}{http://aladin.u-strasbg.fr/}} or
+TOPCAT\footnote{%Tool for OPerations on Catalogues And Tables:
+  \href{http://www.star.bristol.ac.uk/~mbt/topcat/}%
+  {http://www.star.bristol.ac.uk/~mbt/topcat/}}).
 
-A second option is an annotation file for use with the Karma toolkit
-of visualisation tools (in particular, with \texttt{kvis}). There are
-two options on how objects are represented, governed by the
-\texttt{annotationType} parameter. Setting this to \texttt{borders}
-results in a border being drawn around the spatial pixels of the
-object, in a manner similar to that seen in Fig.~\ref{fig-spect}. Note
-that Karma/\texttt{kvis} does not always do this perfectly, so the
-lines may not be directly lined up with pixel borders. The other
-option is \texttt{annotationType = circles}. This will draw a circle
-at the position of each detection, scaled by the spatial size of the
-detection, and number it according to the Obj\# given above. To make
-use of this option, the user should set \texttt{flagKarma = true}, and
-put the desired filename in the parameter \texttt{karmaFile} -- again,
-the default is for it not to be produced.
+A second option are annotation files for use with either the Karma
+toolkit of visualisation tools (in particular, with \texttt{kvis}), or
+with SAOImage DS9 (which should also be compatible with
+casaviewer). There are two options on how objects are represented,
+governed by the \texttt{annotationType} parameter. Setting this to
+\texttt{borders} results in a border being drawn around the spatial
+pixels of the object, in a manner similar to that seen in
+Fig.~\ref{fig-spect}. Note that Karma/\texttt{kvis} does not always do
+this perfectly, so the lines may not be directly lined up with pixel
+borders. The other option is \texttt{annotationType = circles}. This
+will draw a circle at the position of each detection, scaled by the
+spatial size of the detection, and number it according to the Obj\#
+given above. To make use of this option, the user should set
+\texttt{flagKarma} or \texttt{flagDS9} to \texttt{true}, and put the
+desired filename in the parameter \texttt{karmaFile} or
+\texttt{ds9File} -- again, the default is for these not to be produced.
 
 The final optional results file produced is a simple text file that
 contains the spectra for each detected object. The format of the file

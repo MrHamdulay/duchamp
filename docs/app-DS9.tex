@@ -25,13 +25,13 @@
 %                    Epping NSW 1710
 %                    AUSTRALIA
 % -----------------------------------------------------------------------
-\secA{Example Karma Annotation file output}
+\secA{Example DS9 Region file output}
 \label{app-karma}
 
-This is the format of the Karma Annotation file, showing the locations
-of the detected objects. This can be loaded by the plotting tools of
-the Karma package (for instance, \texttt{kvis}) as an overlay on the FITS
-file.
+This is the format of the DS9 region file, showing the locations
+of the detected objects. This can be loaded by the visualisation tool
+SAOImage DS9 as an overlay on the FITS file, and should be compatible
+with CASA's casaviewer.
 
 \begin{verbatim}
 # Duchamp Source Finder v.1.2
@@ -60,14 +60,14 @@ file.
 # Mean of noise background = 0.0148019
 # Std. Deviation of noise background = 1.00927
 #  [Using robust methods]
-COLOR RED
-COORD W
-LINE 92.796776 -27.682375 92.721457 -27.683528
-LINE 92.795375 -27.615691 92.720102 -27.616844
-LINE 92.722816 -27.750214 92.647453 -27.751330
-LINE 92.714730 -27.350128 92.639640 -27.351239
+global color=red 
+fk5
+line 92.796776 -27.682375 92.721457 -27.683528
+line 92.795375 -27.615691 92.720102 -27.616844
+line 92.722816 -27.750214 92.647453 -27.751330
+line 92.714730 -27.350128 92.639640 -27.351239
 ...
-TEXT 92.301572 -27.583707 1
+text 92.301572 -27.583707 {1}
 \end{verbatim}
 
 %%% Local Variables: 
