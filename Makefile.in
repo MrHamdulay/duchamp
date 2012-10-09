@@ -76,6 +76,7 @@ HEADS = $(BASE)/duchamp.hh\
 	$(OUTPUTSDIR)/columns.hh\
 	$(OUTPUTSDIR)/CatalogueSpecification.hh\
 	$(OUTPUTSDIR)/CatalogueWriter.hh\
+	$(OUTPUTSDIR)/FileCatalogueWriter.hh\
 	$(OUTPUTSDIR)/ASCIICatalogueWriter.hh\
 	$(OUTPUTSDIR)/VOTableCatalogueWriter.hh\
 	$(OUTPUTSDIR)/AnnotationWriter.hh\
@@ -145,6 +146,7 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(OUTPUTSDIR)/columns.o\
 	$(OUTPUTSDIR)/CatalogueSpecification.o\
 	$(OUTPUTSDIR)/CatalogueWriter.o\
+	$(OUTPUTSDIR)/FileCatalogueWriter.o\
 	$(OUTPUTSDIR)/ASCIICatalogueWriter.o\
 	$(OUTPUTSDIR)/VOTableCatalogueWriter.o\
 	$(OUTPUTSDIR)/AnnotationWriter.o\
