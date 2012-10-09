@@ -1,5 +1,5 @@
-Results of the Duchamp source finder v.1.2: Tue Oct  9 11:09:58 2012
-Executing statement: ./Duchamp-1.2 -p ./verification/input6 
+Results of the Duchamp source finder v.1.2.1: Tue Oct  9 15:03:31 2012
+Executing statement: ./Duchamp-1.2.1 -p ./verification/input6 
 
 ---- Parameters ----
 Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits[35:64,35:64,1:128]
@@ -142,4 +142,4 @@ Detection #1
 50-50, 50,70
 
 --------------
-Duchamp completed: Tue Oct  9 11:09:58 2012
+Duchamp completed: Tue Oct  9 15:03:32 2012
