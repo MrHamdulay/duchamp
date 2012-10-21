@@ -104,12 +104,29 @@ namespace duchamp
 
       // if we get to here, reconGood is true (ie. file is open);
 
+      // Identify which axes are the "interesting" ones 
+      int lng,lat,spc;
+      if(this->head.isWCS() && (this->head.WCS().spec>=0)){
+	lng = this->head.WCS().lng;
+	lat = this->head.WCS().lat;
+	spc = this->head.WCS().spec;
+      }
+      else{
+	lng = 0;
+	lat = 1;
+	spc = 2;
+      }
+
       status=0;
       fitsfile *fptr;
       fits_open_file(&fptr,this->par.getReconFile().c_str(),READONLY,&status);
       short int maxdim=3;
       long *fpixel = new long[maxdim];
       for(int i=0;i<maxdim;i++) fpixel[i]=1;
+      long *lpixel = new long[maxdim];
+      for(int i=0;i<maxdim;i++) lpixel[i]=this->axisDim[i];
+      long *inc = new long[maxdim];
+      for(int i=0;i<maxdim;i++) inc[i]=1;
       long *dimAxesNew = new long[maxdim];
       for(int i=0;i<maxdim;i++) dimAxesNew[i]=1;
       int bitpix,numAxesNew,anynul;
@@ -191,7 +208,7 @@ namespace duchamp
       std::string fluxunits;
       fits_read_key(fptr, TSTRING, (char *)header.c_str(), unit, comment, &status);
       if (status){
-	DUCHAMPWARN("Cube Reader","Error reading BUNIT keyword: ");
+	DUCHAMPWARN("Recon Reader","Error reading BUNIT keyword: ");
 	fits_report_error(stderr, status);
 	return FAILURE;
       }
@@ -204,10 +221,18 @@ namespace duchamp
       // If we get to here, the reconFile exists and matches the atrous 
       //  parameters the user has requested.
 
+      int colnum = 0;  // want the first dataset in the FITS file
       status = 0;
-      fits_read_pix(fptr, TFLOAT, fpixel, this->numPixels, NULL, 
-		    this->recon, &anynul, &status);
-  
+      // fits_read_pix(fptr, TFLOAT, fpixel, this->numPixels, NULL, 
+      // 		    this->recon, &anynul, &status);
+      if(fits_read_subset_flt(fptr, colnum, 3, dimAxesNew,
+			      fpixel, lpixel, inc, 
+			      this->par.getBlankPixVal(), this->array, &anynul, &status)){
+	DUCHAMPERROR("Recon Reader", "There was an error reading in the data array:");
+	fits_report_error(stderr, status);
+	return FAILURE;
+      }
+
       status = 0;
       fits_close_file(fptr, &status);
       if (status){
