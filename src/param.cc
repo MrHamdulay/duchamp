@@ -1159,11 +1159,12 @@ namespace duchamp
 
     if(this->fileOutputMask==""){
       std::string inputName = this->imageFile;
-      std::stringstream ss;
-      ss << inputName.substr(0,inputName.size()-5);  
+      std::string outputName = inputName;
+      if(inputName.substr(inputName.size()-5,5)==".fits")
+	outputName = inputName.substr(0,inputName.size()-5);  
       // remove the ".fits" on the end.
-      ss << ".MASK.fits";
-      return ss.str();
+      outputName += ".MASK.fits";
+      return outputName;
     }
     else return this->fileOutputMask;
   }
@@ -1176,11 +1177,12 @@ namespace duchamp
 
     if(this->fileOutputMomentMap==""){
       std::string inputName = this->imageFile;
-      std::stringstream ss;
-      ss << inputName.substr(0,inputName.size()-5);  
+      std::string outputName = inputName;
+      if(inputName.substr(inputName.size()-5,5)==".fits")
+	outputName = inputName.substr(0,inputName.size()-5);  
       // remove the ".fits" on the end.
-      ss << ".MOM0.fits";
-      return ss.str();
+      outputName += ".MOM0.fits";
+      return outputName;
     }
     else return this->fileOutputMomentMap;
   }
@@ -1199,8 +1201,11 @@ namespace duchamp
     if(this->fileOutputSmooth==""){
       std::string inputName = this->imageFile;
       std::stringstream ss;
-      ss << inputName.substr(0,inputName.size()-5);  
-      // remove the ".fits" on the end.
+      if(inputName.substr(inputName.size()-5,5)==".fits")
+	ss << inputName.substr(0,inputName.size()-5);  
+      else
+	ss << inputName;
+      // remove the ".fits" on the end if necessary.
       if(this->flagSubsection) ss<<".sub";
       if(this->smoothType=="spectral")
 	ss << ".SMOOTH-1D-" << this->hanningWidth << ".fits";
