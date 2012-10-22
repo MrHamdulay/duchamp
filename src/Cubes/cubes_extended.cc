@@ -40,6 +40,8 @@
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/Cubes/cubes.hh>
+#include <duchamp/Cubes/ReadExistingRecon.hh>
+#include <duchamp/Cubes/ReadExistingSmooth.hh>
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Outputs/columns.hh>
 #include <duchamp/Utils/utils.hh>
@@ -97,7 +99,9 @@ namespace duchamp
     // If the reconstructed array is to be read in from disk
     if( this->par.getFlagReconExists() && this->par.getFlagATrous() ){
       std::cout << "Reading reconstructed array: "<<std::endl;
-      if( this->readReconCube() == FAILURE){
+      // if( this->readReconCube() == FAILURE){
+      ReadExistingRecon reconReader(this);
+      if( reconReader.read() == FAILURE){
 	DUCHAMPWARN("Duchamp", "Could not read in existing reconstructed array. Will perform reconstruction using assigned parameters.");
 	this->par.setFlagReconExists(false);
       }
@@ -106,7 +110,9 @@ namespace duchamp
 
     if( this->par.getFlagSmoothExists() && this->par.getFlagSmooth() ){
       std::cout << "Reading smoothed array: "<<std::endl;
-      if( this->readSmoothCube() == FAILURE){
+      ReadExistingSmooth smoothReader(this);
+      if( smoothReader.read() == FAILURE){
+	//      if( this->readSmoothCube() == FAILURE){
 	DUCHAMPWARN("Duchamp", "Could not read in existing smoothed array. Will smooth the cube using assigned parameters.");
 	this->par.setFlagSmoothExists(false);
       }
