@@ -227,7 +227,7 @@ namespace duchamp
       // 		    this->recon, &anynul, &status);
       if(fits_read_subset_flt(fptr, colnum, 3, dimAxesNew,
 			      fpixel, lpixel, inc, 
-			      this->par.getBlankPixVal(), this->array, &anynul, &status)){
+			      this->par.getBlankPixVal(), this->recon, &anynul, &status)){
 	DUCHAMPERROR("Recon Reader", "There was an error reading in the data array:");
 	fits_report_error(stderr, status);
 	return FAILURE;
