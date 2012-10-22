@@ -57,18 +57,19 @@ namespace duchamp {
   {
     OUTCOME result=FAILURE;
     int exists,status=0;
-    if(this->par.getReconFile() != ""){
-      fits_file_exists(this->par.getReconFile().c_str(),&exists,&status);
+    std::string reconFile = this->itsCube->pars().getReconFile();
+    if(reconFile != ""){
+      fits_file_exists(reconFile.c_str(),&exists,&status);
       if(exists<=0){
 	fits_report_error(stderr, status);
-	DUCHAMPWARN("readReconCube", "Cannot find requested ReconFile. Trying with parameters. Bad reconFile was: "<<this->par.getReconFile());
+	DUCHAMPWARN("readReconCube", "Cannot find requested ReconFile. Trying with parameters. Bad reconFile was: "<<reconFile);
       }
       else result = SUCCESS;
     }
     else{
       DUCHAMPWARN("readReconCube", "ReconFile not specified. Working out name from parameters.");
 
-      std::string reconFile = this->itsCube->pars().outputReconFile();
+      reconFile = this->itsCube->pars().outputReconFile();
       DUCHAMPWARN("readReconCube", "Trying file " << reconFile );
       fits_file_exists(reconFile.c_str(),&exists,&status);
       if(exists<=0){

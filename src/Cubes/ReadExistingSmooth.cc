@@ -57,18 +57,19 @@ namespace duchamp {
   {
     OUTCOME result=FAILURE;
     int exists,status=0;
-    if(this->par.getSmoothFile() != ""){
-      fits_file_exists(this->par.getSmoothFile().c_str(),&exists,&status);
+    std::string smoothFile = this->itsCube->pars().getSmoothFile();
+    if(smoothFile != ""){
+      fits_file_exists(smoothFile.c_str(),&exists,&status);
       if(exists<=0){
 	fits_report_error(stderr, status);
-	DUCHAMPWARN("readSmoothCube", "Cannot find requested SmoothFile. Trying with parameters. Bad smoothFile was: "<<this->par.getSmoothFile());
+	DUCHAMPWARN("readSmoothCube", "Cannot find requested SmoothFile. Trying with parameters. Bad smoothFile was: "<<smoothFile);
       }
       else result = SUCCESS;
     }
     else{
       DUCHAMPWARN("readSmoothCube", "SmoothFile not specified. Working out name from parameters.");
 
-      std::string smoothFile = this->itsCube->pars().outputSmoothFile();
+      smoothFile = this->itsCube->pars().outputSmoothFile();
       DUCHAMPWARN("readSmoothCube", "Trying file " << smoothFile );
       fits_file_exists(smoothFile.c_str(),&exists,&status);
       if(exists<=0){
