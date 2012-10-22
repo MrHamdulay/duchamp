@@ -55,26 +55,38 @@ namespace duchamp {
 
   OUTCOME ReadExistingSmooth::checkFile()
   {
-    OUTCOME result=SUCCESS;
+    OUTCOME result=FAILURE;
     int exists,status=0;
-    std::string smoothFile = this->itsCube->pars().outputSmoothFile();
-    DUCHAMPWARN("readSmoothCube", "Trying file " << smoothFile );
-    fits_file_exists(smoothFile.c_str(),&exists,&status);
-    if(exists<=0){
-      fits_report_error(stderr, status);
-      DUCHAMPERROR("readSmoothCube","SmoothFile not present.");
-      result = FAILURE;
+    if(this->par.getSmoothFile() != ""){
+      fits_file_exists(this->par.getSmoothFile().c_str(),&exists,&status);
+      if(exists<=0){
+	fits_report_error(stderr, status);
+	DUCHAMPWARN("readSmoothCube", "Cannot find requested SmoothFile. Trying with parameters. Bad smoothFile was: "<<this->par.getSmoothFile());
+      }
+      else result = SUCCESS;
     }
+    else{
+      DUCHAMPWARN("readSmoothCube", "SmoothFile not specified. Working out name from parameters.");
 
-    if(result==SUCCESS){ 
-      // were able to open this new file -- use this, so reset the 
-      //  relevant parameter
-      this->itsCube->pars().setSmoothFile(smoothFile);
+      std::string smoothFile = this->itsCube->pars().outputSmoothFile();
+      DUCHAMPWARN("readSmoothCube", "Trying file " << smoothFile );
+      fits_file_exists(smoothFile.c_str(),&exists,&status);
+      if(exists<=0){
+	fits_report_error(stderr, status);
+	DUCHAMPERROR("readSmoothCube","SmoothFile not present.");
+	result = FAILURE;
+      }
+      else result=SUCCESS;
+	     
+      if(result==SUCCESS){ 
+	// were able to open this new file -- use this, so reset the 
+	//  relevant parameter
+	this->itsCube->pars().setSmoothFile(smoothFile);
+      }
     }
 
     this->itsFilename = smoothFile;
     return result;
-
   }
 
   OUTCOME ReadExistingSmooth::checkHeaders()
@@ -142,7 +154,7 @@ namespace duchamp {
   {
     OUTCOME result = this->ReadExisting::readFromFile();
     if(result == SUCCESS){
-      // We don't want to write out the recon or resid files at the end
+      // We don't want to write out the smooth file at the end
       this->itsCube->pars().setFlagOutputSmooth(false);
     }
     return result;
