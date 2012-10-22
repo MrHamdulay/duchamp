@@ -61,6 +61,9 @@ HEADS = $(BASE)/duchamp.hh\
 	$(DETECTIONDIR)/ObjectGrower.hh\
 	$(CUBESDIR)/cubes.hh\
 	$(CUBESDIR)/plots.hh\
+	$(CUBESDIR)/ReadExisting.hh\
+	$(CUBESDIR)/ReadExistingRecon.hh\
+	$(CUBESDIR)/ReadExistingSmooth.hh\
 	$(FITSIODIR)/Beam.hh\
 	$(FITSIODIR)/DuchampBeam.hh\
 	$(UTILDIR)/Hanning.hh\
@@ -121,6 +124,9 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(CUBESDIR)/smoothCube.o\
 	$(CUBESDIR)/spectraUtils.o\
 	$(CUBESDIR)/trimImage.o\
+	$(CUBESDIR)/ReadExisting.o\
+	$(CUBESDIR)/ReadExistingRecon.o\
+	$(CUBESDIR)/ReadExistingSmooth.o\
 	$(FITSIODIR)/Beam.o\
 	$(FITSIODIR)/DuchampBeam.o\
 	$(FITSIODIR)/dataIO.o\
