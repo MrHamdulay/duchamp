@@ -130,7 +130,7 @@ namespace duchamp
     ///  ID number; if false, they take the value 1 for all
     ///  objects. Pixels not in a detected object have the value 0.
 
-    int newbitpix = SHORT_IMG;
+    int newbitpix = LONG_IMG;
     long *fpixel = new long[this->head.WCS().naxis];
     for(int i=0;i<this->header().WCS().naxis;i++) fpixel[i]=1;
     int status = 0;  /* MUST initialize status */
@@ -167,7 +167,7 @@ namespace duchamp
       delete [] comment;
       delete [] keyword;
 	
-      short *mask = new short[this->numPixels];
+      int *mask = new int[this->numPixels];
       for(size_t i=0;i<this->numPixels;i++) mask[i]=0;
       std::vector<Detection>::iterator obj;
       for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
@@ -181,8 +181,11 @@ namespace duchamp
         }
       }
       status=0;
-      if(fits_write_pix(fptrNew, TSHORT, fpixel, this->numPixels, mask, &status)){
-	duchampFITSerror(status,"saveMask","Error writing mask array:");
+      long group=0;
+      LONGLONG first=1;
+      LONGLONG nelem=LONGLONG(this->numPixels);
+      if(fits_write_img_int(fptrNew, group, first, nelem, mask, &status)){
+	duchampFITSerror(status,"saveMask","Error writing mask array!:");
       }
       status = 0;
       if(fits_close_file(fptrNew, &status)){
@@ -226,17 +229,18 @@ namespace duchamp
       }
       else {
 
-	  if(this->writeBasicHeader(fptrNew, -32)==FAILURE){
+	  if(this->writeBasicHeader(fptrNew, FLOAT_IMG)==FAILURE){
 	    DUCHAMPWARN("write Smoothed Cube", "Failure writing to header");
 	    return FAILURE;
 	  }
 
 	writeSmoothHeaderInfo(fptrNew, this->par);
 
+	long group=0;
 	if(this->par.getFlagBlankPix())
-	  fits_write_imgnull(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &blankval, &status);
+	  fits_write_imgnull_flt(fptrNew, group, 1, this->numPixels, this->recon, blankval, &status);
 	else 
-	  fits_write_img(fptrNew, TFLOAT, 1, this->numPixels, this->recon, &status);
+	  fits_write_img_flt(fptrNew, group, 1, this->numPixels, this->recon, &status);
 	if(status){
 	  duchampFITSerror(status,"saveSmothedCube","Error writing smoothed array:");
 	  return FAILURE;
@@ -272,6 +276,7 @@ namespace duchamp
     }
 
     int status = 0;  /* MUST initialize status */
+    long group=0;
     fitsfile *fptrNew;         
   
     if(this->par.getFlagOutputRecon()){
@@ -286,7 +291,7 @@ namespace duchamp
       else
 	{
 
-	  if(this->writeBasicHeader(fptrNew, -32)==FAILURE){
+	  if(this->writeBasicHeader(fptrNew, FLOAT_IMG)==FAILURE){
 	    DUCHAMPWARN("write Recon Cube", "Failure writing to header");
 	    return FAILURE;
 	  }
@@ -294,9 +299,6 @@ namespace duchamp
 	  writeReconHeaderInfo(fptrNew, this->par, "recon");
 
 	  status=0;
-	  long *fpixel = new long[this->header().WCS().naxis];
-	  for(int i=0;i<this->numDim;i++) fpixel[i]=1;
-	  long group=0;
 	  if(this->par.getFlagBlankPix())
 	    fits_write_imgnull_flt(fptrNew, group, 1, this->numPixels, this->recon, blankval, &status);
 	  else  
@@ -305,7 +307,6 @@ namespace duchamp
 	    duchampFITSerror(status,"saveReconCube","Error writing reconstructed array:");
 	    return FAILURE;
 	  }
-	  delete [] fpixel;
 
 	  status = 0;
 	  if(fits_close_file(fptrNew, &status)){
@@ -338,9 +339,9 @@ namespace duchamp
 	  writeReconHeaderInfo(fptrNew, this->par, "resid");
 
 	  if(this->par.getFlagBlankPix())
-	    fits_write_imgnull(fptrNew, TFLOAT, 1, this->numPixels, resid, &blankval, &status);
+	    fits_write_imgnull_flt(fptrNew, group, 1, this->numPixels, resid, blankval, &status);
 	  else  
-	    fits_write_img(fptrNew, TFLOAT, 1, this->numPixels, resid, &status);
+	    fits_write_img_flt(fptrNew, group, 1, this->numPixels, resid, &status);
 	  if(status){
 	    duchampFITSerror(status,"saveResidualCube","Error writing reconstructed array:");
 	    return FAILURE;
@@ -544,6 +545,7 @@ namespace duchamp
     for(size_t i=0;i<naxis;i++) naxes[i]=this->axisDim[i];
     if(is2D) naxes[this->head.WCS().spec]=1;
     // write the required header keywords 
+    std::cerr << "Creating image with bitpix = " << bitpix << "\n";
     fits_write_imghdr(fptr, bitpix, naxis, naxes,  &status);
 
     // Write beam information
