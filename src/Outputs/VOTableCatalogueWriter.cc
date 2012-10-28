@@ -156,16 +156,22 @@ namespace duchamp {
     for(size_t i=0;i<this->itsColumnSpecification->size();i++){
       
       Catalogues::Column *col = this->itsColumnSpecification->pCol(i);
-      if(col->doCol(Catalogues::VOTABLE,this->itsHead->isSpecOK())){
+      bool useFint=this->itsHead->isSpecOK();
+      if(col->doCol(Catalogues::VOTABLE,useFint)){
 	VOField field(*col); 
 	if(col->type()=="RAJD")  field.setUCD(lngUCDbase+";meta.main");
 	if(col->type()=="WRA")   field.setUCD("phys.angSize;"+lngUCDbase);
 	if(col->type()=="DECJD") field.setUCD(latUCDbase+";meta.main");
 	if(col->type()=="WDEC")  field.setUCD("phys.angSize;"+latUCDbase);	
 	if(col->type()=="VEL")   field.setUCD(specUCDbase+";meta.main");
-	if(col->type()=="W20")   field.setUCD("spect.line.width;"+specUCDbase);
-	if(col->type()=="W50")   field.setUCD("spect.line.width;"+specUCDbase);
-	if(col->type()=="WVEL")  field.setUCD("spect.line.width;"+specUCDbase);
+	if(col->type()=="W20")   field.setUCD("spect.line.width.20;"+specUCDbase);
+	if(col->type()=="W50")   field.setUCD("spect.line.width.50;"+specUCDbase);
+	if(col->type()=="WVEL")  field.setUCD("spect.line.width.full;"+specUCDbase);
+	if(!this->itsHead->is2D()){
+	  if(col->type()=="FINT") field.setUCD(field.UCD()+"spect.line.intensity");
+	  if(col->type()=="FTOT") field.setUCD(field.UCD()+"spect.line.intensity");
+	  if(col->type()=="FPEAK") field.setUCD(field.UCD()+"spect.line.intensity");
+	}
 	this->itsFileStream << "      ";
 	field.printField(this->itsFileStream);
       }
