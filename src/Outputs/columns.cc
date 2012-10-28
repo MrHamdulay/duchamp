@@ -247,8 +247,8 @@ namespace duchamp
       else if(type=="XPEAK") return Column(type,"X_peak","",7,prXYZ,"pos.cartesian.x;phot.flux;stat.max","int","col_xpeak","");
       else if(type=="YPEAK") return Column(type,"Y_peak","",7,prXYZ,"pos.cartesian.y;phot.flux;stat.max","int","col_ypeak","");
       else if(type=="ZPEAK") return Column(type,"Z_peak","",7,prXYZ,"pos.cartesian.z;phot.flux;stat.max","int","col_zpeak","");
-      else if(type=="NUMCH") return Column(type,"Nch","em.bin;stat.sum",6,0,"","int","col_nch","");
-      else if(type=="SPATSIZE") return Column(type,"Sp_size","instr.pixel;stat.sum",8,0,"","int","col_spsize","");
+      else if(type=="NUMCH") return Column(type,"Nch","",6,0,"em.bin;stat.sum","int","col_nch","");
+      else if(type=="SPATSIZE") return Column(type,"Sp_size","",8,0,"instr.pixel;stat.sum","int","col_spsize","");
       else {
 	Column col;
 	col.setType(type);
