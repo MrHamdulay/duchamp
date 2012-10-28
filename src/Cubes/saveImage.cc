@@ -545,7 +545,6 @@ namespace duchamp
     for(size_t i=0;i<naxis;i++) naxes[i]=this->axisDim[i];
     if(is2D) naxes[this->head.WCS().spec]=1;
     // write the required header keywords 
-    std::cerr << "Creating image with bitpix = " << bitpix << "\n";
     fits_write_imghdr(fptr, bitpix, naxis, naxes,  &status);
 
     // Write beam information
