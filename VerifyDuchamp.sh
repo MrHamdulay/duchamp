@@ -1,5 +1,7 @@
 #!/bin/bash
 
+fullComp=false
+
 if [ $# -gt 0 ]; then
 
     if [ $1 == "-f" ]; then
@@ -9,10 +11,9 @@ if [ $# -gt 0 ]; then
 	echo "   Options: -f - Full comparison. This may throw up differences arising merely from precision"
 	echo "                 The default is a basic comparison that won't be affected by precision changes"
 	echo "            -h - This help text."
+	exit 0
     fi
 
-else
-    fullComp=false
 fi
 
 version=`grep VERSION src/config.h | sed '/\"/s///' | sed '/\"/s///' | awk '{print $3}'`
