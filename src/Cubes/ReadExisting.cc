@@ -55,7 +55,7 @@ namespace duchamp {
     else{
       
       int status = 0, maxdim = 3;
-      int bitpix,numAxesNew,anynul;
+      int bitpix,numAxesNew;
       long *dimAxesNew = new long[maxdim];
       for(int i=0;i<maxdim;i++) dimAxesNew[i]=1;
       fits_get_img_param(this->itsFptr, maxdim, &bitpix, &numAxesNew, dimAxesNew, &status);
@@ -98,9 +98,10 @@ namespace duchamp {
 	delete subsection;
       }
 
-      return result;
-
     }
+
+    return result;
+
   }
 
   OUTCOME ReadExisting::readFromFile()
@@ -121,7 +122,7 @@ namespace duchamp {
       for(int i=0;i<maxdim;i++) inc[i]=1;
       long *dimAxesNew = new long[maxdim];
       for(int i=0;i<maxdim;i++) dimAxesNew[i]=this->itsCube->getDimArray()[i];
-      int bitpix,numAxesNew,anynul;
+      int anynul;
       int colnum = 0;  // want the first dataset in the FITS file
       int status = 0;
 
