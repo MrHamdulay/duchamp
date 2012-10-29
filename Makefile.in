@@ -1,4 +1,4 @@
-CFLAGS = -O2 -ftree-vectorize -fshort-enum
+CFLAGS = -O2 -ftree-vectorize
 
 FFLAGS = -fast -O4
 
