@@ -131,8 +131,8 @@ for (( i=0; i<${#number[@]}; i++ )); do
     if [ $fullComp == true ]; then
 	numdiff=`diff $karma $Skarma | wc -l`
     else
-	grep -e "^#" $karma > $temp1
-	grep -e "^#" $Skarma > $temp2
+	grep -v -e "^#" $karma > $temp1
+	grep -v -e "^#" $Skarma > $temp2
 	numdiff=`diff $temp1 $temp2 | wc -l`
     fi
     if [ $numdiff == 0 ]; then
@@ -151,8 +151,8 @@ for (( i=0; i<${#number[@]}; i++ )); do
     if [ $fullComp == true ]; then
 	numdiff=`diff $ds9 $Sds9 | wc -l`
     else
-	grep -e "^#" $ds9 > $temp1
-	grep -e "^#" $Sds9 > $temp2
+	grep -v -e "^#" $ds9 > $temp1
+	grep -v -e "^#" $Sds9 > $temp2
 	numdiff=`diff $temp1 $temp2 | wc -l`
     fi
     if [ $numdiff == 0 ]; then
