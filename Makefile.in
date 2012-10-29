@@ -118,8 +118,6 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(CUBESDIR)/invertCube.o\
 	$(CUBESDIR)/Merger.o\
 	$(CUBESDIR)/momentMap.o\
-	$(CUBESDIR)/readRecon.o\
-	$(CUBESDIR)/readSmooth.o\
 	$(CUBESDIR)/saveImage.o\
 	$(CUBESDIR)/smoothCube.o\
 	$(CUBESDIR)/spectraUtils.o\
