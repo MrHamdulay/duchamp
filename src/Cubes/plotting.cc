@@ -173,7 +173,7 @@ namespace duchamp
 
       spPlot.close();
     }
-    else {
+    else { // num dim > 1
 
       Plot::ImagePlot newplot;
       int flag = newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));

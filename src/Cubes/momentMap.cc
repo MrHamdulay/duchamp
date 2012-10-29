@@ -61,7 +61,7 @@ namespace duchamp
 
     int count=0;
     for(int i=0;i<xdim*ydim;i++) {
-      if(momentMap[i]>0.){
+      if(this->detectMap[i]>0){
 	float logmm = log10(momentMap[i]);
 	bool addPixel = detectedPixels[i];
 	if(addPixel){
@@ -143,8 +143,7 @@ namespace duchamp
       x = double(pix%xdim);
       y = double(pix/xdim);
 
-      if(!this->isBlank(pix) &&   // only do this for non-blank pixels. Judge this by the first pixel of the channel.
-	 this->detectMap[pix] > 0 ){  // and only where something was detected in the spectrum.
+      if( this->detectMap[pix] > 0 ){  // and only where something was detected in the spectrum.
 
 	double * world = this->head.pixToVel(x,y,zArray,zdim);
       
