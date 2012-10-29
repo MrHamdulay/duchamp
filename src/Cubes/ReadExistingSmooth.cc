@@ -40,13 +40,13 @@ namespace duchamp {
 
   OUTCOME ReadExistingSmooth::checkPars()
   {
-    if(!this->itsCube->pars().getFlagReconExists()){
-      DUCHAMPWARN("readReconCube", 
-		  "reconExists flag is not set. Not reading anything in!");
+    if(!this->itsCube->pars().getFlagSmoothExists()){
+      DUCHAMPWARN("readSmoothCube", 
+		  "smoothExists flag is not set. Not reading anything in!");
       return FAILURE;
     }
     else if(!this->itsCube->pars().getFlagSmooth()){
-      DUCHAMPWARN("readReconCube",
+      DUCHAMPWARN("readSmoothCube",
 		  "flagSmooth is not set. Don't need to read in recon array!");
       return FAILURE;
     }
