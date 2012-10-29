@@ -69,29 +69,29 @@ with wavelet reconstruction.
       <PARAM name="thresholdActual" ucd="" datatype="float" units="Jy/beam" value="4.05187"/>
       <PARAM name="noiseMeanActual" ucd="" datatype="float" units="Jy/beam" value="0.0148019"/>
       <PARAM name="noiseSpreadActual" ucd="" datatype="float" units="Jy/beam" value="1.00927"/>
-      <FIELD name="Obj#" ID="col01" ucd="meta.id" datatype="int" units="" width="5"/>
-      <FIELD name="Name" ID="col02" ucd="meta.id;meta.main" datatype="char" units="" arraysize="15"/>
-      <FIELD name="RA" ID="col03" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" units="deg" width="11" precision="6"/>
-      <FIELD name="DEC" ID="col04" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" units="deg" width="11" precision="6"/>
-      <FIELD name="VELO" ID="col05" ucd="phys.veloc;src.dopplerVeloc" datatype="float" units="km/s" width="9" precision="3"/>
-      <FIELD name="w_RA" ID="col06" ucd="pos.eq.dec;meta.main" ref="J2000" datatype="float" units="arcmin" width="9" precision="2"/>
-      <FIELD name="w_DEC" ID="col07" ucd="phys.angSize;pos.eq.dec" ref="J2000" datatype="float" units="arcmin" width="9" precision="2"/>
-      <FIELD name="w_50" ID="col08" ucd="phys.veloc;src.dopplerVeloc;spect.line.width" datatype="float" units="km/s" width="8" precision="3"/>
-      <FIELD name="w_20" ID="col09" ucd="phys.veloc;src.dopplerVeloc;spect.line.width" datatype="float" units="km/s" width="8" precision="3"/>
-      <FIELD name="w_VELO" ID="col10" ucd="phys.veloc;src.dopplerVeloc;spect.line.width" datatype="float" units="km/s" width="8" precision="3"/>
-      <FIELD name="Integrated_Flux" ID="col11" ucd="phot.flux;spect.line.intensity" datatype="float" units="Jy.km/s" width="10" precision="3"/>
-      <FIELD name="Peak_Flux" ID="col12" ucd="phot.flux;spect.line.intensity" datatype="float" units="Jy/beam" width="10" precision="3"/>
-      <FIELD name="S/Nmax" ID="col13" ucd="phot.flux;stat.snr" datatype="float" units="" width="7" precision="2"/>
-      <FIELD name="Flag" ID="col14" ucd="meta.code.qual" datatype="char" units="" arraysize="5"/>
-      <FIELD name="X_av" ID="col15" ucd="pos.cartesian.x" datatype="float" units="" width="6" precision="1"/>
-      <FIELD name="Y_av" ID="col16" ucd="pos.cartesian.y" datatype="float" units="" width="6" precision="1"/>
-      <FIELD name="Z_av" ID="col17" ucd="pos.cartesian.z" datatype="float" units="" width="6" precision="1"/>
-      <FIELD name="X_Centroid" ID="col18" ucd="pos.cartesian.x" datatype="float" units="" width="7" precision="1"/>
-      <FIELD name="Y_Centroid" ID="col19" ucd="pos.cartesian.y" datatype="float" units="" width="7" precision="1"/>
-      <FIELD name="Z_Centroid" ID="col20" ucd="pos.cartesian.z" datatype="float" units="" width="7" precision="1"/>
-      <FIELD name="X_peak" ID="col21" ucd="pos.cartesian.x" datatype="int" units="" width="7"/>
-      <FIELD name="Y_peak" ID="col22" ucd="pos.cartesian.y" datatype="int" units="" width="7"/>
-      <FIELD name="Z_peak" ID="col23" ucd="pos.cartesian.z" datatype="int" units="" width="7"/>
+      <FIELD name="Obj#" ID="col_objnum" ucd="meta.id" datatype="int" unit="" width="5"/>
+      <FIELD name="Name" ID="col_name" ucd="meta.id;meta.main" datatype="char" unit="" arraysize="15"/>
+      <FIELD name="RA" ID="col_rajd" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" unit="deg" width="11" precision="6"/>
+      <FIELD name="DEC" ID="col_decjd" ucd="pos.eq.dec;meta.main" ref="J2000" datatype="float" unit="deg" width="11" precision="6"/>
+      <FIELD name="VRAD" ID="col_vel" ucd="phys.veloc;spect.dopplerVeloc.rad;meta.main" datatype="float" unit="m/s" width="12" precision="3"/>
+      <FIELD name="w_RA" ID="col_wra" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
+      <FIELD name="w_DEC" ID="col_wdec" ucd="phys.angSize;pos.eq.dec" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
+      <FIELD name="w_50" ID="col_w50" ucd="spect.line.width.50;phys.veloc;spect.dopplerVeloc.rad" datatype="float" unit="m/s" width="11" precision="3"/>
+      <FIELD name="w_20" ID="col_w20" ucd="spect.line.width.20;phys.veloc;spect.dopplerVeloc.rad" datatype="float" unit="m/s" width="11" precision="3"/>
+      <FIELD name="w_VRAD" ID="col_wvel" ucd="spect.line.width.full;phys.veloc;spect.dopplerVeloc.rad" datatype="float" unit="m/s" width="11" precision="3"/>
+      <FIELD name="Integrated_Flux" ID="col_fint" ucd="phot.flux.density.integratedspect.line.intensity" datatype="float" unit="Jy.m/s" width="10" precision="3"/>
+      <FIELD name="Peak_Flux" ID="col_fpeak" ucd="phot.flux;stat.maxspect.line.intensity" datatype="float" unit="Jy/beam" width="10" precision="3"/>
+      <FIELD name="S/Nmax" ID="col_snrmax" ucd="stat.snr;phot.flux" datatype="float" unit="" width="7" precision="2"/>
+      <FIELD name="Flag" ID="col_flag" ucd="meta.code.qual" datatype="char" unit="" arraysize="5"/>
+      <FIELD name="X_av" ID="col_xav" ucd="pos.cartesian.x;stat.mean" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="Y_av" ID="col_yav" ucd="pos.cartesian.y;stat.mean" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="Z_av" ID="col_zav" ucd="pos.cartesian.z;stat.mean" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="X_Centroid" ID="col_xcent" ucd="pos.cartesian.x;stat.centroid" datatype="float" unit="" width="7" precision="1"/>
+      <FIELD name="Y_Centroid" ID="col_ycent" ucd="pos.cartesian.y;stat.centroid" datatype="float" unit="" width="7" precision="1"/>
+      <FIELD name="Z_Centroid" ID="col_zcent" ucd="pos.cartesian.z;stat.centroid" datatype="float" unit="" width="7" precision="1"/>
+      <FIELD name="X_peak" ID="col_xpeak" ucd="pos.cartesian.x;phot.flux;stat.max" datatype="int" unit="" width="7"/>
+      <FIELD name="Y_peak" ID="col_ypeak" ucd="pos.cartesian.y;phot.flux;stat.max" datatype="int" unit="" width="7"/>
+      <FIELD name="Z_peak" ID="col_zpeak" ucd="pos.cartesian.z;phot.flux;stat.max" datatype="int" unit="" width="7"/>
       <DATA>
         <TABLEDATA>
         <TR>

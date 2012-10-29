@@ -1,3 +1,34 @@
+Duchamp version 1.2.2 (2012/10/29)
+----------------------------------
+
+Bug fixes:
+
+* The reading of reconstructed & smoothed arrays in the case of large
+  (>2GB) cubes has been improved. While the most recent versions of
+  cfitsio were able to handle these, earlier versions would result in
+  a segementation fault using the previous interface. An alternative
+  interface has been implemented that avoids these faults, even for
+  the older cfitsio libraries.
+
+* A bug affecting the writing of FITS mask files (apparently for the
+  case of flagging by the object number) has been fixed.
+
+* The moment map occasionally failed if sources lay spatially within
+  the blank pixel region of the first channel. This check has been
+  removed and the moment map should be produced successfully in all
+  situations.
+
+Other:
+
+* The UCDs used in the VOTable catalogue output have been
+  updated. Several of these were shared between different columns, and
+  so they have been changed so that each UCD is unique to one
+  column. The column ID strings have been updated for clarity.
+
+* The determination of default output image filenames has been
+  improved -- it previously assumed the input filename ended in
+  '.fits', but this is no longer the case.
+
 Duchamp version 1.2.1 (2012/10/09)
 ----------------------------------
 
