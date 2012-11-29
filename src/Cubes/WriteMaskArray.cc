@@ -87,7 +87,7 @@ namespace duchamp {
     char *keyword = new char[FLEN_KEYWORD];
     std::string newunits = (this->itsCube->pars().getFlagMaskWithObjectNum()) ? "Object ID" : "Detection flag";
     strcpy(keyword,"BUNIT");
-    if(fits_update_key(fptrNew, TSTRING, keyword, (char *)newunits.c_str(), comment, &status)){
+    if(fits_update_key(this->itsFptr, TSTRING, keyword, (char *)newunits.c_str(), comment, &status)){
       duchampFITSerror(status,"saveMask","Error writing BUNIT header:");
       result = FAILURE;
     }
@@ -100,26 +100,30 @@ namespace duchamp {
 
   OUTCOME WriteMaskArray::writeData()
   {
-      int *mask = new int[this->itsCube->getSize()];
-      for(size_t i=0;i<this->itsCube->getSize();i++) mask[i]=0;
-      std::vector<Detection>::iterator obj;
-      for(obj=this->itsCube->pObjectList()->begin();obj<this->itsCube->pObjectList()->end();obj++){
-        std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
-        std::vector<PixelInfo::Voxel>::iterator vox;
-        for(vox=voxlist.begin();vox<voxlist.end();vox++){
-          size_t pixelpos = vox->getX() + this->itsCube->getDimX()*vox->getY() + 
-            this->itsCube->getDimX()*this->itsCube.getDimY()*vox->getZ();
-          if(this->itsCube->pars().getFlagMaskWithObjectNum()) mask[pixelpos] = obj->getID();
-	  else mask[pixelpos] = 1;
-        }
+    OUTCOME result = SUCCESS;
+    int *mask = new int[this->itsCube->getSize()];
+    for(size_t i=0;i<this->itsCube->getSize();i++) mask[i]=0;
+    std::vector<Detection>::iterator obj;
+    for(obj=this->itsCube->pObjectList()->begin();obj<this->itsCube->pObjectList()->end();obj++){
+      std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
+      std::vector<PixelInfo::Voxel>::iterator vox;
+      for(vox=voxlist.begin();vox<voxlist.end();vox++){
+	size_t pixelpos = vox->getX() + this->itsCube->getDimX()*vox->getY() + 
+	  this->itsCube->getDimX()*this->itsCube->getDimY()*vox->getZ();
+	if(this->itsCube->pars().getFlagMaskWithObjectNum()) mask[pixelpos] = obj->getID();
+	else mask[pixelpos] = 1;
       }
-      status=0;
-      long group=0;
-      LONGLONG first=1;
-      LONGLONG nelem=LONGLONG(this->itsCube->getSize());
-      if(fits_write_img_int(this->itsFptr, group, first, nelem, mask, &status)){
-	duchampFITSerror(status,"saveMask","Error writing mask array!:");
-      }
+    }
+    int status=0;
+    long group=0;
+    LONGLONG first=1;
+    LONGLONG nelem=LONGLONG(this->itsCube->getSize());
+    if(fits_write_img_int(this->itsFptr, group, first, nelem, mask, &status)){
+      duchampFITSerror(status,"saveMask","Error writing mask array!:");
+      result = FAILURE;
+    }
+
+    return result;
 
   }
 
