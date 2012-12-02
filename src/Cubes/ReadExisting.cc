@@ -30,6 +30,8 @@ namespace duchamp {
     if(this==&other) return *this;
     this->itsCube = other.itsCube;
     this->itsArray = other.itsArray;
+    this->itsFilename = other.itsFilename;
+    this->itsFptr = other.itsFptr;
     return *this;
   }
 
