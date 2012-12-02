@@ -46,6 +46,9 @@ objectList      *
 # flagTextSpectra -- whether to save a text file detailing the spectra
 #                    of each source
 # spectraTextFile -- the file in which to save the text-formatted spectra
+# flagOutputBaseline -- whether to save a FITS file containing the cube of baseline values
+# fileOutputBaseline -- the filename for the baseline FITS file. If not given, it defaults 
+#                   to the format shown (for input file image.fits)
 # flagOutputMomentMap -- whether to save a FITS file containing the moment-0 map
 # fileOutputMomentMap -- the filename for the moment-0 FITS file. If not given, it defaults 
 #                   to the format shown (for input file image.fits)
@@ -88,6 +91,8 @@ flagPlotSpectra true
 spectraFile	duchamp-Spectra.ps
 flagTextSpectra false
 spectraTextFile duchamp-Spectra.txt
+flagOutputBaseline  false
+fileOutputBaseline  image.BASE.fits
 flagOutputMomentMap  false
 fileOutputMomentMap  image.MOM0.fits
 flagOutputMask  false

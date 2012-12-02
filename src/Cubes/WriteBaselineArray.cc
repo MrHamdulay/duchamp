@@ -15,7 +15,6 @@ namespace duchamp {
   WriteBaselineArray::WriteBaselineArray(Cube *cube):
     WriteArray(cube,FLOAT_IMG)
   {
-    this->itsFlag2D=true;
   }
 
   WriteBaselineArray::WriteBaselineArray(const WriteBaselineArray &other)

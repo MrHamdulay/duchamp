@@ -7,17 +7,17 @@
 namespace duchamp {
 
   WriteArray::WriteArray():
-    itsCube(0),itsFptr(0),itsBitpix(-32),itsFilename(""),itsFlag2D(false)
+    itsCube(0),itsFilename(""),itsBitpix(-32),itsFlag2D(false),itsFptr(0)
   {
   }
 
   WriteArray::WriteArray(Cube *cube):
-    itsCube(cube),itsFptr(0),itsBitpix(-32),itsFilename(""),itsFlag2D(false)
+    itsCube(cube),itsFilename(""),itsBitpix(-32),itsFlag2D(false),itsFptr(0)
   {
   }
 
   WriteArray::WriteArray(Cube *cube, int bitpix):
-    itsCube(cube),itsFptr(0),itsBitpix(bitpix),itsFilename(""),itsFlag2D(false)
+    itsCube(cube),itsFilename(""),itsBitpix(bitpix),itsFlag2D(false),itsFptr(0)
   {
   }
 
@@ -39,17 +39,19 @@ namespace duchamp {
 
   OUTCOME WriteArray::write()
   {
-    this->openFile();
-    this->writeBasicHeader();
-    this->writeHeader();
-    this->writeData();
-    this->closeFile();
+    if(this->openFile()==FAILURE) return FAILURE;
+    if(this->writeBasicHeader()==FAILURE) return FAILURE;
+    if(this->writeHeader()==FAILURE) return FAILURE;
+    if(this->writeData()==FAILURE) return FAILURE;
+    if(this->closeFile()==FAILURE) return FAILURE;
+    return SUCCESS;
   }
 
   OUTCOME WriteArray::openFile()
   {
     OUTCOME result=SUCCESS;
     int status=0;
+    this->itsFilename = "!"+this->itsFilename;
     fits_create_file(&this->itsFptr,this->itsFilename.c_str(),&status);
     if(status){
       DUCHAMPWARN("Reading Cube", "Error creating file " << this->itsFilename);
@@ -141,7 +143,7 @@ namespace duchamp {
   {
     OUTCOME result=SUCCESS;
     int status = 0;
-    if(this->itsFptr==0){
+    if(this->itsFptr!=0){
       fits_close_file(this->itsFptr, &status);
       if (status){
 	DUCHAMPWARN("Reading Cube", "Error closing file " << this->itsFilename);

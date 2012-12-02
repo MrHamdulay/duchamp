@@ -1200,7 +1200,7 @@ namespace duchamp
     ///  the baseline FITS image. If the input image is image.fits, then the
     ///  output will be image.BASE.fits.
 
-    if(this->fileOutputMomentMap==""){
+    if(this->fileOutputBaseline==""){
       std::string inputName = this->imageFile;
       std::string outputName = inputName;
       if(inputName.substr(inputName.size()-5,5)==".fits")
@@ -1209,7 +1209,7 @@ namespace duchamp
       outputName += ".BASE.fits";
       return outputName;
     }
-    else return this->fileOutputMomentMap;
+    else return this->fileOutputBaseline;
   }
 
   std::string Param::outputSmoothFile()

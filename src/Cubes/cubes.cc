@@ -1671,8 +1671,8 @@ namespace duchamp
 
   void Cube::writeToFITS()
   {
+    std::string report;
     if(!this->par.getFlagUsePrevious()){
-      std::string report;
       if(this->par.getFlagATrous()){
 	if(this->par.getFlagOutputRecon()){
 	  if(this->par.isVerbose())
@@ -1687,7 +1687,7 @@ namespace duchamp
 	  if(this->par.isVerbose())
 	    std::cout << "  Saving reconstruction residual cube to " << this->par.outputResidFile() << "... "<<std::flush;
 	  WriteReconArray writer(this);
-	  writer.setFilename(this->par.outputReconFile());
+	  writer.setFilename(this->par.outputResidFile());
 	  writer.setIsRecon(false);
 	  OUTCOME result = writer.write();
 	  report=(result==FAILURE)?"Failed!":"done.";
@@ -1703,36 +1703,35 @@ namespace duchamp
 	report=(result==FAILURE)?"Failed!":"done.";
 	std::cout << report << "\n";
       }
-      if(this->par.getFlagOutputMomentMap()){
-	if(this->par.isVerbose())
-	  std::cout << "  Saving moment map to " << this->par.outputMomentMapFile() << "... "<<std::flush;
-	WriteMomentMapArray writer(this);
-	writer.setFilename(this->par.outputMomentMapFile());
-	OUTCOME result = writer.write();
-	report=(result==FAILURE)?"Failed!":"done.";
-	std::cout << report << "\n";
-      }
-      if(this->par.getFlagOutputBaseline()){
-	if(this->par.isVerbose())
-	  std::cout << "  Saving baseline cube to " << this->par.outputBaselineFile() << "... "<<std::flush;
-	WriteBaselineArray writer(this);
-	writer.setFilename(this->par.outputBaselineFile());
-	OUTCOME result = writer.write();
-	report=(result==FAILURE)?"Failed!":"done.";
-	std::cout << report << "\n";
-      }
-      if(this->par.getFlagOutputMask()){
-	if(this->par.isVerbose())
-	  std::cout << "  Saving mask cube to " << this->par.outputMaskFile() << "... "<<std::flush;
-	WriteMaskArray writer(this);
-	writer.setFilename(this->par.outputMaskFile());
-	OUTCOME result = writer.write();
-	report=(result==FAILURE)?"Failed!":"done.";
-	std::cout << report << "\n";
-      }
-
-
     }
+    if(this->par.getFlagOutputMomentMap()){
+      if(this->par.isVerbose())
+	std::cout << "  Saving moment map to " << this->par.outputMomentMapFile() << "... "<<std::flush;
+      WriteMomentMapArray writer(this);
+      writer.setFilename(this->par.outputMomentMapFile());
+      OUTCOME result = writer.write();
+      report=(result==FAILURE)?"Failed!":"done.";
+	std::cout << report << "\n";
+    }
+    if(this->par.getFlagOutputBaseline()){
+      if(this->par.isVerbose())
+	std::cout << "  Saving baseline cube to " << this->par.outputBaselineFile() << "... "<<std::flush;
+      WriteBaselineArray writer(this);
+      writer.setFilename(this->par.outputBaselineFile());
+      OUTCOME result = writer.write();
+      report=(result==FAILURE)?"Failed!":"done.";
+      std::cout << report << "\n";
+    }
+    if(this->par.getFlagOutputMask()){
+      if(this->par.isVerbose())
+	std::cout << "  Saving mask cube to " << this->par.outputMaskFile() << "... "<<std::flush;
+      WriteMaskArray writer(this);
+      writer.setFilename(this->par.outputMaskFile());
+      OUTCOME result = writer.write();
+      report=(result==FAILURE)?"Failed!":"done.";
+      std::cout << report << "\n";
+    }
+
   }
 
 

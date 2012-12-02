@@ -34,9 +34,9 @@ namespace duchamp {
   protected:
     Cube *itsCube;
     std::string itsFilename;
-    fitsfile *itsFptr;
     int itsBitpix;
     bool itsFlag2D;
+    fitsfile *itsFptr;
   };
 
 }
