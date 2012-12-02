@@ -282,7 +282,7 @@ namespace duchamp
 
       float dud,vmin,vmax;
       cpgqwin(&vmin,&vmax,&dud,&dud);
-	cpgsci(RED);
+	cpgsci(BLUE);
 	cpgsls(DASHED);
 	float thresh = stats.getThreshold();
 	if(par.getFlagNegative()) thresh *= -1.;
