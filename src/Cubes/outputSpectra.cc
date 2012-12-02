@@ -296,6 +296,14 @@ namespace duchamp
 	ct++;
 	if(specy[i]>max) max=specy[i];
 	if(specy[i]<min) min=specy[i];
+	if(this->par.getFlagBaseline()){
+	  if(base[i]>max) max=base[i];
+	  if(base[i]<min) min=base[i];
+	}
+	if(this->reconExists){
+	  if(specy2[i]>max) max=specy2[i];
+	  if(specy2[i]<min) min=specy2[i];
+	}
       }
     }
     // widen the flux range slightly so that the top & bottom don't lie
