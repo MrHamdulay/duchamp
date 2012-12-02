@@ -93,6 +93,7 @@ namespace duchamp
     size_t             getDimY(){if(numDim>1) return axisDim[1];else return 1;};
     size_t             getDimZ(){if(numDim>2) return axisDim[2];else return 1;};
     size_t             getSize(){ return numPixels; };
+    size_t             getSpatialSize(){if(numDim>1) return axisDim[0]*axisDim[1]; else if(numDim>0) return axisDim[0]; else return 0;};
     short int          getNumDim(){ return numDim; };
     virtual float      getPixValue(size_t pos){ return array[pos]; };
     virtual void       setPixValue(size_t pos, float f){array[pos] = f;};
@@ -293,7 +294,13 @@ namespace duchamp
 
     /// @brief Save reconstructed array to an external array. 
     void        getRecon(float *output);
+    /// @brief Return the pointer to the reconstructed array.
     float *     getRecon(){return recon; };
+
+    /// @brief Save baseline array to an external array. 
+    void        getBaseline(float *output);
+    /// @brief Return the pointer to the baseline array.
+    float *     getBaseline(){return baseline; };
 
     /// @brief Set Milky Way channels to zero. 
     void        removeMW();
@@ -392,6 +399,10 @@ namespace duchamp
     OUTCOME         getFITSdata(fitsfile *fptr);   // in FitsIO/dataIO.cc
 
     OUTCOME         writeBasicHeader(fitsfile *fptr, int bitpix, bool is2D=false);
+
+    /// @brief Handle all the writing to FITS files.
+    void            writeToFITS();
+
 
     /// @brief Save the moment map to a FITS file
     OUTCOME        saveMomentMapImage();

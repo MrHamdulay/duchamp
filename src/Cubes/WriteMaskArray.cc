@@ -10,13 +10,11 @@ namespace duchamp {
     WriteArray()
   {
     this->itsBitpix=LONG_IMG;
-    this->itsFlag2D=true;
   }
   
   WriteMaskArray::WriteMaskArray(Cube *cube):
     WriteArray(cube,LONG_IMG)
   {
-    this->itsFlag2D=true;
   }
 
   WriteMaskArray::WriteMaskArray(const WriteMaskArray &other)
@@ -88,7 +86,7 @@ namespace duchamp {
     std::string newunits = (this->itsCube->pars().getFlagMaskWithObjectNum()) ? "Object ID" : "Detection flag";
     strcpy(keyword,"BUNIT");
     if(fits_update_key(this->itsFptr, TSTRING, keyword, (char *)newunits.c_str(), comment, &status)){
-      duchampFITSerror(status,"saveMask","Error writing BUNIT header:");
+      duchampFITSerror(status,"writeMaskArray","Error writing BUNIT header:");
       result = FAILURE;
     }
     delete [] comment;
@@ -119,7 +117,7 @@ namespace duchamp {
     LONGLONG first=1;
     LONGLONG nelem=LONGLONG(this->itsCube->getSize());
     if(fits_write_img_int(this->itsFptr, group, first, nelem, mask, &status)){
-      duchampFITSerror(status,"saveMask","Error writing mask array!:");
+      duchampFITSerror(status,"writeMaskArray","Error writing mask array:");
       result = FAILURE;
     }
 

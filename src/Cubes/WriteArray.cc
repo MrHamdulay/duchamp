@@ -37,6 +37,15 @@ namespace duchamp {
     return *this;
   }
 
+  OUTCOME WriteArray::write()
+  {
+    this->openFile();
+    this->writeBasicHeader();
+    this->writeHeader();
+    this->writeData();
+    this->closeFile();
+  }
+
   OUTCOME WriteArray::openFile()
   {
     OUTCOME result=SUCCESS;

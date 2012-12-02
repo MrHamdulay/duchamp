@@ -64,6 +64,12 @@ HEADS = $(BASE)/duchamp.hh\
 	$(CUBESDIR)/ReadExisting.hh\
 	$(CUBESDIR)/ReadExistingRecon.hh\
 	$(CUBESDIR)/ReadExistingSmooth.hh\
+	$(CUBESDIR)/WriteArray.hh\
+	$(CUBESDIR)/WriteBaselineArray.hh\
+	$(CUBESDIR)/WriteMaskArray.hh\
+	$(CUBESDIR)/WriteMomentMapArray.hh\
+	$(CUBESDIR)/WriteReconArray.hh\
+	$(CUBESDIR)/WriteSmoothArray.hh\
 	$(FITSIODIR)/Beam.hh\
 	$(FITSIODIR)/DuchampBeam.hh\
 	$(UTILDIR)/Hanning.hh\
@@ -125,6 +131,12 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(CUBESDIR)/ReadExisting.o\
 	$(CUBESDIR)/ReadExistingRecon.o\
 	$(CUBESDIR)/ReadExistingSmooth.o\
+	$(CUBESDIR)/WriteArray.o\
+	$(CUBESDIR)/WriteBaselineArray.o\
+	$(CUBESDIR)/WriteMaskArray.o\
+	$(CUBESDIR)/WriteMomentMapArray.o\
+	$(CUBESDIR)/WriteReconArray.o\
+	$(CUBESDIR)/WriteSmoothArray.o\
 	$(FITSIODIR)/Beam.o\
 	$(FITSIODIR)/DuchampBeam.o\
 	$(FITSIODIR)/dataIO.o\

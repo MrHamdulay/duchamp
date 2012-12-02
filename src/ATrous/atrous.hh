@@ -55,10 +55,10 @@ namespace duchamp
 			float *originalCube, float *baseline, Param &par);
 
   /// @brief Find the baseline of a 1-D spectrum. 
-  void getBaseline(size_t size, float *input, float *baseline, Param &par);
+  void findBaseline(size_t size, float *input, float *baseline, Param &par);
 
   /// @brief Find the baseline of a 1-D spectrum. 
-  void getBaseline(size_t size, float *input, float *baseline);
+  void findBaseline(size_t size, float *input, float *baseline);
 
 }
 

@@ -30,6 +30,7 @@
 #include <iomanip>
 #include <string>
 #include <duchamp/duchamp.hh>
+#include <fitsio.h>
 
 namespace duchamp
 {
@@ -41,6 +42,15 @@ namespace duchamp
 
   DuchampError::~DuchampError() throw()
   {}
+
+
+  void duchampFITSerror(int status, std::string subroutine, std::string error)
+  {
+    if(status){
+      DUCHAMPWARN(subroutine,error);
+      fits_report_error(stderr, status);
+    }
+  }
 
 
 }

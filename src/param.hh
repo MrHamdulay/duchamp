@@ -101,8 +101,11 @@ namespace duchamp
     /// @brief Copy certain necessary FITS header parameters from a FitsHeader object 
     void   copyHeaderInfo(FitsHeader &head);
 
-    /// @brief Determine filename in which to save the mask array. 
+    /// @brief Determine filename in which to save the moment map. 
     std::string outputMomentMapFile();
+
+    /// @brief Determine filename in which to save the baseline array. 
+    std::string outputBaselineFile();
 
     /// @brief Determine filename in which to save the mask array. 
     std::string outputMaskFile();
@@ -204,6 +207,10 @@ namespace duchamp
     void   setFlagTextSpectra(bool b){flagTextSpectra = b;};
     std::string getSpectraTextFile(){return spectraTextFile;};
     void   setSpectraTextFile(std::string fname){spectraTextFile = fname;};
+    bool   getFlagOutputBaseline(){return flagOutputBaseline;};
+    void   setFlagOutputBaseline(bool flag){flagOutputBaseline=flag;};
+    std::string getFileOutputBaseline(){return fileOutputBaseline;};
+    void   setFileOutputBaseline(std::string s){fileOutputBaseline=s;};
     bool   getFlagOutputMomentMap(){return flagOutputMomentMap;};
     void   setFlagOutputMomentMap(bool flag){flagOutputMomentMap=flag;};
     std::string getFileOutputMomentMap(){return fileOutputMomentMap;};
@@ -430,6 +437,8 @@ namespace duchamp
     std::string spectraFile;     ///< Where the spectra are displayed
     bool        flagTextSpectra; ///< Should a text file with all spectra be written?
     std::string spectraTextFile; ///< Where the text spectra are written.
+    bool        flagOutputBaseline;  ///< Should the cube of baseline values be written to a FITS file?
+    std::string fileOutputBaseline;  ///< The name of the baseline FITS file
     bool        flagOutputMomentMap;  ///< Should the moment map image be written to a FITS file?
     std::string fileOutputMomentMap;  ///< The name of the moment map FITS file
     bool        flagOutputMask;  ///< Should the mask image be written?

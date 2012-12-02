@@ -51,6 +51,11 @@
 #include <duchamp/Utils/mycpgplot.hh>
 #include <duchamp/Utils/Statistics.hh>
 #include <duchamp/FitsIO/DuchampBeam.hh>
+#include <duchamp/Cubes/WriteReconArray.hh>
+#include <duchamp/Cubes/WriteSmoothArray.hh>
+#include <duchamp/Cubes/WriteMaskArray.hh>
+#include <duchamp/Cubes/WriteMomentMapArray.hh>
+#include <duchamp/Cubes/WriteBaselineArray.hh>
 
 using namespace mycpgplot;
 using namespace Statistics;
@@ -864,6 +869,21 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
+  void Cube::getBaseline(float *output)
+  {
+    /// @details
+    /// The baseline array is written to output. The output array needs to 
+    ///  be defined beforehand: no checking is done on the memory.
+    /// \param output The array that is written to.
+
+    // Need check for change in number of pixels!
+    for(size_t i=0;i<this->numPixels;i++){
+      if(this->baselineAllocated) output[i] = this->baseline[i];
+      else output[i] = 0.;
+    }
+  }
+  //--------------------------------------------------------------------
+
   void Cube::removeMW()
   {
     /// @details
@@ -1648,6 +1668,73 @@ namespace duchamp
 
   }
   //--------------------------------------------------------------------
+
+  void Cube::writeToFITS()
+  {
+    if(!this->par.getFlagUsePrevious()){
+      std::string report;
+      if(this->par.getFlagATrous()){
+	if(this->par.getFlagOutputRecon()){
+	  if(this->par.isVerbose())
+	    std::cout << "  Saving reconstructed cube to " << this->par.outputReconFile() << "... "<<std::flush;
+	  WriteReconArray writer(this);
+	  writer.setFilename(this->par.outputReconFile());
+	  OUTCOME result = writer.write();
+	  report=(result==FAILURE)?"Failed!":"done.";
+	  std::cout << report << "\n";
+	}
+	if(this->par.getFlagOutputResid()){
+	  if(this->par.isVerbose())
+	    std::cout << "  Saving reconstruction residual cube to " << this->par.outputResidFile() << "... "<<std::flush;
+	  WriteReconArray writer(this);
+	  writer.setFilename(this->par.outputReconFile());
+	  writer.setIsRecon(false);
+	  OUTCOME result = writer.write();
+	  report=(result==FAILURE)?"Failed!":"done.";
+	  std::cout << report << "\n";
+	}
+      }
+      if(this->par.getFlagSmooth()&& this->par.getFlagOutputSmooth()){
+	if(this->par.isVerbose())
+	  std::cout << "  Saving smoothed cube to " << this->par.outputSmoothFile() << "... "<<std::flush;
+	WriteSmoothArray writer(this);
+	writer.setFilename(this->par.outputSmoothFile());
+	OUTCOME result = writer.write();
+	report=(result==FAILURE)?"Failed!":"done.";
+	std::cout << report << "\n";
+      }
+      if(this->par.getFlagOutputMomentMap()){
+	if(this->par.isVerbose())
+	  std::cout << "  Saving moment map to " << this->par.outputMomentMapFile() << "... "<<std::flush;
+	WriteMomentMapArray writer(this);
+	writer.setFilename(this->par.outputMomentMapFile());
+	OUTCOME result = writer.write();
+	report=(result==FAILURE)?"Failed!":"done.";
+	std::cout << report << "\n";
+      }
+      if(this->par.getFlagOutputBaseline()){
+	if(this->par.isVerbose())
+	  std::cout << "  Saving baseline cube to " << this->par.outputBaselineFile() << "... "<<std::flush;
+	WriteBaselineArray writer(this);
+	writer.setFilename(this->par.outputBaselineFile());
+	OUTCOME result = writer.write();
+	report=(result==FAILURE)?"Failed!":"done.";
+	std::cout << report << "\n";
+      }
+      if(this->par.getFlagOutputMask()){
+	if(this->par.isVerbose())
+	  std::cout << "  Saving mask cube to " << this->par.outputMaskFile() << "... "<<std::flush;
+	WriteMaskArray writer(this);
+	writer.setFilename(this->par.outputMaskFile());
+	OUTCOME result = writer.write();
+	report=(result==FAILURE)?"Failed!":"done.";
+	std::cout << report << "\n";
+      }
+
+
+    }
+  }
+
 
   /****************************************************************/
   /////////////////////////////////////////////////////////////

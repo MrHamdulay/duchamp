@@ -38,8 +38,8 @@ namespace duchamp
   void Cube::removeBaseline()
   {
     /// @details
-    ///  A front-end to the getBaseline routine, specialised for the 
-    ///  Cube data structure. Calls getBaseline on each spectrum individually.
+    ///  A front-end to the findBaseline routine, specialised for the 
+    ///  Cube data structure. Calls findBaseline on each spectrum individually.
     ///  Upon exit, the original array minus its spectral baseline is stored
     ///   in this->array and the baseline is in this->baseline.
     ///  If the reconstructed array exists, the baseline is subtracted from 
@@ -58,7 +58,7 @@ namespace duchamp
       for(size_t z=0; z<this->axisDim[2]; z++)  
 	spec[z] = this->array[z*numSpec + pix];
 
-      getBaseline(this->axisDim[2], spec, thisBaseline, this->par);
+      findBaseline(this->axisDim[2], spec, thisBaseline, this->par);
 
       for(size_t z=0; z<this->axisDim[2]; z++) {
 	this->baseline[z*numSpec+pix] = thisBaseline[z];

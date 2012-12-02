@@ -29,6 +29,8 @@ namespace duchamp {
     virtual OUTCOME writeData() = 0;
     OUTCOME closeFile();
 
+    OUTCOME write();
+
   protected:
     Cube *itsCube;
     std::string itsFilename;

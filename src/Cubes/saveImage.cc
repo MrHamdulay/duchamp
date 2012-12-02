@@ -61,13 +61,13 @@ namespace duchamp
   //---------------------------------------------------------------------------
 
 
-  void duchampFITSerror(int status, std::string subroutine, std::string error)
-  {
-    if(status){
-      DUCHAMPWARN(subroutine,error);
-      fits_report_error(stderr, status);
-    }
-  }
+  // void duchampFITSerror(int status, std::string subroutine, std::string error)
+  // {
+  //   if(status){
+  //     DUCHAMPWARN(subroutine,error);
+  //     fits_report_error(stderr, status);
+  //   }
+  // }
 
 
   OUTCOME Cube::saveMomentMapImage()

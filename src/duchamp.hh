@@ -124,6 +124,8 @@ Selavy re-analyses and re-plots objects found by Duchamp.\n\
     throw DuchampError(error.str());		\
   }
 
+  void duchampFITSerror(int status, std::string subroutine, std::string error);
+
   /// The spectral type that we want the wcsprm structs to be in. 
   const char duchampVelocityType[9] = "VOPT-F2W";
   //const char duchampVelocityType[9] = "VELO-F2V";
@@ -214,6 +216,14 @@ Selavy re-analyses and re-plots objects found by Duchamp.\n\
   const std::string header_maskHistory_input = 
 	     "Input image used by " + PROGNAME + " follows";
   const std::string header_maskSubsection_comment = 
+	     "A subsection of the original was searched by " + PROGNAME;
+
+  // Descriptive Headers: for the output Baseline image
+  const std::string header_baselineHistory =
+	     "Results of baseline extraction by " + PROGNAME + " v." + VERSION;
+  const std::string header_baselineHistory_input = 
+	     "Input image used by " + PROGNAME + " follows";
+  const std::string header_baselineSubsection_comment = 
 	     "A subsection of the original was searched by " + PROGNAME;
 
   // Descriptive Headers: for the output Moment-0 image

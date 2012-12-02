@@ -90,6 +90,8 @@ namespace duchamp
     this->spectraFile       = "duchamp-Spectra.ps";
     this->flagTextSpectra   = false;
     this->spectraTextFile   = "duchamp-Spectra.txt";
+    this->flagOutputBaseline    = false;
+    this->fileOutputBaseline    = "";
     this->flagOutputMomentMap    = false;
     this->fileOutputMomentMap    = "";
     this->flagOutputMask    = false;
@@ -226,6 +228,8 @@ namespace duchamp
     this->spectraFile       = p.spectraFile;    
     this->flagTextSpectra   = p.flagTextSpectra;    
     this->spectraTextFile   = p.spectraTextFile;    
+    this->flagOutputBaseline    = p.flagOutputBaseline;
+    this->fileOutputBaseline    = p.fileOutputBaseline;
     this->flagOutputMomentMap    = p.flagOutputMomentMap;
     this->fileOutputMomentMap    = p.fileOutputMomentMap;
     this->flagOutputMask    = p.flagOutputMask;
@@ -589,6 +593,8 @@ namespace duchamp
 	if(arg=="spectrafile")     this->spectraFile = readFilename(ss); 
 	if(arg=="flagtextspectra") this->flagTextSpectra = readFlag(ss); 
 	if(arg=="spectratextfile") this->spectraTextFile = readFilename(ss); 
+	if(arg=="flagoutputbaseline")  this->flagOutputBaseline = readFlag(ss); 
+	if(arg=="fileoutputbaseline")  this->fileOutputBaseline = readFilename(ss);
 	if(arg=="flagoutputmomentmap")  this->flagOutputMomentMap = readFlag(ss); 
 	if(arg=="fileoutputmomentmap")  this->fileOutputMomentMap = readFilename(ss);
 	if(arg=="flagoutputmask")  this->flagOutputMask = readFlag(ss); 
@@ -951,7 +957,8 @@ namespace duchamp
       recordParam(theStream, "[flagOutputSmooth]", "Saving smoothed cube?", fileOption(par.getFlagOutputSmooth(),par.outputSmoothFile()));
     }						       
     recordParam(theStream, "[flagOutputMask]", "Saving mask cube?", fileOption(par.getFlagOutputMask(),par.outputMaskFile()));
-    recordParam(theStream, "[flagOutputMask]", "Saving 0th moment to FITS file?", fileOption(par.getFlagOutputMomentMap(),par.outputMomentMapFile()));
+    recordParam(theStream, "[flagOutputMomentMap]", "Saving 0th moment to FITS file?", fileOption(par.getFlagOutputMomentMap(),par.outputMomentMapFile()));
+    recordParam(theStream, "[flagOutputBaseline]", "Saving baseline values to FITS file?", fileOption(par.getFlagOutputBaseline(),par.outputBaselineFile()));
 
     theStream  <<"------"<<std::endl;
 
@@ -1182,6 +1189,24 @@ namespace duchamp
 	outputName = inputName.substr(0,inputName.size()-5);  
       // remove the ".fits" on the end.
       outputName += ".MOM0.fits";
+      return outputName;
+    }
+    else return this->fileOutputMomentMap;
+  }
+
+  std::string Param::outputBaselineFile()
+  {
+    ///  This function produces the required filename in which to save
+    ///  the baseline FITS image. If the input image is image.fits, then the
+    ///  output will be image.BASE.fits.
+
+    if(this->fileOutputMomentMap==""){
+      std::string inputName = this->imageFile;
+      std::string outputName = inputName;
+      if(inputName.substr(inputName.size()-5,5)==".fits")
+	outputName = inputName.substr(0,inputName.size()-5);  
+      // remove the ".fits" on the end.
+      outputName += ".BASE.fits";
       return outputName;
     }
     else return this->fileOutputMomentMap;
