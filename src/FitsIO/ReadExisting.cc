@@ -1,4 +1,4 @@
-#include <duchamp/Cubes/ReadExisting.hh>
+#include <duchamp/FitsIO/ReadExisting.hh>
 #include <duchamp/duchamp.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <fitsio.h>

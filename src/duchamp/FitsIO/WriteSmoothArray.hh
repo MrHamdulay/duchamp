@@ -1,0 +1,1 @@
+../../FitsIO/WriteSmoothArray.hh

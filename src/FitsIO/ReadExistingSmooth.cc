@@ -1,4 +1,4 @@
-#include <duchamp/Cubes/ReadExistingSmooth.hh>
+#include <duchamp/FitsIO/ReadExistingSmooth.hh>
 #include <duchamp/duchamp.hh>
 #include <duchamp/Cubes/cubes.hh>
 

@@ -1,5 +1,5 @@
-#include <duchamp/Cubes/WriteReconArray.hh>
-#include <duchamp/Cubes/WriteArray.hh>
+#include <duchamp/FitsIO/WriteReconArray.hh>
+#include <duchamp/FitsIO/WriteArray.hh>
 #include <duchamp/duchamp.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <fitsio.h>

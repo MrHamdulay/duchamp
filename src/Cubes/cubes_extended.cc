@@ -40,8 +40,8 @@
 #include <duchamp/param.hh>
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/Cubes/cubes.hh>
-#include <duchamp/Cubes/ReadExistingRecon.hh>
-#include <duchamp/Cubes/ReadExistingSmooth.hh>
+#include <duchamp/FitsIO/ReadExistingRecon.hh>
+#include <duchamp/FitsIO/ReadExistingSmooth.hh>
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Outputs/columns.hh>
 #include <duchamp/Utils/utils.hh>

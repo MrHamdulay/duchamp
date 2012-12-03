@@ -51,11 +51,11 @@
 #include <duchamp/Utils/mycpgplot.hh>
 #include <duchamp/Utils/Statistics.hh>
 #include <duchamp/FitsIO/DuchampBeam.hh>
-#include <duchamp/Cubes/WriteReconArray.hh>
-#include <duchamp/Cubes/WriteSmoothArray.hh>
-#include <duchamp/Cubes/WriteMaskArray.hh>
-#include <duchamp/Cubes/WriteMomentMapArray.hh>
-#include <duchamp/Cubes/WriteBaselineArray.hh>
+#include <duchamp/FitsIO/WriteReconArray.hh>
+#include <duchamp/FitsIO/WriteSmoothArray.hh>
+#include <duchamp/FitsIO/WriteMaskArray.hh>
+#include <duchamp/FitsIO/WriteMomentMapArray.hh>
+#include <duchamp/FitsIO/WriteBaselineArray.hh>
 
 using namespace mycpgplot;
 using namespace Statistics;

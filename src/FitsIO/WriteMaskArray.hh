@@ -2,7 +2,7 @@
 #define DUCHAMP_WRITE_MASK_ARRAY_HH_
 
 #include <duchamp/duchamp.hh>
-#include <duchamp/Cubes/WriteArray.hh>
+#include <duchamp/FitsIO/WriteArray.hh>
 #include <duchamp/Cubes/cubes.hh>
 
 namespace duchamp {

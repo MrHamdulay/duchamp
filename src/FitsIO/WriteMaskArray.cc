@@ -1,5 +1,5 @@
-#include <duchamp/Cubes/WriteMaskArray.hh>
-#include <duchamp/Cubes/WriteArray.hh>
+#include <duchamp/FitsIO/WriteMaskArray.hh>
+#include <duchamp/FitsIO/WriteArray.hh>
 #include <duchamp/duchamp.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <fitsio.h>

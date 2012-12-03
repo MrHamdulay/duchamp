@@ -2,7 +2,7 @@
 #define DUCHAMP_CUBE_READ_EXISTING_RECON_HH_
 
 #include <duchamp/duchamp.hh>
-#include <duchamp/Cubes/ReadExisting.hh>
+#include <duchamp/FitsIO/ReadExisting.hh>
 #include <duchamp/Cubes/cubes.hh>
 
 namespace duchamp {
