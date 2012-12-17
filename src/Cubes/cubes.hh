@@ -557,6 +557,9 @@ namespace duchamp
     /// @brief Output detections to a DS9 annotation file. 
     void        outputDetectionsDS9();
 
+    /// @brief Output detections to a CASA region file. 
+    void        outputDetectionsCasa();
+
     /// @brief Write annotation files
     void        outputAnnotations();
 

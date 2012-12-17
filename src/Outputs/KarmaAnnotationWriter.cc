@@ -88,6 +88,12 @@ namespace duchamp {
       this->itsFileStream << "CIRCLE " << x << " " << y << " " << r << "\n";
     }
   }
+  void KarmaAnnotationWriter::box(double x1, double x2, double y1, double y2, std::string label)
+  {
+    if(this->itsOpenFlag){
+      this->itsFileStream << "BOX " << x1 << " " << y1 << " " << x2 << " " << y2 <<"\n";
+    }
+  }
   void KarmaAnnotationWriter::ellipse(double x, double y, double r1, double r2, double angle)
   {
     if(this->itsOpenFlag){

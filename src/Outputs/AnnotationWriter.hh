@@ -87,6 +87,8 @@ namespace duchamp {
     virtual void line(double x1, double x2, double y1, double y2)=0;
     /// @brief Annotate with a circle
     virtual void circle(double x, double y, double r)=0;
+    /// @brief Annotate with a box
+    virtual void box(double x1, double x2, double y1, double y2, std::string label="")=0;
     /// @brief Annotate with an ellipse
     virtual void ellipse(double x, double y, double r1, double r2, double angle)=0;
     /// @brief Annotate with a series of lines connecting points

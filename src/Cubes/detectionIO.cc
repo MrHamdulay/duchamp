@@ -44,6 +44,7 @@
 #include <duchamp/Outputs/VOTableCatalogueWriter.hh>
 #include <duchamp/Outputs/KarmaAnnotationWriter.hh>
 #include <duchamp/Outputs/DS9AnnotationWriter.hh>
+#include <duchamp/Outputs/CasaAnnotationWriter.hh>
  
 using std::endl;
 using std::setw;
@@ -58,6 +59,7 @@ namespace duchamp
   {
     if(this->pars().getFlagKarma()) this->outputDetectionsKarma();
     if(this->pars().getFlagDS9())   this->outputDetectionsDS9();
+    if(this->pars().getFlagCasa())  this->outputDetectionsCasa();
   }
 
   void Cube::outputDetectionsKarma()
@@ -78,6 +80,21 @@ namespace duchamp
   void Cube::outputDetectionsDS9()
   {
     DS9AnnotationWriter writer(this->pars().getDS9File());
+    writer.setup(this);
+    writer.openCatalogue();
+    writer.writeHeader();
+    writer.writeParameters();
+    writer.writeStats();
+    writer.writeTableHeader();
+    writer.writeEntries();
+    writer.writeFooter();
+    writer.closeCatalogue();
+
+  }
+
+  void Cube::outputDetectionsCasa()
+  {
+    CasaAnnotationWriter writer(this->pars().getCasaFile());
     writer.setup(this);
     writer.openCatalogue();
     writer.writeHeader();

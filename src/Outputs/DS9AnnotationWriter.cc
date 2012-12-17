@@ -92,6 +92,12 @@ namespace duchamp {
       this->itsFileStream << "circle " << x << " " << y << " " << r << "\n";
     }
   }
+  void DS9AnnotationWriter::box(double x1, double x2, double y1, double y2, std::string label)
+  {
+    if(this->itsOpenFlag){
+      this->itsFileStream << "box " << 0.5*(x1+x2) << " " << 0.5*(y1+y2) << " " << fabs(x1-x2) << " " << fabs(y1-y2) << " 0\n";
+    }
+  }
   void DS9AnnotationWriter::ellipse(double x, double y, double r1, double r2, double angle)
   {
     if(this->itsOpenFlag){

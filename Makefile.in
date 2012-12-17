@@ -90,7 +90,8 @@ HEADS = $(BASE)/duchamp.hh\
 	$(OUTPUTSDIR)/VOTableCatalogueWriter.hh\
 	$(OUTPUTSDIR)/AnnotationWriter.hh\
 	$(OUTPUTSDIR)/KarmaAnnotationWriter.hh\
-	$(OUTPUTSDIR)/DS9AnnotationWriter.hh
+	$(OUTPUTSDIR)/DS9AnnotationWriter.hh\
+	$(OUTPUTSDIR)/CasaAnnotationWriter.hh
 
 OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(BASE)/duchamp.o\
@@ -166,7 +167,8 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(OUTPUTSDIR)/VOTableCatalogueWriter.o\
 	$(OUTPUTSDIR)/AnnotationWriter.o\
 	$(OUTPUTSDIR)/KarmaAnnotationWriter.o\
-	$(OUTPUTSDIR)/DS9AnnotationWriter.o
+	$(OUTPUTSDIR)/DS9AnnotationWriter.o\
+	$(OUTPUTSDIR)/CasaAnnotationWriter.o
 
 ifeq ($(strip $(PGPLOTLIB)),)
   OBJECTS = $(OBJECTS-NOPG)

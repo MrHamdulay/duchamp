@@ -109,6 +109,8 @@ namespace duchamp
     this->karmaFile         = "duchamp-Results.ann";
     this->flagDS9           = false;
     this->ds9File           = "duchamp-Results.reg";
+    this->flagCasa          = false;
+    this->casaFile          = "duchamp-Results.crf";
     this->annotationType    = "borders";
     this->flagMaps          = true;
     this->detectionMap      = "duchamp-DetectionMap.ps";
@@ -247,6 +249,8 @@ namespace duchamp
     this->karmaFile         = p.karmaFile;      
     this->flagDS9           = p.flagDS9;      
     this->ds9File           = p.ds9File;      
+    this->flagCasa          = p.flagCasa;      
+    this->casaFile          = p.casaFile;      
     this->annotationType    = p.annotationType;
     this->flagMaps          = p.flagMaps;       
     this->detectionMap      = p.detectionMap;   
@@ -612,6 +616,8 @@ namespace duchamp
 	if(arg=="karmafile")       this->karmaFile = readFilename(ss); 
 	if(arg=="flagds9")         this->flagDS9 = readFlag(ss); 
 	if(arg=="ds9file")         this->ds9File = readFilename(ss); 
+	if(arg=="flagcasa")        this->flagCasa = readFlag(ss); 
+	if(arg=="casafile")        this->casaFile = readFilename(ss); 
 	if(arg=="annotationtype")  this->annotationType = readSval(ss); 
 	if(arg=="flagmaps")        this->flagMaps = readFlag(ss); 
 	if(arg=="detectionmap")    this->detectionMap = readFilename(ss); 
@@ -941,6 +947,9 @@ namespace duchamp
     }
     if(par.getFlagDS9()){
       recordParam(theStream, "[ds9File]", "DS9 annotation file" , par.getDS9File());
+    }
+    if(par.getFlagCasa()){
+      recordParam(theStream, "[casaFile]", "CASA annotation file" , par.getCasaFile());
     }
     if(USE_PGPLOT && par.getFlagMaps()){
       recordParam(theStream, "[momentMap]", "0th Moment Map", par.getMomentMap());

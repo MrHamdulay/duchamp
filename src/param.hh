@@ -247,6 +247,10 @@ namespace duchamp
     void   setFlagDS9(bool flag){flagDS9=flag;};
     std::string getDS9File(){return ds9File;};
     void   setDS9File(std::string fname){ds9File = fname;};
+    bool   getFlagCasa(){return flagCasa;};
+    void   setFlagCasa(bool flag){flagCasa=flag;};
+    std::string getCasaFile(){return casaFile;};
+    void   setCasaFile(std::string fname){casaFile = fname;};
     bool   getFlagMaps(){return flagMaps;};
     void   setFlagMaps(bool flag){flagMaps=flag;};
     std::string getDetectionMap(){return detectionMap;};
@@ -454,6 +458,8 @@ namespace duchamp
     std::string votFile;         ///< Where the VOTable goes.
     bool        flagKarma;       ///< Should we save results in Karma annotation format?
     std::string karmaFile;       ///< Where the Karma annotation file goes.
+    bool        flagCasa;        ///< Should we save results in CASA region format?
+    std::string casaFile;        ///< Where the CASA region file goes.
     bool        flagDS9;         ///< Should we save results in DS9 annotation format?
     std::string ds9File;         ///< Where the DS9 annotation file goes.
     std::string annotationType;  ///< Should the annoations be circles or borders?

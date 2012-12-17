@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// DS9AnnotationWriter.hh: Class for writing results to DS9 annotation files.
+// CasaAnnotationWriter.hh: Class for writing results to CASA annotation files.
 // -----------------------------------------------------------------------
 // Copyright (C) 2006, Matthew Whiting, ATNF
 //
@@ -25,8 +25,8 @@
 //                    Epping NSW 1710
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
-#ifndef DUCHAMP_DS9_ANNOTATION_WRITER_H_
-#define DUCHAMP_DS9_ANNOTATION_WRITER_H_
+#ifndef DUCHAMP_CASA_ANNOTATION_WRITER_H_
+#define DUCHAMP_CASA_ANNOTATION_WRITER_H_
 #include <duchamp/Outputs/AnnotationWriter.hh>
 #include <duchamp/Outputs/CatalogueWriter.hh>
 #include <duchamp/Outputs/FileCatalogueWriter.hh>
@@ -38,22 +38,31 @@
 
 namespace duchamp {
 
-  class DS9AnnotationWriter : public AnnotationWriter
+  class CasaAnnotationWriter : public AnnotationWriter
   {
   public:
     /// @brief Default constructor
-    DS9AnnotationWriter();
+    CasaAnnotationWriter();
     /// @brief Constructor with given filename
-    DS9AnnotationWriter(std::string name);
+    CasaAnnotationWriter(std::string name);
     /// @brief Copy constructor
-    DS9AnnotationWriter(const DS9AnnotationWriter& other);
+    CasaAnnotationWriter(const CasaAnnotationWriter& other);
     /// @brief Copy operator
-    DS9AnnotationWriter& operator= (const DS9AnnotationWriter& other);
+    CasaAnnotationWriter& operator= (const CasaAnnotationWriter& other);
     /// @brief Default destructor
-    virtual ~DS9AnnotationWriter(){};
+    virtual ~CasaAnnotationWriter(){};
+
+    /// @brief Reimplement writeHeader to ensure the first line is correct.
+    void writeHeader();
 
     /// @brief Write the global properties for the file (colour, WCS info, ...)
     void writeTableHeader();
+
+    /// @brief Reimplement writeEntry to write the object's bounding box as a region prior to the annotation
+    void writeEntry(Detection *object);
+
+    std::string spatialUnits(){return itsSpatialUnits;};
+    void setSpatialUnits(std::string units){itsSpatialUnits=units;};
 
     /// @brief Annotate with a text string
     void text(double x, double y, std::string text);
@@ -63,10 +72,13 @@ namespace duchamp {
     void circle(double x, double y, double r);
     /// @brief Annotate with a box
     void box(double x1, double x2, double y1, double y2, std::string label="");
-    /// @brief Annotate with an ellipse
+   /// @brief Annotate with an ellipse
     void ellipse(double x, double y, double r1, double r2, double angle);
     /// @brief Annotate with a series of lines connecting points
     void joinTheDots(std::vector<double> x, std::vector<double> y);
+
+  protected:
+    std::string itsSpatialUnits;
 
   };
 
