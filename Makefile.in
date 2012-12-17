@@ -61,17 +61,17 @@ HEADS = $(BASE)/duchamp.hh\
 	$(DETECTIONDIR)/ObjectGrower.hh\
 	$(CUBESDIR)/cubes.hh\
 	$(CUBESDIR)/plots.hh\
-	$(CUBESDIR)/ReadExisting.hh\
-	$(CUBESDIR)/ReadExistingRecon.hh\
-	$(CUBESDIR)/ReadExistingSmooth.hh\
-	$(CUBESDIR)/WriteArray.hh\
-	$(CUBESDIR)/WriteBaselineArray.hh\
-	$(CUBESDIR)/WriteMaskArray.hh\
-	$(CUBESDIR)/WriteMomentMapArray.hh\
-	$(CUBESDIR)/WriteReconArray.hh\
-	$(CUBESDIR)/WriteSmoothArray.hh\
 	$(FITSIODIR)/Beam.hh\
 	$(FITSIODIR)/DuchampBeam.hh\
+	$(FITSIODIR)/ReadExisting.hh\
+	$(FITSIODIR)/ReadExistingRecon.hh\
+	$(FITSIODIR)/ReadExistingSmooth.hh\
+	$(FITSIODIR)/WriteArray.hh\
+	$(FITSIODIR)/WriteBaselineArray.hh\
+	$(FITSIODIR)/WriteMaskArray.hh\
+	$(FITSIODIR)/WriteMomentMapArray.hh\
+	$(FITSIODIR)/WriteReconArray.hh\
+	$(FITSIODIR)/WriteSmoothArray.hh\
 	$(UTILDIR)/Hanning.hh\
 	$(UTILDIR)/GaussSmooth1D.hh\
 	$(UTILDIR)/GaussSmooth2D.hh\
@@ -127,17 +127,17 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(CUBESDIR)/smoothCube.o\
 	$(CUBESDIR)/spectraUtils.o\
 	$(CUBESDIR)/trimImage.o\
-	$(CUBESDIR)/ReadExisting.o\
-	$(CUBESDIR)/ReadExistingRecon.o\
-	$(CUBESDIR)/ReadExistingSmooth.o\
-	$(CUBESDIR)/WriteArray.o\
-	$(CUBESDIR)/WriteBaselineArray.o\
-	$(CUBESDIR)/WriteMaskArray.o\
-	$(CUBESDIR)/WriteMomentMapArray.o\
-	$(CUBESDIR)/WriteReconArray.o\
-	$(CUBESDIR)/WriteSmoothArray.o\
 	$(FITSIODIR)/Beam.o\
 	$(FITSIODIR)/DuchampBeam.o\
+	$(FITSIODIR)/ReadExisting.o\
+	$(FITSIODIR)/ReadExistingRecon.o\
+	$(FITSIODIR)/ReadExistingSmooth.o\
+	$(FITSIODIR)/WriteArray.o\
+	$(FITSIODIR)/WriteBaselineArray.o\
+	$(FITSIODIR)/WriteMaskArray.o\
+	$(FITSIODIR)/WriteMomentMapArray.o\
+	$(FITSIODIR)/WriteReconArray.o\
+	$(FITSIODIR)/WriteSmoothArray.o\
 	$(FITSIODIR)/dataIO.o\
 	$(FITSIODIR)/headerIO.o\
 	$(FITSIODIR)/subsection.o\
