@@ -57,9 +57,38 @@ namespace duchamp
 
   void Cube::outputAnnotations()
   {
-    if(this->pars().getFlagKarma()) this->outputDetectionsKarma();
-    if(this->pars().getFlagDS9())   this->outputDetectionsDS9();
-    if(this->pars().getFlagCasa())  this->outputDetectionsCasa();
+    
+    for(int i=0;i<3;i++){
+      AnnotationWriter *writer=0;
+      switch(i){
+      case 0: //Karma
+	if(this->par.getFlagKarma())
+	  writer = new KarmaAnnotationWriter(this->par.getKarmaFile());
+	break;
+      case 1://DS9
+	if(this->par.getFlagDS9())
+	  writer = new DS9AnnotationWriter(this->par.getDS9File());
+	break;
+      case 2://DS9
+	if(this->par.getFlagCasa())
+	  writer = new CasaAnnotationWriter(this->par.getCasaFile());
+	break;	
+      }
+      if(writer!=0){
+	writer->setup(this);
+	writer->openCatalogue();
+	writer->writeHeader();
+	writer->writeParameters();
+	writer->writeStats();
+	writer->writeTableHeader();
+	writer->writeEntries();
+	writer->writeFooter();
+	writer->closeCatalogue();
+      }
+
+      delete writer;
+    }
+
   }
 
   void Cube::outputDetectionsKarma()
