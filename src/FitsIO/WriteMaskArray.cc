@@ -3,6 +3,7 @@
 #include <duchamp/duchamp.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <fitsio.h>
+#include <string.h>
 
 namespace duchamp {
 
