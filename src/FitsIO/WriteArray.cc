@@ -2,6 +2,7 @@
 #include <duchamp/duchamp.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <fitsio.h>
+#include <string.h>
 #include <wcslib/wcsunits.h>
 
 namespace duchamp {
