@@ -50,14 +50,17 @@ namespace PixelInfo
   Object2D& Object2D::operator= (const Object2D& o)
   {
     if(this == &o) return *this;
-    this->scanlist = o.scanlist;
-    this->numPix   = o.numPix;
-    this->xSum     = o.xSum;
-    this->ySum     = o.ySum;
-    this->xmin     = o.xmin;
-    this->ymin     = o.ymin;
-    this->xmax     = o.xmax;
-    this->ymax     = o.ymax;
+    this->scanlist  = o.scanlist;
+    this->numPix    = o.numPix;
+    this->xSum      = o.xSum;
+    this->ySum      = o.ySum;
+    this->xmin      = o.xmin;
+    this->ymin      = o.ymin;
+    this->xmax      = o.xmax;
+    this->ymax      = o.ymax;
+    this->majorAxis = o.majorAxis;
+    this->minorAxis = o.minorAxis;
+    this->posAngle  = o.posAngle;
     return *this;
   }  
   //------------------------------------------------------
