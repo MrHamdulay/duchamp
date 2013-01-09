@@ -135,6 +135,9 @@ namespace duchamp
       }
       else column.printBlank(stream);
     }
+    else if(type=="MAJ") column.printEntry(stream,this->majorAxis);
+    else if(type=="MIN") column.printEntry(stream,this->minorAxis);
+    else if(type=="PA") column.printEntry(stream,this->posang);
     else if(type=="WRA"){
       if(this->flagWCS) column.printEntry(stream,this->raWidth);
       else column.printBlank(stream);
@@ -263,8 +266,10 @@ namespace duchamp
       std::stringstream ss;
       ss.setf(std::ios::fixed);
       ss << std::setprecision(this->posPrec);
-      ss << "W\\d"              << this->lngtype  <<"\\u=" << this->raWidth;
-      ss << ", W\\d"            << this->lattype  <<"\\u=" << this->decWidth;
+      // ss << "W\\d"              << this->lngtype  <<"\\u=" << this->raWidth;
+      // ss << ", W\\d"            << this->lattype  <<"\\u=" << this->decWidth;
+      ss << this->majorAxis<<"\\(0718)"<<char(215)<<this->minorAxis<<"\\(0718)";
+      ss <<", PA="<<this->posang<<"\\(0718)";
       if(this->specOK){
 	ss << std::setprecision(this->velPrec);
 	ss << ", W\\d50\\u="    << this->w50      << " "   << this->specUnits;

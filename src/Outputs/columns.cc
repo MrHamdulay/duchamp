@@ -174,27 +174,27 @@ namespace duchamp
       /// otherwise. False if tableType not one of four listed.
       
  
-      std::string FileList[34]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","WRA","WDEC",
+      std::string FileList[37]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA","WRA","WDEC",
 				"W50","W20","WVEL","FINT","FTOT","FPEAK","SNRPEAK",
 				"X1","X2","Y1","Y2","Z1","Z2","NPIX","FLAG","XAV","YAV",
 				"ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
-      std::string ScreenList[21]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","WRA","WDEC",
+      std::string ScreenList[22]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA",
 				  "W50","FPEAK","SNRPEAK","X1","X2","Y1",
 				  "Y2","Z1","Z2","NPIX","FLAG"};
       std::string LogList[16]={"NUM","X","Y","Z","FTOT","FPEAK","SNRPEAK",
 			       "X1","X2","Y1","Y2","Z1","Z2","NPIX","NUMCH","SPATSIZE"};
-      std::string VOList[22]={"NUM","NAME","RAJD","DECJD","VEL","WRA","WDEC",
+      std::string VOList[23]={"NUM","NAME","RAJD","DECJD","VEL","MAJ","MIN","PA",
 			    "W50","W20","WVEL","FPEAK","SNRPEAK","FLAG","XAV","YAV",
 			    "ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
 
       bool doIt=false;
       if(tableType == FILE){
-	for(int i=0;i<34 && !doIt;i++) doIt = doIt || (this->itsType==FileList[i]);
+	for(int i=0;i<37 && !doIt;i++) doIt = doIt || (this->itsType==FileList[i]);
       }
       else if(tableType == SCREEN){
       	if(this->itsType=="FTOT") doIt = !flagFint;
 	else if(this->itsType == "FINT") doIt = flagFint;
-	else for(int i=0;i<21 && !doIt;i++) doIt = doIt || (this->itsType==ScreenList[i]);
+	else for(int i=0;i<22 && !doIt;i++) doIt = doIt || (this->itsType==ScreenList[i]);
       }
       else if(tableType == LOG){
 	for(int i=0;i<16 && !doIt;i++) doIt = doIt || (this->itsType==LogList[i]);
@@ -202,7 +202,7 @@ namespace duchamp
       else if(tableType == VOTABLE){
      	if(this->itsType=="FTOT") doIt = !flagFint;
 	else if(this->itsType == "FINT") doIt = flagFint;
-	else for(int i=0;i<22 && !doIt;i++) doIt = doIt || (this->itsType==VOList[i]);
+	else for(int i=0;i<23 && !doIt;i++) doIt = doIt || (this->itsType==VOList[i]);
       }
       return doIt;
 	
@@ -221,6 +221,9 @@ namespace duchamp
       else if(type=="RAJD") return Column(type,"RAJD","[deg]",11,prPOS,"","float","col_rajd",coordRef);
       else if(type=="DECJD") return Column(type,"DECJD","[deg]",11,prPOS,"","float","col_decjd",coordRef);
       else if(type=="VEL") return Column(type,"VEL","",7,prVEL,"","float","col_vel","");
+      else if(type=="MAJ") return Column(type,"MAJ","[deg]",6,prWPOS,"phys.angSize.smajAxis","float","col_maj",coordRef);
+      else if(type=="MIN") return Column(type,"MIN","[deg]",6,prWPOS,"phys.angSize.sminAxis","float","col_min",coordRef);
+      else if(type=="PA") return Column(type,"PA","[deg]",7,prWPOS,"pos.posAng;phys.angSize","float","col_pa",coordRef);
       else if(type=="WRA") return Column(type,"w_RA","[arcmin]",9,prWPOS,"","float","col_wra",coordRef);
       else if(type=="WDEC") return Column(type,"w_DEC","[arcmin]",9,prWPOS,"","float","col_wdec",coordRef);
       else if(type=="W50") return Column(type,"w_50","",7,prVEL,"","float","col_w50","");
@@ -305,6 +308,9 @@ namespace duchamp
       newset.addColumn( Column("RAJD") );
       newset.addColumn( Column("DECJD") );
       newset.addColumn( Column("VEL") );
+      newset.addColumn( Column("MAJ") );
+      newset.addColumn( Column("MIN") );
+      newset.addColumn( Column("PA") );
       newset.addColumn( Column("WRA") );
       newset.addColumn( Column("WDEC") );
       newset.addColumn( Column("W50") );
@@ -425,6 +431,42 @@ namespace duchamp
 	    if(valD<0) tempwidth++;
 	    for(int i=newset.column("VEL").getWidth();i<tempwidth;i++) newset.column("VEL").widen();
 	  }
+
+	  // MAJ -- check width & title. leave units for the moment.
+	  tempwidth = newset.column("MAJ").getUnits().size() + 1;
+	  for(int i=newset.column("MAJ").getWidth();i<tempwidth;i++) newset.column("MAJ").widen();
+	  valD = obj->getMajorAxis();
+	  if((fabs(valD) < 1.)&&(valD>0.)){
+	    minvalD = pow(10, -1. * (newset.column("MAJ").getPrecision()+1)); 
+	    if(valD < minvalD) newset.column("MAJ").upPrec();
+	  }
+	  tempwidth = int( log10(fabs(valD)) + 1) + newset.column("MAJ").getPrecision() + 2;
+	  if(valD<0) tempwidth++;
+	  for(int i=newset.column("MAJ").getWidth();i<tempwidth;i++) newset.column("MAJ").widen();
+
+	  // MIN -- check width & title. leave units for the moment.
+	  tempwidth = newset.column("MIN").getUnits().size() + 1;
+	  for(int i=newset.column("MIN").getWidth();i<tempwidth;i++) newset.column("MIN").widen();
+	  valD = obj->getMinorAxis();
+	  if((fabs(valD) < 1.)&&(valD>0.)){
+	    minvalD = pow(10, -1. * (newset.column("MIN").getPrecision()+1)); 
+	    if(valD < minvalD) newset.column("MIN").upPrec();
+	  }
+	  tempwidth = int( log10(fabs(valD)) + 1) + newset.column("MIN").getPrecision() + 2;
+	  if(valD<0) tempwidth++;
+	  for(int i=newset.column("MIN").getWidth();i<tempwidth;i++) newset.column("MIN").widen();
+
+	  // PA -- check width & title. leave units for the moment.
+	  tempwidth = newset.column("PA").getUnits().size() + 1;
+	  for(int i=newset.column("PA").getWidth();i<tempwidth;i++) newset.column("PA").widen();
+	  valD = obj->getMajorAxis();
+	  if((fabs(valD) < 1.)&&(valD>0.)){
+	    minvalD = pow(10, -1. * (newset.column("PA").getPrecision()+1)); 
+	    if(valD < minvalD) newset.column("PA").upPrec();
+	  }
+	  tempwidth = int( log10(fabs(valD)) + 1) + newset.column("PA").getPrecision() + 2;
+	  if(valD<0) tempwidth++;
+	  for(int i=newset.column("PA").getWidth();i<tempwidth;i++) newset.column("PA").widen();
 
 	  // w_RA -- check width & title. leave units for the moment.
 	  tempstr = "w_" + head.lngtype();

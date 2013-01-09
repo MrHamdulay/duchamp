@@ -330,7 +330,9 @@ namespace PixelInfo
     sumxy /= sumflux;
     sumyy /= sumflux;
 
-    this->posAngle = 0.5 * atan2( 2*sumxy , (sumxx-sumyy) );
+    this->posAngle = 0.5 * atan2( 2*sumxy , (sumxx-sumyy) ) + M_PI/2.;
+    this->posAngle = fmod(this->posAngle, 2.*M_PI);
+    if(this->posAngle > M_PI) this->posAngle -= 2.*M_PI;
     result = ( (sumxx + sumyy + sqrt((sumxx-sumyy)*(sumxx-sumyy) + 4.*sumxy*sumxy)) > 0 );
     if(result){
       this->majorAxis = sqrt( 2. * (sumxx + sumyy + sqrt((sumxx-sumyy)*(sumxx-sumyy) + 4.*sumxy*sumxy)) );

@@ -63,8 +63,8 @@ namespace duchamp {
   {
     if(this->itsOpenFlag){
       this->itsFileStream << "COLOR " << this->itsColour<<"\n";
-      if(this->itsHead->isWCS()) this->itsFileStream << "COORD W\n";
-      else this->itsFileStream << "COORD P\n";
+      this->itsFileStream << "PA STANDARD\n";
+      this->itsFileStream << "COORD W\n";
       this->itsFileStream << std::setprecision(6);
       this->itsFileStream.setf(std::ios::fixed);
     }
@@ -97,7 +97,19 @@ namespace duchamp {
   void KarmaAnnotationWriter::ellipse(double x, double y, double r1, double r2, double angle)
   {
     if(this->itsOpenFlag){
-      this->itsFileStream << "ELLIPSE " << x << " " << y << " " << r1 << " " << r2 << " " << angle << "\n";
+      double angleUsed=angle;
+      // Need to correct the angle here. This is what the Karma documentation says, at http://www.atnf.csiro.au/computing/software/karma/user-manual/node17.html:
+      // Standard Postition Angles are generally defined in the Cartesian sense where PA=0 specifies {X>0,Y=0}, PA=90 specifies {X=0,Y>0}, and so forth. 
+      // In a coordinate system where X increases from left to right, and Y increases from bottom to top, PA will increase in a counter-clockwise direction. 
+      // However this will be reversed if the X increases from right to left, or Y from top to bottom (though not both). So be careful! To summarize: 
+      //  PA is measured CCW from right in R coords, and CW from right in P coords. How it is measured in W coords depends on the coordinate system: 
+      // in many cases, it will be the same as R coords, but this is not always true! For example, most astronomical maps of the sky have the X coordinate 
+      // increasing toward the left, in which case, PA will be measured CW from left! 
+      //
+      // So, we need to invert the sign of the PA when RA increases to the left (as is usual), then subtract 90degrees.
+      if(this->itsHead->getWCS()->cdelt[0]<0.) angleUsed *= -1.; 
+      angleUsed -= 90.;
+      this->itsFileStream << "ELLIPSE " << x << " " << y << " " << r1 << " " << r2 << " " << angleUsed << "\n";
     }
   }
 

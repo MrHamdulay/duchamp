@@ -777,7 +777,10 @@ namespace duchamp
       this->intFlux = integrated;
 
       bool ellipseGood=this->spatialMap.findEllipse(true,momMap,xsize,ysize,xzero,yzero);  // try first by weighting the pixels by their flux
-      if(!ellipseGood) ellipseGood=this->spatialMap.findEllipse(false,momMap,xsize,ysize,xzero,yzero); // if that fails, remove the flux weighting
+      if(!ellipseGood) {
+	ellipseGood=this->spatialMap.findEllipse(false,momMap,xsize,ysize,xzero,yzero); // if that fails, remove the flux weighting
+	this->flagText += "W";
+      }
       if(ellipseGood){
 	this->majorAxis = this->spatialMap.major() * head.getAvPixScale();
 	this->minorAxis = this->spatialMap.minor() * head.getAvPixScale();

@@ -172,6 +172,7 @@ namespace duchamp {
       }
       else if(this->itsParam->getAnnotationType()=="ellipses"){
 	this->ellipse(object->getRA(),object->getDec(),object->getMajorAxis(),object->getMinorAxis(),object->getPositionAngle());
+	//this->ellipse(object->getXaverage(),object->getYaverage(),object->getMajorAxis(),object->getMinorAxis(),object->getPositionAngle());
       }
 
       std::stringstream ss;
