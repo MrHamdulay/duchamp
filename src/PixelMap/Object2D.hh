@@ -124,6 +124,12 @@ namespace PixelInfo
     double getPositionAngle();
     /// @brief Return the lengths of the principal axes.
     std::pair<double,double> getPrincipleAxes();
+    /// @brief Find the best fitting ellipse weighted by some flux array
+    bool findEllipse(bool weightByFlux, float *array, size_t xdim, size_t ydim, int xzero=0, int yzero=0);
+
+    double major(){return majorAxis;};
+    double minor(){return minorAxis;};
+    double posAng(){return posAngle;};
 
     /// @brief A stream output operator. 
     friend std::ostream& operator<< ( std::ostream& theStream, Object2D& obj);
@@ -142,6 +148,9 @@ namespace PixelInfo
     float             ySum;           ///< Sum of y values
     long              xmin,xmax;      ///< min and max x-values of object
     long              ymin,ymax;      ///< min and max y-values of object
+    double            majorAxis;      ///< fitted major principle axis
+    double            minorAxis;      ///< fitted minor principle axis
+    double            posAngle;       ///< fitted position angle of principle axis
   };
 
 }

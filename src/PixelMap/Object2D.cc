@@ -308,6 +308,43 @@ namespace PixelInfo
 
   //------------------------------------------------------
 
+  bool Object2D::findEllipse(bool weightByFlux, float *array, size_t xdim, size_t ydim, int xzero, int yzero)
+  {
+    bool result=true;
+    double sumxx=0.,sumyy=0.,sumxy=0.,sumflux=0.;
+    std::vector<Scan>::iterator scn=this->scanlist.begin();
+    for(;scn!=this->scanlist.end();scn++){
+      int y = scn->itsY;
+      float yoff=scn->itsY - this->getYaverage();
+      for(int x=scn->itsX;x<=scn->getXmax();x++){
+	float xoff=x-this->getXaverage();
+	float flux = weightByFlux ? array[(x-xzero)+xdim*(y-yzero)] : 1;
+	sumxx += (xoff*xoff*flux);
+	sumyy += (yoff*yoff*flux);
+	sumxy += (xoff*yoff*flux);
+	sumflux += flux;
+      }
+    }
+
+    sumxx /= sumflux;
+    sumxy /= sumflux;
+    sumyy /= sumflux;
+
+    this->posAngle = 0.5 * atan2( 2*sumxy , (sumxx-sumyy) );
+    result = ( (sumxx + sumyy + sqrt((sumxx-sumyy)*(sumxx-sumyy) + 4.*sumxy*sumxy)) > 0 );
+    if(result){
+      this->majorAxis = sqrt( 2. * (sumxx + sumyy + sqrt((sumxx-sumyy)*(sumxx-sumyy) + 4.*sumxy*sumxy)) );
+      this->minorAxis = sqrt( 2. * (sumxx + sumyy - sqrt((sumxx-sumyy)*(sumxx-sumyy) + 4.*sumxy*sumxy)) );
+      this->minorAxis = std::max(this->minorAxis,0.1);
+    }
+    else this->majorAxis = this->minorAxis = 0.;
+    //    std::cerr << sumxx << " " << sumxy << " " << sumyy << " " << posAngle << " " << majorAxis << " " << minorAxis << "   " << ((sumxx-sumyy)*(sumxx-sumyy) + 4.*sumxy*sumxy) << "\n";
+    return result;
+  }
+
+
+  //------------------------------------------------------
+
   double Object2D::getPositionAngle()
   {
 

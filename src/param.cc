@@ -819,7 +819,7 @@ namespace duchamp
     }
 
     // Make sure the annnotationType is an acceptable option -- default is "borders"
-    if((this->annotationType != "borders") && (this->annotationType!="circles")){
+    if((this->annotationType != "borders") && (this->annotationType!="circles") && (this->annotationType!="ellipses")){
       DUCHAMPWARN("Reading parameters","The requested value of the parameter annotationType, \"" << this->annotationType << "\", is invalid -- changing to \"borders\".");
       this->annotationType = "borders";
     }

@@ -480,6 +480,7 @@ namespace duchamp
 	this->majorAxis = std::max(axes.first,axes.second) * head.getAvPixScale();
 	this->minorAxis = std::min(axes.first,axes.second) * head.getAvPixScale();
 	this->posang = spatMap.getPositionAngle() * 180. / M_PI;
+	//	std::cerr << majorAxis << " " << minorAxis << " " << posang << "   " << majorAxis/head.getAvPixScale() << " " << minorAxis/head.getAvPixScale() << " " << posang*M_PI/180.<<"\n";
 
 	this->name = head.getIAUName(this->ra, this->dec);
 	this->vel    = head.specToVel(world[2]);
@@ -730,11 +731,15 @@ namespace duchamp
       std::vector <bool> isObj(size,false);
       double *localFlux = new double[size];
       for(size_t i=0;i<size;i++) localFlux[i]=0.;
+      float *momMap = new float[spatsize];
+      for(size_t i=0;i<spatsize;i++) momMap[i]=0.;
       // work out which pixels are object pixels
       std::vector<Voxel> voxlist = this->getPixelSet();
       for(std::vector<Voxel>::iterator v=voxlist.begin();v<voxlist.end();v++){
-	size_t pos=(v->getX()-xzero) + (v->getY()-yzero)*xsize + (v->getZ()-zzero)*spatsize;
+	size_t spatpos=(v->getX()-xzero) + (v->getY()-yzero)*xsize;
+	size_t pos= spatpos + (v->getZ()-zzero)*spatsize;
 	localFlux[pos] = fluxArray[v->arrayIndex(dim)];
+	momMap[spatpos] += fluxArray[v->arrayIndex(dim)];
 	isObj[pos] = true;
       }
   
@@ -771,8 +776,17 @@ namespace duchamp
       }
       this->intFlux = integrated;
 
+      bool ellipseGood=this->spatialMap.findEllipse(true,momMap,xsize,ysize,xzero,yzero);  // try first by weighting the pixels by their flux
+      if(!ellipseGood) ellipseGood=this->spatialMap.findEllipse(false,momMap,xsize,ysize,xzero,yzero); // if that fails, remove the flux weighting
+      if(ellipseGood){
+	this->majorAxis = this->spatialMap.major() * head.getAvPixScale();
+	this->minorAxis = this->spatialMap.minor() * head.getAvPixScale();
+	this->posang = this->spatialMap.posAng() * 180. / M_PI;
+      }
+
       delete [] world;
       delete [] localFlux;
+      delete [] momMap;
 
       calcVelWidths(fluxArray, dim, head);
 

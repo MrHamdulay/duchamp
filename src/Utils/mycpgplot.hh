@@ -100,6 +100,8 @@ extern "C" void cpghistlog(int npts, float *data, float datamin,
 extern "C" void cpgcumul(int npts, float *data, float datamin, 
 			 float datamax, int pgflag);
 
+extern "C" void cpgellipse(float x0, float y0, float maj, float min, float pa);
+
 namespace mycpgplot {
 
   /// @brief Is a PGPLOT device a postscript (hardcopy) device?  

@@ -148,6 +148,10 @@ namespace duchamp
       // Draw the border of cube's pixels
       this->drawFieldEdge();
 
+      // Draw the fitted ellipse
+      cpgsci(RED);
+      cpgellipse(object.getXaverage(),object.getYaverage(),object.getMajorAxis()/this->head.getAvPixScale(),object.getMinorAxis()/this->head.getAvPixScale(),object.getPositionAngle());
+
       // Draw the borders around the object
       cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
       cpgsfs(OUTLINE);

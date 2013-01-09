@@ -170,6 +170,9 @@ namespace duchamp {
         float radius = std::max(object->getRAWidth(),object->getDecWidth())/120.;
 	this->circle(object->getRA(),object->getDec(),radius);
       }
+      else if(this->itsParam->getAnnotationType()=="ellipses"){
+	this->ellipse(object->getRA(),object->getDec(),object->getMajorAxis(),object->getMinorAxis(),object->getPositionAngle());
+      }
 
       std::stringstream ss;
       ss << object->getID();

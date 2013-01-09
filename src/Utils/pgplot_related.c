@@ -416,6 +416,36 @@ void cpghistlog(int npts, float *data, float datamin, float datamax, int nbin,
     
 }
 
+/********************************************************************/
+/*   CPGELLIPSE                                                     */
+/********************************************************************/
+
+
+void cpgellipse(float x0, float y0, float maj, float min, float pa)
+{
+  /*
+    Draw an ellipse, using the parametric equation u = a cos(t), v = b sin(t), where u and v are coordinates such that the position angle of the ellipse is zero.
+   */
+  double cospa,sinpa,u,v,x,y,t;
+  int it;
+  cospa = cos(pa*M_PI/180.);
+  sinpa = sin(pa*M_PI/180.);
+  u=maj;
+  v=0.;
+  x=u*cospa+v*sinpa;
+  y=u*sinpa-v*cospa;
+  cpgmove(x+x0,y+y0);
+  for(it=0;it<1000;it++){
+    t=it*2*M_PI/1000.;
+    u=maj*cos(t);
+    v=min*sin(t);
+    x=u*cospa+v*sinpa;
+    y=u*sinpa-v*cospa;
+    cpgdraw(x+x0,y+y0);
+  }
+}
+
+
 /* /\********************************************************************\/ */
 /* /\*   CPGVERTHIST                                                    *\/ */
 /* /\********************************************************************\/ */
