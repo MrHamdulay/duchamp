@@ -715,35 +715,35 @@ namespace duchamp
     ///  \param dim The dimensions of the flux array.
     ///  \param head FitsHeader object that contains the WCS information.
 
-    if(!head.is2D()){
+    this->haveParams = true;
 
-      this->haveParams = true;
-
-      const int border=1; // include one pixel either side in each direction
-      size_t xsize = std::min(size_t(this->xmax-this->xmin+2*border+1),dim[0]);
-      size_t ysize = std::min(size_t(this->ymax-this->ymin+2*border+1),dim[1]);
-      size_t zsize = std::min(size_t(this->zmax-this->zmin+2*border+1),dim[2]);
-      size_t xzero = size_t(std::max(0L,this->xmin-border));
-      size_t yzero = size_t(std::max(0L,this->ymin-border));
-      size_t zzero = size_t(std::max(0L,this->zmin-border));
-      size_t spatsize = xsize*ysize;
-      size_t size = xsize*ysize*zsize;
-      std::vector <bool> isObj(size,false);
-      double *localFlux = new double[size];
-      for(size_t i=0;i<size;i++) localFlux[i]=0.;
-      float *momMap = new float[spatsize];
-      for(size_t i=0;i<spatsize;i++) momMap[i]=0.;
-      // work out which pixels are object pixels
-      std::vector<Voxel> voxlist = this->getPixelSet();
-      for(std::vector<Voxel>::iterator v=voxlist.begin();v<voxlist.end();v++){
-	size_t spatpos=(v->getX()-xzero) + (v->getY()-yzero)*xsize;
-	size_t pos= spatpos + (v->getZ()-zzero)*spatsize;
-	localFlux[pos] = fluxArray[v->arrayIndex(dim)];
-	momMap[spatpos] += fluxArray[v->arrayIndex(dim)];
-	isObj[pos] = true;
-      }
+    const int border=1; // include one pixel either side in each direction
+    size_t xsize = std::min(size_t(this->xmax-this->xmin+2*border+1),dim[0]);
+    size_t ysize = std::min(size_t(this->ymax-this->ymin+2*border+1),dim[1]);
+    size_t zsize = std::min(size_t(this->zmax-this->zmin+2*border+1),dim[2]);
+    size_t xzero = size_t(std::max(0L,this->xmin-border));
+    size_t yzero = size_t(std::max(0L,this->ymin-border));
+    size_t zzero = size_t(std::max(0L,this->zmin-border));
+    size_t spatsize = xsize*ysize;
+    size_t size = xsize*ysize*zsize;
+    std::vector <bool> isObj(size,false);
+    double *localFlux = new double[size];
+    for(size_t i=0;i<size;i++) localFlux[i]=0.;
+    float *momMap = new float[spatsize];
+    for(size_t i=0;i<spatsize;i++) momMap[i]=0.;
+    // work out which pixels are object pixels
+    std::vector<Voxel> voxlist = this->getPixelSet();
+    for(std::vector<Voxel>::iterator v=voxlist.begin();v<voxlist.end();v++){
+      size_t spatpos=(v->getX()-xzero) + (v->getY()-yzero)*xsize;
+      size_t pos= spatpos + (v->getZ()-zzero)*spatsize;
+      localFlux[pos] = fluxArray[v->arrayIndex(dim)];
+      momMap[spatpos] += fluxArray[v->arrayIndex(dim)]*head.WCS().cdelt[head.WCS().spec];
+      isObj[pos] = true;
+    }
   
-      // work out the WCS coords for each pixel
+     if(!head.is2D()){
+
+     // work out the WCS coords for each pixel
       double *world  = new double[size];
       double xpt,ypt,zpt;
       size_t i=0;
@@ -774,28 +774,22 @@ namespace duchamp
 	  }
 	}
       }
-      this->intFlux = integrated;
-
-      bool ellipseGood=this->spatialMap.findEllipse(true,momMap,xsize,ysize,xzero,yzero);  // try first by weighting the pixels by their flux
-      if(!ellipseGood) {
-	ellipseGood=this->spatialMap.findEllipse(false,momMap,xsize,ysize,xzero,yzero); // if that fails, remove the flux weighting
-	this->flagText += "W";
-      }
-      if(ellipseGood){
-	this->majorAxis = this->spatialMap.major() * head.getAvPixScale();
-	this->minorAxis = this->spatialMap.minor() * head.getAvPixScale();
-	this->posang = this->spatialMap.posAng() * 180. / M_PI;
-      }
 
       delete [] world;
-      delete [] localFlux;
-      delete [] momMap;
-
+      
+      this->intFlux = integrated;
+      
       calcVelWidths(fluxArray, dim, head);
 
-    }
-    else // in this case there is just a 2D image.
+     }
+      else // in this case there is just a 2D image.
       this->intFlux = this->totalFlux;
+    
+     this->findShape(momMap, xsize, ysize, head);
+
+     delete [] localFlux;
+     delete [] momMap;
+    
 
     if(head.isWCS()){
       // correct for the beam size if the flux units string ends in "/beam" and we have beam info
@@ -803,6 +797,59 @@ namespace duchamp
     }
 
   }
+  //--------------------------------------------------------------------
+
+  void Detection::findShape(float *momentMap, size_t xdim, size_t ydim, FitsHeader &head)
+  {
+
+      const int border=1; // include one pixel either side in each direction
+      size_t xzero = size_t(std::max(0L,this->xmin-border));
+      size_t yzero = size_t(std::max(0L,this->ymin-border));
+
+      /*
+      bool ellipseGood = this->spatialMap.findEllipse(true, momentMap, xdim, ydim, xzero, yzero, this->xCentroid, this->yCentroid);  // try first by weighting the pixels by their flux
+      if(!ellipseGood) {
+      	ellipseGood = this->spatialMap.findEllipse(false, momentMap, xdim, ydim, xzero, yzero, this->xCentroid, this->yCentroid); // if that fails, remove the flux weighting
+      	this->flagText += "W";
+      }
+      if(ellipseGood){
+	// multiply axes by 2 to go from semi-major to FWHM...
+      	this->majorAxis = this->spatialMap.major() * head.getAvPixScale() * 2.;
+      	this->minorAxis = this->spatialMap.minor() * head.getAvPixScale() * 2.;
+      	this->posang = this->spatialMap.posAng() * 180. / M_PI;
+      }
+      */
+      size_t dim[2]; dim[0]=xdim; dim[1]=ydim;
+      Image *smlIm = new Image(dim);
+      smlIm->saveArray(momentMap,xdim*ydim);
+      smlIm->setMinSize(1);
+      float max = *std::max_element(momentMap,momentMap+xdim*ydim);
+      smlIm->stats().setThreshold(max/2.);
+      std::vector<Object2D> objlist=smlIm->findSources2D();
+      //      std::cerr << max << " " << smlIm->stats().getThreshold() << " " << objlist.size()<<"\n";
+
+      Object2D combined;
+      for(size_t i=0;i<objlist.size();i++) combined = combined + objlist[i];
+      bool ellipseGood = combined.findEllipse(true, momentMap, xdim, ydim, 0,0, this->getXcentre()-xzero, this->getYcentre()-yzero); // try first by weighting the pixels by their flux
+      if(!ellipseGood) {
+	ellipseGood = combined.findEllipse(false, momentMap, xdim, ydim, 0,0, this->getXcentre()-xzero, this->getYcentre()-yzero); // if that fails, remove the flux weighting
+	this->flagText += "W";
+      }
+      if(ellipseGood){
+	// multiply axes by 2 to go from semi-major to FWHM...
+	float scale=head.getShapeScale();
+	//	if(fabs(head.WCS().cdelt[head.WCS().lng])<0.01) scale=60.;
+	//	else  if(fabs(head.WCS().cdelt[head.WCS().lng])<5.e-4) scale=3600;
+	this->majorAxis = combined.major() * head.getAvPixScale() * 2. * scale;
+	this->minorAxis = combined.minor() * head.getAvPixScale() * 2. * scale;
+	this->posang =    combined.posAng() * 180. / M_PI;
+
+	//	std::cerr << "*** " << combined.getSize()<< " " << majorAxis<<" " << minorAxis << " " << posang<< "\n";
+      }
+
+      delete smlIm;
+  }
+
   //--------------------------------------------------------------------
 
   void Detection::calcVelWidths(size_t zdim, std::vector<Voxel> voxelList, FitsHeader &head)

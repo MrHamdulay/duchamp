@@ -258,7 +258,7 @@ namespace duchamp
       label = this->objectList->at(objNum).outputLabelFluxes();
       plot.secondHeaderLine(label);
     }
-    label = this->objectList->at(objNum).outputLabelWidths();
+    label = this->objectList->at(objNum).outputLabelWidths(this->head);
     plot.thirdHeaderLine(label);
     label = this->objectList->at(objNum).outputLabelPix();
     plot.fourthHeaderLine(label);
@@ -373,7 +373,7 @@ namespace duchamp
       label = obj.outputLabelFluxes();
       plot.secondHeaderLine(label);
     }
-    label = obj.outputLabelWidths();
+    label = obj.outputLabelWidths(this->head);
     plot.thirdHeaderLine(label);
     label = obj.outputLabelPix();
     plot.fourthHeaderLine(label);

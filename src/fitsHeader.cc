@@ -335,4 +335,22 @@ namespace duchamp
     else return lattyp;
   }
 
+  float FitsHeader::getShapeScale()
+  {
+    // Returns a scale factor that will scale the reported size of the fitted ellipses to numbers that are sensible.
+    float scale=1.;
+    if(fabs(this->wcs->cdelt[this->wcs->lng])<0.01) scale=60.;
+    else if(fabs(this->wcs->cdelt[this->wcs->lng])<5.e-4) scale=3600.;
+    return scale;
+  }
+
+  std::string FitsHeader::getShapeUnits()
+  {
+    std::string units="deg";
+    if(fabs(this->wcs->cdelt[this->wcs->lng])<0.01) units="arcmin";
+    else if(fabs(this->wcs->cdelt[this->wcs->lng])<5.e-4) units="arcsec";
+    return units;
+  }
+
+
 }

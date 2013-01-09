@@ -100,6 +100,9 @@ namespace duchamp
     void calcVelWidths(size_t zdim, std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head);
     void calcVelWidths(size_t zdim, std::map<Voxel,float> voxelMap, FitsHeader &head);
 
+    /// @brief Calculate the spatial (moment-0) shape
+    void findShape(float *momentMap, size_t xdim, size_t ydim, FitsHeader &head);
+
     /// @brief Set the values of the axis offsets from the cube. 
     void   setOffsets(Param &par); 
 
@@ -125,7 +128,7 @@ namespace duchamp
     std::string outputLabelFluxes(); 
 
     /// @brief The spectral output label that contains info on widths of the Detection. 
-    std::string outputLabelWidths(); 
+    std::string outputLabelWidths(FitsHeader &head); 
 
     /// @brief Print all required values for the Detection to a table.
     void printTableRow(std::ostream &stream, Catalogues::CatalogueSpecification columns, Catalogues::DESTINATION tableType);

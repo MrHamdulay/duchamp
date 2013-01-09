@@ -251,7 +251,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  std::string Detection::outputLabelWidths()
+  std::string Detection::outputLabelWidths(FitsHeader &head)
   {
     /// @details
     ///  Prints to a std::string the widths of the object in position
@@ -268,7 +268,12 @@ namespace duchamp
       ss << std::setprecision(this->posPrec);
       // ss << "W\\d"              << this->lngtype  <<"\\u=" << this->raWidth;
       // ss << ", W\\d"            << this->lattype  <<"\\u=" << this->decWidth;
-      ss << this->majorAxis<<"\\(0718)"<<char(215)<<this->minorAxis<<"\\(0718)";
+      std::string pgunits,units=head.getShapeUnits();
+      if(units=="deg") pgunits="\\(0718)";
+      else if(units=="arcmin") pgunits="\\(0716)";
+      else if(units=="arcsec") pgunits="\\(0717)";
+      else pgunits="";
+      ss << this->majorAxis<<pgunits<<char(215)<<this->minorAxis<<pgunits;
       ss <<", PA="<<this->posang<<"\\(0718)";
       if(this->specOK){
 	ss << std::setprecision(this->velPrec);

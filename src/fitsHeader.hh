@@ -170,11 +170,14 @@ namespace duchamp
     std::string lngtype();
     std::string lattype();
 
-    /// @brief Return the average pixel scale (eg arcmin/pix) of the two spatial axes. 
+    /// @brief Return the average pixel scale (eg deg/pix) of the two spatial axes. 
     float   getAvPixScale(){
       return sqrt( fabs ( (wcs->pc[0]*wcs->cdelt[0])*
 			  (wcs->pc[wcs->naxis+1]*wcs->cdelt[1])));
     };
+
+    float getShapeScale();
+    std::string getShapeUnits();
 
     bool    needBeamSize();
 

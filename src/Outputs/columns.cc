@@ -433,11 +433,12 @@ namespace duchamp
 	  }
 
 	  // MAJ -- check width & title. leave units for the moment.
+	  newset.column("MAJ").setUnits("["+head.getShapeUnits()+"]");
 	  tempwidth = newset.column("MAJ").getUnits().size() + 1;
 	  for(int i=newset.column("MAJ").getWidth();i<tempwidth;i++) newset.column("MAJ").widen();
 	  valD = obj->getMajorAxis();
 	  if((fabs(valD) < 1.)&&(valD>0.)){
-	    minvalD = pow(10, -1. * (newset.column("MAJ").getPrecision()+1)); 
+	    minvalD = pow(10, -1. * (newset.column("MAJ").getPrecision())); 
 	    if(valD < minvalD) newset.column("MAJ").upPrec();
 	  }
 	  tempwidth = int( log10(fabs(valD)) + 1) + newset.column("MAJ").getPrecision() + 2;
@@ -445,11 +446,12 @@ namespace duchamp
 	  for(int i=newset.column("MAJ").getWidth();i<tempwidth;i++) newset.column("MAJ").widen();
 
 	  // MIN -- check width & title. leave units for the moment.
+	  newset.column("MIN").setUnits("["+head.getShapeUnits()+"]");
 	  tempwidth = newset.column("MIN").getUnits().size() + 1;
 	  for(int i=newset.column("MIN").getWidth();i<tempwidth;i++) newset.column("MIN").widen();
 	  valD = obj->getMinorAxis();
 	  if((fabs(valD) < 1.)&&(valD>0.)){
-	    minvalD = pow(10, -1. * (newset.column("MIN").getPrecision()+1)); 
+	    minvalD = pow(10, -1. * (newset.column("MIN").getPrecision())); 
 	    if(valD < minvalD) newset.column("MIN").upPrec();
 	  }
 	  tempwidth = int( log10(fabs(valD)) + 1) + newset.column("MIN").getPrecision() + 2;
@@ -459,7 +461,7 @@ namespace duchamp
 	  // PA -- check width & title. leave units for the moment.
 	  tempwidth = newset.column("PA").getUnits().size() + 1;
 	  for(int i=newset.column("PA").getWidth();i<tempwidth;i++) newset.column("PA").widen();
-	  valD = obj->getMajorAxis();
+	  valD = obj->getPositionAngle();
 	  if((fabs(valD) < 1.)&&(valD>0.)){
 	    minvalD = pow(10, -1. * (newset.column("PA").getPrecision()+1)); 
 	    if(valD < minvalD) newset.column("PA").upPrec();

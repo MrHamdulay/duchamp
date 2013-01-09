@@ -125,7 +125,7 @@ namespace PixelInfo
     /// @brief Return the lengths of the principal axes.
     std::pair<double,double> getPrincipleAxes();
     /// @brief Find the best fitting ellipse weighted by some flux array
-    bool findEllipse(bool weightByFlux, float *array, size_t xdim, size_t ydim, int xzero=0, int yzero=0);
+    bool findEllipse(bool weightByFlux, float *array, size_t xdim, size_t ydim, int xzero, int yzero, float x0, float y0);
 
     double major(){return majorAxis;};
     double minor(){return minorAxis;};
