@@ -1681,7 +1681,7 @@ namespace duchamp
 	  writer.setFilename(this->par.outputReconFile());
 	  OUTCOME result = writer.write();
 	  report=(result==FAILURE)?"Failed!":"done.";
-	  std::cout << report << "\n";
+	  if(this->par.isVerbose()) std::cout << report << "\n";
 	}
 	if(this->par.getFlagOutputResid()){
 	  if(this->par.isVerbose())
@@ -1691,7 +1691,7 @@ namespace duchamp
 	  writer.setIsRecon(false);
 	  OUTCOME result = writer.write();
 	  report=(result==FAILURE)?"Failed!":"done.";
-	  std::cout << report << "\n";
+	  if(this->par.isVerbose()) std::cout << report << "\n";
 	}
       }
       if(this->par.getFlagSmooth()&& this->par.getFlagOutputSmooth()){
@@ -1701,7 +1701,7 @@ namespace duchamp
 	writer.setFilename(this->par.outputSmoothFile());
 	OUTCOME result = writer.write();
 	report=(result==FAILURE)?"Failed!":"done.";
-	std::cout << report << "\n";
+	if(this->par.isVerbose()) std::cout << report << "\n";
       }
     }
     if(this->par.getFlagOutputMomentMap()){
@@ -1711,7 +1711,7 @@ namespace duchamp
       writer.setFilename(this->par.outputMomentMapFile());
       OUTCOME result = writer.write();
       report=(result==FAILURE)?"Failed!":"done.";
-	std::cout << report << "\n";
+      if(this->par.isVerbose()) std::cout << report << "\n";
     }
     if(this->par.getFlagOutputBaseline()){
       if(this->par.isVerbose())
@@ -1720,7 +1720,7 @@ namespace duchamp
       writer.setFilename(this->par.outputBaselineFile());
       OUTCOME result = writer.write();
       report=(result==FAILURE)?"Failed!":"done.";
-      std::cout << report << "\n";
+      if(this->par.isVerbose()) std::cout << report << "\n";
     }
     if(this->par.getFlagOutputMask()){
       if(this->par.isVerbose())
@@ -1729,7 +1729,7 @@ namespace duchamp
       writer.setFilename(this->par.outputMaskFile());
       OUTCOME result = writer.write();
       report=(result==FAILURE)?"Failed!":"done.";
-      std::cout << report << "\n";
+      if(this->par.isVerbose()) std::cout << report << "\n";
     }
 
   }
