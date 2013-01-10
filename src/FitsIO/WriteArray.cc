@@ -60,10 +60,6 @@ namespace duchamp {
       result = FAILURE;
     }
     
-    // if(result == SUCCESS){
-    //   result = this->writeBasicHeader();
-    // }
-
     return result;
   }
 
