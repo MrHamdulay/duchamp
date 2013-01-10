@@ -60,9 +60,9 @@ namespace duchamp {
       result = FAILURE;
     }
     
-    if(result == SUCCESS){
-      result = this->writeBasicHeader();
-    }
+    // if(result == SUCCESS){
+    //   result = this->writeBasicHeader();
+    // }
 
     return result;
   }
@@ -72,10 +72,13 @@ namespace duchamp {
     char *header, *hptr, keyname[9];
     int  i, nkeyrec, status = 0;
     
-    const size_t naxis=this->itsCube->getNumDim();
+    size_t naxis=this->itsCube->getNumDim();
     long* naxes = new long[this->itsCube->getNumDim()];
     for(size_t i=0;i<naxis;i++) naxes[i]=this->itsCube->getDimArray()[i];
-    if(this->itsFlag2D) naxes[this->itsCube->header().WCS().spec]=1;
+    if(this->itsFlag2D){
+      naxes[this->itsCube->header().WCS().spec]=1;
+      naxis=2;
+    }
     // write the required header keywords 
     fits_write_imghdr(this->itsFptr, this->itsBitpix, naxis, naxes,  &status);
 
@@ -92,10 +95,13 @@ namespace duchamp {
     }
 
     // convert the wcsprm struct to a set of 80-char keys
+    int oldnaxis = this->itsCube->header().WCS().naxis;
+    if(this->itsFlag2D) this->itsCube->header().WCS().naxis=2;
     if ((status = wcshdo(WCSHDO_all, this->itsCube->header().getWCS(), &nkeyrec, &header))) {
       DUCHAMPWARN("saveImage","Could not convert WCS information to FITS header. WCS Error Code = "<<status<<": "<<wcs_errmsg[status]);
       return FAILURE;
     }
+    if(this->itsFlag2D) this->itsCube->header().WCS().naxis = oldnaxis;
 
     hptr = header;
     strncpy(keyname,hptr,8);

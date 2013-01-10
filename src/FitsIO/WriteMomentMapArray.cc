@@ -51,7 +51,16 @@ namespace duchamp {
     ///   The keyword names and comments are taken from duchamp.hh
 
     OUTCOME result=SUCCESS;
+    char keyname[9];
+
     int status = 0;
+    std::string bunit=this->itsCube->header().getFluxUnits() + " " + this->itsCube->header().getSpectralUnits();
+    strcpy(keyname,"BUNIT");
+    if(fits_update_key(this->itsFptr, TSTRING, keyname, (char *)bunit.c_str(), NULL, &status)){
+      duchampFITSerror(status,"saveImage","Error writing BSCALE header:");
+    }
+
+    status = 0;
     if(fits_write_history(this->itsFptr, (char *)header_moment0History.c_str(), &status)){
       duchampFITSerror(status,"writeMomentMapArray","Error : header I/O");
       result=FAILURE;
