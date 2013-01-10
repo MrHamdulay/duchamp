@@ -64,7 +64,7 @@ namespace Statistics
   class StatsContainer
   {
   public:
-    StatsContainer(){useRobust=true; defined=false; useFDR=false;};
+    StatsContainer(){useRobust=true; defined=false; useFDR=false; commentString="";};
     virtual ~StatsContainer(){};
     StatsContainer(const StatsContainer<Type>& s);
     StatsContainer<Type>& operator= (const StatsContainer<Type>& s);
@@ -120,6 +120,9 @@ namespace Statistics
     /// @brief Is a value above the threshold? 
     bool isDetection(float value);
 
+    /// @brief Set the comment characters
+    void setCommentString(std::string comment){commentString = comment;};;
+
     // Functions to calculate the stats for a given array.
     // The idea here is that there are two options to do the calculations:
     //   *The first just uses all the points in the array. If you need to 
@@ -145,6 +148,8 @@ namespace Statistics
     float  pThreshold;   ///< a threshold for the FDR case -- the upper limit of P values that detected pixels can have.
     bool   useRobust;    ///< whether we use the two robust stats or not
     bool   useFDR;       ///< whether the FDR method is used for determining a detection
+
+    std::string commentString; ///< Any comment characters etc that need to be prepended to any output via the << operator.
 
   };
 

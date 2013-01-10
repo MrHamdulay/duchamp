@@ -48,6 +48,7 @@ namespace duchamp {
       if(this == &other) return *this;
       this->itsColumnList = other.itsColumnList;
       this->itsTypeMap = other.itsTypeMap;
+      this->itsCommentString = other.itsCommentString;
       return *this;
     }
 
@@ -65,6 +66,41 @@ namespace duchamp {
 	this->itsColumnList.erase( this->itsColumnList.begin()+this->itsTypeMap[type] );
 
     }
+
+
+    void CatalogueSpecification::outputTableHeader(std::ostream &stream, Catalogues::DESTINATION tableType, bool flagWCS)
+    {
+      /// @details
+      ///  Prints the header row for a table of detections. The columns
+      ///  that are included depend on the value of tableType, according
+      ///  to the Column::doCol() function. The format is a row of
+      ///  dashes, a row with column names, a row with column units, and
+      ///  another row of dashes.
+      /// \param stream Where the output is written
+      /// \param columns The vector list of Column objects
+      /// \param tableType A string saying what format to use: one of
+      /// "file", "log", "screen" or "votable" (although the latter
+      /// shouldn't be used with this function).
+      /// \param flagWCS A flag for use with Column::doCol(), specifying
+      /// whether to use FINT or FTOT.
+
+      stream << this->itsCommentString;
+      for(size_t i=0;i<this->itsColumnList.size();i++)
+	if(this->itsColumnList[i].doCol(tableType,flagWCS)) this->itsColumnList[i].printDash(stream);
+      stream << "\n"<<this->itsCommentString;
+      for(size_t i=0;i<this->itsColumnList.size();i++)
+	if(this->itsColumnList[i].doCol(tableType,flagWCS)) this->itsColumnList[i].printTitle(stream);
+      stream << "\n"<<this->itsCommentString;
+      for(size_t i=0;i<this->itsColumnList.size();i++)
+	if(this->itsColumnList[i].doCol(tableType,flagWCS)) this->itsColumnList[i].printUnits(stream);
+      stream << "\n"<<this->itsCommentString;
+      for(size_t i=0;i<this->itsColumnList.size();i++)
+	if(this->itsColumnList[i].doCol(tableType,flagWCS)) this->itsColumnList[i].printDash(stream);
+      stream << "\n";
+
+      for(size_t i=0;i<this->itsCommentString.size();i++) this->itsColumnList[0].widen();
+    }
+
 
   }
 

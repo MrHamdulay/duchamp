@@ -43,14 +43,14 @@ namespace duchamp
 {
 
   /// @brief Write out info on a parameter to e.g. the results file.
-  void recordParameters(std::ostream& theStream, std::string paramName, std::string paramDesc, std::string paramValue);
+  void recordParameters(std::ostream& theStream, Param &par, std::string paramName, std::string paramDesc, std::string paramValue);
 
   /// @brief A macro to handle streamed output to recordParameters
-#define recordParam(outstream,string1,string2,instream)      \
+#define recordParam(outstream,par,string1,string2,instream) \
   do{                                                       \
     std::ostringstream oss;                                 \
     oss<<instream;                                          \
-    recordParameters(outstream,string1,string2,oss.str());   \
+    recordParameters(outstream,par,string1,string2,oss.str());	\
   }while(0)
 
   class FitsHeader; // foreshadow this so that Param knows it exists
@@ -418,6 +418,10 @@ namespace duchamp
     bool   isVerbose(){return verbose;};
     void   setVerbosity(bool f){verbose=f;};
   
+    /// @brief Set the comment characters
+    void setCommentString(std::string comment){commentStr = comment;};
+    std::string commentString(){return commentStr;};
+
   private:
     // Input files
     std::string imageFile;       ///< The image to be analysed.
@@ -567,6 +571,8 @@ namespace duchamp
     bool   borders;             ///< Whether to draw a border around the individual pixels of a detection in the spectral display
     bool   blankEdge;           ///< Whether to draw a border around the BLANK pixel region in the moment maps and cutout images
     bool   verbose;             ///< Whether to use maximum verbosity -- use progress indicators in the reconstruction & merging steps.
+
+    std::string commentStr; ///< Any comment characters etc that need to be prepended to any output via the << operator.
 
   };
 

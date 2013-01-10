@@ -211,7 +211,7 @@ namespace duchamp
     Column defaultColumn(std::string type)
     {
       // type|name|units|width|prec|ucd|datatype|extraInfo
-      if (type == "NUM") return Column(type,"Obj#","",5,0,"meta.id","int","col_objnum","");
+      if (type == "NUM") return Column(type,"ObjID","",6,0,"meta.id","int","col_objnum","");
       else if(type=="NAME") return Column(type,"Name","",8,0,"meta.id;meta.main","char","col_name","");
       else if(type=="X") return Column(type,"X","",6,prXYZ,"pos.cartesian.x","float","col_x","");
       else if(type=="Y") return Column(type,"Y","",6,prXYZ,"pos.cartesian.y","float","col_y","");

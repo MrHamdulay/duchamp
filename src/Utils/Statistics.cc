@@ -80,6 +80,7 @@ namespace Statistics
     this->pThreshold = s.pThreshold;
     this->useRobust  = s.useRobust;
     this->useFDR     = s.useFDR;
+    this->commentString = s.commentString;
     return *this;
   }
   template StatsContainer<int>& StatsContainer<int>::operator= (const StatsContainer<int>& s);
@@ -314,8 +315,10 @@ namespace Statistics
   std::ostream& operator<< (std::ostream& theStream, StatsContainer<Type> &s)
   {
     /// Prints out the four key statistics to the requested stream.
-    theStream << "Mean   = "   << s.mean   << "\t"
+    theStream << s.commentString << " "
+	      << "Mean   = "   << s.mean   << "\t"
 	      << "Std.Dev. = " << s.stddev << "\n"
+	      << s.commentString << " "
 	      << "Median = "   << s.median << "\t"
 	      << "MADFM    = " << s.madfm  << " (= " << madfmToSigma(s.madfm) << " as std.dev.)\n";
     return theStream;

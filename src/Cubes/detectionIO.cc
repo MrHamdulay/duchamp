@@ -311,17 +311,15 @@ namespace duchamp
 
     if(this->objectList->size()>0){
 
-      ASCIICatalogueWriter logwriter(this->par.getLogFile(),Catalogues::LOG);
-      logwriter.setup(this);
-      logwriter.openCatalogue(std::ios::app);
-
       long left = this->par.getBorderLeft();
       long bottom = this->par.getBorderBottom();
 
-      // std::ofstream fout(this->par.getLogFile().c_str(),std::ios::app);
       if(calcFluxes) this->calcObjectFluxes();
       this->setupColumns();
-      // outputTableHeader(fout,this->fullCols,Catalogues::LOG,this->head.isWCS());
+
+      ASCIICatalogueWriter logwriter(this->par.getLogFile(),Catalogues::LOG);
+      logwriter.setup(this);
+      logwriter.openCatalogue(std::ios::app);
       logwriter.writeTableHeader();
 
       if(this->par.getFlagBaseline()){
@@ -337,7 +335,6 @@ namespace duchamp
 	}
 	if(calcFluxes) obj.calcFluxes(this->array, this->axisDim);
 	obj.setID(objCtr+1);
-	//	obj.printTableRow(fout,this->fullCols,Catalogues::LOG);
 	logwriter.writeEntry(&obj);
       }
 
@@ -345,7 +342,7 @@ namespace duchamp
 	for(size_t i=0;i<this->axisDim[0]*this->axisDim[1]*this->axisDim[2];i++)
 	  this->array[i] -= this->baseline[i];
       }
-      //      fout.close();
+
       logwriter.closeCatalogue();
  
     }

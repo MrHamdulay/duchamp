@@ -92,10 +92,16 @@ namespace duchamp {
       if(this->itsDestination==Catalogues::SCREEN){
 	this->itsStream = &std::cout;
 	this->itsOpenFlag = true;
+	this->itsParam->setCommentString("");
+	this->itsStats->setCommentString("");
+	this->itsColumnSpecification->setCommentString("");
       }
       else{
 	FileCatalogueWriter::openCatalogue(mode);
 	this->itsStream = &this->itsFileStream;
+	this->itsParam->setCommentString("# ");
+	this->itsStats->setCommentString("# ");
+	this->itsColumnSpecification->setCommentString("# ");
       }
 
       if(!this->itsOpenFlag) 
@@ -107,7 +113,7 @@ namespace duchamp {
   void ASCIICatalogueWriter::writeHeader()
   {
     if(this->itsOpenFlag){
-      *this->itsStream <<"Results of the Duchamp source finder v."<<VERSION<<": ";
+      *this->itsStream <<"# Results of the Duchamp source finder v."<<VERSION<<": ";
       time_t now = time(NULL);
       *this->itsStream << asctime( localtime(&now) );
     }
@@ -116,7 +122,7 @@ namespace duchamp {
   void ASCIICatalogueWriter::writeCommandLineEntry(int argc, char *argv[])
   {
     if(this->itsOpenFlag){
-      *this->itsStream << "Executing statement: ";
+      *this->itsStream << "# Executing statement: ";
        for(int i=0;i<argc;i++) *this->itsStream << argv[i] << " ";
        *this->itsStream << std::endl;
     }
@@ -125,7 +131,8 @@ namespace duchamp {
   void ASCIICatalogueWriter::writeParameters()
   {
     if(this->itsOpenFlag){
-      *this->itsStream << *this->itsParam << "\n";
+      // if(this->itsDestination != Catalogues::SCREEN) this->itsParam->setCommentString("# ");
+      *this->itsStream << *this->itsParam << this->itsParam->commentString() << "\n";
     }
   }
 
@@ -133,15 +140,15 @@ namespace duchamp {
   {
     if(this->itsOpenFlag){
 
-      *this->itsStream<<"--------------------\n";
-      *this->itsStream<<"Summary of statistics:\n";
-      *this->itsStream<<"Detection threshold = " << this->itsStats->getThreshold()
+      *this->itsStream<<"# --------------------\n";
+      *this->itsStream<<"# Summary of statistics:\n";
+      *this->itsStream<<"# Detection threshold = " << this->itsStats->getThreshold()
 		      <<" " << this->itsHead->getFluxUnits();
       if(this->itsParam->getFlagFDR())
 	*this->itsStream<<" (or S/N=" << this->itsStats->getThresholdSNR()<<")";
       if(this->itsParam->getFlagSmooth()) *this->itsStream << " in smoothed cube.";
       if(!this->itsParam->getFlagUserThreshold())
-	*this->itsStream<<"\nNoise level = " << this->itsStats->getMiddle()
+	*this->itsStream<<"\n# Noise level = " << this->itsStats->getMiddle()
 			<<", Noise spread = " << this->itsStats->getSpread();
       if(this->itsParam->getFlagSmooth()) *this->itsStream  <<" in smoothed cube.";
       
@@ -171,20 +178,22 @@ namespace duchamp {
 	else
 	  growthStats.setThresholdSNR(this->itsParam->getGrowthCut());
 	growthStats.setUseFDR(false);
-	*this->itsStream<<"\nDetections grown down to threshold of " 
+	*this->itsStream<<"\n# Detections grown down to threshold of " 
 			<< growthStats.getThreshold() << " " 
 			<< this->itsHead->getFluxUnits();
       }
 
-      if(!this->itsParam->getFlagUserThreshold())
-	*this->itsStream << "\nFull stats:\n" << *this->itsStats;
+      if(!this->itsParam->getFlagUserThreshold()){
+	// this->itsStats->setCommentString("#");
+	*this->itsStream << "\n# Full stats:\n" << *this->itsStats;
+      }
       else
-	*this->itsStream << "\n\nNot calculating full stats since threshold was provided directly.\n";
+	*this->itsStream << "\n#\n# Not calculating full stats since threshold was provided directly.\n";
 
-      *this->itsStream<<"--------------------\n";
+      *this->itsStream<<"# --------------------\n";
  
-      *this->itsStream<<"Total number of detections = "<<this->itsObjectList->size()<<"\n";
-      *this->itsStream<<"--------------------\n";
+      *this->itsStream<<"# Total number of detections = "<<this->itsObjectList->size()<<"\n";
+      *this->itsStream<<"# --------------------\n";
 
     }
   }
@@ -192,7 +201,7 @@ namespace duchamp {
   void ASCIICatalogueWriter::writeTableHeader()
   {
     if(this->itsOpenFlag){
-      outputTableHeader(*this->itsStream,*this->itsColumnSpecification,this->itsDestination,this->itsHead->isWCS());
+      this->itsColumnSpecification->outputTableHeader(*this->itsStream,this->itsDestination,this->itsHead->isWCS());
     }
   }
 
@@ -207,7 +216,7 @@ namespace duchamp {
   {
     if(this->itsOpenFlag){
       
-      *this->itsStream << "=-=-=-=-=-=-=-\nCube summary\n=-=-=-=-=-=-=-\n";
+      *this->itsStream << "#=-=-=-=-=-=-=-\nCube summary\n=-=-=-=-=-=-=-\n";
 
       *this->itsStream<<this->itsCubeDim[0];
       for(int i=1;i<3;i++) *this->itsStream<<"x"<<this->itsCubeDim[i];

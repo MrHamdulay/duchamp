@@ -882,13 +882,14 @@ namespace duchamp
   }
 
 
-  void recordParameters(std::ostream& theStream, std::string paramName, std::string paramDesc, std::string paramValue)
+  void recordParameters(std::ostream& theStream, Param &par, std::string paramName, std::string paramDesc, std::string paramValue)
   {
     
     const int width = 56;
     int widthText = width - paramName.size();
 
-    theStream << std::setw(widthText) << paramDesc
+    theStream << par.commentString()
+	      << std::setw(widthText) << paramDesc
 	      << setiosflags(std::ios::right) << paramName
 	      << "  =  " << resetiosflags(std::ios::right) << paramValue 
 	      <<std::endl;
@@ -911,155 +912,155 @@ namespace duchamp
     // BUG -- can get error: `boolalpha' is not a member of type `ios' -- old compilers: gcc 2.95.3?
     //   theStream.setf(std::ios::boolalpha);
     theStream.setf(std::ios::left);
-    theStream  <<"\n---- Parameters ----"<<std::endl;
+    theStream  <<par.commentString()<<"\n"<<par.commentString()<<"---- Parameters ----"<<std::endl;
     theStream  << std::setfill('.');
     if(par.getFlagSubsection())
-      recordParam(theStream, "[imageFile]", "Image to be analysed", par.getImageFile()<<par.getSubsection());
+      recordParam(theStream, par, "[imageFile]", "Image to be analysed", par.getImageFile()<<par.getSubsection());
     else 
-      recordParam(theStream, "[imageFile]", "Image to be analysed", par.getImageFile());
+      recordParam(theStream, par, "[imageFile]", "Image to be analysed", par.getImageFile());
     if(par.getFlagRestFrequencyUsed()){
-      recordParam(theStream, "[restFrequency]","Rest frequency as used", par.getRestFrequency());
+      recordParam(theStream, par, "[restFrequency]","Rest frequency as used", par.getRestFrequency());
     }
     if(par.getFlagReconExists() && par.getFlagATrous()){
-      recordParam(theStream, "[reconExists]", "Reconstructed array exists?", stringize(par.getFlagReconExists()));
-      recordParam(theStream, "[reconFile]", "FITS file containing reconstruction", par.getReconFile());
+      recordParam(theStream, par, "[reconExists]", "Reconstructed array exists?", stringize(par.getFlagReconExists()));
+      recordParam(theStream, par, "[reconFile]", "FITS file containing reconstruction", par.getReconFile());
     }
     if(par.getFlagSmoothExists() && par.getFlagSmooth()){
-      recordParam(theStream, "[smoothExists]", "Smoothed array exists?", stringize(par.getFlagSmoothExists()));
-      recordParam(theStream, "[smoothFile]", "FITS file containing smoothed array", par.getSmoothFile());
+      recordParam(theStream, par, "[smoothExists]", "Smoothed array exists?", stringize(par.getFlagSmoothExists()));
+      recordParam(theStream, par, "[smoothFile]", "FITS file containing smoothed array", par.getSmoothFile());
     }
-    recordParam(theStream, "[logFile]", "Intermediate Logfile", par.logFile);
-    recordParam(theStream, "[outFile]", "Final Results file", par.getOutFile());
+    recordParam(theStream, par, "[logFile]", "Intermediate Logfile", par.logFile);
+    recordParam(theStream, par, "[outFile]", "Final Results file", par.getOutFile());
     if(par.getFlagSeparateHeader()){
-      recordParam(theStream, "[headerFile]", "Header for results file", par.getHeaderFile());
+      recordParam(theStream, par, "[headerFile]", "Header for results file", par.getHeaderFile());
     }
     if(USE_PGPLOT && par.getFlagPlotSpectra()){
-      recordParam(theStream, "[spectraFile]", "Spectrum file", par.getSpectraFile());
+      recordParam(theStream, par, "[spectraFile]", "Spectrum file", par.getSpectraFile());
     }
     if(par.getFlagTextSpectra()){
-      recordParam(theStream, "[spectraTextFile]", "Text file with ascii spectral data", par.getSpectraTextFile());
+      recordParam(theStream, par, "[spectraTextFile]", "Text file with ascii spectral data", par.getSpectraTextFile());
     }
     if(par.getFlagVOT()){
-      recordParam(theStream, "[votFile]", "VOTable file", par.getVOTFile());
+      recordParam(theStream, par, "[votFile]", "VOTable file", par.getVOTFile());
     }
     if(par.getFlagKarma()){
-      recordParam(theStream, "[karmaFile]", "Karma annotation file" , par.getKarmaFile());
+      recordParam(theStream, par, "[karmaFile]", "Karma annotation file" , par.getKarmaFile());
     }
     if(par.getFlagDS9()){
-      recordParam(theStream, "[ds9File]", "DS9 annotation file" , par.getDS9File());
+      recordParam(theStream, par, "[ds9File]", "DS9 annotation file" , par.getDS9File());
     }
     if(par.getFlagCasa()){
-      recordParam(theStream, "[casaFile]", "CASA annotation file" , par.getCasaFile());
+      recordParam(theStream, par, "[casaFile]", "CASA annotation file" , par.getCasaFile());
     }
     if(USE_PGPLOT && par.getFlagMaps()){
-      recordParam(theStream, "[momentMap]", "0th Moment Map", par.getMomentMap());
-      recordParam(theStream, "[detectionMap]", "Detection Map", par.getDetectionMap());
+      recordParam(theStream, par, "[momentMap]", "0th Moment Map", par.getMomentMap());
+      recordParam(theStream, par, "[detectionMap]", "Detection Map", par.getDetectionMap());
     }
     if(USE_PGPLOT){
-      recordParam(theStream, "[flagXOutput]", "Display a map in a pgplot xwindow?", stringize(par.getFlagXOutput()));
+      recordParam(theStream, par, "[flagXOutput]", "Display a map in a pgplot xwindow?", stringize(par.getFlagXOutput()));
     }
     if(par.getFlagATrous()){
-      recordParam(theStream, "[flagOutputRecon]", "Saving reconstructed cube?", fileOption(par.getFlagOutputRecon(),par.outputReconFile()));
-      recordParam(theStream, "[flagOutputResid]", "Saving residuals from reconstruction?", fileOption(par.getFlagOutputResid(),par.outputResidFile()));
+      recordParam(theStream, par, "[flagOutputRecon]", "Saving reconstructed cube?", fileOption(par.getFlagOutputRecon(),par.outputReconFile()));
+      recordParam(theStream, par, "[flagOutputResid]", "Saving residuals from reconstruction?", fileOption(par.getFlagOutputResid(),par.outputResidFile()));
     }						       
     if(par.getFlagSmooth()){	
-      recordParam(theStream, "[flagOutputSmooth]", "Saving smoothed cube?", fileOption(par.getFlagOutputSmooth(),par.outputSmoothFile()));
+      recordParam(theStream, par, "[flagOutputSmooth]", "Saving smoothed cube?", fileOption(par.getFlagOutputSmooth(),par.outputSmoothFile()));
     }						       
-    recordParam(theStream, "[flagOutputMask]", "Saving mask cube?", fileOption(par.getFlagOutputMask(),par.outputMaskFile()));
-    recordParam(theStream, "[flagOutputMomentMap]", "Saving 0th moment to FITS file?", fileOption(par.getFlagOutputMomentMap(),par.outputMomentMapFile()));
-    recordParam(theStream, "[flagOutputBaseline]", "Saving baseline values to FITS file?", fileOption(par.getFlagOutputBaseline(),par.outputBaselineFile()));
+    recordParam(theStream, par, "[flagOutputMask]", "Saving mask cube?", fileOption(par.getFlagOutputMask(),par.outputMaskFile()));
+    recordParam(theStream, par, "[flagOutputMomentMap]", "Saving 0th moment to FITS file?", fileOption(par.getFlagOutputMomentMap(),par.outputMomentMapFile()));
+    recordParam(theStream, par, "[flagOutputBaseline]", "Saving baseline values to FITS file?", fileOption(par.getFlagOutputBaseline(),par.outputBaselineFile()));
 
-    theStream  <<"------"<<std::endl;
+    theStream  << par.commentString() <<"------"<<std::endl;
 
-    recordParam(theStream, "[searchType]", "Type of searching performed", par.getSearchType());
+    recordParam(theStream, par, "[searchType]", "Type of searching performed", par.getSearchType());
     if(par.getFlagBlankPix()){
-      recordParam(theStream, "", "Blank Pixel Value", par.getBlankPixVal());
+      recordParam(theStream, par, "", "Blank Pixel Value", par.getBlankPixVal());
     }
-    recordParam(theStream, "[flagTrim]", "Trimming Blank Pixels?", stringize(par.getFlagTrim()));
-    recordParam(theStream, "[flagNegative]", "Searching for Negative features?", stringize(par.getFlagNegative()));
-    recordParam(theStream, "[flagMW]", "Removing Milky Way channels?", stringize(par.getFlagMW()));
+    recordParam(theStream, par, "[flagTrim]", "Trimming Blank Pixels?", stringize(par.getFlagTrim()));
+    recordParam(theStream, par, "[flagNegative]", "Searching for Negative features?", stringize(par.getFlagNegative()));
+    recordParam(theStream, par, "[flagMW]", "Removing Milky Way channels?", stringize(par.getFlagMW()));
     if(par.getFlagMW()){
       // need to remove the offset correction, as we want to report the parameters actually entered
-      recordParam(theStream, "[minMW - maxMW]", "Milky Way Channels", par.getMinMW()+par.getZOffset()<<"-"<<par.getMaxMW()+par.getZOffset());
+      recordParam(theStream, par, "[minMW - maxMW]", "Milky Way Channels", par.getMinMW()+par.getZOffset()<<"-"<<par.getMaxMW()+par.getZOffset());
     }
     if(par.beamAsUsed.origin()==EMPTY){  // No beam in FITS file and no information provided
-      recordParam(theStream, "", "Area of Beam", "No beam");
+      recordParam(theStream, par, "", "Area of Beam", "No beam");
     }
     else if(par.beamAsUsed.origin()==HEADER){ // Report beam size from FITS file
-      recordParam(theStream, "", "Area of Beam (pixels)", par.beamAsUsed.area() << "   (beam: " << par.beamAsUsed.maj() << " x " << par.beamAsUsed.min() <<" pixels)");
+      recordParam(theStream, par, "", "Area of Beam (pixels)", par.beamAsUsed.area() << "   (beam: " << par.beamAsUsed.maj() << " x " << par.beamAsUsed.min() <<" pixels)");
     }
     else if(par.beamAsUsed.origin()==PARAM){ // Report beam size requested in parameter set input
-      if(par.fwhmBeam>0.) recordParam(theStream, "[beamFWHM]", "FWHM of Beam (pixels)", par.beamAsUsed.maj() << "   (beam area = " << par.beamAsUsed.area() <<" pixels)");
-      else  recordParam(theStream, "[beamArea]", "Area of Beam (pixels)", par.beamAsUsed.area());
+      if(par.fwhmBeam>0.) recordParam(theStream, par, "[beamFWHM]", "FWHM of Beam (pixels)", par.beamAsUsed.maj() << "   (beam area = " << par.beamAsUsed.area() <<" pixels)");
+      else  recordParam(theStream, par, "[beamArea]", "Area of Beam (pixels)", par.beamAsUsed.area());
     }
     else{
-      recordParam(theStream, "[beam info]", "Size & shape of beam", "No information available!");
+      recordParam(theStream, par, "[beam info]", "Size & shape of beam", "No information available!");
     }
-    recordParam(theStream, "[flagBaseline]", "Removing baselines before search?", stringize(par.getFlagBaseline()));
-    recordParam(theStream, "[flagSmooth]", "Smoothing data prior to searching?", stringize(par.getFlagSmooth()));
+    recordParam(theStream, par, "[flagBaseline]", "Removing baselines before search?", stringize(par.getFlagBaseline()));
+    recordParam(theStream, par, "[flagSmooth]", "Smoothing data prior to searching?", stringize(par.getFlagSmooth()));
     if(par.getFlagSmooth()){	       
-      recordParam(theStream, "[smoothType]", "Type of smoothing", par.getSmoothType());
+      recordParam(theStream, par, "[smoothType]", "Type of smoothing", par.getSmoothType());
       if(par.getSmoothType()=="spectral")
-	recordParam(theStream, "[hanningWidth]", "Width of hanning filter", par.getHanningWidth());
+	recordParam(theStream, par, "[hanningWidth]", "Width of hanning filter", par.getHanningWidth());
       else{
-	recordParam(theStream, "[kernMaj]", "Gaussian kernel semi-major axis [pix]", par.getKernMaj());
-	recordParam(theStream, "[kernMin]", "Gaussian kernel semi-minor axis [pix]", par.getKernMin());
-	recordParam(theStream, "[kernPA]",  "Gaussian kernel position angle [deg]",  par.getKernPA());
+	recordParam(theStream, par, "[kernMaj]", "Gaussian kernel semi-major axis [pix]", par.getKernMaj());
+	recordParam(theStream, par, "[kernMin]", "Gaussian kernel semi-minor axis [pix]", par.getKernMin());
+	recordParam(theStream, par, "[kernPA]",  "Gaussian kernel position angle [deg]",  par.getKernPA());
       }
     }
-    recordParam(theStream, "[flagATrous]", "Using A Trous reconstruction?", stringize(par.getFlagATrous()));
+    recordParam(theStream, par, "[flagATrous]", "Using A Trous reconstruction?", stringize(par.getFlagATrous()));
     if(par.getFlagATrous()){			       
-      recordParam(theStream, "[reconDim]", "Number of dimensions in reconstruction", par.getReconDim());
+      recordParam(theStream, par, "[reconDim]", "Number of dimensions in reconstruction", par.getReconDim());
       if(par.getMaxScale()>0){
-	recordParam(theStream, "[scaleMin-scaleMax]", "Scales used in reconstruction", par.getMinScale()<<"-"<<par.getMaxScale());
+	recordParam(theStream, par, "[scaleMin-scaleMax]", "Scales used in reconstruction", par.getMinScale()<<"-"<<par.getMaxScale());
       }
       else{
-	recordParam(theStream, "[scaleMin]", "Minimum scale in reconstruction", par.getMinScale());
+	recordParam(theStream, par, "[scaleMin]", "Minimum scale in reconstruction", par.getMinScale());
       }
-      recordParam(theStream, "[snrRecon]", "SNR Threshold within reconstruction", par.getAtrousCut());
-      recordParam(theStream, "[reconConvergence]", "Residual convergence criterion", par.getReconConvergence());
-      recordParam(theStream, "[filterCode]", "Filter being used for reconstruction", par.getFilterCode()<<" ("<<par.getFilterName()<<")");
+      recordParam(theStream, par, "[snrRecon]", "SNR Threshold within reconstruction", par.getAtrousCut());
+      recordParam(theStream, par, "[reconConvergence]", "Residual convergence criterion", par.getReconConvergence());
+      recordParam(theStream, par, "[filterCode]", "Filter being used for reconstruction", par.getFilterCode()<<" ("<<par.getFilterName()<<")");
     }	     					       
-    recordParam(theStream, "[flagRobustStats]", "Using Robust statistics?", stringize(par.getFlagRobustStats()));
+    recordParam(theStream, par, "[flagRobustStats]", "Using Robust statistics?", stringize(par.getFlagRobustStats()));
     if(par.getFlagStatSec()){
-      recordParam(theStream, "[statSec]", "Section used by statistics calculation", par.statSec.getSection());
+      recordParam(theStream, par, "[statSec]", "Section used by statistics calculation", par.statSec.getSection());
     }
-    recordParam(theStream, "[flagFDR]", "Using FDR analysis?", stringize(par.getFlagFDR()));
+    recordParam(theStream, par, "[flagFDR]", "Using FDR analysis?", stringize(par.getFlagFDR()));
     if(par.getFlagFDR()){				       
-      recordParam(theStream, "[alphaFDR]", "Alpha value for FDR analysis", par.getAlpha());
-      recordParam(theStream, "[FDRnumCorChan]", "Number of correlated channels for FDR", par.getFDRnumCorChan());
+      recordParam(theStream, par, "[alphaFDR]", "Alpha value for FDR analysis", par.getAlpha());
+      recordParam(theStream, par, "[FDRnumCorChan]", "Number of correlated channels for FDR", par.getFDRnumCorChan());
     }	     					       
     else {
       if(par.getFlagUserThreshold()){
-	recordParam(theStream, "[threshold]", "Detection Threshold", par.getThreshold());
+	recordParam(theStream, par, "[threshold]", "Detection Threshold", par.getThreshold());
       }
       else{
-	recordParam(theStream, "[snrCut]", "SNR Threshold (in sigma)", par.getCut());
+	recordParam(theStream, par, "[snrCut]", "SNR Threshold (in sigma)", par.getCut());
       }
     }
-    recordParam(theStream, "[minPix]", "Minimum # Pixels in a detection", par.getMinPix());
-    recordParam(theStream, "[minChannels]", "Minimum # Channels in a detection", par.getMinChannels());
-    recordParam(theStream, "[minVoxels]", "Minimum # Voxels in a detection", par.getMinVoxels());
-    recordParam(theStream, "[flagGrowth]", "Growing objects after detection?", stringize(par.getFlagGrowth()));
+    recordParam(theStream, par, "[minPix]", "Minimum # Pixels in a detection", par.getMinPix());
+    recordParam(theStream, par, "[minChannels]", "Minimum # Channels in a detection", par.getMinChannels());
+    recordParam(theStream, par, "[minVoxels]", "Minimum # Voxels in a detection", par.getMinVoxels());
+    recordParam(theStream, par, "[flagGrowth]", "Growing objects after detection?", stringize(par.getFlagGrowth()));
     if(par.getFlagGrowth()) {			       
       if(par.getFlagUserGrowthThreshold()){
-	recordParam(theStream, "[growthThreshold]", "Threshold for growth", par.getGrowthThreshold());
+	recordParam(theStream, par, "[growthThreshold]", "Threshold for growth", par.getGrowthThreshold());
       }
       else{
-	recordParam(theStream, "[growthCut]", "SNR Threshold for growth", par.getGrowthCut());
+	recordParam(theStream, par, "[growthCut]", "SNR Threshold for growth", par.getGrowthCut());
       }
     }
-    recordParam(theStream, "[flagAdjacent]", "Using Adjacent-pixel criterion?", stringize(par.getFlagAdjacent()));
+    recordParam(theStream, par, "[flagAdjacent]", "Using Adjacent-pixel criterion?", stringize(par.getFlagAdjacent()));
     if(!par.getFlagAdjacent()){
-      recordParam(theStream, "[threshSpatial]", "Max. spatial separation for merging", par.getThreshS());
+      recordParam(theStream, par, "[threshSpatial]", "Max. spatial separation for merging", par.getThreshS());
     }
-    recordParam(theStream, "[threshVelocity]", "Max. velocity separation for merging", par.getThreshV());
-    recordParam(theStream, "[flagRejectBeforeMerge]", "Reject objects before merging?", stringize(par.getFlagRejectBeforeMerge()));
-    recordParam(theStream, "[flagTwoStageMerging]", "Merge objects in two stages?", stringize(par.getFlagTwoStageMerging()));
-    recordParam(theStream, "[spectralMethod]", "Method of spectral plotting", par.getSpectralMethod());
-    recordParam(theStream, "[pixelCentre]", "Type of object centre used in results", par.getPixelCentre());
+    recordParam(theStream, par, "[threshVelocity]", "Max. velocity separation for merging", par.getThreshV());
+    recordParam(theStream, par, "[flagRejectBeforeMerge]", "Reject objects before merging?", stringize(par.getFlagRejectBeforeMerge()));
+    recordParam(theStream, par, "[flagTwoStageMerging]", "Merge objects in two stages?", stringize(par.getFlagTwoStageMerging()));
+    recordParam(theStream, par, "[spectralMethod]", "Method of spectral plotting", par.getSpectralMethod());
+    recordParam(theStream, par, "[pixelCentre]", "Type of object centre used in results", par.getPixelCentre());
 
-    theStream  <<"--------------------\n";
+    theStream  << par.commentString() <<"--------------------\n";
     theStream  << std::setfill(' ');
     theStream.unsetf(std::ios::left);
     //  theStream.unsetf(std::ios::boolalpha);

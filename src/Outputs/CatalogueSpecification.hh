@@ -53,10 +53,17 @@ namespace duchamp {
       void removeColumn(std::string type);
       size_t size(){return itsColumnList.size();};
       
+      void outputTableHeader(std::ostream &stream, Catalogues::DESTINATION tableType, bool flagWCS);
+
+      /// @brief Set the comment characters
+      void setCommentString(std::string comment){itsCommentString = comment;};
+      std::string commentString(){return itsCommentString;};
 
     protected:
       std::vector<Column> itsColumnList;
       std::map<std::string, int> itsTypeMap;
+      std::string itsCommentString; ///< Any comment characters etc that need to be prepended to the table header
+
     };
 
 

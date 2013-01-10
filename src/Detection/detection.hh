@@ -353,8 +353,8 @@ namespace duchamp
   /// @brief Manage both the merging and the cleaning up of the list. 
   void ObjectMerger(std::vector<Detection> &objList, Param &par);
 
-  /// @brief Print the header information to a particular table 
-  void outputTableHeader(std::ostream &stream, Catalogues::CatalogueSpecification columns, Catalogues::DESTINATION tableType, bool flagWCS);
+  // /// @brief Print the header information to a particular table 
+  // void outputTableHeader(std::ostream &stream, Catalogues::CatalogueSpecification &columns, Catalogues::DESTINATION tableType, bool flagWCS);
 
 }
 
