@@ -199,12 +199,12 @@ void Cube::SpatialSmooth()
       
 	for(size_t pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];
     
-	bool *mask      = this->par.makeBlankMask(image,xySize);
+	bool *mask      = this->par.makeBlankMask(image+z*xySize,xySize);
     
 	float *smoothed = gauss.smooth(image,xdim,ydim,mask);
     
 	for(size_t pix=0;pix<xySize;pix++){
-	  if(mask[pix])
+	  if(!mask[pix])
 	    this->recon[z*xySize+pix] = this->array[z*xySize+pix];
 	  else
 	    this->recon[z*xySize+pix] = smoothed[pix];
@@ -271,7 +271,7 @@ void Cube::SpatialSmoothNSearch()
 
       for(size_t pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];
 
-      mask  = this->par.makeBlankMask(image,xySize);
+      mask  = this->par.makeBlankMask(image+z*xySize,xySize);
 
       smoothed = gauss.smooth(image,xdim,ydim,mask);
       
