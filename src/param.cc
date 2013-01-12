@@ -202,6 +202,7 @@ namespace duchamp
     this->borders           = true;
     this->blankEdge         = true;
     this->verbose           = true;
+    this->commentStr        = "";
   }
 
   Param::Param (const Param& p)
@@ -334,6 +335,7 @@ namespace duchamp
     this->borders           = p.borders;
     this->blankEdge         = p.blankEdge;
     this->verbose           = p.verbose;
+    this->commentStr        = p.commentStr;
     return *this;
   }
   //--------------------------------------------------------------------
