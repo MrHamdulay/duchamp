@@ -55,6 +55,7 @@
 #include <duchamp/FitsIO/WriteSmoothArray.hh>
 #include <duchamp/FitsIO/WriteMaskArray.hh>
 #include <duchamp/FitsIO/WriteMomentMapArray.hh>
+#include <duchamp/FitsIO/WriteMomentMaskArray.hh>
 #include <duchamp/FitsIO/WriteBaselineArray.hh>
 
 using namespace mycpgplot;
@@ -1709,6 +1710,15 @@ namespace duchamp
 	std::cout << "  Saving moment map to " << this->par.outputMomentMapFile() << "... "<<std::flush;
       WriteMomentMapArray writer(this);
       writer.setFilename(this->par.outputMomentMapFile());
+      OUTCOME result = writer.write();
+      report=(result==FAILURE)?"Failed!":"done.";
+      if(this->par.isVerbose()) std::cout << report << "\n";
+    }
+    if(this->par.getFlagOutputMomentMask()){
+      if(this->par.isVerbose())
+	std::cout << "  Saving moment-0 mask to " << this->par.outputMomentMaskFile() << "... "<<std::flush;
+      WriteMomentMaskArray writer(this);
+      writer.setFilename(this->par.outputMomentMaskFile());
       OUTCOME result = writer.write();
       report=(result==FAILURE)?"Failed!":"done.";
       if(this->par.isVerbose()) std::cout << report << "\n";

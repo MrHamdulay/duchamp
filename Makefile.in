@@ -70,6 +70,7 @@ HEADS = $(BASE)/duchamp.hh\
 	$(FITSIODIR)/WriteBaselineArray.hh\
 	$(FITSIODIR)/WriteMaskArray.hh\
 	$(FITSIODIR)/WriteMomentMapArray.hh\
+	$(FITSIODIR)/WriteMomentMaskArray.hh\
 	$(FITSIODIR)/WriteReconArray.hh\
 	$(FITSIODIR)/WriteSmoothArray.hh\
 	$(UTILDIR)/Hanning.hh\
@@ -137,6 +138,7 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(FITSIODIR)/WriteBaselineArray.o\
 	$(FITSIODIR)/WriteMaskArray.o\
 	$(FITSIODIR)/WriteMomentMapArray.o\
+	$(FITSIODIR)/WriteMomentMaskArray.o\
 	$(FITSIODIR)/WriteReconArray.o\
 	$(FITSIODIR)/WriteSmoothArray.o\
 	$(FITSIODIR)/dataIO.o\

@@ -104,6 +104,9 @@ namespace duchamp
     /// @brief Determine filename in which to save the moment map. 
     std::string outputMomentMapFile();
 
+    /// @brief Determine filename in which to save the moment-0 mask.
+    std::string outputMomentMaskFile();
+
     /// @brief Determine filename in which to save the baseline array. 
     std::string outputBaselineFile();
 
@@ -215,6 +218,10 @@ namespace duchamp
     void   setFlagOutputMomentMap(bool flag){flagOutputMomentMap=flag;};
     std::string getFileOutputMomentMap(){return fileOutputMomentMap;};
     void   setFileOutputMomentMap(std::string s){fileOutputMomentMap=s;};
+    bool   getFlagOutputMomentMask(){return flagOutputMomentMask;};
+    void   setFlagOutputMomentMask(bool flag){flagOutputMomentMask=flag;};
+    std::string getFileOutputMomentMask(){return fileOutputMomentMask;};
+    void   setFileOutputMomentMask(std::string s){fileOutputMomentMask=s;};
     bool   getFlagOutputMask(){return flagOutputMask;};
     void   setFlagOutputMask(bool flag){flagOutputMask=flag;};
     std::string getFileOutputMask(){return fileOutputMask;};
@@ -449,6 +456,8 @@ namespace duchamp
     std::string fileOutputBaseline;  ///< The name of the baseline FITS file
     bool        flagOutputMomentMap;  ///< Should the moment map image be written to a FITS file?
     std::string fileOutputMomentMap;  ///< The name of the moment map FITS file
+    bool        flagOutputMomentMask;  ///< Should the moment-0 mask be written to a FITS file?
+    std::string fileOutputMomentMask;  ///< The name of the moment-0 mask FITS file
     bool        flagOutputMask;  ///< Should the mask image be written?
     std::string fileOutputMask;  ///< The name of the mask image.
     bool        flagMaskWithObjectNum;///< Should the mask values be labeled with the object ID (or just 1)?

@@ -514,6 +514,7 @@ state of \texttt{flagMaps}).
 \secB{FITS output}
 
 \secC{Moment map}
+\label{sec-momentOut}
 
 The moment map described above can also be written to a FITS file, so
 that it can be examined more closely, and have annotation files
@@ -524,7 +525,7 @@ the \texttt{fileOutputMomentMap} parameter, or, if this is not given,
 \texttt{image.MOM0.fits} (where the input image is called
 \texttt{image.fits}).
 
-\secC{Mask image}
+\secC{Mask images}
 \label{sec-maskOut}
 
 It is also possible to write the mask array to a FITS file, for use in
@@ -538,6 +539,18 @@ this FITS file, set the input parameter
 \texttt{flagOutputMask=true}. The file will be named according to the
 \texttt{fileOutputMask} parameter, or, if this is not given,
 \texttt{image.MASK.fits} (where the input image is called
+\texttt{image.fits}).
+
+A spatial mask, or moment-0 mask, can also be written. This is simply
+a two-dimensional image that shows which spatial pixels are detected
+in one or more channels. Unlike the full mask file above, detected
+pixels can only be recorded as 1 (as a given spatial pixel may appear
+in multiple objects) -- that is, the parameter
+\texttt{flagMaskWithObjectNum} does not affect the moment-0 mask. To
+create this FITS file, set the input parameter
+\texttt{flagOutputMomentMask=true}. The file will be named according
+to the \texttt{fileOutputMomentMask} parameter, or, if this is not
+given, \texttt{image.MOM0MASK.fits} (where the input image is called
 \texttt{image.fits}).
 
 \secC{Smoothed or Reconstructed image}

@@ -109,32 +109,6 @@ namespace duchamp {
 	return FAILURE;
       }
     }
-    
-    if(this->itsBitpix>0){
-      if(this->itsCube->pars().getFlagBlankPix()){
-	strcpy(keyname,"BSCALE");
-	float bscale=this->itsCube->header().getBscaleKeyword();
-	if(fits_update_key(this->itsFptr, TFLOAT, keyname, &bscale, NULL, &status)){
-	  duchampFITSerror(status,"saveImage","Error writing BSCALE header:");
-	}
-	strcpy(keyname,"BZERO");
-	float bzero=this->itsCube->header().getBzeroKeyword();
-	if(fits_update_key(this->itsFptr, TFLOAT, keyname, &bzero, NULL, &status)){
-	  duchampFITSerror(status,"saveImage","Error writing BZERO header:");
-	}
-	strcpy(keyname,"BLANK");
-	int blank=this->itsCube->header().getBlankKeyword();
-	if(fits_update_key(this->itsFptr, TINT, keyname, &blank, NULL, &status)){
-	  duchampFITSerror(status,"saveImage","Error writing BLANK header:");
-	}
-	if(fits_set_imgnull(this->itsFptr, blank, &status)){
-	  duchampFITSerror(status, "saveImage", "Error setting null value:");
-	}
-	if(fits_set_bscale(this->itsFptr, bscale, bzero, &status)){
-	  duchampFITSerror(status,"saveImage","Error setting scale:");
-	}
-      }
-    }
 
     delete [] naxes;
 

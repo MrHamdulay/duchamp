@@ -94,6 +94,8 @@ namespace duchamp
     this->fileOutputBaseline    = "";
     this->flagOutputMomentMap    = false;
     this->fileOutputMomentMap    = "";
+    this->flagOutputMomentMask    = false;
+    this->fileOutputMomentMask    = "";
     this->flagOutputMask    = false;
     this->fileOutputMask    = "";
     this->flagMaskWithObjectNum = false;
@@ -235,6 +237,8 @@ namespace duchamp
     this->fileOutputBaseline    = p.fileOutputBaseline;
     this->flagOutputMomentMap    = p.flagOutputMomentMap;
     this->fileOutputMomentMap    = p.fileOutputMomentMap;
+    this->flagOutputMomentMask   = p.flagOutputMomentMask;
+    this->fileOutputMomentMask   = p.fileOutputMomentMask;
     this->flagOutputMask    = p.flagOutputMask;
     this->fileOutputMask    = p.fileOutputMask;
     this->flagMaskWithObjectNum = p.flagMaskWithObjectNum;
@@ -603,6 +607,8 @@ namespace duchamp
 	if(arg=="fileoutputbaseline")  this->fileOutputBaseline = readFilename(ss);
 	if(arg=="flagoutputmomentmap")  this->flagOutputMomentMap = readFlag(ss); 
 	if(arg=="fileoutputmomentmap")  this->fileOutputMomentMap = readFilename(ss);
+	if(arg=="flagoutputmomentmask")  this->flagOutputMomentMask = readFlag(ss); 
+	if(arg=="fileoutputmomentmask")  this->fileOutputMomentMask = readFilename(ss);
 	if(arg=="flagoutputmask")  this->flagOutputMask = readFlag(ss); 
 	if(arg=="fileoutputmask")  this->fileOutputMask = readFilename(ss);
 	if(arg=="flagmaskwithobjectnum") this->flagMaskWithObjectNum = readFlag(ss);
@@ -887,7 +893,7 @@ namespace duchamp
   void recordParameters(std::ostream& theStream, Param &par, std::string paramName, std::string paramDesc, std::string paramValue)
   {
     
-    const int width = 56;
+    const int width = 60;
     int widthText = width - paramName.size();
 
     theStream << par.commentString()
@@ -970,6 +976,7 @@ namespace duchamp
     }						       
     recordParam(theStream, par, "[flagOutputMask]", "Saving mask cube?", fileOption(par.getFlagOutputMask(),par.outputMaskFile()));
     recordParam(theStream, par, "[flagOutputMomentMap]", "Saving 0th moment to FITS file?", fileOption(par.getFlagOutputMomentMap(),par.outputMomentMapFile()));
+    recordParam(theStream, par, "[flagOutputMomentMask]", "Saving 0th moment mask to FITS file?", fileOption(par.getFlagOutputMomentMask(),par.outputMomentMaskFile()));
     recordParam(theStream, par, "[flagOutputBaseline]", "Saving baseline values to FITS file?", fileOption(par.getFlagOutputBaseline(),par.outputBaselineFile()));
 
     theStream  << par.commentString() <<"------"<<std::endl;
@@ -1204,6 +1211,24 @@ namespace duchamp
       return outputName;
     }
     else return this->fileOutputMomentMap;
+  }
+
+  std::string Param::outputMomentMaskFile()
+  {
+    ///  This function produces the required filename in which to save
+    ///  the moment-0 FITS image. If the input image is image.fits, then the
+    ///  output will be image.MOM0.fits.
+
+    if(this->fileOutputMomentMask==""){
+      std::string inputName = this->imageFile;
+      std::string outputName = inputName;
+      if(inputName.substr(inputName.size()-5,5)==".fits")
+	outputName = inputName.substr(0,inputName.size()-5);  
+      // remove the ".fits" on the end.
+      outputName += ".MOM0MASK.fits";
+      return outputName;
+    }
+    else return this->fileOutputMomentMask;
   }
 
   std::string Param::outputBaselineFile()

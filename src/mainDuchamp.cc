@@ -205,7 +205,9 @@ int main(int argc, char * argv[])
 
   }
 
+  std::cout << "Writing to FITS files... \n";
   cube->writeToFITS();
+  std::cout << "Done.\n";
   
   if(cube->pars().getFlagVOT()){
     cube->outputDetectionsVOTable();

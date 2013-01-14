@@ -113,6 +113,12 @@ not matter, they are grouped here in logical sections.
   FITS file containing the moment-0 map. 
 \item[fileOutputMomentMap{ [see text]}] The file to which the moment-0 array is
   written. If left blank (the default), the naming scheme detailed in
+  \S\ref{sec-momentOut} is used.
+\item[{flagOutputMomentMask [false]}] A flag to say whether or not to save a
+  FITS file containing the moment-0 mask (a mask showing which spatial
+  pixels are detected in one or more channels). 
+\item[fileOutputMomentMask{ [see text]}] The file to which the moment-0 mask is
+  written. If left blank (the default), the naming scheme detailed in
   \S\ref{sec-maskOut} is used.
 \item[{flagOutputMask [false]}] A flag to say whether or not to save a
   FITS file containing a mask array, with values 1 where there is a
