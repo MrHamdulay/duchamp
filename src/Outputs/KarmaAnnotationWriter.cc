@@ -99,6 +99,7 @@ namespace duchamp {
     if(this->itsOpenFlag){
       double angleUsed=angle;
       // Need to correct the angle here. This is what the Karma documentation says, at http://www.atnf.csiro.au/computing/software/karma/user-manual/node17.html:
+      //
       // Standard Postition Angles are generally defined in the Cartesian sense where PA=0 specifies {X>0,Y=0}, PA=90 specifies {X=0,Y>0}, and so forth. 
       // In a coordinate system where X increases from left to right, and Y increases from bottom to top, PA will increase in a counter-clockwise direction. 
       // However this will be reversed if the X increases from right to left, or Y from top to bottom (though not both). So be careful! To summarize: 
