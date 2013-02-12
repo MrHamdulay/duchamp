@@ -551,6 +551,11 @@ namespace duchamp
 
     void        logSummary();
 
+    /// @brief Write set of detections and metadata to a binary catalogue
+    void        writeBinaryCatalogue();
+    OUTCOME     readBinaryCatalogue();
+
+
     /// @brief Output detections to a Karma annotation file. 
     void        outputDetectionsKarma();
 

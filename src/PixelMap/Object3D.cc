@@ -280,7 +280,7 @@ namespace PixelInfo
   }
   //------------------------------------------------------
 
-  void Object3D::write(std::string &filename)
+  void Object3D::write(std::string filename)
   {
     std::ofstream outfile(filename.c_str(), std::ios::out | std::ios::binary | std::ios::app);
     size_t size=this->chanlist.size();
@@ -302,9 +302,10 @@ namespace PixelInfo
       
   }
 
-  void Object3D::read(std::string &filename)
+  std::streampos Object3D::read(std::string filename, std::streampos loc)
   {
     std::ifstream infile(filename.c_str(), std::ios::in | std::ios::binary);
+    infile.seekg(loc);
     size_t mapsize,scanlistsize;
     long z,x,xl,y;
     infile.read(reinterpret_cast<char*>(&mapsize), sizeof mapsize);
@@ -321,8 +322,9 @@ namespace PixelInfo
       }
       this->addChannel(z,obj);
     }
+    std::streampos newloc = infile.tellg();
     infile.close();
-
+    return newloc;
   }
 
 

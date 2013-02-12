@@ -30,6 +30,7 @@
 #define STATS_H
 
 #include <iostream>
+#include <fstream>
 #include <math.h>
 
 /// A namespace to control everything to do with statistical
@@ -135,6 +136,9 @@ namespace Statistics
 
     /// @brief Calculate statistics for a subset of a data array 
     void calculate(Type *array, long size, bool *mask);
+
+    void writeToBinaryFile(std::string filename);
+    std::streampos readFromBinaryFile(std::string filename, std::streampos loc=0);
 
   private:
     bool   defined;      // a flag indicating whether the stats are defined.

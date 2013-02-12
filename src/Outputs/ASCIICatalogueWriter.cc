@@ -216,7 +216,7 @@ namespace duchamp {
   {
     if(this->itsOpenFlag){
       
-      *this->itsStream << "#=-=-=-=-=-=-=-\nCube summary\n=-=-=-=-=-=-=-\n";
+      *this->itsStream << "=-=-=-=-=-=-=-\nCube summary\n=-=-=-=-=-=-=-\n";
 
       *this->itsStream<<this->itsCubeDim[0];
       for(int i=1;i<3;i++) *this->itsStream<<"x"<<this->itsCubeDim[i];

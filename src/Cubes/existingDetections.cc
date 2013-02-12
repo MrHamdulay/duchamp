@@ -58,9 +58,9 @@ namespace duchamp
     std::stringstream ss;
 
     // first check filename, just to be sure
-    while(getline(logfile,temp), (temp.size()<11 || temp.substr(0,11)!="Image to be")){}
+    while(getline(logfile,temp), (temp.size()<11 || temp.substr(0,13)!="# Image to be")){}
     ss.str(temp);
-    ss >> temp >> temp >> temp >> temp>> temp >> filename;
+    ss >> temp >> temp >> temp >> temp >> temp>> temp >> filename;
     if(filename != this->par.getFullImageFile()){
       DUCHAMPERROR("getExistingDetections", "The image file given the log file (" << filename <<") is different to that in the parameter file (" << this->par.getFullImageFile()<<").");
       return FAILURE;

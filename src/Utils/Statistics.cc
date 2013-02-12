@@ -27,6 +27,7 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <iostream>
+#include <fstream>
 #include <duchamp/Utils/Statistics.hh>
 #include <duchamp/Utils/utils.hh>
 
@@ -327,6 +328,60 @@ namespace Statistics
   template std::ostream& operator<<<long> (std::ostream& theStream, StatsContainer<long> &s);
   template std::ostream& operator<<<float> (std::ostream& theStream, StatsContainer<float> &s);
   template std::ostream& operator<<<double> (std::ostream& theStream, StatsContainer<double> &s);
+
+  //--------------------------------------------------------------------
+
+  template <class Type>
+  void StatsContainer<Type>::writeToBinaryFile(std::string filename)
+  {
+    std::ofstream outfile(filename.c_str(), std::ios::out | std::ios::binary | std::ios::app);
+    outfile.write(reinterpret_cast<const char*>(&this->defined), sizeof this->defined);
+    outfile.write(reinterpret_cast<const char*>(&this->mean), sizeof this->mean);
+    outfile.write(reinterpret_cast<const char*>(&this->stddev), sizeof this->stddev);
+    outfile.write(reinterpret_cast<const char*>(&this->median), sizeof this->median);
+    outfile.write(reinterpret_cast<const char*>(&this->madfm), sizeof this->madfm);
+    outfile.write(reinterpret_cast<const char*>(&this->threshold), sizeof this->threshold);
+    outfile.write(reinterpret_cast<const char*>(&this->pThreshold), sizeof this->pThreshold);
+    outfile.write(reinterpret_cast<const char*>(&this->useRobust), sizeof this->useRobust);
+    outfile.write(reinterpret_cast<const char*>(&this->useFDR), sizeof this->useFDR);
+    writeStringToBinaryFile(outfile,this->commentString);
+    outfile.close();
+  }
+  template void StatsContainer<int>::writeToBinaryFile(std::string filename);
+  template void StatsContainer<long>::writeToBinaryFile(std::string filename);
+  template void StatsContainer<float>::writeToBinaryFile(std::string filename);
+  template void StatsContainer<double>::writeToBinaryFile(std::string filename);
+
+ //--------------------------------------------------------------------
+
+  template <class Type>
+  std::streampos StatsContainer<Type>::readFromBinaryFile(std::string filename, std::streampos loc)
+  {
+    std::ifstream infile(filename.c_str(), std::ios::in | std::ios::binary);
+    if(!infile.is_open()){
+      // DUCHAMPERROR("read binary stats","Could not open binary catalogue \""<<filename <<"\"");
+      std::cerr << "Read binary stats : Could not open binary catalogue \"" << filename << "\"\n";
+      return -1;
+    }
+    infile.seekg(loc);
+    infile.read(reinterpret_cast<char*>(&this->defined), sizeof this->defined);
+    infile.read(reinterpret_cast<char*>(&this->mean), sizeof this->mean);
+    infile.read(reinterpret_cast<char*>(&this->stddev), sizeof this->stddev);
+    infile.read(reinterpret_cast<char*>(&this->median), sizeof this->median);
+    infile.read(reinterpret_cast<char*>(&this->madfm), sizeof this->madfm);
+    infile.read(reinterpret_cast<char*>(&this->threshold), sizeof this->threshold);
+    infile.read(reinterpret_cast<char*>(&this->pThreshold), sizeof this->pThreshold);
+    infile.read(reinterpret_cast<char*>(&this->useRobust), sizeof this->useRobust);
+    infile.read(reinterpret_cast<char*>(&this->useFDR), sizeof this->useFDR);
+    this->commentString=readStringFromBinaryFile(infile);
+    std::streampos newloc = infile.tellg();
+    infile.close();
+    return newloc;
+  }
+  template std::streampos StatsContainer<int>::readFromBinaryFile(std::string filename, std::streampos loc);
+  template std::streampos StatsContainer<long>::readFromBinaryFile(std::string filename, std::streampos loc);
+  template std::streampos StatsContainer<float>::readFromBinaryFile(std::string filename, std::streampos loc);
+  template std::streampos StatsContainer<double>::readFromBinaryFile(std::string filename, std::streampos loc);
 
 
 

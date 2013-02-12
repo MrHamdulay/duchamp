@@ -86,6 +86,8 @@ namespace duchamp
     this->outFile           = "duchamp-Results.txt";
     this->flagSeparateHeader= false;
     this->headerFile        = "duchamp-Results.hdr";
+    this->flagWriteBinaryCatalogue = true;
+    this->binaryCatalogue   = "duchamp-Catalogue.dpc";
     this->flagPlotSpectra   = true;
     this->spectraFile       = "duchamp-Spectra.ps";
     this->flagTextSpectra   = false;
@@ -229,6 +231,8 @@ namespace duchamp
     this->outFile           = p.outFile;        
     this->flagSeparateHeader= p.flagSeparateHeader;
     this->headerFile        = p.headerFile;
+    this->flagWriteBinaryCatalogue = p.flagWriteBinaryCatalogue;
+    this->binaryCatalogue   = p.binaryCatalogue;
     this->flagPlotSpectra   = p.flagPlotSpectra;
     this->spectraFile       = p.spectraFile;    
     this->flagTextSpectra   = p.flagTextSpectra;    
@@ -599,6 +603,8 @@ namespace duchamp
 	if(arg=="outfile")         this->outFile = readSval(ss); 
 	if(arg=="flagseparateheader") this->flagSeparateHeader = readFlag(ss);
 	if(arg=="headerfile")      this->headerFile = readFilename(ss);
+	if(arg=="flagwritebinarycatalogue") this->flagWriteBinaryCatalogue = readFlag(ss);
+	if(arg=="binarycatalogue") this->binaryCatalogue = readFilename(ss);
 	if(arg=="flagplotspectra") this->flagPlotSpectra = readFlag(ss);
 	if(arg=="spectrafile")     this->spectraFile = readFilename(ss); 
 	if(arg=="flagtextspectra") this->flagTextSpectra = readFlag(ss); 
@@ -870,6 +876,12 @@ namespace duchamp
     if(this->minVoxels < (this->minPix + this->minChannels - 1) ){
       DUCHAMPWARN("Reading parameters","Changing minVoxels to " << this->minPix + this->minChannels - 1 << " given minPix="<<this->minPix << " and minChannels="<<this->minChannels);
       this->minVoxels = this->minPix + this->minChannels - 1;
+    }
+
+    // check that baselines are being calculated if we want to save them to a FITS file
+    if(this->flagOutputBaseline && !this->flagBaseline){
+      DUCHAMPWARN("Reading parameters","Saving of baseline values to a FITS file has been requested, but baselines are not being calculated. Turning off saving of baseline values.");
+      this->flagOutputBaseline = false;
     }
       
   }
@@ -1160,25 +1172,6 @@ namespace duchamp
 
   }
 
-  void Param::writeStringToBinaryFile(std::ofstream &outfile, std::string str)
-  {
-    size_t size=str.size();
-    outfile.write(reinterpret_cast<const char*>(&size), sizeof size);
-    outfile.write(str.c_str(), sizeof(char) * size);
-  }
-
-  std::string Param::readStringFromBinaryFile(std::ifstream &infile)
-  {
-    size_t size;
-    infile.read(reinterpret_cast<char*>(&size), sizeof size);
-    char *cstr = new char[size];
-    infile.read(cstr, sizeof(char) * size);
-    std::string str(cstr);
-    str = str.substr(0,size); // don't know why this is necessary - if left out, sometimes get a string returned that is too long...
-    delete cstr; 
-    return str;
-  }
-
   void Param::writeToBinaryFile(std::string &filename)
   {
     std::ofstream outfile(filename.c_str(), std::ios::out | std::ios::binary | std::ios::app);
@@ -1191,7 +1184,6 @@ namespace duchamp
     if(this->flagReconExists) writeStringToBinaryFile(outfile,this->reconFile);
     outfile.write(reinterpret_cast<const char*>(&this->flagSmoothExists), sizeof this->flagSmoothExists);
     if(this->flagSmoothExists) writeStringToBinaryFile(outfile,this->smoothFile);
-    if(this->usePrevious)  writeStringToBinaryFile(outfile,this->objectList);
     //
     writeStringToBinaryFile(outfile,this->searchType);
     outfile.write(reinterpret_cast<const char*>(&this->flagNegative), sizeof this->flagNegative);
@@ -1259,9 +1251,14 @@ namespace duchamp
     outfile.close();
   }
 
-  void Param::readFromBinaryFile(std::string &filename)
+  std::streampos Param::readFromBinaryFile(std::string &filename, std::streampos loc)
   {
-    std::ifstream infile(filename.c_str(), std::ios::out | std::ios::binary);
+    std::ifstream infile(filename.c_str(), std::ios::in | std::ios::binary);
+    if(!infile.is_open()){
+      DUCHAMPERROR("read binary parameters","Could not open binary catalogue \""<<filename <<"\"");
+      return -1;
+    }
+    infile.seekg(loc);
     this->imageFile = readStringFromBinaryFile(infile);
     infile.read(reinterpret_cast<char*>(&this->flagSubsection), sizeof this->flagSubsection);
     if(this->flagSubsection){
@@ -1277,9 +1274,6 @@ namespace duchamp
     if(this->flagReconExists) this->reconFile=readStringFromBinaryFile(infile);
     infile.read(reinterpret_cast<char*>(&this->flagSmoothExists), sizeof this->flagSmoothExists);
     if(this->flagSmoothExists) this->smoothFile=readStringFromBinaryFile(infile);
-    if(this->usePrevious){
-      this->objectList=readStringFromBinaryFile(infile);
-    }
     //
     this->searchType=readStringFromBinaryFile(infile);
     infile.read(reinterpret_cast<char*>(&this->flagNegative), sizeof this->flagNegative);
@@ -1345,8 +1339,9 @@ namespace duchamp
       infile.read(reinterpret_cast<char*>(&this->maxMW), sizeof this->maxMW);
     }
     
-
+    std::streampos newloc = infile.tellg();
     infile.close();
+    return newloc;
 
   }
 

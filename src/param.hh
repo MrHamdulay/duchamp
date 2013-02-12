@@ -129,10 +129,9 @@ namespace duchamp
     std::vector<VOParam> getVOParams();
 
     void writeToBinaryFile(std::string &filename);
-    void readFromBinaryFile(std::string &filename);
-    std::string readStringFromBinaryFile(std::ifstream &infile);
-    void writeStringToBinaryFile(std::ofstream &outfile, std::string str);
-
+    std::streampos readFromBinaryFile(std::string &filename, std::streampos loc=0);
+    void writeToBinaryFile(){writeToBinaryFile(binaryCatalogue);};
+    std::streampos readFromBinaryFile(std::streampos loc=0){return readFromBinaryFile(binaryCatalogue,loc);};
 
     //------------------
     // Functions in FitsIO/subsection.cc
@@ -208,6 +207,10 @@ namespace duchamp
     void   setFlagSeparateHeader(bool b){flagSeparateHeader=b;};
     std::string getHeaderFile(){return headerFile;};
     void   setHeaderFile(std::string s){headerFile=s;};
+    bool   getFlagWriteBinaryCatalogue(){return flagWriteBinaryCatalogue;};
+    void   setFlagWriteBinaryCatalogue(bool b){flagWriteBinaryCatalogue=b;};
+    std::string getBinaryCatalogue(){return binaryCatalogue;};
+    void   setBinaryCatalogue(std::string s){binaryCatalogue=s;};
     bool   getFlagPlotSpectra(){return flagPlotSpectra;};
     void   setFlagPlotSpectra(bool b){flagPlotSpectra=b;};
     std::string getSpectraFile(){return spectraFile;};
@@ -454,6 +457,8 @@ namespace duchamp
     std::string outFile;         ///< Where the final results get put.
     bool        flagSeparateHeader;///< Should the header information(parameters & statistics) be written to a separate file to the table ofresults?
     std::string headerFile;      ///< Where the header information to go with the results table should be written.
+    bool        flagWriteBinaryCatalogue; ///< Whether to write the catalogue to a binary file
+    std::string binaryCatalogue; ///< The binary file holding the catalogue of detected pixels.
     bool        flagPlotSpectra; ///< Should we plot the spectrum of each detection?
     std::string spectraFile;     ///< Where the spectra are displayed
     bool        flagTextSpectra; ///< Should a text file with all spectra be written?

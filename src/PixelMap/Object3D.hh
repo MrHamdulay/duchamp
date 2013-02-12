@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <map>
 #include <iostream>
+#include <fstream>
 
 namespace PixelInfo
 {
@@ -129,9 +130,9 @@ namespace PixelInfo
     duchamp::Section getBoundingSection(int boundary=1);
 
     /// @brief Writing to a binary file
-    void write(std::string &filename);
+    void write(std::string filename);
     /// @brief Reading from a binary file
-    void read(std::string &filename);
+    std::streampos read(std::string filename, std::streampos loc=0);
 
     /// @brief Class function to print to a stream
     void print(std::ostream& theStream);

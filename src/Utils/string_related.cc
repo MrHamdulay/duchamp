@@ -27,6 +27,7 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <iomanip>
 #include <string>
@@ -136,3 +137,23 @@ std::string deblank(std::string s)
   for(int j=beg;j<=end;j++) newstring += s[j];
   return newstring;
 }
+
+void writeStringToBinaryFile(std::ofstream &outfile, std::string str)
+{
+  size_t size=str.size();
+  outfile.write(reinterpret_cast<const char*>(&size), sizeof size);
+  outfile.write(str.c_str(), sizeof(char) * size);
+}
+
+std::string readStringFromBinaryFile(std::ifstream &infile)
+{
+  size_t size;
+  infile.read(reinterpret_cast<char*>(&size), sizeof size);
+  char *cstr = new char[size];
+  infile.read(cstr, sizeof(char) * size);
+  std::string str(cstr);
+  str = str.substr(0,size); // don't know why this is necessary - if left out, sometimes get a string returned that is too long...
+  delete cstr; 
+  return str;
+}
+

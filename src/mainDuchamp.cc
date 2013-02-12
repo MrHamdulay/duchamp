@@ -84,7 +84,7 @@ int main(int argc, char * argv[])
 
   if(cube->pars().getFlagUsePrevious()){
     std::cout << "Reading detections from existing log file... \n";
-    if(cube->getExistingDetections() == FAILURE){
+    if(cube->readBinaryCatalogue() == FAILURE){
       DUCHAMPTHROW("Duchamp", "Could not read detections from log file");
       return FAILURE;
     }
@@ -198,9 +198,9 @@ int main(int argc, char * argv[])
   }
 
   if(!cube->pars().getFlagUsePrevious()){
-
-    if(cube->pars().getFlagLog() && (cube->getNumObj()>0)){
-      cube->logSummary();
+    
+    if(cube->pars().getFlagWriteBinaryCatalogue() && (cube->getNumObj()>0)){
+      cube->writeBinaryCatalogue();
     }
 
   }

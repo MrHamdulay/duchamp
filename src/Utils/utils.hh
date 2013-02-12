@@ -126,5 +126,7 @@ float readFval(std::stringstream& ss);
 int readIval(std::stringstream& ss);
 std::string removeLeadingBlanks(std::string s);
 std::string deblank(std::string s);
+std::string readStringFromBinaryFile(std::ifstream &infile);
+void writeStringToBinaryFile(std::ofstream &outfile, std::string str);
 
 #endif

@@ -358,6 +358,76 @@ namespace duchamp
     logwriter.closeCatalogue();
   }
 
+  void Cube::writeBinaryCatalogue()
+  {
+    if(this->par.getFlagWriteBinaryCatalogue()){
+      
+      std::ofstream bincat(this->par.getBinaryCatalogue().c_str(), std::ios::out | std::ios::binary);
+      time_t now = time(NULL);
+      std::string nowstr(asctime(localtime(&now)));
+      writeStringToBinaryFile(bincat,nowstr);
+      bincat.close();
+      this->par.writeToBinaryFile();
+
+      this->Stats.writeToBinaryFile(this->par.getBinaryCatalogue());
+ 
+      bincat.open(this->par.getBinaryCatalogue().c_str(), std::ios::out | std::ios::binary | std::ios::app);
+      size_t numObj=this->objectList->size();
+      bincat.write(reinterpret_cast<const char*>(&numObj), sizeof numObj);
+      bincat.close();
+
+      for(size_t i=0;i<numObj;i++)
+	this->objectList->at(i).write(this->par.getBinaryCatalogue());
+
+    }
+  }
+
+  OUTCOME Cube::readBinaryCatalogue()
+  {
+    std::ifstream bincat(this->par.getBinaryCatalogue().c_str(), std::ios::in | std::ios::binary);
+    if(!bincat.is_open()){
+      DUCHAMPERROR("read binary catalogue", "Could not open binary catalogue \""<<this->par.getBinaryCatalogue()<<"\".");
+      return FAILURE;
+    }
+    std::string nowstr=readStringFromBinaryFile(bincat);
+    if(this->par.isVerbose()) std::cout << "  Reading from binary catalogue " << this->par.getBinaryCatalogue() << " made on " << nowstr << std::flush;
+    std::streampos loc=bincat.tellg();
+    bincat.close();
+
+    loc = this->par.readFromBinaryFile(loc);
+    if(loc<0) {
+      DUCHAMPERROR("read binary catalogue","Error reading catalogue");
+      return FAILURE;
+    }
+
+    loc=this->Stats.readFromBinaryFile(this->par.getBinaryCatalogue(),loc);
+    if(loc<0) {
+      DUCHAMPERROR("read binary catalogue","Error reading catalogue");
+      return FAILURE;
+    }
+
+    bincat.open(this->par.getBinaryCatalogue().c_str(), std::ios::in | std::ios::binary);
+    bincat.seekg(loc);
+    size_t numObj;
+    bincat.read(reinterpret_cast<char*>(&numObj), sizeof numObj);
+    loc=bincat.tellg();
+    bincat.close();
+
+    for(size_t i=0;i<numObj;i++){
+      Object3D obj;
+      loc=obj.read(this->par.getBinaryCatalogue(),loc);
+      this->objectList->push_back(obj);
+    }
+
+    if(this->par.isVerbose()) std::cout << "  Successfully read " << numObj << " objects from the binary catalogue.\n";
+
+    this->updateDetectMap();
+
+    return SUCCESS;
+
+  }
+
+
   void Cube::writeSpectralData()
   {
     /// @details
