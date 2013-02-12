@@ -26,6 +26,7 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <duchamp/PixelMap/Voxel.hh>
 #include <duchamp/PixelMap/Scan.hh>
@@ -278,6 +279,52 @@ namespace PixelInfo
 
   }
   //------------------------------------------------------
+
+  void Object3D::write(std::string &filename)
+  {
+    std::ofstream outfile(filename.c_str(), std::ios::out | std::ios::binary | std::ios::app);
+    size_t size=this->chanlist.size();
+    outfile.write(reinterpret_cast<const char*>(&size), sizeof size);
+    for(std::map<long, Object2D>::iterator it = this->chanlist.begin(); 
+	it!=this->chanlist.end();it++){
+      
+      outfile.write(reinterpret_cast<const char*>(&(it->first)), sizeof it->first);
+      size=it->second.scanlist.size();
+      outfile.write(reinterpret_cast<const char*>(&size), sizeof size);
+      for(std::vector<Scan>::iterator s=it->second.scanlist.begin();s!=it->second.scanlist.end();s++){
+	outfile.write(reinterpret_cast<const char*>(&(s->itsX)),sizeof s->itsX);
+	outfile.write(reinterpret_cast<const char*>(&(s->itsXLen)),sizeof s->itsXLen);
+	outfile.write(reinterpret_cast<const char*>(&(s->itsY)),sizeof s->itsY);
+      }
+
+    }
+    outfile.close();
+      
+  }
+
+  void Object3D::read(std::string &filename)
+  {
+    std::ifstream infile(filename.c_str(), std::ios::in | std::ios::binary);
+    size_t mapsize,scanlistsize;
+    long z,x,xl,y;
+    infile.read(reinterpret_cast<char*>(&mapsize), sizeof mapsize);
+    for(size_t i=0;i<mapsize;i++){
+      infile.read(reinterpret_cast<char*>(&z), sizeof z);
+      Object2D obj;
+      infile.read(reinterpret_cast<char*>(&scanlistsize), sizeof scanlistsize);
+      for(size_t j=0;j<scanlistsize;j++){
+	infile.read(reinterpret_cast<char*>(&x),sizeof x);
+	infile.read(reinterpret_cast<char*>(&xl),sizeof xl);
+	infile.read(reinterpret_cast<char*>(&y),sizeof y);
+	Scan scn(y,x,xl);
+	obj.addScan(scn);
+      }
+      this->addChannel(z,obj);
+    }
+    infile.close();
+
+  }
+
 
   void Object3D::print(std::ostream& theStream)
   {
