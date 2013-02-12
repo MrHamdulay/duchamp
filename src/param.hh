@@ -128,6 +128,12 @@ namespace duchamp
 
     std::vector<VOParam> getVOParams();
 
+    void writeToBinaryFile(std::string &filename);
+    void readFromBinaryFile(std::string &filename);
+    std::string readStringFromBinaryFile(std::ifstream &infile);
+    void writeStringToBinaryFile(std::ofstream &outfile, std::string str);
+
+
     //------------------
     // Functions in FitsIO/subsection.cc
     //

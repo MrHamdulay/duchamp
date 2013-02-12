@@ -1121,7 +1121,7 @@ namespace duchamp
     vopars.push_back(VOParam("flagAdjacent","meta.code","boolean",this->flagAdjacent,0,""));
     if(!this->flagAdjacent)
       vopars.push_back(VOParam("threshSpatial","","float",this->threshSpatial,0,""));
-    vopars.push_back(VOParam("threshVelocity","","float",this->threshSpatial,0,""));
+    vopars.push_back(VOParam("threshVelocity","","float",this->threshVelocity,0,""));
     vopars.push_back(VOParam("flagRejectBeforeMerge","","boolean",this->flagRejectBeforeMerge,0,""));
     vopars.push_back(VOParam("flagTwoStageMerging","","boolean",this->flagTwoStageMerging,0,""));
     vopars.push_back(VOParam("pixelCentre","","char",this->pixelCentre,this->pixelCentre.size(),""));
@@ -1159,6 +1159,197 @@ namespace duchamp
     return vopars;
 
   }
+
+  void Param::writeStringToBinaryFile(std::ofstream &outfile, std::string str)
+  {
+    size_t size=str.size();
+    outfile.write(reinterpret_cast<const char*>(&size), sizeof size);
+    outfile.write(str.c_str(), sizeof(char) * size);
+  }
+
+  std::string Param::readStringFromBinaryFile(std::ifstream &infile)
+  {
+    size_t size;
+    infile.read(reinterpret_cast<char*>(&size), sizeof size);
+    char *cstr = new char[size];
+    infile.read(cstr, sizeof(char) * size);
+    std::string str(cstr);
+    str = str.substr(0,size); // don't know why this is necessary - if left out, sometimes get a string returned that is too long...
+    delete cstr; 
+    return str;
+  }
+
+  void Param::writeToBinaryFile(std::string &filename)
+  {
+    std::ofstream outfile(filename.c_str(), std::ios::out | std::ios::binary | std::ios::app);
+    writeStringToBinaryFile(outfile,this->imageFile);
+    outfile.write(reinterpret_cast<const char*>(&this->flagSubsection), sizeof this->flagSubsection);
+    if(this->flagSubsection) writeStringToBinaryFile(outfile,this->pixelSec.getSection());
+    outfile.write(reinterpret_cast<const char*>(&this->flagStatSec), sizeof this->flagStatSec);
+    if(this->flagStatSec) writeStringToBinaryFile(outfile,this->statSec.getSection());
+    outfile.write(reinterpret_cast<const char*>(&this->flagReconExists), sizeof this->flagReconExists);
+    if(this->flagReconExists) writeStringToBinaryFile(outfile,this->reconFile);
+    outfile.write(reinterpret_cast<const char*>(&this->flagSmoothExists), sizeof this->flagSmoothExists);
+    if(this->flagSmoothExists) writeStringToBinaryFile(outfile,this->smoothFile);
+    if(this->usePrevious)  writeStringToBinaryFile(outfile,this->objectList);
+    //
+    writeStringToBinaryFile(outfile,this->searchType);
+    outfile.write(reinterpret_cast<const char*>(&this->flagNegative), sizeof this->flagNegative);
+    outfile.write(reinterpret_cast<const char*>(&this->flagBaseline), sizeof this->flagBaseline);
+    outfile.write(reinterpret_cast<const char*>(&this->flagRobustStats), sizeof this->flagRobustStats);
+    outfile.write(reinterpret_cast<const char*>(&this->flagFDR), sizeof this->flagFDR);
+    if(this->flagFDR){
+      outfile.write(reinterpret_cast<const char*>(&this->alphaFDR), sizeof this->alphaFDR);
+      outfile.write(reinterpret_cast<const char*>(&this->FDRnumCorChan), sizeof this->FDRnumCorChan);
+      if(this->beamAsUsed.origin()==PARAM){
+	outfile.write(reinterpret_cast<const char*>(&this->fwhmBeam), sizeof this->fwhmBeam);
+	outfile.write(reinterpret_cast<const char*>(&this->areaBeam), sizeof this->areaBeam);
+      }
+    }
+    else{
+      outfile.write(reinterpret_cast<const char*>(&this->flagUserThreshold), sizeof this->flagUserThreshold);
+      if(this->flagUserThreshold)
+	outfile.write(reinterpret_cast<const char*>(&this->threshold), sizeof this->threshold);
+      else
+	outfile.write(reinterpret_cast<const char*>(&this->snrCut), sizeof this->snrCut);
+    }
+    outfile.write(reinterpret_cast<const char*>(&this->flagGrowth), sizeof this->flagGrowth);
+    if(this->flagGrowth){
+      if(this->flagUserGrowthThreshold)
+	outfile.write(reinterpret_cast<const char*>(&this->growthThreshold), sizeof this->growthThreshold);
+      else
+	outfile.write(reinterpret_cast<const char*>(&this->growthCut), sizeof this->growthCut);
+    }
+    outfile.write(reinterpret_cast<const char*>(&this->minVoxels), sizeof this->minVoxels);
+    outfile.write(reinterpret_cast<const char*>(&this->minPix), sizeof this->minPix);
+    outfile.write(reinterpret_cast<const char*>(&this->minChannels), sizeof this->minChannels);
+    outfile.write(reinterpret_cast<const char*>(&this->flagAdjacent), sizeof this->flagAdjacent);
+    if(!this->flagAdjacent)
+      outfile.write(reinterpret_cast<const char*>(&this->threshSpatial), sizeof this->threshSpatial);
+    outfile.write(reinterpret_cast<const char*>(&this->threshVelocity), sizeof this->threshVelocity);
+    outfile.write(reinterpret_cast<const char*>(&this->flagRejectBeforeMerge), sizeof this->flagRejectBeforeMerge);
+    outfile.write(reinterpret_cast<const char*>(&this->flagTwoStageMerging), sizeof this->flagTwoStageMerging);
+    outfile.write(reinterpret_cast<const char*>(&this->flagSmooth), sizeof this->flagSmooth);
+    if(this->flagSmooth){
+      bool type=(this->smoothType=="spectral");
+      outfile.write(reinterpret_cast<const char*>(&type), sizeof type);
+      if(type)
+	outfile.write(reinterpret_cast<const char*>(&this->hanningWidth), sizeof this->hanningWidth);
+      else{
+	outfile.write(reinterpret_cast<const char*>(&this->kernMaj), sizeof this->kernMaj);
+	outfile.write(reinterpret_cast<const char*>(&this->kernMin), sizeof this->kernMin);
+	outfile.write(reinterpret_cast<const char*>(&this->kernPA), sizeof this->kernPA);
+      }
+    }
+    outfile.write(reinterpret_cast<const char*>(&this->flagATrous), sizeof this->flagATrous);
+    if(this->flagATrous){
+      outfile.write(reinterpret_cast<const char*>(&this->reconDim), sizeof this->reconDim);
+      outfile.write(reinterpret_cast<const char*>(&this->scaleMin), sizeof this->scaleMin);
+      outfile.write(reinterpret_cast<const char*>(&this->scaleMax), sizeof this->scaleMax);
+      outfile.write(reinterpret_cast<const char*>(&this->snrRecon), sizeof this->snrRecon);
+      outfile.write(reinterpret_cast<const char*>(&this->reconConvergence), sizeof this->reconConvergence);
+      outfile.write(reinterpret_cast<const char*>(&this->filterCode), sizeof this->filterCode);
+    }
+    outfile.write(reinterpret_cast<const char*>(&this->flagMW), sizeof this->flagMW);
+    if(this->flagMW){
+      outfile.write(reinterpret_cast<const char*>(&this->minMW), sizeof this->minMW);
+      outfile.write(reinterpret_cast<const char*>(&this->maxMW), sizeof this->maxMW);
+    }
+    
+    outfile.close();
+  }
+
+  void Param::readFromBinaryFile(std::string &filename)
+  {
+    std::ifstream infile(filename.c_str(), std::ios::out | std::ios::binary);
+    this->imageFile = readStringFromBinaryFile(infile);
+    infile.read(reinterpret_cast<char*>(&this->flagSubsection), sizeof this->flagSubsection);
+    if(this->flagSubsection){
+      std::string sec=readStringFromBinaryFile(infile);
+      this->pixelSec.setSection(sec);
+    }
+    infile.read(reinterpret_cast<char*>(&this->flagStatSec), sizeof this->flagStatSec);
+    if(this->flagStatSec){
+      std::string sec=readStringFromBinaryFile(infile);
+      this->statSec.setSection(sec);
+    }
+    infile.read(reinterpret_cast<char*>(&this->flagReconExists), sizeof this->flagReconExists);
+    if(this->flagReconExists) this->reconFile=readStringFromBinaryFile(infile);
+    infile.read(reinterpret_cast<char*>(&this->flagSmoothExists), sizeof this->flagSmoothExists);
+    if(this->flagSmoothExists) this->smoothFile=readStringFromBinaryFile(infile);
+    if(this->usePrevious){
+      this->objectList=readStringFromBinaryFile(infile);
+    }
+    //
+    this->searchType=readStringFromBinaryFile(infile);
+    infile.read(reinterpret_cast<char*>(&this->flagNegative), sizeof this->flagNegative);
+    infile.read(reinterpret_cast<char*>(&this->flagBaseline), sizeof this->flagBaseline);
+    infile.read(reinterpret_cast<char*>(&this->flagRobustStats), sizeof this->flagRobustStats);
+    infile.read(reinterpret_cast<char*>(&this->flagFDR), sizeof this->flagFDR);
+    if(this->flagFDR){
+      infile.read(reinterpret_cast<char*>(&this->alphaFDR), sizeof this->alphaFDR);
+      infile.read(reinterpret_cast<char*>(&this->FDRnumCorChan), sizeof this->FDRnumCorChan);
+      if(this->beamAsUsed.origin()==PARAM){
+	infile.read(reinterpret_cast<char*>(&this->fwhmBeam), sizeof this->fwhmBeam);
+	infile.read(reinterpret_cast<char*>(&this->areaBeam), sizeof this->areaBeam);
+      }
+    }
+    else{
+      infile.read(reinterpret_cast<char*>(&this->flagUserThreshold), sizeof this->flagUserThreshold);
+      if(this->flagUserThreshold)
+	infile.read(reinterpret_cast<char*>(&this->threshold), sizeof this->threshold);
+      else
+	infile.read(reinterpret_cast<char*>(&this->snrCut), sizeof this->snrCut);
+    }
+    infile.read(reinterpret_cast<char*>(&this->flagGrowth), sizeof this->flagGrowth);
+    if(this->flagGrowth){
+      if(this->flagUserGrowthThreshold)
+	infile.read(reinterpret_cast<char*>(&this->growthThreshold), sizeof this->growthThreshold);
+      else
+	infile.read(reinterpret_cast<char*>(&this->growthCut), sizeof this->growthCut);
+    }
+    infile.read(reinterpret_cast<char*>(&this->minVoxels), sizeof this->minVoxels);
+    infile.read(reinterpret_cast<char*>(&this->minPix), sizeof this->minPix);
+    infile.read(reinterpret_cast<char*>(&this->minChannels), sizeof this->minChannels);
+    infile.read(reinterpret_cast<char*>(&this->flagAdjacent), sizeof this->flagAdjacent);
+    if(!this->flagAdjacent)
+      infile.read(reinterpret_cast<char*>(&this->threshSpatial), sizeof this->threshSpatial);
+    infile.read(reinterpret_cast<char*>(&this->threshVelocity), sizeof this->threshVelocity);
+    infile.read(reinterpret_cast<char*>(&this->flagRejectBeforeMerge), sizeof this->flagRejectBeforeMerge);
+    infile.read(reinterpret_cast<char*>(&this->flagTwoStageMerging), sizeof this->flagTwoStageMerging);
+    infile.read(reinterpret_cast<char*>(&this->flagSmooth), sizeof this->flagSmooth);
+    if(this->flagSmooth){
+      bool type;
+      infile.read(reinterpret_cast<char*>(&type), sizeof type);
+      this->smoothType = type ? "spectral" : "spatial";
+      if(type)
+	infile.read(reinterpret_cast<char*>(&this->hanningWidth), sizeof this->hanningWidth);
+      else{
+	infile.read(reinterpret_cast<char*>(&this->kernMaj), sizeof this->kernMaj);
+	infile.read(reinterpret_cast<char*>(&this->kernMin), sizeof this->kernMin);
+	infile.read(reinterpret_cast<char*>(&this->kernPA), sizeof this->kernPA);
+      }
+    }
+    infile.read(reinterpret_cast<char*>(&this->flagATrous), sizeof this->flagATrous);
+    if(this->flagATrous){
+      infile.read(reinterpret_cast<char*>(&this->reconDim), sizeof this->reconDim);
+      infile.read(reinterpret_cast<char*>(&this->scaleMin), sizeof this->scaleMin);
+      infile.read(reinterpret_cast<char*>(&this->scaleMax), sizeof this->scaleMax);
+      infile.read(reinterpret_cast<char*>(&this->snrRecon), sizeof this->snrRecon);
+      infile.read(reinterpret_cast<char*>(&this->reconConvergence), sizeof this->reconConvergence);
+      infile.read(reinterpret_cast<char*>(&this->filterCode), sizeof this->filterCode);
+    }
+    infile.read(reinterpret_cast<char*>(&this->flagMW), sizeof this->flagMW);
+    if(this->flagMW){
+      infile.read(reinterpret_cast<char*>(&this->minMW), sizeof this->minMW);
+      infile.read(reinterpret_cast<char*>(&this->maxMW), sizeof this->maxMW);
+    }
+    
+
+    infile.close();
+
+  }
+
 
 
 

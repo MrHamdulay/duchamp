@@ -57,33 +57,20 @@ namespace duchamp {
   {
     OUTCOME result=FAILURE;
     int exists,status=0;
-    std::string smoothFile = this->itsCube->pars().getSmoothFile();
-    if(smoothFile != ""){
-      fits_file_exists(smoothFile.c_str(),&exists,&status);
-      if(exists<=0){
-	fits_report_error(stderr, status);
-	DUCHAMPWARN("readSmoothCube", "Cannot find requested SmoothFile. Trying with parameters. Bad smoothFile was: "<<smoothFile);
-      }
-      else result = SUCCESS;
-    }
-    else{
+    std::string smoothFile = this->itsCube->pars().outputSmoothFile();
+
+    if(this->itsCube->pars().getSmoothFile() == "")
       DUCHAMPWARN("readSmoothCube", "SmoothFile not specified. Working out name from parameters.");
 
-      smoothFile = this->itsCube->pars().outputSmoothFile();
-      DUCHAMPWARN("readSmoothCube", "Trying file " << smoothFile );
-      fits_file_exists(smoothFile.c_str(),&exists,&status);
-      if(exists<=0){
-	fits_report_error(stderr, status);
-	DUCHAMPERROR("readSmoothCube","SmoothFile not present.");
-	result = FAILURE;
-      }
-      else result=SUCCESS;
-	     
-      if(result==SUCCESS){ 
-	// were able to open this new file -- use this, so reset the 
-	//  relevant parameter
-	this->itsCube->pars().setSmoothFile(smoothFile);
-      }
+    fits_file_exists(smoothFile.c_str(),&exists,&status);
+    if(exists<=0){
+      fits_report_error(stderr, status);
+      DUCHAMPERROR("readSmoothCube","SmoothFile not present.");
+      result = FAILURE;
+    }
+    else{
+      result=SUCCESS;
+      this->itsCube->pars().setSmoothFile(smoothFile);
     }
 
     this->itsFilename = smoothFile;

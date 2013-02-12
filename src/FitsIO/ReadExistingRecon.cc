@@ -57,33 +57,21 @@ namespace duchamp {
   {
     OUTCOME result=FAILURE;
     int exists,status=0;
-    std::string reconFile = this->itsCube->pars().getReconFile();
-    if(reconFile != ""){
-      fits_file_exists(reconFile.c_str(),&exists,&status);
-      if(exists<=0){
-	fits_report_error(stderr, status);
-	DUCHAMPWARN("readReconCube", "Cannot find requested ReconFile. Trying with parameters. Bad reconFile was: "<<reconFile);
-      }
-      else result = SUCCESS;
-    }
-    else{
+    std::string reconFile = this->itsCube->pars().outputReconFile();
+
+    if(this->itsCube->pars().getReconFile() == "")
       DUCHAMPWARN("readReconCube", "ReconFile not specified. Working out name from parameters.");
 
-      reconFile = this->itsCube->pars().outputReconFile();
-      DUCHAMPWARN("readReconCube", "Trying file " << reconFile );
-      fits_file_exists(reconFile.c_str(),&exists,&status);
-      if(exists<=0){
-	fits_report_error(stderr, status);
-	DUCHAMPERROR("readReconCube","ReconFile not present.");
-	result = FAILURE;
-      }
-      else result=SUCCESS;
-	     
-      if(result==SUCCESS){ 
-	// were able to open this new file -- use this, so reset the 
-	//  relevant parameter
-	this->itsCube->pars().setReconFile(reconFile);
-      }
+    fits_file_exists(reconFile.c_str(),&exists,&status);
+    if(exists<=0){
+      fits_report_error(stderr, status);
+      DUCHAMPERROR("readReconCube","ReconFile not present.");
+      this->itsCube->pars().setFlagReconExists(false);
+      result = FAILURE;
+    }
+    else{
+      result=SUCCESS;
+      this->itsCube->pars().setReconFile(reconFile);
     }
 
     this->itsFilename = reconFile;
