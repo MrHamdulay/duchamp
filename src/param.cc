@@ -90,6 +90,7 @@ namespace duchamp
     this->binaryCatalogue   = "duchamp-Catalogue.dpc";
     this->flagPlotSpectra   = true;
     this->spectraFile       = "duchamp-Spectra.ps";
+    this->flagPlotIndividualSpectra = false;
     this->flagTextSpectra   = false;
     this->spectraTextFile   = "duchamp-Spectra.txt";
     this->flagOutputBaseline    = false;
@@ -235,6 +236,7 @@ namespace duchamp
     this->binaryCatalogue   = p.binaryCatalogue;
     this->flagPlotSpectra   = p.flagPlotSpectra;
     this->spectraFile       = p.spectraFile;    
+    this->flagPlotIndividualSpectra = p.flagPlotIndividualSpectra;
     this->flagTextSpectra   = p.flagTextSpectra;    
     this->spectraTextFile   = p.spectraTextFile;    
     this->flagOutputBaseline    = p.flagOutputBaseline;
@@ -607,6 +609,7 @@ namespace duchamp
 	if(arg=="binarycatalogue") this->binaryCatalogue = readFilename(ss);
 	if(arg=="flagplotspectra") this->flagPlotSpectra = readFlag(ss);
 	if(arg=="spectrafile")     this->spectraFile = readFilename(ss); 
+	if(arg=="flagplotindividualspectra") this->flagPlotIndividualSpectra = readFlag(ss);
 	if(arg=="flagtextspectra") this->flagTextSpectra = readFlag(ss); 
 	if(arg=="spectratextfile") this->spectraTextFile = readFilename(ss); 
 	if(arg=="flagoutputbaseline")  this->flagOutputBaseline = readFlag(ss); 
@@ -743,11 +746,17 @@ namespace duchamp
 
     // If pgplot was not included in the compilation, need to set flagXOutput to false
     if(!USE_PGPLOT){
-      if(this->flagXOutput || this->flagMaps || this->flagPlotSpectra)
-	DUCHAMPWARN("Reading parameters","PGPlot has not been enabled, so setting flagXOutput, flagMaps and flagPlotSpectra to false.");
+      if(this->flagXOutput || this->flagMaps || this->flagPlotSpectra || this->flagPlotIndividualSpectra)
+	DUCHAMPWARN("Reading parameters","PGPlot has not been enabled, so setting flagXOutput, flagMaps, flagPlotSpectra and flagPlotIndividualSpectra to false.");
       this->flagXOutput = false;
       this->flagMaps = false;
       this->flagPlotSpectra = false;
+      this->flagPlotIndividualSpectra = false;
+    }
+
+    if(!this->flagPlotSpectra && this->flagPlotIndividualSpectra){
+      DUCHAMPWARN("Reading parameters","flagPlotSpectra is false, so setting flagPlotIndividualSpectra to false as well.");
+      this->flagPlotIndividualSpectra = false;
     }
 
     // Correcting bad precision values -- if negative, set to 0
@@ -955,7 +964,9 @@ namespace duchamp
       recordParam(theStream, par, "[headerFile]", "Header for results file", par.getHeaderFile());
     }
     if(USE_PGPLOT && par.getFlagPlotSpectra()){
-      recordParam(theStream, par, "[spectraFile]", "Spectrum file", par.getSpectraFile());
+      std::string label=par.getSpectraFile();
+      if(par.getFlagPlotIndividualSpectra()) label += ", with individual spectra too";
+      recordParam(theStream, par, "[spectraFile]", "Spectrum file", label);
     }
     if(par.getFlagTextSpectra()){
       recordParam(theStream, par, "[spectraTextFile]", "Text file with ascii spectral data", par.getSpectraTextFile());

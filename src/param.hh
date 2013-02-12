@@ -215,6 +215,8 @@ namespace duchamp
     void   setFlagPlotSpectra(bool b){flagPlotSpectra=b;};
     std::string getSpectraFile(){return spectraFile;};
     void   setSpectraFile(std::string fname){spectraFile = fname;};
+    bool   getFlagPlotIndividualSpectra(){return flagPlotIndividualSpectra;};
+    void   setFlagPlotIndividualSpectra(bool b){flagPlotIndividualSpectra=b;};
     bool   getFlagTextSpectra(){return flagTextSpectra;};
     void   setFlagTextSpectra(bool b){flagTextSpectra = b;};
     std::string getSpectraTextFile(){return spectraTextFile;};
@@ -461,6 +463,7 @@ namespace duchamp
     std::string binaryCatalogue; ///< The binary file holding the catalogue of detected pixels.
     bool        flagPlotSpectra; ///< Should we plot the spectrum of each detection?
     std::string spectraFile;     ///< Where the spectra are displayed
+    bool        flagPlotIndividualSpectra; ///< Should the sources be plotted with spectra in individual files?
     bool        flagTextSpectra; ///< Should a text file with all spectra be written?
     std::string spectraTextFile; ///< Where the text spectra are written.
     bool        flagOutputBaseline;  ///< Should the cube of baseline values be written to a FITS file?

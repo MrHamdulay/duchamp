@@ -188,7 +188,7 @@ int main(int argc, char * argv[])
     std::cout << "Done.\n";
     
     if(cube->getNumObj()>0 && cube->pars().getFlagPlotSpectra()){
-      std::cout << "Plotting the individual spectra... " << std::flush;
+      std::cout << "Plotting the spectra of detected objects... " << std::flush;
       cube->outputSpectra();
       std::cout << "Done.\n";
     }

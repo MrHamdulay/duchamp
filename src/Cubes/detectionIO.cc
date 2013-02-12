@@ -440,22 +440,30 @@ namespace duchamp
     ///  parameter set.
 
     const int zdim = this->axisDim[2];
-    const int numObj = this->objectList->size();
     float *specxOut = new float[zdim];
+
+    std::vector<bool> objectChoice = this->par.getObjectChoices(this->objectList->size());
+    size_t numObj = 0;
+    for(size_t i=0;i<this->objectList->size();i++) if(objectChoice[i]) numObj++;
+
     float *spectra = new float[numObj*zdim];
     
-    for(int obj=0; obj<numObj; obj++){
-      float *temp = new float[zdim];
-      float *specx = new float[zdim];
-      float *recon = new float[zdim];
-      float *base = new float[zdim];
-      this->getSpectralArrays(obj, specx, temp, recon, base);
-      for(int z=0;z<zdim;z++) spectra[obj*zdim+z] = temp[z];
-      if(obj==0) for(int z=0;z<zdim;z++) specxOut[z] = specx[z];
-      delete [] specx;
-      delete [] recon;
-      delete [] base;
-      delete [] temp;
+    size_t obj=0;
+    for(size_t i=0;i<this->objectList->size();i++){
+      if(objectChoice[i]){
+	float *temp = new float[zdim];
+	float *specx = new float[zdim];
+	float *recon = new float[zdim];
+	float *base = new float[zdim];
+	this->getSpectralArrays(i, specx, temp, recon, base);
+	for(int z=0;z<zdim;z++) spectra[obj*zdim+z] = temp[z];
+	if(obj==0) for(int z=0;z<zdim;z++) specxOut[z] = specx[z];
+	obj++;
+	delete [] specx;
+	delete [] recon;
+	delete [] base;
+	delete [] temp;
+      }
     }
     
     std::ofstream fspec(this->par.getSpectraTextFile().c_str());
@@ -465,8 +473,12 @@ namespace duchamp
       
       fspec << std::setprecision(8);
       fspec << specxOut[z] << "  ";
-      for(int obj=0;obj<numObj; obj++) {
-	fspec << spectra[obj*zdim+z] << "  ";
+      obj=0;
+      for(size_t i=0;i<this->objectList->size();i++){
+	if(objectChoice[i]){
+	  fspec << spectra[obj*zdim+z] << "  ";
+	  obj++;
+	}
       }
       fspec << "\n";
 
