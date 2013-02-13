@@ -60,18 +60,7 @@ Duchamp is an object finder for spectral-line FITS cubes.\n\
 \n\
   -p FILE      Read in parameters from FILE, including FITS image location.\n\
   -f FILE      Use default parameters with imageFile=FILE\n\
-  -x           Do not use X-windows PGPLOT output\n\
-               (equivalent to setting flagXOutput=false -- overrides the parameter file)\n\n\
-  -v           Return version number and exit\n\
-  -h           Display this help information and exit\n";
-
-  /// Usage message for command line help for Selavy. 
-  const std::string SELAVY_ERR_USAGE_MSG =
-    "Usage: Selavy [OPTION] [FILE]\n\
-Selavy re-analyses and re-plots objects found by Duchamp.\n\
-\n\
-  -p FILE      Read in parameters from FILE, including FITS image location.\n\
-  -f FILE      Use default parameters with imageFile=FILE\n\
+  -t THRESH    Sets the detection threshold to THRESH, overriding that given by the parameter file.\n\
   -x           Do not use X-windows PGPLOT output\n\
                (equivalent to setting flagXOutput=false -- overrides the parameter file)\n\n\
   -v           Return version number and exit\n\

@@ -360,17 +360,16 @@ namespace duchamp
 
     OUTCOME returnValue = FAILURE;
     if(argc==1){
-      if(progname=="Selavy") std::cout << SELAVY_ERR_USAGE_MSG;
-      else if(progname=="Duchamp") std::cout << ERR_USAGE_MSG;
-      else std::cout << ERR_USAGE_MSG;
+      std::cout << ERR_USAGE_MSG;
       returnValue = FAILURE;
     }
     else {
       std::string file;
-      bool changeX = false;
+      float thresh;
+      bool changeX = false, changeThresh=false;
       this->defaultValues();
       char c;
-      while( ( c = getopt(argc,argv,"p:f:hvx") )!=-1){
+      while( ( c = getopt(argc,argv,"p:f:t:hvx") )!=-1){
 	switch(c) {
 	case 'p':
 	  file = optarg;
@@ -390,11 +389,13 @@ namespace duchamp
 	case 'x':
 	  changeX = true;
 	  break;
+	case 't':
+	  thresh = atof(optarg);
+	  changeThresh = true;
+	  break;
 	case 'h':
 	default :
-	  if(progname=="Selavy") std::cout << SELAVY_ERR_USAGE_MSG;
-	  else if(progname=="Duchamp") std::cout << ERR_USAGE_MSG;
-	  else std::cout << ERR_USAGE_MSG;
+	  std::cout << ERR_USAGE_MSG;
 	  break;
 	}
       }
@@ -404,6 +405,11 @@ namespace duchamp
 	  DUCHAMPERROR(progname, "You need to specify either a parameter file or FITS image.\n");
 	  std::cout << "\n" << ERR_USAGE_MSG;
 	}
+      }
+      if(changeThresh){
+	this->threshold = thresh;
+	this->flagUserThreshold = true;
+	this->checkPars();
       }
     }
     return returnValue;
