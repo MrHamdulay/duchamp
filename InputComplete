@@ -41,8 +41,14 @@ objectList      *
 #                        to a separate file from the outFile (so that the 
 #                        outFile just contains the table of detections).
 # headerFile -- the file to write the header information to.
+# flagWriteBinaryCatalogue -- whether to create a binary catalogue
+# 			      indicating the pixel locations of
+# 			      detected objects (for later reuse)
+# binaryCatalogue -- the file containing the binary source catalogue
 # flagPlotSpectra -- whether to produce a file showing spectra of each detection
 # spectraFile -- the postscript file of spectra
+# flagPlotIndividualSpectra -- whether to also write individual source
+# 			       spectra postscript files
 # flagTextSpectra -- whether to save a text file detailing the spectra
 #                    of each source
 # spectraTextFile -- the file in which to save the text-formatted spectra
@@ -51,6 +57,10 @@ objectList      *
 #                   to the format shown (for input file image.fits)
 # flagOutputMomentMap -- whether to save a FITS file containing the moment-0 map
 # fileOutputMomentMap -- the filename for the moment-0 FITS file. If not given, it defaults 
+#                   to the format shown (for input file image.fits)
+# flagOutputMomentMask -- whether to save a FITS file containing the
+# 		       	  moment-0 mask image
+# fileOutputMomentMask -- the filename for the moment-0 mask FITS file. If not given, it defaults 
 #                   to the format shown (for input file image.fits)
 # flagOutputMask -- whether to save a FITS file containing a mask
 #                   array, showing the locations of detected objects
@@ -73,6 +83,8 @@ objectList      *
 # karmaFile -- the file to put it in
 # flagDS9 -- make a DS9 region file of the results?  
 # ds9File -- the file to put it in
+# flagCasa -- make a CASA region file of the results?  
+# casaFile -- the file to put it in
 # flagMaps -- save postscript versions of the detection and 0th moment maps?
 # detectionMap, momentMap -- the postscript files produced.
 # flagXOutput -- display the moment map in a pgplot window
@@ -87,14 +99,19 @@ logFile		duchamp-Logfile.txt
 outFile		duchamp-Results.txt
 flagSeparateHeader false
 headerFile      duchamp-Results.hdr
+flagWriteBinaryCatalogue true
+binaryCatalogue duchamp-Catalogue.dpc
 flagPlotSpectra true
 spectraFile	duchamp-Spectra.ps
+flagPlotIndividualSpectra false
 flagTextSpectra false
 spectraTextFile duchamp-Spectra.txt
 flagOutputBaseline  false
 fileOutputBaseline  image.BASE.fits
 flagOutputMomentMap  false
 fileOutputMomentMap  image.MOM0.fits
+flagOutputMomentMask  false
+fileOutputMomentMask  image.MOM0MASK.fits
 flagOutputMask  false
 fileOutputMask  image.MASK.fits
 flagMaskWithObjectNum false
@@ -110,6 +127,8 @@ flagKarma       false
 karmaFile       duchamp-Results.ann
 flagDS9         false
 ds9File         duchamp-Results.reg
+flagCasa        false
+casaFile        duchamp-Results.crf
 flagMaps        true
 detectionMap    duchamp-DetectionMap.ps
 momentMap       duchamp-MomentMap.ps
