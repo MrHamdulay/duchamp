@@ -1,5 +1,5 @@
 % -----------------------------------------------------------------------
-% app-Karma.tex: Example output annotation file for Karma software.
+% app-casa.tex: Example output region file for CASA
 % -----------------------------------------------------------------------
 % Copyright (C) 2006, Matthew Whiting, ATNF
 %
@@ -25,52 +25,53 @@
 %                    Epping NSW 1710
 %                    AUSTRALIA
 % -----------------------------------------------------------------------
-\secA{Example DS9 Region file output}
-\label{app-karma}
+\secA{Example CASA Region file output}
+\label{app-casa}
 
-This is the format of the DS9 region file, showing the locations
-of the detected objects. This can be loaded by the visualisation tool
-SAOImage DS9 as an overlay on the FITS file, and should be compatible
-with CASA's casaviewer.
+This is the format of the CASA region file, showing the locations
+of the detected objects. This can be loaded in casapy, and should be
+able to be used in the casaviewer image viewer (once that
+functionality is made available)
 
 \begin{verbatim}
+#CRTFv0
 # Duchamp Source Finder v.1.3
 # Results for FITS file: /home/mduchamp/fountain.fits
 # imageFile              /home/mduchamp/fountain.fits
 # flagSubsection         0
 # flagStatSec            0
-# searchType             spatial
+# searchType             spectral
 # flagNegative           0
 # flagBaseline           0
-# flagRobustStats        1
+# flagRobustStats        0
 # flagFDR                0
-# snrCut                 4
-# flagGrowth             0
-# minVoxels              4
-# minPix                 2
-# minChannels            2
+# snrCut                 5
+# flagGrowth             1
+# growthCut              3
+# minVoxels              7
+# minPix                 5
+# minChannels            3
 # flagAdjacent           1
-# threshVelocity         3
+# threshVelocity         7
 # flagRejectBeforeMerge  0
-# flagTwoStageMerging    1
+# flagTwoStageMerging    0
 # pixelCentre            centroid
 # flagSmooth             0
 # flagATrous             0
-# Detection threshold used = 4.05187
-# Mean of noise background = 0.0148019
-# Std. Deviation of noise background = 1.00927
-#  [Using robust methods]
-global color=red 
-fk5
-line 92.796776 -27.682375 92.721457 -27.683528
-line 92.795375 -27.615691 92.720102 -27.616844
-line 92.722816 -27.750214 92.647453 -27.751330
-line 92.714730 -27.350128 92.639640 -27.351239
-...
-text 92.301572 -27.583707 {1}
-\end{verbatim}
+# Detection threshold used = 0.0693069
+# Mean of noise background = 0.000421091
+# Std. Deviation of noise background = 0.0137772
+global color=red, coord=J2000 
+#
+box[[88.086891deg,-29.482756deg], [87.945344deg,-29.012892deg]], label='1'
+ann ellipse[[88.053118deg,-29.283458deg], [0.272748deg,0.013333deg], 179.999776deg]
+text[[88.053118deg,-29.283458deg], '1']
 
-%%% Local Variables: 
-%%% mode: latex
-%%% TeX-master: "Guide"
-%%% End: 
+box[[93.194880deg,-21.870648deg], [92.542252deg,-21.480469deg]], label='2'
+ann ellipse[[92.828794deg,-21.613361deg], [0.273816deg,0.235305deg], 141.808738deg]
+text[[92.828794deg,-21.613361deg], '2']
+
+box[[90.609492deg,-24.032905deg], [89.955329deg,-23.364696deg]], label='3'
+ann ellipse[[90.281318deg,-23.666887deg], [0.269583deg,0.229524deg], 91.375033deg]
+text[[90.281318deg,-23.666887deg], '3']
+\end{verbatim}

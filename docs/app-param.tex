@@ -88,12 +88,19 @@ not matter, they are grouped here in logical sections.
 \item[{HeaderFile [duchamp-\\Results.hdr]}] The file to which the
   header information should be written when
   \texttt{flagSeparateHeader=true}.
+\item[{flagWriteBinaryCatalogue [true]}] Whether to write a binary
+  catalogue of the detections, for later re-use (see
+  Sec.~\ref{sec-reuse} for details).
+\item[{binaryCatalogue [duchamp-Catalogue.dpc]}] The filename for the
+  binary catalogue.
 \item[{flagPlotSpectra [true]}] Whether to produce a postscript file
   containing spectra of all detected objects. If PGPlot has not been
   enabled, this parameter defaults to \texttt{false}.
 \item[{SpectraFile [duchamp-\\Spectra.ps]}] The postscript file
   that contains the resulting integrated spectra and images of the
   detections.
+\item[{flagPlotIndividualSpectra [false]}] Whether to produce
+  individual spectral plots for listed sources.
 \item[{flagTextSpectra [false]}] A flag to say whether the spectra
   should be saved in text form in a single file. See below for a
   description. 
@@ -162,7 +169,13 @@ not matter, they are grouped here in logical sections.
   DS9 region file corresponding to the information in
   \texttt{outfile}. This can be used as an overlay in SAOImage DS9 or
   casaviewer. 
-\item[{karmaFile [duchamp-\\Results.ann]}] The DS9 region file showing
+\item[{ds9File [duchamp-\\Results.ann]}] The DS9 region file showing
+  the list of final detections.
+\item[{flagCasa [false]}] A flag to say whether to create a
+  CASA region file corresponding to the information in
+  \texttt{outfile}. This can be used as an overlay in casaviewer (when
+  this functionality is available) or import into casapy. 
+\item[{casaFile [duchamp-\\Results.crf]}] The CASA region file showing
   the list of final detections.
 \item[{annotationType [borders]}] Which type of annotation plot to
   use. Specifying ``borders'' gives an outline around the detected
