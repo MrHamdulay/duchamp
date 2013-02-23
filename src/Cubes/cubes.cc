@@ -1316,10 +1316,18 @@ namespace duchamp
 	obj->calcWCSparams(this->head);
 	obj->calcIntegFlux(this->array,this->axisDim,this->head);
 
-	if(this->par.getFlagUserThreshold())
-	  obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
-	else
-	  obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+	if(!this->par.getFlagUserThreshold()){
+	    obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+	    obj->setIntegFluxError( sqrt(double(obj->getSize())) * this->Stats.getSpread() );
+	    if(!this->head.is2D()){
+		double x=obj->getXcentre(),y=obj->getYcentre(),z1=obj->getZcentre(),z2=z1+1;
+		double dz=this->head.pixToVel(x,y,z1)-this->head.pixToVel(x,y,z2);
+		obj->setIntegFluxError( obj->getIntegFluxError() * fabs(dz));
+	    }
+	    if(head.needBeamSize()) obj->setIntegFluxError( obj->getIntegFluxError()  / head.beam().area() );
+	}
+
+
       }
     }  
     if(this->par.isVerbose()) bar.remove();
@@ -1524,10 +1532,16 @@ namespace duchamp
   
     this->fullCols = getFullColSet(*(this->objectList), this->head);
 
+    if(this->par.getFlagUserThreshold()){
+	this->fullCols.removeColumn("SNRPEAK");
+	this->fullCols.removeColumn("FINTERR");
+    }
+
     int vel,fpeak,fint,pos,xyz,snr;
     vel = fullCols.column("VEL").getPrecision();
     fpeak = fullCols.column("FPEAK").getPrecision();
-    snr = fullCols.column("SNRPEAK").getPrecision();
+    if(!this->par.getFlagUserThreshold()) 
+	snr = fullCols.column("SNRPEAK").getPrecision();
     xyz = fullCols.column("X").getPrecision();
     xyz = std::max(xyz, fullCols.column("Y").getPrecision());
     xyz = std::max(xyz, fullCols.column("Z").getPrecision());
@@ -1542,7 +1556,8 @@ namespace duchamp
       obj->setXYZPrec(xyz);
       obj->setPosPrec(pos);
       obj->setFintPrec(fint);
-      obj->setSNRPrec(snr);
+      if(!this->par.getFlagUserThreshold()) 
+	  obj->setSNRPrec(snr);
     }
 
   }

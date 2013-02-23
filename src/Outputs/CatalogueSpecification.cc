@@ -67,6 +67,10 @@ namespace duchamp {
 
     }
 
+      bool CatalogueSpecification::hasColumn(std::string type)
+      {
+	  return this->itsTypeMap.find(type) != this->itsTypeMap.end();
+      }
 
     void CatalogueSpecification::outputTableHeader(std::ostream &stream, Catalogues::DESTINATION tableType, bool flagWCS)
     {

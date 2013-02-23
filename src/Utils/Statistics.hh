@@ -65,7 +65,7 @@ namespace Statistics
   class StatsContainer
   {
   public:
-    StatsContainer(){useRobust=true; defined=false; useFDR=false; commentString="";};
+    StatsContainer();
     virtual ~StatsContainer(){};
     StatsContainer(const StatsContainer<Type>& s);
     StatsContainer<Type>& operator= (const StatsContainer<Type>& s);

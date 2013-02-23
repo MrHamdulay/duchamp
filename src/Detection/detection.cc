@@ -56,6 +56,7 @@ namespace duchamp
     this->totalFlux = 0.;
     this->peakFlux = 0.;
     this->intFlux = 0.;
+    this->eIntFlux = 0.;
     this->xpeak = 0;
     this->ypeak = 0;
     this->zpeak = 0;
@@ -130,6 +131,7 @@ namespace duchamp
     this->haveParams   = d.haveParams;
     this->totalFlux    = d.totalFlux;
     this->intFlux      = d.intFlux;
+    this->eIntFlux     = d.eIntFlux;
     this->peakFlux     = d.peakFlux;
     this->xpeak        = d.xpeak;
     this->ypeak        = d.ypeak;

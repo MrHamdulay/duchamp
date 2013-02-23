@@ -50,6 +50,27 @@ namespace Statistics
   //--------------------------------------------------------------------
   //--------------------------------------------------------------------
 
+    template <class Type> 
+    StatsContainer<Type>::StatsContainer()
+    {
+	defined = false;
+	mean=Type(0);
+	stddev=Type(0);
+	median=Type(0);
+	madfm=Type(0);
+	threshold=Type(0);
+	pThreshold=Type(0);
+	useRobust=true; 
+	useFDR=false; 
+	commentString="";
+    }
+    template StatsContainer<int>::StatsContainer();
+    template StatsContainer<long>::StatsContainer();
+    template StatsContainer<float>::StatsContainer();
+    template StatsContainer<double>::StatsContainer();
+  //--------------------------------------------------------------------
+
+
   template <class Type> 
   StatsContainer<Type>::StatsContainer(const StatsContainer<Type>& s)
   {
@@ -110,7 +131,8 @@ namespace Statistics
     ///  @details
     /// The SNR is defined in terms of excess over the middle estimator
     /// in units of the spread estimator.
-    threshold=this->getMiddle() + snr*this->getSpread();
+      if(this->defined)
+	  threshold=this->getMiddle() + snr*this->getSpread();
   }
   template void StatsContainer<int>::setThresholdSNR(float snr);
   template void StatsContainer<long>::setThresholdSNR(float snr);
@@ -124,7 +146,10 @@ namespace Statistics
     ///  @details
     /// The SNR is defined in terms of excess over the middle estimator
     /// in units of the spread estimator.
-    return (value - this->getMiddle())/this->getSpread();
+      if(this->defined)
+	  return (value - this->getMiddle())/this->getSpread();
+      else
+	  return Type(0);
   }
   template float StatsContainer<int>::valueToSNR(float value);
   template float StatsContainer<long>::valueToSNR(float value);

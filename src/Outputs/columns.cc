@@ -174,8 +174,8 @@ namespace duchamp
       /// otherwise. False if tableType not one of four listed.
       
  
-      std::string FileList[37]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA","WRA","WDEC",
-				"W50","W20","WVEL","FINT","FTOT","FPEAK","SNRPEAK",
+      std::string FileList[38]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA","WRA","WDEC",
+				"W50","W20","WVEL","FINT", "FINTERR", "FTOT","FPEAK","SNRPEAK",
 				"X1","X2","Y1","Y2","Z1","Z2","NPIX","FLAG","XAV","YAV",
 				"ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
       std::string ScreenList[22]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA",
@@ -230,6 +230,7 @@ namespace duchamp
       else if(type=="W20") return Column(type,"w_20","",7,prVEL,"","float","col_w20","");
       else if(type=="WVEL") return Column(type,"w_VEL","",7,prVEL,"","float","col_wvel","");
       else if(type=="FINT") return Column(type,"F_int","",10,prFLUX,"phot.flux.density.integrated","float","col_fint","");
+      else if(type=="FINTERR") return Column(type,"eF_int","",10,prFLUX,"phot.flux.density.integrated;stat.err","float","col_efint","");
       else if(type=="FTOT") return Column(type,"F_tot","",10,prFLUX,"phot.flux.density","float","col_ftot","");
       else if(type=="FPEAK") return Column(type,"F_peak","",9,prFLUX,"phot.flux;stat.max","float","col_fpeak","");
       else if(type=="SNRPEAK") return Column(type,"S/Nmax","",7,prSNR,"stat.snr;phot.flux","float","col_snrmax","");
@@ -317,6 +318,7 @@ namespace duchamp
       newset.addColumn( Column("W20") );
       newset.addColumn( Column("WVEL") );
       newset.addColumn( Column("FINT") );
+      newset.addColumn( Column("FINTERR") );
       newset.addColumn( Column("FTOT") );
       newset.addColumn( Column("FPEAK") );
       newset.addColumn( Column("SNRPEAK") );
@@ -567,6 +569,23 @@ namespace duchamp
 	  if(valD<0) tempwidth++;
 	  for(int i=newset.column("FINT").getWidth();i<tempwidth;i++) newset.column("FINT").widen();
       
+	  // eF_int -- check width & units
+	  if(obj->getIntegFluxError()>0.){
+	      if(head.getIntFluxUnits().size()>0)
+		  newset.column("FINTERR").setUnits("[" + head.getIntFluxUnits() + "]");
+	      tempwidth = newset.column("FINTERR").getUnits().size() + 1;
+	      for(int i=newset.column("FINTERR").getWidth();i<tempwidth;i++) newset.column("FINTERR").widen();
+	      valD = obj->getIntegFluxError();
+	      if((fabs(valD) < 1.)// &&(valD>0.)
+		  ){
+		  int minprec = int(fabs(log10(fabs(valD))))+2;
+		  for(int i=newset.column("FINTERR").getPrecision();i<minprec;i++) newset.column("FINTERR").upPrec();
+	      }
+	      tempwidth = int( log10(fabs(valD)) + 1) + newset.column("FINTERR").getPrecision() + 2;
+	      if(valD<0) tempwidth++;
+	      for(int i=newset.column("FINTERR").getWidth();i<tempwidth;i++) newset.column("FINTERR").widen();
+	  }
+
 	}
 
 	// F_tot
@@ -599,14 +618,16 @@ namespace duchamp
 	for(int i=newset.column("FPEAK").getWidth();i<tempwidth;i++) newset.column("FPEAK").widen();
 
 	// S/N_peak
-	val = obj->getPeakSNR();
-	if((fabs(val) < 1.)&&(val>0.)){
-	  minval = pow(10, -1. * (newset.column("SNRPEAK").getPrecision()+1)); 
-	  if(val < minval) newset.column("SNRPEAK").upPrec();
+	if(obj->getPeakSNR()>0.){
+	    val = obj->getPeakSNR();
+	    if((fabs(val) < 1.)&&(val>0.)){
+		minval = pow(10, -1. * (newset.column("SNRPEAK").getPrecision()+1)); 
+		if(val < minval) newset.column("SNRPEAK").upPrec();
+	    }
+	    tempwidth = int( log10(fabs(val)) + 1) + newset.column("SNRPEAK").getPrecision() +2;
+	    if(val<0) tempwidth++;
+	    for(int i=newset.column("SNRPEAK").getWidth();i<tempwidth;i++) newset.column("SNRPEAK").widen();
 	}
-	tempwidth = int( log10(fabs(val)) + 1) + newset.column("SNRPEAK").getPrecision() +2;
-	if(val<0) tempwidth++;
-	for(int i=newset.column("SNRPEAK").getWidth();i<tempwidth;i++) newset.column("SNRPEAK").widen();
 
 	// X1 position
 	val = obj->getXmin() + obj->getXOffset();

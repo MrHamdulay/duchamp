@@ -190,6 +190,8 @@ namespace duchamp
     void        setTotalFlux(float f){totalFlux=f;};
     double      getIntegFlux(){return intFlux;};
     void        setIntegFlux(double f){intFlux=f;};
+    double      getIntegFluxError(){return eIntFlux;};
+    void        setIntegFluxError(double d){eIntFlux=d;};
     float       getPeakFlux(){return peakFlux;};
     void        setPeakFlux(float f){peakFlux=f;};
     long        getXPeak(){return xpeak;};
@@ -259,6 +261,7 @@ namespace duchamp
     // Flux related
     float          totalFlux;      ///< sum of the fluxes of all the pixels
     double         intFlux;        ///< integrated flux : involves integration over velocity.
+    double         eIntFlux;       ///< error on the integrated flux
     float          peakFlux;       ///< maximum flux over all the pixels
     long           xpeak;          ///< x-pixel location of peak flux
     long           ypeak;          ///< y-pixel location of peak flux
