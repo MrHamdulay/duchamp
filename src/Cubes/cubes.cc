@@ -1285,7 +1285,8 @@ namespace duchamp
     std::vector<Detection>::iterator obj;
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
       obj->calcFluxes(this->array, this->axisDim);
-      if(this->par.getFlagUserThreshold())
+      obj->findShape(this->array,this->axisDim,this->head);
+      if(!this->par.getFlagUserThreshold())
 	obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
       else
 	obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
@@ -1312,6 +1313,7 @@ namespace duchamp
       if(!obj->hasParams()){
 	obj->setCentreType(this->par.getPixelCentre());
 	obj->calcFluxes(this->array,this->axisDim);
+	obj->findShape(this->array,this->axisDim,this->head);
 	//      obj->calcWCSparams(this->array,this->axisDim,this->head);
 	obj->calcWCSparams(this->head);
 	obj->calcIntegFlux(this->array,this->axisDim,this->head);
@@ -1537,6 +1539,14 @@ namespace duchamp
 	this->fullCols.removeColumn("FTOTERR");
 	this->fullCols.removeColumn("SNRPEAK");
 	this->fullCols.removeColumn("FINTERR");
+    }
+
+    if(!this->head.isWCS()){
+	this->fullCols.removeColumn("RA");
+	this->fullCols.removeColumn("DEC");
+	this->fullCols.removeColumn("VEL");
+	this->fullCols.removeColumn("w_RA");
+	this->fullCols.removeColumn("w_DEC");
     }
 
     int vel,fpeak,fint,pos,xyz,snr;

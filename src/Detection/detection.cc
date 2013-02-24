@@ -789,8 +789,6 @@ namespace duchamp
       else // in this case there is just a 2D image.
       this->intFlux = this->totalFlux;
     
-     this->findShape(momMap, xsize, ysize, head);
-
      delete [] localFlux;
      delete [] momMap;
     
@@ -803,12 +801,25 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::findShape(float *momentMap, size_t xdim, size_t ydim, FitsHeader &head)
+  void Detection::findShape(float *fluxArray, size_t *dim, FitsHeader &head)
   {
 
       const int border=1; // include one pixel either side in each direction
       size_t xzero = size_t(std::max(0L,this->xmin-border));
       size_t yzero = size_t(std::max(0L,this->ymin-border));
+      size_t xdim=dim[0];
+      size_t ydim=dim[1];
+      size_t spatsize = xdim*ydim;
+
+      float *momentMap = new float[spatsize];
+      for(size_t i=0;i<spatsize;i++) momentMap[i]=0.;
+      // work out which pixels are object pixels
+      std::vector<Voxel> voxlist = this->getPixelSet();
+      float delta = head.isWCS() ? fabs(head.WCS().cdelt[head.WCS().spec]) : 1.;
+      for(std::vector<Voxel>::iterator v=voxlist.begin();v<voxlist.end();v++){
+	  size_t spatpos=(v->getX()-xzero) + (v->getY()-yzero)*xdim;
+	  momentMap[spatpos] += fluxArray[v->arrayIndex(dim)] * delta;
+      }
 
       /*
       bool ellipseGood = this->spatialMap.findEllipse(true, momentMap, xdim, ydim, xzero, yzero, this->xCentroid, this->yCentroid);  // try first by weighting the pixels by their flux
@@ -823,7 +834,7 @@ namespace duchamp
       	this->posang = this->spatialMap.posAng() * 180. / M_PI;
       }
       */
-      size_t dim[2]; dim[0]=xdim; dim[1]=ydim;
+//      size_t dim[2]; dim[0]=xdim; dim[1]=ydim;
       Image *smlIm = new Image(dim);
       smlIm->saveArray(momentMap,xdim*ydim);
       smlIm->setMinSize(1);
