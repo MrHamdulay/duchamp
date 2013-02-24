@@ -162,7 +162,9 @@ namespace duchamp
 
     // Adjust some of the names for clarity
     if(column.type()=="FINT") this->itsName = "Integrated_Flux";
+    else if(column.type()=="FINTERR") this->itsName = "Integrated_Flux_Error";
     else if(column.type()=="FTOT") this->itsName = "Total_Flux";
+    else if(column.type()=="FINT") this->itsName = "Total_Flux_Error";
     else if(column.type()=="FPEAK") this->itsName = "Peak_Flux";
     else if(column.type()=="XCENT") this->itsName = "X_Centroid";
     else if(column.type()=="YCENT") this->itsName = "Y_Centroid";

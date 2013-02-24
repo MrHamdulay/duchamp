@@ -188,6 +188,8 @@ namespace duchamp
     float       getZcentre();
     float       getTotalFlux(){return totalFlux;};
     void        setTotalFlux(float f){totalFlux=f;};
+    float       getTotalFluxError(){return eTotalFlux;};
+    void        setTotalFluxError(float f){eTotalFlux=f;};
     double      getIntegFlux(){return intFlux;};
     void        setIntegFlux(double f){intFlux=f;};
     double      getIntegFluxError(){return eIntFlux;};
@@ -260,6 +262,7 @@ namespace duchamp
     bool           haveParams;     ///< Have the parameters been calculated?
     // Flux related
     float          totalFlux;      ///< sum of the fluxes of all the pixels
+    float          eTotalFlux;     ///< error on the total flux
     double         intFlux;        ///< integrated flux : involves integration over velocity.
     double         eIntFlux;       ///< error on the integrated flux
     float          peakFlux;       ///< maximum flux over all the pixels

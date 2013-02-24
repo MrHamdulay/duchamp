@@ -129,6 +129,7 @@ namespace duchamp
     else if(type=="FINT") column.printEntry(stream,this->intFlux);
     else if(type=="FINTERR") column.printEntry(stream,this->eIntFlux);
     else if(type=="FTOT") column.printEntry(stream,this->totalFlux);
+    else if(type=="FTOTERR") column.printEntry(stream,this->eTotalFlux);
     else if(type=="FPEAK") column.printEntry(stream,this->peakFlux);
     else if(type=="SNRPEAK") column.printEntry(stream,this->peakSNR);
     else if(type=="X1") column.printEntry(stream,this->getXmin() + this->xSubOffset);

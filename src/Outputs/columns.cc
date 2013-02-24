@@ -174,8 +174,8 @@ namespace duchamp
       /// otherwise. False if tableType not one of four listed.
       
  
-      std::string FileList[38]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA","WRA","WDEC",
-				"W50","W20","WVEL","FINT", "FINTERR", "FTOT","FPEAK","SNRPEAK",
+      std::string FileList[39]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA","WRA","WDEC",
+				"W50","W20","WVEL","FINT", "FINTERR", "FTOT", "FTOTERR", "FPEAK","SNRPEAK",
 				"X1","X2","Y1","Y2","Z1","Z2","NPIX","FLAG","XAV","YAV",
 				"ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
       std::string ScreenList[22]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA",
@@ -189,7 +189,7 @@ namespace duchamp
 
       bool doIt=false;
       if(tableType == FILE){
-	for(int i=0;i<37 && !doIt;i++) doIt = doIt || (this->itsType==FileList[i]);
+	for(int i=0;i<38 && !doIt;i++) doIt = doIt || (this->itsType==FileList[i]);
       }
       else if(tableType == SCREEN){
       	if(this->itsType=="FTOT") doIt = !flagFint;
@@ -200,8 +200,8 @@ namespace duchamp
 	for(int i=0;i<16 && !doIt;i++) doIt = doIt || (this->itsType==LogList[i]);
       }
       else if(tableType == VOTABLE){
-     	if(this->itsType=="FTOT") doIt = !flagFint;
-	else if(this->itsType == "FINT") doIt = flagFint;
+     	if(this->itsType=="FTOT" || this->itsType=="FTOTERR") doIt = !flagFint;
+	else if(this->itsType == "FINT" || this->itsType=="FINTERR") doIt = flagFint;
 	else for(int i=0;i<23 && !doIt;i++) doIt = doIt || (this->itsType==VOList[i]);
       }
       return doIt;
@@ -232,6 +232,7 @@ namespace duchamp
       else if(type=="FINT") return Column(type,"F_int","",10,prFLUX,"phot.flux.density.integrated","float","col_fint","");
       else if(type=="FINTERR") return Column(type,"eF_int","",10,prFLUX,"phot.flux.density.integrated;stat.err","float","col_efint","");
       else if(type=="FTOT") return Column(type,"F_tot","",10,prFLUX,"phot.flux.density","float","col_ftot","");
+      else if(type=="FTOTERR") return Column(type,"eF_tot","",10,prFLUX,"phot.flux.density;stat.err","float","col_eftot","");
       else if(type=="FPEAK") return Column(type,"F_peak","",9,prFLUX,"phot.flux;stat.max","float","col_fpeak","");
       else if(type=="SNRPEAK") return Column(type,"S/Nmax","",7,prSNR,"stat.snr;phot.flux","float","col_snrmax","");
       else if(type=="X1") return Column(type,"X1","",4,0,"pos.cartesian.x;stat.min","int","col_x1","");
@@ -320,6 +321,7 @@ namespace duchamp
       newset.addColumn( Column("FINT") );
       newset.addColumn( Column("FINTERR") );
       newset.addColumn( Column("FTOT") );
+      newset.addColumn( Column("FTOTERR") );
       newset.addColumn( Column("FPEAK") );
       newset.addColumn( Column("SNRPEAK") );
       newset.addColumn( Column("X1") );
@@ -602,6 +604,22 @@ namespace duchamp
 	tempwidth = int( log10(fabs(val)) + 1) + newset.column("FTOT").getPrecision() + 2;
 	if(val<0) tempwidth++;
 	for(int i=newset.column("FTOT").getWidth();i<tempwidth;i++) newset.column("FTOT").widen();
+
+	// eF_tot -- check width & units
+	if(obj->getIntegFluxError()>0.){
+	    newset.column("FTOTERR").setUnits("[" + head.getFluxUnits() + "]");
+	    tempwidth = newset.column("FTOTERR").getUnits().size() + 1;
+	    for(int i=newset.column("FTOTERR").getWidth();i<tempwidth;i++) newset.column("FTOTERR").widen();
+	    valD = obj->getTotalFluxError();
+	    if((fabs(valD) < 1.)// &&(valD>0.)
+		){
+		int minprec = int(fabs(log10(fabs(valD))))+2;
+		for(int i=newset.column("FTOTERR").getPrecision();i<minprec;i++) newset.column("FTOTERR").upPrec();
+	      }
+	    tempwidth = int( log10(fabs(valD)) + 1) + newset.column("FTOTERR").getPrecision() + 2;
+	    if(valD<0) tempwidth++;
+	    for(int i=newset.column("FTOTERR").getWidth();i<tempwidth;i++) newset.column("FTOTERR").widen();
+	}
 
 	// F_peak
 	newset.column("FPEAK").setUnits("[" + head.getFluxUnits() + "]");

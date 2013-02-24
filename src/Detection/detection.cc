@@ -54,6 +54,7 @@ namespace duchamp
     this->zSubOffset = 0;
     this->haveParams = false;
     this->totalFlux = 0.;
+    this->eTotalFlux = 0.;
     this->peakFlux = 0.;
     this->intFlux = 0.;
     this->eIntFlux = 0.;
@@ -130,6 +131,7 @@ namespace duchamp
     this->zSubOffset   = d.zSubOffset;
     this->haveParams   = d.haveParams;
     this->totalFlux    = d.totalFlux;
+    this->eTotalFlux   = d.eTotalFlux;
     this->intFlux      = d.intFlux;
     this->eIntFlux     = d.eIntFlux;
     this->peakFlux     = d.peakFlux;

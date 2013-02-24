@@ -1318,6 +1318,7 @@ namespace duchamp
 
 	if(!this->par.getFlagUserThreshold()){
 	    obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+	    obj->setTotalFluxError( sqrt(float(obj->getSize())) * this->Stats.getSpread() );
 	    obj->setIntegFluxError( sqrt(double(obj->getSize())) * this->Stats.getSpread() );
 	    if(!this->head.is2D()){
 		double x=obj->getXcentre(),y=obj->getYcentre(),z1=obj->getZcentre(),z2=z1+1;
@@ -1533,6 +1534,7 @@ namespace duchamp
     this->fullCols = getFullColSet(*(this->objectList), this->head);
 
     if(this->par.getFlagUserThreshold()){
+	this->fullCols.removeColumn("FTOTERR");
 	this->fullCols.removeColumn("SNRPEAK");
 	this->fullCols.removeColumn("FINTERR");
     }

@@ -56,15 +56,21 @@ namespace duchamp {
     {
       this->removeColumn(col.type());
       this->itsColumnList.push_back(col);
-      this->itsTypeMap[col.type()] = this->itsColumnList.size() - 1;
-
+      // this->itsTypeMap[col.type()] = this->itsColumnList.size() - 1;
+      this->setMap();
     }
+
+      void CatalogueSpecification::setMap()
+      {
+	  for(size_t i=0;i<this->itsColumnList.size();i++)
+	      this->itsTypeMap[this->itsColumnList[i].type()] = i;
+      }
 
     void CatalogueSpecification::removeColumn(std::string type)
     {
-      if( this->itsTypeMap.find(type) != this->itsTypeMap.end() ) // already in list
-	this->itsColumnList.erase( this->itsColumnList.begin()+this->itsTypeMap[type] );
-
+	if( this->itsTypeMap.find(type) != this->itsTypeMap.end() ) // already in list
+	    this->itsColumnList.erase( this->itsColumnList.begin()+this->itsTypeMap[type] );
+	this->setMap();
     }
 
       bool CatalogueSpecification::hasColumn(std::string type)

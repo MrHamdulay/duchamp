@@ -52,6 +52,7 @@ namespace duchamp {
       Column *pCol(int i){return &(itsColumnList[i]);};
       void removeColumn(std::string type);
       bool hasColumn(std::string type);
+      void setMap();
       size_t size(){return itsColumnList.size();};
       
       void outputTableHeader(std::ostream &stream, Catalogues::DESTINATION tableType, bool flagWCS);
