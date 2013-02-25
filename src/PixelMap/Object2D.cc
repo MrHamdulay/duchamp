@@ -336,11 +336,13 @@ namespace PixelInfo
     this->posAngle = 0.5 * atan2( 2*sumxy , (sumxx-sumyy) ) + M_PI/2.;
     this->posAngle = fmod(this->posAngle, 2.*M_PI);
     if(this->posAngle > M_PI) this->posAngle -= 2.*M_PI;
-    result = ( (sumxx + sumyy + sqrt((sumxx-sumyy)*(sumxx-sumyy) + 4.*sumxy*sumxy)) > 0 );
-    result = result && ( (sumxx + sumyy - sqrt((sumxx-sumyy)*(sumxx-sumyy) + 4.*sumxy*sumxy)) > 0 );
+    double plusroot = sumxx + sumyy + sqrt((sumxx-sumyy)*(sumxx-sumyy) + 4.*sumxy*sumxy);
+    result = ( plusroot > 0 );
+    double minusroot = sumxx + sumyy - sqrt((sumxx-sumyy)*(sumxx-sumyy) + 4.*sumxy*sumxy);
+    result = result && ( minusroot > 0 );
     if(result){
-      this->majorAxis = sqrt( 2. * (sumxx + sumyy + sqrt((sumxx-sumyy)*(sumxx-sumyy) + 4.*sumxy*sumxy)) );
-      this->minorAxis = sqrt( 2. * (sumxx + sumyy - sqrt((sumxx-sumyy)*(sumxx-sumyy) + 4.*sumxy*sumxy)) );
+      this->majorAxis = sqrt( 2. * plusroot );
+      this->minorAxis = sqrt( 2. * minusroot );
       this->minorAxis = std::max(this->minorAxis,0.1);
     }
     else this->majorAxis = this->minorAxis = 0.;

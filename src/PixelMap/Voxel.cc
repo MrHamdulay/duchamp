@@ -109,7 +109,7 @@ namespace PixelInfo
   }
   //--------------------------------------------------------------------
 
-  size_t Voxel::arrayIndex(size_t *dim)
+  size_t Voxel::arrayIndex(const size_t *dim)
   {
     ///  Return the index value corresponding to the Voxel for an array with dimensions given by dim.
     ///  \param dim Array of dimension values (ie. lengths of x, y and z dimensions)

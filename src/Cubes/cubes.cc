@@ -1285,7 +1285,6 @@ namespace duchamp
     std::vector<Detection>::iterator obj;
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
       obj->calcFluxes(this->array, this->axisDim);
-      obj->findShape(this->array,this->axisDim,this->head);
       if(!this->par.getFlagUserThreshold())
 	obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
       else

@@ -479,13 +479,6 @@ namespace duchamp
 	this->decWidth  = angularSeparation(world[0],world[10],
 					    world[0],world[13]) * 60.;
 
-	Object2D spatMap = this->getSpatialMap();
-	std::pair<double,double> axes = spatMap.getPrincipleAxes();
-	this->majorAxis = std::max(axes.first,axes.second) * head.getAvPixScale();
-	this->minorAxis = std::min(axes.first,axes.second) * head.getAvPixScale();
-	this->posang = spatMap.getPositionAngle() * 180. / M_PI;
-	//	std::cerr << majorAxis << " " << minorAxis << " " << posang << "   " << majorAxis/head.getAvPixScale() << " " << minorAxis/head.getAvPixScale() << " " << posang*M_PI/180.<<"\n";
-
 	this->name = head.getIAUName(this->ra, this->dec);
 	this->vel    = head.specToVel(world[2]);
 	this->velMin = head.specToVel(world[5]);
@@ -801,15 +794,17 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::findShape(float *fluxArray, size_t *dim, FitsHeader &head)
+  void Detection::findShape(const float *fluxArray, const size_t *dim, FitsHeader &head)
   {
 
-      const int border=1; // include one pixel either side in each direction
-      size_t xzero = size_t(std::max(0L,this->xmin-border));
-      size_t yzero = size_t(std::max(0L,this->ymin-border));
-      size_t xdim=dim[0];
-      size_t ydim=dim[1];
-      size_t spatsize = xdim*ydim;
+      const size_t border=1; // include one pixel either side in each direction
+      size_t xmin = size_t(std::max(size_t(0),this->xmin-border));
+      size_t ymin = size_t(std::max(size_t(0),this->ymin-border));
+      size_t xmax = size_t(std::min(dim[0]-1,this->xmax+border));
+      size_t ymax = size_t(std::min(dim[1]-1,this->ymax+border));
+      size_t xsize = xmax-xmin+1;
+      size_t ysize = ymax-ymin+1;
+      size_t spatsize = xsize*ysize;
 
       float *momentMap = new float[spatsize];
       for(size_t i=0;i<spatsize;i++) momentMap[i]=0.;
@@ -817,52 +812,61 @@ namespace duchamp
       std::vector<Voxel> voxlist = this->getPixelSet();
       float delta = head.isWCS() ? fabs(head.WCS().cdelt[head.WCS().spec]) : 1.;
       for(std::vector<Voxel>::iterator v=voxlist.begin();v<voxlist.end();v++){
-	  size_t spatpos=(v->getX()-xzero) + (v->getY()-yzero)*xdim;
-	  momentMap[spatpos] += fluxArray[v->arrayIndex(dim)] * delta;
+	  size_t spatpos=(v->getX()-xmin) + (v->getY()-ymin)*xsize;
+	  if(spatpos>=0 && spatpos<spatsize)
+	      momentMap[spatpos] += fluxArray[v->arrayIndex(dim)] * delta;
+	  else DUCHAMPTHROW("findShape","Memory overflow - accessing spatpos="<<spatpos<<" when spatsize="<<spatsize);
       }
 
       /*
-      bool ellipseGood = this->spatialMap.findEllipse(true, momentMap, xdim, ydim, xzero, yzero, this->xCentroid, this->yCentroid);  // try first by weighting the pixels by their flux
-      if(!ellipseGood) {
-      	ellipseGood = this->spatialMap.findEllipse(false, momentMap, xdim, ydim, xzero, yzero, this->xCentroid, this->yCentroid); // if that fails, remove the flux weighting
+	bool ellipseGood = this->spatialMap.findEllipse(true, momentMap, xsize, ysize, xmin, ymin, this->xCentroid, this->yCentroid);  // try first by weighting the pixels by their flux
+	if(!ellipseGood) {
+      	ellipseGood = this->spatialMap.findEllipse(false, momentMap, xsize, ysize, xmin, ymin, this->xCentroid, this->yCentroid); // if that fails, remove the flux weighting
       	this->flagText += "W";
-      }
-      if(ellipseGood){
+	}
+	if(ellipseGood){
 	// multiply axes by 2 to go from semi-major to FWHM...
       	this->majorAxis = this->spatialMap.major() * head.getAvPixScale() * 2.;
       	this->minorAxis = this->spatialMap.minor() * head.getAvPixScale() * 2.;
       	this->posang = this->spatialMap.posAng() * 180. / M_PI;
-      }
+	}
       */
-//      size_t dim[2]; dim[0]=xdim; dim[1]=ydim;
-      Image *smlIm = new Image(dim);
-      smlIm->saveArray(momentMap,xdim*ydim);
+      size_t smldim[2]; smldim[0]=xsize; smldim[1]=ysize;
+      Image *smlIm = new Image(smldim);
+      smlIm->saveArray(momentMap,spatsize);
       smlIm->setMinSize(1);
-      float max = *std::max_element(momentMap,momentMap+xdim*ydim);
+      float max = *std::max_element(momentMap,momentMap+spatsize);
       smlIm->stats().setThreshold(max/2.);
       std::vector<Object2D> objlist=smlIm->findSources2D();
-      //      std::cerr << max << " " << smlIm->stats().getThreshold() << " " << objlist.size()<<"\n";
+      // std::cerr << max << " " << smlIm->stats().getThreshold() << " " << objlist.size()<<"\n";
 
       Object2D combined;
       for(size_t i=0;i<objlist.size();i++) combined = combined + objlist[i];
-      bool ellipseGood = combined.findEllipse(true, momentMap, xdim, ydim, 0,0, this->getXcentre()-xzero, this->getYcentre()-yzero); // try first by weighting the pixels by their flux
+      bool ellipseGood = combined.findEllipse(true, momentMap, xsize, ysize, 0,0, this->getXcentre()-xmin, this->getYcentre()-ymin); // try first by weighting the pixels by their flux
       if(!ellipseGood) {
-	ellipseGood = combined.findEllipse(false, momentMap, xdim, ydim, 0,0, this->getXcentre()-xzero, this->getYcentre()-yzero); // if that fails, remove the flux weighting
-	this->flagText += "W";
+	  ellipseGood = combined.findEllipse(false, momentMap, xsize, ysize, 0,0, this->getXcentre()-xmin, this->getYcentre()-ymin); // if that fails, remove the flux weighting
+	  this->flagText += "W";
       }
       if(ellipseGood){
-	// multiply axes by 2 to go from semi-major to FWHM...
-	float scale=head.getShapeScale();
-	//	if(fabs(head.WCS().cdelt[head.WCS().lng])<0.01) scale=60.;
-	//	else  if(fabs(head.WCS().cdelt[head.WCS().lng])<5.e-4) scale=3600;
-	this->majorAxis = combined.major() * head.getAvPixScale() * 2. * scale;
-	this->minorAxis = combined.minor() * head.getAvPixScale() * 2. * scale;
-	this->posang =    combined.posAng() * 180. / M_PI;
+	  // multiply axes by 2 to go from semi-major to FWHM...
+	  float scale=head.getShapeScale();
+	  this->majorAxis = combined.major() * head.getAvPixScale() * 2. * scale;
+	  this->minorAxis = combined.minor() * head.getAvPixScale() * 2. * scale;
+	  this->posang =    combined.posAng() * 180. / M_PI;
 
-	//	std::cerr << "*** " << combined.getSize()<< " " << majorAxis<<" " << minorAxis << " " << posang<< "\n";
+	  // std::cerr << "*** " << combined.getSize()<< " " << majorAxis<<" " << minorAxis << " " << posang<< "\n";
       }
+      else {
+	  Object2D spatMap = this->getSpatialMap();
+	  std::pair<double,double> axes = spatMap.getPrincipleAxes();
+	  this->majorAxis = std::max(axes.first,axes.second) * head.getAvPixScale();
+	  this->minorAxis = std::min(axes.first,axes.second) * head.getAvPixScale();
+	  this->posang = spatMap.getPositionAngle() * 180. / M_PI;
+      }
+      
 
       delete smlIm;
+      delete [] momentMap;
   }
 
   //--------------------------------------------------------------------

@@ -101,7 +101,7 @@ namespace duchamp
     void calcVelWidths(size_t zdim, std::map<Voxel,float> voxelMap, FitsHeader &head);
 
     /// @brief Calculate the spatial (moment-0) shape
-    void findShape(float *momentMap, size_t *dim, FitsHeader &head);
+    void findShape(const float *momentMap, const size_t *dim, FitsHeader &head);
 
     /// @brief Set the values of the axis offsets from the cube. 
     void   setOffsets(Param &par); 
