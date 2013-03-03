@@ -382,6 +382,8 @@ namespace duchamp
     void        setHead(FitsHeader F){head = F;};
     /// @brief Provide a reference to the FitsHeader object.
     FitsHeader& header(){ FitsHeader &h = head; return h; };
+    /// @brief Provide a pointer to the FitsHeader object
+    FitsHeader *pHeader(){return &head;};
 
     //-------------------------------------------
     // FITS-I/O related functions -- not in cubes.cc
