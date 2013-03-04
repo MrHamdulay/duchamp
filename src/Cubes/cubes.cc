@@ -1286,9 +1286,7 @@ namespace duchamp
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
       obj->calcFluxes(this->array, this->axisDim);
       if(!this->par.getFlagUserThreshold())
-	obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
-      else
-	obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+	  obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
     }
   }
   //--------------------------------------------------------------------
@@ -1373,10 +1371,18 @@ namespace duchamp
 	obj->calcWCSparams(this->head);
 	obj->calcIntegFlux(this->axisDim[2],bigVoxList[ct],this->head);
 	
-	if(this->par.getFlagUserThreshold())
-	  obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
-	else
+	if(!this->par.getFlagUserThreshold()){
 	  obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+	  obj->setTotalFluxError( sqrt(float(obj->getSize())) * this->Stats.getSpread() );
+	  obj->setIntegFluxError( sqrt(double(obj->getSize())) * this->Stats.getSpread() );
+	  if(!this->head.is2D()){
+	      double x=obj->getXcentre(),y=obj->getYcentre(),z1=obj->getZcentre(),z2=z1+1;
+	      double dz=this->head.pixToVel(x,y,z1)-this->head.pixToVel(x,y,z2);
+	      obj->setIntegFluxError( obj->getIntegFluxError() * fabs(dz));
+	  }
+	  if(head.needBeamSize()) obj->setIntegFluxError( obj->getIntegFluxError()  / head.beam().area() );
+	}
+
       }
       ct++;
     }  
@@ -1420,10 +1426,17 @@ namespace duchamp
 	obj->calcWCSparams(this->head);
 	obj->calcIntegFlux(this->axisDim[2],voxelMap,this->head);
 	
-	if(this->par.getFlagUserThreshold())
-	  obj->setPeakSNR( obj->getPeakFlux() / this->Stats.getThreshold() );
-	else
+	if(!this->par.getFlagUserThreshold()){
 	  obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
+	  obj->setTotalFluxError( sqrt(float(obj->getSize())) * this->Stats.getSpread() );
+	  obj->setIntegFluxError( sqrt(double(obj->getSize())) * this->Stats.getSpread() );
+	  if(!this->head.is2D()){
+	      double x=obj->getXcentre(),y=obj->getYcentre(),z1=obj->getZcentre(),z2=z1+1;
+	      double dz=this->head.pixToVel(x,y,z1)-this->head.pixToVel(x,y,z2);
+	      obj->setIntegFluxError( obj->getIntegFluxError() * fabs(dz));
+	  }
+	  if(head.needBeamSize()) obj->setIntegFluxError( obj->getIntegFluxError()  / head.beam().area() );
+	}
       }
       ct++;
     }  

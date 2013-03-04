@@ -203,8 +203,10 @@ namespace duchamp
       ss << "F\\dint\\u=" << this->intFlux << " " << this->intFluxUnits;
       ss << std::setprecision(this->fpeakPrec);
       ss << ", F\\dpeak\\u=" << this->peakFlux << " " << this->fluxUnits;
-      ss << std::setprecision(this->snrPrec);
-      ss << ", S/N\\dmax\\u=" << this->peakSNR;
+      if(this->peakSNR>0.){
+	  ss << std::setprecision(this->snrPrec);
+	  ss << ", S/N\\dmax\\u=" << this->peakSNR;
+      }
     }
     else{ 
       ss << "#" << std::setfill('0') << std::setw(3) << this->id << ": ";
@@ -212,8 +214,10 @@ namespace duchamp
       ss << "F\\dtot\\u=" << this->totalFlux << this->fluxUnits;
       ss << std::setprecision(this->fpeakPrec);
       ss << ", F\\dpeak\\u=" << this->peakFlux << this->fluxUnits;
-      ss << std::setprecision(this->snrPrec);
-      ss << ", S/N\\dmax\\u=" << this->peakSNR;
+      if(this->peakSNR>0.){
+	  ss << std::setprecision(this->snrPrec);
+	  ss << ", S/N\\dmax\\u=" << this->peakSNR;
+      }
     }
     std::string output = ss.str();
 
