@@ -83,7 +83,7 @@ int main(int argc, char * argv[])
   std::cout << cube->pars() << "\n";
 
   if(cube->pars().getFlagUsePrevious()){
-    std::cout << "Reading detections from existing log file... \n";
+    std::cout << "Reading detections from binary catalogue... \n";
     if(cube->readBinaryCatalogue() == FAILURE){
       DUCHAMPTHROW("Duchamp", "Could not read detections from log file");
       return FAILURE;

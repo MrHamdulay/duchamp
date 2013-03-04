@@ -363,6 +363,7 @@ namespace duchamp
     if(this->par.getFlagWriteBinaryCatalogue()){
       
       std::ofstream bincat(this->par.getBinaryCatalogue().c_str(), std::ios::out | std::ios::binary);
+      writeStringToBinaryFile(bincat,PACKAGE_VERSION);
       time_t now = time(NULL);
       std::string nowstr(asctime(localtime(&now)));
       writeStringToBinaryFile(bincat,nowstr);
@@ -389,6 +390,10 @@ namespace duchamp
       DUCHAMPERROR("read binary catalogue", "Could not open binary catalogue \""<<this->par.getBinaryCatalogue()<<"\".");
       return FAILURE;
     }
+    std::string bincatVersion = readStringFromBinaryFile(bincat);
+    if(bincatVersion != std::string(PACKAGE_VERSION))
+	DUCHAMPWARN("read binary catalogue","Duchamp versions don't match: Binary catalogue has " << bincatVersion << " compared to " << PACKAGE_VERSION<<". Attempting to continue, but beware!");
+
     std::string nowstr=readStringFromBinaryFile(bincat);
     if(this->par.isVerbose()) std::cout << "  Reading from binary catalogue " << this->par.getBinaryCatalogue() << " made on " << nowstr << std::flush;
     std::streampos loc=bincat.tellg();
