@@ -237,7 +237,13 @@ of two ways. The first is:
 }
 \end{quote}
 where \texttt{[FITS file]} is the file you wish to search. This method
-simply uses the default values of all parameters.
+simply uses the default values of all parameters. The flux threshold
+can be specified using the \texttt{-t [THRESHOLD]} option:
+\begin{quote}
+{\footnotesize
+\texttt{> Duchamp -f [FITS file] -t [THRESHOLD]}
+}
+\end{quote}
 
 The second method allows some determination of the parameter values by
 the user. Type:
@@ -247,13 +253,17 @@ the user. Type:
 }
 \end{quote}
 where \texttt{[parameterFile]} is a file with the input parameters,
-including the name of the cube you want to search. There are two
-example input files included with the distribution. The smaller one,
-\texttt{InputExample}, shows the typical parameters one might want to
-set. The large one, \texttt{InputComplete}, lists all possible
-parameters that can be entered, and a brief description of them. To
-get going quickly, just replace the \texttt{"your-file-here"} in the
-\texttt{InputExample} file with your image name, and type
+including the name of the cube you want to search. The \texttt{-t}
+flag can also be specified - its threshold value will override
+anything given in the parameter file.
+
+There are two example input files included with the distribution. The
+smaller one, \texttt{InputExample}, shows the typical parameters one
+might want to set. The large one, \texttt{InputComplete}, lists all
+possible parameters that can be entered, along with their default
+values, and a brief description of them. To get going quickly, just
+replace the \texttt{"your-file-here"} in the \texttt{InputExample}
+file with your image name, and type
 \begin{quote}
 {\footnotesize
 \texttt{> Duchamp -p InputExample}
@@ -271,6 +281,8 @@ false} or use the \texttt{-x} command-line option:
 \texttt{> Duchamp -x -f [FITS file]}
 }
 \end{quote}
+Note that the postscript outputs will still be produced (if required)
+-- this just affects the runtime display.
 
 The following appendices provide details on the individual parameters,
 and show examples of the output files that \duchamp produces.

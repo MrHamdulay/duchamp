@@ -3,43 +3,52 @@ Duchamp version 1.3 (...)
 
 New features:
 
-* Ability to save baseline values to a FITS file (in the same way as
-  for the reconstructed or smoothed array).
+* New source parameters:
 
-* Ability to save the moment-0 mask to a FITS file (that is, a mask
-* indicating which spatial pixels form part of the moment-0 map).
+  # Each source now has a measurement of the major & minor axis sizes,
+    along with the position angle of the major axis. The sizes are the
+    full-width at half maximum, measured from the moment-0 map. These
+    now appear in the catalogue and in the spectral plots, with the
+    ellipse drawn on the moment map cutout in the spectral plots. The
+    old measurements of w_RA & w_DEC are still made and included in
+    the full catalogue, but are no longer reported in the smaller
+    catalogue printed to screen (nor in the XML/VOTable output).
 
-* Each source now has a measurement of the major & minor axis sizes,
-  along with the position angle of the major axis. The sizes are the
-  full-width at half maximum, measured from the moment-0 map. These
-  now appear in the catalogue and in the spectral plots, with the
-  ellipse drawn on the moment map cutout in the spectral plots. The
-  old measurements of w_RA & w_DEC are still made and included in the
-  full catalogue, but are no longer reported in the smaller catalogue
-  printed to screen (nor in the XML/VOTable output).
+  # Each source also now has a measurement of the error on the
+    integrated and total fluxes. This is calculated from summing in
+    quadrature the statistical noise on each detected voxel.
 
-* Ability to create CASA region format files showing the location of
-  the detected sources. This is analogous to the Karma annotation
-  files or DS9 region files, for use with the casa viewer, but can
-  also be imported into casapy.
+* Output files - new types and changes to the way they are written:
 
-* There is an improved way to store the detected pixels for later
-  re-use. While previously the detected pixels were written as scans
-  to the logfile, and then read in when the usePrevious flag was set,
-  we now write the scans and other metadata to a binary catalogue that
-  can be read in again. Writing as a binary file leads to much better
-  compression of the data, particularly when combined with the
-  run-length encoding. It is anticipated future tools will be provided
-  to allow additional interaction with these binary catalogues.
+  # Ability to create CASA region format files showing the location of
+    the detected sources. This is analogous to the Karma annotation
+    files or DS9 region files, for use with the casa viewer, but can
+    also be imported into casapy.
 
-* There are slight changes to the format of the ASCII catalogues,
-  where lines not containing sources are prefixed with a comment
-  character '#'. This will facilitate their use in other software.
+  # Ability to save baseline values to a FITS file (in the same way as
+    for the reconstructed or smoothed array).
 
-* There is a new command-line parameter, -t, which specifies the flux
-  threshold for searching. It is designed to be used with the -f
-  option, as a quick way of searching a FITS image to a specified flux
-  level.
+  # Ability to save the moment-0 mask to a FITS file (that is, a mask
+    indicating which spatial pixels form part of the moment-0 map).
+
+  # There is an improved way to store the detected pixels for later
+    re-use. While previously the detected pixels were written as scans
+    to the logfile, and then read in when the usePrevious flag was
+    set, we now write the scans and other metadata to a binary
+    catalogue that can be read in again. Writing as a binary file
+    leads to much better compression of the data, particularly when
+    combined with the run-length encoding. It is anticipated future
+    tools will be provided to allow additional interaction with these
+    binary catalogues.
+
+  # There are slight changes to the format of the ASCII catalogues,
+    where lines not containing sources are prefixed with a comment
+    character '#'. This will facilitate their use in other software.
+
+  # There is a new command-line parameter, -t THRESH, which specifies
+    the flux threshold for searching. It is designed to be used with
+    the -f option, as a quick way of searching a FITS image to a
+    specified flux level.
 
 Bug fixes:
 

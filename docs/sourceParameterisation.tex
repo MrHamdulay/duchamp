@@ -1,0 +1,327 @@
+% -----------------------------------------------------------------------
+% outputs.tex: Section detailing the different forms of text- and
+%              plot-based output.
+% -----------------------------------------------------------------------
+% Copyright (C) 2006, Matthew Whiting, ATNF
+%
+% This program is free software; you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the
+% Free Software Foundation; either version 2 of the License, or (at your
+% option) any later version.
+%
+% Duchamp is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+% for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with Duchamp; if not, write to the Free Software Foundation,
+% Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA
+%
+% Correspondence concerning Duchamp may be directed to:
+%    Internet email: Matthew.Whiting [at] atnf.csiro.au
+%    Postal address: Dr. Matthew Whiting
+%                    Australia Telescope National Facility, CSIRO
+%                    PO Box 76
+%                    Epping NSW 1710
+%                    AUSTRALIA
+% -----------------------------------------------------------------------
+\secA{Source Parameterisation}
+\label{sec-sourceparam}
+
+Once sources have been located, numerous measurements are made so that
+they can be placed in a catalogue. This section details each of the
+source parameters, explaining what they are and how they are
+calculated. Each parameter is referred to by the heading of the
+relevant column(s) in the output source list (see
+\S\ref{sec-output}).
+
+\secB{Object ID, \texttt{Obj\#}}
+\label{sec-objectID}
+
+The ID  of the detection is an integer, simply the sequential count for the
+list. The default is ordering by increasing spectral coordinate, or channel
+number, if the WCS is not good enough to determine the spectral world
+coordinate, but this can be changed by the \texttt{sortingParam} input
+parameter. See Sec~\ref{sec-results} for details.
+
+\secB{Object Name, \texttt{Name}}
+
+This is the ``IAU''-format name of the detection, derived from the WCS
+position if available.  For instance, a source that is centred on the
+RA,Dec position 12$^h$53$^m$45$^s$, -36$^\circ$24$'$12$''$ will be
+given the name J125345$-$362412, if the epoch is J2000, or the name
+B125345$-$362412 if it is B1950. The precision of the RA and Dec
+values is determined by the pixel size, such that sufficient precision
+is used to uniquely define a position. The RA value will have one
+figure greater precision than Dec.
+
+An alternative form is used for Galactic coordinates: a source centred
+on the position ($l$,$b$) = (323.1245, 5.4567) will be called
+G323.124$+$05.457. 
+
+If the WCS is not valid (\ie is not present or does not have all the
+necessary information), the name will instead be of the form
+``ObjXXX'', where XXX is replaced with the objectID, padded
+sufficiently with zeros.
+
+\secB{Pixel locations}
+
+There are three ways in which the pixel location of the detection is
+calculated: 
+\begin{itemize}
+\item Peak: the pixel value in which the detection has its peak
+  flux. Appears in the results file under columns \texttt{X\_peak,
+    Y\_peak, Z\_peak}.
+\item Average: the average over all detected pixels. Specifically,
+  $x_\text{av}=\sum x_i / N$ and similarly for $y_\text{av}$ and
+  $z_\text{av}$. Appears in the results file under columns \texttt{X\_av,
+    Y\_av, Z\_av}.
+\item Centroid: the flux-weighted average over all detected pixels. Specifically,
+  $x_\text{cent}=\sum F_i x_i / \sum F_i$ and similarly for $y_\text{cent}$ and
+  $z_\text{cent}$. Appears in the results file under columns \texttt{X\_cent,
+    Y\_cent, Z\_cent}.
+\end{itemize}
+
+All three alternatives are calculated, and written to the results
+file, but the choice of the \texttt{pixelCentre} input parameter will
+determine which option is used for the reference values \texttt{X, Y,
+  Z}.
+
+\secB{Spatial world location, \texttt{RA/GLON, DEC/GLAT}}
+
+These are the conversion of the \texttt{X} and \texttt{Y} pixel
+positions to world coordinates (that is, the pixel position determined
+by \texttt{pixelCentre}). These will typically be Right Ascension and
+Declination, or Galactic Longitude and Galactic Latitude, but the
+actual names used in the output file will be taken from the WCS
+specification. 
+
+If there is no useful WCS, these are not calculated.
+
+\secB{Spectral world location, \texttt{VEL}}
+\label{sec-vel}
+
+The conversion of the \texttt{Z} pixel position to the spectral world
+coordinates. This is dictated by the WCS of the FITS file plus the
+input parameter \texttt{spectralType}. The name of the output column
+will come from the CTYPE of the spectral axis (or
+\texttt{spectralType} -- see \S\ref{sec-wcs}), specifically , the
+  4-character S-type code) (\ie not necessarily ``VEL'')
+
+The spectral units can be specified by the user, using the input
+parameter \texttt{spectralUnits} (enter it as a single string with no
+spaces). The default value comes from the FITS header. 
+
+\secB{Spatial size, \texttt{MAJ, MIN, PA}}
+\label{sec-shape}
+
+The spatial size of the detection is measured from the moment-0 map
+(in the case of three-dimensional data) or the two-dimensional image,
+and is parameterised by the FWHM of the major and minor axes, plus the
+position angle of the major axis.
+
+The method for doing this is is to form the moment-0 map (if
+necessary), select all pixels greater than half the maximum, then
+calculate the parameters $a$ (major FWHM), $b$ (minor FWHM) and
+$\theta$ (position angle) according to 
+\begin{eqnarray*}
+\frac{1}{2} a^2  &= & S_{xx} + S_{yy} + \sqrt{ (S_{xx} -
+  S_{yy})^2 + 4 (S_{xy})^2}\\
+\frac{1}{2} b^2  &= & S_{xx} + S_{yy} - \sqrt{ (S_{xx} -
+  S_{yy})^2 + 4 (S_{xy})^2}\\
+\tan 2\theta &= &\frac{2 S_{xy}}{S_{xx} - S_{yy}}
+\end{eqnarray*}
+where the sums $S_{xx}$, $S_{yy}$ and $S_{xy}$ are calculated in one
+of two ways. First, the algorithm tries to weight each pixel by its
+flux:
+\begin{eqnarray*}
+S_{xx} &= &\sum F_i x_i^2 / \sum F_i\\
+S_{yy} &= &\sum F_i y_i^2 / \sum F_i\\
+S_{xy} &= &\sum F_i x_i y_i / \sum F_i
+\end{eqnarray*}
+Mostly, this will work. But there can be situations where the
+expression $S_{xx}-S_{yy} + 4 S_{xy}^2 < 0$, in which case the
+calculation of $a$ and $b$ will fail. These situations are often where
+the moment-0 map is very disordered with no clear primary axis. 
+
+In this case, the calculation of the sums is redone without the flux
+weighting ($S_{xx} = \sum x_i^2$ etc), and the shape parameters
+recalculated. A \textbf{W} flag will be recorded for the detection to
+indicate that the weighting failed: see Sec~\ref{sec-flags} below.
+
+The position angle will be measured in the usual astronomical sense,
+in degrees East of North. The major and minor axes will be specified
+in angular units (assuming the WCS allows this), with the units chosen
+such that the numbers are not too small.
+
+The algorithm will first try to calculate $a,b,\theta$ by weighting
+
+
+\secB{Spatial extent, \texttt{w\_RA/w\_GLON, w\_DEC}}
+
+The extent of the detection in each of the spatial directions is also
+calculated. This is simply the angular width of the detection (in
+arcmin), converting the minimum and maximum values of $x$ (usually RA)
+and $y$ (Dec) to the world coordinates.
+
+\secB{Spectral width, \texttt{w\_50, w\_20, w\_VEL}}
+
+Several measures of the spectral extent of a detection are
+provided. The simplest is the full spectral width, calculated as for
+the spatial extents above. This is referred to as \texttt{w\_VEL}, but
+need not be velocity. It is obtained by taking the difference in world
+coordinates of the minimum and maximum values of $z$. The units are as
+described in \S\ref{sec-vel}.
+
+Two other measures of the spectral width are provided, \texttt{w\_50}
+and \texttt{w\_20}, being the width at 50\% and 20\% of the peak
+flux. These are measured on the integrated spectrum (\ie the spectra
+of all detected spatial pixels summed together), and are defined by
+starting at the outer spectral extent of the object (the highest and
+lowest spectral values) and moving in or out until the required flux
+threshold is reached. The widths are then just the difference between
+the two values obtained. If the detection threshold is greater than
+20\% or 50\% of the peak, then these values will be the same as
+\texttt{w\_VEL}.
+
+\secB{Source flux, \texttt{F\_tot, F\_int, F\_peak}}
+
+%% THE FOLLOWING IS FROM THE MNRAS PAPER
+%The flux of the source is given by the peak flux and both the ``total
+%flux'', defined above as $F_T$, and the ``integrated flux'' $F_I$, or
+%the total flux integrated over the spectral extent and corrected for
+%the beam:
+%\[
+%F_I = \frac{\sum F_i \Delta v_i}{B}
+%\]
+%where $B=\pi \alpha \beta / 4 \ln(2)$ is the area of a beam of major
+%and minor axes $\alpha$ and $\beta$ (in pixels), and $\Delta v_i$ is
+%the spectral width of each voxel.
+
+There are two measurements of the total flux of the detection. The
+simplest, \texttt{F\_tot}, is just the sum of all detected pixels in
+the image: $F_\text{tot}=\sum F_i$. The alternative, \texttt{F\_int},
+is the flux integrated over the detected pixels, taking into account
+the spectral range. For the case of velocity, the expression is
+$F_\text{int} = \sum F_i \Delta v_i$, where $\Delta v_i$ is the
+velocity width of the channel containing pixel $i$. The actual units
+of the spectral range are as described in \S\ref{sec-vel}.
+
+When the cube brightness units are quoted per beam (\eg Jy/beam), then
+the integrated flux \texttt{F\_int} includes a correction for
+this. This involves dividing by the integral over the beam. This is
+calculated using the BMAJ, BMIN \& BPA header keywords from the FITS
+file. BMAJ and BMIN are assumed to be the full-width at half maximum
+(FWHM) in the major and minor axis directions of a Gaussian beam. The
+integral is calculated as follows: the functional form of a 2D
+elliptical Gaussian can be written as
+$\exp(-((x^2/2\sigma_x^2)+(y^2/2\sigma_y^2)))$, and the FWHM in a
+given direction is then $f=2\sqrt{2\ln2}\sigma$. Then, $F_\text{int} =
+C \sum F_i \Delta v_i$, where 
+\[
+C = \int\exp\left(-\left(\frac{x^2}{2\sigma_x^2}+\frac{y^2}{2\sigma_y^2}\right)\right)
+= 2\pi\sigma_x\sigma_y
+=\frac{\pi f_x f_y}{4\ln2}
+\]
+provides the correction factor to go from units of Jy/beam to Jy.
+
+If the FITS file does not have the beam information, the user can
+either:
+\begin{enumerate}
+\item Specify the FWHM of the beam in pixels (assuming a circular
+  beam) via the parameter \texttt{beamFWHM}.
+\item Specify the area of the beam, again in pixels, via the parameter
+  \texttt{beamArea}\footnote{Note that this is equivalent to the old
+    parameter \texttt{beamSize}, which was highlighted as being
+    ambiguous.}. This should be the value given by the equation above.
+\end{enumerate}
+If both are given, \texttt{beamFWHM} takes precendence. If neither are
+given, and there is no beam information in the header, then no
+correction to the integrated flux is made (and so it will stay in
+units of Jy/beam or equivalent).
+
+Note that these parameters are measured using \textit{only the
+  detected pixels}. The summing of the flux will not include voxels
+that fall below the detection (or growth) threshold -- which is in
+accord with the definition of the threshold as dividing source and
+non-source voxels. If the threshold is not low enough, this will bias
+the measurement of the fluxes. This applies to all parameters (with
+the exception of the \texttt{w\_50} and \texttt{w\_20} widths, which
+are measured from the integrated spectrum, including channels not
+necessarily forming part of the detection).
+
+Finally, the peak flux \texttt{F\_peak} is simply the maximum value of
+the flux over all the detected pixels.
+
+
+\secB{Error on total/integrated flux, \texttt{eF\_tot, eF\_int}}
+
+Both \texttt{F\_tot} and \texttt{F\_int} can also have their
+associated error calculated (\texttt{eF\_tot} and \texttt{eF\_int}
+respectively). This is the random error due to the noise in the image,
+and is simply the sum in quadrature of the noise on each of the
+voxels, and, in the case of \texttt{F\_int} multiplied by the spectral
+width and corrected for the beam if necessary. Since we assume a
+constant noise level in the image ($\sigma_i=\sigma\  \forall i$), we
+have:
+\begin{eqnarray*}
+eF_\text{int} &= & \sqrt{\sum\sigma_i^2} \\&= &\sigma \sqrt{N}\\
+eF_\text{tot} &= & \sqrt{\sum C^2\sigma_i^2 \Delta v_i^2} \\&= &C \sigma
+\sqrt{N} \Delta v \text{ (for the case of $\Delta v_i = \Delta v$)}
+\end{eqnarray*}
+In the case that a flux threshold is provided, these quantities are
+not calculated, since we don't measure the image noise
+statistics. 
+
+
+\secB{Peak signal-to-noise, \texttt{S/Nmax}}
+
+This parameter converts the peak flux to a signal-to-noise value,
+based on the measured noise level in the image. As for the error
+quantities above, if no noise is measured (\ie a flux threshold is
+provided by the user), then this is not calculated.
+
+\secB{Pixel ranges, \texttt{X1, X2, Y1, Y2, Z1, Z2}}
+
+These quantities give the range of pixel values spanned by the
+detection in each of the three axes. \texttt{X1, Y1, Z1} give the
+minimum pixel in each direction, while \texttt{X2, Y2, Z2} give the
+maximum pixel.
+
+\secB{Size, \texttt{Npix}}
+
+The number of detected pixels that make up the detection 
+
+\secB{Warning Flags, \texttt{Flag}}
+\label{sec-flags}
+
+The detection can have warning flags recorded, to highlight potential
+issues:
+\begin{itemize}
+\item \textbf{E} -- The detection is next to the spatial edge of the
+  image, meaning either the limit of the pixels, or the limit of the
+  non-BLANK pixel region.
+\item \textbf{S} -- The detection lies at the edge of the spectral
+  region.
+\item \textbf{M} -- The detection is adjacent to, or overlaps the
+  ``Milky Way'' range of channels (see \S\ref{sec-MW}).
+\item \textbf{N} -- The total flux, summed over all the (non-BLANK)
+  pixels in the smallest box that completely encloses the detection,
+  is negative. Note that this sum is likely to include non-detected
+  pixels. It is of use in pointing out detections that lie next to
+  strongly negative pixels, such as might arise due to interference --
+  the detected pixels might then also be due to the interference, so
+  caution is advised.
+\item \textbf{W} -- The weighting of fluxes in the shape calculation
+  (Sec~\ref{sec-shape}) failed, so the unweighted calculation was
+  used. This likely indicates some very disordered shape for the
+  moment-0 map.
+\end{itemize}
+In the absence of any of these flags, a \textbf{-} will be recorded.
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Guide"
+%%% End: 

@@ -100,7 +100,8 @@ went wrong.
 \label{sec-results}
 
 Finally, we get to the results -- the reason for running \duchamp in
-the first place. Once the detection list is finalised, it is sorted
+the first place. Once the detection list is finalised and
+parameterised according to \S\ref{sec-sourceparam}, it is sorted
 according to the value of the \texttt{sortingParam}. This can take the
 value ``xvalue'', ``yvalue'', ``zvalue'', ``ra'', ``dec'', ``vel'',
 ``w50'', ``iflux'' (for integrated flux), or ``pflux'' (for peak
@@ -111,16 +112,37 @@ position equivalent is used (``ra'' is replaced by ``xvalue'', ``dec''
 by ``yvalue'', ``vel'' and ``w50'' by ``zvalue''). The sense of the
 sorting will be increasing value with position in the list. To sort in
 the opposite sense, prepend the parameter name with a '-' (\eg
-``-vel'' instead of ``vel''). The results are then printed to the
-screen and to the output file, given by the \texttt{OutFile}
-parameter.
+``-vel'' instead of ``vel''). The object ID number
+(\S\ref{sec-objectID}) is determined by the order of the list
+\emph{after} this sorting, so sorting by a different parameter will
+result in a different object ID for the same object.
 
-The output consists of two sections. First, a list of the parameters
-are printed to the output file, for future reference. Next, the
-detection threshold that was used is given, so comparison can be made
-with other searches. The statistics estimating the noise parameters
-are given (see \S\ref{sec-stats}). Thirdly, the number of detections
-are reported.
+The results are then printed to the screen and to the output file,
+given by the \texttt{OutFile} parameter. The output file will contain
+all calculated parameters, as described in
+\S\ref{sec-sourceparam}. The results list printed to the screen,
+however, will leave out certain columns: 
+\begin{itemize}
+\item The spatial extent columns \texttt{w\_RA \& w\_DEC}.
+\item The \texttt{w\_20} and \texttt{w\_VEL} spectral width columns.
+\item The total flux \texttt{F\_tot} (unless there is no good WCS, in
+  which case it is printed instead of \texttt{F\_int}), and the errors
+  on the total and integrated fluxes \texttt{eF\_tot, eF\_int}.
+\item The explicit columns for the average, centroid and peak pixel
+  locations. The only pixel location columns printed are \texttt{X, Y,
+  Z}, which are determined via the \texttt{pixelCentre} input
+parameter.
+\item \textit{If the WCS is no good}, the world-coordinate columns
+  \texttt{RA, DEC, VEL, F\_int} will not be printed either.
+\end{itemize}
+
+The output file consists of two sections. The first section contains
+the metadata for the search. First, a list of the parameters are
+printed to the output file, for future reference. Next, the detection
+threshold that was used is given, so comparison can be made with other
+searches. The statistics estimating the noise parameters are given
+(see \S\ref{sec-stats}). Thirdly, the number of detections are
+reported.
 
 All this information, known as the ``header'', can either be written
 to the start of the output file (denoted by the parameter
@@ -129,174 +151,37 @@ detections. This second option is activated by the parameter
 \texttt{flagSeparateHeader}, and the information is written to the
 file given by \texttt{HeaderFile}.
 
-The most interesting part, however, is the list of detected
-objects. This list, an example of which can be seen in
-Appendix~\ref{app-output}, contains the following columns (note that
-the title of the columns depending on WCS information will depend on
-the details of the WCS projection: they are shown below for the
-Equatorial and Galactic projection cases).
+The second part of the file, however, contains the most interesting
+part --  the list of detected objects. This is written as an ASCII
+table, properly spaced so that it is readable. An example is shown in
+Appendix~\ref{app-output}. 
 
-\begin{Lentry}
-\item[{Obj\#}] The ID number of the detection (simply the
-  sequential count for the list, which is ordered by increasing
-  velocity, or channel number, if the WCS is not good enough to find
-  the velocity).
-\item[{Name}] The ``IAU''-format name of the detection (derived from the
-  WCS position -- see below for a description of the format).
-\item[{X,Y,Z}] The ``centre'' pixel position, determined by the input
-  parameter \texttt{pixelCentre}.
-\item[{RA/GLON}] The Right Ascension or Galactic Longitude of the centre
-  of the object.
-\item[{DEC/GLAT}] The Declination or Galactic Latitude of the centre of
-  the object.
-\item[{VEL}] The mean spectral coordinate of the object [units given by the
-  \texttt{spectralUnits} parameter]. The actual values here will
-  depend on the WCS of the FITS file, and the name of the column will
-  come from the CTYPE of the spectral axis (specifically, the
-  4-character S-type code).
-\item[{w\_RA/w\_GLON}] The width of the object in Right Ascension or
-  Galactic Longitude (depending on FITS coordinates) [arcmin].
-\item[{w\_DEC/w\_GLAT}] The width of the object in Declination Galactic
-  Latitude [arcmin].
-\item[{w\_50}] The spectral width of the detection at 50\% of the peak
-  flux (the measured full-width at half-maximum, FWHM), in the
-  appropriate spectral units [see note below].
-\item[{F\_int}] The integrated flux over the object, in the units of
-  flux times velocity, corrected for the beam if necessary. See below
-  for a discussion on this correction.
-\item[{F\_peak}] The peak flux over the object, in the units of flux.
-\item[{S/Nmax}] The signal-to-noise ratio at the peak pixel.
-\item[{X1, X2}] The minimum and maximum X-pixel coordinates.
-\item[{Y1, Y2}] The minimum and maximum Y-pixel coordinates.
-\item[{Z1, Z2}] The minimum and maximum Z-pixel coordinates.
-\item[{Npix}] The number of voxels (\ie distinct $(x,y,z)$ coordinates)
-  in the detection.
-\item[{Flag}] Whether the detection has any warning flags (see below).
-\end{Lentry}
+The user can specify the precision used to display the flux, spectral
+location/width and S/Nmax values, by using the input parameters
+\texttt{precFlux}, \texttt{precVel} and \texttt{precSNR}
+respectively. These values apply to the tables written to the screen
+and to the output file, as well as for the VOTable (see below).
 
-These parameters are written to the screen during execution. There are
-alternative ways of calculating the total flux, the position and
-velocity width, however, and so additional parameters are written to
-the output file:
-\begin{Lentry}
-\item[{w\_20}] The spectral width of the detection at 20\% of the peak
-  flux, in spectral units [see note below].
-\item[{w\_VEL}] The full spectral width of the detection (max channel
-  $-$ min channel, in the appropriate spectral units).
-\item[{F\_tot}] The sum of the flux values of all detected voxels.
-\item[{X\_av, Y\_av, Z\_av}] The average pixel value in each
-  axis direction \ie X\_av is the average of the $x$-values of all
-  pixels in the detection.
-\item[{X\_cent, Y\_cent, Z\_cent}] The centroid position, being
-  the flux-weighted average of the pixels.
-\item[{X\_peak, Y\_peak, Z\_peak}] The location of the pixel
-  containing the peak flux value.
-\end{Lentry}
 
-The velocity width of the detection is calculated at 50\% and 20\% of
-the peak flux, as well as the full detected width (if the detection
-threshold is greater than 20\% or 50\% of the peak, then these values
-will be the same as \texttt{w\_VEL}. The type of position value given
-in the \texttt{X, Y, Z} columns in the screen output is determined by
-the \texttt{pixelCentre} parameter. All three alternatives are shown
-in the output file.
-
-The user can specify the precision used to display the flux, velocity
-and S/Nmax values, by using the input parameters \texttt{precFlux},
-\texttt{precVel} and \texttt{precSNR} respectively. These values apply
-to the tables written to the screen and to the output file, as well as
-for the VOTable (see below).
-
-The \texttt{Name} is derived from the WCS position. For instance, a
-source that is centred on the RA,Dec position 12$^h$53$^m$45$^s$,
--36$^\circ$24$'$12$''$ will be given the name J125345$-$362412, if the
-epoch is J2000, or the name B125345$-$362412 if it is B1950. The
-precision of the RA and Dec values is determined by the pixel size,
-such that sufficient precision is used to uniquely define a
-position. The RA value will have one figure greater precision than
-Dec. An alternative form is used for Galactic coordinates: a source
-centred on the position ($l$,$b$) = (323.1245, 5.4567) will be called
-G323.124$+$05.457. If the WCS is not valid (\ie is not present or does
-not have all the necessary information), the \texttt{Name, RA, DEC,
-  VEL} and related columns are not printed, but the pixel coordinates
-are still provided.
-
-The velocity units can be specified by the user, using the input
-parameter \texttt{spectralUnits} (enter it as a single string with no
-spaces). The default value comes from the FITS header. These units are
-also used to give the units of integrated flux.
-
-When the cube brightness units are quoted per beam (\eg Jy/beam), then
-the integrated flux \texttt{F\_int} includes a correction for
-this. This involves dividing by the integral over the beam. This is
-calculated using the BMAJ, BMIN \& BPA header keywords from the FITS
-file. BMAJ and BMIN are assumed to be the full-width at half maximum
-(FWHM) in the major and minor axis directions of a Gaussian beam. The
-integral is calculated as follows: the functional form of a 2D
-elliptical Gaussian can be written as
-$\exp(-((x^2/2\sigma_x^2)+(y^2/2\sigma_y^2)))$, and the FWHM in a
-given direction is then $f=2\sqrt{2\ln2}\sigma$. Then, 
-\[
-\int
-\exp\left(-\left(\frac{x^2}{2\sigma_x^2}+\frac{y^2}{2\sigma_y^2}\right)\right)
-= 2\pi\sigma_x\sigma_y
-=\frac{\pi f_x f_y}{4\ln2}
-\]
-provides the correction factor to go from units of Jy/beam to Jy. 
-
-If the FITS file does not have the beam information, the user can
-either:
-\begin{enumerate}
-\item Specify the FWHM of the beam in pixels (assuming a circular
-  beam) via the parameter \texttt{beamFWHM}.
-\item Specify the area of the beam, again in pixels, via the parameter
-  \texttt{beamArea}\footnote{Note that this is equivalent to the old
-    parameter \texttt{beamSize}, which was highlighted as being
-    ambiguous.}. This should be the value given by the equation above.
-\end{enumerate}
-If both are given, \texttt{beamFWHM} takes precendence. If neither are
-given, and there is no beam information in the header, then no
-correction to the integrated flux is made (and so it will stay in
-units of Jy/beam or equivalent).
-
-If the WCS is absent or not sufficiently specified, then all columns
-from \texttt{RA/GLON} to \texttt{w\_VEL} will be left blank. Also,
-\texttt{F\_int} will be replaced with the more simple \texttt{F\_tot}.
-
-The \texttt{Flag} column contains any warning flags, such as:
-\begin{itemize}
-\item \textbf{E} -- The detection is next to the spatial edge of the image,
-meaning either the limit of the pixels, or the limit of the non-BLANK
-pixel region.
-\item \textbf{S} -- The detection lies at the edge of the spectral region.
-\item \textbf{M} -- The detection is adjacent to, or overlaps the
-  ``Milky Way'' range of channels (see Sec.~\ref{sec-MW}).
-\item \textbf{N} -- The total flux, summed over all the (non-BLANK)
-pixels in the smallest box that completely encloses the detection, is
-negative. Note that this sum is likely to include non-detected
-pixels. It is of use in pointing out detections that lie next to
-strongly negative pixels, such as might arise due to interference --
-the detected pixels might then also be due to the interference, so
-caution is advised.
-\end{itemize}
-In the absence of any of these flags, a \textbf{-} will be recorded in
-this column.
-
-\secC{Other results lists}
+\secC{VOTable catalogue}
+\label{sec-votable}
 
 Three additional results files can also be requested. One option is a
-VOTable-format XML file, containing just the RA, Dec, Velocity and the
-corresponding widths of the detections, as well as the fluxes. The
-user should set \texttt{flagVOT = true}, and put the desired filename
-in the parameter \texttt{votFile} -- note that the default is for it
-not to be produced. An example of VOTable output can be found in
-Appendix~\ref{app-votable}.  This file should be compatible with all
-Virtual Observatory tools (such as Aladin%
+VOTable-format XML file, containing just the RA, Dec, spectral
+location and the corresponding widths of the detections, as well as
+the fluxes. The user should set \texttt{flagVOT = true}, and put the
+desired filename in the parameter \texttt{votFile} -- note that the
+default is for it not to be produced. An example of VOTable output can
+be found in Appendix~\ref{app-votable}.  This file should be
+compatible with all Virtual Observatory tools (such as Aladin%
 \footnote{%Aladin can be found on the web at
   \href{http://aladin.u-strasbg.fr/}{http://aladin.u-strasbg.fr/}} or
 TOPCAT\footnote{%Tool for OPerations on Catalogues And Tables:
   \href{http://www.star.bristol.ac.uk/~mbt/topcat/}%
   {http://www.star.bristol.ac.uk/~mbt/topcat/}}).
+
+\secC{Annotation and region files}
+\label{sec-annotfiles}
 
 A second option are annotation files for use with either the Karma
 toolkit of visualisation tools (in particular, with \texttt{kvis}), or
@@ -314,6 +199,9 @@ given above. To make use of this option, the user should set
 \texttt{flagKarma} or \texttt{flagDS9} to \texttt{true}, and put the
 desired filename in the parameter \texttt{karmaFile} or
 \texttt{ds9File} -- again, the default is for these not to be produced.
+
+\secC{Spectral text file}
+\label{sec-spectraltext}
 
 The final optional results file produced is a simple text file that
 contains the spectra for each detected object. The format of the file
@@ -347,6 +235,9 @@ what a spectral text file might look like is given below:
     \end{tabular}
   }
 \end{quote}
+
+\secC{Log file}
+\label{sec-logfile}
 
 In addition to these three files, a log file can also be produced. As
 the program is running, it also (optionally) records the detections
@@ -427,8 +318,6 @@ obviously whether there are any BLANK pixel present.
 Note that the creation of the spectral plots can be prevented by
 setting \texttt{flagPlotSpectra = false}.
 
-%\secC{Output for 2-dimensional images}
-
 When the input image is two-dimensional, with no spectral dimension,
 this spectral plot would not make much sense. Instead, \duchamp
 creates a similar postscript file that simply includes the text
@@ -438,6 +327,24 @@ by the \texttt{spectralFile} parameter.
 
 When the input image is one-dimensional, the spectral plot is
 identical save for the absence of the cutout image.
+
+In addition to the spectral plot, it is possible to produce plots for
+each spectrum individually. Set
+\texttt{flagPlotIndividualSpectra=true}, and a postscript plot will be
+produced for each object. If the normal spectral output file
+(determined by the \texttt{spectralFile} input parameter) is called
+\texttt{duchamp-Spectra.ps}, then the individual files will be called
+\texttt{duchamp-Spectra-01.ps} etc. 
+
+\secC{Spectral data}
+
+It is possible to export the spectra of each object to an ASCII text
+file by setting \texttt{flagTextSpectra=true}. This produces a
+multi-column file (named by \texttt{spectraTextFile}), with the first
+being the spectral coordinates (in world coordinates if possible, else
+pixels), then the remainder being the spectrum of each object. The
+values, as for the plots, are determined by the
+\texttt{spectralMethod} parameter. 
 
 \secC{Spatial maps}
 \label{sec-spatialmaps}
@@ -564,37 +471,75 @@ controlled by \texttt{flagOutputRecon}, \texttt{flagOutputResid} and
 \texttt{flagOutputSmooth}. Consult \S\ref{sec-reconIO} for further
 details.
 
-\secB{Re-using previous detections}
+\secB{Re-examining previous \duchamp results}
 \label{sec-reuse}
 
-It may be the case that, once you have run \duchamp with a set of
-parameters, you are unsatisfied with the output spectra -- perhaps you
-would have preferred integrated rather than peak flux to be
-plotted. However, the searching might have taken a while to run, and
-the thought of doing it again just for different plots may be a bit
-off-putting.
 
-Well, provided you have made a log file when running \duchamp (with
-the \texttt{flagLog=true} setting), it is possible to do this easily
-without having to go through the process of detecting your sources a
-second time. By using the same input file, with the additional
-parameter \texttt{usePrevious=true}, the log file that was created
-with a previous \duchamp run can be read to extract each of the
-individual detections. The output stage is then run again, with the
-parameters (in particular \texttt{pixelCentre} and
-\texttt{spectralMethod}) as given in the input file. 
+\secC{Binary Catalogue}
 
-Perhaps you would also like to extract a single source's
-spectral plot (\eg for use in a journal paper). The use-previous
-method allows you to specify particular sources to re-plot. Only these
-sources will be plotted in the \texttt{SpectraFile} file, and
-individual files will be created for each of the listed sources. Their
-filenames will follow the format of \texttt{SpectraFile}: if,
-\texttt{SpectraFile=file.ps}, source \#3 will appear in
-\texttt{file-03.ps}. To give a list of sources, use the
-\texttt{objectList} parameter, and provide a string with individual
-object numbers or object ranges: \eg 1,2,4-7,8,11.
+It is often the case that the bulk of the work in a \duchamp run is in
+the searching for sources. If you are interested in re-doing some of
+the spectral plots, or re-parameterising with different
+\texttt{spectralType} settings, then having to re-run the searching
+can be a bit off-putting. 
 
+A solution to this problem exists in the ability to save a binary
+catalogue, containing the information on the individual pixels
+detected in each object. This is sufficient to recreate a set of
+detections and re-do the parameterisation. To enable this mode, set
+\texttt{flagWriteBinaryCatalogue=true}, and provide a filename with
+\texttt{binaryCatalogue} (or use the default of
+\texttt{duchamp-Catalogue.dpc}). The following will be written to the
+catalogue: 
+\begin{itemize}
+\item Version of \duchamp. If it is not the same version, a warning is raised.
+\item Current date and time.
+\item The parameter set. Only the parameters affecting the
+  pre-processing and searching are stored. Those related to, say,
+  graphical output are not.
+\item The measured statistics.
+\item The pixels of each detected object, written using the run-length
+  encoding described in \S\ref{sec-scan}.
+\end{itemize}
+These are written in binary format to conserve disk space, and are
+sufficient to recreate the state of \duchamp after the searching has
+taken place. 
+
+To re-use this catalogue, set the flag \texttt{usePrevious=true} and
+provide the binary catalogue filename via
+\texttt{binaryCatalogue}. The catalogue will be loaded, and (provided
+it loads correctly) the preprocessing and searching steps will be
+skipped. The post-processing (\ie plotting and catalogue output) steps
+will occur as normal, using the settings provided in the input
+parameter file.
+
+Note that while at this stage this is the only use for the binary
+catalogues, it is anticipated that other functionality will be
+provided in future - for instance, to allow conversion into mask
+images. The binary catalogues are seen as a compact way of storing the
+results of a \duchamp run. 
+
+\secC{Selection of objects}
+
+When re-running \duchamp on a previously-generated catalogue, it is
+possible to produce the plots for only a selection of objects. Use the
+\texttt{objectList} parameter to specify a set of objects, listing
+individual object numbers or ranges, for example ``1,3-6,9,11'' means
+objects 1,3,4,5,6,9,11. The output plots will be appropriately
+modified: the spectral plots will only show these objects; the moment
+map plot will only show the contribution from these objects; the
+detection map will show the outlines of only these objects, although
+all detected pixels are still shown in greyscale. 
+
+Note that the object numbers here are valid for the catalogue as
+sorted according to the \texttt{sortingParam} specification in the
+parameter file. If you change this, the order of the catalogue may
+change and the specific objects selected by \texttt{objectList} will
+differ. 
+
+This option is designed for the case of re-using a catalogue, but can
+be used for a blind search as well. Of course, you may not know what
+numbers the sources will turn out to be.
 
 %%% Local Variables: 
 %%% mode: latex

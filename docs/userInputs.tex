@@ -26,11 +26,21 @@
 %                    AUSTRALIA
 % -----------------------------------------------------------------------
 \secA{User Inputs}
+
+\secB{Parameter file input}
 \label{sec-param}
 
-Input to the program is provided by means of a parameter
-file. Parameters are listed in the file, followed by the value that
-should be assigned to them. The syntax used is 
+\duchamp allows a large degree of control over the way the different
+algorithms work. This is done by means of input parameters, specified
+through a parameter file. The parameter file is provided at runtime,
+via
+\begin{quote}
+{\footnotesize
+\texttt{> Duchamp -p [parameter file]}
+}
+\end{quote}
+The parameter file simply contains a list of parameter names followed
+by the value that should be assigned to them. The syntax used is 
 \begin{quote}
 \texttt{parameterName value}.
 \end{quote}
@@ -72,3 +82,40 @@ flagBaseline    1
 You would, of course, replace the ``\texttt{your-file-here}'' with the
 FITS file you wanted to search. Further examples are given in
 Appendix~\ref{app-input}.
+
+\secB{Command-line control}
+
+\duchamp provides the ability to run without constructing a parameter
+file first. Using the \texttt{-f} command-line flag to specify an
+image will make use of the default values for all parameters:
+\begin{quote}
+{\footnotesize
+\texttt{> Duchamp -f [FITS image]}
+}
+\end{quote}
+
+It is possible to specify a flux threshold as well on the command
+line, using the \texttt{-t} flag. This allows the user to quickly
+search a given image to a given depth (\ie give me all sources in this
+image above 1mJy.
+\begin{quote}
+{\footnotesize
+\texttt{> Duchamp -f [FITS image] -t [THRESHOLD]}
+}
+\end{quote}
+The \texttt{-t} flag can also be used with the \texttt{-p} option --
+it sets the \texttt{threshold} parameter, and overrides the value
+provided in the parameter file specified. The flux threshold should be
+in the same brightness units as specified in the FITS image.
+
+The other command-line flag that can be used is \texttt{-x}. This
+turns off the X-window output (that graphically shows where the
+detected objects are). This makes scripted use of \duchamp somewhat
+easier. 
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Guide"
+%%% End: 
