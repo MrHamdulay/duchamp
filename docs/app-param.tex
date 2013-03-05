@@ -179,9 +179,10 @@ not matter, they are grouped here in logical sections.
   the list of final detections.
 \item[{annotationType [borders]}] Which type of annotation plot to
   use. Specifying ``borders'' gives an outline around the detected
-  spatial pixels, while ``circles'' gives a circle centred on the
+  spatial pixels, ``circles'' gives a circle centred on the
   centre of the object with radius large enough to encompass all
-  spatial pixels.
+  spatial pixels, and ``ellipses'' gives an ellipse centred on the
+  centre of the object of size given by the MAJ, MIN \& PA values. 
 \item[{flagMaps [true]}] A flag to say whether to save postscript
   files showing the 0th moment map of the whole cube
   (\texttt{momentMap}) and the detection image

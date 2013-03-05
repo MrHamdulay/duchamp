@@ -45,10 +45,10 @@ New features:
     where lines not containing sources are prefixed with a comment
     character '#'. This will facilitate their use in other software.
 
-  # There is a new command-line parameter, -t THRESH, which specifies
-    the flux threshold for searching. It is designed to be used with
-    the -f option, as a quick way of searching a FITS image to a
-    specified flux level.
+* There is a new command-line parameter, -t THRESH, which specifies
+  the flux threshold for searching. It is designed to be used with the
+  -f option, as a quick way of searching a FITS image to a specified
+  flux level.
 
 Bug fixes:
 
@@ -78,6 +78,9 @@ Other
 * The code-base for reading from and writing to FITS files has been
   overhauled and streamlined. It can now be found in the FitsIO
   directory.
+
+* The User Guide has been slightly re-ordered to provide more explicit
+  information about the source parameters.
 
 
 Duchamp version 1.2.2 (2012/10/29)

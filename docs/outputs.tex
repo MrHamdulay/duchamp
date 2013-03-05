@@ -183,22 +183,32 @@ TOPCAT\footnote{%Tool for OPerations on Catalogues And Tables:
 \secC{Annotation and region files}
 \label{sec-annotfiles}
 
-A second option are annotation files for use with either the Karma
-toolkit of visualisation tools (in particular, with \texttt{kvis}), or
-with SAOImage DS9 (which should also be compatible with
-casaviewer). There are two options on how objects are represented,
-governed by the \texttt{annotationType} parameter. Setting this to
-\texttt{borders} results in a border being drawn around the spatial
-pixels of the object, in a manner similar to that seen in
-Fig.~\ref{fig-spect}. Note that Karma/\texttt{kvis} does not always do
-this perfectly, so the lines may not be directly lined up with pixel
-borders. The other option is \texttt{annotationType = circles}. This
-will draw a circle at the position of each detection, scaled by the
-spatial size of the detection, and number it according to the Obj\#
-given above. To make use of this option, the user should set
-\texttt{flagKarma} or \texttt{flagDS9} to \texttt{true}, and put the
-desired filename in the parameter \texttt{karmaFile} or
-\texttt{ds9File} -- again, the default is for these not to be produced.
+A second option are annotation files for use with several
+visualisation tools, including the Karma toolkit (in particular, with
+\texttt{kvis}), SAOImage DS9, and \texttt{casaviewer} (and
+\texttt{casapy} itself).
+
+There are three options on how objects are represented, governed by the
+\texttt{annotationType} parameter. These are:
+\begin{itemize}
+\item \texttt{borders} -- a border is drawn around the spatial pixels
+  of the object, in a manner similar to that seen in
+  Fig.~\ref{fig-spect}. Note that Karma/\texttt{kvis} does not always
+  do this perfectly, particularly as you change the zoom, so the lines
+  may not be directly lined up with pixel borders.
+\item \texttt{circles} -- draws a circle at the position of each
+  detection, scaled by the spatial size of the detection.
+\item \texttt{ellipses} -- draws an ellipse of size given by the
+  \texttt{MAJ, MIN, PA} source parameters (\S\ref{sec-shape}).
+\end{itemize}
+In each case, the object is numbered according to the object ID
+(\S\ref{sec-objectID}. To make use of this option, the user should set
+\texttt{flagKarma}, \texttt{flagDS9} or \texttt{flagCasa} to
+\texttt{true}, and put the desired filename in the parameter
+\texttt{karmaFile}, \texttt{ds9File} or \texttt{casaFile} -- again,
+the default is for these not to be produced. Examples of these
+annotation files are in
+Appendices~\ref{app-karma},\ref{app-ds9},\ref{app-casa}. 
 
 \secC{Spectral text file}
 \label{sec-spectraltext}
