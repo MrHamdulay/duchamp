@@ -481,6 +481,21 @@ controlled by \texttt{flagOutputRecon}, \texttt{flagOutputResid} and
 \texttt{flagOutputSmooth}. Consult \S\ref{sec-reconIO} for further
 details.
 
+\secC{Baseline image}
+\label{sec-baselineOut}
+
+As mentioned in \S\ref{sec-baseline}, the spectral baseline values can
+be saved to a FITS file, allowing examination of them offline. There
+is no scope at present for reloading previously-calculated baselines
+(although the overheads in calculating these are not too
+prohibitive). Saving to a FITS file is controlled by the input
+parameters \texttt{flagOutputBaseline} and
+\texttt{fileOutputBaseline}. If \texttt{fileOutputBaseline} is not
+provided, the file will be named \texttt{image.BASE.fits} (for an
+input image called \texttt{image.fits}).
+
+
+
 \secB{Re-examining previous \duchamp results}
 \label{sec-reuse}
 

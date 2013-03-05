@@ -166,6 +166,7 @@ is non-rectangular). However, these are ignored in all further
 calculations done on the cube.
 
 \secC{Baseline removal}
+\label{sec-baseline}
 
 Second, the user may request the removal of baselines from the
 spectra, via the parameter \texttt{flagBaseline}. This may be
@@ -188,6 +189,9 @@ reconstruction process at some standard threshold (at $8\sigma$ above
 the mean). The baseline determined should thus be representative of
 the true, signal-free baseline. Note that this trimming is only a
 temporary measure which does not affect the source-detection.
+
+The baseline values can be saved to a FITS file for later
+examination. See \S\ref{sec-baselineOut} for details.
 
 \secC{Ignoring bright Milky Way emission}
 \label{sec-MW}
