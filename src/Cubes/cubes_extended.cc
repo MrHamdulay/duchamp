@@ -99,7 +99,6 @@ namespace duchamp
     // If the reconstructed array is to be read in from disk
     if( this->par.getFlagReconExists() && this->par.getFlagATrous() ){
       std::cout << "Reading reconstructed array: "<<std::endl;
-      // if( this->readReconCube() == FAILURE){
       ReadExistingRecon reconReader(this);
       if( reconReader.read() == FAILURE){
 	DUCHAMPWARN("Duchamp", "Could not read in existing reconstructed array. Will perform reconstruction using assigned parameters.");
@@ -112,7 +111,6 @@ namespace duchamp
       std::cout << "Reading smoothed array: "<<std::endl;
       ReadExistingSmooth smoothReader(this);
       if( smoothReader.read() == FAILURE){
-	//      if( this->readSmoothCube() == FAILURE){
 	DUCHAMPWARN("Duchamp", "Could not read in existing smoothed array. Will smooth the cube using assigned parameters.");
 	this->par.setFlagSmoothExists(false);
       }

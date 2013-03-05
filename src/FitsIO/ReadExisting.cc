@@ -67,14 +67,14 @@ namespace duchamp {
       }
 
       if(numAxesNew != this->itsCube->getNumDim()){
-	DUCHAMPERROR("readReconCube", "Input cube " << this->itsFilename << " has a different number of axes to original!" 
+	DUCHAMPERROR("Reading Cube", "Input cube " << this->itsFilename << " has a different number of axes to original!" 
 		     << " (" << numAxesNew << " cf. " << this->itsCube->getNumDim() << ")");
 	result = FAILURE;
       }
 
       for(int i=0;i<numAxesNew;i++){
 	if(dimAxesNew[i]!=int(this->itsCube->getDimArray()[i])){
-	  DUCHAMPERROR("readReconCube", "Input cube " << this->itsFilename << " has different axis dimensions to original! Axis #" 
+	  DUCHAMPERROR("Reading Cube", "Input cube " << this->itsFilename << " has different axis dimensions to original! Axis #" 
 		       << i+1 << " has size " << dimAxesNew[i] << " cf. " << this->itsCube->getDimArray()[i] <<" in original.");
 	  result = FAILURE;
 	}
@@ -87,12 +87,12 @@ namespace duchamp {
 	status = 0;
 	fits_read_key(this->itsFptr, TSTRING, (char *)keyword_subsection.c_str(), subsection, comment, &status);
 	if(status){
-	  DUCHAMPERROR("readReconCube", "subsection keyword not present in reconFile.");
+	  DUCHAMPERROR("Reading Cube", "subsection keyword not present in reconFile.");
 	  result = FAILURE;
 	}
 	else{
 	  if(this->itsCube->pars().getSubsection() != subsection){
-	    DUCHAMPERROR("readReconCube", "subsection keyword in reconFile (" << subsection 
+	    DUCHAMPERROR("Reading Cube", "subsection keyword in reconFile (" << subsection 
 			 << ") does not match that requested (" << this->itsCube->pars().getSubsection() << ").");
 	    result = FAILURE;
 	  }

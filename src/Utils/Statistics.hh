@@ -122,7 +122,7 @@ namespace Statistics
     bool isDetection(float value);
 
     /// @brief Set the comment characters
-    void setCommentString(std::string comment){commentString = comment;};;
+    void setCommentString(std::string comment){commentString = comment;};
 
     // Functions to calculate the stats for a given array.
     // The idea here is that there are two options to do the calculations:

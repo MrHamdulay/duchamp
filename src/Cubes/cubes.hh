@@ -405,25 +405,6 @@ namespace duchamp
     /// @brief Handle all the writing to FITS files.
     void            writeToFITS();
 
-
-    /// @brief Save the moment map to a FITS file
-    OUTCOME        saveMomentMapImage();
-
-    /// @brief Save a mask array to disk.
-    OUTCOME        saveMaskCube();       // in Cubes/saveImage.cc
-
-    /// @brief Save Smoothed array to disk.
-    OUTCOME        saveSmoothedCube();       // in Cubes/saveImage.cc
-
-    /// @brief Save Reconstructed array to disk. 
-    OUTCOME        saveReconstructedCube();  // in Cubes/saveImage.cc
-
-    /// @brief Read in reconstructed array from FITS file. 
-    OUTCOME        readReconCube();  // in Cubes/readRecon.cc
-  
-    /// @brief Read in Hanning-smoothed array from FITS file. 
-    OUTCOME        readSmoothCube();     // in Cubes/readSmooth.cc  
-
     //-------------------------------------
     // Functions that act on the cube
     //
