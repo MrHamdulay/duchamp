@@ -69,7 +69,7 @@ for (( i=0; i<${#number[@]}; i++ )); do
     rm -f /tmp/duchampRes /tmp/duchampComp /tmp/duchamptest
     $progname -p $in > /tmp/duchamptest
     echo "Done. Comparison to standard result:"
-    numDet=`grep "Total number" $res | cut -f 6 -d " "`
+    numDet=`grep "Total number" $res | cut -f 7 -d " "`
     if [ $numDet == ${ndet[i]} ]; then
 	if [ $fullComp == true ]; then
 	    numdiff=`diff -I"Duchamp" $res $Sres | wc -l`

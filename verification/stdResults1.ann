@@ -1,4 +1,4 @@
-# Duchamp Source Finder v.1.2.1
+# Duchamp Source Finder v.1.3beta
 # Results for FITS file: verification/verificationCube.fits
 # imageFile              verification/verificationCube.fits
 # flagSubsection         0
@@ -14,7 +14,7 @@
 # minPix                 2
 # minChannels            2
 # flagAdjacent           1
-# threshVelocity         3
+# threshVelocity         7
 # flagRejectBeforeMerge  0
 # flagTwoStageMerging    1
 # pixelCentre            centroid
@@ -25,6 +25,7 @@
 # Std. Deviation of noise background = 1.00927
 #  [Using robust methods]
 COLOR RED
+PA STANDARD
 COORD W
 LINE 92.796776 -27.682375 92.721457 -27.683528
 LINE 92.795375 -27.615691 92.720102 -27.616844
