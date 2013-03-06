@@ -1,57 +1,59 @@
-Results of the Duchamp source finder v.1.2.1: Tue Oct  9 15:03:23 2012
-
----- Parameters ----
-Image to be analysed.........................[imageFile]  =  verification/verificationCube.fits
-Intermediate Logfile...........................[logFile]  =  verification/log2.txt
-Final Results file.............................[outFile]  =  verification/results2.txt
-Spectrum file..............................[spectraFile]  =  verification/spectra2.ps
-VOTable file...................................[votFile]  =  verification/results2.xml
-Karma annotation file........................[karmaFile]  =  verification/results2.ann
-DS9 annotation file............................[ds9File]  =  verification/results2.reg
-Display a map in a pgplot xwindow?.........[flagXOutput]  =  true
-Saving mask cube?.......................[flagOutputMask]  =  false
-Saving 0th moment to FITS file?.........[flagOutputMask]  =  false
-------
-Type of searching performed.................[searchType]  =  spatial
-Trimming Blank Pixels?........................[flagTrim]  =  false
-Searching for Negative features?..........[flagNegative]  =  false
-Removing Milky Way channels?....................[flagMW]  =  false
-Area of Beam (pixels)...................................  =  14.6848   (beam: 3.6 x 3.6 pixels)
-Removing baselines before search?.........[flagBaseline]  =  false
-Smoothing data prior to searching?..........[flagSmooth]  =  false
-Using A Trous reconstruction?...............[flagATrous]  =  false
-Using Robust statistics?...............[flagRobustStats]  =  true
-Using FDR analysis?............................[flagFDR]  =  true
-Alpha value for FDR analysis..................[alphaFDR]  =  0.05
-Number of correlated channels for FDR....[FDRnumCorChan]  =  2
-Minimum # Pixels in a detection.................[minPix]  =  2
-Minimum # Channels in a detection..........[minChannels]  =  2
-Minimum # Voxels in a detection..............[minVoxels]  =  4
-Growing objects after detection?............[flagGrowth]  =  false
-Using Adjacent-pixel criterion?...........[flagAdjacent]  =  true
-Max. velocity separation for merging....[threshVelocity]  =  7
-Reject objects before merging?...[flagRejectBeforeMerge]  =  false
-Merge objects in two stages?.......[flagTwoStageMerging]  =  true
-Method of spectral plotting.............[spectralMethod]  =  peak
-Type of object centre used in results......[pixelCentre]  =  centroid
---------------------
-
---------------------
-Summary of statistics:
-Detection threshold = 4.12445 Jy/beam (or S/N=4.07191)
-Noise level = 0.0148019, Noise spread = 1.00927
-Full stats:
-Mean   = 0.0279632	Std.Dev. = 1.04764
-Median = 0.0148019	MADFM    = 0.68074 (= 1.00927 as std.dev.)
---------------------
-Total number of detections = 5
---------------------
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- Obj#           Name     X     Y     Z         RA       DEC        VOPT     w_RA    w_DEC       w_50       w_20     w_VOPT       F_int     F_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2  Npix Flag  X_av  Y_av  Z_av X_cent Y_cent Z_cent X_peak Y_peak Z_peak
-                                                                  [m/s] [arcmin] [arcmin]      [m/s]      [m/s]      [m/s]    [Jy m/s] [Jy/beam] [Jy/beam]                                [pix]                                                                 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    1 J060912-273501  25.0  25.1  20.0 06:09:12.4 -27:35:01  277659.135    52.66    43.29 113078.208 167632.210 158295.840 2612586.497  2908.382    11.489  11.37  19  31  20  30  14  26   480    -  25.1  25.1  20.1   25.0   25.1   20.0     26     25     21
-    2 J055409-273512  75.1  25.0  41.9 05:54:09.4 -27:35:12  566191.861    47.23    48.74 107954.172 171506.267 145104.520 2533493.872  2820.334    11.766  11.64  70  81  20  31  36  47   463    -  75.1  25.0  41.9   75.1   25.0   41.9     76     25     43
-    3 J060143-255604  49.9  50.0  64.0 06:01:43.9 -25:56:04  857340.090    43.99    48.03 109048.197 167639.214 158295.840 2645773.473  2945.326    10.926  10.81  45  55  44  55  58  70   482    -  49.9  50.0  64.0   49.9   50.0   64.0     50     51     66
-    4 J060900-241502  25.1  75.1  86.1 06:09:00.1 -24:15:02 1148669.273    44.67    51.43 108414.503 166604.873 158295.840 2539178.838  2826.664    10.445  10.33  20  30  69  81  81  93   466    -  25.1  75.1  86.1   25.1   75.1   86.1     26     75     86
-    5 J055425-241539  74.9  74.9 108.1 05:54:25.5 -24:15:39 1439595.587    43.37    48.66 106623.010 168523.988 145104.520 2612247.025  2908.004    11.304  11.19  70  80  69  80 103 114   479    -  74.9  74.9 108.2   74.9   74.9  108.1     74     75    107
+# Results of the Duchamp source finder v.1.3beta: Wed Mar  6 11:55:40 2013
+# 
+# ---- Parameters ----
+# Image to be analysed.............................[imageFile]  =  verification/verificationCube.fits
+# Intermediate Logfile...............................[logFile]  =  verification/log2.txt
+# Final Results file.................................[outFile]  =  verification/results2.txt
+# Spectrum file..................................[spectraFile]  =  verification/spectra2.ps
+# VOTable file.......................................[votFile]  =  verification/results2.xml
+# Karma annotation file............................[karmaFile]  =  verification/results2.ann
+# DS9 annotation file................................[ds9File]  =  verification/results2.reg
+# Display a map in a pgplot xwindow?.............[flagXOutput]  =  true
+# Saving mask cube?...........................[flagOutputMask]  =  false
+# Saving 0th moment to FITS file?........[flagOutputMomentMap]  =  false
+# Saving 0th moment mask to FITS file?..[flagOutputMomentMask]  =  false
+# Saving baseline values to FITS file?....[flagOutputBaseline]  =  false
+# ------
+# Type of searching performed.....................[searchType]  =  spatial
+# Trimming Blank Pixels?............................[flagTrim]  =  false
+# Searching for Negative features?..............[flagNegative]  =  false
+# Removing Milky Way channels?........................[flagMW]  =  false
+# Area of Beam (pixels).......................................  =  14.6848   (beam: 3.6 x 3.6 pixels)
+# Removing baselines before search?.............[flagBaseline]  =  false
+# Smoothing data prior to searching?..............[flagSmooth]  =  false
+# Using A Trous reconstruction?...................[flagATrous]  =  false
+# Using Robust statistics?...................[flagRobustStats]  =  true
+# Using FDR analysis?................................[flagFDR]  =  true
+# Alpha value for FDR analysis......................[alphaFDR]  =  0.05
+# Number of correlated channels for FDR........[FDRnumCorChan]  =  2
+# Minimum # Pixels in a detection.....................[minPix]  =  2
+# Minimum # Channels in a detection..............[minChannels]  =  2
+# Minimum # Voxels in a detection..................[minVoxels]  =  4
+# Growing objects after detection?................[flagGrowth]  =  false
+# Using Adjacent-pixel criterion?...............[flagAdjacent]  =  true
+# Max. velocity separation for merging........[threshVelocity]  =  7
+# Reject objects before merging?.......[flagRejectBeforeMerge]  =  false
+# Merge objects in two stages?...........[flagTwoStageMerging]  =  true
+# Method of spectral plotting.................[spectralMethod]  =  peak
+# Type of object centre used in results..........[pixelCentre]  =  centroid
+# --------------------
+# 
+# --------------------
+# Summary of statistics:
+# Detection threshold = 4.12445 Jy/beam (or S/N=4.07191)
+# Noise level = 0.0148019, Noise spread = 1.00927
+# Full stats:
+#  Mean   = 0.0279632	Std.Dev. = 1.04764
+#  Median = 0.0148019	MADFM    = 0.68074 (= 1.00927 as std.dev.)
+# --------------------
+# Total number of detections = 5
+# --------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#  ObjID           Name     X     Y     Z         RA       DEC        VOPT   MAJ   MIN     PA     w_RA    w_DEC       w_50       w_20     w_VOPT       F_int    eF_int     F_tot    eF_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2  Npix Flag  X_av  Y_av  Z_av X_cent Y_cent Z_cent X_peak Y_peak
+#                                                                    [m/s] [deg] [deg]  [deg] [arcmin] [arcmin]      [m/s]      [m/s]      [m/s]    [Jy m/s]  [Jy m/s] [Jy/beam] [Jy/beam] [Jy/beam]                                [pix]                                                          
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+       1 J060912-273501  25.0  25.1  20.0 06:09:12.4 -27:35:01  277659.135  0.46  0.41 164.30    52.66    43.29 113078.208 167632.210 158295.840 2612586.497 19863.064  2908.382    22.112    11.489  11.37  19  31  20  30  14  26   480    -  25.1  25.1  20.1   25.0   25.1   20.0     26     25
+       2 J055409-273512  75.1  25.0  41.9 05:54:09.4 -27:35:12  566191.861  0.45  0.41 128.38    47.23    48.74 107954.172 171506.267 145104.520 2533493.872 19508.152  2820.334    21.717    11.766  11.64  70  81  20  31  36  47   463    -  75.1  25.0  41.9   75.1   25.0   41.9     76     25
+       3 J060143-255604  49.9  50.0  64.0 06:01:43.9 -25:56:04  857340.090  0.43  0.41  89.27    43.99    48.03 109048.197 167639.214 158295.840 2645773.473 19904.402  2945.326    22.158    10.926  10.81  45  55  44  55  58  70   482    -  49.9  50.0  64.0   49.9   50.0   64.0     50     51
+       4 J060900-241502  25.1  75.1  86.1 06:09:00.1 -24:15:02 1148669.273  0.45  0.40  23.19    44.67    51.43 108414.503 166604.873 158295.840 2539178.838 19571.251  2826.664    21.787    10.445  10.33  20  30  69  81  81  93   466    -  25.1  75.1  86.1   25.1   75.1   86.1     26     75
+       5 J055425-241539  74.9  74.9 108.1 05:54:25.5 -24:15:39 1439595.587  0.44  0.41 112.39    43.37    48.66 106623.010 168523.988 145104.520 2612247.025 19842.363  2908.004    22.089    11.304  11.19  70  80  69  80 103 114   479    -  74.9  74.9 108.2   74.9   74.9  108.1     74     75
