@@ -131,6 +131,9 @@ namespace Statistics
     //   *Alternatively, construct a mask array of the same size,
     //     showing which points are good, and use the second option.
 
+      /// @brief Directly set the statistics that have been calculated elsewhere.
+      void define(float mean, Type median, float stddev, Type madfm);
+
     /// @brief Calculate statistics for all elements of a data array 
     void calculate(Type *array, long size);
 

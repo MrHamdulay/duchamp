@@ -132,7 +132,7 @@ namespace Statistics
     /// The SNR is defined in terms of excess over the middle estimator
     /// in units of the spread estimator.
       if(this->defined)
-	  threshold=this->getMiddle() + snr*this->getSpread();
+	  this->threshold=this->getMiddle() + snr*this->getSpread();
   }
   template void StatsContainer<int>::setThresholdSNR(float snr);
   template void StatsContainer<long>::setThresholdSNR(float snr);
@@ -290,6 +290,24 @@ namespace Statistics
   template bool StatsContainer<long>::isDetection(float value);
   template bool StatsContainer<float>::isDetection(float value);
   template bool StatsContainer<double>::isDetection(float value);
+  //--------------------------------------------------------------------
+
+  template <class Type> 
+  void StatsContainer<Type>::define(float mean, Type median, float stddev, Type madfm)
+  {
+    /// @details
+    /// Set all four statistics directly
+    /// 
+      this->mean = mean;
+      this->median = median;
+      this->stddev = stddev;
+      this->madfm = madfm;
+      this->defined = true;
+  }
+  template void StatsContainer<int>::define(float mean, int median, float stddev, int madfm);
+  template void StatsContainer<long>::define(float mean, long median, float stddev, long madfm);
+  template void StatsContainer<float>::define(float mean, float median, float stddev, float madfm);
+  template void StatsContainer<double>::define(float mean, double median, float stddev, double madfm);
   //--------------------------------------------------------------------
 
   template <class Type> 

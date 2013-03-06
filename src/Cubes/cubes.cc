@@ -983,10 +983,10 @@ namespace duchamp
 	  }
 
 	  // First, find the mean of the original array. Store it.
-	  this->Stats.setMean( findMean<float>(tempArray, goodSize) );
+	  float mean = findMean<float>(tempArray, goodSize);
 	
 	  // Now sort it and find the median. Store it.
-	  this->Stats.setMedian( findMedian<float>(tempArray, goodSize, true) );
+	  float median = findMedian<float>(tempArray, goodSize, true);
 
 	  // Now calculate the residuals and find the mean & median of
 	  // them. We don't store these, but they are necessary to find
@@ -1005,10 +1005,12 @@ namespace duchamp
 	    }
 	  }
 	    
-	  this->Stats.setStddev( findStddev<float>(tempArray, goodSize) );
+	  float stddev = findStddev<float>(tempArray, goodSize);
 
 	  // Now find the madfm of the residuals. Store it.
-	  this->Stats.setMadfm( findMADFM(tempArray, goodSize, true) );
+	  float madfm = findMADFM<float>(tempArray, goodSize, true);
+
+	  this->Stats.define(mean,median,stddev,madfm);
 
 	  delete [] tempArray;
 	}
