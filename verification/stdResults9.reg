@@ -1,4 +1,4 @@
-# Duchamp Source Finder v.1.2.1
+# Duchamp Source Finder v.1.3beta
 # Results for FITS file: verification/verificationCube.fits
 # imageFile              verification/verificationCube.fits
 # flagSubsection         0
@@ -14,7 +14,7 @@
 # minPix                 2
 # minChannels            2
 # flagAdjacent           1
-# threshVelocity         3
+# threshVelocity         7
 # flagRejectBeforeMerge  0
 # flagTwoStageMerging    1
 # pixelCentre            centroid
