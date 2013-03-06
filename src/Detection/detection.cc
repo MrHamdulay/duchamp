@@ -797,11 +797,11 @@ namespace duchamp
   void Detection::findShape(const float *fluxArray, const size_t *dim, FitsHeader &head)
   {
 
-      const size_t border=1; // include one pixel either side in each direction
-      size_t x1 = size_t(std::max(size_t(0),this->xmin-border));
-      size_t y1 = size_t(std::max(size_t(0),this->ymin-border));
-      size_t x2 = size_t(std::min(dim[0]-1,this->xmax+border));
-      size_t y2 = size_t(std::min(dim[1]-1,this->ymax+border));
+      const long border=1; // include one pixel either side in each direction
+      size_t x1 = size_t(std::max(long(0),this->xmin-border));
+      size_t y1 = size_t(std::max(long(0),this->ymin-border));
+      size_t x2 = size_t(std::min(long(dim[0])-1,this->xmax+border));
+      size_t y2 = size_t(std::min(long(dim[1])-1,this->ymax+border));
       size_t xsize = x2-x1+1;
       size_t ysize = y2-y1+1;
       size_t spatsize = xsize*ysize;
