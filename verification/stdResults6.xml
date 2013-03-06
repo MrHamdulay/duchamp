@@ -21,7 +21,7 @@
       <PARAM name="minPix" ucd="" datatype="int" value="2"/>
       <PARAM name="minChannels" ucd="" datatype="int" value="2"/>
       <PARAM name="flagAdjacent" ucd="meta.code" datatype="boolean" value="1"/>
-      <PARAM name="threshVelocity" ucd="" datatype="float" value="3"/>
+      <PARAM name="threshVelocity" ucd="" datatype="float" value="7"/>
       <PARAM name="flagRejectBeforeMerge" ucd="" datatype="boolean" value="0"/>
       <PARAM name="flagTwoStageMerging" ucd="" datatype="boolean" value="1"/>
       <PARAM name="pixelCentre" ucd="" datatype="char" arraysize="8" value="centroid"/>
@@ -36,33 +36,35 @@
       <PARAM name="thresholdActual" ucd="" datatype="float" units="Jy/beam" value="3.94241"/>
       <PARAM name="noiseMeanActual" ucd="" datatype="float" units="Jy/beam" value="0.0343318"/>
       <PARAM name="noiseSpreadActual" ucd="" datatype="float" units="Jy/beam" value="0.97702"/>
-      <FIELD name="Obj#" ID="col_objnum" ucd="meta.id" datatype="int" unit="" width="5"/>
+      <FIELD name="ObjID" ID="col_objnum" ucd="meta.id" datatype="int" unit="" width="8"/>
       <FIELD name="Name" ID="col_name" ucd="meta.id;meta.main" datatype="char" unit="" arraysize="15"/>
       <FIELD name="RA" ID="col_rajd" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" unit="deg" width="11" precision="6"/>
       <FIELD name="DEC" ID="col_decjd" ucd="pos.eq.dec;meta.main" ref="J2000" datatype="float" unit="deg" width="11" precision="6"/>
       <FIELD name="VOPT" ID="col_vel" ucd="phys.veloc;spect.dopplerVeloc.opt;meta.main" datatype="float" unit="m/s" width="11" precision="3"/>
-      <FIELD name="w_RA" ID="col_wra" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
-      <FIELD name="w_DEC" ID="col_wdec" ucd="phys.angSize;pos.eq.dec" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
-      <FIELD name="w_50" ID="col_w50" ucd="spect.line.width;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
-      <FIELD name="w_20" ID="col_w20" ucd="spect.line.width;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
-      <FIELD name="w_VOPT" ID="col_wvel" ucd="spect.line.width;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
-      <FIELD name="Integrated_Flux" ID="col_fint" ucd="phot.flux;spect.line.intensity" datatype="float" unit="Jy.m/s" width="12" precision="3"/>
-      <FIELD name="Peak_Flux" ID="col_fpeak" ucd="phot.flux;spect.line.intensity" datatype="float" unit="Jy/beam" width="10" precision="3"/>
-      <FIELD name="S/Nmax" ID="col_snrmax" ucd="phot.flux;stat.snr" datatype="float" unit="" width="7" precision="2"/>
+      <FIELD name="MAJ" ID="col_maj" ucd="phys.angSize.smajAxis" ref="J2000" datatype="float" unit="deg" width="6" precision="2"/>
+      <FIELD name="MIN" ID="col_min" ucd="phys.angSize.sminAxis" ref="J2000" datatype="float" unit="deg" width="6" precision="2"/>
+      <FIELD name="PA" ID="col_pa" ucd="pos.posAng;phys.angSize" ref="J2000" datatype="float" unit="deg" width="7" precision="2"/>
+      <FIELD name="w_50" ID="col_w50" ucd="spect.line.width.50;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
+      <FIELD name="w_20" ID="col_w20" ucd="spect.line.width.20;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
+      <FIELD name="w_VOPT" ID="col_wvel" ucd="spect.line.width.full;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
+      <FIELD name="Integrated_Flux" ID="col_fint" ucd="phot.flux.density.integratedspect.line.intensity" datatype="float" unit="Jy.m/s" width="12" precision="3"/>
+      <FIELD name="Integrated_Flux_Error" ID="col_efint" ucd="phot.flux.density.integrated;stat.err" datatype="float" unit="Jy.m/s" width="10" precision="3"/>
+      <FIELD name="Peak_Flux" ID="col_fpeak" ucd="phot.flux;stat.maxspect.line.intensity" datatype="float" unit="Jy/beam" width="10" precision="3"/>
+      <FIELD name="S/Nmax" ID="col_snrmax" ucd="stat.snr;phot.flux" datatype="float" unit="" width="7" precision="2"/>
       <FIELD name="Flag" ID="col_flag" ucd="meta.code.qual" datatype="char" unit="" arraysize="5"/>
-      <FIELD name="X_av" ID="col_xav" ucd="pos.cartesian.x" datatype="float" unit="" width="6" precision="1"/>
-      <FIELD name="Y_av" ID="col_yav" ucd="pos.cartesian.y" datatype="float" unit="" width="6" precision="1"/>
-      <FIELD name="Z_av" ID="col_zav" ucd="pos.cartesian.z" datatype="float" unit="" width="6" precision="1"/>
-      <FIELD name="X_Centroid" ID="col_xcent" ucd="pos.cartesian.x" datatype="float" unit="" width="7" precision="1"/>
-      <FIELD name="Y_Centroid" ID="col_ycent" ucd="pos.cartesian.y" datatype="float" unit="" width="7" precision="1"/>
-      <FIELD name="Z_Centroid" ID="col_zcent" ucd="pos.cartesian.z" datatype="float" unit="" width="7" precision="1"/>
-      <FIELD name="X_peak" ID="col_xpeak" ucd="pos.cartesian.x" datatype="int" unit="" width="7"/>
-      <FIELD name="Y_peak" ID="col_ypeak" ucd="pos.cartesian.y" datatype="int" unit="" width="7"/>
-      <FIELD name="Z_peak" ID="col_zpeak" ucd="pos.cartesian.z" datatype="int" unit="" width="7"/>
+      <FIELD name="X_av" ID="col_xav" ucd="pos.cartesian.x;stat.mean" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="Y_av" ID="col_yav" ucd="pos.cartesian.y;stat.mean" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="Z_av" ID="col_zav" ucd="pos.cartesian.z;stat.mean" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="X_Centroid" ID="col_xcent" ucd="pos.cartesian.x;stat.centroid" datatype="float" unit="" width="7" precision="1"/>
+      <FIELD name="Y_Centroid" ID="col_ycent" ucd="pos.cartesian.y;stat.centroid" datatype="float" unit="" width="7" precision="1"/>
+      <FIELD name="Z_Centroid" ID="col_zcent" ucd="pos.cartesian.z;stat.centroid" datatype="float" unit="" width="7" precision="1"/>
+      <FIELD name="X_peak" ID="col_xpeak" ucd="pos.cartesian.x;phot.flux;stat.max" datatype="int" unit="" width="7"/>
+      <FIELD name="Y_peak" ID="col_ypeak" ucd="pos.cartesian.y;phot.flux;stat.max" datatype="int" unit="" width="7"/>
+      <FIELD name="Z_peak" ID="col_zpeak" ucd="pos.cartesian.z;phot.flux;stat.max" datatype="int" unit="" width="7"/>
       <DATA>
         <TABLEDATA>
         <TR>
-          <TD>    1</TD><TD> J060142-255610</TD><TD>  90.428739</TD><TD> -25.936125</TD><TD> 858272.536</TD><TD>    35.99</TD><TD>    40.02</TD><TD> 108881.866</TD><TD> 167803.984</TD><TD> 145104.520</TD><TD> 2219057.476</TD><TD>    10.926</TD><TD>  11.15</TD><TD>    -</TD><TD>  50.0</TD><TD>  49.9</TD><TD>  64.0</TD><TD>   50.0</TD><TD>   50.0</TD><TD>   64.1</TD><TD>     50</TD><TD>     51</TD><TD>     66</TD>
+          <TD>       1</TD><TD> J060142-255610</TD><TD>  90.428739</TD><TD> -25.936125</TD><TD> 858272.536</TD><TD>  0.38</TD><TD>  0.36</TD><TD> 107.33</TD><TD> 108881.866</TD><TD> 167803.984</TD><TD> 145104.520</TD><TD> 2219057.476</TD><TD> 17354.456</TD><TD>    10.926</TD><TD>  11.15</TD><TD>    -</TD><TD>  50.0</TD><TD>  49.9</TD><TD>  64.0</TD><TD>   50.0</TD><TD>   50.0</TD><TD>   64.1</TD><TD>     50</TD><TD>     51</TD><TD>     66</TD>
         </TR>
         </TABLEDATA>
       </DATA>
