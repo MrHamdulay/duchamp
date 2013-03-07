@@ -523,9 +523,6 @@ namespace duchamp
     /// @brief Write the statistical information to the output file. 
     void        outputStats();
 
-    /// @brief Output detections to the output file and standard output. 
-    void        outputDetectionList();
-
     /// @brief Prepare the log file for output. 
     void        prepareLogFile(int argc, char *argv[]);
 

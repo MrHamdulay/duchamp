@@ -151,7 +151,15 @@ namespace duchamp
       // Draw the fitted ellipse
       cpgsci(RED);
       float scale=this->head.getShapeScale();
-      cpgellipse(object.getXcentre(),object.getYcentre(),object.getMajorAxis()/this->head.getAvPixScale()/2./scale,object.getMinorAxis()/this->head.getAvPixScale()/2./scale,90.+object.getPositionAngle());
+      cpgellipse(object.getXcentre(), object.getYcentre(), 
+		 object.getMajorAxis()/this->head.getAvPixScale()/2./scale, object.getMinorAxis()/this->head.getAvPixScale()/2./scale, 
+		 90.+object.getPositionAngle());
+
+      // Draw the beam
+      setDarkGreen();
+      cpgsci(DARKGREEN);
+      cpgellipse(xmax-0.5-this->head.beam().maj(), ymin-0.5+this->head.beam().maj(),
+		 this->head.beam().maj()/2., this->head.beam().min()/2., this->head.beam().pa()+90.);
 
       // Draw the borders around the object
       cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
