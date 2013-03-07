@@ -298,15 +298,21 @@ separate window.
   \end{center}
   \caption{\footnotesize An example of the spectral output. Note
     several of the features discussed in the text: the red solid lines
-    indicating the reconstructed spectrum; the red dashed and dotted
+    indicating the reconstructed spectrum; the blue dashed and dotted
     horizontal lines indicating the detection and growth thresholds
     respectively; the blue dashed lines indicating the spectral extent
     of the detection; the green hashed area indicating the Milky Way
     channels that are ignored by the searching algorithm; the blue
-    border showing its spatial extent on the 0th moment map; and the
+    border showing its spatial extent on the 0th moment map; the
+    ellipses indicating the size of the object and the beam; and the
     15~arcmin-long scale bar.}
   \label{fig-spect}
 \end{figure}
+
+The cutout image shows a red ellipse indicating the spatial size of the
+detection (using \texttt{MAJ, MIN, PA} - \S\ref{sec-shape}). Also
+drawn in green in the corner of the image is an ellipse indicating the
+beam size (assuming the beam is defined). 
 
 The cutout image can optionally include a border around the spatial
 pixels that are in the detection (turned on and off by the
@@ -346,15 +352,6 @@ produced for each object. If the normal spectral output file
 \texttt{duchamp-Spectra.ps}, then the individual files will be called
 \texttt{duchamp-Spectra-01.ps} etc. 
 
-\secC{Spectral data}
-
-It is possible to export the spectra of each object to an ASCII text
-file by setting \texttt{flagTextSpectra=true}. This produces a
-multi-column file (named by \texttt{spectraTextFile}), with the first
-being the spectral coordinates (in world coordinates if possible, else
-pixels), then the remainder being the spectrum of each object. The
-values, as for the plots, are determined by the
-\texttt{spectralMethod} parameter. 
 
 \secC{Spatial maps}
 \label{sec-spatialmaps}
