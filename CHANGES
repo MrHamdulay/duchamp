@@ -16,7 +16,8 @@ New features:
 
   # Each source also now has a measurement of the error on the
     integrated and total fluxes. This is calculated from summing in
-    quadrature the statistical noise on each detected voxel.
+    quadrature the statistical noise on each detected voxel. This is
+    from a request by Sara Shakouri.
 
 * Output files - new types and changes to the way they are written:
 

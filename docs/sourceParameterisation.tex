@@ -141,9 +141,10 @@ S_{yy} &= &\sum F_i y_i^2 / \sum F_i\\
 S_{xy} &= &\sum F_i x_i y_i / \sum F_i
 \end{eqnarray*}
 Mostly, this will work. But there can be situations where the
-expression $S_{xx}-S_{yy} + 4 S_{xy}^2 < 0$, in which case the
-calculation of $a$ and $b$ will fail. These situations are often where
-the moment-0 map is very disordered with no clear primary axis. 
+calculated value of $b^2$ is negative (that is, $S_{xx}+S_{yy} <
+\sqrt{(S_{xx}-S_{yy})^2+4S_{xy}^2}$, or $S_{xx}S_{yy}<S_{xy}^2$). These situations are
+often where the moment-0 map is very disordered with no clear primary
+axis.
 
 In this case, the calculation of the sums is redone without the flux
 weighting ($S_{xx} = \sum x_i^2$ etc), and the shape parameters

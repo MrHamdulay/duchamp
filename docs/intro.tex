@@ -191,7 +191,8 @@ discussed in more detail in the following sections.
   Appendix~\ref{app-param}).
 
   If the \texttt{-f} option is used, all parameters are assigned their
-  default values.
+  default values, with the flux threshold able to be set with the
+  \texttt{-t} option.
 
 \item The FITS image is located and read in to memory.
 
@@ -344,14 +345,14 @@ discussed in more detail in the following sections.
   file is a multi-column ascii text file, suitable for import into
   other software packages. 
 
-\item If requested, the reconstructed or smoothed array can be written
-  to a new FITS file.
+\item If requested, FITS files are written containing the
+  reconstructed, smoothed, baseline or mask arrays.
 
-  If either of these procedures were done, the resulting array can be
-  saved as a FITS file for later use (for instance, reading in as
-  described at step \#\ref{step-reuse}). The FITS header will be the
-  same as the input file, with a few additional keywords to identify
-  the file.
+  If one of the preprocessing methods was used, the resulting array
+  can be saved as a FITS file for later examination or use (for
+  instance, reading in as described at step \#\ref{step-reuse}). The
+  FITS header will be the same as the input file, with a few
+  additional keywords to identify the file.
 
 \end{enumerate}
 
@@ -365,3 +366,8 @@ a cubist. \emph{Picasso}, sadly, was already taken \citep{minchin99},
 so I settled on naming it after Marcel Duchamp, another cubist, but
 also one of the first artists to work with ``found objects''.
 
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Guide"
+%%% End: 

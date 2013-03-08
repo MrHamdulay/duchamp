@@ -233,8 +233,9 @@ procedure can be found in \citet{starck02a}. The reconstruction is an
 effective way of removing a lot of the noise in the image, allowing
 one to search reliably to fainter levels, and reducing the number of
 spurious detections. This is an optional step, but one that greatly
-enhances the source-detection process, at the cost of additional CPU
-and memory usage (see \S\ref{sec-notes} for discussion).
+enhances the reliability of the resulting catalogue, at the cost of
+additional CPU and memory usage (see \S\ref{sec-notes} for
+discussion).
 
 \secC{Algorithm}
 
@@ -305,20 +306,6 @@ estimators of the underlying mean and standard deviation (or rms) of
 the background noise distribution. The methods used to estimate these
 quantities are detailed in \S\ref{sec-stats} -- the default behaviour
 is to use robust estimators, to avoid biasing due to bright pixels.
-
-%These statistics are estimated using
-%robust methods, to avoid corruption by strong outlying points. The
-%mean of the distribution is actually estimated by the median, while
-%the median absolute deviation from the median (MADFM) is calculated
-%and corrected assuming Gaussianity to estimate the underlying standard
-%deviation $\sigma$. The Gaussianity (or Normality) assumption is
-%critical, as the MADFM does not give the same value as the usual rms
-%or standard deviation value -- for a Normal distribution
-%$N(\mu,\sigma)$ we find MADFM$=0.6744888\sigma$, but this will change
-%for different distributions. Since this ratio is corrected for, the
-%user need only think in the usual multiples of the rms when setting
-%\texttt{snrRecon}. See Appendix~\ref{app-madfm} for a derivation of
-%this value.
 
 When thresholding the different wavelet scales, the value of the rms
 as measured from the wavelet array needs to be scaled to account for
@@ -556,6 +543,9 @@ integrated flux. The advantage of this approach is that the pixel
 locations can be easily applied to different flux arrays as the need
 permits (for instance, defining them using the reconstructed array,
 yet evaluating parameters on the original array).
+
+This scan-based run-length encoding is how the individual detections
+are stored in the binary catalogue described in \S\ref{sec-bincat}.
 
 \secC{Technique}
 
