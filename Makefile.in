@@ -46,7 +46,8 @@ UTILDIR = $(BASE)/Utils
 OUTPUTSDIR = $(BASE)/Outputs
 TESTDIR = ./verification
 
-HEADS = $(BASE)/duchamp.hh\
+HEADS = $(BASE)/config.h\
+	$(BASE)/duchamp.hh\
 	$(BASE)/pgheader.hh\
 	$(BASE)/param.hh\
 	$(BASE)/fitsHeader.hh\
