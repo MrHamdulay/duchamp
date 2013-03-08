@@ -78,7 +78,8 @@ Other
 
 * The code-base for reading from and writing to FITS files has been
   overhauled and streamlined. It can now be found in the FitsIO
-  directory.
+  directory. The interface for the writing of FITS files via the Cube
+  class has not changed.
 
 * The User Guide has been slightly re-ordered to provide more explicit
   information about the source parameters.
