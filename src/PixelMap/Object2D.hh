@@ -123,7 +123,7 @@ namespace PixelInfo
     /// @brief Return a measurement of the primary position angle
     double getPositionAngle();
     /// @brief Return the lengths of the principal axes.
-    std::pair<double,double> getPrincipleAxes();
+    std::pair<double,double> getPrincipalAxes();
     /// @brief Find the best fitting ellipse weighted by some flux array
     bool findEllipse(bool weightByFlux, float *array, size_t xdim, size_t ydim, int xzero, int yzero, float x0, float y0);
 
@@ -148,9 +148,9 @@ namespace PixelInfo
     float             ySum;           ///< Sum of y values
     long              xmin,xmax;      ///< min and max x-values of object
     long              ymin,ymax;      ///< min and max y-values of object
-    double            majorAxis;      ///< fitted major principle axis
-    double            minorAxis;      ///< fitted minor principle axis
-    double            posAngle;       ///< fitted position angle of principle axis
+    double            majorAxis;      ///< fitted major principal axis
+    double            minorAxis;      ///< fitted minor principal axis
+    double            posAngle;       ///< fitted position angle of principal axis
   };
 
 }

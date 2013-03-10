@@ -858,7 +858,7 @@ namespace duchamp
       }
       else {
 	  Object2D spatMap = this->getSpatialMap();
-	  std::pair<double,double> axes = spatMap.getPrincipleAxes();
+	  std::pair<double,double> axes = spatMap.getPrincipalAxes();
 	  this->majorAxis = std::max(axes.first,axes.second) * head.getAvPixScale();
 	  this->minorAxis = std::min(axes.first,axes.second) * head.getAvPixScale();
 	  this->posang = spatMap.getPositionAngle() * 180. / M_PI;

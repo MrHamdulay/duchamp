@@ -385,7 +385,7 @@ namespace PixelInfo
 
   //------------------------------------------------------
 
-  std::pair<double,double> Object2D::getPrincipleAxes()
+  std::pair<double,double> Object2D::getPrincipalAxes()
   {
 
     double theta = this->getPositionAngle();
