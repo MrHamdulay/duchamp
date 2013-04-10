@@ -1714,6 +1714,7 @@ namespace duchamp
     OUTCOME Cube::saveReconstructedCube()
     {
 	std::string report;
+	OUTCOME result=SUCCESS;
 	if(!this->par.getFlagUsePrevious()){
 	    if(this->par.getFlagATrous()){
 		if(this->par.getFlagOutputRecon()){
@@ -1721,43 +1722,47 @@ namespace duchamp
 			std::cout << "  Saving reconstructed cube to " << this->par.outputReconFile() << "... "<<std::flush;
 		    WriteReconArray writer(this);
 		    writer.setFilename(this->par.outputReconFile());
-		    OUTCOME result = writer.write();
+		    result = writer.write();
 		    report=(result==FAILURE)?"Failed!":"done.";
 		    if(this->par.isVerbose()) std::cout << report << "\n";
 		}
-		if(this->par.getFlagOutputResid()){
+		if(result==SUCCESS && this->par.getFlagOutputResid()){
 		    if(this->par.isVerbose())
 			std::cout << "  Saving reconstruction residual cube to " << this->par.outputResidFile() << "... "<<std::flush;
 		    WriteReconArray writer(this);
 		    writer.setFilename(this->par.outputResidFile());
 		    writer.setIsRecon(false);
-		    OUTCOME result = writer.write();
+		    result = writer.write();
 		    report=(result==FAILURE)?"Failed!":"done.";
 		    if(this->par.isVerbose()) std::cout << report << "\n";
 		}
 	    }
 	}
+	return result;
     }
 
     OUTCOME Cube::saveSmoothedCube()
     {
 	std::string report;
+	OUTCOME result=SUCCESS;
 	if(!this->par.getFlagUsePrevious()){
 	    if(this->par.getFlagSmooth() && this->par.getFlagOutputSmooth()){
 		if(this->par.isVerbose())
 		    std::cout << "  Saving smoothed cube to " << this->par.outputSmoothFile() << "... "<<std::flush;
 		WriteSmoothArray writer(this);
 		writer.setFilename(this->par.outputSmoothFile());
-		OUTCOME result = writer.write();
+		result = writer.write();
 		report=(result==FAILURE)?"Failed!":"done.";
 		if(this->par.isVerbose()) std::cout << report << "\n";
 	    }
 	}
+	return result;
     }
 
     OUTCOME Cube::saveMaskCube()
     {
 	std::string report;
+	OUTCOME result=SUCCESS;
 	if(this->par.getFlagOutputMask()){
 	    if(this->par.isVerbose())
 		std::cout << "  Saving mask cube to " << this->par.outputMaskFile() << "... "<<std::flush;
@@ -1767,11 +1772,13 @@ namespace duchamp
 	    report=(result==FAILURE)?"Failed!":"done.";
 	    if(this->par.isVerbose()) std::cout << report << "\n";
 	}
+	return result;
     }
 
     OUTCOME Cube::saveMomentMapImage()
     {
 	std::string report;
+	OUTCOME result=SUCCESS;
 	if(this->par.getFlagOutputMomentMap()){
 	    if(this->par.isVerbose())
 		std::cout << "  Saving moment map to " << this->par.outputMomentMapFile() << "... "<<std::flush;
@@ -1781,11 +1788,13 @@ namespace duchamp
 	    report=(result==FAILURE)?"Failed!":"done.";
 	    if(this->par.isVerbose()) std::cout << report << "\n";
 	}
+	return result;
     }
 
     OUTCOME Cube::saveMomentMask()
     {
 	std::string report;
+	OUTCOME result=SUCCESS;
 	if(this->par.getFlagOutputMomentMask()){
 	    if(this->par.isVerbose())
 		std::cout << "  Saving moment-0 mask to " << this->par.outputMomentMaskFile() << "... "<<std::flush;
@@ -1795,11 +1804,13 @@ namespace duchamp
 	    report=(result==FAILURE)?"Failed!":"done.";
 	    if(this->par.isVerbose()) std::cout << report << "\n";
 	}
+	return result;
     }
 
     OUTCOME Cube::saveBaselineCube()
     {
 	std::string report;
+	OUTCOME result=SUCCESS;
 	if(this->par.getFlagOutputBaseline()){
 	    if(this->par.isVerbose())
 		std::cout << "  Saving baseline cube to " << this->par.outputBaselineFile() << "... "<<std::flush;
@@ -1809,6 +1820,7 @@ namespace duchamp
 	    report=(result==FAILURE)?"Failed!":"done.";
 	    if(this->par.isVerbose()) std::cout << report << "\n";
 	}
+	return result;
     }
     
     void Cube::writeToFITS()
