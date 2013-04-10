@@ -65,14 +65,14 @@ public:
   void   setKernelWidth(float width){kernWidth = width;};
 
   /// @brief Smooth an array with the Gaussian kernel
-  Type *smooth(Type *input, int xdim, int ydim, EDGES edgeTreatment=EQUALTOEDGE);  
+  Type *smooth(Type *input, size_t xdim, size_t ydim, EDGES edgeTreatment=EQUALTOEDGE);  
   /// @brief Smooth an array with the Gaussian kernel, using a mask to define blank pixels
-  Type *smooth(Type *input, int xdim, int ydim, bool *mask, EDGES edgeTreatment=EQUALTOEDGE);  
+  Type *smooth(Type *input, size_t xdim, size_t ydim, bool *mask, EDGES edgeTreatment=EQUALTOEDGE);  
   
   void   setKernMaj(float f){kernMaj=f;};
   void   setKernMin(float f){kernMin=f;};
   void   setKernPA(float f){kernPA=f;};
-
+ 
   Type   getKernelPt(int i){return kernel[i];};
   Type  *getKernel(){return kernel;};
 
@@ -82,11 +82,13 @@ public:
   void   setBlankVal(Type b){blankVal = b;};
   Type   getBlankVal(){return blankVal;};
 
+    bool isAllocated(){return allocated;};
+
 private:
   float  kernMaj;      ///< The FWHM of the major axis of the elliptical Gaussian.
   float  kernMin;      ///< The FWHM of the minor axis of the elliptical Gaussian.
   float  kernPA;       ///< The position angle of the elliptical Gaussian.
-  int    kernWidth;    ///< The width of the kernel (in pixels).
+  size_t kernWidth;    ///< The width of the kernel (in pixels).
   float  stddevScale;  ///< The factor by which the rms of the input array gets scaled by (assuming iid normally)
   Type  *kernel;       ///< The coefficients of the smoothing kernel
   bool   allocated;    ///< Have the coefficients been allocated in memory?
@@ -97,3 +99,4 @@ private:
 #include <duchamp/Utils/GaussSmooth2D.tcc>
 
 #endif  // GAUSSSMOOTH2D_H
+ 

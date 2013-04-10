@@ -191,31 +191,25 @@ void Cube::SpatialSmooth()
 	if(useBar) bar.init(zdim);
       }
 
-      float *image = new float[xySize];
+      float *image=0;
 
       for(size_t z=0;z<zdim;z++){
 
 	if( this->par.isVerbose() && useBar ) bar.update(z+1);
       
-	for(size_t pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];
+	image = this->array + z*xySize;
     
-	bool *mask      = this->par.makeBlankMask(image+z*xySize,xySize);
+	bool *mask      = this->par.makeBlankMask(image,xySize);
     
 	float *smoothed = gauss.smooth(image,xdim,ydim,mask);
     
-	for(size_t pix=0;pix<xySize;pix++){
-	  if(!mask[pix])
-	    this->recon[z*xySize+pix] = this->array[z*xySize+pix];
-	  else
+	for(size_t pix=0;pix<xySize;pix++) 
 	    this->recon[z*xySize+pix] = smoothed[pix];
-	}
 
-	delete [] smoothed;
+	if(gauss.isAllocated()) delete [] smoothed;
 	delete [] mask;
       }
 
-      delete [] image;
- 
       this->reconExists = true;
   
       if(par.isVerbose()){

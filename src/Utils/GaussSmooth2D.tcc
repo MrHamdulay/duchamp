@@ -47,7 +47,7 @@ void GaussSmooth2D<Type>::defaults()
 {
   this->allocated=false;
   this->blankVal = Type(-99);
-  this->kernWidth = -1;
+  this->kernWidth = 0;
 }
 
 template <class Type>
@@ -122,10 +122,11 @@ void GaussSmooth2D<Type>::define(float maj, float min, float pa)
   // on the number of pixels needed to make the exponential drop to
   // less than the minimum floating-point value. Use the major axis to
   // get the largest square that includes the ellipse.
-  float majorSigma = this->kernMaj / (4.*M_LN2);
-  int kernelHW = int(ceil(majorSigma * sqrt(-2.*log(1. / MAXVAL))));
+  // float majorSigma = this->kernMaj / (4.*M_LN2);
+  float majorSigma = this->kernMaj / (2*sqrt(2.*M_LN2));
+  unsigned int kernelHW = (unsigned int)(ceil(majorSigma * sqrt(-2.*log(1. / MAXVAL))));
 
-  if(this->kernWidth < 0) this->kernWidth = 2*kernelHW + 1;
+  if(this->kernWidth == 0) this->kernWidth = size_t(2*kernelHW + 1);
   else if(this->kernWidth < 2*kernelHW + 1){
     DUCHAMPWARN("GaussSmooth2D::define","You have provided a kernel smaller than optimal (" << this->kernWidth << " cf. " << 2*kernelHW + 1 <<")");
   }
@@ -136,23 +137,29 @@ void GaussSmooth2D<Type>::define(float maj, float min, float pa)
   this->stddevScale=0.;
   float posang = this->kernPA * M_PI/180.;
 
+  float normalisation = 2. * M_PI * sqrt(sigmaX2*sigmaY2);
+  float kernSum = 0.;
+  for(size_t i=0;i<this->kernWidth;i++){
+    for(size_t j=0;j<this->kernWidth;j++){
+      float xpt = int(i-kernelHW)*sin(posang) - int(j-kernelHW)*cos(posang);
 
-  for(int i=0;i<this->kernWidth;i++){
-    for(int j=0;j<this->kernWidth;j++){
-      float xpt = (i-kernelHW)*sin(posang) - (j-kernelHW)*cos(posang);
-
-      float ypt = (i-kernelHW)*cos(posang) + (j-kernelHW)*sin(posang);
+      float ypt = int(i-kernelHW)*cos(posang) + int(j-kernelHW)*sin(posang);
       float rsq = (xpt*xpt/sigmaX2) + (ypt*ypt/sigmaY2);
-      kernel[i*this->kernWidth+j] = exp( -0.5 * rsq);
+      this->kernel[i*this->kernWidth+j] = exp( -0.5 * rsq)/normalisation;
+      kernSum += this->kernel[i*this->kernWidth + j];
       this->stddevScale += 
 	kernel[i*this->kernWidth+j]*kernel[i*this->kernWidth+j];
     }
   }
+  
+//  std::cerr << "Normalisation = " << normalisation << ", kernSum = " << kernSum << ", kernel size = " << kernWidth << ", kernelHW = " << kernelHW <<", majorSigma = " << majorSigma << ", sigmaX2="<< sigmaX2 <<", sigmaY2="<<sigmaY2<<"\n";
+
+  for(size_t i=0;i<this->kernWidth*this->kernWidth; i++) this->kernel[i] /= kernSum;
   this->stddevScale = sqrt(this->stddevScale);
 }
 
 template <class Type>
-Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, EDGES edgeTreatment)
+Type *GaussSmooth2D<Type>::smooth(Type *input, size_t xdim, size_t ydim, EDGES edgeTreatment)
 {
   /// @details
   /// Smooth a given two-dimensional array, of dimensions xdim
@@ -167,14 +174,14 @@ Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, EDGES edgeTre
 
   Type *smoothed;
   bool *mask = new bool[xdim*ydim];
-  for(int i=0;i<xdim*ydim;i++) mask[i]=true;
+  for(size_t i=0;i<xdim*ydim;i++) mask[i]=true;
   smoothed = this->smooth(input,xdim,ydim,mask,edgeTreatment);
   delete [] mask;
   return smoothed;
 }
 
 template <class Type>
-Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, EDGES edgeTreatment)
+Type *GaussSmooth2D<Type>::smooth(Type *input, size_t xdim, size_t ydim, bool *mask, EDGES edgeTreatment)
 {
   /// @details
   ///  Smooth a given two-dimensional array, of dimensions xdim
@@ -203,16 +210,17 @@ Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, E
 
     Type *output = new Type[xdim*ydim];
 
-    int pos,comp,xcomp,ycomp,fpos,ct;
+    size_t pos,comp,xcomp,ycomp,fpos;
+    int ct;
     float fsum,kernsum=0;
-    int kernelHW = this->kernWidth/2;
+    unsigned int kernelHW = this->kernWidth/2;
 
-    for(int i=0;i<this->kernWidth;i++)
-      for(int j=0;j<this->kernWidth;j++)
+    for(size_t i=0;i<this->kernWidth;i++)
+      for(size_t j=0;j<this->kernWidth;j++)
 	kernsum += this->kernel[i*this->kernWidth+j];
 
-    for(int ypos = 0; ypos<ydim; ypos++){
-      for(int xpos = 0; xpos<xdim; xpos++){
+    for(size_t ypos = 0; ypos<ydim; ypos++){
+      for(size_t xpos = 0; xpos<xdim; xpos++){
 	pos = ypos*xdim + xpos;
       
 	if(!mask[pos]) output[pos] = input[pos];
@@ -226,11 +234,11 @@ Type *GaussSmooth2D<Type>::smooth(Type *input, int xdim, int ydim, bool *mask, E
 	  fsum=0.;
 	  output[pos] = 0.;
 	
-	  for(int yoff = -kernelHW; yoff<=kernelHW; yoff++){
+	  for(int yoff = -int(kernelHW); yoff<=int(kernelHW); yoff++){
 	    ycomp = ypos + yoff;
 	    if((ycomp>=0)&&(ycomp<ydim)){
 
-	      for(int xoff = -kernelHW; xoff<=kernelHW; xoff++){
+		for(int xoff = -int(kernelHW); xoff<=int(kernelHW); xoff++){
 		xcomp = xpos + xoff;	      
 		if((xcomp>=0)&&(xcomp<xdim)){
 
