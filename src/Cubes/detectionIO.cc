@@ -69,7 +69,7 @@ namespace duchamp
 	if(this->par.getFlagDS9())
 	  writer = new DS9AnnotationWriter(this->par.getDS9File());
 	break;
-      case 2://DS9
+      case 2://CASA
 	if(this->par.getFlagCasa())
 	  writer = new CasaAnnotationWriter(this->par.getCasaFile());
 	break;	
