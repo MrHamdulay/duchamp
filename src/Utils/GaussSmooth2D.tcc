@@ -135,7 +135,7 @@ void GaussSmooth2D<Type>::define(float maj, float min, float pa)
   this->kernel = new Type[this->kernWidth*this->kernWidth];
   this->allocated = true;
   this->stddevScale=0.;
-  float posang = this->kernPA * M_PI/180.;
+  float posang = (this->kernPA+90.) * M_PI/180.;
 
   float normalisation = 2. * M_PI * sqrt(sigmaX2*sigmaY2);
   float kernSum = 0.;
