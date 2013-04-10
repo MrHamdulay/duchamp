@@ -228,7 +228,10 @@ namespace duchamp
     float max,min;
     int loc=0;
     if(this->par.getMinMW()>0) max = min = specy[0];
-    else max = min = specy[this->par.getMaxMW()+1];
+    else{
+	loc = std::max(this->par.getMaxMW()+1,0);
+	max = min = specy[loc];
+    }
     for(int i=0;i<zdim;i++){
       if(!this->par.isInMW(i)){
 	if(specy[i]>max) max=specy[i];
@@ -238,6 +241,7 @@ namespace duchamp
 	}
       }
     }
+
     // widen the ranges slightly so that the top & bottom & edges don't 
     // lie on the axes.
     width = max - min;

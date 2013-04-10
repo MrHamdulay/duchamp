@@ -62,16 +62,18 @@ namespace duchamp
     int count=0;
     for(int i=0;i<xdim*ydim;i++) {
       if(this->detectMap[i]>0){
-	float logmm = log10(momentMap[i]);
-	bool addPixel = detectedPixels[i];
-	if(addPixel){
-	  if(count==0) z1 = z2 = logmm;
-	  else{
-	    if(logmm < z1) z1 = logmm;
-	    if(logmm > z2) z2 = logmm;
+	  if(momentMap[i]>0){
+	      float logmm = log10(momentMap[i]);
+	      bool addPixel = detectedPixels[i];
+	      if(addPixel){
+		  if(count==0) z1 = z2 = logmm;
+		  else{
+		      if(logmm < z1) z1 = logmm;
+		      if(logmm > z2) z2 = logmm;
+		  }
+		  count++;
+	      }
 	  }
-	  count++;
-	}
       }
     }
     
