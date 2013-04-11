@@ -38,6 +38,7 @@ namespace duchamp
 
   Section::Section()
   {
+    this->subsection = "";
     this->numSections = 0;
     this->flagParsed = false;
   }
@@ -111,6 +112,12 @@ namespace duchamp
     /// \return SUCCESS/FAILURE (from duchamp.hh)
 
     std::stringstream errmsg;
+
+    // Return an error if we haven't set the subsection yet.
+    if(this->subsection == ""){
+	DUCHAMPERROR("Section parsing", "Subsection has not yet been defined.");
+	return FAILURE;
+    }
 
     // First Make sure subsection has [ and ] at ends
     if((this->subsection[0]!='[') || 

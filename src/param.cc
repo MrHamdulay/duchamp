@@ -73,7 +73,7 @@ namespace duchamp
     // Input files
     this->imageFile         = "";
     this->flagSubsection    = false;
-    this->pixelSec.setSection(defaultSection);
+    this->pixelSec          = Section();
     this->flagReconExists   = false;
     this->reconFile         = "";
     this->flagSmoothExists  = false;
@@ -166,7 +166,7 @@ namespace duchamp
     this->FDRnumCorChan     = 2;
     // Other detection      
     this->flagStatSec       = false;
-    this->statSec.setSection(defaultSection);
+    this->statSec           = Section();
     this->flagRobustStats   = true;
     this->snrCut            = 5.;
     this->threshold         = 0.;
