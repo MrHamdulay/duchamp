@@ -171,7 +171,7 @@ namespace duchamp
     this->pixelSec = this->pixelSec.intersect(dim);
     if(this->pixelSec.parse(dim)==FAILURE) return FAILURE;
     if(!this->pixelSec.isValid()){
-      DUCHAMPERROR("parseSubsections","pixel section does not include any pixels");
+      DUCHAMPERROR("parseSubsections","pixel section is not valid");
       return FAILURE;
     }
     
@@ -180,7 +180,7 @@ namespace duchamp
       this->statSec = this->statSec.intersect(dim);
       if(this->statSec.parse(dim)==FAILURE) return FAILURE;
       if(!this->statSec.isValid()){
-	DUCHAMPERROR("parseSubsections","StatSec does not include any pixels");
+	DUCHAMPERROR("parseSubsections","StatSec is not valid");
 	return FAILURE;
       }
       this->statSec = this->statSec.intersect(this->pixelSec);
