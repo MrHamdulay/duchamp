@@ -226,18 +226,19 @@ namespace duchamp
     }
   
     float max,min;
-    int loc=0;
     if(this->par.getMinMW()>0) max = min = specy[0];
-    else{
-	loc = std::max(this->par.getMaxMW()+1,0);
-	max = min = specy[loc];
-    }
+    else max = min = specy[std::max(this->par.getMaxMW()+1,0)];
     for(int i=0;i<zdim;i++){
       if(!this->par.isInMW(i)){
 	if(specy[i]>max) max=specy[i];
-	if(specy[i]<min){
-	  min=specy[i];
-	  loc = i;
+	if(specy[i]<min) min=specy[i];
+ 	if(this->par.getFlagBaseline()){
+	    if(base[i]>max) max=base[i];
+	    if(base[i]<min) min=base[i];
+	}
+	if(this->reconExists){
+	    if(specy2[i]>max) max=specy2[i];
+	    if(specy2[i]<min) min=specy2[i];
 	}
       }
     }
