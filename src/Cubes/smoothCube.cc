@@ -173,7 +173,7 @@ void Cube::SpatialSmooth()
       size_t zdim = this->axisDim[2];
 
       ProgressBar bar;
-      bool useBar = this->par.isVerbose && (zdim > 1);
+      bool useBar = this->par.isVerbose() && (zdim > 1);
       
       // if kernMin is negative (not defined), make it equal to kernMaj
       if(this->par.getKernMin() < 0) 
