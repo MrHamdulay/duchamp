@@ -59,8 +59,6 @@ void Cube::SmoothSearch()
 
     this->setCubeStats();
 
-//       this->Stats.scaleNoise(1./gauss.getStddevScale());
-
     if(this->par.isVerbose()) std::cout << "  Searching... " << std::flush;
   
     *(this->objectList) = search3DArray(this->axisDim,this->recon,
@@ -175,8 +173,7 @@ void Cube::SpatialSmooth()
       size_t zdim = this->axisDim[2];
 
       ProgressBar bar;
-//       bool useBar = this->head.canUseThirdAxis();
-      bool useBar = (zdim > 1);
+      bool useBar = this->par.isVerbose && (zdim > 1);
       
       // if kernMin is negative (not defined), make it equal to kernMaj
       if(this->par.getKernMin() < 0) 
@@ -191,12 +188,15 @@ void Cube::SpatialSmooth()
 	if(useBar) bar.init(zdim);
       }
 
+      // pointer used to point to start of a given channel's image
+      //  Can do this because the spatial axes vary the quickest.
       float *image=0;
 
       for(size_t z=0;z<zdim;z++){
 
-	if( this->par.isVerbose() && useBar ) bar.update(z+1);
+	if(useBar) bar.update(z+1);
       
+	// update pointer to point to current channel
 	image = this->array + z*xySize;
     
 	bool *mask      = this->par.makeBlankMask(image,xySize);

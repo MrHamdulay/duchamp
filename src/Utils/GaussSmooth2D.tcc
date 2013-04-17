@@ -138,7 +138,6 @@ void GaussSmooth2D<Type>::define(float maj, float min, float pa)
   float posang = -1.*(this->kernPA+90.) * M_PI/180.;
 
   float normalisation = 2. * M_PI * sqrt(sigmaX2*sigmaY2);
-  float kernSum = 0.;
   for(size_t i=0;i<this->kernWidth;i++){
     for(size_t j=0;j<this->kernWidth;j++){
       float xpt = int(i-kernelHW)*sin(posang) - int(j-kernelHW)*cos(posang);
@@ -146,15 +145,13 @@ void GaussSmooth2D<Type>::define(float maj, float min, float pa)
       float ypt = int(i-kernelHW)*cos(posang) + int(j-kernelHW)*sin(posang);
       float rsq = (xpt*xpt/sigmaX2) + (ypt*ypt/sigmaY2);
       this->kernel[i*this->kernWidth+j] = exp( -0.5 * rsq)/normalisation;
-      kernSum += this->kernel[i*this->kernWidth + j];
-      this->stddevScale += 
-	kernel[i*this->kernWidth+j]*kernel[i*this->kernWidth+j];
+      this->stddevScale += kernel[i*this->kernWidth+j]*kernel[i*this->kernWidth+j];
     }
   }
   
 //  std::cerr << "Normalisation = " << normalisation << ", kernSum = " << kernSum << ", kernel size = " << kernWidth << ", kernelHW = " << kernelHW <<", majorSigma = " << majorSigma << ", sigmaX2="<< sigmaX2 <<", sigmaY2="<<sigmaY2<<"\n";
 
-  for(size_t i=0;i<this->kernWidth*this->kernWidth; i++) this->kernel[i] /= kernSum;
+//  for(size_t i=0;i<this->kernWidth*this->kernWidth; i++) this->kernel[i] /= kernSum;
   this->stddevScale = sqrt(this->stddevScale);
 }
 
