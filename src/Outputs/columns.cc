@@ -174,35 +174,39 @@ namespace duchamp
       /// otherwise. False if tableType not one of four listed.
       
  
-      std::string FileList[39]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA","WRA","WDEC",
-				"W50","W20","WVEL","FINT", "FINTERR", "FTOT", "FTOTERR", "FPEAK","SNRPEAK",
-				"X1","X2","Y1","Y2","Z1","Z2","NPIX","FLAG","XAV","YAV",
-				"ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
-      std::string ScreenList[22]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA",
-				  "W50","FPEAK","SNRPEAK","X1","X2","Y1",
-				  "Y2","Z1","Z2","NPIX","FLAG"};
-      std::string LogList[16]={"NUM","X","Y","Z","FTOT","FPEAK","SNRPEAK",
-			       "X1","X2","Y1","Y2","Z1","Z2","NPIX","NUMCH","SPATSIZE"};
-      std::string VOList[23]={"NUM","NAME","RAJD","DECJD","VEL","MAJ","MIN","PA",
-			    "W50","W20","WVEL","FPEAK","SNRPEAK","FLAG","XAV","YAV",
-			    "ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
+      const size_t sizeFileList=39;
+      std::string FileList[sizeFileList]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA","WRA","WDEC",
+					  "W50","W20","WVEL","FINT", "FINTERR", "FTOT", "FTOTERR", "FPEAK","SNRPEAK",
+					  "X1","X2","Y1","Y2","Z1","Z2","NPIX","FLAG","XAV","YAV",
+					  "ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
+      const size_t sizeScreenList=22;
+      std::string ScreenList[sizeScreenList]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA",
+					      "W50","FPEAK","SNRPEAK","X1","X2","Y1",
+					      "Y2","Z1","Z2","NPIX","FLAG"};
+      const size_t sizeLogList=16;
+      std::string LogList[sizeLogList]={"NUM","X","Y","Z","FTOT","FPEAK","SNRPEAK",
+					"X1","X2","Y1","Y2","Z1","Z2","NPIX","NUMCH","SPATSIZE"};
+      const size_t sizeVOList=23;
+      std::string VOList[sizeVOList]={"NUM","NAME","RAJD","DECJD","VEL","MAJ","MIN","PA",
+				      "W50","W20","WVEL","FPEAK","SNRPEAK","FLAG","XAV","YAV",
+				      "ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
 
       bool doIt=false;
       if(tableType == FILE){
-	for(int i=0;i<38 && !doIt;i++) doIt = doIt || (this->itsType==FileList[i]);
+	for(size_t i=0;i<sizeFileList && !doIt;i++) doIt = doIt || (this->itsType==FileList[i]);
       }
       else if(tableType == SCREEN){
       	if(this->itsType=="FTOT") doIt = !flagFint;
 	else if(this->itsType == "FINT") doIt = flagFint;
-	else for(int i=0;i<22 && !doIt;i++) doIt = doIt || (this->itsType==ScreenList[i]);
+	else for(size_t i=0;i<sizeScreenList && !doIt;i++) doIt = doIt || (this->itsType==ScreenList[i]);
       }
       else if(tableType == LOG){
-	for(int i=0;i<16 && !doIt;i++) doIt = doIt || (this->itsType==LogList[i]);
+	for(size_t i=0;i<sizeLogList && !doIt;i++) doIt = doIt || (this->itsType==LogList[i]);
       }
       else if(tableType == VOTABLE){
      	if(this->itsType=="FTOT" || this->itsType=="FTOTERR") doIt = !flagFint;
 	else if(this->itsType == "FINT" || this->itsType=="FINTERR") doIt = flagFint;
-	else for(int i=0;i<23 && !doIt;i++) doIt = doIt || (this->itsType==VOList[i]);
+	else for(size_t i=0;i<sizeVOList && !doIt;i++) doIt = doIt || (this->itsType==VOList[i]);
       }
       return doIt;
 	
