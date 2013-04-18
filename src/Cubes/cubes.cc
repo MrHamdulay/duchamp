@@ -1318,9 +1318,21 @@ namespace duchamp
 	obj->calcIntegFlux(this->array,this->axisDim,this->head);
 
 	if(!this->par.getFlagUserThreshold()){
-	    obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
-	    obj->setTotalFluxError( sqrt(float(obj->getSize())) * this->Stats.getSpread() );
-	    obj->setIntegFluxError( sqrt(double(obj->getSize())) * this->Stats.getSpread() );
+	    
+	    float peak=obj->getPeakFlux();
+	    if(this->par.getFlagATrous() || this->par.getFlagSmooth()) {
+		// for these situations, need to measure peak flux in the reconstructed array, where we do the searching
+		Detection *newobj = new Detection(*obj);
+		newobj->calcFluxes(this->recon,this->axisDim);
+		peak=newobj->getPeakFlux();
+	    }
+	    obj->setPeakSNR( (peak - this->Stats.getMiddle()) / this->Stats.getSpread() );
+
+	    if(!this->par.getFlagSmooth()){
+		obj->setTotalFluxError( sqrt(float(obj->getSize())) * this->Stats.getSpread() );
+		obj->setIntegFluxError( sqrt(double(obj->getSize())) * this->Stats.getSpread() );
+	    }
+
 	    if(!this->head.is2D()){
 		double x=obj->getXcentre(),y=obj->getYcentre(),z1=obj->getZcentre(),z2=z1+1;
 		double dz=this->head.pixToVel(x,y,z1)-this->head.pixToVel(x,y,z2);
@@ -1374,9 +1386,21 @@ namespace duchamp
 	obj->calcIntegFlux(this->axisDim[2],bigVoxList[ct],this->head);
 	
 	if(!this->par.getFlagUserThreshold()){
-	  obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
-	  obj->setTotalFluxError( sqrt(float(obj->getSize())) * this->Stats.getSpread() );
-	  obj->setIntegFluxError( sqrt(double(obj->getSize())) * this->Stats.getSpread() );
+
+	    float peak=obj->getPeakFlux();
+	    if(this->par.getFlagATrous() || this->par.getFlagSmooth()) {
+		// for these situations, need to measure peak flux in the reconstructed array, where we do the searching
+		Detection *newobj = new Detection(*obj);
+		newobj->calcFluxes(this->recon,this->axisDim);
+		peak=newobj->getPeakFlux();
+	    }
+	    obj->setPeakSNR( (peak - this->Stats.getMiddle()) / this->Stats.getSpread() );
+
+	    if(!this->par.getFlagSmooth()){
+		obj->setTotalFluxError( sqrt(float(obj->getSize())) * this->Stats.getSpread() );
+		obj->setIntegFluxError( sqrt(double(obj->getSize())) * this->Stats.getSpread() );
+	    }
+
 	  if(!this->head.is2D()){
 	      double x=obj->getXcentre(),y=obj->getYcentre(),z1=obj->getZcentre(),z2=z1+1;
 	      double dz=this->head.pixToVel(x,y,z1)-this->head.pixToVel(x,y,z2);
@@ -1429,9 +1453,21 @@ namespace duchamp
 	obj->calcIntegFlux(this->axisDim[2],voxelMap,this->head);
 	
 	if(!this->par.getFlagUserThreshold()){
-	  obj->setPeakSNR( (obj->getPeakFlux() - this->Stats.getMiddle()) / this->Stats.getSpread() );
-	  obj->setTotalFluxError( sqrt(float(obj->getSize())) * this->Stats.getSpread() );
-	  obj->setIntegFluxError( sqrt(double(obj->getSize())) * this->Stats.getSpread() );
+	    
+	    float peak=obj->getPeakFlux();
+	    if(this->par.getFlagATrous() || this->par.getFlagSmooth()) {
+		// for these situations, need to measure peak flux in the reconstructed array, where we do the searching
+		Detection *newobj = new Detection(*obj);
+		newobj->calcFluxes(this->recon,this->axisDim);
+		peak=newobj->getPeakFlux();
+	    }
+	    obj->setPeakSNR( (peak - this->Stats.getMiddle()) / this->Stats.getSpread() );
+
+	    if(!this->par.getFlagSmooth()){
+		obj->setTotalFluxError( sqrt(float(obj->getSize())) * this->Stats.getSpread() );
+		obj->setIntegFluxError( sqrt(double(obj->getSize())) * this->Stats.getSpread() );
+	    }
+
 	  if(!this->head.is2D()){
 	      double x=obj->getXcentre(),y=obj->getYcentre(),z1=obj->getZcentre(),z2=z1+1;
 	      double dz=this->head.pixToVel(x,y,z1)-this->head.pixToVel(x,y,z2);
@@ -1552,6 +1588,11 @@ namespace duchamp
     if(this->par.getFlagUserThreshold()){
 	this->fullCols.removeColumn("FTOTERR");
 	this->fullCols.removeColumn("SNRPEAK");
+	this->fullCols.removeColumn("FINTERR");
+    }
+
+    if(this->par.getFlagSmooth()){
+	this->fullCols.removeColumn("FTOTERR");
 	this->fullCols.removeColumn("FINTERR");
     }
 
