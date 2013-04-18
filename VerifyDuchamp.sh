@@ -4,12 +4,12 @@ fullComp=true
 
 if [ $# -gt 0 ]; then
 
-    if [ $1 == "-f" ]; then
-	fullComp=true
+    if [ $1 == "-b" ]; then
+	fullComp=false
     else 
 	echo "VerifyDuchamp.sh: A script to run multiple Duchamp runs, testing different algorithms."
-	echo "   Options: -f - Full comparison. This may throw up differences arising merely from precision"
-	echo "                 The default is a basic comparison that won't be affected by precision changes"
+	echo "   Options: -b - Brief comparison. This is aimed at doing a limited test of the results, "
+        echo "                 and may avoid changes arising merely from precision"
 	echo "            -h - This help text."
 	exit 0
     fi
