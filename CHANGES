@@ -1,3 +1,43 @@
+Duchamp version 1.3.1 (2013/04/18)
+----------------------------------
+
+Bug fixes:
+
+* The kernel used in the 2D smoothing was not normalised properly,
+  which meant the fluxes in the smoothed array were scaled
+  incorrectly. The kernel is now normalised, so that the fluxes in the
+  smoothed array decrease (and to an increasing degree with larger
+  kernels, as expected).
+
+* The way the position angle of the smoothing kernel was interpreted
+  was wrong. It now conforms to the typical astronomical position
+  angle definition of degrees east of north.
+
+* The Z_PEAK column was being left out of the results file for
+  Duchamp-1.3. It has been put back in.
+
+* The calculation of S/Nmax has changed so that when smoothing or
+  reconstruction is done, the peak flux used is measured in the
+  reconstructed/smoothed array (where the noise is measured).
+
+* The flux errors are now not reported in the case of smoothing, since
+  we don't measure the noise in the original input image array.
+
+Other fixes:
+
+* The vertical range of the spectral plots now properly takes into
+  account all spectra (not just the input array), and quirks with a MW
+  range lying outside the plotted range have been fixed.
+
+* The flux scaling for the moment-0 map plot now ignores negative
+  values, meaning the scale should be sensible.
+
+* The spelling of the Object2D::getPrincipalAxes() has been corrected.
+
+* Minor code optimisations have been made to the smoothing code.
+
+* The subsection class is now initialised with a blank string.
+
 Duchamp version 1.3 (2013/03/08)
 --------------------------------
 
