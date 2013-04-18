@@ -1,6 +1,6 @@
 #!/bin/bash
 
-fullComp=false
+fullComp=true
 
 if [ $# -gt 0 ]; then
 
@@ -129,7 +129,7 @@ for (( i=0; i<${#number[@]}; i++ )); do
 
 #Test the Karma annotation files
     if [ $fullComp == true ]; then
-	numdiff=`diff $karma $Skarma | wc -l`
+	numdiff=`diff -I"Duchamp" $karma $Skarma | wc -l`
     else
 	grep -v -e "^#" $karma > $temp1
 	grep -v -e "^#" $Skarma > $temp2
@@ -149,7 +149,7 @@ for (( i=0; i<${#number[@]}; i++ )); do
 
 #Test the DS9 annotation files
     if [ $fullComp == true ]; then
-	numdiff=`diff $ds9 $Sds9 | wc -l`
+	numdiff=`diff -I"Duchamp" $ds9 $Sds9 | wc -l`
     else
 	grep -v -e "^#" $ds9 > $temp1
 	grep -v -e "^#" $Sds9 > $temp2
