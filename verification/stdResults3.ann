@@ -1,4 +1,4 @@
-# Duchamp Source Finder v.1.3beta
+# Duchamp Source Finder v.1.3
 # Results for FITS file: verification/verificationCube.fits
 # imageFile              verification/verificationCube.fits
 # flagSubsection         0
@@ -24,9 +24,9 @@
 # kernMin                3
 # kernPA                 0
 # flagATrous             0
-# Detection threshold used = 6.9475
-# Mean of noise background = 0.0653583
-# Std. Deviation of noise background = 2.29405
+# Detection threshold used = 0.681274
+# Mean of noise background = 0.00640906
+# Std. Deviation of noise background = 0.224955
 #  [Using robust methods]
 COLOR RED
 PA STANDARD
