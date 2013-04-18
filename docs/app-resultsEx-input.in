@@ -1,0 +1,137 @@
+imageFile	/Users/whi550/ObsData/cubes/H201_abcde_luther_chop.fits
+#imageFile	/Users/whi550/ObsData/cubes/H201_abcde_luther_chop_invert.fits
+#imageFile	/Users/whi550/ObsData/cubes/H201_abcde_luther_chop_invert_reinvert.fits
+#imageFile	/Users/whi550/ObsData/cubes/H201_abcde_luther_chop_tinypix.fits
+#imageFile	/Users/whi550/ObsData/cubes/H201_abcde_luther_chop.fitsa
+#imageFile	/DATA/SITAR_1/whi550/ObsData/cubes/H201_abcde_luther_chop.fits
+#imageFile	/DATA/SITAR_1/whi550/ObsData/cubes/H001_abcde_luther_chop.fits
+#imageFile	/DATA/SITAR_1/whi550/ObsData/cubes/H042_abcde_luther_chop.fits
+#imageFile	/DATA/SITAR_1/whi550/ObsData/cubes/H215_abcde_luther_chop.fits
+#imageFile	/DATA/SITAR_1/whi550/ObsData/cubes/H216_abcde_luther_chop.fits
+#imageFile	/DATA/SITAR_1/whi550/ObsData/cubes/H170_abcde_luther_chop.fits
+#imageFile	/DATA/SITAR_1/whi550/ObsData/cubes/H171_abcde_luther_chop.fits
+
+flagSeparateHeader 1
+#headerFile     
+
+#usePrevious true
+#objectList 1-10,15
+#flagPlotIndividualSpectra true
+
+#beamsize 1
+
+#newFluxUnits    mJy/beam
+#sortingParam    -pflux
+
+#flagRobustStats false
+
+#flagReconExists 1
+#reconFile       /DATA/SITAR_1/whi550/ObsData/cubes/H201_recon_test.fits
+#reconFile        /Users/whi550/ASKAP/SSP-interactions/WG2/Specifications/2D1D-refactored/H201_2d1d_nopositivity.fits
+#flagSmoothExists 1
+flagOutputRecon	1
+#fileOutputRecon latestRecon.fits
+flagOutputResid	1
+fileOutputResid latestResid.fits
+flagOutputSmooth 1
+fileOutputSmooth latestSmooth.fits
+flagOutputMask  1
+flagMaskWithObjectNum 1
+#flagMaskWithObjectNum 0
+fileOutputMask  latestmask2.fits
+flagOutputMomentMap 1
+fileOutputMomentMap latestmom0.fits
+flagOutputMomentMask 1
+fileOutputMomentMask latestmom0mask.fits
+flagOutputBaseline true
+fileOutputBaseline  latestBaseline.fits
+
+#flagNegative    1
+
+#flagSubsection  1
+#subsection      [29:42,14:46,112:1024]
+subsection      [15:145,30:140,*]
+#subsection      [31:130,47:146,*,*]
+#subsection       [1:1000,1:1000,1500:2000]
+#subsection      [31:80,31:80,112:1024]
+#subsection      [65:85,65:85,210:260]
+#subsection      [*,*,1:512]
+#subsection      [*,*,1:700]
+#subsection      [*,*,200:300]
+subsection      [*,*,225:240]
+#subsection       [*,*,10:1024]
+#subsection       [1:100,1:100,*]
+#subsection       [100:130,15:45,*]
+
+#flagBaseline    1
+
+#flagTrim        1
+flagMW		1
+minMW		75
+maxMW		112
+#maxMW		122
+
+#flagSmooth	1
+#smoothType      spatial
+smoothType      spectral
+hanningWidth    15
+#kernMaj         4
+kernMaj 10
+#kernMin         3
+
+flagATrous	1
+reconDim        1
+scaleMin	1
+snrRecon	4
+filterCode      1
+
+#flagFDR 	1
+alphaFDR	0.1
+FDRnumCorChan   2
+
+#threshold       60
+#threshold       .05
+#threshold        0.33
+#threshold 50
+#threshold 1.e6
+
+snrCut		3.5
+#snrCut          1.5
+#snrCut          1.e6
+flagstatsec     0
+statSec         [70:110,50:110,*]
+
+#flagGrowth	1
+growthCut	2.5
+#growthCut       0.25
+#growthThreshold 40
+#growthThreshold 0.03
+
+flagAdjacent    true
+threshSpatial	3
+threshVelocity	7
+minPix		5
+minChannels	3
+minVoxels       7
+#flagRejectBeforeMerge true
+flagTwoStageMerging false
+searchType      spectral
+
+#verbose         0
+pixelCentre     centroid
+#pixelCentre     average
+spectralMethod  peak
+#spectralMethod  sum
+
+flagLog         1
+flagVOT		1
+flagKarma	1  
+flagDS9  	1  
+flagCasa  	1  
+flagMaps	1
+flagTextSpectra 1
+annotationtype ellipses
+
+spectralType    VRAD
+#spectralUnits   MHz
+spectralUnits   km/s

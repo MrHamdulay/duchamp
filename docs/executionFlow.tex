@@ -413,8 +413,9 @@ be set to the same value, and \texttt{kernPA} to zero.  If we define
 these parameters as $a,b,\theta$ respectively, we can define the
 kernel by the function
 \[ 
-k(x,y) = \exp\left[-0.5 \left(\frac{X^2}{\sigma_X^2} + 
-                              \frac{Y^2}{\sigma_Y^2}   \right) \right] 
+k(x,y) = \frac{1}{2\pi\sigma_X\sigma_Y} \exp\left[-0.5
+  \left(\frac{X^2}{\sigma_X^2} + \frac{Y^2}{\sigma_Y^2} \right)
+\right]
 \]
 where $(x,y)$ are the offsets from the central pixel of the gaussian
 function, and 

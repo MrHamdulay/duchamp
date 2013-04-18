@@ -187,6 +187,7 @@ the two values obtained. If the detection threshold is greater than
 \texttt{w\_VEL}.
 
 \secB{Source flux, \texttt{F\_tot, F\_int, F\_peak}}
+\label{sec-fluxparams}
 
 %% THE FOLLOWING IS FROM THE MNRAS PAPER
 %The flux of the source is given by the peak flux and both the ``total
@@ -273,7 +274,10 @@ eF_\text{tot} &= & \sqrt{\sum C^2\sigma_i^2 \Delta v_i^2} \\&= &C \sigma
 \end{eqnarray*}
 In the case that a flux threshold is provided, these quantities are
 not calculated, since we don't measure the image noise
-statistics. 
+statistics. Likewise, when the array is smoothed we measure the noise
+only in the smoothed image, and this value is not applicable to the
+flux measured from the original image, so the errors are not
+reported. 
 
 
 \secB{Peak signal-to-noise, \texttt{S/Nmax}}
@@ -282,6 +286,14 @@ This parameter converts the peak flux to a signal-to-noise value,
 based on the measured noise level in the image. As for the error
 quantities above, if no noise is measured (\ie a flux threshold is
 provided by the user), then this is not calculated.
+
+When the array is pre-processed (via smoothing or wavelet
+reconstruction), we take the peak flux here to be the peak in the
+smoothed or reconstructed array. This is because this is where the
+detection is made, and so the \texttt{S/Nmax} value can be directly
+compared to the requested signal-to-noise threshold. Note that the
+peak flux discussed in \S\ref{sec-fluxparams} is always measured from
+the original image array.
 
 \secB{Pixel ranges, \texttt{X1, X2, Y1, Y2, Z1, Z2}}
 
