@@ -44,6 +44,9 @@ namespace duchamp
 	  if(this->reconExists) this->recon[i] *= -1.;
 	}
     }
+    std::vector<Detection>::iterator obj;
+    for(obj=this->objectList->begin(); obj<this->objectList->end(); obj++) 
+	obj->invert();
 
   }
 

@@ -139,7 +139,7 @@ int main(int argc, char * argv[])
 
     if(cube->pars().getFlagNegative()){
       std::cout<<"Un-Inverting the Cube... "<<std::flush;
-      cube->reInvert();
+      cube->invert();
       std::cout<<" Done."<<std::endl;
     }
 

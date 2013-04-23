@@ -82,6 +82,9 @@ namespace duchamp
     void   calcFluxes(std::vector<PixelInfo::Voxel> voxelList); 
     void   calcFluxes(std::map<Voxel,float> &voxelMap);
 
+      /// @brief Invert the source's flux values
+      void invert();
+
     /// @brief Calculate parameters related to the World Coordinate System. 
     //    void   calcWCSparams(float *fluxArray, long *dim, FitsHeader &head); 
     void   calcWCSparams(FitsHeader &head); 

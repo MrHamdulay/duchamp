@@ -266,6 +266,22 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
+    void Detection::invert()
+    {
+	/// @details
+	/// A front-end to simplify the inversion that is done at the Cube level.
+	/// The fluxes are made negative, and the negSource flag is flipped.
+	/// This can be used at any time - it doesn't matter which way the inversion is happening.
+
+	this->negSource = !this->negSource;
+	this->totalFlux = -1. * this->totalFlux;
+	this->intFlux = -1. * this->intFlux;
+	this->peakFlux = -1. * this->peakFlux;
+
+    }
+
+  //--------------------------------------------------------------------
+
   void Detection::calcFluxes(std::vector<Voxel> voxelList)
   {
     ///  @details
