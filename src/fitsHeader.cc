@@ -275,8 +275,6 @@ namespace duchamp
     this->offset= of;
     this->power = po;
     
-    this->setIntFluxUnits();
-
   }
 
   bool FitsHeader::needBeamSize()
