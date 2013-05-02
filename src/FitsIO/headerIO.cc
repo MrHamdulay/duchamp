@@ -100,6 +100,7 @@ namespace duchamp
     OUTCOME beamResult = this->readBeamInfo(fptr, par);
 
     if(this->wcs->spec>=0) this->fixSpectralUnits(par.getSpectralUnits());
+    else this->setIntFluxUnits();
 
     if(bunitResult == FAILURE || blankResult==FAILURE || beamResult==FAILURE ){
       DUCHAMPWARN("Cube Reader","Header could not be read completely");

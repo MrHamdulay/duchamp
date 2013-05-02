@@ -50,9 +50,9 @@ namespace duchamp
     this->flag2D=false;
     this->spectralUnits="";
     this->spectralDescription=duchamp::duchampSpectralDescription[FREQUENCY];
-    this->originalFluxUnits="counts";
-    this->fluxUnits="counts";
-    this->intFluxUnits="counts";
+    this->originalFluxUnits="";
+    this->fluxUnits="";
+    this->intFluxUnits="";
     this->scale=1.;
     this->offset=0.;
     this->power=1.;
