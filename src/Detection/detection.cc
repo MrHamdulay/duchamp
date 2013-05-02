@@ -812,7 +812,6 @@ namespace duchamp
 
   void Detection::findShape(const float *fluxArray, const size_t *dim, FitsHeader &head)
   {
-
       const long border=1; // include one pixel either side in each direction
       size_t x1 = size_t(std::max(long(0),this->xmin-border));
       size_t y1 = size_t(std::max(long(0),this->ymin-border));
@@ -826,27 +825,15 @@ namespace duchamp
       for(size_t i=0;i<spatsize;i++) momentMap[i]=0.;
       // work out which pixels are object pixels
       std::vector<Voxel> voxlist = this->getPixelSet();
-      float delta = head.isWCS() ? fabs(head.WCS().cdelt[head.WCS().spec]) : 1.;
+      float delta = (head.isWCS() && head.getWCS()->spec>=0) ? fabs(head.WCS().cdelt[head.WCS().spec]) : 1.;
+      float sign = this->negSource ? -1. : 1.;
       for(std::vector<Voxel>::iterator v=voxlist.begin();v<voxlist.end();v++){
 	  size_t spatpos=(v->getX()-x1) + (v->getY()-y1)*xsize;
 	  if(spatpos>=0 && spatpos<spatsize)
-	      momentMap[spatpos] += fluxArray[v->arrayIndex(dim)] * delta;
+	      momentMap[spatpos] += fluxArray[v->arrayIndex(dim)] * delta * sign;
 	  else DUCHAMPTHROW("findShape","Memory overflow - accessing spatpos="<<spatpos<<" when spatsize="<<spatsize);
       }
 
-      /*
-	bool ellipseGood = this->spatialMap.findEllipse(true, momentMap, xsize, ysize, x1, y1, this->xCentroid, this->yCentroid);  // try first by weighting the pixels by their flux
-	if(!ellipseGood) {
-      	ellipseGood = this->spatialMap.findEllipse(false, momentMap, xsize, ysize, x1, y1, this->xCentroid, this->yCentroid); // if that fails, remove the flux weighting
-      	this->flagText += "W";
-	}
-	if(ellipseGood){
-	// multiply axes by 2 to go from semi-major to FWHM...
-      	this->majorAxis = this->spatialMap.major() * head.getAvPixScale() * 2.;
-      	this->minorAxis = this->spatialMap.minor() * head.getAvPixScale() * 2.;
-      	this->posang = this->spatialMap.posAng() * 180. / M_PI;
-	}
-      */
       size_t smldim[2]; smldim[0]=xsize; smldim[1]=ysize;
       Image *smlIm = new Image(smldim);
       smlIm->saveArray(momentMap,spatsize);
@@ -854,31 +841,33 @@ namespace duchamp
       float max = *std::max_element(momentMap,momentMap+spatsize);
       smlIm->stats().setThreshold(max/2.);
       std::vector<Object2D> objlist=smlIm->findSources2D();
-      // std::cerr << max << " " << smlIm->stats().getThreshold() << " " << objlist.size()<<"\n";
 
       Object2D combined;
       for(size_t i=0;i<objlist.size();i++) combined = combined + objlist[i];
+      std::string extraFlag="";
       bool ellipseGood = combined.findEllipse(true, momentMap, xsize, ysize, 0,0, this->getXcentre()-x1, this->getYcentre()-y1); // try first by weighting the pixels by their flux
       if(!ellipseGood) {
 	  ellipseGood = combined.findEllipse(false, momentMap, xsize, ysize, 0,0, this->getXcentre()-x1, this->getYcentre()-y1); // if that fails, remove the flux weighting
-	  this->flagText += "W";
+	  extraFlag="W";
       }
+      float scale=head.getShapeScale();
       if(ellipseGood){
 	  // multiply axes by 2 to go from semi-major to FWHM...
-	  float scale=head.getShapeScale();
 	  this->majorAxis = combined.major() * head.getAvPixScale() * 2. * scale;
 	  this->minorAxis = combined.minor() * head.getAvPixScale() * 2. * scale;
 	  this->posang =    combined.posAng() * 180. / M_PI;
-
-	  // std::cerr << "*** " << combined.getSize()<< " " << majorAxis<<" " << minorAxis << " " << posang<< "\n";
+	  // std::cerr << "*** " << combined.getSize()<< " " << majorAxis<<" " << minorAxis << " " << posang<< " " << scale <<"\n";
       }
       else {
+	  extraFlag="w";
 	  Object2D spatMap = this->getSpatialMap();
 	  std::pair<double,double> axes = spatMap.getPrincipalAxes();
-	  this->majorAxis = std::max(axes.first,axes.second) * head.getAvPixScale();
-	  this->minorAxis = std::min(axes.first,axes.second) * head.getAvPixScale();
+	  this->majorAxis = std::max(axes.first,axes.second) * head.getAvPixScale() * scale;
+	  this->minorAxis = std::min(axes.first,axes.second) * head.getAvPixScale() * scale;
 	  this->posang = spatMap.getPositionAngle() * 180. / M_PI;
-      }
+ 	  // std::cerr << "** " << combined.getSize()<< " " << majorAxis<<" " << minorAxis << " " << posang<< " " << scale <<"\n";
+     }
+      this->flagText += extraFlag;
       
 
       delete smlIm;

@@ -341,7 +341,7 @@ namespace duchamp
       float scale;
       float cdelt = fabs(this->wcs->cdelt[this->wcs->lng]);
       if(cdelt>0.01) scale =1.;
-      else if(cdelt<5.e-4) scale=3600.;
+      else if(cdelt<1.e-3) scale=3600.;
       else scale = 60.;
       return scale;
   }
@@ -351,7 +351,7 @@ namespace duchamp
       std::string units="deg";
       float cdelt = fabs(this->wcs->cdelt[this->wcs->lng]);
       if(cdelt>0.01) units="deg";
-      else if(cdelt<5.e-4) units="arcsec";
+      else if(cdelt<1.e-3) units="arcsec";
       else units="arcmin";
       return units;
   }

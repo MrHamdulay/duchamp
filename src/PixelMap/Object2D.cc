@@ -315,11 +315,13 @@ namespace PixelInfo
   {
     bool result=true;
     double sumxx=0.,sumyy=0.,sumxy=0.,sumflux=0.;
+    int ct=0;
     std::vector<Scan>::iterator scn=this->scanlist.begin();
     for(;scn!=this->scanlist.end();scn++){
       int y = scn->itsY;
       float yoff=scn->itsY - y0;
       for(int x=scn->itsX;x<=scn->getXmax();x++){
+	  ct++;
 	float xoff=x-x0;
 	float flux = weightByFlux ? array[(x-xzero)+xdim*(y-yzero)] : 1;
 	sumxx += (xoff*xoff*flux);
@@ -328,10 +330,12 @@ namespace PixelInfo
 	sumflux += flux;
       }
     }
-
-    sumxx /= sumflux;
-    sumxy /= sumflux;
-    sumyy /= sumflux;
+    
+    if(ct>0){
+	sumxx /= sumflux;
+	sumxy /= sumflux;
+	sumyy /= sumflux;
+    }
 
     this->posAngle = 0.5 * atan2( 2*sumxy , (sumxx-sumyy) ) + M_PI/2.;
     this->posAngle = fmod(this->posAngle, 2.*M_PI);
