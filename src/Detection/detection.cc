@@ -860,11 +860,10 @@ namespace duchamp
       }
       else {
 	  extraFlag="w";
-	  Object2D spatMap = this->getSpatialMap();
-	  std::pair<double,double> axes = spatMap.getPrincipalAxes();
+	  std::pair<double,double> axes = combined.getPrincipalAxes();
 	  this->majorAxis = std::max(axes.first,axes.second) * head.getAvPixScale() * scale;
 	  this->minorAxis = std::min(axes.first,axes.second) * head.getAvPixScale() * scale;
-	  this->posang = spatMap.getPositionAngle() * 180. / M_PI;
+	  this->posang = combined.getPositionAngle() * 180. / M_PI;
  	  // std::cerr << "** " << combined.getSize()<< " " << majorAxis<<" " << minorAxis << " " << posang<< " " << scale <<"\n";
      }
       this->flagText += extraFlag;

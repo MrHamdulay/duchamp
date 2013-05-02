@@ -395,23 +395,22 @@ namespace PixelInfo
     double theta = this->getPositionAngle();
     double x0 = this->getXaverage();
     double y0 = this->getYaverage();
-    std::vector<double> majorAxes, minorAxes;
     std::vector<Scan>::iterator scn=this->scanlist.begin();
+    double maj,min,majMax=0.,majMin=0.,minMax=0.,minMin=0.;
     for(;scn!=this->scanlist.end();scn++){
       for(int x=scn->itsX;x<=scn->getXmax();x++){
-	majorAxes.push_back((x-x0+0.5)*cos(theta) + (scn->itsY-y0+0.5)*sin(theta));
-	minorAxes.push_back((x-x0+0.5)*sin(theta) + (scn->itsY-y0+0.5)*cos(theta));
+	maj = (x-x0+0.5)*cos(theta) + (scn->itsY-y0+0.5)*sin(theta);
+	min = (x-x0+0.5)*sin(theta) + (scn->itsY-y0+0.5)*cos(theta);
+	majMax=std::max(maj,majMax);
+	majMin=std::min(maj,majMin);
+	minMax=std::max(min,minMax);
+	minMin=std::min(min,minMin);
       }
     }
 
-    std::sort(majorAxes.begin(),majorAxes.end());
-    std::sort(minorAxes.begin(),minorAxes.end());
-    int size = majorAxes.size();
     std::pair<double,double> axes;
-    axes.first = fabs(majorAxes[0]-majorAxes[size-1]);
-    axes.second = fabs(minorAxes[0]-minorAxes[size-1]);
-    if(axes.first<0.5) axes.first=0.5;
-    if(axes.second<0.5) axes.second=0.5;
+    axes.first=std::max(majMax-majMin,1.);
+    axes.second=std::max(minMax-minMin,1.);
     return axes;
 
   }
