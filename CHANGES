@@ -1,3 +1,26 @@
+Duchamp version 1.3.2 (2013/05/02)
+----------------------------------
+
+Bug fixes:
+
+* The units for the integrated flux (for F_int) were not being
+  calculated for cases of a FITS file without a spectral
+  axis. Additionally, a vestigial default value meant this column had
+  units of "counts". This has been fixed so that a FITS file with
+  Jy/beam units will have F_int values in Jy.
+
+* The ellipse fitting to find the MAJ/MIN/PA was not working correctly
+  in the case of negative searches. This has been fixed.
+
+* The scaling of MAJ/MIN values was not being done correctly in all
+  cases, so that the values were out by a factor of 60 or 3600. This
+  was particularly the case when the ellipse fitting failed (due to
+  small numbers of pixels, for instance).
+
+* The principle axes calculations have been simplified slightly, and
+  now are done only on pixels above half the peak in the moment-0 map
+  (to estimate the FWHM).
+
 Duchamp version 1.3.1 (2013/04/18)
 ----------------------------------
 

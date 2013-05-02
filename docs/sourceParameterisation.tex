@@ -121,10 +121,18 @@ The spatial size of the detection is measured from the moment-0 map
 and is parameterised by the FWHM of the major and minor axes, plus the
 position angle of the major axis.
 
-The method for doing this is is to form the moment-0 map (if
-necessary), select all pixels greater than half the maximum, then
-calculate the parameters $a$ (major FWHM), $b$ (minor FWHM) and
-$\theta$ (position angle) according to 
+The position angle will be measured in the usual astronomical sense,
+in degrees East of North. The major and minor axes will be specified
+in angular units (assuming the WCS allows this), with the units chosen
+such that the numbers are not too small.
+
+The method for calculating these parameters is to form the moment-0
+map (if necessary), select all pixels greater than half the maximum
+\footnote{In the event of a negative search (see
+  \S\ref{sec-searchTechnique}), the moment map is inverted prior to
+  this selection.},
+then calculate the parameters $a$ (major FWHM), $b$ (minor FWHM) and
+$\theta$ (position angle) according to
 \begin{eqnarray*}
 \frac{1}{2} a^2  &= & S_{xx} + S_{yy} + \sqrt{ (S_{xx} -
   S_{yy})^2 + 4 (S_{xy})^2}\\
@@ -149,14 +157,31 @@ axis.
 In this case, the calculation of the sums is redone without the flux
 weighting ($S_{xx} = \sum x_i^2$ etc), and the shape parameters
 recalculated. A \textbf{W} flag will be recorded for the detection to
-indicate that the weighting failed: see Sec~\ref{sec-flags} below.
+indicate that the weighting failed: see \S\ref{sec-flags} below.
 
-The position angle will be measured in the usual astronomical sense,
-in degrees East of North. The major and minor axes will be specified
-in angular units (assuming the WCS allows this), with the units chosen
-such that the numbers are not too small.
+It is possible that this second calculation will fail, particuarly for
+sources with only a small number of spatial pixels. In this case, we
+revert to using the method of principle axes. 
 
-The algorithm will first try to calculate $a,b,\theta$ by weighting
+We first calculate the angle of minimum moment and assign this as the
+position angle. This is defined by calculating the net moments:
+\begin{eqnarray*}
+M_{xx} &= & \sum x_i^2 - \frac{1}{N} \left(\sum x_i\right)^2\\
+M_{yy} &= & \sum y_i^2 - \frac{1}{N} \left(\sum y_i\right)^2\\
+M_{xy} &= & \sum x_i y_i - \frac{1}{N} \sum x_i \sum y_i\\
+\end{eqnarray*}
+then
+\[
+\tan \theta = \frac{(M_{xx} - M_{yy} + \sqrt{(M_{xx}-M_{yy})^2+4M_{xy}})}{2M_{xy}}.
+\]
+To find the sizes of the principle axes (the major axis aligning with
+the angle just calculated, and the minor being perpendicular to it),
+we calculate the projection along these two axes of each pixel above
+half the peak in the moment-0 map, and take the range between the
+maximum and minimum, requiring it to be at least one pixel. Note this
+is not sensitive to the flux distribution. If this calculation is
+used, a \textbf{w} flag will be recorded for the detection: see
+\S\ref{sec-flags} below.
 
 
 \secB{Spatial extent, \texttt{w\_RA/w\_GLON, w\_DEC}}
@@ -330,6 +355,9 @@ issues:
   (Sec~\ref{sec-shape}) failed, so the unweighted calculation was
   used. This likely indicates some very disordered shape for the
   moment-0 map.
+\item \textbf{w} -- The unweighted calculation also failed, most
+  likely because there are too few pixels. In this case, we use the
+  alternate method of principle axes to estimate the shape.
 \end{itemize}
 In the absence of any of these flags, a \textbf{-} will be recorded.
 
