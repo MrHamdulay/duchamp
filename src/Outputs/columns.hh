@@ -32,6 +32,7 @@
 #include <iomanip>
 #include <string>
 #include <vector>
+#include <math.h>
 
 namespace duchamp
 {
@@ -100,6 +101,18 @@ namespace duchamp
       void   upPrec(){itsPrecision++; itsWidth++;};
 
       void   changePrec(int p);
+
+	//-----------
+	// managing the width,precision,etc based on a value
+	void checkPrec(double d);
+	void checkWidth(int w);
+	void check(int i)          {int negVal=(i<0)?1:0; checkWidth(int(log10(fabs(double(i)))+1)+negVal);};
+	void check(long i)         {int negVal=(i<0)?1:0; checkWidth(int(log10(fabs(double(i)))+1)+negVal);};
+	void check(unsigned int i) {checkWidth(int(log10(double(i))+1));};
+	void check(unsigned long i){checkWidth(int(log10(double(i))+1));};
+	void check(std::string s){checkWidth(int(s.size()));};
+	void check(float f){checkPrec(double(f)); int negVal=(f<0)?1:0; checkWidth(int(log10(f)+1)+1+itsPrecision+negVal); };
+	void check(double d){checkPrec(d); int negVal=(d<0)?1:0; checkWidth(int(log10(d)+1)+1+itsPrecision+negVal); };
 
       //--------------
       // Outputting functions -- all in columns.cc
