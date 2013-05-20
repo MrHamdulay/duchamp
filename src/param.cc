@@ -1389,7 +1389,7 @@ namespace duchamp
     if(this->fileOutputMask==""){
       std::string inputName = this->imageFile;
       std::string outputName = inputName;
-      if(inputName.substr(inputName.size()-5,5)==".fits")
+      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
 	outputName = inputName.substr(0,inputName.size()-5);  
       // remove the ".fits" on the end.
       outputName += ".MASK.fits";
@@ -1407,7 +1407,7 @@ namespace duchamp
     if(this->fileOutputMomentMap==""){
       std::string inputName = this->imageFile;
       std::string outputName = inputName;
-      if(inputName.substr(inputName.size()-5,5)==".fits")
+      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
 	outputName = inputName.substr(0,inputName.size()-5);  
       // remove the ".fits" on the end.
       outputName += ".MOM0.fits";
@@ -1425,7 +1425,7 @@ namespace duchamp
     if(this->fileOutputMomentMask==""){
       std::string inputName = this->imageFile;
       std::string outputName = inputName;
-      if(inputName.substr(inputName.size()-5,5)==".fits")
+      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
 	outputName = inputName.substr(0,inputName.size()-5);  
       // remove the ".fits" on the end.
       outputName += ".MOM0MASK.fits";
@@ -1443,7 +1443,7 @@ namespace duchamp
     if(this->fileOutputBaseline==""){
       std::string inputName = this->imageFile;
       std::string outputName = inputName;
-      if(inputName.substr(inputName.size()-5,5)==".fits")
+      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
 	outputName = inputName.substr(0,inputName.size()-5);  
       // remove the ".fits" on the end.
       outputName += ".BASE.fits";
@@ -1466,7 +1466,7 @@ namespace duchamp
     if(this->fileOutputSmooth==""){
       std::string inputName = this->imageFile;
       std::stringstream ss;
-      if(inputName.substr(inputName.size()-5,5)==".fits")
+      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
 	ss << inputName.substr(0,inputName.size()-5);  
       else
 	ss << inputName;
@@ -1495,7 +1495,10 @@ namespace duchamp
       std::string inputName = this->imageFile;
       std::stringstream ss;
       // First we remove the ".fits" from the end of the filename.
-      ss << inputName.substr(0,inputName.size()-5);  
+      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
+	  ss << inputName.substr(0,inputName.size()-5);  
+      else
+	  ss << inputName;
       if(this->flagSubsection) ss<<".sub";
       ss << ".RECON-" << this->reconDim 
 	 << "-"       << this->filterCode
@@ -1520,7 +1523,10 @@ namespace duchamp
       std::string inputName = this->imageFile;
       std::stringstream ss;
       // First we remove the ".fits" from the end of the filename.
-      ss << inputName.substr(0,inputName.size()-5);
+      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
+	  ss << inputName.substr(0,inputName.size()-5);
+      else
+	  ss << inputName;
       if(this->flagSubsection) ss<<".sub";
       ss << ".RESID-" << this->reconDim 
 	 << "-"       << this->filterCode
