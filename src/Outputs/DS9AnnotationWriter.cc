@@ -101,7 +101,8 @@ namespace duchamp {
   void DS9AnnotationWriter::ellipse(double x, double y, double r1, double r2, double angle)
   {
     if(this->itsOpenFlag){
-      this->itsFileStream << "ellipse " << x << " " << y << " " << r1 << " " << r2 << " " << angle << "\n";
+      double angleUsed = angle - 90.;
+      this->itsFileStream << "ellipse " << x << " " << y << " " << r1 << " " << r2 << " " << angleUsed << "\n";
     }
   }
 
