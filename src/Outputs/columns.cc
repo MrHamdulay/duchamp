@@ -372,8 +372,9 @@ namespace duchamp
       newset.addColumn( Column("NUMCH") );
       newset.addColumn( Column("SPATSIZE") );
       
-
-      
+      // Define the column names and units where not predifined by the
+      // default settings (ie. for those columns that depend on the
+      // WCS or image units)
       if(head.isWCS()){
 	  newset.column("RA").setName(head.lngtype());
 	  newset.column("DEC").setName(head.lattype());
@@ -412,7 +413,9 @@ namespace duchamp
       newset.column("FPEAK").setUnits("[" + head.getFluxUnits() + "]");
       
 
-      // Now test each object against each new column
+      // Now test each object against each new column, ensuring each
+      // column has sufficient width and (in most cases) precision to
+      // accomodate the data.
       std::vector<Detection>::iterator obj;
       for(obj = objectList.begin(); obj < objectList.end(); obj++){
 	std::string tempstr;
@@ -435,6 +438,9 @@ namespace duchamp
 	    }
 	    newset.column("MAJ").check(obj->getMajorAxis());
 	    newset.column("MIN").check(obj->getMinorAxis());
+	    // For the PA column, we don't increase the precision. If
+	    // something is very close to zero position angle, then
+	    // we're happy to call it zero.
 	    newset.column("PA").check(obj->getPositionAngle(),false);
 	    newset.column("WRA").check(obj->getRAWidth());
 	    newset.column("WDEC").check(obj->getDecWidth());
