@@ -36,8 +36,66 @@ AC_HEADER_STDBOOL
 AC_C_CONST
 AC_C_INLINE
 
-# Utilities.
+# Get the system type.
+AC_CANONICAL_BUILD
+ARCH="${build_cpu}-$build_os"
+AC_SUBST([ARCH])
+
+# Library and installation utilities.
+#------------------------------------
+#     (Taken from Mark Calabretta's wcslib package)
+# Static library generation.
 AC_PROG_RANLIB
+# Installation utilities.
+#AC_PROG_LN_S
+#AC_PROG_INSTALL
+
+
+# Shared library generation.
+if test "x$ac_cv_c_compiler_gnu" = xyes ; then
+  # Note that -fPIC is on by default for Macs, this just makes it obvious.
+  SHRFLAGS="-fPIC"
+  SHRLD="\$(CC) \$(SHRFLAGS)"
+
+  case "$build_os" in
+  darwin*)
+    AC_MSG_NOTICE([ Using darwin build option])
+    SHRLIB="libduchamp.$LIBVER.dylib"
+    SHRLD="$SHRLD -dynamiclib -single_module"
+    SHRLD="$SHRLD -compatibility_version $PACKAGE_VERSION -current_version $PACKAGE_VERSION"
+    SHRLN=
+
+    case "$build_cpu" in
+    powerpc*)
+      AC_MSG_NOTICE([ Using darwin build option with powerpc subcase])		
+      # Switch off -fPIC (not applicable for Intel Macs).
+      CFLAGS="$CFLAGS -mdynamic-no-pic"
+      ;;
+    esac
+    ;;
+  *)
+    # Covers Linux and Solaris at least.
+    AC_MSG_NOTICE([ Using alternative (linux) build option])
+    SHRLIB="libduchamp.so.$PACKAGE_VERSION"
+    SHRLD="$SHRLD -shared -Wl,-h\$(SHRLIB)"
+    SHRLN="libduchamp.so"
+    ;;
+  esac
+
+else
+    AC_MSG_NOTICE([ Not setting shared library options])
+  SHRLIB=
+  SHRFLAGS=
+  SHRLD=
+  SHRSFX=
+  SHRLN=
+fi
+
+AC_SUBST([SHRLIB])
+AC_SUBST([SHRFLAGS])
+AC_SUBST([SHRLD])
+AC_SUBST([SHRSFX])
+AC_SUBST([SHRLN])
 
 # Checks for library functions.
 AC_FUNC_STRTOD

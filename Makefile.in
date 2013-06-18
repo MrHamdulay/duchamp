@@ -1,4 +1,4 @@
-CFLAGS = -O2 -ftree-vectorize
+CFLAGS = -O2 -ftree-vectorize -fPIC
 
 FFLAGS = -fast -O4
 
@@ -20,6 +20,9 @@ EXEC-STUB = Duchamp
 AR = ar cq
 LIB = libduchamp.a
 RANLIB = ranlib
+SHAREDFLAGS = -shared -Wl,-soname,@SHRLIB@
+LIBSO = @SHRLIB@
+LIBSO_LN = @SHRLN@
 
 INSTALL = @INSTALL@
 LN_S = @LN_S@
@@ -192,6 +195,7 @@ duchamp : $(OBJECTS)
 lib     : $(OBJECTS)
 	$(AR) $(LIB) $(OBJECTS)
 	$(RANLIB) $(LIB)
+	$(CXX) $(SHAREDFLAGS) -o $(LIBSO) $(OBJECTS)
 
 createTestImage : $(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o
 	$(CXX) -o createTestImage.x\
