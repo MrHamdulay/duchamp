@@ -62,7 +62,7 @@ if test "x$ac_cv_c_compiler_gnu" = xyes ; then
   case "$build_os" in
   darwin*)
     AC_MSG_NOTICE([ Using darwin build option])
-    SHRLIB="libduchamp.$LIBVER.dylib"
+    SHRLIB="libduchamp.$PACKAGE_VERSION.dylib"
     SHRLD="$SHRLD -dynamiclib -single_module"
     SHRLD="$SHRLD -compatibility_version $PACKAGE_VERSION -current_version $PACKAGE_VERSION"
     SHRLN=

@@ -4516,7 +4516,7 @@ if test "x$ac_cv_c_compiler_gnu" = xyes ; then
   darwin*)
     { $as_echo "$as_me:${as_lineno-$LINENO}:  Using darwin build option" >&5
 $as_echo "$as_me:  Using darwin build option" >&6;}
-    SHRLIB="libduchamp.$LIBVER.dylib"
+    SHRLIB="libduchamp.$PACKAGE_VERSION.dylib"
     SHRLD="$SHRLD -dynamiclib -single_module"
     SHRLD="$SHRLD -compatibility_version $PACKAGE_VERSION -current_version $PACKAGE_VERSION"
     SHRLN=
