@@ -209,6 +209,8 @@ install :
 	cd $(INSTALLDIR) && $(LN_S) $(EXEC) $(EXEC-STUB)
 	-test ! -f $(LIB) || $(INSTALL) -d -m 2755 $(LIBDIR)
 	-test ! -f $(LIB) || $(INSTALL) -m 644 $(LIB) $(LIBDIR)
+	-test ! -f $(LIB) || $(INSTALL) -m 755 $(LIBSO) $(LIBDIR)
+	-test ! -f $(LIB) || cd $(LIBDIR) && $(LN_S) $(LIBSO) $(LIBSO_LN)
 	$(INSTALL) -d -m 2755 $(INCDIR)
 	$(INSTALL) -m 644 $(BASE)/*.hh $(INCDIR)
 	$(INSTALL) -m 644 $(BASE)/*.h $(INCDIR)
@@ -237,7 +239,7 @@ $(OBJECTS) : $(HEADS)
 	$(CC) -c $< $(CINC) -o $@
 
 clean : 
-	rm -f $(BASE)/*.o $(ATROUSDIR)/*.o $(CUBESDIR)/*.o $(FITSIODIR)/*.o $(DETECTIONDIR)/*.o $(UTILDIR)/*.o $(PIXELMAPDIR)/*.o
+	rm -f $(BASE)/*.o $(ATROUSDIR)/*.o $(CUBESDIR)/*.o $(FITSIODIR)/*.o $(DETECTIONDIR)/*.o $(UTILDIR)/*.o $(PIXELMAPDIR)/*.o $(LIB) $(LIBSO)
 
 cleanest: clean
 	rm -rf Makefile config.log config.status src/config.h $(EXEC)
