@@ -212,7 +212,9 @@ install :
 	-test ! -f $(LIB) || $(INSTALL) -d -m 2755 $(LIBDIR)
 	-test ! -f $(LIB) || $(INSTALL) -m 644 $(LIB) $(LIBDIR)
 	-test ! -f $(LIB) || $(INSTALL) -m 755 $(LIBSO) $(LIBDIR)
-	-test ! -f $(LIB) || cd $(LIBDIR) && $(LN_S) $(LIBSO) $(LIBSO_LN)
+	if [ "$(SHRLN)" != "" ] ; then \
+		-test ! -f $(LIB) || cd $(LIBDIR) && $(LN_S) $(LIBSO) $(LIBSO_LN); \
+	fi
 	$(INSTALL) -d -m 2755 $(INCDIR)
 	$(INSTALL) -m 644 $(BASE)/*.hh $(INCDIR)
 	$(INSTALL) -m 644 $(BASE)/*.h $(INCDIR)
