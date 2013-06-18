@@ -121,6 +121,17 @@ namespace duchamp {
     }
   }
 
+
+    void AnnotationWriter::writeCommentString(std::string line)
+    {
+	/// @details A simple way to write a line as a comment, where
+	/// the start of the line is given by the itsComment string.
+
+	if(this->itsOpenFlag){
+	    this->itsFileStream << this->itsComment << line << "\n";
+	}
+    }
+
   void AnnotationWriter::writeEntry(Detection *object)
   {
     /// @details The given object is written as an annotation. If the

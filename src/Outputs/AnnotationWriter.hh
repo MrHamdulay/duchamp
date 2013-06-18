@@ -78,6 +78,9 @@ namespace duchamp {
     /// @brief Write information describing a detected object
     virtual void writeEntry(Detection *object);
 
+    /// @brief Write a comment line, starting with the approriate character
+    virtual void writeCommentString(std::string line);
+
     /// @brief Write any information to go at the end of the file
     virtual void writeFooter(){};
 
