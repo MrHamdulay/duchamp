@@ -36,11 +36,6 @@ AC_HEADER_STDBOOL
 AC_C_CONST
 AC_C_INLINE
 
-# Get the system type.
-AC_CANONICAL_BUILD
-ARCH="${build_cpu}-$build_os"
-AC_SUBST([ARCH])
-
 # Library and installation utilities.
 #------------------------------------
 #     (Taken from Mark Calabretta's wcslib package)
