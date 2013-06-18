@@ -20,7 +20,8 @@ EXEC-STUB = Duchamp
 AR = ar cq
 LIB = libduchamp.a
 RANLIB = ranlib
-SHAREDFLAGS = -shared -Wl,-soname,@SHRLIB@
+SHAREDLIB = @SHRLD@
+#SHAREDFLAGS = -shared -Wl,-soname,@SHRLIB@
 LIBSO = @SHRLIB@
 LIBSO_LN = @SHRLN@
 
@@ -195,7 +196,8 @@ duchamp : $(OBJECTS)
 lib     : $(OBJECTS)
 	$(AR) $(LIB) $(OBJECTS)
 	$(RANLIB) $(LIB)
-	$(CXX) $(SHAREDFLAGS) -o $(LIBSO) $(OBJECTS)
+	$(SHAREDLIB) $(CINC) $(LIBS) -o $(LIBSO) $(OBJECTS)
+#	$(CXX) $(SHAREDFLAGS) -o $(LIBSO) $(OBJECTS)
 
 createTestImage : $(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o
 	$(CXX) -o createTestImage.x\

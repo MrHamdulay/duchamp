@@ -7,6 +7,13 @@ AC_CONFIG_SRCDIR([src/duchamp.hh])
 AC_CONFIG_HEADER([src/config.h])
 AC_PREFIX_DEFAULT(/usr/local)
 
+AC_CONFIG_AUX_DIR([config])
+
+# Get the system type.
+AC_CANONICAL_BUILD
+ARCH="${build_cpu}-$build_os"
+AC_SUBST([ARCH])
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
@@ -50,7 +57,7 @@ AC_PROG_RANLIB
 if test "x$ac_cv_c_compiler_gnu" = xyes ; then
   # Note that -fPIC is on by default for Macs, this just makes it obvious.
   SHRFLAGS="-fPIC"
-  SHRLD="\$(CC) \$(SHRFLAGS)"
+  SHRLD="\$(LINK) $SHRFLAGS"
 
   case "$build_os" in
   darwin*)
@@ -72,7 +79,7 @@ if test "x$ac_cv_c_compiler_gnu" = xyes ; then
     # Covers Linux and Solaris at least.
     AC_MSG_NOTICE([ Using alternative (linux) build option])
     SHRLIB="libduchamp.so.$PACKAGE_VERSION"
-    SHRLD="$SHRLD -shared -Wl,-h\$(SHRLIB)"
+    SHRLD="$SHRLD -shared -Wl,-soname,$SHRLIB"
     SHRLN="libduchamp.so"
     ;;
   esac
