@@ -1,3 +1,27 @@
+Duchamp version 1.4 (2013/06/20)
+--------------------------------
+
+Installation:
+
+* The "make lib" command will now create a shared library
+  libduchamp.1.4.so as well as the static library libduchamp.1.4.a
+  (formerly just called libduchamp.a).
+
+Bug Fixes:
+
+* The orientation of ellipses in the DS9 region files are now correct
+  (they were wrong by 90 degrees).
+
+* Corrected the output FITS filenames so that they work when the input
+  filename does *not* end in ".fits".
+
+Code changes:
+
+* The code that manages the output columns for the ASCII and VOTable
+  output has been overhauled and streamlined. Little functional change
+  should be evident, but it should be much more robust. And easier to
+  use in derived software.
+
 Duchamp version 1.3.2 (2013/05/02)
 ----------------------------------
 

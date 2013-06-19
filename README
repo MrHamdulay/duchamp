@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------
                The Duchamp Source Finder
 -----------------------------------------------------------------------
-Duchamp 1.3.2 -- an object finder for spectral-line data cubes
-Copyright (C) 2006-2012
+Duchamp 1.4 -- an object finder for spectral-line data cubes
+Copyright (C) 2006-2013
 Matthew Whiting, CSIRO Astronomy & Space Science
 
 Duchamp is free software; you can redistribute it and/or modify it
@@ -74,7 +74,7 @@ character!):
 
  >  ./configure
  >  make
- >  make lib   (optional -- this makes a library for use in code
+ >  make lib   (optional -- this makes libraries for use in code
     	        development)
  >  make clean (again optional -- to remove the object files from the
     	        src directory)
@@ -83,11 +83,11 @@ character!):
 This default setup will search in standard locations for the necessary
 libraries, and install the executable ("Duchamp") in /usr/local/bin (a
 copy will also be in the current directory). It also installs the
-library libduchamp.a in /usr/local/lib and the header (.hh) files in
-/usr/local/include/duchamp. If you want these to go somewhere else, eg
-if you don't have write-access to that directory, or you need to tweak
-the libraries, see the next section. Otherwise, jump to the testing
-section.
+libraries libduchamp.1.4.a and libduchamp.1.4.so in /usr/local/lib and
+the header (.hh) files in /usr/local/include/duchamp. If you want
+these to go somewhere else, eg if you don't have write-access to that
+directory, or you need to tweak the libraries, see the next
+section. Otherwise, jump to the testing section.
 
 
 Tweaking the installation setup

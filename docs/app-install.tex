@@ -64,7 +64,7 @@ character!):
 \texttt{%
 > ./configure\\
 > make\\
-> make lib (optional -- to create a library for development
+> make lib (optional -- to create libraries for development
 purposes)\\ 
 > make clean (optional -- to remove the object files)\\
 > make install }
@@ -72,15 +72,22 @@ purposes)\\
 \end{quote}
 
 This default setup will search in standard locations for the necessary
-libraries, and install the executable (\texttt{Duchamp-\version})
-in \texttt{/usr/local/bin}, along with a \texttt{Duchamp} symbolic
-link (a copy will also be in the current directory). The library (if
-you've made it) will be installed in \texttt{/usr/local/lib}, and the
-full set of header files will be installed in
-\texttt{/usr/local/include/duchamp} and subdirectories thereof.  If
-you want these to go somewhere else, \eg if you don't have
-write-access to that directory, or you need to tweak the libraries,
-see the next section. Otherwise, jump to the testing section.
+libraries, and install the executable (\texttt{Duchamp-\version}) in
+\texttt{/usr/local/bin}, along with a \texttt{Duchamp} symbolic link
+(a copy will also be in the current directory). The full set of header
+files will be installed in \texttt{/usr/local/include/duchamp} and
+subdirectories thereof. 
+
+If you have made the libraries, both static
+(\texttt{libduchamp.\version.a}) and shared
+(\texttt{libduchamp.\version.so} or \texttt{libduchamp.\version.dylib}
+depending on your system) libraries will be created and installed in
+\texttt{/usr/local/lib}.
+
+If you want these to go somewhere else, \eg if you don't have
+write-access to that directory, or you need to tweak the location of
+the libraries, see the next section. Otherwise, jump to the testing
+section.
 
 \secC{Tweaking the installation process}
 
