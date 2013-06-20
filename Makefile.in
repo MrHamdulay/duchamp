@@ -214,7 +214,7 @@ install :
 	-test ! -f $(LIB) || $(INSTALL) -m 644 $(LIB) $(LIBDIR)
 	-test ! -f $(LIB) || cd $(LIBDIR) && $(LN_S) $(LIB) $(LIB_LN)
 	-test ! -f $(LIB) || $(INSTALL) -m 755 $(LIBSO) $(LIBDIR)
-	if [ "$(SHRLN)" != "" ] ; then \
+	if [ "@SHRLN@" != "" ] ; then \
 		-test ! -f $(LIB) || cd $(LIBDIR) && $(LN_S) $(LIBSO) $(LIBSO_LN); \
 	fi
 	$(INSTALL) -d -m 2755 $(INCDIR)
