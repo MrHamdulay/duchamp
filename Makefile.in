@@ -212,10 +212,10 @@ install :
 	cd $(INSTALLDIR) && $(LN_S) $(EXEC) $(EXEC-STUB)
 	-test ! -f $(LIB) || $(INSTALL) -d -m 2755 $(LIBDIR)
 	-test ! -f $(LIB) || $(INSTALL) -m 644 $(LIB) $(LIBDIR)
-	-test ! -f $(LIB) || cd $(LIBDIR) && $(LN_S) $(LIB) $(LIB_LN)
+	-test ! -f $(LIB) || cd $(LIBDIR) && $(RM) $(LIB_LN) && $(LN_S) $(LIB) $(LIB_LN)
 	-test ! -f $(LIB) || $(INSTALL) -m 755 $(LIBSO) $(LIBDIR)
 	if [ "@SHRLN@" != "" ] ; then \
-		-test ! -f $(LIB) || cd $(LIBDIR) && $(LN_S) $(LIBSO) $(LIBSO_LN); \
+		-test ! -f $(LIB) || cd $(LIBDIR) && $(RM) $(LIBSO_LN) && $(LN_S) $(LIBSO) $(LIBSO_LN); \
 	fi
 	$(INSTALL) -d -m 2755 $(INCDIR)
 	$(INSTALL) -m 644 $(BASE)/*.hh $(INCDIR)
