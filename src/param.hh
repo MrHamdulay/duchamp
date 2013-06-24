@@ -452,6 +452,7 @@ namespace duchamp
 
     bool       usePrevious;      ///< Whether to read the detections from a previously-created log file
     std::string objectList;      ///< List of objects to re-plot
+    std::vector<int> objectChoices; ///<< Vector list of the objects requested
 
     // Output files
     bool        flagLog;         ///< Should we do the intermediate logging?
@@ -508,6 +509,8 @@ namespace duchamp
     std::string newFluxUnits;    ///< The user-requested flux units, to replace BUNIT.
 
     // Milky-Way parameters
+    std::string flaggedChannelList; ///< List of channels to be flagged (ignored).
+    std::vector <int> flaggedChannels; ///< The flagged channels listed individually 
     bool        flagMW;          ///< A flag that indicates whether to ignore the Milky Way channels.
     int         maxMW;           ///< Last  Milky Way channel
     int         minMW;           ///< First Milky Way channel

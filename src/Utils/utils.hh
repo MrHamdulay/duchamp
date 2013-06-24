@@ -30,6 +30,7 @@
 
 #include <wcslib/wcs.h>
 #include <string>
+#include <vector>
 
 struct wcsprm; // just foreshadow this.
 
@@ -128,5 +129,6 @@ std::string removeLeadingBlanks(std::string s);
 std::string deblank(std::string s);
 std::string readStringFromBinaryFile(std::ifstream &infile);
 void writeStringToBinaryFile(std::ofstream &outfile, std::string str);
+std::vector<int> selectionToIntVec(std::string &str);
 
 #endif

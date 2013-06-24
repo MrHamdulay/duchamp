@@ -157,3 +157,30 @@ std::string readStringFromBinaryFile(std::ifstream &infile)
   return str;
 }
 
+std::vector<int> selectionToIntVec(std::string &str)
+{
+    ///  Converts a comma-separated list of items & ranges to a vector
+    /// list of integers. For instance, the string 1-4,6,9-11 will be
+    /// converted to the vector [1,2,3,4,6,9,10,11] 
+    /// \return An STL integer vector
+
+    std::stringstream ss1;
+    std::string tmp;
+    std::vector<int> tmplist;
+    ss1.str(str);
+    while(!ss1.eof()){
+      getline(ss1,tmp,',');
+      for(size_t i=0;i<tmp.size();i++) if(tmp[i]=='-') tmp[i]=' ';
+      int a,b;
+      std::stringstream ss2;
+      ss2.str(tmp);
+      ss2 >>a;
+      if(!ss2.eof()) ss2 >> b;
+      else b=a;
+      for(int n=a;n<=b;n++){
+	tmplist.push_back(n);
+      }      
+    }
+    return tmplist;
+
+}

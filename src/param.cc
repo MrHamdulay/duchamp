@@ -132,6 +132,8 @@ namespace duchamp
     this->bzeroKeyword      = 0.;
     this->newFluxUnits      = "";
     // Milky-Way parameters
+    this->flaggedChannelList = "";
+    this->flaggedChannels   = std::vector<int>(0);
     this->flagMW            = false;
     this->maxMW             = 112;
     this->minMW             = 75;
@@ -277,6 +279,8 @@ namespace duchamp
     this->bscaleKeyword     = p.bscaleKeyword;  
     this->bzeroKeyword      = p.bzeroKeyword;   
     this->newFluxUnits      = p.newFluxUnits;
+    this->flaggedChannelList = p.flaggedChannelList;
+    this->flaggedChannels   = p.flaggedChannels;
     this->flagMW            = p.flagMW;         
     this->maxMW             = p.maxMW;          
     this->minMW             = p.minMW;         
@@ -492,31 +496,6 @@ namespace duchamp
     return !flagStatSec || statSec.isInside(xval,yval,zval);
   }
 
-  std::vector<int> Param::getObjectRequest()
-  {
-    ///  Returns a list of the object numbers requested via the objectList parameter. 
-    /// \return a vector of integers, one for each number in the objectList set.
-
-    std::stringstream ss1;
-    std::string tmp;
-    std::vector<int> tmplist;
-    ss1.str(this->objectList);
-    while(!ss1.eof()){
-      getline(ss1,tmp,',');
-      for(size_t i=0;i<tmp.size();i++) if(tmp[i]=='-') tmp[i]=' ';
-      int a,b;
-      std::stringstream ss2;
-      ss2.str(tmp);
-      ss2 >>a;
-      if(!ss2.eof()) ss2 >> b;
-      else b=a;
-      for(int n=a;n<=b;n++){
-	tmplist.push_back(n);
-      }      
-    }
-    return tmplist;
-  }
-
   std::vector<bool> Param::getObjectChoices()
   {
     ///  Returns a list of bool values, indicating whether a given
@@ -526,12 +505,14 @@ namespace duchamp
     ///  [0,1,1,0,1,1,1,1].
     ///  \return Vector of bool values.
 
-    std::vector<int> objectChoices = this->getObjectRequest();
-    int maxNum = *std::max_element(objectChoices.begin(), objectChoices.end());
-    std::vector<bool> choices(maxNum,false);
-    for(std::vector<int>::iterator obj = objectChoices.begin();obj!=objectChoices.end();obj++) 
-      choices[*obj-1] = true;
-    return choices;
+      if(this->objectChoices.size()==0) return std::vector<bool>(0);
+      else {
+	  int maxNum = *std::max_element(this->objectChoices.begin(), this->objectChoices.end());
+	  std::vector<bool> choices(maxNum,false);
+	  for(std::vector<int>::iterator obj = objectChoices.begin();obj!=objectChoices.end();obj++) 
+	      choices[*obj-1] = true;
+	  return choices;
+      }
   }
 
   std::vector<bool> Param::getObjectChoices(int numObjects)
@@ -549,10 +530,25 @@ namespace duchamp
       return choices;
     }
     else{
-      std::vector<int> objectChoices = this->getObjectRequest();
       std::vector<bool> choices(numObjects,false);
-      for(std::vector<int>::iterator obj = objectChoices.begin();obj!=objectChoices.end();obj++) 
-	if(*obj<=numObjects) choices[*obj-1] = true;
+      std::vector<int> duds,goodlist;
+      for(std::vector<int>::iterator obj = this->objectChoices.begin();obj!=this->objectChoices.end();obj++){ 
+	  if(*obj<=numObjects) {
+	      choices[*obj-1] = true;
+	      goodlist.push_back(*obj);
+	  }
+	  else duds.push_back(*obj);
+      }
+      if(duds.size()>0){
+	  this->objectChoices = goodlist;
+	  std::stringstream dudlist;
+	  dudlist << duds[0];
+	  for(size_t i=1;i<duds.size();i++) dudlist << ","<<duds[i];
+	  std::string obj="object";
+	  if(duds.size()>1) obj+= "s";
+	  DUCHAMPWARN("Object Selection", "You have only detected " << numObjects << " objects, so the requested " 
+		      << obj << " '" << dudlist.str() << "' cannot be returned. Please check your request, as it doesn't match the results.");
+      }
       return choices;
     }
   }
@@ -652,6 +648,7 @@ namespace duchamp
 	if(arg=="precsnr")         this->precSNR = readIval(ss);
 
 	if(arg=="flagtrim")        this->flagTrim = readFlag(ss); 
+	if(arg=="flaggedchannels") this->flaggedChannelList = readSval(ss);
 	if(arg=="flagmw")          this->flagMW = readFlag(ss); 
 	if(arg=="maxmw")           this->maxMW = readIval(ss); 
 	if(arg=="minmw")           this->minMW = readIval(ss); 
@@ -747,8 +744,12 @@ namespace duchamp
       this->statSec.setSection(defaultSection);
     }
 
-    // If we have usePrevious=false, set the objectlist to blank so that we use all of them
+    // If we have usePrevious=false, set the objectlist to blank so that we use all of them. Otherwise, define the vector list of choices.
     if(!this->usePrevious) this->objectList = "";
+    else this->objectChoices = selectionToIntVec(this->objectList);
+
+    // Defining the vector list of flagged channels
+    this->flaggedChannels = selectionToIntVec(this->flaggedChannelList);
 
     // If pgplot was not included in the compilation, need to set flagXOutput to false
     if(!USE_PGPLOT){
