@@ -133,8 +133,8 @@ namespace duchamp
     this->newFluxUnits      = "";
     // Milky-Way parameters
     this->flaggedChannelList = "";
-    this->flaggedChannels   = std::vector<int>(0);
-    this->flaggedChannelMask= std::vector<bool>(0);
+    this->flaggedChannels   = std::vector<int>();
+    this->flaggedChannelMask= std::vector<bool>();
     this->areaBeam          = 0.;
     this->fwhmBeam          = 0.;
     this->beamAsUsed.empty();
@@ -758,13 +758,11 @@ namespace duchamp
     else this->objectListVector = selectionToIntVec(this->objectList);
 
     // Defining the vector list of flagged channels
-    this->flaggedChannels = selectionToIntVec(this->flaggedChannelList);
-    this->flaggedChannelMask = std::vector<bool>(*std::max_element(this->flaggedChannels.begin(),this->flaggedChannels.end()),false);
-    for(size_t i=0;i<this->flaggedChannels.size();i++) this->flaggedChannelMask[ this->flaggedChannels[i] ] = true;
-
-    std::cerr << flaggedChannels[0];
-    for(size_t i=1;i<flaggedChannels.size();i++) std::cerr << " " << flaggedChannels[i];
-    std::cerr << "\n";
+    if(this->flaggedChannelList.size()>0){
+	this->flaggedChannels = selectionToIntVec(this->flaggedChannelList);
+	this->flaggedChannelMask = std::vector<bool>(*std::max_element(this->flaggedChannels.begin(),this->flaggedChannels.end()),false);
+	for(size_t i=0;i<this->flaggedChannels.size();i++) this->flaggedChannelMask[ this->flaggedChannels[i] ] = true;
+    }
 
     // If pgplot was not included in the compilation, need to set flagXOutput to false
     if(!USE_PGPLOT){
