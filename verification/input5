@@ -1,7 +1,6 @@
 imageFile	verification/verificationCube.fits
 flagSubsection  1
 subsection      [35:64,35:64,*]
-flagMW		false
 flagTrim	false
 flagAtrous	false
 snrCut		4

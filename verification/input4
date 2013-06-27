@@ -1,5 +1,4 @@
 imageFile	verification/verificationCube.fits
-flagMW		false
 flagTrim	false
 flagFDR		false
 flagAtrous	true
