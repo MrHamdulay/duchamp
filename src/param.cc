@@ -722,7 +722,7 @@ namespace duchamp
 	if(arg=="flagblankpix"){
 	  this->flagTrim = readFlag(ss);
 	  DUCHAMPWARN("Reading parameters","The parameter flagBlankPix is deprecated. Please use the flagTrim parameter in future.");
-	  DUCHAMPWARN("Reading parameters","Setting flagTrim = " << stringize(this->flagTrim));
+	  DUCHAMPWARN("Reading parameters","   Setting flagTrim = " << stringize(this->flagTrim));
 	}
 	if(arg=="blankpixvalue"){
 	  DUCHAMPWARN("Reading parameters","The parameter blankPixValue is deprecated. This value is only taken from the FITS header.");
@@ -730,9 +730,12 @@ namespace duchamp
 	if(arg=="beamsize"){
 	  this->areaBeam = readFval(ss);
 	  DUCHAMPWARN("Reading parameters","The parameter beamSize is deprecated. You can specify the beam size by beamArea or beamFWHM.");
-	  DUCHAMPWARN("Reading parameters","Setting beamArea = " << this->areaBeam);
+	  DUCHAMPWARN("Reading parameters","   Setting beamArea = " << this->areaBeam);
 	}
-
+	if(arg=="flagmw"){
+	    DUCHAMPWARN("Reading parameters", "The parameters flagMW, minMW and maxMW have been deprecated.");
+	    DUCHAMPWARN("Reading parameters", "   Instead, use the parameter flaggedChannels to indicate channels & channel ranges to be excluded from detection.");
+	}
       }
     }
 
