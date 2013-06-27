@@ -1069,6 +1069,11 @@ namespace duchamp
       recordParam(theStream, par, "[beam info]", "Size & shape of beam", "No information available!");
     }
     recordParam(theStream, par, "[flagBaseline]", "Removing baselines before search?", stringize(par.getFlagBaseline()));
+    if(par.getFlagBaseline()){
+	recordParam(theStream, par, "[baselineType]", "Baseline removal algorithm", par.getBaselineType());
+	if(par.getBaselineType()=="median")
+	    recordParam(theStream, par, "[baselineBoxWidth]", "Box width for median baseline estimation", par.getBaselineBoxWidth());
+    }
     recordParam(theStream, par, "[flagSmooth]", "Smoothing data prior to searching?", stringize(par.getFlagSmooth()));
     if(par.getFlagSmooth()){	       
       recordParam(theStream, par, "[smoothType]", "Type of smoothing", par.getSmoothType());
@@ -1159,6 +1164,11 @@ namespace duchamp
     vopars.push_back(VOParam("searchType","meta.note","char",this->searchType,this->searchType.size(),""));
     vopars.push_back(VOParam("flagNegative","meta.code","boolean",this->flagNegative,0,""));
     vopars.push_back(VOParam("flagBaseline","meta.code","boolean",this->flagBaseline,0,""));
+    if(this->flagBaseline){
+	vopars.push_back(VOParam("baselineType","meta.note","char",this->baselineType,this->baselineType.size(),""));
+	if(this->baselineType=="median")
+	    vopars.push_back(VOParam("baselineBoxWidth","","int",this->baselineBoxWidth,0,""));
+    }
     vopars.push_back(VOParam("flagRobustStats","meta.code","boolean",this->flagRobustStats,0,""));
     vopars.push_back(VOParam("flagFDR","meta.code","boolean",this->flagFDR,0,""));
     if(this->flagFDR){
@@ -1239,6 +1249,11 @@ namespace duchamp
     writeStringToBinaryFile(outfile,this->searchType);
     outfile.write(reinterpret_cast<const char*>(&this->flagNegative), sizeof this->flagNegative);
     outfile.write(reinterpret_cast<const char*>(&this->flagBaseline), sizeof this->flagBaseline);
+    if(this->flagBaseline){
+	writeStringToBinaryFile(outfile,this->baselineType);
+	if(this->baselineType=="median")
+	    outfile.write(reinterpret_cast<const char*>(&this->baselineBoxWidth), sizeof this->baselineBoxWidth);
+    }
     outfile.write(reinterpret_cast<const char*>(&this->flagRobustStats), sizeof this->flagRobustStats);
     outfile.write(reinterpret_cast<const char*>(&this->flagFDR), sizeof this->flagFDR);
     if(this->flagFDR){
@@ -1325,6 +1340,11 @@ namespace duchamp
     this->searchType=readStringFromBinaryFile(infile);
     infile.read(reinterpret_cast<char*>(&this->flagNegative), sizeof this->flagNegative);
     infile.read(reinterpret_cast<char*>(&this->flagBaseline), sizeof this->flagBaseline);
+    if(this->flagBaseline){
+	this->baselineType = readStringFromBinaryFile(infile);
+	if(this->baselineType == "median")
+	    infile.read(reinterpret_cast<char*>(&this->baselineBoxWidth), sizeof this->baselineBoxWidth);
+    }
     infile.read(reinterpret_cast<char*>(&this->flagRobustStats), sizeof this->flagRobustStats);
     infile.read(reinterpret_cast<char*>(&this->flagFDR), sizeof this->flagFDR);
     if(this->flagFDR){
