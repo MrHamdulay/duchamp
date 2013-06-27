@@ -30,7 +30,7 @@
 
 #include <string>
 #include <duchamp/Plotting/SpectralPlot.hh>
-#include <duchamp/FitsHeader.hh>
+#include <duchamp/fitsHeader.hh>
 
 namespace duchamp
 {

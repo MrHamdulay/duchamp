@@ -27,7 +27,7 @@
 // -----------------------------------------------------------------------
 #include <duchamp/Plotting/SimpleSpectralPlot.hh>
 #include <duchamp/Plotting/SpectralPlot.hh>
-#include <duchamp/FitsHeader.hh>
+#include <duchamp/fitsHeader.hh>
 #include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Object2D.hh>
 #include <string>
