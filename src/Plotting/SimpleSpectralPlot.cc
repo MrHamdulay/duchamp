@@ -40,6 +40,7 @@ namespace duchamp {
 	    SpectralPlot()
 	{
 	    this->numOnPage = 1;
+	    this->aspectRatio = M_SQRT2/5.;
 	}
 	 
 	SimpleSpectralPlot::SimpleSpectralPlot(const SimpleSpectralPlot& other)

@@ -39,7 +39,6 @@
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Cubes/cubes.hh>
-// #include <duchamp/Cubes/plots.hh>
 #include <duchamp/Utils/utils.hh>
 
 using namespace PixelInfo;

@@ -38,7 +38,6 @@
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Outputs/columns.hh>
 #include <duchamp/Outputs/CatalogueSpecification.hh>
-// #include <duchamp/Cubes/plots.hh>
 #include <duchamp/Plotting/SpectralPlot.hh>
 #include <duchamp/Plotting/CutoutPlot.hh>
 #include <duchamp/Utils/Statistics.hh>

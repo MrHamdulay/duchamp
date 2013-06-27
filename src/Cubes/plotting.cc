@@ -41,7 +41,6 @@
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Cubes/cubeUtils.hh>
-//#include <duchamp/Cubes/plots.hh>
 #include <duchamp/Plotting/SpectralPlot.hh>
 #include <duchamp/Plotting/SimpleSpectralPlot.hh>
 #include <duchamp/Plotting/ImagePlot.hh>
@@ -109,8 +108,8 @@ namespace duchamp
 	for(int z=0;z<zdim;z++){
 //	    if(!flaggedChans[z]){
 	    if(!this->par.isFlaggedChannel(z)){
-		if(specy[z]>max && !haveStarted) max=specy[z];
-		if(specy[z]<min && !haveStarted) min=specy[z];
+		if(specy[z]>max || !haveStarted) max=specy[z];
+		if(specy[z]<min || !haveStarted) min=specy[z];
 		haveStarted=true;
 	    }
 	}
@@ -131,6 +130,7 @@ namespace duchamp
 	else label="Spectral pixel";
 	std::string filename=this->pars().getImageFile();
 	filename = filename.substr(filename.rfind('/')+1);
+	if(this->par.getSubsection().size()>0) filename += this->par.getSubsection();
 	spPlot.label(label,fluxLabel,"Detection summary : " + filename);
 	spPlot.gotoMainSpectrum(vmin,vmax,min,max);
 	cpgline(zdim,specx,specy);
