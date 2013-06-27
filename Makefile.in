@@ -47,6 +47,7 @@ PIXELMAPDIR = $(BASE)/PixelMap
 DETECTIONDIR = $(BASE)/Detection
 CUBESDIR = $(BASE)/Cubes
 FITSIODIR = $(BASE)/FitsIO
+PLOTDIR = $(BASE)/Plotting
 UTILDIR = $(BASE)/Utils
 OUTPUTSDIR = $(BASE)/Outputs
 TESTDIR = ./verification
@@ -66,7 +67,6 @@ HEADS = $(BASE)/config.h\
 	$(DETECTIONDIR)/finders.hh\
 	$(DETECTIONDIR)/ObjectGrower.hh\
 	$(CUBESDIR)/cubes.hh\
-	$(CUBESDIR)/plots.hh\
 	$(FITSIODIR)/Beam.hh\
 	$(FITSIODIR)/DuchampBeam.hh\
 	$(FITSIODIR)/ReadExisting.hh\
@@ -79,6 +79,12 @@ HEADS = $(BASE)/config.h\
 	$(FITSIODIR)/WriteMomentMaskArray.hh\
 	$(FITSIODIR)/WriteReconArray.hh\
 	$(FITSIODIR)/WriteSmoothArray.hh\
+	$(PLOTDIR)/DuchampPlot.hh\
+	$(PLOTDIR)/MultipleDuchampPlot.hh\
+	$(PLOTDIR)/ImagePlot.hh\
+	$(PLOTDIR)/SpectralPlot.hh\
+	$(PLOTDIR)/SimpleSpectralPlot.hh\
+	$(PLOTDIR)/CutoutPlot.hh\
 	$(UTILDIR)/Hanning.hh\
 	$(UTILDIR)/GaussSmooth1D.hh\
 	$(UTILDIR)/GaussSmooth2D.hh\
@@ -186,8 +192,13 @@ else
 	$(CUBESDIR)/drawMomentCutout.o\
 	$(CUBESDIR)/outputSpectra.o\
 	$(CUBESDIR)/plotting.o\
+	$(PLOTDIR)/DuchampPlot.o\
+	$(PLOTDIR)/MultipleDuchampPlot.o\
+	$(PLOTDIR)/ImagePlot.o\
+	$(PLOTDIR)/SpectralPlot.o\
+	$(PLOTDIR)/SimpleSpectralPlot.o\
+	$(PLOTDIR)/CutoutPlot.o\
 	$(UTILDIR)/mycpgplot.o\
-	$(CUBESDIR)/plots.o\
 	$(UTILDIR)/pgplot_related.o
 endif
 
@@ -228,6 +239,8 @@ install :
 	$(INSTALL) -m 644 $(DETECTIONDIR)/*.hh $(INCDIR)/Detection
 	$(INSTALL) -d -m 2755 $(INCDIR)/FitsIO
 	$(INSTALL) -m 644 $(FITSIODIR)/*.hh $(INCDIR)/FitsIO
+	$(INSTALL) -d -m 2755 $(INCDIR)/Plotting
+	$(INSTALL) -m 644 $(PLOTDIR)/*.hh $(INCDIR)/Plotting
 	$(INSTALL) -d -m 2755 $(INCDIR)/PixelMap
 	$(INSTALL) -m 644 $(PIXELMAPDIR)/*.hh $(INCDIR)/PixelMap
 	$(INSTALL) -d -m 2755 $(INCDIR)/Outputs
@@ -245,7 +258,7 @@ $(OBJECTS) : $(HEADS)
 	$(CC) -c $< $(CINC) -o $@
 
 clean : 
-	rm -f $(BASE)/*.o $(ATROUSDIR)/*.o $(CUBESDIR)/*.o $(FITSIODIR)/*.o $(DETECTIONDIR)/*.o $(UTILDIR)/*.o $(PIXELMAPDIR)/*.o $(LIB) $(LIBSO)
+	rm -f $(BASE)/*.o $(ATROUSDIR)/*.o $(CUBESDIR)/*.o $(FITSIODIR)/*.o $(DETECTIONDIR)/*.o $(UTILDIR)/*.o $(PIXELMAPDIR)/*.o $(PLOTDIR)/*.o $(LIB) $(LIBSO)
 
 cleanest: clean
 	rm -rf Makefile config.log config.status src/config.h $(EXEC)
