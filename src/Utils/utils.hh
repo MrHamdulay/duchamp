@@ -131,4 +131,8 @@ std::string readStringFromBinaryFile(std::ifstream &infile);
 void writeStringToBinaryFile(std::ofstream &outfile, std::string str);
 std::vector<int> selectionToIntVec(std::string &str);
 
+// PLOTTING UTILITY FUNCTIONS
+void wcsAxes(struct wcsprm *wcs, size_t *axes, int textColour, int axisColour);
+
+
 #endif

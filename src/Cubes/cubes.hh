@@ -42,6 +42,7 @@
 #include <duchamp/Plotting/SpectralPlot.hh>
 #include <duchamp/Plotting/CutoutPlot.hh>
 #include <duchamp/Utils/Statistics.hh>
+#include <duchamp/Utils/utils.hh>
 #include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Object2D.hh>
 
@@ -65,8 +66,6 @@ namespace duchamp
 						Statistics::StatsContainer<float> &stats);
   std::vector <Detection> search3DArraySpatial(size_t *dim, float *Array, Param &par,
 					       Statistics::StatsContainer<float> &stats);
-
-    void plotWCSaxes(struct wcsprm *wcs, size_t *axes, int textColour=DUCHAMP_ID_TEXT_COLOUR, int axisColour=DUCHAMP_WCS_AXIS_COLOUR);
 
 
   //=========================================================================
@@ -594,7 +593,7 @@ namespace duchamp
     void        plotMomentMap(std::vector<std::string> pgDestination);
 
     /// @brief Draw WCS axes over a PGPLOT map. 
-    void        plotWCSaxes(){duchamp::plotWCSaxes(head.getWCS(),axisDim);};
+    void        plotWCSaxes(){wcsAxes(head.getWCS(),axisDim,DUCHAMP_ID_TEXT_COLOUR,DUCHAMP_WCS_AXIS_COLOUR);};
 
     //  in Cubes/outputSpectra.cc
     /// @brief Print spectra of each detected object. 
