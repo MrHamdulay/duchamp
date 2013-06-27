@@ -155,7 +155,7 @@ vector <Detection> cubicSearchNMerge(long *dim, float *Array, Param &par)
   // NEXT, DO SOURCE FINDING
   bool *doChannel = new bool[zdim];
   for(int z=0;z<zdim;z++) 
-      doChannel[z] = !par.getChannelFlag(z);
+      doChannel[z] = !par.isFlaggedChannel(z);
 
   for(int z=0; z<zdim; z++){
 

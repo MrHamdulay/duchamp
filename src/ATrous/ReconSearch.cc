@@ -179,12 +179,10 @@ namespace duchamp
     if(!this->reconExists){
       if(this->par.isVerbose()) std::cout<<"  Reconstructing... ";
       if(useBar&&this->par.isVerbose()) bar.init(this->axisDim[2]);
-//      std::vector<bool> flaggedChans=par.getChannelFlags(this->axisDim[2]);
       for(size_t z=0;z<this->axisDim[2];z++){
 
 	if( this->par.isVerbose() && useBar ) bar.update((z+1));
 
-//	if(!flaggedChans[z]){
 	if(!this->par.isFlaggedChannel(z)){
 	  float *im = new float[xySize];
 	  float *newIm = new float[xySize];
@@ -284,12 +282,10 @@ namespace duchamp
 
       bool *doPixel = new bool[xySize];
       // doPixel is a bool array to say whether to look in a given spectrum
-//      std::vector<bool> flaggedChans=par.getChannelFlags(zdim);
       for(size_t npix=0; npix<xySize; npix++){
 	doPixel[npix] = false;
 	for(size_t z=0;z<zdim;z++) {
 	  doPixel[npix] = doPixel[npix] || 
-//	    (!par.isBlank(originalArray[npix+xySize*z]) && !flaggedChans[z]);
 	      (!par.isBlank(originalArray[npix+xySize*z]) && !par.isFlaggedChannel(z));
 	}
 	// doPixel[i] is false only when there are no good pixels in spectrum
@@ -386,15 +382,12 @@ namespace duchamp
     channelImage->saveStats(stats);
     channelImage->setMinSize(1);
 
-//    std::vector<bool> flaggedChans=par.getChannelFlags(zdim);
     for(size_t z=0; z<zdim; z++){  // loop over all channels
 
       if( par.isVerbose() && useBar ) bar.update(z+1);
 
-//      if(!flaggedChans[z]){ 
       if(!par.isFlaggedChannel(z)){ 
-	// purpose of this is to ignore the Milky Way channels 
-	//  if we are flagging them
+	// purpose of this is to ignore the flagged channels
 
 	channelImage->extractImage(reconArray,dim,z);
 	std::vector<Object2D> objlist = channelImage->findSources2D();

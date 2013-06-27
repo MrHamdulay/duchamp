@@ -257,12 +257,10 @@ void Cube::SpatialSmoothNSearch()
   float *smoothed=0;
   bool *mask=0;
   float median,madfm;//,threshold;
-//  std::vector<bool> flaggedChans=this->par.getChannelFlags(zdim);
   for(size_t z=0;z<zdim;z++){
 
     if( this->par.isVerbose() ) bar.update(z+1);
       
-//    if(!flaggedChans[z]){
     if(!this->par.isFlaggedChannel(z)){
 
       for(size_t pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];

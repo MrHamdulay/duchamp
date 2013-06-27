@@ -924,8 +924,6 @@ namespace duchamp
 
       bool *mask = new bool[this->numPixels];
       size_t vox=0,goodSize = 0;
-      //std::vector<bool> flaggedChans = this->par.getChannelFlags(this->axisDim[2]);
-//      std::cerr << flaggedChans[72] << " " << flaggedChans[73] << " " << flaggedChans[74] << " " << flaggedChans[75] << " " << flaggedChans[76] << "\n";
       for(size_t z=0;z<this->axisDim[2];z++){
 	for(size_t y=0;y<this->axisDim[1];y++){
 	  for(size_t x=0;x<this->axisDim[0];x++){
@@ -933,7 +931,6 @@ namespace duchamp
 	    bool isBlank=this->isBlank(vox);
 	    bool statOK = this->par.isStatOK(x,y,z);
 	    bool isFlagged = this->par.isFlaggedChannel(z);
-//	    mask[vox] = (!isBlank && !flaggedChans[z] && statOK );
 	    mask[vox] = (!isBlank && !isFlagged && statOK );
 	    if(mask[vox]) goodSize++;
 	    vox++;
@@ -1103,7 +1100,6 @@ namespace duchamp
     // first calculate p-value for each pixel -- assume Gaussian for now.
 
     float *orderedP = new float[this->numPixels];
-//    std::vector<bool> flaggedChans = this->par.getChannelFlags(this->axisDim[2]);
     size_t count = 0;
     for(size_t x=0;x<this->axisDim[0];x++){
       for(size_t y=0;y<this->axisDim[1];y++){
@@ -1111,7 +1107,6 @@ namespace duchamp
 	  size_t pix = z * this->axisDim[0]*this->axisDim[1] + 
 	    y*this->axisDim[0] + x;
 
-//	  if(!(this->par.isBlank(this->array[pix])) && !flaggedChans[z]){ 
 	  if(!(this->par.isBlank(this->array[pix])) && !this->par.isFlaggedChannel(z)){ 
 	    // only look at non-blank, valid pixels 
 	    //  	  orderedP[count++] = this->Stats.getPValue(this->array[pix]);

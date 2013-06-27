@@ -39,7 +39,6 @@
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Cubes/cubeUtils.hh>
-// #include <duchamp/Cubes/plots.hh>
 #include <duchamp/Plotting/CutoutPlot.hh>
 #include <duchamp/Plotting/SpectralPlot.hh>
 #include <duchamp/Utils/utils.hh>
@@ -174,7 +173,6 @@ namespace duchamp
     ///        to plot the spectrum on.
 
     long zdim = this->axisDim[2];
-//    std::vector<bool> flaggedChans=this->par.getChannelFlags(zdim);
     double xval = double(this->objectList->at(objNum).getXcentre());
     double yval = double(this->objectList->at(objNum).getYcentre());
  
@@ -224,7 +222,6 @@ namespace duchamp
     float max,min;
     bool haveStarted=false;
     for(int z=0;z<zdim;z++){
-//	if(!flaggedChans[z]){
 	if(!this->par.isFlaggedChannel(z)){
 	    if(specy[z]>max || !haveStarted) max=specy[z];
 	    if(specy[z]<min || !haveStarted) min=specy[z];
@@ -298,7 +295,6 @@ namespace duchamp
     std::swap(max,min);
     int ct = 0;
     for(int i=0;i<zdim;i++){
-//      if((!flaggedChans[i])&&(specx[i]>=minvel)&&(specx[i]<=maxvel)){
 	if((!this->par.isFlaggedChannel(i))&&(specx[i]>=minvel)&&(specx[i]<=maxvel)){
 	ct++;
 	if(specy[i]>max) max=specy[i];

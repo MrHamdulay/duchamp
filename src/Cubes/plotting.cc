@@ -85,15 +85,11 @@ namespace duchamp
       float *base   = new float[zdim];
       Plot::SimpleSpectralPlot spPlot;
       int flag = spPlot.setUpPlot(pgDestination.c_str());
-//       int flag=cpgopen(pgDestination.c_str());
-//       cpgpap(spPlot.getPaperWidth(),spPlot.getAspectRatio());
-//       cpgsch(Plot::spLabelSize);
       if(flag <= 0){
 	DUCHAMPERROR("Plot Detection Map", "Could not open PGPlot device " << pgDestination);
       }
       else{
 	
-//	std::vector<bool> flaggedChans=this->par.getChannelFlags(zdim);
 	this->getSpectralArrays(-1,specx,specy,specy2,base);
 	float vmax,vmin,width;
 	vmax = vmin = specx[0];
@@ -106,7 +102,6 @@ namespace duchamp
 	float max,min;
 	bool haveStarted=false;
 	for(int z=0;z<zdim;z++){
-//	    if(!flaggedChans[z]){
 	    if(!this->par.isFlaggedChannel(z)){
 		if(specy[z]>max || !haveStarted) max=specy[z];
 		if(specy[z]<min || !haveStarted) min=specy[z];
