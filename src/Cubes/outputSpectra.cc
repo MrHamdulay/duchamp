@@ -236,15 +236,15 @@ namespace duchamp
     for(int z=0;z<zdim;z++){
 //	if(!flaggedChans[z]){
 	if(!this->par.isFlaggedChannel(z)){
-	    if(specy[z]>max && !haveStarted) max=specy[z];
-	    if(specy[z]<min && !haveStarted) min=specy[z];
+	    if(specy[z]>max || !haveStarted) max=specy[z];
+	    if(specy[z]<min || !haveStarted) min=specy[z];
 	    if(this->par.getFlagBaseline()){
-		if(base[z]>max && !haveStarted) max=base[z];
-		if(base[z]<min && !haveStarted) min=base[z];
+		if(base[z]>max || !haveStarted) max=base[z];
+		if(base[z]<min || !haveStarted) min=base[z];
 	    }
 	    if(this->reconExists){
-		if(specy2[z]>max && !haveStarted) max=specy2[z];
-		if(specy2[z]<min && !haveStarted) min=specy2[z];
+		if(specy2[z]>max || !haveStarted) max=specy2[z];
+		if(specy2[z]<min || !haveStarted) min=specy2[z];
 	    }
 	    haveStarted=true;
 	}

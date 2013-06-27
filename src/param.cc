@@ -488,7 +488,8 @@ namespace duchamp
 	//     isFlagged=(z==this->flaggedChannels[i]);
 	// return isFlagged;
 
-	if(z>this->flaggedChannelMask.size() || z<0) return false;
+	if(this->flaggedChannelMask.size()==0) return false;
+	else if(z>this->flaggedChannelMask.size() || z<0) return false;
 	else return this->flaggedChannelMask[z];
 
     }
