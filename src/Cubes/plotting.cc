@@ -147,20 +147,26 @@ namespace duchamp
 	  drawSpectralRange(spPlot,this->objectList->at(i),this->head);
 	}
 
-	cpgsci(RED);
-	cpgsls(DASHED);
-	float thresh = this->Stats.getThreshold();
-	if(this->par.getFlagNegative()) thresh *= -1.;
-	cpgmove(vmin,thresh);
-	cpgdraw(vmax,thresh);
-	if(this->par.getFlagGrowth()){
-	  if(this->par.getFlagUserGrowthThreshold()) thresh= this->par.getGrowthThreshold();
-	  else thresh= this->Stats.snrToValue(this->par.getGrowthCut());
-	  if(this->par.getFlagNegative()) thresh *= -1.;	
-	  cpgsls(DOTTED);
-	  cpgmove(vmin,thresh);
-	  cpgdraw(vmax,thresh);
-	}
+	if(this->par.getFlagBaseline())
+	    spPlot.drawThresholds(this->par,this->Stats,specx,base,zdim);
+	else
+	    spPlot.drawThresholds(this->par,this->Stats);
+
+
+	// cpgsci(RED);
+	// cpgsls(DASHED);
+	// float thresh = this->Stats.getThreshold();
+	// if(this->par.getFlagNegative()) thresh *= -1.;
+	// cpgmove(vmin,thresh);
+	// cpgdraw(vmax,thresh);
+	// if(this->par.getFlagGrowth()){
+	//   if(this->par.getFlagUserGrowthThreshold()) thresh= this->par.getGrowthThreshold();
+	//   else thresh= this->Stats.snrToValue(this->par.getGrowthCut());
+	//   if(this->par.getFlagNegative()) thresh *= -1.;	
+	//   cpgsls(DOTTED);
+	//   cpgmove(vmin,thresh);
+	//   cpgdraw(vmax,thresh);
+	// }
       }
 
       spPlot.close();

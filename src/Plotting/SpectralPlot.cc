@@ -259,6 +259,29 @@ namespace duchamp {
 	    cpgsls(SOLID);
 	}
 
+	void SpectralPlot::drawThresholds(Param &par, Statistics::StatsContainer<float> &stats, float *vel, float *baseline, size_t size)
+	{
+
+	    cpgsci(BLUE);
+	    cpgsls(DASHED);
+	    float thresh = stats.getThreshold();
+	    if(par.getFlagNegative()) thresh *= -1.;
+	    for(size_t i=0;i<size;i++) baseline[i]+= thresh;
+	    cpgline(size,vel,baseline);
+	    for(size_t i=0;i<size;i++) baseline[i]-= thresh;
+	    if(par.getFlagGrowth()){
+		if(par.getFlagUserGrowthThreshold()) thresh= par.getGrowthThreshold();
+		else thresh= stats.snrToValue(par.getGrowthCut());
+		if(par.getFlagNegative()) thresh *= -1.;	
+		for(size_t i=0;i<size;i++) baseline[i]+= thresh;
+		cpgsls(DOTTED);
+		cpgline(size,vel,baseline);
+		for(size_t i=0;i<size;i++) baseline[i]-= thresh;
+	    }
+	    cpgsci(FOREGND);
+	    cpgsls(SOLID);
+	}
+
     }
 
 }

@@ -281,8 +281,12 @@ namespace duchamp
     this->drawFlaggedChannels(plot,xval,yval);
     drawSpectralRange(plot,this->objectList->at(objNum),this->head);
 
-    if(this->par.getSpectralMethod()=="peak")
-      plot.drawThresholds(this->par,this->Stats);
+    if(this->par.getSpectralMethod()=="peak"){
+	if(this->par.getFlagBaseline())
+	    plot.drawThresholds(this->par,this->Stats,specx,base,zdim);
+	else
+	    plot.drawThresholds(this->par,this->Stats);
+    }
 
     /**************************/
     // ZOOM IN SPECTRALLY ON THE DETECTION.
@@ -330,9 +334,12 @@ namespace duchamp
     this->drawFlaggedChannels(plot,xval,yval);
     drawSpectralRange(plot,this->objectList->at(objNum),this->head);
     
-    if(this->par.getSpectralMethod()=="peak")
-      plot.drawThresholds(this->par,this->Stats);
-
+    if(this->par.getSpectralMethod()=="peak"){
+	if(this->par.getFlagBaseline())
+	    plot.drawThresholds(this->par,this->Stats,specx,base,zdim);
+	else
+	    plot.drawThresholds(this->par,this->Stats);
+    }
     /**************************/
 
     // DRAW THE MOMENT MAP OF THE DETECTION -- SUMMED OVER ALL CHANNELS

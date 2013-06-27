@@ -99,6 +99,8 @@ namespace duchamp
 	    /// @brief Draw thresholds
 	    void drawThresholds(Param &par, Statistics::StatsContainer<float> &stats);
 
+	    /// @brief Draw thesholds when baselines have been subtracted.
+	    void drawThresholds(Param &par, Statistics::StatsContainer<float> &stats, float *vel, float *baseline, size_t size);
 
 	private:
 	    float zoomCoords[4]; ///< Boundaries for the zoomed-in spectrum [inches]
