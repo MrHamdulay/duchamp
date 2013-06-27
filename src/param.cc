@@ -131,10 +131,11 @@ namespace duchamp
     this->bscaleKeyword     = -8.00061;
     this->bzeroKeyword      = 0.;
     this->newFluxUnits      = "";
-    // Milky-Way parameters
+    // Flagged channel parameters
     this->flaggedChannelList = "";
     this->flaggedChannels   = std::vector<int>();
     this->flaggedChannelMask= std::vector<bool>();
+    // Beam
     this->areaBeam          = 0.;
     this->fwhmBeam          = 0.;
     this->beamAsUsed.empty();
@@ -153,6 +154,8 @@ namespace duchamp
     this->zSubOffset        = 0;
     // Baseline related
     this->flagBaseline      = false;
+    this->baselineType      = "atrous";
+    this->baselineBoxWidth  = 51;
     // Detection-related    
     this->flagNegative      = false;
     // Object growth        
@@ -300,6 +303,8 @@ namespace duchamp
     this->ySubOffset        = p.ySubOffset;     
     this->zSubOffset        = p.zSubOffset;
     this->flagBaseline      = p.flagBaseline;
+    this->baselineType      = p.baselineType;
+    this->baselineBoxWidth  = p.baselineBoxWidth;
     this->flagGrowth        = p.flagGrowth;
     this->growthCut         = p.growthCut;
     this->growthThreshold   = p.growthThreshold;
@@ -662,6 +667,8 @@ namespace duchamp
 	if(arg=="flagtrim")        this->flagTrim = readFlag(ss); 
 	if(arg=="flaggedchannels") this->flaggedChannelList = readSval(ss);
 	if(arg=="flagbaseline")    this->flagBaseline = readFlag(ss); 
+	if(arg=="baselinetype")    this->baselineType = readSval(ss);
+	if(arg=="baselineboxwidth") this->baselineBoxWidth = readIval(ss);
 	if(arg=="searchtype")      this->searchType = readSval(ss);
 
 	if(arg=="flagnegative")    this->flagNegative = readFlag(ss);
@@ -914,6 +921,18 @@ namespace duchamp
     if(this->flagOutputBaseline && !this->flagBaseline){
       DUCHAMPWARN("Reading parameters","Saving of baseline values to a FITS file has been requested, but baselines are not being calculated. Turning off saving of baseline values.");
       this->flagOutputBaseline = false;
+    }
+
+    // check that the baseline option is valid
+    if(this->flagBaseline){
+	if (this->baselineType != "atrous" && this->baselineType != "median"){
+	    DUCHAMPWARN("Reading parameters", "The only types of baseline subtraction available are 'atrous' or 'median' - you provided '"<<this->baselineType <<"'. Setting to 'atrous'.");
+	    this->baselineType = "atrous";
+	}
+	if(this->baselineType == "median" && this->baselineBoxWidth%2 == 0){
+	    DUCHAMPWARN("Reading parameters", "The baseline box width needs to be odd. Changing from " << this->baselineBoxWidth << " to " << this->baselineBoxWidth+1 <<".");
+	    this->baselineBoxWidth++;
+	}
     }
       
   }

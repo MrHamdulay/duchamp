@@ -354,6 +354,10 @@ namespace duchamp
     //
     bool   getFlagBaseline(){return flagBaseline;};
     void   setFlagBaseline(bool flag){flagBaseline = flag;};
+      std::string getBaselineType(){return baselineType;};
+      void setBaselineType(std::string s){baselineType = s;};
+      unsigned int getBaselineBoxWidth(){return baselineBoxWidth;};
+      void setBaselineBoxWidth(unsigned int i){baselineBoxWidth = i;};
     //
     bool   getFlagStatSec(){return flagStatSec;};
     void   setFlagStatSec(bool flag){flagStatSec=flag;};
@@ -531,6 +535,8 @@ namespace duchamp
 
     // Baseline related
     bool        flagBaseline;    ///< Whether to do baseline subtraction before reconstruction and/or searching.
+      std::string baselineType;  ///< Which baselining method to use
+      unsigned int baselineBoxWidth; ///< For the median baselining method, the full width of the sliding box.
 
     // Detection-related
     unsigned int minPix;         ///< Minimum number of pixels for a detected object to be counted

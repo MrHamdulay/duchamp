@@ -90,7 +90,7 @@ namespace duchamp
     
   }
 
-  void findBaseline(size_t size, float *input, float *baseline, Param &par)
+  void findAtrousBaseline(size_t size, float *input, float *baseline, Param &par)
   {
     ///   Uses the a trous reconstruction, keeping only the highest two scales, 
     ///     to reconstruct the baseline.
@@ -135,7 +135,7 @@ namespace duchamp
   }
 
  
-  void findBaseline(size_t size, float *input, float *baseline)
+  void findAtrousBaseline(size_t size, float *input, float *baseline)
   {
     ///  This version is designed for programs not using Param classes -- it 
     ///   keeps that side of things hidden from the user.

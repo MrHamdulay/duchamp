@@ -38,8 +38,8 @@ namespace duchamp
   void Cube::removeBaseline()
   {
     /// @details
-    ///  A front-end to the findBaseline routine, specialised for the 
-    ///  Cube data structure. Calls findBaseline on each spectrum individually.
+    ///  A front-end to the findAtrousBaseline routine, specialised for the 
+    ///  Cube data structure. Calls findAtrousBaseline on each spectrum individually.
     ///  Upon exit, the original array minus its spectral baseline is stored
     ///   in this->array and the baseline is in this->baseline.
     ///  If the reconstructed array exists, the baseline is subtracted from 
@@ -48,6 +48,9 @@ namespace duchamp
     float *spec     = new float[this->axisDim[2]];
     float *thisBaseline = new float[this->axisDim[2]];
     size_t numSpec = this->axisDim[0]*this->axisDim[1];
+
+    if(this->par.getBaselineType()=="median")
+	std::cout << "Finding median baseline with box width " << this->par.getBaselineBoxWidth() <<"\n";
 
     ProgressBar bar;
     if(this->par.isVerbose()) bar.init(numSpec);
@@ -58,7 +61,10 @@ namespace duchamp
       for(size_t z=0; z<this->axisDim[2]; z++)  
 	spec[z] = this->array[z*numSpec + pix];
 
-      findBaseline(this->axisDim[2], spec, thisBaseline, this->par);
+      if(this->par.getBaselineType()=="atrous")
+	  findAtrousBaseline(this->axisDim[2], spec, thisBaseline, this->par);
+      else
+	  findMedianBaseline(this->axisDim[2], spec, this->par.getBaselineBoxWidth(), thisBaseline);
 
       for(size_t z=0; z<this->axisDim[2]; z++) {
 	this->baseline[z*numSpec+pix] = thisBaseline[z];
