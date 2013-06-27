@@ -32,6 +32,7 @@
 #include <wcslib/pgwcsl.h>
 #include <wcslib/wcs.h>
 #include <cpgplot.h>
+#include <string.h>
 
 void wcsAxes(struct wcsprm *wcs, size_t *axes, int textColour, int axisColour)
 {
