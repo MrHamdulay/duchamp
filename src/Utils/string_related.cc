@@ -184,3 +184,4 @@ std::vector<int> selectionToIntVec(std::string &str)
     return tmplist;
 
 }
+

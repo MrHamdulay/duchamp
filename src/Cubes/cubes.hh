@@ -38,7 +38,9 @@
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Outputs/columns.hh>
 #include <duchamp/Outputs/CatalogueSpecification.hh>
-#include <duchamp/Cubes/plots.hh>
+// #include <duchamp/Cubes/plots.hh>
+#include <duchamp/Plotting/SpectralPlot.hh>
+#include <duchamp/Plotting/CutoutPlot.hh>
 #include <duchamp/Utils/Statistics.hh>
 #include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Object2D.hh>
@@ -63,6 +65,9 @@ namespace duchamp
 						Statistics::StatsContainer<float> &stats);
   std::vector <Detection> search3DArraySpatial(size_t *dim, float *Array, Param &par,
 					       Statistics::StatsContainer<float> &stats);
+
+    void plotWCSaxes(struct wcsprm *wcs, size_t *axes, int textColour=DUCHAMP_ID_TEXT_COLOUR, int axisColour=DUCHAMP_WCS_AXIS_COLOUR);
+
 
   //=========================================================================
 
@@ -367,8 +372,11 @@ namespace duchamp
     /// @brief Is the object at an end of the spectrum? 
     bool        objAtSpectralEdge(Detection obj);
 
-    /// @brief Is the object next to the MW range?
-    bool        objNextToMW(Detection obj);
+    // /// @brief Is the object next to the MW range?
+    // bool        objNextToMW(Detection obj);
+
+      /// @brief Is the object next to or enclosing flagged channels?
+      bool      objNextToFlaggedChan(Detection &obj);
 
     /// @brief Set warning flags for the detections. 
     void        setObjectFlags();
@@ -605,6 +613,9 @@ namespace duchamp
     void        plotSpectrum(int objNum, Plot::SpectralPlot &plot);
     /// @brief Plot the image cutout for a single object 
     void        plotSource(Detection obj, Plot::CutoutPlot &plot);
+    /// @brief Mark channels that have been flagged by the user.
+      void        drawFlaggedChannels(Plot::SpectralPlot &plot, double xval, double yval);
+
 
     /// @brief Get the spectral arrays 
     void        getSpectralArrays(int objNumber, float *specx, float *specy, float *specRecon, float *specBase);
@@ -703,8 +714,10 @@ namespace duchamp
       else return Stats.isDetection(array[voxel]);
     };  
 
-    /// @brief Blank out a set of channels marked as being Milky Way channels 
-    void      removeMW();
+    // /// @brief Blank out a set of channels marked as being Milky Way channels 
+    // void      removeMW();
+    /// @brief Blank out a set of channels marked as flagged
+      void removeFlaggedChannels();
 
   private: 
     unsigned int minSize;    ///< the minimum number of pixels for a detection to be accepted.

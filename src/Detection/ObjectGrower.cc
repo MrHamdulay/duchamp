@@ -101,12 +101,18 @@ namespace duchamp {
       }
     }
 
-    if(theCube->pars().getFlagMW()){
-      int minz=std::max(0,theCube->pars().getMinMW());
-      int maxz=std::min(int(theCube->getDimZ())-1,theCube->pars().getMaxMW());
-      if(minz<maxz){
-	for(size_t i=minz*spatsize;i<(maxz+1)*spatsize;i++) this->itsFlagArray[i]=MW;
-      }
+    // if(theCube->pars().getFlagMW()){
+    //   int minz=std::max(0,theCube->pars().getMinMW());
+    //   int maxz=std::min(int(theCube->getDimZ())-1,theCube->pars().getMaxMW());
+    //   if(minz<maxz){
+    // 	for(size_t i=minz*spatsize;i<(maxz+1)*spatsize;i++) this->itsFlagArray[i]=MW;
+    //   }
+    // }
+
+    std::vector<int> flaggedChans=theCube->pars().getFlaggedChannels();
+    for(size_t iz=0; iz<flaggedChans.size();iz++) {
+	int z=flaggedChans[iz];
+	for(size_t i=0;i<spatsize;i++) this->itsFlagArray[i+z*spatsize]=MW;
     }
 
     for(size_t i=0;i<fullsize;i++)

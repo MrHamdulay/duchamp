@@ -36,7 +36,8 @@
 #include <duchamp/fitsHeader.hh>
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/Cubes/cubes.hh>
-
+#include <duchamp/Plotting/SpectralPlot.hh>
+#include <duchamp/Plotting/SimpleSpectralPlot.hh>
 
 namespace duchamp
 {

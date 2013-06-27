@@ -91,8 +91,11 @@ namespace PixelInfo
     /// @brief Return the number of Scans in the Object. 
     long  getNumScan(){return scanlist.size();};
 
+    /// @brief Return the scan list.
+    std::vector<Scan> getScanlist(){return scanlist;};
+
     /// @brief Get the i-th Scan in the Scan list. 
-    // Scan  getScan(int i){return scanlist[i];};
+    Scan  getScan(int i){return scanlist[i];};
 
     /// @brief Order the Scans in the list, using the < operator for Scans. 
      void  order(){std::stable_sort(scanlist.begin(),scanlist.end());};

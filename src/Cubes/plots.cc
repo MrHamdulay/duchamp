@@ -251,13 +251,13 @@ namespace duchamp
       cpgsls(ls);
     }
     //----------------------------------------------------------
-    void SpectralPlot::drawMWRange(float v1, float v2)
+    // void SpectralPlot::drawMWRange(float v1, float v2)
+    void SpectralPlot::drawFlaggedChannelRange(float v1, float v2)
     {
       ///  @details
-      /// Draws a box showing the extent of channels masked by the 
-      ///  Milky Way parameters
-      /// \param v1 Minimum velocity of the Milky Way range.
-      /// \param v2 Maximum velocity of the Milky Way range.
+      /// Draws a box showing the extent of flagged channels. 
+      /// \param v1 Minimum world coordinate of the flagged channel range.
+      /// \param v2 Maximum world coordinate of the flagged channel range.
 
       int ci,fs;
       float dud,min,max,height;

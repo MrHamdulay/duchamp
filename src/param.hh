@@ -154,8 +154,11 @@ namespace duchamp
     /// @brief Is a pixel value a BLANK? 
     bool   isBlank(float &value);
 
-    /// @brief Is a given channel flagged as being in the Milky Way?           
-    bool   isInMW(int z);
+    // /// @brief Is a given channel flagged as being in the Milky Way?           
+      bool   isInMW(int z);
+    /// @brief Has a given channel been flagged by the user?
+      bool isFlaggedChannel(int z);
+      std::vector<bool> getChannelFlags(int numChannels);
 
     /// @brief Is a given pixel position OK for use with stats calculations? 
     bool   isStatOK(int x, int y, int z);
@@ -193,6 +196,8 @@ namespace duchamp
     void   setFlagUsePrevious(bool flag){usePrevious=flag;};
     std::string getObjectList(){return objectList;};
     void   setObjectList(std::string s){objectList = s;};
+    std::vector<int> getObjectListVector(){return objectListVector;};
+    void   setObjectListVector(std::vector<int> v){objectListVector = v;};
     std::vector<int> getObjectRequest();
     std::vector<bool> getObjectChoices();
     std::vector<bool> getObjectChoices(int numObjects);
@@ -296,6 +301,10 @@ namespace duchamp
     void   setBscaleKeyword(float v){bscaleKeyword=v;};
     float  getBzeroKeyword(){return bzeroKeyword;};
     void   setBzeroKeyword(float v){bzeroKeyword=v;};
+    std::vector<int> getFlaggedChannels(){return flaggedChannels;};
+    void   setFlaggedChannels(std::vector<int> v){flaggedChannels=v;};
+    std::string getFlaggedChannelList(){return flaggedChannelList;};
+    void   setFlaggedChannelList(std::string s){flaggedChannelList=s;};
     bool   getFlagMW(){return flagMW;};
     void   setFlagMW(bool flag){flagMW=flag;};
     int    getMaxMW(){return maxMW - zSubOffset;};
@@ -452,7 +461,7 @@ namespace duchamp
 
     bool       usePrevious;      ///< Whether to read the detections from a previously-created log file
     std::string objectList;      ///< List of objects to re-plot
-    std::vector<int> objectChoices; ///<< Vector list of the objects requested
+    std::vector<int> objectListVector; ///<< Vector list of the objects requested
 
     // Output files
     bool        flagLog;         ///< Should we do the intermediate logging?
@@ -511,6 +520,7 @@ namespace duchamp
     // Milky-Way parameters
     std::string flaggedChannelList; ///< List of channels to be flagged (ignored).
     std::vector <int> flaggedChannels; ///< The flagged channels listed individually 
+    std::vector<bool> flaggedChannelMask; ///< Whether a given channel is flagged, up to the maximum listed flagged channel
     bool        flagMW;          ///< A flag that indicates whether to ignore the Milky Way channels.
     int         maxMW;           ///< Last  Milky Way channel
     int         minMW;           ///< First Milky Way channel

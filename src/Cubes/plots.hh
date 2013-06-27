@@ -141,8 +141,10 @@ namespace duchamp
       /// @brief Draw lines indicating velocity range.
       void drawVelRange(float v1, float v2); 
 
-      /// @brief Draw box showing excluded range due to Milky Way.
-      void drawMWRange(float v1, float v2);
+      // /// @brief Draw box showing excluded range due to Milky Way.
+      // void drawMWRange(float v1, float v2);
+      /// @brief Draw box showing excluded range due flagged channels.
+      void drawFlaggedChannelRange(float v1, float v2);
     
       /// @brief Draw thresholds
       void drawThresholds(Param &par, Statistics::StatsContainer<float> &stats);

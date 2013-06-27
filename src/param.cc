@@ -134,6 +134,7 @@ namespace duchamp
     // Milky-Way parameters
     this->flaggedChannelList = "";
     this->flaggedChannels   = std::vector<int>(0);
+    this->flaggedChannelMask= std::vector<bool>(0);
     this->flagMW            = false;
     this->maxMW             = 112;
     this->minMW             = 75;
@@ -281,6 +282,7 @@ namespace duchamp
     this->newFluxUnits      = p.newFluxUnits;
     this->flaggedChannelList = p.flaggedChannelList;
     this->flaggedChannels   = p.flaggedChannels;
+    this->flaggedChannelMask= p.flaggedChannelMask;
     this->flagMW            = p.flagMW;         
     this->maxMW             = p.maxMW;          
     this->minMW             = p.minMW;         
@@ -451,11 +453,13 @@ namespace duchamp
     ///  channel. The array is allocated by the function with a 'new' call. 
 
     bool *mask = new bool[dim[0]*dim[1]*dim[2]];
+    std::vector<bool> flaggedChans = this->getChannelFlags(dim[2]);
     for(size_t x=0;x<dim[0];x++) {
       for(size_t y=0;y<dim[1];y++) {
 	for(size_t z=0;z<dim[2];z++) {
 	  size_t i = x+y*dim[0]+z*dim[0]*dim[1];
-	  mask[i] = !this->isBlank(array[i]) && !this->isInMW(z) && this->isStatOK(x,y,z);
+	  // mask[i] = !this->isBlank(array[i]) && !this->isInMW(z) && this->isStatOK(x,y,z);
+	  mask[i] = !this->isBlank(array[i]) && !flaggedChans[z] && this->isStatOK(x,y,z);
 	}
       }
     }
@@ -474,6 +478,32 @@ namespace duchamp
 
     return ( this->flagMW && (z>=this->getMinMW()) && (z<=this->getMaxMW()) );
   }
+
+    bool Param::isFlaggedChannel(int z)
+    {
+	/// Tests whether a given channel has been flagged by the user
+
+	// bool isFlagged=false;
+	// for(size_t i=0;i<this->flaggedChannels.size()&&!isFlagged;i++)
+	//     isFlagged=(z==this->flaggedChannels[i]);
+	// return isFlagged;
+
+	if(z>this->flaggedChannelMask.size() || z<0) return false;
+	else return this->flaggedChannelMask[z];
+
+    }
+
+    std::vector<bool> Param::getChannelFlags(int numChannels)
+    {
+
+	std::vector<bool> flags(numChannels,false);
+	for(std::vector<int>::iterator chan = this->flaggedChannels.begin(); chan!=this->flaggedChannels.end(); chan++){ 
+	    // channels are zero-based, but channel-specification is 1-based
+	    if(*chan<=numChannels && *chan>-1) flags[*chan-1] = true;
+	}
+	return flags;
+    }
+
 
   bool Param::isStatOK(int x, int y, int z)
   {
@@ -505,11 +535,11 @@ namespace duchamp
     ///  [0,1,1,0,1,1,1,1].
     ///  \return Vector of bool values.
 
-      if(this->objectChoices.size()==0) return std::vector<bool>(0);
+      if(this->objectListVector.size()==0) return std::vector<bool>(0);
       else {
-	  int maxNum = *std::max_element(this->objectChoices.begin(), this->objectChoices.end());
+	  int maxNum = *std::max_element(this->objectListVector.begin(), this->objectListVector.end());
 	  std::vector<bool> choices(maxNum,false);
-	  for(std::vector<int>::iterator obj = objectChoices.begin();obj!=objectChoices.end();obj++) 
+	  for(std::vector<int>::iterator obj = objectListVector.begin();obj!=objectListVector.end();obj++) 
 	      choices[*obj-1] = true;
 	  return choices;
       }
@@ -532,25 +562,26 @@ namespace duchamp
     else{
       std::vector<bool> choices(numObjects,false);
       std::vector<int> duds,goodlist;
-      for(std::vector<int>::iterator obj = this->objectChoices.begin();obj!=this->objectChoices.end();obj++){ 
-	  if(*obj<=numObjects) {
-	      choices[*obj-1] = true;
-	      goodlist.push_back(*obj);
-	  }
-	  else duds.push_back(*obj);
+      for(std::vector<int>::iterator obj = this->objectListVector.begin();obj!=this->objectListVector.end();obj++){ 
+    	  if(*obj<=numObjects) {
+    	      choices[*obj-1] = true;
+    	      goodlist.push_back(*obj);
+    	  }
+    	  else duds.push_back(*obj);
       }
       if(duds.size()>0){
-	  this->objectChoices = goodlist;
-	  std::stringstream dudlist;
-	  dudlist << duds[0];
-	  for(size_t i=1;i<duds.size();i++) dudlist << ","<<duds[i];
-	  std::string obj="object";
-	  if(duds.size()>1) obj+= "s";
-	  DUCHAMPWARN("Object Selection", "You have only detected " << numObjects << " objects, so the requested " 
-		      << obj << " '" << dudlist.str() << "' cannot be returned. Please check your request, as it doesn't match the results.");
+    	  this->objectListVector = goodlist;
+    	  std::stringstream dudlist;
+    	  dudlist << duds[0];
+    	  for(size_t i=1;i<duds.size();i++) dudlist << ","<<duds[i];
+    	  std::string obj="object";
+    	  if(duds.size()>1) obj+= "s";
+    	  DUCHAMPWARN("Object Selection", "You have only detected " << numObjects << " objects, so the requested " 
+    		      << obj << " '" << dudlist.str() << "' cannot be returned. Please check your request, as it doesn't match the results.");
       }
       return choices;
     }
+
   }
 
   /****************************************************************/
@@ -746,10 +777,16 @@ namespace duchamp
 
     // If we have usePrevious=false, set the objectlist to blank so that we use all of them. Otherwise, define the vector list of choices.
     if(!this->usePrevious) this->objectList = "";
-    else this->objectChoices = selectionToIntVec(this->objectList);
+    else this->objectListVector = selectionToIntVec(this->objectList);
 
     // Defining the vector list of flagged channels
     this->flaggedChannels = selectionToIntVec(this->flaggedChannelList);
+    this->flaggedChannelMask = std::vector<bool>(*std::max_element(this->flaggedChannels.begin(),this->flaggedChannels.end()),false);
+    for(size_t i=0;i<this->flaggedChannels.size();i++) this->flaggedChannelMask[ this->flaggedChannels[i] ] = true;
+
+    std::cerr << flaggedChannels[0];
+    for(size_t i=1;i<flaggedChannels.size();i++) std::cerr << " " << flaggedChannels[i];
+    std::cerr << "\n";
 
     // If pgplot was not included in the compilation, need to set flagXOutput to false
     if(!USE_PGPLOT){
@@ -1022,6 +1059,9 @@ namespace duchamp
       // need to remove the offset correction, as we want to report the parameters actually entered
       recordParam(theStream, par, "[minMW - maxMW]", "Milky Way Channels", par.getMinMW()+par.getZOffset()<<"-"<<par.getMaxMW()+par.getZOffset());
     }
+    if(par.getFlaggedChannelList().size()>0){
+	recordParam(theStream, par, "[flaggedChannels]", "Channels flagged by user", par.getFlaggedChannelList());
+    }
     if(par.beamAsUsed.origin()==EMPTY){  // No beam in FITS file and no information provided
       recordParam(theStream, par, "", "Area of Beam", "No beam");
     }
@@ -1265,7 +1305,8 @@ namespace duchamp
       outfile.write(reinterpret_cast<const char*>(&this->minMW), sizeof this->minMW);
       outfile.write(reinterpret_cast<const char*>(&this->maxMW), sizeof this->maxMW);
     }
-    
+    writeStringToBinaryFile(outfile,this->flaggedChannelList);
+
     outfile.close();
   }
 
@@ -1356,7 +1397,8 @@ namespace duchamp
       infile.read(reinterpret_cast<char*>(&this->minMW), sizeof this->minMW);
       infile.read(reinterpret_cast<char*>(&this->maxMW), sizeof this->maxMW);
     }
-    
+    this->flaggedChannelList=readStringFromBinaryFile(infile);
+
     std::streampos newloc = infile.tellg();
     infile.close();
     return newloc;

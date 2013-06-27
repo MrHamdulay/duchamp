@@ -885,24 +885,24 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Cube::removeMW()
-  {
-    /// @details
-    /// The channels corresponding to the Milky Way range (as given by the Param
-    ///  set) are all set to 0 in the pixel array.
-    /// Only done if the appropriate flag is set, and the pixels are not BLANK.
-    /// \deprecated
+  // void Cube::removeMW()
+  // {
+  //   /// @details
+  //   /// The channels corresponding to the Milky Way range (as given by the Param
+  //   ///  set) are all set to 0 in the pixel array.
+  //   /// Only done if the appropriate flag is set, and the pixels are not BLANK.
+  //   /// \deprecated
 
-    if(this->par.getFlagMW()){
-      for(size_t pix=0;pix<this->axisDim[0]*this->axisDim[1];pix++){
-	for(size_t z=0;z<this->axisDim[2];z++){
-	  size_t pos = z*this->axisDim[0]*this->axisDim[1] + pix;
-	  if(!this->isBlank(pos) && this->par.isInMW(z)) this->array[pos]=0.;
-	}
-      }
-    }
-  }
-  //--------------------------------------------------------------------
+  //   if(this->par.getFlagMW()){
+  //     for(size_t pix=0;pix<this->axisDim[0]*this->axisDim[1];pix++){
+  // 	for(size_t z=0;z<this->axisDim[2];z++){
+  // 	  size_t pos = z*this->axisDim[0]*this->axisDim[1] + pix;
+  // 	  if(!this->isBlank(pos) && this->par.isInMW(z)) this->array[pos]=0.;
+  // 	}
+  //     }
+  //   }
+  // }
+  // //--------------------------------------------------------------------
 
   void Cube::setCubeStats()
   {
@@ -944,14 +944,19 @@ namespace duchamp
 
       bool *mask = new bool[this->numPixels];
       size_t vox=0,goodSize = 0;
+      //std::vector<bool> flaggedChans = this->par.getChannelFlags(this->axisDim[2]);
+//      std::cerr << flaggedChans[72] << " " << flaggedChans[73] << " " << flaggedChans[74] << " " << flaggedChans[75] << " " << flaggedChans[76] << "\n";
       for(size_t z=0;z<this->axisDim[2];z++){
 	for(size_t y=0;y<this->axisDim[1];y++){
 	  for(size_t x=0;x<this->axisDim[0];x++){
 	    //	    vox = z * xysize + y*this->axisDim[0] + x;
 	    bool isBlank=this->isBlank(vox);
-	    bool isMW = this->par.isInMW(z);
 	    bool statOK = this->par.isStatOK(x,y,z);
-	    mask[vox] = (!isBlank && !isMW && statOK );
+//	    bool isMW = this->par.isInMW(z);
+	    bool isFlagged = this->par.isFlaggedChannel(z);
+//	    mask[vox] = (!isBlank && !isMW && statOK );
+//	    mask[vox] = (!isBlank && !flaggedChans[z] && statOK );
+	    mask[vox] = (!isBlank && !isFlagged && statOK );
 	    if(mask[vox]) goodSize++;
 	    vox++;
 	  }
@@ -1120,6 +1125,7 @@ namespace duchamp
     // first calculate p-value for each pixel -- assume Gaussian for now.
 
     float *orderedP = new float[this->numPixels];
+//    std::vector<bool> flaggedChans = this->par.getChannelFlags(this->axisDim[2]);
     size_t count = 0;
     for(size_t x=0;x<this->axisDim[0];x++){
       for(size_t y=0;y<this->axisDim[1];y++){
@@ -1127,7 +1133,9 @@ namespace duchamp
 	  size_t pix = z * this->axisDim[0]*this->axisDim[1] + 
 	    y*this->axisDim[0] + x;
 
-	  if(!(this->par.isBlank(this->array[pix])) && !this->par.isInMW(z)){ 
+	  // if(!(this->par.isBlank(this->array[pix])) && !this->par.isInMW(z)){ 
+//	  if(!(this->par.isBlank(this->array[pix])) && !flaggedChans[z]){ 
+	  if(!(this->par.isBlank(this->array[pix])) && !this->par.isFlaggedChannel(z)){ 
 	    // only look at non-blank, valid pixels 
 	    //  	  orderedP[count++] = this->Stats.getPValue(this->array[pix]);
 	    orderedP[count++] = this->Stats.getPValue(input[pix]);
@@ -1701,22 +1709,43 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  bool Cube::objNextToMW(Detection obj)
-  {
-    ///   @details A function to test whether the object obj lies
-    ///   adjacent to the MW range or straddles it (conceivably, you
-    ///   could have disconnected channels in your object that don't
-    ///   touch the MW range, but lie either side - in this case we
-    ///   want the flag). If flagMW=false we will always return false.
-    /// 
+  // bool Cube::objNextToMW(Detection obj)
+  // {
+  //   ///   @details A function to test whether the object obj lies
+  //   ///   adjacent to the MW range or straddles it (conceivably, you
+  //   ///   could have disconnected channels in your object that don't
+  //   ///   touch the MW range, but lie either side - in this case we
+  //   ///   want the flag). If flagMW=false we will always return false.
+  //   /// 
+  //   ///   \param obj The Detection under consideration.
+
+  //   bool isNext = this->par.getFlagMW() &&
+  //     ((obj.getZmin() <= this->par.getMaxMW()+1) && (obj.getZmax() >= this->par.getMinMW()-1));
+    
+  //   return isNext;
+
+  // }
+
+    bool Cube::objNextToFlaggedChan(Detection &obj)
+    {
+   ///   @details A function to test whether the object obj lies
+    ///   adjacent to a flagged channel or straddles one or more
+    ///   (conceivably, you could have disconnected channels in your
+    ///   object that don't touch flagged channels, but lie either side -
+    ///   in this case we want to flag the object).
+    ///
+    ///   We scan across the channel range from one below the  
     ///   \param obj The Detection under consideration.
 
-    bool isNext = this->par.getFlagMW() &&
-      ((obj.getZmin() <= this->par.getMaxMW()+1) && (obj.getZmax() >= this->par.getMinMW()-1));
-    
-    return isNext;
+	bool isNext=false;
+	int zstart=std::max(obj.getZmin()-1,0L);
+	int zend=std::min(obj.getZmax()+1,long(this->axisDim[2]-1));
+	for(int z=zstart;z<=zend && !isNext; z++)
+	    isNext = isNext || this->par.isFlaggedChannel(z);
+	return isNext;
 
-  }
+    }
+
   //--------------------------------------------------------------------
 
   void Cube::setObjectFlags()
@@ -1742,8 +1771,10 @@ namespace duchamp
       if( this->objAtSpectralEdge(*obj) && (this->axisDim[2] > 2)) 
 	obj->addToFlagText("S");
 
-      if( this->objNextToMW(*obj) )
-	obj->addToFlagText("M");
+      // if( this->objNextToMW(*obj) )
+      // 	obj->addToFlagText("M");
+      if( this->objNextToFlaggedChan(*obj) )
+	obj->addToFlagText("F");
 
       if(obj->getFlagText()=="") obj->addToFlagText("-");
 
@@ -2087,20 +2118,42 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Image::removeMW()
+  // void Image::removeMW()
+  // {
+  //   /// @details
+  //   ///  A function to remove the Milky Way range of channels from a 1-D spectrum.
+  //   ///  The array in this Image is assumed to be 1-D, with only the first axisDim
+  //   ///    equal to 1.
+  //   ///  The values of the MW channels are set to 0, unless they are BLANK.
+
+  //   if(this->par.getFlagMW() && (this->axisDim[1]==1) ){
+  //     for(size_t z=0;z<this->axisDim[0];z++){
+  // 	if(!this->isBlank(z) && this->par.isInMW(z)) this->array[z]=0.;
+  //     }
+  //   }
+  // }
+
+  // //--------------------------------------------------------------------
+
+  void Image::removeFlaggedChannels()
   {
     /// @details
-    ///  A function to remove the Milky Way range of channels from a 1-D spectrum.
+    ///  A function to remove the flagged channels from a 1-D spectrum.
     ///  The array in this Image is assumed to be 1-D, with only the first axisDim
     ///    equal to 1.
-    ///  The values of the MW channels are set to 0, unless they are BLANK.
+    ///  The values of the flagged channels are set to 0, unless they are BLANK.
 
-    if(this->par.getFlagMW() && (this->axisDim[1]==1) ){
-      for(size_t z=0;z<this->axisDim[0];z++){
-	if(!this->isBlank(z) && this->par.isInMW(z)) this->array[z]=0.;
-      }
+    if(this->axisDim[1]==1) {
+
+	std::vector<int> flaggedChans = this->par.getFlaggedChannels();
+	for(std::vector<int>::iterator chan = flaggedChans.begin();chan!=flaggedChans.end();chan++){ 
+	    // channels are zero-based
+	    if(!this->isBlank(*chan)) this->array[*chan]=0.;
+	}
+
     }
   }
+
   //--------------------------------------------------------------------
 
   std::vector<Object2D> Image::findSources2D() 

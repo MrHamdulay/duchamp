@@ -41,7 +41,10 @@
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Cubes/cubeUtils.hh>
-#include <duchamp/Cubes/plots.hh>
+//#include <duchamp/Cubes/plots.hh>
+#include <duchamp/Plotting/SpectralPlot.hh>
+#include <duchamp/Plotting/SimpleSpectralPlot.hh>
+#include <duchamp/Plotting/ImagePlot.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/mycpgplot.hh>
 
@@ -91,6 +94,7 @@ namespace duchamp
       }
       else{
 	
+//	std::vector<bool> flaggedChans=this->par.getChannelFlags(zdim);
 	this->getSpectralArrays(-1,specx,specy,specy2,base);
 	float vmax,vmin,width;
 	vmax = vmin = specx[0];
@@ -99,19 +103,33 @@ namespace duchamp
 	  if(specx[i]<vmin) vmin=specx[i];
 	}
       
+	// // Find the min & max of the spectrum.
+	// float max,min;
+	// int loc=0;
+	// if(this->par.getMinMW()>0) max = min = specy[0];
+	// else max = min = specy[this->par.getMaxMW()+1];
+	// for(int i=0;i<zdim;i++){
+	//   if(!this->par.isInMW(i)){
+	//     if(specy[i]>max) max=specy[i];
+	//     if(specy[i]<min){
+	//       min=specy[i];
+	//       loc = i;
+	//     }
+	//   }
+	// }
+
+	// Find the maximum & minimum values of the spectrum, ignoring flagged channels.
 	float max,min;
-	int loc=0;
-	if(this->par.getMinMW()>0) max = min = specy[0];
-	else max = min = specy[this->par.getMaxMW()+1];
-	for(int i=0;i<zdim;i++){
-	  if(!this->par.isInMW(i)){
-	    if(specy[i]>max) max=specy[i];
-	    if(specy[i]<min){
-	      min=specy[i];
-	      loc = i;
+	bool haveStarted=false;
+	for(int z=0;z<zdim;z++){
+//	    if(!flaggedChans[z]){
+	    if(!this->par.isFlaggedChannel(z)){
+		if(specy[z]>max && !haveStarted) max=specy[z];
+		if(specy[z]<min && !haveStarted) min=specy[z];
+		haveStarted=true;
 	    }
-	  }
 	}
+
 	// widen the ranges slightly so that the top & bottom & edges don't 
 	// lie on the axes.
 	width = max - min;
@@ -141,13 +159,14 @@ namespace duchamp
 	  cpgline(zdim,specx,specy2);    
 	  cpgsci(FOREGND);
 	}
-	if(this->par.getFlagMW()){
-	  double zval = double(this->par.getMinMW()),zero=0.;
-	  double minMWvel = this->head.pixToVel(zero,zero,zval);
-	  zval = double(this->par.getMaxMW());
-	  double maxMWvel = this->head.pixToVel(zero,zero,zval);
-	  spPlot.drawMWRange(minMWvel,maxMWvel);
-	}
+	// if(this->par.getFlagMW()){
+	//   double zval = double(this->par.getMinMW()),zero=0.;
+	//   double minMWvel = this->head.pixToVel(zero,zero,zval);
+	//   zval = double(this->par.getMaxMW());
+	//   double maxMWvel = this->head.pixToVel(zero,zero,zval);
+	//   spPlot.drawMWRange(minMWvel,maxMWvel);
+	// }
+	this->drawFlaggedChannels(spPlot,0.,0.);
 
 	spPlot.markDetectedPixels(this->detectMap,zdim,this->head);
 
@@ -175,8 +194,8 @@ namespace duchamp
     }
     else { // num dim > 1
 
-      Plot::ImagePlot newplot;
-      int flag = newplot.setUpPlot(pgDestination.c_str(),float(xdim),float(ydim));
+      Plot::ImagePlot newplot(xdim,ydim);
+      int flag = newplot.setUpPlot(pgDestination);
 
       if(flag<=0){
 	DUCHAMPERROR("Plot Detection Map", "Could not open PGPlot device " << pgDestination);
@@ -298,15 +317,14 @@ namespace duchamp
     long ydim=this->axisDim[1];
 
     int numPlots = pgDestination.size();
-    std::vector<Plot::ImagePlot> plotList(numPlots);
+    std::vector<Plot::ImagePlot> plotList(numPlots,Plot::ImagePlot(xdim,ydim));
     std::vector<int> plotFlag(numPlots,0);
     std::vector<bool> doPlot(numPlots,false);
     bool plotNeeded = false;
 
     for(int i=0;i<numPlots;i++){
     
-      plotFlag[i] = plotList[i].setUpPlot(pgDestination[i],
-					  float(xdim),float(ydim));
+      plotFlag[i] = plotList[i].setUpPlot(pgDestination[i]);
        
       if(plotFlag[i]<=0){
 	DUCHAMPERROR("Plot Moment Map", "Could not open PGPlot device " << pgDestination[i]);

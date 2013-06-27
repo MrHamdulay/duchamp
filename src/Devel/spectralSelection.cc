@@ -69,15 +69,15 @@ void spectralSelection(std::vector<float> &xvalues,
     char ans;
     duchamp::Cube *cube = new duchamp::Cube;
     duchamp::Param par;
-    std::cout << "Remove Milky Way emission (y/n)? : ";
-    std::cin >> ans;
-    par.setFlagMW(ans=='y');
+    // std::cout << "Remove Milky Way emission (y/n)? : ";
+    // std::cin >> ans;
+    // par.setFlagMW(ans=='y');
     par.setImageFile(fname);
     par.setVerbosity(false);
     cube->saveParam(par);
     if(cube->getCube()==FAILURE) std::cerr << "Cannot read cube!";
     zdim = cube->getDimZ();
-    if(par.getFlagMW()) cube->removeMW();
+    // if(par.getFlagMW()) cube->removeMW();
     zdim = cube->getDimZ();
 
     long xpos,ypos;

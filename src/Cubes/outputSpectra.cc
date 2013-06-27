@@ -39,7 +39,9 @@
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Cubes/cubes.hh>
 #include <duchamp/Cubes/cubeUtils.hh>
-#include <duchamp/Cubes/plots.hh>
+// #include <duchamp/Cubes/plots.hh>
+#include <duchamp/Plotting/CutoutPlot.hh>
+#include <duchamp/Plotting/SpectralPlot.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/mycpgplot.hh>
 
@@ -172,18 +174,21 @@ namespace duchamp
     ///        to plot the spectrum on.
 
     long zdim = this->axisDim[2];
-
+//    std::vector<bool> flaggedChans=this->par.getChannelFlags(zdim);
+    double xval = double(this->objectList->at(objNum).getXcentre());
+    double yval = double(this->objectList->at(objNum).getYcentre());
+ 
     this->objectList->at(objNum).calcFluxes(this->array, this->axisDim);
 
-    double minMWvel=0,maxMWvel=0,xval,yval,zval;
-    xval = double(this->objectList->at(objNum).getXcentre());
-    yval = double(this->objectList->at(objNum).getYcentre());
-    if(this->par.getFlagMW()){
-      zval = double(this->par.getMinMW());
-      minMWvel = this->head.pixToVel(xval,yval,zval);
-      zval = double(this->par.getMaxMW());
-      maxMWvel = this->head.pixToVel(xval,yval,zval);
-    }
+    // double minMWvel=0,maxMWvel=0,xval,yval,zval;
+    // xval = double(this->objectList->at(objNum).getXcentre());
+    // yval = double(this->objectList->at(objNum).getYcentre());
+    // if(this->par.getFlagMW()){
+    //   zval = double(this->par.getMinMW());
+    //   minMWvel = this->head.pixToVel(xval,yval,zval);
+    //   zval = double(this->par.getMaxMW());
+    //   maxMWvel = this->head.pixToVel(xval,yval,zval);
+    // }
 
     float *specx  = new float[zdim];
     float *specy  = new float[zdim];
@@ -225,23 +230,42 @@ namespace duchamp
       if(specx[i]<vmin) vmin=specx[i];
     }
   
+    // Find the maximum & minimum values of the spectrum, ignoring flagged channels.
     float max,min;
-    if(this->par.getMinMW()>0) max = min = specy[0];
-    else max = min = specy[std::max(this->par.getMaxMW()+1,0)];
-    for(int i=0;i<zdim;i++){
-      if(!this->par.isInMW(i)){
-	if(specy[i]>max) max=specy[i];
-	if(specy[i]<min) min=specy[i];
- 	if(this->par.getFlagBaseline()){
-	    if(base[i]>max) max=base[i];
-	    if(base[i]<min) min=base[i];
+    bool haveStarted=false;
+    for(int z=0;z<zdim;z++){
+//	if(!flaggedChans[z]){
+	if(!this->par.isFlaggedChannel(z)){
+	    if(specy[z]>max && !haveStarted) max=specy[z];
+	    if(specy[z]<min && !haveStarted) min=specy[z];
+	    if(this->par.getFlagBaseline()){
+		if(base[z]>max && !haveStarted) max=base[z];
+		if(base[z]<min && !haveStarted) min=base[z];
+	    }
+	    if(this->reconExists){
+		if(specy2[z]>max && !haveStarted) max=specy2[z];
+		if(specy2[z]<min && !haveStarted) min=specy2[z];
+	    }
+	    haveStarted=true;
 	}
-	if(this->reconExists){
-	    if(specy2[i]>max) max=specy2[i];
-	    if(specy2[i]<min) min=specy2[i];
-	}
-      }
     }
+
+    // if(this->par.getMinMW()>0) max = min = specy[0];
+    // else max = min = specy[std::max(this->par.getMaxMW()+1,0)];
+    // for(int i=0;i<zdim;i++){
+    //   if(!this->par.isInMW(i)){
+    // 	if(specy[i]>max) max=specy[i];
+    // 	if(specy[i]<min) min=specy[i];
+    // 	if(this->par.getFlagBaseline()){
+    // 	    if(base[i]>max) max=base[i];
+    // 	    if(base[i]<min) min=base[i];
+    // 	}
+    // 	if(this->reconExists){
+    // 	    if(specy2[i]>max) max=specy2[i];
+    // 	    if(specy2[i]<min) min=specy2[i];
+    // 	}
+    //   }
+    // }
 
     // widen the ranges slightly so that the top & bottom & edges don't 
     // lie on the axes.
@@ -284,7 +308,8 @@ namespace duchamp
       cpgline(zdim,specx,specy2);    
       cpgsci(FOREGND);
     }
-    if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
+    // if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
+    this->drawFlaggedChannels(plot,xval,yval);
     drawSpectralRange(plot,this->objectList->at(objNum),this->head);
 
     if(this->par.getSpectralMethod()=="peak")
@@ -301,7 +326,9 @@ namespace duchamp
     std::swap(max,min);
     int ct = 0;
     for(int i=0;i<zdim;i++){
-      if((!this->par.isInMW(i))&&(specx[i]>=minvel)&&(specx[i]<=maxvel)){
+      // if((!this->par.isInMW(i))&&(specx[i]>=minvel)&&(specx[i]<=maxvel)){
+//      if((!flaggedChans[i])&&(specx[i]>=minvel)&&(specx[i]<=maxvel)){
+	if((!this->par.isFlaggedChannel(i))&&(specx[i]>=minvel)&&(specx[i]<=maxvel)){
 	ct++;
 	if(specy[i]>max) max=specy[i];
 	if(specy[i]<min) min=specy[i];
@@ -333,7 +360,8 @@ namespace duchamp
       cpgline(zdim,specx,specy2);    
       cpgsci(FOREGND);
     }
-    if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
+    // if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
+    this->drawFlaggedChannels(plot,xval,yval);
     drawSpectralRange(plot,this->objectList->at(objNum),this->head);
     
     if(this->par.getSpectralMethod()=="peak")
@@ -354,6 +382,26 @@ namespace duchamp
   
   }
   //--------------------------------------------------------------------
+
+    void Cube::drawFlaggedChannels(Plot::SpectralPlot &plot, double xval, double yval)
+    {
+	std::vector<int> flaggedChannels = this->par.getFlaggedChannels();
+	if(flaggedChannels.size()>0){
+	    Object2D contiguousFlaggedChans;
+	    for(size_t i=0;i<flaggedChannels.size();i++){
+		contiguousFlaggedChans.addPixel(flaggedChannels[i],0);
+	    }
+	    // each scan in the object2D is a contiguous range of flagged channels
+	    std::vector<Scan> rangeList=contiguousFlaggedChans.getScanlist();
+	    double minvel=0,maxvel=0,zval;
+	    for(size_t i=0;i<rangeList.size();i++){
+		zval = double(rangeList[i].getX()-0.5);
+		minvel = this->head.pixToVel(xval,yval,zval);
+		zval = double(rangeList[i].getXmax()+0.5);
+		plot.drawFlaggedChannelRange(minvel,maxvel);
+	    }
+	}
+    }
 
 
   void Cube::plotSource(Detection obj, Plot::CutoutPlot &plot)
