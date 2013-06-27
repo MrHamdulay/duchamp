@@ -269,19 +269,8 @@ void Cube::SpatialSmoothNSearch()
 
       smoothed = gauss.smooth(image,xdim,ydim,mask);
       
-      //     for(int pix=0;pix<xySize;pix++)
-      //       this->recon[z*xySize+pix] = smoothed[pix];
-
       findMedianStats(smoothed,xySize,mask,median,madfm);
-      //       threshold = median+this->par.getCut()*Statistics::madfmToSigma(madfm);
-      //       for(int i=0;i<xySize;i++)
-      // 	if(smoothed[i]<threshold) image[i] = this->Stats.getMiddle();
-      //       channelImage->saveArray(image,xySize);
 
-
-      //       channelImage->stats().setMadfm(madfm);
-      //       channelImage->stats().setMedian(median);
-      //       channelImage->stats().setThresholdSNR(this->par.getCut());
       channelImage->saveArray(smoothed,xySize);
 
       std::vector<PixelInfo::Object2D> objlist = channelImage->findSources2D();
