@@ -418,10 +418,6 @@ namespace duchamp
       // accomodate the data.
       std::vector<Detection>::iterator obj;
       for(obj = objectList.begin(); obj < objectList.end(); obj++){
-	std::string tempstr;
-	int tempwidth;
-	float val,minval;
-	double valD,minvalD;
 
 	newset.column("NUM").check(obj->getID());
 	newset.column("NAME").check(obj->getName());
