@@ -127,7 +127,6 @@ std::vector <Detection> search3DArraySpectral(size_t *dim, float *Array, Param &
 	doPixel[npix] = doPixel[npix] || 
 //	    (!par.isBlank(Array[npix+xySize*z]) && !flaggedChans[z]);
 	    (!par.isBlank(Array[npix+xySize*z]) && !par.isFlaggedChannel(z));
-	  // (!par.isBlank(Array[npix+xySize*z]) && !par.isInMW(z));
       }
       // doPixel[i] is false only when there are no good pixels in spectrum
       //  of pixel #i.
@@ -150,7 +149,6 @@ std::vector <Detection> search3DArraySpectral(size_t *dim, float *Array, Param &
 	
 	if(doPixel[npix]){
 	  spectrum->extractSpectrum(Array,dim,npix);
-	  // spectrum->removeMW(); // only works if flagMW is true
 	  spectrum->removeFlaggedChannels();
 	  std::vector<Scan> objlist = spectrum->findSources1D();
 	  std::vector<Scan>::iterator obj;
@@ -223,7 +221,6 @@ std::vector <Detection> search3DArraySpatial(size_t *dim, float *Array,
 
     if( par.isVerbose() && useBar ) bar.update(z+1);
 
-    // if(!par.isInMW(z)){
 //    if(!flaggedChans[z]){
     if(!par.isFlaggedChannel(z)){
 

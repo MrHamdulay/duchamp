@@ -103,21 +103,6 @@ namespace duchamp
 	  if(specx[i]<vmin) vmin=specx[i];
 	}
       
-	// // Find the min & max of the spectrum.
-	// float max,min;
-	// int loc=0;
-	// if(this->par.getMinMW()>0) max = min = specy[0];
-	// else max = min = specy[this->par.getMaxMW()+1];
-	// for(int i=0;i<zdim;i++){
-	//   if(!this->par.isInMW(i)){
-	//     if(specy[i]>max) max=specy[i];
-	//     if(specy[i]<min){
-	//       min=specy[i];
-	//       loc = i;
-	//     }
-	//   }
-	// }
-
 	// Find the maximum & minimum values of the spectrum, ignoring flagged channels.
 	float max,min;
 	bool haveStarted=false;
@@ -159,13 +144,6 @@ namespace duchamp
 	  cpgline(zdim,specx,specy2);    
 	  cpgsci(FOREGND);
 	}
-	// if(this->par.getFlagMW()){
-	//   double zval = double(this->par.getMinMW()),zero=0.;
-	//   double minMWvel = this->head.pixToVel(zero,zero,zval);
-	//   zval = double(this->par.getMaxMW());
-	//   double maxMWvel = this->head.pixToVel(zero,zero,zval);
-	//   spPlot.drawMWRange(minMWvel,maxMWvel);
-	// }
 	this->drawFlaggedChannels(spPlot,0.,0.);
 
 	spPlot.markDetectedPixels(this->detectMap,zdim,this->head);

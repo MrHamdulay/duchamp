@@ -154,8 +154,6 @@ namespace duchamp
     /// @brief Is a pixel value a BLANK? 
     bool   isBlank(float &value);
 
-    // /// @brief Is a given channel flagged as being in the Milky Way?           
-      bool   isInMW(int z);
     /// @brief Has a given channel been flagged by the user?
       bool isFlaggedChannel(int z);
       std::vector<bool> getChannelFlags(int numChannels);
@@ -305,12 +303,6 @@ namespace duchamp
     void   setFlaggedChannels(std::vector<int> v){flaggedChannels=v;};
     std::string getFlaggedChannelList(){return flaggedChannelList;};
     void   setFlaggedChannelList(std::string s){flaggedChannelList=s;};
-    bool   getFlagMW(){return flagMW;};
-    void   setFlagMW(bool flag){flagMW=flag;};
-    int    getMaxMW(){return maxMW - zSubOffset;};
-    void   setMaxMW(int m){maxMW=m;};
-    int    getMinMW(){return minMW - zSubOffset;};
-    void   setMinMW(int m){minMW=m;};
     void   setBeamSize(float s){areaBeam = s;};
     float  getBeamSize(){return areaBeam;};
     void   setBeamFWHM(float s){fwhmBeam = s;};
@@ -521,9 +513,6 @@ namespace duchamp
     std::string flaggedChannelList; ///< List of channels to be flagged (ignored).
     std::vector <int> flaggedChannels; ///< The flagged channels listed individually 
     std::vector<bool> flaggedChannelMask; ///< Whether a given channel is flagged, up to the maximum listed flagged channel
-    bool        flagMW;          ///< A flag that indicates whether to ignore the Milky Way channels.
-    int         maxMW;           ///< Last  Milky Way channel
-    int         minMW;           ///< First Milky Way channel
 
     // Trim-related
     bool        flagTrim;        ///< Does the user want the cube trimmed?

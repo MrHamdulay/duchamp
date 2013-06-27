@@ -307,9 +307,6 @@ namespace duchamp
     /// @brief Return the pointer to the baseline array.
     float *     getBaseline(){return baseline; };
 
-    /// @brief Set Milky Way channels to zero. 
-    void        removeMW();
-
     //------------------------
     // Statistics for cube
     //
@@ -371,9 +368,6 @@ namespace duchamp
 
     /// @brief Is the object at an end of the spectrum? 
     bool        objAtSpectralEdge(Detection obj);
-
-    // /// @brief Is the object next to the MW range?
-    // bool        objNextToMW(Detection obj);
 
       /// @brief Is the object next to or enclosing flagged channels?
       bool      objNextToFlaggedChan(Detection &obj);
@@ -714,8 +708,6 @@ namespace duchamp
       else return Stats.isDetection(array[voxel]);
     };  
 
-    // /// @brief Blank out a set of channels marked as being Milky Way channels 
-    // void      removeMW();
     /// @brief Blank out a set of channels marked as flagged
       void removeFlaggedChannels();
 

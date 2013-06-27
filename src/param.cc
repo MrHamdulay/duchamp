@@ -135,9 +135,6 @@ namespace duchamp
     this->flaggedChannelList = "";
     this->flaggedChannels   = std::vector<int>(0);
     this->flaggedChannelMask= std::vector<bool>(0);
-    this->flagMW            = false;
-    this->maxMW             = 112;
-    this->minMW             = 75;
     this->areaBeam          = 0.;
     this->fwhmBeam          = 0.;
     this->beamAsUsed.empty();
@@ -283,9 +280,6 @@ namespace duchamp
     this->flaggedChannelList = p.flaggedChannelList;
     this->flaggedChannels   = p.flaggedChannels;
     this->flaggedChannelMask= p.flaggedChannelMask;
-    this->flagMW            = p.flagMW;         
-    this->maxMW             = p.maxMW;          
-    this->minMW             = p.minMW;         
     this->areaBeam          = p.areaBeam;     
     this->fwhmBeam          = p.fwhmBeam;     
     this->beamAsUsed        = p.beamAsUsed;
@@ -449,7 +443,7 @@ namespace duchamp
   {
     ///  This returns an array of bools, saying whether each pixel in
     ///  the given array is suitable for a stats calculation. It needs
-    ///  to be in the StatSec (if defined), not blank and not a MW
+    ///  to be in the StatSec (if defined), not blank and not a flagged
     ///  channel. The array is allocated by the function with a 'new' call. 
 
     bool *mask = new bool[dim[0]*dim[1]*dim[2]];
@@ -458,25 +452,11 @@ namespace duchamp
       for(size_t y=0;y<dim[1];y++) {
 	for(size_t z=0;z<dim[2];z++) {
 	  size_t i = x+y*dim[0]+z*dim[0]*dim[1];
-	  // mask[i] = !this->isBlank(array[i]) && !this->isInMW(z) && this->isStatOK(x,y,z);
 	  mask[i] = !this->isBlank(array[i]) && !flaggedChans[z] && this->isStatOK(x,y,z);
 	}
       }
     }
     return mask;
-  }
-
-
-  bool Param::isInMW(int z)
-  {
-    ///  Tests whether we are flagging Milky Way channels, and if so
-    /// whether the given channel number is in the Milky Way range. The
-    /// channels are assumed to start at number 0.  
-    /// \param z The channel number 
-    /// \return True if we are flagging Milky Way channels and z is in
-    ///  the range.
-
-    return ( this->flagMW && (z>=this->getMinMW()) && (z<=this->getMaxMW()) );
   }
 
     bool Param::isFlaggedChannel(int z)
@@ -681,9 +661,6 @@ namespace duchamp
 
 	if(arg=="flagtrim")        this->flagTrim = readFlag(ss); 
 	if(arg=="flaggedchannels") this->flaggedChannelList = readSval(ss);
-	if(arg=="flagmw")          this->flagMW = readFlag(ss); 
-	if(arg=="maxmw")           this->maxMW = readIval(ss); 
-	if(arg=="minmw")           this->minMW = readIval(ss); 
 	if(arg=="flagbaseline")    this->flagBaseline = readFlag(ss); 
 	if(arg=="searchtype")      this->searchType = readSval(ss);
 
@@ -1055,11 +1032,6 @@ namespace duchamp
     }
     recordParam(theStream, par, "[flagTrim]", "Trimming Blank Pixels?", stringize(par.getFlagTrim()));
     recordParam(theStream, par, "[flagNegative]", "Searching for Negative features?", stringize(par.getFlagNegative()));
-    recordParam(theStream, par, "[flagMW]", "Removing Milky Way channels?", stringize(par.getFlagMW()));
-    if(par.getFlagMW()){
-      // need to remove the offset correction, as we want to report the parameters actually entered
-      recordParam(theStream, par, "[minMW - maxMW]", "Milky Way Channels", par.getMinMW()+par.getZOffset()<<"-"<<par.getMaxMW()+par.getZOffset());
-    }
     if(par.getFlaggedChannelList().size()>0){
 	recordParam(theStream, par, "[flaggedChannels]", "Channels flagged by user", par.getFlaggedChannelList());
     }
@@ -1301,11 +1273,6 @@ namespace duchamp
       outfile.write(reinterpret_cast<const char*>(&this->reconConvergence), sizeof this->reconConvergence);
       outfile.write(reinterpret_cast<const char*>(&this->filterCode), sizeof this->filterCode);
     }
-    outfile.write(reinterpret_cast<const char*>(&this->flagMW), sizeof this->flagMW);
-    if(this->flagMW){
-      outfile.write(reinterpret_cast<const char*>(&this->minMW), sizeof this->minMW);
-      outfile.write(reinterpret_cast<const char*>(&this->maxMW), sizeof this->maxMW);
-    }
     writeStringToBinaryFile(outfile,this->flaggedChannelList);
 
     outfile.close();
@@ -1392,11 +1359,6 @@ namespace duchamp
       infile.read(reinterpret_cast<char*>(&this->snrRecon), sizeof this->snrRecon);
       infile.read(reinterpret_cast<char*>(&this->reconConvergence), sizeof this->reconConvergence);
       infile.read(reinterpret_cast<char*>(&this->filterCode), sizeof this->filterCode);
-    }
-    infile.read(reinterpret_cast<char*>(&this->flagMW), sizeof this->flagMW);
-    if(this->flagMW){
-      infile.read(reinterpret_cast<char*>(&this->minMW), sizeof this->minMW);
-      infile.read(reinterpret_cast<char*>(&this->maxMW), sizeof this->maxMW);
     }
     this->flaggedChannelList=readStringFromBinaryFile(infile);
 

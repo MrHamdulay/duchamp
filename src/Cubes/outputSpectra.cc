@@ -180,17 +180,6 @@ namespace duchamp
  
     this->objectList->at(objNum).calcFluxes(this->array, this->axisDim);
 
-    // double minMWvel=0,maxMWvel=0,zval;//xval,yval,zval;
-    // // xval = double(this->objectList->at(objNum).getXcentre());
-    // // yval = double(this->objectList->at(objNum).getYcentre());
-    // if(this->par.getFlagMW()){
-    //   zval = double(this->par.getMinMW()-0.5);
-    //   minMWvel = this->head.pixToVel(xval,yval,zval);
-    //   zval = double(this->par.getMaxMW()+0.5);
-    //   maxMWvel = this->head.pixToVel(xval,yval,zval);
-    // }
-    // std::cerr << "Would have used MW range of channels ["<<this->par.getMinMW() << "," << this->par.getMaxMW() <<"] or velocities ["<<minMWvel<<","<<maxMWvel<<"], for (x,y)=("<<xval<<","<<yval<<")\n";
-
     float *specx  = new float[zdim];
     float *specy  = new float[zdim];
     float *specy2 = new float[zdim];
@@ -251,23 +240,6 @@ namespace duchamp
 	}
     }
 
-    // if(this->par.getMinMW()>0) max = min = specy[0];
-    // else max = min = specy[std::max(this->par.getMaxMW()+1,0)];
-    // for(int i=0;i<zdim;i++){
-    //   if(!this->par.isInMW(i)){
-    // 	if(specy[i]>max) max=specy[i];
-    // 	if(specy[i]<min) min=specy[i];
-    // 	if(this->par.getFlagBaseline()){
-    // 	    if(base[i]>max) max=base[i];
-    // 	    if(base[i]<min) min=base[i];
-    // 	}
-    // 	if(this->reconExists){
-    // 	    if(specy2[i]>max) max=specy2[i];
-    // 	    if(specy2[i]<min) min=specy2[i];
-    // 	}
-    //   }
-    // }
-
     // widen the ranges slightly so that the top & bottom & edges don't 
     // lie on the axes.
     width = max - min;
@@ -309,7 +281,6 @@ namespace duchamp
       cpgline(zdim,specx,specy2);    
       cpgsci(FOREGND);
     }
-    // if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
     this->drawFlaggedChannels(plot,xval,yval);
     drawSpectralRange(plot,this->objectList->at(objNum),this->head);
 
@@ -327,7 +298,6 @@ namespace duchamp
     std::swap(max,min);
     int ct = 0;
     for(int i=0;i<zdim;i++){
-      // if((!this->par.isInMW(i))&&(specx[i]>=minvel)&&(specx[i]<=maxvel)){
 //      if((!flaggedChans[i])&&(specx[i]>=minvel)&&(specx[i]<=maxvel)){
 	if((!this->par.isFlaggedChannel(i))&&(specx[i]>=minvel)&&(specx[i]<=maxvel)){
 	ct++;
@@ -361,7 +331,6 @@ namespace duchamp
       cpgline(zdim,specx,specy2);    
       cpgsci(FOREGND);
     }
-    // if(this->par.getFlagMW()) plot.drawMWRange(minMWvel,maxMWvel);
     this->drawFlaggedChannels(plot,xval,yval);
     drawSpectralRange(plot,this->objectList->at(objNum),this->head);
     

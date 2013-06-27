@@ -184,7 +184,6 @@ namespace duchamp
 
 	if( this->par.isVerbose() && useBar ) bar.update((z+1));
 
-	// if(!this->par.isInMW(z)){
 //	if(!flaggedChans[z]){
 	if(!this->par.isFlaggedChannel(z)){
 	  float *im = new float[xySize];
@@ -290,7 +289,6 @@ namespace duchamp
 	doPixel[npix] = false;
 	for(size_t z=0;z<zdim;z++) {
 	  doPixel[npix] = doPixel[npix] || 
-	    // (!par.isBlank(originalArray[npix+xySize*z]) && !par.isInMW(z));
 //	    (!par.isBlank(originalArray[npix+xySize*z]) && !flaggedChans[z]);
 	      (!par.isBlank(originalArray[npix+xySize*z]) && !par.isFlaggedChannel(z));
 	}
@@ -319,7 +317,6 @@ namespace duchamp
 	  if(doPixel[npix]){
 
 	    spectrum->extractSpectrum(reconArray,dim,npix);
-	    // spectrum->removeMW(); // only works if flagMW is true
 	    spectrum->removeFlaggedChannels();
 	    std::vector<Scan> objlist = spectrum->findSources1D();
 	    std::vector<Scan>::iterator obj;
@@ -394,7 +391,6 @@ namespace duchamp
 
       if( par.isVerbose() && useBar ) bar.update(z+1);
 
-      // if(!par.isInMW(z)){ 
 //      if(!flaggedChans[z]){ 
       if(!par.isFlaggedChannel(z)){ 
 	// purpose of this is to ignore the Milky Way channels 

@@ -176,7 +176,6 @@ vector<Detection> readAndSearch(Param &par)
 	spectrum->saveArray(recon,dimAxes[2]);
 	delete [] recon;
 	delete [] resid; 
-	spectrum->removeMW(); // only works if flagMW is true
 	spectrum->setStats(median,sigma,par.getCut());
 	if(par.getFlagFDR()) spectrum->setupFDR();
 	spectrum->setMinSize(par.getMinChannels());
@@ -185,7 +184,6 @@ vector<Detection> readAndSearch(Param &par)
       else{
 	sigma  = findMADFM(array,dimAxes[2])/correctionFactor;
 	spectrum->saveArray(array,dimAxes[2]);
-	spectrum->removeMW(); // only works if flagMW is true
 	spectrum->setStats(median,sigma,par.getCut());
 	if(par.getFlagFDR()) spectrum->setupFDR();
 	spectrum->setMinSize(par.getMinChannels());

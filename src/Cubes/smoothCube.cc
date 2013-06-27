@@ -262,7 +262,6 @@ void Cube::SpatialSmoothNSearch()
 
     if( this->par.isVerbose() ) bar.update(z+1);
       
-    // if(!this->par.isInMW(z)){
 //    if(!flaggedChans[z]){
     if(!this->par.isFlaggedChannel(z)){
 

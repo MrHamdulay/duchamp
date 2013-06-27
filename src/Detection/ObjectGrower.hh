@@ -37,7 +37,7 @@
 namespace duchamp {
 
   /// @brief Flags defining the state of each pixel
-  enum STATE {AVAILABLE, DETECTED, BLANK, MW};
+  enum STATE {AVAILABLE, DETECTED, BLANK, FLAG};
 
   /// @brief A class to manage the growing of objects to a secondary
   /// threshold
