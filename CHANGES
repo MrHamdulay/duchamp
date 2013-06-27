@@ -1,3 +1,23 @@
+Duchamp version 1.5 (2013/??/??)
+--------------------------------
+
+Input parameter changes:
+
+* There is now a more flexible way to specify channels that should be
+  ignored by the source-finding. Use flaggedChannels to provide a list
+  of single channels or channel ranges that should be ignored. This
+  replaces the flagMW/minMW/maxMW parameters, extending their
+  functionality and allowing more than one set of channels to be
+  specified. 
+
+
+Code changes:
+
+* The plotting code has been refactored, improving its class structure
+  and inheritance. No functional change from this should be evident,
+  but it improves the maintainability of the code.
+
+
 Duchamp version 1.4 (2013/06/20)
 --------------------------------
 

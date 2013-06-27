@@ -193,24 +193,60 @@ temporary measure which does not affect the source-detection.
 The baseline values can be saved to a FITS file for later
 examination. See \S\ref{sec-baselineOut} for details.
 
-\secC{Ignoring bright Milky Way emission}
-\label{sec-MW}
+%\secC{Ignoring bright Milky Way emission}
+%\label{sec-MW}
+%
+%Finally, a single set of contiguous channels can be ignored -- these
+%may exhibit very strong emission, such as that from the Milky Way as
+%seen in extragalactic \hi cubes (hence the references to ``Milky
+%Way'' in relation to this task -- apologies to Galactic
+%astronomers!). Such dominant channels will produce many detections
+%that are unnecessary, uninteresting (if one is interested in
+%extragalactic \hi) and large (in size and hence in memory usage), and
+%so will slow the program down and detract from the interesting
+%detections. 
+%
+%The use of this feature is controlled by the \texttt{flagMW}
+%parameter, and the exact channels concerned are able to be set by the
+%user (using \texttt{maxMW} and \texttt{minMW} -- these give an
+%inclusive range of channels). These channels refer to the channel
+%numbers of \textbf{the full cube}, before any subsection is applied.
+%
+%The effect is to ignore detections that lie within these channels. If
+%a spatial search is being conducted (\ie one channel map at a time),
+%these channels are simply not searched. If a spectral search is being
+%conducted, those channels will be flagged so that no detection is made
+%within them. The spectral output (see Fig.~\ref{fig-spect}) will
+%ignore them as far as scaling the plot goes, and the channel range
+%will be indicated by a green hatched box.
+%
+%Note that these channels will be included in any smoothing or
+%reconstruction that is done on the array, and so will be included in
+%any saved FITS file (see \S\ref{sec-reconIO}).
+%
 
-Finally, a single set of contiguous channels can be ignored -- these
-may exhibit very strong emission, such as that from the Milky Way as
-seen in extragalactic \hi cubes (hence the references to ``Milky
-Way'' in relation to this task -- apologies to Galactic
-astronomers!). Such dominant channels will produce many detections
-that are unnecessary, uninteresting (if one is interested in
-extragalactic \hi) and large (in size and hence in memory usage), and
-so will slow the program down and detract from the interesting
-detections. 
+\secC{Flagging channels}
+\label{sec-flagging}
 
-The use of this feature is controlled by the \texttt{flagMW}
-parameter, and the exact channels concerned are able to be set by the
-user (using \texttt{maxMW} and \texttt{minMW} -- these give an
-inclusive range of channels). These channels refer to the channel
-numbers of \textbf{the full cube}, before any subsection is applied.
+Finally, it is possible to flag particular channels so that they are
+not included in the search. This is an extension of the old ``Milky
+Way'' channel range. That allowed the specification of a single
+contiguous block of channels, and was aimed at excluding Galactic
+emission in extragalactic \hi cubes. 
+
+The new flagging approach allows the specification of a series of
+channels and channel ranges. This allows the user to block the
+detection of known regions of RFI, or known but uninteresting emission
+(\eg Galactic \hi emission if you are searching for extragalactic
+sources). 
+
+Flagged channels are specified using the \texttt{flaggedChannels}
+parameter, and can be given by a comma-separated list of single values
+or ranges. For instance: \texttt{flaggedChannels  5,6,12-20,87}. These
+channels refer to channel numbers in the \textbf{the full cube},
+before any subsection is applied. Also note that \textbf{the channel
+  numbering starts at zero}, that is, channel 0 is the first channel
+of the cube. 
 
 The effect is to ignore detections that lie within these channels. If
 a spatial search is being conducted (\ie one channel map at a time),

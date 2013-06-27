@@ -141,13 +141,10 @@ precSNR         2
 # FIXING UP THE CUBE
 # flagTrim -- whether to trim blank pixels from the edges of the cube.
 # flagBaseline -- whether to subtract spectral baselines before searching
-# flagMW -- ignore a range of channels (to remove Milky Way emission)?
-# minMW, maxMW -- the first and last channels to be ignored
+# flaggedChannels -- list of channels to ignore in the source-finding
 
 flagTrim        false
-flagMW		false
-minMW		75
-maxMW		112
+flaggedChannels no-default
 flagBaseline    false
 
 # GENERAL DETECTION RELATED

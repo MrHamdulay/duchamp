@@ -66,10 +66,7 @@ subsection      [*,*,225:240]
 #flagBaseline    1
 
 #flagTrim        1
-flagMW		1
-minMW		75
-maxMW		112
-#maxMW		122
+flaggedChannels 75-112
 
 #flagSmooth	1
 #smoothType      spatial
