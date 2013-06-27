@@ -180,15 +180,16 @@ namespace duchamp
  
     this->objectList->at(objNum).calcFluxes(this->array, this->axisDim);
 
-    // double minMWvel=0,maxMWvel=0,xval,yval,zval;
-    // xval = double(this->objectList->at(objNum).getXcentre());
-    // yval = double(this->objectList->at(objNum).getYcentre());
+    // double minMWvel=0,maxMWvel=0,zval;//xval,yval,zval;
+    // // xval = double(this->objectList->at(objNum).getXcentre());
+    // // yval = double(this->objectList->at(objNum).getYcentre());
     // if(this->par.getFlagMW()){
-    //   zval = double(this->par.getMinMW());
+    //   zval = double(this->par.getMinMW()-0.5);
     //   minMWvel = this->head.pixToVel(xval,yval,zval);
-    //   zval = double(this->par.getMaxMW());
+    //   zval = double(this->par.getMaxMW()+0.5);
     //   maxMWvel = this->head.pixToVel(xval,yval,zval);
     // }
+    // std::cerr << "Would have used MW range of channels ["<<this->par.getMinMW() << "," << this->par.getMaxMW() <<"] or velocities ["<<minMWvel<<","<<maxMWvel<<"], for (x,y)=("<<xval<<","<<yval<<")\n";
 
     float *specx  = new float[zdim];
     float *specy  = new float[zdim];
@@ -398,6 +399,7 @@ namespace duchamp
 		zval = double(rangeList[i].getX()-0.5);
 		minvel = this->head.pixToVel(xval,yval,zval);
 		zval = double(rangeList[i].getXmax()+0.5);
+		maxvel = this->head.pixToVel(xval,yval,zval);
 		plot.drawFlaggedChannelRange(minvel,maxvel);
 	    }
 	}
