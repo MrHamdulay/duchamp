@@ -169,7 +169,7 @@ namespace duchamp
     };
 
     /// @brief How many channels does the Detection have? 
-    long   getNumChannels(){return Object3D::getNumDistinctZ();};
+    size_t   getNumChannels(){return Object3D::getNumDistinctZ();};
 
     /// @brief Is there at least the acceptable minimum number of channels in the Detection?  
     bool   hasEnoughChannels(int minNumber);

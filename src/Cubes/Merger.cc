@@ -234,9 +234,15 @@ namespace duchamp
     for(;obj<objList.end();obj++){
       obj->setOffsets(par);
       
-      if( (obj->hasEnoughChannels(par.getMinChannels()))
-	  && (obj->getSpatialSize() >= par.getMinPix())
-	  && (obj->getSize() >= par.getMinVoxels() ) ){
+      bool keepObject = (obj->getSpatialSize() >= par.getMinPix());
+      keepObject = keepObject && (obj->getMaxAdjacentChannels() >= par.getMinChannels());
+      keepObject = keepObject && (obj->getSize() >= par.getMinVoxels());
+      
+      if(par.getMaxPix()>0) keepObject = keepObject && (int(obj->getSpatialSize())<=par.getMaxPix());
+      if(par.getMaxChannels()>0) keepObject = keepObject && (int(obj->getNumChannels())<=par.getMaxChannels());
+      if(par.getMaxVoxels()>0) keepObject = keepObject && (int(obj->getSize())<=par.getMaxVoxels());
+
+      if( keepObject ){
 
 	newlist.push_back(*obj);
 

@@ -333,9 +333,6 @@ namespace duchamp
     long   getZOffset(){return zSubOffset;};
     void   setZOffset(long o){zSubOffset = o;};
     //
-    unsigned int   getMinPix(){return minPix;};
-    void   setMinPix(unsigned int m){minPix=m;};
-    //	 
     bool   getFlagGrowth(){return flagGrowth;};
     void   setFlagGrowth(bool flag){flagGrowth=flag;};
     float  getGrowthCut(){return growthCut;};
@@ -409,10 +406,18 @@ namespace duchamp
     void   setThreshS(float t){threshSpatial=t;};
     float  getThreshV(){return threshVelocity;};
     void   setThreshV(float t){threshVelocity=t;};
+    unsigned int   getMinPix(){return minPix;};
+    void   setMinPix(unsigned int m){minPix=m;};
     unsigned int getMinChannels(){return minChannels;};
     void   setMinChannels(unsigned int n){minChannels=n;};
     unsigned int getMinVoxels(){return minVoxels;};
     void   setMinVoxels(unsigned int n){minVoxels=n;};
+    int   getMaxPix(){return maxPix;};
+    void   setMaxPix(int m){maxPix=m;};
+    int getMaxChannels(){return maxChannels;};
+    void   setMaxChannels(int n){maxChannels=n;};
+    int getMaxVoxels(){return maxVoxels;};
+    void   setMaxVoxels(int n){maxVoxels=n;};
     bool   getFlagRejectBeforeMerge(){return flagRejectBeforeMerge;};
     void   setFlagRejectBeforeMerge(bool flag){flagRejectBeforeMerge=flag;};
     bool   getFlagTwoStageMerging(){return flagTwoStageMerging;};
@@ -539,7 +544,6 @@ namespace duchamp
       unsigned int baselineBoxWidth; ///< For the median baselining method, the full width of the sliding box.
 
     // Detection-related
-    unsigned int minPix;         ///< Minimum number of pixels for a detected object to be counted
     float       areaBeam;        ///< Size (area) of the beam in pixels.
     float       fwhmBeam;        ///< FWHM of the beam in pixels.
     DuchampBeam beamAsUsed;      ///< A copy of the beam as used in FitsHeader - only used here for output
@@ -586,8 +590,12 @@ namespace duchamp
     bool   flagAdjacent;    ///< Whether to use the adjacent criterion for judging if objects are to be merged.
     float  threshSpatial;   ///< Maximum spatial separation between objects
     float  threshVelocity;  ///< Maximum channels separation between objects
+    unsigned int minPix;         ///< Minimum number of pixels for a detected object to be counted
     unsigned int minChannels;     ///< Minimum no. of channels to make an object 
     unsigned int minVoxels;       ///< Minimum no. of voxels required in an object
+    int maxPix;
+    int maxChannels;
+    int maxVoxels;
     bool   flagRejectBeforeMerge; ///< Whether to reject sources before merging
     bool   flagTwoStageMerging;  ///< Whether to do a partial merge when the objects are found, via the mergeIntoList function.
 

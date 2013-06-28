@@ -98,10 +98,7 @@ namespace PixelInfo
     unsigned int getSize(){return numVox;};
 
     /// @brief Return the number of distinct channels in the Object. 
-    long getNumDistinctZ(){return chanlist.size();};
-
-    /// @brief Return the number of channels in the Object. 
-    long getNumChanMap(){return chanlist.size();};
+    size_t getNumDistinctZ(){return chanlist.size();};
 
     /// @brief Return the number of spatial pixels -- ie. the number of distinct (x,y) sets in the Object. 
     unsigned long getSpatialSize(){return spatialMap.getSize();};
@@ -115,7 +112,7 @@ namespace PixelInfo
     std::vector<long> getChannelList();
 
     /// @brief Return the largest number of adjacent channels in the Object.
-    int getMaxAdjacentChannels();
+    unsigned int getMaxAdjacentChannels();
 
     /// @brief Get the channel map for channel z. 
     Object2D getChanMap(long z);

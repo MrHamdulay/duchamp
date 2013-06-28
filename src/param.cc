@@ -197,6 +197,9 @@ namespace duchamp
     this->minChannels       = 3;
     this->minPix            = 2;
     this->minVoxels         = 4;
+    this->maxChannels       = -1;
+    this->maxPix            = -1;
+    this->maxVoxels         = -1;
     this->flagRejectBeforeMerge = false;
     this->flagTwoStageMerging = true;
     // Input-Output related
@@ -338,6 +341,9 @@ namespace duchamp
     this->minChannels       = p.minChannels;
     this->minPix            = p.minPix;
     this->minVoxels         = p.minVoxels;
+    this->maxChannels       = p.maxChannels;
+    this->maxPix            = p.maxPix;
+    this->maxVoxels         = p.maxVoxels;
     this->flagRejectBeforeMerge = p.flagRejectBeforeMerge;
     this->flagTwoStageMerging = p.flagTwoStageMerging;
     this->spectralMethod    = p.spectralMethod;
@@ -474,7 +480,7 @@ namespace duchamp
 	// return isFlagged;
 
 	if(this->flaggedChannelMask.size()==0) return false;
-	else if(z>this->flaggedChannelMask.size() || z<0) return false;
+	else if(z>int(this->flaggedChannelMask.size()) || z<0) return false;
 	else return this->flaggedChannelMask[z];
 
     }
@@ -672,7 +678,6 @@ namespace duchamp
 	if(arg=="searchtype")      this->searchType = readSval(ss);
 
 	if(arg=="flagnegative")    this->flagNegative = readFlag(ss);
-	if(arg=="minpix")          this->minPix = readIval(ss); 
 	if(arg=="flaggrowth")      this->flagGrowth = readFlag(ss); 
 	if(arg=="growthcut")       this->growthCut = readFval(ss); 
 	if(arg=="growththreshold"){
@@ -710,8 +715,12 @@ namespace duchamp
 	if(arg=="flagadjacent")    this->flagAdjacent = readFlag(ss); 
 	if(arg=="threshspatial")   this->threshSpatial = readFval(ss); 
 	if(arg=="threshvelocity")  this->threshVelocity = readFval(ss); 
+	if(arg=="minpix")          this->minPix = readIval(ss); 
 	if(arg=="minchannels")     this->minChannels = readIval(ss); 
 	if(arg=="minvoxels")       this->minVoxels = readIval(ss); 
+	if(arg=="maxpix")          this->maxPix = readIval(ss); 
+	if(arg=="maxchannels")     this->maxChannels = readIval(ss); 
+	if(arg=="maxvoxels")       this->maxVoxels = readIval(ss); 
 	if(arg=="flagrejectbeforemerge") this->flagRejectBeforeMerge = readFlag(ss); 
 	if(arg=="flagtwostagemerging") this->flagTwoStageMerging = readFlag(ss); 
 
@@ -916,7 +925,7 @@ namespace duchamp
       DUCHAMPWARN("Reading parameters","Changing minVoxels to " << this->minPix + this->minChannels - 1 << " given minPix="<<this->minPix << " and minChannels="<<this->minChannels);
       this->minVoxels = this->minPix + this->minChannels - 1;
     }
-
+    
     // check that baselines are being calculated if we want to save them to a FITS file
     if(this->flagOutputBaseline && !this->flagBaseline){
       DUCHAMPWARN("Reading parameters","Saving of baseline values to a FITS file has been requested, but baselines are not being calculated. Turning off saving of baseline values.");
@@ -1118,6 +1127,9 @@ namespace duchamp
     recordParam(theStream, par, "[minPix]", "Minimum # Pixels in a detection", par.getMinPix());
     recordParam(theStream, par, "[minChannels]", "Minimum # Channels in a detection", par.getMinChannels());
     recordParam(theStream, par, "[minVoxels]", "Minimum # Voxels in a detection", par.getMinVoxels());
+    if(par.getMaxPix()>0) recordParam(theStream, par, "[maxPix]", "Maximum # Pixels in a detection", par.getMaxPix());
+    if(par.getMaxChannels()>0) recordParam(theStream, par, "[maxChannels]", "Maximum # Channels in a detection", par.getMaxChannels());
+    if(par.getMaxVoxels()>0) recordParam(theStream, par, "[maxVoxels]", "Maximum # Voxels in a detection", par.getMaxVoxels());
     recordParam(theStream, par, "[flagGrowth]", "Growing objects after detection?", stringize(par.getFlagGrowth()));
     if(par.getFlagGrowth()) {			       
       if(par.getFlagUserGrowthThreshold()){
@@ -1188,9 +1200,12 @@ namespace duchamp
       else
 	vopars.push_back(VOParam("growthCut","stat.snr;phot;stat.min","float",this->growthCut,0,""));
     }
-    vopars.push_back(VOParam("minVoxels","","int",minVoxels,0,""));
-    vopars.push_back(VOParam("minPix","","int",minPix,0,""));
-    vopars.push_back(VOParam("minChannels","","int",minChannels,0,""));
+    vopars.push_back(VOParam("minPix","","int",this->minPix,0,""));
+    vopars.push_back(VOParam("minChannels","","int",this->minChannels,0,""));
+    vopars.push_back(VOParam("minVoxels","","int",this->minVoxels,0,""));
+    if(this->maxPix>0) vopars.push_back(VOParam("maxPix","","int",this->maxPix,0,""));
+    if(this->maxChannels>0) vopars.push_back(VOParam("maxChannels","","int",this->maxChannels,0,""));
+    if(this->maxVoxels>0) vopars.push_back(VOParam("maxVoxels","","int",this->maxVoxels,0,""));
     vopars.push_back(VOParam("flagAdjacent","meta.code","boolean",this->flagAdjacent,0,""));
     if(!this->flagAdjacent)
       vopars.push_back(VOParam("threshSpatial","","float",this->threshSpatial,0,""));
@@ -1278,9 +1293,12 @@ namespace duchamp
       else
 	outfile.write(reinterpret_cast<const char*>(&this->growthCut), sizeof this->growthCut);
     }
-    outfile.write(reinterpret_cast<const char*>(&this->minVoxels), sizeof this->minVoxels);
     outfile.write(reinterpret_cast<const char*>(&this->minPix), sizeof this->minPix);
     outfile.write(reinterpret_cast<const char*>(&this->minChannels), sizeof this->minChannels);
+    outfile.write(reinterpret_cast<const char*>(&this->minVoxels), sizeof this->minVoxels);
+    outfile.write(reinterpret_cast<const char*>(&this->maxPix), sizeof this->maxPix);
+    outfile.write(reinterpret_cast<const char*>(&this->maxChannels), sizeof this->maxChannels);
+    outfile.write(reinterpret_cast<const char*>(&this->maxVoxels), sizeof this->maxVoxels);
     outfile.write(reinterpret_cast<const char*>(&this->flagAdjacent), sizeof this->flagAdjacent);
     if(!this->flagAdjacent)
       outfile.write(reinterpret_cast<const char*>(&this->threshSpatial), sizeof this->threshSpatial);
@@ -1369,9 +1387,12 @@ namespace duchamp
       else
 	infile.read(reinterpret_cast<char*>(&this->growthCut), sizeof this->growthCut);
     }
-    infile.read(reinterpret_cast<char*>(&this->minVoxels), sizeof this->minVoxels);
     infile.read(reinterpret_cast<char*>(&this->minPix), sizeof this->minPix);
     infile.read(reinterpret_cast<char*>(&this->minChannels), sizeof this->minChannels);
+    infile.read(reinterpret_cast<char*>(&this->minVoxels), sizeof this->minVoxels);
+    infile.read(reinterpret_cast<char*>(&this->maxPix), sizeof this->maxPix);
+    infile.read(reinterpret_cast<char*>(&this->maxChannels), sizeof this->maxChannels);
+    infile.read(reinterpret_cast<char*>(&this->maxVoxels), sizeof this->maxVoxels);
     infile.read(reinterpret_cast<char*>(&this->flagAdjacent), sizeof this->flagAdjacent);
     if(!this->flagAdjacent)
       infile.read(reinterpret_cast<char*>(&this->threshSpatial), sizeof this->threshSpatial);
