@@ -290,19 +290,26 @@ namespace duchamp
 
   Section Section::intersect(long *dimAxes, int size)
   {
-    std::vector<long> vecDim(size);
+    std::vector<size_t> vecDim(size);
     for(int i=0;i<size;i++) vecDim[i] = dimAxes[i];
     return this->intersect(vecDim);
   }
 
   Section Section::intersect(std::vector<int> dimAxes)
   {
-    std::vector<long> vecDim(dimAxes.size());
-    for(size_t i=0;i<dimAxes.size();i++) vecDim[i] = long(dimAxes[i]);
+    std::vector<size_t> vecDim(dimAxes.size());
+    for(size_t i=0;i<dimAxes.size();i++) vecDim[i] = size_t(dimAxes[i]);
     return this->intersect(vecDim);
   }
 
   Section Section::intersect(std::vector<long> dimAxes)
+  {
+    std::vector<size_t> vecDim(dimAxes.size());
+    for(size_t i=0;i<dimAxes.size();i++) vecDim[i] = size_t(dimAxes[i]);
+    return this->intersect(vecDim);
+  }
+
+  Section Section::intersect(std::vector<size_t> dimAxes)
   {
     
     std::string nullSec = nullSection(dimAxes.size());

@@ -140,8 +140,8 @@ namespace duchamp
       ///////////////////
       // Now parse the subsection and make sure all that works.
   
-      std::vector<long> dim(numAxes);
-      for(int i=0;i<numAxes;i++) dim[i] = dimAxes[i];
+      std::vector<size_t> dim(dimAxes,dimAxes+numAxes);
+      // for(int i=0;i<numAxes;i++) dim[i] = dimAxes[i];
       delete [] dimAxes;
 
       return this->parseSubsections(dim);
@@ -150,21 +150,28 @@ namespace duchamp
 
   }
 
-  OUTCOME Param::parseSubsections(long *dim, int size)
+  OUTCOME Param::parseSubsections(size_t *dim, int size)
   {
-    std::vector<long> vecDim(size);
+    std::vector<size_t> vecDim(size);
     for(int i=0;i<size;i++) vecDim[i] = dim[i];
+    return this->parseSubsections(vecDim);
+  }
+
+  OUTCOME Param::parseSubsections(std::vector<long> &dim)
+  {
+    std::vector<size_t> vecDim(dim.size());
+    for(size_t i=0;i<dim.size();i++) vecDim[i] = size_t(dim[i]);
     return this->parseSubsections(vecDim);
   }
 
   OUTCOME Param::parseSubsections(std::vector<int> &dim)
   {
-    std::vector<long> vecDim(dim.size());
-    for(size_t i=0;i<dim.size();i++) vecDim[i] = long(dim[i]);
+    std::vector<size_t> vecDim(dim.size());
+    for(size_t i=0;i<dim.size();i++) vecDim[i] = size_t(dim[i]);
     return this->parseSubsections(vecDim);
   }
 
-  OUTCOME Param::parseSubsections(std::vector<long> &dim)
+  OUTCOME Param::parseSubsections(std::vector<size_t> &dim)
   {
 
     if(this->pixelSec.parse(dim)==FAILURE) return FAILURE;

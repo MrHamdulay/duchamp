@@ -107,6 +107,7 @@ namespace duchamp
     Section intersect(Section &other);
 
     /// @brief Return a section that is the intersection of this with the full section given by a set of axis dimensions
+    Section intersect(std::vector<size_t> dimAxes);
     Section intersect(std::vector<long> dimAxes);
     Section intersect(std::vector<int> dimAxes);
     Section intersect(long *dim, int size);

@@ -139,9 +139,10 @@ namespace duchamp
     /// @brief Make sure the subsection strings are OK, with FITS access. 
     OUTCOME verifySubsection();
     /// @brief Parse the subsection strings with a dimension set
+    OUTCOME parseSubsections(std::vector<size_t> &dim);
     OUTCOME parseSubsections(std::vector<long> &dim);
     OUTCOME parseSubsections(std::vector<int> &dim);
-    OUTCOME parseSubsections(long *dim, int size);
+    OUTCOME parseSubsections(size_t *dim, int size);
 
     /// @brief Set the correct offset values for each axis 
     void   setOffsets(struct wcsprm *wcs);
