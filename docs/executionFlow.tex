@@ -171,59 +171,44 @@ calculations done on the cube.
 Second, the user may request the removal of baselines from the
 spectra, via the parameter \texttt{flagBaseline}. This may be
 necessary if there is a strong baseline ripple present, which can
-result in spurious detections at the high points of the ripple. The
-baseline is calculated from a wavelet reconstruction procedure (see
-\S\ref{sec-recon}) that keeps only the two largest scales. This is
-done separately for each spatial pixel (\ie for each spectrum in the
-cube), and the baselines are stored and added back in before any
-output is done. In this way the quoted fluxes and displayed spectra
-are as one would see from the input cube itself -- even though the
-detection (and reconstruction if applicable) is done on the
-baseline-removed cube.
+result in spurious detections at the high points of the ripple. 
 
-The presence of very strong signals (for instance, masers at several
-hundred Jy) could affect the determination of the baseline, and would
-lead to a large dip centred on the signal in the baseline-subtracted
-spectrum. To prevent this, the signal is trimmed prior to the
-reconstruction process at some standard threshold (at $8\sigma$ above
-the mean). The baseline determined should thus be representative of
-the true, signal-free baseline. Note that this trimming is only a
-temporary measure which does not affect the source-detection.
+There are two ways in which the baseline can be calculated. The first
+makes use of the \atrous wavelet reconstruction procedure (see
+\S\ref{sec-recon}), where only the two largest scales are kept. 
+
+The second method uses a median filter combined with a sliding box of some
+specified width. For each pixel, the baseline is determined to be the
+median value of all pixels in a region of that width centred on the
+pixel of interest. The box is truncated at the edges of the spectrum
+(so that fewer pixels are included), but there will always be at least
+half the width of the box present.
+
+The choice between these methods is made using the
+\texttt{baselineType} parameter -- only values of \texttt{atrous} (the
+default) or \texttt{median} are accepted. If the \texttt{median}
+method is being used, the full width of the box is specified with
+\texttt{baselineBoxWidth}. 
+
+The baseline calculation is done separately for each spatial pixel
+(\ie for each spectrum in the cube), and the baselines are stored and
+added back in before any output is done. In this way the quoted fluxes
+and displayed spectra are as one would see from the input cube itself
+-- even though the detection (and reconstruction if applicable) is
+done on the baseline-removed cube.
+
+When the \texttt{atrous} method is used, the presence of very strong
+signals (for instance, masers at several hundred Jy) could affect the
+determination of the baseline, and would lead to a large dip centred
+on the signal in the baseline-subtracted spectrum. To prevent this,
+the signal is trimmed prior to the reconstruction process at some
+standard threshold (at $5\sigma$ above the mean). The baseline
+determined should thus be representative of the true, signal-free
+baseline. Note that this trimming is only a temporary measure which
+does not affect the source-detection.
 
 The baseline values can be saved to a FITS file for later
 examination. See \S\ref{sec-baselineOut} for details.
-
-%\secC{Ignoring bright Milky Way emission}
-%\label{sec-MW}
-%
-%Finally, a single set of contiguous channels can be ignored -- these
-%may exhibit very strong emission, such as that from the Milky Way as
-%seen in extragalactic \hi cubes (hence the references to ``Milky
-%Way'' in relation to this task -- apologies to Galactic
-%astronomers!). Such dominant channels will produce many detections
-%that are unnecessary, uninteresting (if one is interested in
-%extragalactic \hi) and large (in size and hence in memory usage), and
-%so will slow the program down and detract from the interesting
-%detections. 
-%
-%The use of this feature is controlled by the \texttt{flagMW}
-%parameter, and the exact channels concerned are able to be set by the
-%user (using \texttt{maxMW} and \texttt{minMW} -- these give an
-%inclusive range of channels). These channels refer to the channel
-%numbers of \textbf{the full cube}, before any subsection is applied.
-%
-%The effect is to ignore detections that lie within these channels. If
-%a spatial search is being conducted (\ie one channel map at a time),
-%these channels are simply not searched. If a spectral search is being
-%conducted, those channels will be flagged so that no detection is made
-%within them. The spectral output (see Fig.~\ref{fig-spect}) will
-%ignore them as far as scaling the plot goes, and the channel range
-%will be indicated by a green hatched box.
-%
-%Note that these channels will be included in any smoothing or
-%reconstruction that is done on the array, and so will be included in
-%any saved FITS file (see \S\ref{sec-reconIO}).
-%
 
 \secC{Flagging channels}
 \label{sec-flagging}
@@ -528,7 +513,7 @@ given above.
 \secC{Representation of detected objects}
 \label{sec-scan}
 
-\begin{figure}
+\begin{figure}[t]
 \includegraphics[width=\textwidth]{exampleObject}
 \caption{An example of the run-length encoding method of storing
 pixel information. The scans used to encode the image are listed
@@ -618,7 +603,7 @@ in one dimension on each individual spatial pixel's spectrum. This is
 a simpler search, but there are potentially many more of them.
 
 Although there are parameters that govern the minimum number of pixels
-in a spatial, spectral and total senses that an object must have
+in a spatial, spectral and total sense that an object must have
 (\texttt{minPix}, \texttt{minChannels} and \texttt{minVoxels}
 respectively), these criteria are not applied at this point - see
 \S\ref{sec-reject} for details.
@@ -691,8 +676,9 @@ used in the calculations).
 Note that \texttt{StatSec} applies only to the statistics used to
 determine the threshold. It does not affect the calculation of
 statistics in the case of the wavelet reconstruction. Note also that
-pixels flagged as BLANK or as part of the ``Milky Way'' range of
-channels are ignored in the statistics calculations.
+pixels identified as BLANK or as flagged via the
+\texttt{flaggedChannels} parameter are ignored in the statistics
+calculations.
 
 \secC{Determining the threshold}
 
@@ -841,17 +827,28 @@ other).
 \secC{Rejecting}
 \label{sec-reject}
 
-Finally, to be accepted, the detections must satisfy minimum size
-criteria, relating to the number of channels, spatial pixels and
-voxels occupied by the object. These criteria are set using the
-\texttt{minChannels}, \texttt{minPix} and \texttt{minVoxels}
-parameters respectively. The channel requirement means a source must
-have at least one set of \texttt{minChannels} consecutive channels to
-be accepted. The spatial pixels (\texttt{minPix}) requirement refers
-to distinct spatial pixels (which are possibly in different channels),
-while the voxels requirement refers to the total number of voxels
-detected. If the \texttt{minVoxels} parameter is not provided, it
-defaults to \texttt{minPix}$+$\texttt{minChannels}-1.
+Finally, to be accepted, the detections must satisfy minimum (and,
+optionally, maximum) size criteria, relating to the number of
+channels, spatial pixels and voxels occupied by the object. These
+criteria are set using the \texttt{minChannels}, \texttt{minPix} and
+\texttt{minVoxels} parameters respectively. The channel requirement
+means a source must have at least one set of \texttt{minChannels}
+consecutive channels to be accepted. The spatial pixels
+(\texttt{minPix}) requirement refers to distinct spatial pixels (which
+are possibly in different channels), while the voxels requirement
+refers to the total number of voxels detected. If the
+\texttt{minVoxels} parameter is not provided, it defaults to
+\texttt{minPix}$+$\texttt{minChannels}-1.
+
+It is possible to also place upper limits on the size of detections in
+a similar fashion. The corresponding parameters are \texttt{maxPix},
+\texttt{maxChannels} and \texttt{maxVoxels}. These will all default to
+a value of -1 -- if they are negative the check is \textbf{not}
+made. If they are provided by the user, an object will be rejected if
+one of the metrics exceeds the limit (in each case, the value is the
+highest allowed value for an object to be accepted). The channel
+requirement differs slightly from the minimum check -- the limit
+applies to the total number of channels in the object.
 
 It is possible to do this rejection stage before the main merging and
 growing stage. This could be done to remove narrow (hopefully

@@ -196,10 +196,10 @@ at large scales), but there will be differences at some level.
 
 Note also that BLANK pixels have no effect on the reconstruction: they
 remain as BLANK in the output, and do not contribute to the discrete
-convolution when they otherwise would. The use of the Milky Way
-channel range, however, has no effect on the reconstruction -- these
-are applied after the preprocessing, either in the searching or the
-rejection stage.
+convolution when they otherwise would. Flagging channels with the
+\texttt{flaggedChannels} parameter, however, has no effect on the
+reconstruction -- this are applied after the preprocessing, either in
+the searching or the rejection stage.
 
 \secB{Smoothing considerations}
 
@@ -244,115 +244,7 @@ single-pixel detections. This is where the minimum channel and pixel
 requirements are important in rejecting spurious detections.
 
 
-%  \secB{Preprocessing}
-%  
-%  \secC{Should I do any preprocessing?}
-%  
-%  The main choice is whether to alter the cube to try and enhance the
-%  detectability of objects, by either smoothing or reconstructing via
-%  the \atrous method. The main benefits of both methods are the marked
-%  reduction in the noise level, leading to regularly-shaped detections,
-%  and good reliability for faint sources.
-%  
-%  The main drawback with the \atrous method is the long execution time:
-%  to reconstruct a $170\times160\times1024$ (\hipass) cube often
-%  requires three iterations and takes about 20-25 minutes to run
-%  completely. Note that this is for the more complete three-dimensional
-%  reconstruction: using \texttt{reconDim = 1} makes the reconstruction
-%  quicker (the full program then takes less than 5 minutes), but it is
-%  still the largest part of the time.
-%  
-%  The smoothing procedure is computationally simpler, and thus quicker,
-%  than the reconstruction. The spectral Hanning method adds only a very
-%  small overhead on the execution, and the spatial Gaussian method,
-%  while taking longer, will be done (for the above example) in less than
-%  2 minutes. Note that these times will depend on the size of the
-%  filter/kernel used: a larger filter means more calculations.
-%  
-%  The searching part of the procedure is much quicker: searching an
-%  un-reconstructed cube leads to execution times of less than a
-%  minute. Alternatively, using the ability to read in previously-saved
-%  reconstructed arrays makes running the reconstruction more than once a
-%  more feasible prospect.
-%  
-%  On the positive side, the shape of the detections in a cube that has
-%  been reconstructed or smoothed will be much more regular and smooth --
-%  the ragged edges that objects in the raw cube possess are smoothed by
-%  the removal of most of the noise. This enables better determination of
-%  the shapes and characteristics of objects.
-%  
-%  \secC{Reconstruction vs Smoothing}
-%  
-%  While the time overhead is larger for the reconstruction case, it will
-%  potentially provide a better recovery of real sources than the
-%  smoothing case. This is because it probes the full range of scales
-%  present in the cube (or spectral domain), rather than the specific
-%  scale determined by the Hanning filter or Gaussian kernel used in the
-%  smoothing. 
-%  
-%  When considering the reconstruction method, note that the 2D
-%  reconstruction (\texttt{reconDim = 2}) can be susceptible to edge
-%  effects. If the valid area in the cube (\ie the part that is not
-%  BLANK) has non-rectangular edges, the convolution can produce
-%  artefacts in the reconstruction that mimic the edges and can lead
-%  (depending on the selection threshold) to some spurious
-%  sources. Caution is advised with such data -- the user is advised to
-%  check carefully the reconstructed cube for the presence of such
-%  artefacts. 
-%  
-%  A more important effect that can be important for 2D reconstructions
-%  is the fact that the pixels in the spatial domain typically exhibit
-%  some correlation due to the beam. Since each channel is reconstructed
-%  independently, beam-sized noise fluctuations can rise above the
-%  reconstruction threshold more frequency than in the 1D case, providing
-%  a greater number of spurious single-channel spikes in a given
-%  reconstructed spectrum. This effect will also be present in 3D
-%  reconstructions, although to a lesser degree since information in the
-%  spectral direction is also taken into account.
-%  
-%  If one chooses the reconstruction method, a further decision is
-%  required on the signal-to-noise cutoff used in determining acceptable
-%  wavelet coefficients. A larger value will remove more noise from the
-%  cube, at the expense of losing fainter sources, while a smaller value
-%  will include more noise, which may produce spurious detections, but
-%  will be more sensitive to faint sources. Values of less than about
-%  $3\sigma$ tend to not reduce the noise a great deal and can lead to
-%  many spurious sources (this depends, of course on the cube itself).
-%  
-%  The smoothing options have less parameters to consider: basically just
-%  the size of the smoothing function or kernel. Spectrally smoothing
-%  with a Hanning filter of width 3 (the smallest possible) is very
-%  efficient at removing spurious one-channel objects that may result
-%  just from statistical fluctuations of the noise. One may want to use
-%  larger widths or kernels of larger size to look for features of a
-%  particular scale in the cube.
-%  
-%  When it comes to searching, the FDR method produces more reliable
-%  results than simple sigma-clipping, particularly in the absence of
-%  reconstruction.  However, it does not work in exactly the way one
-%  would expect for a given value of \texttt{alpha}. For instance,
-%  setting fairly liberal values of \texttt{alpha} (say, 0.1) will often
-%  lead to a much smaller fraction of false detections (\ie much less
-%  than 10\%). This is the effect of the merging algorithms, that combine
-%  the sources after the detection stage, and reject detections not
-%  meeting the minimum pixel or channel requirements.  It is thus better
-%  to aim for larger \texttt{alpha} values than those derived from a
-%  straight conversion of the desired false detection rate.
-%  
-%  If the FDR method is not used, caution is required when choosing the
-%  S/N cutoff. Typical cubes have very large numbers of pixels, so even
-%  an apparently large cutoff will still result in a not-insignificant
-%  number of detections simply due to random fluctuations of the noise
-%  background. For instance, a $4\sigma$ threshold on a cube of Gaussian
-%  noise of size $100\times100\times1024$ will result in $\sim340$
-%  single-pixel detections. This is where the minimum channel and pixel
-%  requirements are important in rejecting spurious detections.
-%  
-%  %Finally, as \duchamp is still undergoing development, there are some
-%  %elements that are not fully developed. In particular, it is not as
-%  %clever as I would like at avoiding interference. The ability to place
-%  %requirements on the minimum number of channels and pixels partially
-%  %circumvents this problem, but work is being done to make \duchamp
-%  %smarter at rejecting signals that are clearly (to a human eye at
-%  %least) interference. See the following section for further
-%  %improvements that are planned.
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "Guide"
+%%% End: 

@@ -276,10 +276,11 @@ the spectrum for each detection, together with a small cutout image
 any flags are printed after the name of the detection, in the format
 \texttt{[E]}). If the cube was reconstructed, the spectrum from the
 reconstruction is shown in red, over the top of the original
-spectrum. The spectral extent of the detected object is indicated by
-two dashed blue lines, and the region covered by the ``Milky Way''
-channels is shown by a green hashed box. An example detection can be
-seen in Fig.~\ref{fig-spect}.
+spectrum. If the spectral baseline was removed prior to source
+detection, this is shown in yellow. The spectral extent of the
+detected object is indicated by two dashed blue lines, and the regions
+covered by the flagged channels are shown by green hashed boxes. An
+example detection can be seen in Fig.~\ref{fig-spect}.
 
 The spectrum that is plotted is governed by the
 \texttt{spectralMethod} parameter. It can be either \texttt{peak} (the
@@ -287,9 +288,12 @@ default), where the spectrum is from the spatial pixel containing the
 detection's peak flux; or \texttt{sum}, where the spectrum is summed
 over all spatial pixels, and then corrected for the beam size. If the
 \texttt{peak} method is used, the detection threshold (and growth
-threshold, if used) are indicated by dashed (and dotted) lines. These
-cannot be plotted on the integrated spectrum. The spectral extent of
-the detection is indicated with blue lines, and a zoom is shown in a
+threshold, if used) are indicated by dashed (and dotted) lines. When
+the spectral baseline has been removed, the thresholds will be a
+constant level above this (and so reflect its variability). Otherwise,
+the thresholds will be horizontal lines. The thresholds cannot be
+plotted on the integrated spectrum. The spectral extent of the
+detection is indicated with blue lines, and a zoom is shown in a
 separate window.
 
 \begin{figure}[t]
@@ -301,7 +305,7 @@ separate window.
     indicating the reconstructed spectrum; the blue dashed and dotted
     horizontal lines indicating the detection and growth thresholds
     respectively; the blue dashed lines indicating the spectral extent
-    of the detection; the green hashed area indicating the Milky Way
+    of the detection; the green hashed area indicating the flagged
     channels that are ignored by the searching algorithm; the blue
     border showing its spatial extent on the 0th moment map; the
     ellipses indicating the size of the object and the beam; and the
@@ -374,13 +378,13 @@ channels in each object, showing the integrated flux in grey-scale;
 and a ``detection image'', a grey-scale image where the pixel values
 are the number of channels in which that spatial pixel is
 detected. These detections include pixels that are subsequently
-discarded (due to the minimum-size criteria). In both cases, if
-\texttt{drawBorders = true}, a border is drawn around the spatial
-extent of each detection, and if \texttt{drawBlankEdges = true}, the
-purple line dividing BLANK and non-BLANK pixels (as described above)
-is drawn. An example moment map is shown in Fig.~\ref{fig-moment}.
-The production or otherwise of these images is governed by the
-\texttt{flagMaps} parameter.
+discarded (due to the minimum- or maximum-size criteria). In both
+cases, if \texttt{drawBorders = true}, a border is drawn around the
+spatial extent of each detection, and if \texttt{drawBlankEdges =
+  true}, the purple line dividing BLANK and non-BLANK pixels (as
+described above) is drawn. An example moment map is shown in
+Fig.~\ref{fig-moment}.  The production or otherwise of these images is
+governed by the \texttt{flagMaps} parameter.
 
 The moment map is also displayed in a PGPlot XWindow (with the
 \texttt{/xs} display option). This feature can be turned off by
@@ -392,7 +396,7 @@ If the input image is one-dimensional, such a spatial map is not
 possible. Instead, the detection map becomes a detection
 spectrum. This shows the full spectral range, indicating (as for the
 spectral plots above) the detection and growth thresholds, as well as
-the `Milky Way' range and every detection that appears in the final
+the flagged channels and every detection that appears in the final
 catalogue. It also indicates all pixels that were detected, including
 those subsequently discarded, by thick black lines above the
 spectrum. An example can be see in

@@ -172,10 +172,11 @@ map.
 Detection involves locating contiguous groups of voxels with fluxes
 above a certain threshold. \duchamp makes no assumptions as to the
 size or shape of the detected features, other than allowing
-user-selected minimum size criteria. Features that are detected are
-assumed to be positive. The user can choose to search for negative
-features by setting an input parameter -- which will invert the cube
-prior to the search (see \S\ref{sec-searchTechnique} for details).
+user-selected minimum or maximum size criteria. Features that are
+detected are assumed to be positive. The user can choose to search for
+negative features by setting an input parameter -- which will invert
+the cube prior to the search (see \S\ref{sec-searchTechnique} for
+details).
 
 \secB{A summary of the execution steps}
 
@@ -276,10 +277,10 @@ discussed in more detail in the following sections.
 
   After the merging is done, the list is culled (although see comment
   for the next step). There are certain criteria the user can specify
-  that objects must meet: minimum numbers of spatial pixels and
-  spectral channels, and minimum separations between neighbouring
-  objects. Those that do not meet these criteria are deleted
-  from the list.
+  that objects must meet: minimum (or maximum) numbers of spatial
+  pixels and spectral channels, and minimum separations between
+  neighbouring objects. Those that do not meet these criteria are
+  deleted from the list.
 
 \item If requested, the objects are ``grown'' down to a lower
   threshold, and then the merging step is done a second time.
