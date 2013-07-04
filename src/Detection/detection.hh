@@ -110,7 +110,11 @@ namespace duchamp
     void   setOffsets(Param &par); 
 
     /// @brief Add the offset values to the pixel locations 
-    void   addOffsets(size_t xoff, size_t yoff, size_t zoff){Object3D::addOffsets(xoff,yoff,zoff);};
+   void   addOffsets(size_t xoff, size_t yoff, size_t zoff){
+       Object3D::addOffsets(xoff,yoff,zoff);
+       xpeak+=xoff; ypeak+=yoff; zpeak+=zoff;
+       xCentroid+=xoff; yCentroid+=yoff; zCentroid+=zoff;
+    };
     void   addOffsets(){
       Object3D::addOffsets(xSubOffset,ySubOffset,zSubOffset);
       xpeak+=xSubOffset; ypeak+=ySubOffset; zpeak+=zSubOffset;
