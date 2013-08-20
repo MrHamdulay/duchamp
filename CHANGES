@@ -10,6 +10,13 @@ Input parameter changes:
   functionality and allowing more than one set of channels to be
   specified. 
 
+Bug fixes:
+
+* Negative velocity (and other) values were resulting in the column
+  widths not adjusting correctly, leading to columns running into each
+  other. This has been fixed, so that the spacing in the results files
+  should be correct.
+
 
 Code changes:
 
