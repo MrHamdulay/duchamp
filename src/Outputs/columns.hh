@@ -111,8 +111,8 @@ namespace duchamp
 	void check(unsigned int i) {checkWidth(int(log10(double(i))+1));};
 	void check(unsigned long i){checkWidth(int(log10(double(i))+1));};
 	void check(std::string s){checkWidth(int(s.size()));};
-	void check(float f, bool doPrec=true) {if(doPrec) checkPrec(double(f)); int negVal=(f<0)?1:0; checkWidth(int(log10(f)+1)+1+itsPrecision+negVal); };
-	void check(double d, bool doPrec=true){if(doPrec) checkPrec(d);         int negVal=(d<0)?1:0; checkWidth(int(log10(d)+1)+1+itsPrecision+negVal); };
+	void check(float f, bool doPrec=true) {if(doPrec) checkPrec(double(f)); int negVal=(f<0)?1:0; checkWidth(int(log10(fabs(f))+1)+1+itsPrecision+negVal); };
+	void check(double d, bool doPrec=true){if(doPrec) checkPrec(d);         int negVal=(d<0)?1:0; checkWidth(int(log10(fabs(d))+1)+1+itsPrecision+negVal); };
 
       //--------------
       // Outputting functions -- all in columns.cc
