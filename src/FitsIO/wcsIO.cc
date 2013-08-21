@@ -100,7 +100,7 @@ namespace duchamp
     OUTCOME returnValue=SUCCESS;
 
     int numAxes=0;
-    long *dimAxes = 0;
+    size_t *dimAxes = 0;
     int noComments = 1; //so that fits_hdr2str will ignore COMMENT, HISTORY etc
     int nExc = 0,nkeys;
     int status = 0;
@@ -116,10 +116,10 @@ namespace duchamp
     }
 
     if(returnValue == SUCCESS){
-      dimAxes = new long[numAxes];
+      dimAxes = new size_t[numAxes];
       for(int i=0;i<numAxes;i++) dimAxes[i]=1;
       status = 0;
-      if(fits_get_img_size(fptr, numAxes, dimAxes, &status)){
+      if(fits_get_img_size(fptr, numAxes, (long*)dimAxes, &status)){
 	fits_report_error(stderr, status);
 	returnValue = FAILURE;
       }
@@ -179,7 +179,7 @@ namespace duchamp
 
   }
 
-  OUTCOME FitsHeader::defineWCS(wcsprm *theWCS, int nWCS, long *dimAxes, Param &par)
+  OUTCOME FitsHeader::defineWCS(wcsprm *theWCS, int nWCS, size_t *dimAxes, Param &par)
   {
   
     int status=0;
