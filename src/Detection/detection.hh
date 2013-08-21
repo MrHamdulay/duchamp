@@ -90,7 +90,7 @@ namespace duchamp
     void   calcWCSparams(FitsHeader &head); 
 
     /// @brief Calculate the integrated flux over the entire Detection. 
-    void   calcIntegFlux(float *fluxArray, size_t *dim, FitsHeader &head); 
+    void   calcIntegFlux(float *fluxArray, size_t *dim, FitsHeader &head, Param &par); 
     /// @brief Calculate the integrated flux over the entire Detection. 
     void   calcIntegFlux(size_t zdim, std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head); 
     void   calcIntegFlux(size_t zdim, std::map<Voxel,float> voxelMap, FitsHeader &head);
@@ -98,7 +98,7 @@ namespace duchamp
     /// @brief Calculate the 20%-/50%-peak-flux widths in a general fashion
     void calcVelWidths(size_t zdim, float *intSpec, FitsHeader &head);
     /// @brief Calculate the 20%/50% peak flux widths 
-    void calcVelWidths(float *fluxArray, size_t *dim, FitsHeader &head);
+    void calcVelWidths(float *fluxArray, size_t *dim, FitsHeader &head, Param &par);
     /// @brief Calculate the 20%/50% peak flux widths 
     void calcVelWidths(size_t zdim, std::vector<PixelInfo::Voxel> voxelList, FitsHeader &head);
     void calcVelWidths(size_t zdim, std::map<Voxel,float> voxelMap, FitsHeader &head);
@@ -115,11 +115,11 @@ namespace duchamp
        xpeak+=xoff; ypeak+=yoff; zpeak+=zoff;
        xCentroid+=xoff; yCentroid+=yoff; zCentroid+=zoff;
     };
-    void   addOffsets(){
-      Object3D::addOffsets(xSubOffset,ySubOffset,zSubOffset);
-      xpeak+=xSubOffset; ypeak+=ySubOffset; zpeak+=zSubOffset;
-      xCentroid+=xSubOffset; yCentroid+=ySubOffset; zCentroid+=zSubOffset;
-    };
+
+      void   addOffsets(){ addOffsets(xSubOffset, ySubOffset, zSubOffset);};
+      void   removeOffsets(size_t xoff, size_t yoff, size_t zoff){ addOffsets(-xoff, -yoff, -zoff);};
+      void   removeOffsets(){ addOffsets(-xSubOffset, -ySubOffset, -zSubOffset);};
+      void   addOffsets(Param &par){setOffsets(par); addOffsets();};
 
     //
     //---------------------------------

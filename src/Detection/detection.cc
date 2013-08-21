@@ -647,54 +647,20 @@ namespace duchamp
       size_t zzero = size_t(std::max(0L,this->zmin-border));
       size_t spatsize=xsize*ysize;
       size_t size = xsize*ysize*zsize;
-      std::vector <bool> isObj(size,false);
-      double *localFlux = new double[size];
-      for(size_t i=0;i<size;i++) localFlux[i]=0.;
 
+      this->intFlux = 0.;
       std::vector<Voxel> voxelList = this->getPixelSet();
       std::vector<Voxel>::iterator vox;
       for(vox=voxelList.begin();vox<voxelList.end();vox++){
-	if(voxelMap.find(*vox) == voxelMap.end()){
-	  DUCHAMPERROR("Detection::calcIntegFlux","Voxel list provided does not match");
-	  return;
-	}	
-	else {
-	  size_t pos=(vox->getX()-xzero) + (vox->getY()-yzero)*xsize + (vox->getZ()-zzero)*spatsize;
-	  localFlux[pos] = voxelMap[*vox];
-	  isObj[pos] = true;
-	}
-      }
-  
-      // work out the WCS coords for each pixel
-      double *world  = new double[size];
-      double xpt,ypt,zpt;
-      for(size_t i=0;i<xsize*ysize*zsize;i++){
-	xpt = double( this->getXmin() - border + i%xsize );
-	ypt = double( this->getYmin() - border + (i/xsize)%ysize );
-	zpt = double( this->getZmin() - border + i/(xsize*ysize) );
-	world[i] = head.pixToVel(xpt,ypt,zpt);
-      }
-
-      double integrated = 0.;
-      for(size_t pix=0; pix<spatsize; pix++){ // loop over each spatial pixel.
-	for(size_t z=0; z<zsize; z++){
-	  size_t pos =  z*xsize*ysize + pix;
-	  if(isObj[pos]){ // if it's an object pixel...
-	    double deltaVel;
-	    if(z==0) 
-	      deltaVel = (world[pos+xsize*ysize] - world[pos]);
-	    else if(z==(zsize-1)) 
-	      deltaVel = (world[pos] - world[pos-xsize*ysize]);
-	    else 
-	      deltaVel = (world[pos+xsize*ysize] - world[pos-xsize*ysize]) / 2.;
-	    integrated += localFlux[pos] * fabs(deltaVel);
+	  if(voxelMap.find(*vox) == voxelMap.end()){
+	      DUCHAMPERROR("Detection::calcIntegFlux","Voxel list provided does not match");
+	      return;
+	  }	
+	  else {
+	      this->intFlux += voxelMap[*vox];
 	  }
-	}
       }
-      this->intFlux = integrated;
-
-      delete [] world;
-      delete [] localFlux;
+      this->intFlux *= fabs(head.WCS().cdelt[head.WCS().spec]);
 
       calcVelWidths(zdim,voxelMap,head);
 
@@ -710,7 +676,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::calcIntegFlux(float *fluxArray, size_t *dim, FitsHeader &head)
+  void Detection::calcIntegFlux(float *fluxArray, size_t *dim, FitsHeader &head, Param &par)
   {
     ///  @details
     ///  Uses the input WCS to calculate the velocity-integrated flux, 
@@ -792,7 +758,7 @@ namespace duchamp
       
       this->intFlux = integrated;
       
-      calcVelWidths(fluxArray, dim, head);
+      calcVelWidths(fluxArray, dim, head, par);
 
      }
       else // in this case there is just a 2D image.
@@ -831,7 +797,7 @@ namespace duchamp
 	  size_t spatpos=(v->getX()-x1) + (v->getY()-y1)*xsize;
 	  if(spatpos>=0 && spatpos<spatsize)
 	      momentMap[spatpos] += fluxArray[v->arrayIndex(dim)] * delta * sign;
-	  else DUCHAMPTHROW("findShape","Memory overflow - accessing spatpos="<<spatpos<<" when spatsize="<<spatsize);
+	  else DUCHAMPTHROW("findShape","Memory overflow - accessing spatpos="<<spatpos<<" when spatsize="<<spatsize <<". Pixel is (x,y)=("<<v->getX() <<","<<v->getY()<<") and (x1,y1)="<<x1<<","<<y1<<"), (x2,y2)="<<x2<<","<<y2<<"), xsize="<<xsize);
       }
 
       size_t smldim[2]; smldim[0]=xsize; smldim[1]=ysize;
@@ -1030,7 +996,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void Detection::calcVelWidths(float *fluxArray, size_t *dim, FitsHeader &head)
+  void Detection::calcVelWidths(float *fluxArray, size_t *dim, FitsHeader &head, Param &par)
   {
     ///  @details
     /// Calculates the widths of the detection at 20% and 50% of the
@@ -1049,7 +1015,7 @@ namespace duchamp
 
       float *intSpec = new float[dim[2]];
       size_t size=dim[0]*dim[1]*dim[2];
-      std::vector<bool> mask(size,true); 
+      bool *mask = par.makeBlankMask(fluxArray,size);
       getIntSpec(*this,fluxArray,dim,mask,1.,intSpec);
 
       this->calcVelWidths(dim[2],intSpec,head);

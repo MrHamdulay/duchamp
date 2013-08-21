@@ -85,7 +85,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void getIntSpec(Detection &object, float *fluxArray, size_t *dimArray, std::vector<bool> mask, 
+  void getIntSpec(Detection &object, float *fluxArray, size_t *dimArray, bool *mask, 
 		  float beamCorrection, float *spec)
   {
     /// @details

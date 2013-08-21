@@ -1295,7 +1295,7 @@ namespace duchamp
 	obj->findShape(this->array,this->axisDim,this->head);
 	//      obj->calcWCSparams(this->array,this->axisDim,this->head);
 	obj->calcWCSparams(this->head);
-	obj->calcIntegFlux(this->array,this->axisDim,this->head);
+	obj->calcIntegFlux(this->array,this->axisDim,this->head, this->par);
 
 	if(!this->par.getFlagUserThreshold()){
 	    

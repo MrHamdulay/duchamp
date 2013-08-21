@@ -52,7 +52,8 @@ namespace duchamp
   // In Cubes/spectraUtils.cc
   void getSpecAbscissae(Detection &object, FitsHeader &head, size_t zdim, float *output);
   void getSpecAbscissae(FitsHeader &head, float xpt, float ypt, size_t zdim, float *output);
-  void getIntSpec(Detection &object, float *fluxArray, size_t *dimArray, std::vector<bool> mask, float beamCorrection, float *output);
+  // void getIntSpec(Detection &object, float *fluxArray, size_t *dimArray, std::vector<bool> mask, float beamCorrection, float *output);
+  void getIntSpec(Detection &object, float *fluxArray, size_t *dimArray, bool *mask, float beamCorrection, float *output);
   void getPeakSpec(Detection &object, float *fluxArray, size_t *dimArray, bool *mask, float *output);
   void getSmallVelRange(Detection &obj, FitsHeader &head, double *minvel, double *maxvel);
   void getSmallZRange(Detection &obj, double *minz, double *maxz);
