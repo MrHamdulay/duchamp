@@ -17,6 +17,9 @@ Bug fixes:
   other. This has been fixed, so that the spacing in the results files
   should be correct.
 
+* Fixed a problem applicable to cubes with blank/masked pixels in the
+  same spectra as detections. The velocity width calculations could
+  sometimes fail due to the mask not being applied.
 
 Code changes:
 
