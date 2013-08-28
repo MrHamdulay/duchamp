@@ -1,7 +1,7 @@
 Duchamp version 1.5 (2013/??/??)
 --------------------------------
 
-Input parameter changes:
+New features & algorithms:
 
 * There is now a more flexible way to specify channels that should be
   ignored by the source-finding. Use flaggedChannels to provide a list
@@ -17,6 +17,11 @@ Input parameter changes:
   parameters now available, baselineType (atrous or median), and
   baselineBoxWidth (the width of the median box). Consult the User's
   Guide for further information.
+
+* There is now more flexibility in running the spatial smoothing. The
+  cutoff value in determining the size of the smoothing kernel can now
+  be set via the input parameters, as can the way the edge pixels get
+  treated. Conult the User's Guide for details.
 
 Output changes:
 

@@ -218,6 +218,11 @@ filterCode      1
 # kernMin -- the FWHM of the minor axis of the 2D spatial smoothing gaussian
 # kernPA  -- the position angle of the major axis of the 2D spatial 
 #            smoothing gaussian
+# smoothEdgeMethod -- how to deal with the pixels at the edge of the
+# 		      image when using the 2D smoothing algorith. Can
+# 		      be equal, truncate, or scale. 
+# spatialSmoothCutoff - relative cutoff used to determine the width of
+#  		      	the 2D smoothing kernel
 
 flagSmooth      false
 smoothType      spectral
@@ -225,6 +230,8 @@ hanningWidth    5
 kernMaj         3.
 kernMin         -1.
 kernPA          0.
+smoothEdgeMethod equal
+spatialSmoothCutoff 1.e-10
 
 # FALSE DISCOVERY RATE METHOD
 # flagFDR -- Whether or not to use the false discovery rate method instead of 

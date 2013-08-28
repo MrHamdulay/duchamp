@@ -341,7 +341,14 @@ not matter, they are grouped here in logical sections.
 \item[{kernMin [3]}] The FWHM of the 2D Gaussian smoothing kernel's
   minor axis.
 \item[{kernPA [0]}] The position angle, in degrees,
-  anticlockwise from vertical (\ie usually East of North). 
+  anticlockwise from vertical (\ie usually East of North).
+\item[{smoothEdgeMethod [equal]}] What method to use for dealing with
+  pixels on the edge of the spatial image (\ie within the width of the
+  kernel). Can be one of \texttt{edge, truncate, scale}. See
+  \S\ref{sec-smoothing} for details.
+\item[{spatialSmoothCutoff [1.e-10]}] The cutoff value for determining
+  the width of the smoothing kernel. See \S\ref{sec-smoothing} for
+  details. 
 \end{Lentry}
 
 \secC*{FDR method}

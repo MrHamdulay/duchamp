@@ -447,6 +447,31 @@ X& = x\sin\theta - y\cos\theta&
   \sigma_Y^2& = \frac{(b/2)^2}{2\ln2}\\
 \end{align*}
 
+The size of the kernel is determined both by these FWHM parameters and
+the cutoff parameter \texttt{spatialSmoothCutoff}. The width is
+determined by 
+\[
+W = \sigma_\text{maj} \sqrt{(2\log(C))}
+\]
+where $C$ is the cutoff value. The value of $W$ is rounded up to get
+the half-width of the kernel in pixels. The default value of
+\texttt{spatialSmoothCutoff} is 1.e-10, which gives full kernel widths
+of 31 pix for \texttt{kernMaj=5} and 19 pix for \texttt{kernMaj=3}. 
+
+The algorithm provides different ways, controlled by the input
+parameter \texttt{smoothEdgeMethod}, to handle those pixels that lie
+within a kernel half-width from the edge of the image and so cannot
+have the full kernel placed on top of them. The default behaviour,
+with \texttt{smoothEdgeMethod=equal}, simply treats these pixels in
+the same way, adding up the product of the kernel pixels with the
+image pixels for all cases that lie within the image boundary. A more
+drastic alternative, \texttt{smoothEdgeMethod=truncate}, is to simply
+not evaluate the convolution at these pixels -- they will be set at
+some null value that will not contribute to any detection. Thirdly,
+setting \texttt{smoothEdgeMethod=scale} will evaluate the convolution
+as for the \texttt{'equal'} case, but scale down the edge pixels by
+summing over only those kernel pixels contributing.
+
 \secB{Input/Output of reconstructed/smoothed arrays}
 \label{sec-reconIO}
 
@@ -499,8 +524,10 @@ by the parameter \texttt{fileOutputSmooth}, but this can be ignored
 and \duchamp will present a name that indicates the both the type and
 the details of the smoothing method used. It will be either
 \texttt{image.SMOOTH-1D-a.fits}, where a is replaced by the Hanning
-width used, or \texttt{image.SMOOTH-2D-a-b-c.fits}, where the Gaussian
-kernel parameters are a,b,c. Similarly to the reconstruction case, a
+width used, or \texttt{image.SMOOTH-2D-a-b-c-X-f.fits}, where a,b,c
+are the Gaussian kernel parameters, X represents the edge method
+(E=equal, T=truncate, S=scale), and f is
+$-\log_{10}(\text{cutoff})$. Similarly to the reconstruction case, a
 saved file can be read in by setting \texttt{flagSmoothExists = true}
 and either specifying a file to be read with the \texttt{smoothFile}
 parameter or relying on \duchamp to find the file with the name as
