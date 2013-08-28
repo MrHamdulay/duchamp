@@ -49,9 +49,6 @@ namespace duchamp
     float *thisBaseline = new float[this->axisDim[2]];
     size_t numSpec = this->axisDim[0]*this->axisDim[1];
 
-    // if(this->par.getBaselineType()=="median")
-    // 	std::cout << "Finding median baseline with box width " << this->par.getBaselineBoxWidth() <<"\n";
-
     ProgressBar bar;
     if(this->par.isVerbose()) bar.init(numSpec);
     for(size_t pix=0; pix<numSpec; pix++){ // for each spatial pixel...

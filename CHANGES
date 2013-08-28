@@ -10,6 +10,14 @@ Input parameter changes:
   functionality and allowing more than one set of channels to be
   specified. 
 
+* There is now an alternative way to find (and remove) spectral
+  baselines, using a median baselining algorithm. This calculates the
+  baseline value for a given pixel to be the median value within a box
+  of a specified size centred on that pixel. There are two input
+  parameters now available, baselineType (atrous or median), and
+  baselineBoxWidth (the width of the median box). Consult the User's
+  Guide for further information.
+
 Output changes:
 
 * The results files now include the Nchan and Nspatpix columns,
