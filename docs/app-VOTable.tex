@@ -42,7 +42,7 @@ with wavelet reconstruction.
   <RESOURCE name="Duchamp Output">
     <TABLE name="Detections">
       <DESCRIPTION>Detected sources and parameters from running the Duchamp source finder.</DESCRIPTION>
-      <PARAM name="imageFile" ucd="meta.file;meta.fits" datatype="char" arraysize="63" value="/home/mduchamp/fountain.fits"/>
+      <PARAM name="imageFile" ucd="meta.file;meta.fits" datatype="char" arraysize="55" value="/Users/whi550/ObsData/cubes/H201_abcde_luther_chop.fits"/>
       <PARAM name="flagSubsection" ucd="meta.code" datatype="boolean" value="0"/>
       <PARAM name="flagStatSec" ucd="meta.code" datatype="boolean" value="0"/>
       <PARAM name="searchType" ucd="meta.note" datatype="char" arraysize="8" value="spectral"/>
@@ -50,13 +50,13 @@ with wavelet reconstruction.
       <PARAM name="flagBaseline" ucd="meta.code" datatype="boolean" value="0"/>
       <PARAM name="flagRobustStats" ucd="meta.code" datatype="boolean" value="1"/>
       <PARAM name="flagFDR" ucd="meta.code" datatype="boolean" value="0"/>
-      <PARAM name="snrCut" ucd="stat.snr;phot;stat.min" datatype="float" value="4"/>
+      <PARAM name="snrCut" ucd="stat.snr;phot;stat.min" datatype="float" value="3.5"/>
       <PARAM name="flagGrowth" ucd="meta.code" datatype="boolean" value="0"/>
-      <PARAM name="minVoxels" ucd="" datatype="int" value="7"/>
       <PARAM name="minPix" ucd="" datatype="int" value="5"/>
       <PARAM name="minChannels" ucd="" datatype="int" value="3"/>
+      <PARAM name="minVoxels" ucd="" datatype="int" value="7"/>
       <PARAM name="flagAdjacent" ucd="meta.code" datatype="boolean" value="1"/>
-      <PARAM name="threshVelocity" ucd="" datatype="float" value="3"/>
+      <PARAM name="threshVelocity" ucd="" datatype="float" value="7"/>
       <PARAM name="flagRejectBeforeMerge" ucd="" datatype="boolean" value="0"/>
       <PARAM name="flagTwoStageMerging" ucd="" datatype="boolean" value="0"/>
       <PARAM name="pixelCentre" ucd="" datatype="char" arraysize="8" value="centroid"/>
@@ -64,25 +64,42 @@ with wavelet reconstruction.
       <PARAM name="flagATrous" ucd="meta.code" datatype="boolean" value="1"/>
       <PARAM name="reconDim" ucd="" datatype="int" value="1"/>
       <PARAM name="scaleMin" ucd="" datatype="int" value="1"/>
-      <PARAM name="snrRecon" ucd="" datatype="float" value="3"/>
+      <PARAM name="scaleMax" ucd="" datatype="int" value="8"/>
+      <PARAM name="snrRecon" ucd="" datatype="float" value="4"/>
+      <PARAM name="reconConvergence" ucd="" datatype="float" value="0.005"/>
       <PARAM name="filterCode" ucd="" datatype="int" value="1"/>
-      <PARAM name="thresholdActual" ucd="" datatype="float" units="Jy/beam" value="4.05187"/>
-      <PARAM name="noiseMeanActual" ucd="" datatype="float" units="Jy/beam" value="0.0148019"/>
-      <PARAM name="noiseSpreadActual" ucd="" datatype="float" units="Jy/beam" value="1.00927"/>
-      <FIELD name="Obj#" ID="col_objnum" ucd="meta.id" datatype="int" unit="" width="5"/>
+      <PARAM name="thresholdActual" ucd="" datatype="float" units="Jy/beam" value="0.0461842"/>
+      <PARAM name="noiseMeanActual" ucd="" datatype="float" units="Jy/beam" value="0.000122074"/>
+      <PARAM name="noiseSpreadActual" ucd="" datatype="float" units="Jy/beam" value="0.0131606"/>
+      <FIELD name="ObjID" ID="col_objnum" ucd="meta.id" datatype="int" unit="" width="8"/>
       <FIELD name="Name" ID="col_name" ucd="meta.id;meta.main" datatype="char" unit="" arraysize="15"/>
+      <FIELD name="X" ID="col_x" ucd="pos.cartesian.x" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="Y" ID="col_y" ucd="pos.cartesian.y" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="Z" ID="col_z" ucd="pos.cartesian.z" datatype="float" unit="" width="6" precision="1"/>
       <FIELD name="RA" ID="col_rajd" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" unit="deg" width="11" precision="6"/>
       <FIELD name="DEC" ID="col_decjd" ucd="pos.eq.dec;meta.main" ref="J2000" datatype="float" unit="deg" width="11" precision="6"/>
-      <FIELD name="VRAD" ID="col_vel" ucd="phys.veloc;spect.dopplerVeloc.rad;meta.main" datatype="float" unit="m/s" width="12" precision="3"/>
+      <FIELD name="VRAD" ID="col_vel" ucd="phys.veloc;spect.dopplerVeloc.rad;meta.main" datatype="float" unit="km/s" width="9" precision="3"/>
+      <FIELD name="MAJ" ID="col_maj" ucd="phys.angSize.smajAxis" ref="J2000" datatype="float" unit="deg" width="6" precision="2"/>
+      <FIELD name="MIN" ID="col_min" ucd="phys.angSize.sminAxis" ref="J2000" datatype="float" unit="deg" width="7" precision="3"/>
+      <FIELD name="PA" ID="col_pa" ucd="pos.posAng;phys.angSize" ref="J2000" datatype="float" unit="deg" width="7" precision="2"/>
       <FIELD name="w_RA" ID="col_wra" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
       <FIELD name="w_DEC" ID="col_wdec" ucd="phys.angSize;pos.eq.dec" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
-      <FIELD name="w_50" ID="col_w50" ucd="spect.line.width.50;phys.veloc;spect.dopplerVeloc.rad" datatype="float" unit="m/s" width="11" precision="3"/>
-      <FIELD name="w_20" ID="col_w20" ucd="spect.line.width.20;phys.veloc;spect.dopplerVeloc.rad" datatype="float" unit="m/s" width="11" precision="3"/>
-      <FIELD name="w_VRAD" ID="col_wvel" ucd="spect.line.width.full;phys.veloc;spect.dopplerVeloc.rad" datatype="float" unit="m/s" width="11" precision="3"/>
-      <FIELD name="Integrated_Flux" ID="col_fint" ucd="phot.flux.density.integratedspect.line.intensity" datatype="float" unit="Jy.m/s" width="10" precision="3"/>
+      <FIELD name="w_50" ID="col_w50" ucd="spect.line.width.50;phys.veloc;spect.dopplerVeloc.rad" datatype="float" unit="km/s" width="8" precision="3"/>
+      <FIELD name="w_20" ID="col_w20" ucd="spect.line.width.20;phys.veloc;spect.dopplerVeloc.rad" datatype="float" unit="km/s" width="8" precision="3"/>
+      <FIELD name="w_VRAD" ID="col_wvel" ucd="spect.line.width.full;phys.veloc;spect.dopplerVeloc.rad" datatype="float" unit="km/s" width="8" precision="3"/>
+      <FIELD name="Integrated_Flux" ID="col_fint" ucd="phot.flux.density.integratedspect.line.intensity" datatype="float" unit="Jy.km/s" width="10" precision="3"/>
       <FIELD name="Integrated_Flux_Error" ID="col_efint" ucd="phot.flux.density.integrated;stat.err" datatype="float" unit="Jy.km/s" width="10" precision="3"/>
       <FIELD name="Peak_Flux" ID="col_fpeak" ucd="phot.flux;stat.maxspect.line.intensity" datatype="float" unit="Jy/beam" width="10" precision="3"/>
       <FIELD name="S/Nmax" ID="col_snrmax" ucd="stat.snr;phot.flux" datatype="float" unit="" width="7" precision="2"/>
+      <FIELD name="X1" ID="col_x1" ucd="pos.cartesian.x;stat.min" datatype="int" unit="" width="4"/>
+      <FIELD name="X2" ID="col_x2" ucd="pos.cartesian.x;stat.max" datatype="int" unit="" width="4"/>
+      <FIELD name="Y1" ID="col_y1" ucd="pos.cartesian.y;stat.min" datatype="int" unit="" width="4"/>
+      <FIELD name="Y2" ID="col_y2" ucd="pos.cartesian.y;stat.max" datatype="int" unit="" width="4"/>
+      <FIELD name="Z1" ID="col_z1" ucd="pos.cartesian.z;stat.min" datatype="int" unit="" width="4"/>
+      <FIELD name="Z2" ID="col_z2" ucd="pos.cartesian.z;stat.max" datatype="int" unit="" width="4"/>
+      <FIELD name="Nvoxel" ID="col_nvox" ucd="phys.size;instr.pixel;em.bin" datatype="int" unit="" width="7"/>
+      <FIELD name="Nchan" ID="col_nch" ucd="spect.line.width.full;em.bin" datatype="int" unit="" width="6"/>
+      <FIELD name="Nspatpix" ID="col_spsize" ucd="phys.angArea;instr.pixel" datatype="int" unit="" width="9"/>
       <FIELD name="Flag" ID="col_flag" ucd="meta.code.qual" datatype="char" unit="" arraysize="5"/>
       <FIELD name="X_av" ID="col_xav" ucd="pos.cartesian.x;stat.mean" datatype="float" unit="" width="6" precision="1"/>
       <FIELD name="Y_av" ID="col_yav" ucd="pos.cartesian.y;stat.mean" datatype="float" unit="" width="6" precision="1"/>
@@ -96,9 +113,11 @@ with wavelet reconstruction.
       <DATA>
         <TABLEDATA>
         <TR>
-          <TD>    1</TD><TD> J060946-215932</TD><TD>  92.444503</TD><TD> -21.992234</TD><TD>  225.640</TD><TD>    20.32</TD>
-<TD>    23.76</TD><TD>  25.442</TD><TD>  41.038</TD><TD>  26.403</TD><TD>     4.621</TD><TD>     0.213</TD><TD>  16.41</TD>
-<TD>    M</TD><TD>  57.9</TD><TD> 139.8</TD><TD> 115.0</TD><TD>   58.0</TD><TD>  139.9</TD><TD>  114.6</TD><TD>     59</TD>
+          <TD>       1</TD><TD> J060930-215738</TD><TD>  58.9</TD><TD> 140.4</TD><TD> 114.5</TD><TD>  92.378723</TD>
+<TD> -21.960721</TD><TD>  223.964</TD><TD>  0.43</TD><TD>  0.280</TD><TD> 113.19</TD><TD>    52.43</TD><TD>    31.33</TD>
+<TD>  25.752</TD><TD>  40.905</TD><TD>  65.957</TD><TD>     9.767</TD><TD>     0.127</TD><TD>     0.213</TD><TD>  16.17</TD>
+<TD>  53</TD><TD>  65</TD><TD> 136</TD><TD> 143</TD><TD> 113</TD><TD> 118</TD><TD>    116</TD><TD>     4</TD><TD>       57</TD>
+<TD>    F</TD><TD>  59.1</TD><TD> 140.4</TD><TD> 114.6</TD><TD>   58.9</TD><TD>  140.4</TD><TD>  114.5</TD><TD>     59</TD>
 <TD>    140</TD><TD>    114</TD>
         </TR>
 ... truncated ...
@@ -107,7 +126,7 @@ with wavelet reconstruction.
     </TABLE>
   </RESOURCE>
 </VOTABLE>
-  \end{verbatim}
+\end{verbatim}
 }
 %\end{minipage}
 %\end{sideways}

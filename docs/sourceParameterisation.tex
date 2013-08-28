@@ -327,9 +327,18 @@ detection in each of the three axes. \texttt{X1, Y1, Z1} give the
 minimum pixel in each direction, while \texttt{X2, Y2, Z2} give the
 maximum pixel.
 
-\secB{Size, \texttt{Npix}}
+\secB{Size, \texttt{Nvoxel, Nchan, Nspatpix}}
 
-The number of detected pixels that make up the detection 
+The number of detected pixels that make up the detection. These
+quantities show the total number of voxels in the detection
+(\texttt{Nvoxel}), the number of distinct spectral channels
+(\texttt{Nchan}) and the number of distinct spatial pixels
+(\texttt{Nspatpix}). 
+
+Note that \texttt{Nchan} here is different to the quantity tested by
+the input parameter \texttt{minChannels} (see \S\ref{sec-reject}) --
+this looks at the maximum number of \textit{adjacent} channels, not
+the total.
 
 \secB{Warning Flags, \texttt{Flag}}
 \label{sec-flags}

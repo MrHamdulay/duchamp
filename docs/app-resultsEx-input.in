@@ -127,7 +127,7 @@ flagDS9  	1
 flagCasa  	1  
 flagMaps	1
 flagTextSpectra 1
-annotationtype ellipses
+#annotationtype ellipses
 
 spectralType    VRAD
 #spectralUnits   MHz
