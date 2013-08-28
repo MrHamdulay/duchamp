@@ -383,6 +383,10 @@ namespace duchamp
     float  getKernMin(){return kernMin;};
     void   setKernPA(float f){kernPA=f;};
     float  getKernPA(){return kernPA;};
+    std::string getSmoothEdgeMethod(){return smoothEdgeMethod;};
+    void   setSmoothEdgeMethod(std::string s){smoothEdgeMethod=s;};  
+    float getSpatialSmoothCutoff(){return spatialSmoothCutoff;};
+    void setSpatialSmoothCutoff(float f){spatialSmoothCutoff=f;};  
     //	 
     bool   getFlagATrous(){return flagATrous;};
     void   setFlagATrous(bool flag){flagATrous=flag;};
@@ -576,6 +580,8 @@ namespace duchamp
     float       kernMaj;         ///< Semi-Major axis of gaussian smoothing kernel
     float       kernMin;         ///< Semi-Minor axis of gaussian smoothing kernel
     float       kernPA;          ///< Position angle of gaussian smoothing kernel, in degrees east of north (i.e. anticlockwise).
+    std::string smoothEdgeMethod; ///< Method for dealing with the edges when 2D smoothing: 'equal','truncate','scale'
+    float       spatialSmoothCutoff; ///< Cutoff value for determining kernel size
 
     // A trous reconstruction parameters
     bool   flagATrous;      ///< Are we using the a trous reconstruction?

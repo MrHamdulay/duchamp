@@ -51,15 +51,17 @@ public:
   GaussSmooth2D(const GaussSmooth2D& g);
   GaussSmooth2D& operator=(const GaussSmooth2D& g);
   
-  void defaults();
+  void defaults(); 
 
+  /// @brief Specific constructor that sets up kernel.
+  GaussSmooth2D(float maj, float min, float pa, float cutoff);  
   /// @brief Specific constructor that sets up kernel.
   GaussSmooth2D(float maj, float min, float pa);  
   /// @brief Specific constructor that sets up kernel: assuming circular gaussian.
   GaussSmooth2D(float maj);  
 
   /// @brief Define the size and the array of coefficients. 
-  void   define(float maj, float min, float pa); 
+  void   define(float maj, float min, float pa, float cutoff); 
 
   /// @brief Set the size of the kernel
   void   setKernelWidth(float width){kernWidth = width;};

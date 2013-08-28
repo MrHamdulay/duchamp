@@ -181,6 +181,8 @@ namespace duchamp
     this->kernMaj           = 3.;
     this->kernMin           = -1.;
     this->kernPA            = 0.;
+    this->smoothEdgeMethod  = "equal";
+    this->spatialSmoothCutoff = 1.e-10;
     // A trous reconstruction parameters
     this->flagATrous        = false;
     this->reconDim          = 1;
@@ -327,6 +329,8 @@ namespace duchamp
     this->kernMaj           = p.kernMaj;
     this->kernMin           = p.kernMin;
     this->kernPA            = p.kernPA;
+    this->smoothEdgeMethod  = p.smoothEdgeMethod;
+    this->spatialSmoothCutoff = p.spatialSmoothCutoff;
     this->flagATrous        = p.flagATrous;
     this->reconDim          = p.reconDim;
     this->scaleMin          = p.scaleMin;
@@ -703,6 +707,8 @@ namespace duchamp
 	if(arg=="kernmaj")         this->kernMaj = readFval(ss);
 	if(arg=="kernmin")         this->kernMin = readFval(ss);
 	if(arg=="kernpa")          this->kernPA = readFval(ss);
+	if(arg=="smoothedgemethod") this->smoothEdgeMethod = readSval(ss);
+	if(arg=="spatialsmoothcutoff") this->spatialSmoothCutoff = readFval(ss);
 
 	if(arg=="flagatrous")      this->flagATrous = readFlag(ss); 
 	if(arg=="recondim")        this->reconDim = readIval(ss); 
@@ -838,6 +844,33 @@ namespace duchamp
 
     }
 
+    // Check validity of smoothing parameters
+    if(this->flagSmooth){
+	
+	// Make sure smoothType is an acceptable type -- default is "spectral"
+	if((this->smoothType!="spectral")&&
+	   (this->smoothType!="spatial")){
+	    DUCHAMPWARN("Reading parameters","The requested value of the parameter smoothType, \"" << this->smoothType << "\", is invalid -- changing to \"spectral\".");
+	    this->smoothType = "spectral";
+	}
+
+	// If kernMin has not been given, or is negative, make it equal to kernMaj
+	if(this->kernMin < 0) this->kernMin = this->kernMaj;
+	
+	// Check the smoothEdgeMethod and spatialSmoothCutoff parameters.
+	if(this->smoothType=="spatial"){
+	    if((this->smoothEdgeMethod != "equal") && (this->smoothEdgeMethod!="truncate") && (this->smoothEdgeMethod!="scale")){
+		DUCHAMPWARN("Reading parameters","The requested value of the parameter smoothEdgeMethod, \""<< this->smoothEdgeMethod << "\", is invalid - changing to \"equal\".");
+		this->smoothEdgeMethod = "equal";
+	    }
+	    if(this->spatialSmoothCutoff<0.){
+		this->spatialSmoothCutoff *= -1.;
+		DUCHAMPWARN("Reading parameters","The value of spatialSmoothCutoff is negative. Changing to "<<this->spatialSmoothCutoff);
+	    }
+	}
+
+    }
+
     if(this->flagUserThreshold){
 
       // If we specify a manual threshold, need to also specify a manual growth threshold
@@ -886,14 +919,6 @@ namespace duchamp
       this->annotationType = "borders";
     }
       
-    // Make sure smoothType is an acceptable type -- default is "spectral"
-    if((this->smoothType!="spectral")&&
-       (this->smoothType!="spatial")){
-      DUCHAMPWARN("Reading parameters","The requested value of the parameter smoothType, \"" << this->smoothType << "\", is invalid -- changing to \"spectral\".");
-      this->smoothType = "spectral";
-    }
-    // If kernMin has not been given, or is negative, make it equal to kernMaj
-    if(this->kernMin < 0) this->kernMin = this->kernMaj;
 
     // Make sure spectralMethod is an acceptable type -- default is "peak"
     if((this->spectralMethod!="peak")&&
@@ -1089,9 +1114,11 @@ namespace duchamp
       if(par.getSmoothType()=="spectral")
 	recordParam(theStream, par, "[hanningWidth]", "Width of hanning filter", par.getHanningWidth());
       else{
-	recordParam(theStream, par, "[kernMaj]", "Gaussian kernel semi-major axis [pix]", par.getKernMaj());
-	recordParam(theStream, par, "[kernMin]", "Gaussian kernel semi-minor axis [pix]", par.getKernMin());
+	recordParam(theStream, par, "[kernMaj]", "Gaussian kernel major axis FWHM [pix]", par.getKernMaj());
+	recordParam(theStream, par, "[kernMin]", "Gaussian kernel minor axis FWHM [pix]", par.getKernMin());
 	recordParam(theStream, par, "[kernPA]",  "Gaussian kernel position angle [deg]",  par.getKernPA());
+	recordParam(theStream, par, "[smoothEdgeMethod]","Method for treating edge pixels", par.getSmoothEdgeMethod());
+	recordParam(theStream, par, "[spatialSmoothCutoff]","Cutoff value for determining kernel", par.getSpatialSmoothCutoff());
       }
     }
     recordParam(theStream, par, "[flagATrous]", "Using A Trous reconstruction?", stringize(par.getFlagATrous()));
@@ -1222,6 +1249,8 @@ namespace duchamp
 	vopars.push_back(VOParam("kernMaj","","float",this->kernMaj,0,""));
 	vopars.push_back(VOParam("kernMin","","float",this->kernMin,0,""));
 	vopars.push_back(VOParam("kernPA","","float",this->kernPA,0,""));
+	vopars.push_back(VOParam("smoothEdgeMethod","","char",this->smoothEdgeMethod,this->smoothEdgeMethod.size(),""));
+	vopars.push_back(VOParam("spatialSmoothCutoff","","float", this->spatialSmoothCutoff,0,""));
       }
     }
     vopars.push_back(VOParam("flagATrous","meta.code","boolean",this->flagATrous,0,""));
@@ -1315,6 +1344,8 @@ namespace duchamp
 	outfile.write(reinterpret_cast<const char*>(&this->kernMaj), sizeof this->kernMaj);
 	outfile.write(reinterpret_cast<const char*>(&this->kernMin), sizeof this->kernMin);
 	outfile.write(reinterpret_cast<const char*>(&this->kernPA), sizeof this->kernPA);
+	outfile.write(reinterpret_cast<const char*>(&this->smoothEdgeMethod), sizeof this->smoothEdgeMethod);
+	outfile.write(reinterpret_cast<const char*>(&this->spatialSmoothCutoff), sizeof this->spatialSmoothCutoff);
       }
     }
     outfile.write(reinterpret_cast<const char*>(&this->flagATrous), sizeof this->flagATrous);
@@ -1410,6 +1441,8 @@ namespace duchamp
 	infile.read(reinterpret_cast<char*>(&this->kernMaj), sizeof this->kernMaj);
 	infile.read(reinterpret_cast<char*>(&this->kernMin), sizeof this->kernMin);
 	infile.read(reinterpret_cast<char*>(&this->kernPA), sizeof this->kernPA);
+	infile.read(reinterpret_cast<char*>(&this->smoothEdgeMethod), sizeof this->smoothEdgeMethod);
+	infile.read(reinterpret_cast<char*>(&this->spatialSmoothCutoff), sizeof this->spatialSmoothCutoff);
       }
     }
     infile.read(reinterpret_cast<char*>(&this->flagATrous), sizeof this->flagATrous);
@@ -1526,8 +1559,8 @@ namespace duchamp
     ///   the output will be:
     ///    <ul><li> Spectral smoothing: image.SMOOTH-1D-3.fits, where the
     ///             width of the Hanning filter was 3 pixels.
-    ///        <li> Spatial smoothing : image.SMOOTH-2D-3-2-20.fits, where
-    ///             kernMaj=3, kernMin=2 and kernPA=20 degrees.
+    ///        <li> Spatial smoothing : image.SMOOTH-2D-3-2-20-E-10.fits, where
+    ///             kernMaj=3, kernMin=2 and kernPA=20 degrees, EQUAL edge method, and cutoff of 1.e-10.
     ///    </ul>
 
     if(this->fileOutputSmooth==""){
@@ -1541,11 +1574,19 @@ namespace duchamp
       if(this->flagSubsection) ss<<".sub";
       if(this->smoothType=="spectral")
 	ss << ".SMOOTH-1D-" << this->hanningWidth << ".fits";
-      else if(this->smoothType=="spatial")
-	ss << ".SMOOTH-2D-" 
-	   << this->kernMaj << "-"
-	   << this->kernMin << "-"
-	   << this->kernPA  << ".fits";
+      else if(this->smoothType=="spatial"){
+	  char method='X';
+	  if(this->smoothEdgeMethod=="equal") method='E';
+	  else if (this->smoothEdgeMethod=="truncate") method='T';
+	  else if (this->smoothEdgeMethod=="scale") method='S';
+	  ss << ".SMOOTH-2D-" 
+	     << this->kernMaj << "-"
+	     << this->kernMin << "-"
+	     << this->kernPA  << "-"
+	     << method        << "-"
+	     << -log10(this->spatialSmoothCutoff)
+	     << ".fits";
+      }
       return ss.str();
     }
     else return this->fileOutputSmooth;

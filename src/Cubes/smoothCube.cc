@@ -179,10 +179,12 @@ void Cube::SpatialSmooth()
       if(this->par.getKernMin() < 0) 
 	this->par.setKernMin(this->par.getKernMaj());
 
+      std::cout << "  ";
       GaussSmooth2D<float> gauss(this->par.getKernMaj(),
-			       this->par.getKernMin(),
-			       this->par.getKernPA());
-
+				 this->par.getKernMin(),
+				 this->par.getKernPA(),
+				 1.e-10);
+ 
       if(this->par.isVerbose()) {
 	std::cout<<"  Smoothing spatially... " << std::flush;
 	if(useBar) bar.init(zdim);
@@ -191,6 +193,12 @@ void Cube::SpatialSmooth()
       // pointer used to point to start of a given channel's image
       //  Can do this because the spatial axes vary the quickest.
       float *image=0;
+
+      EDGES edgeTreatment=EQUALTOEDGE;
+      if(this->par.getSmoothEdgeMethod()=="equal") edgeTreatment=EQUALTOEDGE;
+      else if(this->par.getSmoothEdgeMethod()=="truncate") edgeTreatment=TRUNCATE;
+      else if(this->par.getSmoothEdgeMethod()=="scale") edgeTreatment=SCALEBYCOVERAGE;
+
 
       for(size_t z=0;z<zdim;z++){
 
@@ -201,7 +209,7 @@ void Cube::SpatialSmooth()
     
 	bool *mask      = this->par.makeBlankMask(image,xySize);
     
-	float *smoothed = gauss.smooth(image,xdim,ydim,mask);
+	float *smoothed = gauss.smooth(image,xdim,ydim,mask,edgeTreatment);
     
 	for(size_t pix=0;pix<xySize;pix++) 
 	    this->recon[z*xySize+pix] = smoothed[pix];

@@ -89,21 +89,28 @@ GaussSmooth2D<Type>& GaussSmooth2D<Type>::operator=(const GaussSmooth2D& g)
 }
 
 template <class Type>
+GaussSmooth2D<Type>::GaussSmooth2D(float maj, float min, float pa, float cutoff)
+{
+  this->defaults();
+  this->define(maj, min, pa, cutoff);
+}
+
+template <class Type>
 GaussSmooth2D<Type>::GaussSmooth2D(float maj, float min, float pa)
 {
   this->defaults();
-  this->define(maj, min, pa);
+  this->define(maj, min, pa, 1./MAXVAL);
 }
 
 template <class Type>
 GaussSmooth2D<Type>::GaussSmooth2D(float maj)
 {
   this->defaults();
-  this->define(maj, maj, 0);
+  this->define(maj, maj, 0, 1./MAXVAL);
 }
 
 template <class Type>
-void GaussSmooth2D<Type>::define(float maj, float min, float pa)
+void GaussSmooth2D<Type>::define(float maj, float min, float pa, float cutoff)
 {
 
   this->kernMaj = maj;
@@ -124,12 +131,14 @@ void GaussSmooth2D<Type>::define(float maj, float min, float pa)
   // get the largest square that includes the ellipse.
   // float majorSigma = this->kernMaj / (4.*M_LN2);
   float majorSigma = this->kernMaj / (2*sqrt(2.*M_LN2));
-  unsigned int kernelHW = (unsigned int)(ceil(majorSigma * sqrt(-2.*log(1. / MAXVAL))));
+//  unsigned int kernelHW = (unsigned int)(ceil(majorSigma * sqrt(-2.*log(1. / MAXVAL))));
+  unsigned int kernelHW = (unsigned int)(ceil(majorSigma * sqrt(-2.*log(cutoff))));
 
   if(this->kernWidth == 0) this->kernWidth = size_t(2*kernelHW + 1);
   else if(this->kernWidth < 2*kernelHW + 1){
     DUCHAMPWARN("GaussSmooth2D::define","You have provided a kernel smaller than optimal (" << this->kernWidth << " cf. " << 2*kernelHW + 1 <<")");
   }
+  std::cout << "GaussSmooth2D - defined a kernel of full width " << this->kernWidth << " using cutoff="<<cutoff<< " and majorSigma="<<majorSigma<<"\n";
 
   if(this->allocated) delete [] this->kernel;
   this->kernel = new Type[this->kernWidth*this->kernWidth];
