@@ -198,22 +198,22 @@ namespace duchamp
       /// otherwise. False if tableType not one of four listed.
       
  
-      const size_t sizeFileList=39;
-      std::string FileList[sizeFileList]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA","WRA","WDEC",
-					  "W50","W20","WVEL","FINT", "FINTERR", "FTOT", "FTOTERR", "FPEAK","SNRPEAK",
-					  "X1","X2","Y1","Y2","Z1","Z2","NPIX","FLAG","XAV","YAV",
+      const size_t sizeFileList=43;
+      std::string FileList[sizeFileList]={"NUM","NAME","X","Y","Z","RA","DEC","RAJD","DECJD","VEL","MAJ","MIN","PA","WRA","WDEC",
+					  "W50","W20","WVEL","FINT","FINTERR","FTOT","FTOTERR","FPEAK","SNRPEAK",
+					  "X1","X2","Y1","Y2","Z1","Z2","NVOX","NUMCH","SPATSIZE","FLAG","XAV","YAV",
 					  "ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
-      const size_t sizeScreenList=22;
+      const size_t sizeScreenList=24;
       std::string ScreenList[sizeScreenList]={"NUM","NAME","X","Y","Z","RA","DEC","VEL","MAJ","MIN","PA",
 					      "W50","FPEAK","SNRPEAK","X1","X2","Y1",
-					      "Y2","Z1","Z2","NPIX","FLAG"};
+					      "Y2","Z1","Z2","NVOX","NUMCH","SPATSIZE","FLAG"};
       const size_t sizeLogList=16;
       std::string LogList[sizeLogList]={"NUM","X","Y","Z","FTOT","FPEAK","SNRPEAK",
-					"X1","X2","Y1","Y2","Z1","Z2","NPIX","NUMCH","SPATSIZE"};
-      const size_t sizeVOList=23;
-      std::string VOList[sizeVOList]={"NUM","NAME","RAJD","DECJD","VEL","MAJ","MIN","PA",
-				      "W50","W20","WVEL","FPEAK","SNRPEAK","FLAG","XAV","YAV",
-				      "ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
+					"X1","X2","Y1","Y2","Z1","Z2","NVOX","NUMCH","SPATSIZE"};
+      // const size_t sizeVOList=23;
+      // std::string VOList[sizeVOList]={"NUM","NAME","RAJD","DECJD","VEL","MAJ","MIN","PA",
+      // 				      "W50","W20","WVEL","FPEAK","SNRPEAK","FLAG","XAV","YAV",
+      // 				      "ZAV","XCENT","YCENT","ZCENT","XPEAK","YPEAK","ZPEAK"};
 
       bool doIt=false;
       if(tableType == FILE){
@@ -230,8 +230,15 @@ namespace duchamp
       else if(tableType == VOTABLE){
      	if(this->itsType=="FTOT" || this->itsType=="FTOTERR") doIt = !flagFint;
 	else if(this->itsType == "FINT" || this->itsType=="FINTERR") doIt = flagFint;
-	else for(size_t i=0;i<sizeVOList && !doIt;i++) doIt = doIt || (this->itsType==VOList[i]);
+	// else for(size_t i=0;i<sizeVOList && !doIt;i++) doIt = doIt || (this->itsType==VOList[i]);
+	else{
+	    for(size_t i=0;i<sizeFileList && !doIt;i++){
+		if(FileList[i]!="RA" && FileList[i]!="DEC")
+		    doIt = doIt || (this->itsType==FileList[i]);
+	    }
+	}
       }
+
       return doIt;
 	
     }
@@ -269,7 +276,9 @@ namespace duchamp
       else if(type=="X2") return Column(type,"X2","",4,0,"pos.cartesian.x;stat.max","int","col_x2","");
       else if(type=="Y2") return Column(type,"Y2","",4,0,"pos.cartesian.y;stat.max","int","col_y2","");
       else if(type=="Z2") return Column(type,"Z2","",4,0,"pos.cartesian.z;stat.max","int","col_z2","");
-      else if(type=="NPIX") return Column(type,"Npix","[pix]",6,0,"","int","col_npix","");
+      else if(type=="NVOX") return Column(type,"Nvoxel","",6,0,"phys.size;instr.pixel;em.bin","int","col_nvox","");
+      else if(type=="NUMCH") return Column(type,"Nchan","",6,0,"spect.line.width.full;em.bin","int","col_nch","");
+      else if(type=="SPATSIZE") return Column(type,"Nspatpix","",8,0,"phys.angArea;instr.pixel","int","col_spsize","");
       else if(type=="FLAG") return Column(type,"Flag","",5,0,"meta.code.qual","char","col_flag","");
       else if(type=="XAV") return Column(type,"X_av","",6,prXYZ,"pos.cartesian.x;stat.mean","float","col_xav","");
       else if(type=="YAV") return Column(type,"Y_av","",6,prXYZ,"pos.cartesian.y;stat.mean","float","col_yav","");
@@ -280,8 +289,6 @@ namespace duchamp
       else if(type=="XPEAK") return Column(type,"X_peak","",7,prXYZ,"pos.cartesian.x;phot.flux;stat.max","int","col_xpeak","");
       else if(type=="YPEAK") return Column(type,"Y_peak","",7,prXYZ,"pos.cartesian.y;phot.flux;stat.max","int","col_ypeak","");
       else if(type=="ZPEAK") return Column(type,"Z_peak","",7,prXYZ,"pos.cartesian.z;phot.flux;stat.max","int","col_zpeak","");
-      else if(type=="NUMCH") return Column(type,"Nch","",6,0,"em.bin;stat.sum","int","col_nch","");
-      else if(type=="SPATSIZE") return Column(type,"Sp_size","",8,0,"instr.pixel;stat.sum","int","col_spsize","");
       else {
 	Column col;
 	col.setType(type);
@@ -296,7 +303,7 @@ namespace duchamp
       ///  containing information on the columns necessary for output
       ///  to the results file:
       ///  Obj#,NAME,X,Y,Z,RA,DEC,VEL,w_RA,w_DEC,w_VEL,F_tot,F_int,F_peak,
-      ///  X1,X2,Y1,Y2,Z1,Z2,Npix,Flag,
+      ///  X1,X2,Y1,Y2,Z1,Z2,Nvox,Flag,
       ///  XAV,YAV,ZAV,XCENT,YCENT,ZCENT,XPEAK,YPEAK,ZPEAK
       /// 
       ///   Each object in the provided objectList is checked to see if it
@@ -358,7 +365,9 @@ namespace duchamp
       newset.addColumn( Column("Y2") );
       newset.addColumn( Column("Z1") );
       newset.addColumn( Column("Z2") );
-      newset.addColumn( Column("NPIX") );
+      newset.addColumn( Column("NVOX") );
+      newset.addColumn( Column("NUMCH") );
+      newset.addColumn( Column("SPATSIZE") );
       newset.addColumn( Column("FLAG") );
       newset.addColumn( Column("XAV") );
       newset.addColumn( Column("YAV") );
@@ -369,8 +378,6 @@ namespace duchamp
       newset.addColumn( Column("XPEAK") );
       newset.addColumn( Column("YPEAK") );
       newset.addColumn( Column("ZPEAK") );
-      newset.addColumn( Column("NUMCH") );
-      newset.addColumn( Column("SPATSIZE") );
       
       // Define the column names and units where not predifined by the
       // default settings (ie. for those columns that depend on the
@@ -462,7 +469,7 @@ namespace duchamp
 	newset.column("Y2").check(obj->getYmax()+obj->getYOffset());
 	newset.column("Z1").check(obj->getZmin()+obj->getZOffset());
 	newset.column("Z2").check(obj->getZmax()+obj->getZOffset());
-	newset.column("NPIX").check(obj->getSize());
+	newset.column("NVOX").check(obj->getSize());
 	newset.column("XAV").check(obj->getXaverage()+obj->getXOffset());
 	newset.column("YAV").check(obj->getYaverage()+obj->getYOffset());
 	newset.column("ZAV").check(obj->getZaverage()+obj->getZOffset());

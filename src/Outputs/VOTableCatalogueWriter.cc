@@ -159,8 +159,10 @@ namespace duchamp {
       bool useFint=this->itsHead->isSpecOK();
       if(col->doCol(Catalogues::VOTABLE,useFint)){
 	VOField field(*col); 
+	if(col->type()=="RA")    field.setUCD(lngUCDbase);
 	if(col->type()=="RAJD")  field.setUCD(lngUCDbase+";meta.main");
 	if(col->type()=="WRA")   field.setUCD("phys.angSize;"+lngUCDbase);
+	if(col->type()=="DEC")   field.setUCD(latUCDbase);
 	if(col->type()=="DECJD") field.setUCD(latUCDbase+";meta.main");
 	if(col->type()=="WDEC")  field.setUCD("phys.angSize;"+latUCDbase);	
 	if(col->type()=="VEL")   field.setUCD(specUCDbase+";meta.main");

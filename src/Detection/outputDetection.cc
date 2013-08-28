@@ -138,7 +138,9 @@ namespace duchamp
     else if(type=="Y2") column.printEntry(stream,this->getYmax() + this->ySubOffset);
     else if(type=="Z1") column.printEntry(stream,this->getZmin() + this->zSubOffset);
     else if(type=="Z2") column.printEntry(stream,this->getZmax() + this->zSubOffset);
-    else if(type=="NPIX") column.printEntry(stream,int(this->getSize()));
+    else if(type=="NVOX") column.printEntry(stream,int(this->getSize()));
+    else if(type=="NUMCH") column.printEntry(stream,this->getMaxAdjacentChannels());
+    else if(type=="SPATSIZE") column.printEntry(stream,int(this->getSpatialSize()));
     else if(type=="FLAG") column.printEntry(stream,this->flagText);
     else if(type=="XAV") column.printEntry(stream,this->getXaverage() + this->xSubOffset);
     else if(type=="YAV") column.printEntry(stream,this->getYaverage() + this->ySubOffset);
@@ -149,8 +151,6 @@ namespace duchamp
     else if(type=="XPEAK") column.printEntry(stream,this->getXPeak() + this->xSubOffset);
     else if(type=="YPEAK") column.printEntry(stream,this->getYPeak() + this->ySubOffset);
     else if(type=="ZPEAK") column.printEntry(stream,this->getZPeak() + this->zSubOffset);
-    else if(type=="NUMCH") column.printEntry(stream,this->getMaxAdjacentChannels());
-    else if(type=="SPATSIZE") column.printEntry(stream,int(this->getSpatialSize()));
 
   }
   //--------------------------------------------------------------------
