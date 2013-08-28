@@ -479,7 +479,7 @@ namespace duchamp
 	newset.column("XPEAK").check(obj->getXPeak()+obj->getXOffset());
 	newset.column("YPEAK").check(obj->getYPeak()+obj->getYOffset());
 	newset.column("ZPEAK").check(obj->getZPeak()+obj->getZOffset());
-	newset.column("NUMCH").check(obj->getMaxAdjacentChannels());
+	newset.column("NUMCH").check(obj->getNumChannels());
 	newset.column("SPATSIZE").check(obj->getSpatialSize());
 
       }
