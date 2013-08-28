@@ -10,6 +10,18 @@ Input parameter changes:
   functionality and allowing more than one set of channels to be
   specified. 
 
+Output changes:
+
+* The results files now include the Nchan and Nspatpix columns,
+  showing the number of distinct channels and the number of spatial
+  pixels in each detection. For clarity, the Npix column has been
+  renamed Nvoxel. 
+
+* The VOTable now includes the pixel location X, Y, Z columns, and the
+  pixel ranges - this makes it much closer to the ASCII results file
+  (it is just missing the string versions of RA/DEC, and F_tot when
+  F_int is calculated).
+
 Bug fixes:
 
 * Negative velocity (and other) values were resulting in the column
