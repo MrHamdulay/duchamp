@@ -1,5 +1,5 @@
-# Results of the Duchamp source finder v.1.4: Thu Jun 27 16:21:27 2013
-# Executing statement: ./Duchamp-1.4 -p ./verification/input6 
+# Results of the Duchamp source finder v.1.5b: Wed Aug 28 11:36:16 2013
+# Executing statement: ./Duchamp-1.5b -p ./verification/input6 
 # 
 # ---- Parameters ----
 # Image to be analysed.............................[imageFile]  =  verification/verificationCube.fits[35:64,35:64,1:128]
@@ -44,9 +44,9 @@
 # Type of object centre used in results..........[pixelCentre]  =  centroid
 # --------------------
 # 
-# -----------------------------------------------------------------------------------------------
-#  ObjID     X     Y     Z     F_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2  Npix   Nch Sp_size
-#                          [Jy/beam] [Jy/beam]                                [pix]              
-# -----------------------------------------------------------------------------------------------
-       1  50.0  50.0  64.1  2470.297    10.926  11.15  46  54  45  54  59  70   391    12      63
-# Duchamp completed: Thu Jun 27 16:21:27 2013
+# -------------------------------------------------------------------------------------------------
+#  ObjID     X     Y     Z     F_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2 Nvoxel Nchan Nspatpix
+#                          [Jy/beam] [Jy/beam]                                                     
+# -------------------------------------------------------------------------------------------------
+       1  50.0  50.0  64.1  2470.297    10.926  11.15  46  54  45  54  59  70    391    12       63
+# Duchamp completed: Wed Aug 28 11:36:16 2013

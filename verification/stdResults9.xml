@@ -15,9 +15,9 @@
       <PARAM name="flagFDR" ucd="meta.code" datatype="boolean" value="0"/>
       <PARAM name="snrCut" ucd="stat.snr;phot;stat.min" datatype="float" value="4"/>
       <PARAM name="flagGrowth" ucd="meta.code" datatype="boolean" value="0"/>
-      <PARAM name="minVoxels" ucd="" datatype="int" value="4"/>
       <PARAM name="minPix" ucd="" datatype="int" value="2"/>
       <PARAM name="minChannels" ucd="" datatype="int" value="2"/>
+      <PARAM name="minVoxels" ucd="" datatype="int" value="4"/>
       <PARAM name="flagAdjacent" ucd="meta.code" datatype="boolean" value="1"/>
       <PARAM name="threshVelocity" ucd="" datatype="float" value="7"/>
       <PARAM name="flagRejectBeforeMerge" ucd="" datatype="boolean" value="0"/>
@@ -31,12 +31,17 @@
       <PARAM name="noiseSpreadActual" ucd="" datatype="float" units="Jy/beam" value="1.00927"/>
       <FIELD name="ObjID" ID="col_objnum" ucd="meta.id" datatype="int" unit="" width="8"/>
       <FIELD name="Name" ID="col_name" ucd="meta.id;meta.main" datatype="char" unit="" arraysize="15"/>
+      <FIELD name="X" ID="col_x" ucd="pos.cartesian.x" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="Y" ID="col_y" ucd="pos.cartesian.y" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="Z" ID="col_z" ucd="pos.cartesian.z" datatype="float" unit="" width="6" precision="1"/>
       <FIELD name="RA" ID="col_rajd" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" unit="deg" width="11" precision="6"/>
       <FIELD name="DEC" ID="col_decjd" ucd="pos.eq.dec;meta.main" ref="J2000" datatype="float" unit="deg" width="11" precision="6"/>
       <FIELD name="VRAD" ID="col_vel" ucd="phys.veloc;spect.dopplerVeloc.rad;meta.main" datatype="float" unit="km/s" width="9" precision="3"/>
       <FIELD name="MAJ" ID="col_maj" ucd="phys.angSize.smajAxis" ref="J2000" datatype="float" unit="deg" width="6" precision="2"/>
       <FIELD name="MIN" ID="col_min" ucd="phys.angSize.sminAxis" ref="J2000" datatype="float" unit="deg" width="6" precision="2"/>
       <FIELD name="PA" ID="col_pa" ucd="pos.posAng;phys.angSize" ref="J2000" datatype="float" unit="deg" width="7" precision="2"/>
+      <FIELD name="w_RA" ID="col_wra" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
+      <FIELD name="w_DEC" ID="col_wdec" ucd="phys.angSize;pos.eq.dec" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
       <FIELD name="w_50" ID="col_w50" ucd="spect.line.width.50;phys.veloc;spect.dopplerVeloc.rad" datatype="float" unit="km/s" width="8" precision="3"/>
       <FIELD name="w_20" ID="col_w20" ucd="spect.line.width.20;phys.veloc;spect.dopplerVeloc.rad" datatype="float" unit="km/s" width="8" precision="3"/>
       <FIELD name="w_VRAD" ID="col_wvel" ucd="spect.line.width.full;phys.veloc;spect.dopplerVeloc.rad" datatype="float" unit="km/s" width="8" precision="3"/>
@@ -44,6 +49,15 @@
       <FIELD name="Integrated_Flux_Error" ID="col_efint" ucd="phot.flux.density.integrated;stat.err" datatype="float" unit="Jy.km/s" width="10" precision="3"/>
       <FIELD name="Peak_Flux" ID="col_fpeak" ucd="phot.flux;stat.maxspect.line.intensity" datatype="float" unit="Jy/beam" width="10" precision="3"/>
       <FIELD name="S/Nmax" ID="col_snrmax" ucd="stat.snr;phot.flux" datatype="float" unit="" width="7" precision="2"/>
+      <FIELD name="X1" ID="col_x1" ucd="pos.cartesian.x;stat.min" datatype="int" unit="" width="4"/>
+      <FIELD name="X2" ID="col_x2" ucd="pos.cartesian.x;stat.max" datatype="int" unit="" width="4"/>
+      <FIELD name="Y1" ID="col_y1" ucd="pos.cartesian.y;stat.min" datatype="int" unit="" width="4"/>
+      <FIELD name="Y2" ID="col_y2" ucd="pos.cartesian.y;stat.max" datatype="int" unit="" width="4"/>
+      <FIELD name="Z1" ID="col_z1" ucd="pos.cartesian.z;stat.min" datatype="int" unit="" width="4"/>
+      <FIELD name="Z2" ID="col_z2" ucd="pos.cartesian.z;stat.max" datatype="int" unit="" width="4"/>
+      <FIELD name="Nvoxel" ID="col_nvox" ucd="phys.size;instr.pixel;em.bin" datatype="int" unit="" width="7"/>
+      <FIELD name="Nchan" ID="col_nch" ucd="spect.line.width.full;em.bin" datatype="int" unit="" width="6"/>
+      <FIELD name="Nspatpix" ID="col_spsize" ucd="phys.angArea;instr.pixel" datatype="int" unit="" width="9"/>
       <FIELD name="Flag" ID="col_flag" ucd="meta.code.qual" datatype="char" unit="" arraysize="5"/>
       <FIELD name="X_av" ID="col_xav" ucd="pos.cartesian.x;stat.mean" datatype="float" unit="" width="6" precision="1"/>
       <FIELD name="Y_av" ID="col_yav" ucd="pos.cartesian.y;stat.mean" datatype="float" unit="" width="6" precision="1"/>
@@ -57,19 +71,19 @@
       <DATA>
         <TABLEDATA>
         <TR>
-          <TD>       1</TD><TD> J060912-273501</TD><TD>  92.301572</TD><TD> -27.583707</TD><TD>  277.262</TD><TD>  0.46</TD><TD>  0.41</TD><TD> 164.08</TD><TD> 112.985</TD><TD> 167.456</TD><TD> 158.004</TD><TD>  2659.033</TD><TD>    20.113</TD><TD>    11.489</TD><TD>  11.37</TD><TD>    -</TD><TD>  25.1</TD><TD>  25.1</TD><TD>  20.0</TD><TD>   25.1</TD><TD>   25.1</TD><TD>   20.0</TD><TD>     26</TD><TD>     25</TD><TD>     21</TD>
+          <TD>       1</TD><TD> J060912-273501</TD><TD>  25.1</TD><TD>  25.1</TD><TD>  20.0</TD><TD>  92.301572</TD><TD> -27.583707</TD><TD>  277.262</TD><TD>  0.46</TD><TD>  0.41</TD><TD> 164.08</TD><TD>    52.66</TD><TD>    43.29</TD><TD> 112.985</TD><TD> 167.456</TD><TD> 158.004</TD><TD>  2659.033</TD><TD>    20.113</TD><TD>    11.489</TD><TD>  11.37</TD><TD>  19</TD><TD>  31</TD><TD>  20</TD><TD>  30</TD><TD>  14</TD><TD>  26</TD><TD>    494</TD><TD>    13</TD><TD>       95</TD><TD>    -</TD><TD>  25.1</TD><TD>  25.1</TD><TD>  20.0</TD><TD>   25.1</TD><TD>   25.1</TD><TD>   20.0</TD><TD>     26</TD><TD>     25</TD><TD>     21</TD>
         </TR>
         <TR>
-          <TD>       2</TD><TD> J055409-273508</TD><TD>  88.539348</TD><TD> -27.585681</TD><TD>  565.122</TD><TD>  0.46</TD><TD>  0.41</TD><TD> 123.16</TD><TD> 106.922</TD><TD> 170.226</TD><TD> 144.563</TD><TD>  2608.148</TD><TD>    19.911</TD><TD>    11.766</TD><TD>  11.64</TD><TD>    -</TD><TD>  75.1</TD><TD>  25.1</TD><TD>  41.9</TD><TD>   75.1</TD><TD>   25.0</TD><TD>   41.9</TD><TD>     76</TD><TD>     25</TD><TD>     43</TD>
+          <TD>       2</TD><TD> J055409-273508</TD><TD>  75.1</TD><TD>  25.0</TD><TD>  41.9</TD><TD>  88.539348</TD><TD> -27.585681</TD><TD>  565.122</TD><TD>  0.46</TD><TD>  0.41</TD><TD> 123.16</TD><TD>    47.23</TD><TD>    48.74</TD><TD> 106.922</TD><TD> 170.226</TD><TD> 144.563</TD><TD>  2608.148</TD><TD>    19.911</TD><TD>    11.766</TD><TD>  11.64</TD><TD>  70</TD><TD>  81</TD><TD>  20</TD><TD>  31</TD><TD>  36</TD><TD>  47</TD><TD>    486</TD><TD>    12</TD><TD>       97</TD><TD>    -</TD><TD>  75.1</TD><TD>  25.1</TD><TD>  41.9</TD><TD>   75.1</TD><TD>   25.0</TD><TD>   41.9</TD><TD>     76</TD><TD>     25</TD><TD>     43</TD>
         </TR>
         <TR>
-          <TD>       3</TD><TD> J060144-255603</TD><TD>  90.434257</TD><TD> -25.934232</TD><TD>  854.985</TD><TD>  0.43</TD><TD>  0.42</TD><TD>  54.51</TD><TD> 108.068</TD><TD> 167.400</TD><TD> 157.394</TD><TD>  2707.488</TD><TD>    20.217</TD><TD>    10.926</TD><TD>  10.81</TD><TD>    -</TD><TD>  49.9</TD><TD>  50.0</TD><TD>  64.0</TD><TD>   49.9</TD><TD>   50.0</TD><TD>   64.0</TD><TD>     50</TD><TD>     51</TD><TD>     66</TD>
+          <TD>       3</TD><TD> J060144-255603</TD><TD>  49.9</TD><TD>  50.0</TD><TD>  64.0</TD><TD>  90.434257</TD><TD> -25.934232</TD><TD>  854.985</TD><TD>  0.43</TD><TD>  0.42</TD><TD>  54.51</TD><TD>    43.99</TD><TD>    48.03</TD><TD> 108.068</TD><TD> 167.400</TD><TD> 157.394</TD><TD>  2707.488</TD><TD>    20.217</TD><TD>    10.926</TD><TD>  10.81</TD><TD>  45</TD><TD>  55</TD><TD>  44</TD><TD>  55</TD><TD>  58</TD><TD>  70</TD><TD>    503</TD><TD>    13</TD><TD>       96</TD><TD>    -</TD><TD>  49.9</TD><TD>  50.0</TD><TD>  64.0</TD><TD>   49.9</TD><TD>   50.0</TD><TD>   64.0</TD><TD>     50</TD><TD>     51</TD><TD>     66</TD>
         </TR>
         <TR>
-          <TD>       4</TD><TD> J060859-241502</TD><TD>  92.248524</TD><TD> -24.250630</TD><TD> 1144.232</TD><TD>  0.46</TD><TD>  0.41</TD><TD>  41.54</TD><TD> 107.589</TD><TD> 165.337</TD><TD> 157.077</TD><TD>  2563.564</TD><TD>    19.670</TD><TD>    10.445</TD><TD>  10.33</TD><TD>    -</TD><TD>  25.1</TD><TD>  75.1</TD><TD>  86.1</TD><TD>   25.1</TD><TD>   75.1</TD><TD>   86.1</TD><TD>     26</TD><TD>     75</TD><TD>     86</TD>
+          <TD>       4</TD><TD> J060859-241502</TD><TD>  25.1</TD><TD>  75.1</TD><TD>  86.1</TD><TD>  92.248524</TD><TD> -24.250630</TD><TD> 1144.232</TD><TD>  0.46</TD><TD>  0.41</TD><TD>  41.54</TD><TD>    44.67</TD><TD>    51.43</TD><TD> 107.589</TD><TD> 165.337</TD><TD> 157.077</TD><TD>  2563.564</TD><TD>    19.670</TD><TD>    10.445</TD><TD>  10.33</TD><TD>  20</TD><TD>  30</TD><TD>  69</TD><TD>  81</TD><TD>  81</TD><TD>  93</TD><TD>    478</TD><TD>    11</TD><TD>       96</TD><TD>    -</TD><TD>  25.1</TD><TD>  75.1</TD><TD>  86.1</TD><TD>   25.1</TD><TD>   75.1</TD><TD>   86.1</TD><TD>     26</TD><TD>     75</TD><TD>     86</TD>
         </TR>
         <TR>
-          <TD>       5</TD><TD> J055425-241534</TD><TD>  88.604820</TD><TD> -24.259678</TD><TD> 1432.542</TD><TD>  0.44</TD><TD>  0.41</TD><TD> 112.78</TD><TD> 105.323</TD><TD> 166.865</TD><TD> 143.716</TD><TD>  2634.585</TD><TD>    19.917</TD><TD>    11.304</TD><TD>  11.19</TD><TD>    -</TD><TD>  74.9</TD><TD>  74.9</TD><TD> 108.2</TD><TD>   74.9</TD><TD>   74.9</TD><TD>  108.1</TD><TD>     74</TD><TD>     75</TD><TD>    107</TD>
+          <TD>       5</TD><TD> J055425-241534</TD><TD>  74.9</TD><TD>  74.9</TD><TD> 108.1</TD><TD>  88.604820</TD><TD> -24.259678</TD><TD> 1432.542</TD><TD>  0.44</TD><TD>  0.41</TD><TD> 112.78</TD><TD>    43.37</TD><TD>    48.66</TD><TD> 105.323</TD><TD> 166.865</TD><TD> 143.716</TD><TD>  2634.585</TD><TD>    19.917</TD><TD>    11.304</TD><TD>  11.19</TD><TD>  70</TD><TD>  80</TD><TD>  69</TD><TD>  80</TD><TD> 103</TD><TD> 114</TD><TD>    492</TD><TD>    12</TD><TD>      100</TD><TD>    -</TD><TD>  74.9</TD><TD>  74.9</TD><TD> 108.2</TD><TD>   74.9</TD><TD>   74.9</TD><TD>  108.1</TD><TD>     74</TD><TD>     75</TD><TD>    107</TD>
         </TR>
         </TABLEDATA>
       </DATA>

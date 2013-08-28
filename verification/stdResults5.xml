@@ -17,9 +17,9 @@
       <PARAM name="flagFDR" ucd="meta.code" datatype="boolean" value="0"/>
       <PARAM name="snrCut" ucd="stat.snr;phot;stat.min" datatype="float" value="4"/>
       <PARAM name="flagGrowth" ucd="meta.code" datatype="boolean" value="0"/>
-      <PARAM name="minVoxels" ucd="" datatype="int" value="4"/>
       <PARAM name="minPix" ucd="" datatype="int" value="2"/>
       <PARAM name="minChannels" ucd="" datatype="int" value="2"/>
+      <PARAM name="minVoxels" ucd="" datatype="int" value="4"/>
       <PARAM name="flagAdjacent" ucd="meta.code" datatype="boolean" value="1"/>
       <PARAM name="threshVelocity" ucd="" datatype="float" value="7"/>
       <PARAM name="flagRejectBeforeMerge" ucd="" datatype="boolean" value="0"/>
@@ -32,12 +32,17 @@
       <PARAM name="noiseSpreadActual" ucd="" datatype="float" units="Jy/beam" value="1.02274"/>
       <FIELD name="ObjID" ID="col_objnum" ucd="meta.id" datatype="int" unit="" width="8"/>
       <FIELD name="Name" ID="col_name" ucd="meta.id;meta.main" datatype="char" unit="" arraysize="15"/>
+      <FIELD name="X" ID="col_x" ucd="pos.cartesian.x" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="Y" ID="col_y" ucd="pos.cartesian.y" datatype="float" unit="" width="6" precision="1"/>
+      <FIELD name="Z" ID="col_z" ucd="pos.cartesian.z" datatype="float" unit="" width="6" precision="1"/>
       <FIELD name="RA" ID="col_rajd" ucd="pos.eq.ra;meta.main" ref="J2000" datatype="float" unit="deg" width="11" precision="6"/>
       <FIELD name="DEC" ID="col_decjd" ucd="pos.eq.dec;meta.main" ref="J2000" datatype="float" unit="deg" width="11" precision="6"/>
       <FIELD name="VOPT" ID="col_vel" ucd="phys.veloc;spect.dopplerVeloc.opt;meta.main" datatype="float" unit="m/s" width="11" precision="3"/>
       <FIELD name="MAJ" ID="col_maj" ucd="phys.angSize.smajAxis" ref="J2000" datatype="float" unit="deg" width="6" precision="2"/>
       <FIELD name="MIN" ID="col_min" ucd="phys.angSize.sminAxis" ref="J2000" datatype="float" unit="deg" width="6" precision="2"/>
       <FIELD name="PA" ID="col_pa" ucd="pos.posAng;phys.angSize" ref="J2000" datatype="float" unit="deg" width="7" precision="2"/>
+      <FIELD name="w_RA" ID="col_wra" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
+      <FIELD name="w_DEC" ID="col_wdec" ucd="phys.angSize;pos.eq.dec" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
       <FIELD name="w_50" ID="col_w50" ucd="spect.line.width.50;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
       <FIELD name="w_20" ID="col_w20" ucd="spect.line.width.20;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
       <FIELD name="w_VOPT" ID="col_wvel" ucd="spect.line.width.full;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
@@ -45,6 +50,15 @@
       <FIELD name="Integrated_Flux_Error" ID="col_efint" ucd="phot.flux.density.integrated;stat.err" datatype="float" unit="Jy.m/s" width="10" precision="3"/>
       <FIELD name="Peak_Flux" ID="col_fpeak" ucd="phot.flux;stat.maxspect.line.intensity" datatype="float" unit="Jy/beam" width="10" precision="3"/>
       <FIELD name="S/Nmax" ID="col_snrmax" ucd="stat.snr;phot.flux" datatype="float" unit="" width="7" precision="2"/>
+      <FIELD name="X1" ID="col_x1" ucd="pos.cartesian.x;stat.min" datatype="int" unit="" width="4"/>
+      <FIELD name="X2" ID="col_x2" ucd="pos.cartesian.x;stat.max" datatype="int" unit="" width="4"/>
+      <FIELD name="Y1" ID="col_y1" ucd="pos.cartesian.y;stat.min" datatype="int" unit="" width="4"/>
+      <FIELD name="Y2" ID="col_y2" ucd="pos.cartesian.y;stat.max" datatype="int" unit="" width="4"/>
+      <FIELD name="Z1" ID="col_z1" ucd="pos.cartesian.z;stat.min" datatype="int" unit="" width="4"/>
+      <FIELD name="Z2" ID="col_z2" ucd="pos.cartesian.z;stat.max" datatype="int" unit="" width="4"/>
+      <FIELD name="Nvoxel" ID="col_nvox" ucd="phys.size;instr.pixel;em.bin" datatype="int" unit="" width="7"/>
+      <FIELD name="Nchan" ID="col_nch" ucd="spect.line.width.full;em.bin" datatype="int" unit="" width="6"/>
+      <FIELD name="Nspatpix" ID="col_spsize" ucd="phys.angArea;instr.pixel" datatype="int" unit="" width="9"/>
       <FIELD name="Flag" ID="col_flag" ucd="meta.code.qual" datatype="char" unit="" arraysize="5"/>
       <FIELD name="X_av" ID="col_xav" ucd="pos.cartesian.x;stat.mean" datatype="float" unit="" width="6" precision="1"/>
       <FIELD name="Y_av" ID="col_yav" ucd="pos.cartesian.y;stat.mean" datatype="float" unit="" width="6" precision="1"/>
@@ -58,7 +72,7 @@
       <DATA>
         <TABLEDATA>
         <TR>
-          <TD>       1</TD><TD> J060143-255604</TD><TD>  90.432958</TD><TD> -25.934535</TD><TD> 857340.090</TD><TD>  0.43</TD><TD>  0.41</TD><TD>  89.27</TD><TD> 109048.197</TD><TD> 167639.214</TD><TD> 158295.840</TD><TD> 2645773.473</TD><TD> 20170.134</TD><TD>    10.926</TD><TD>  10.65</TD><TD>    -</TD><TD>  49.9</TD><TD>  50.0</TD><TD>  64.0</TD><TD>   49.9</TD><TD>   50.0</TD><TD>   64.0</TD><TD>     50</TD><TD>     51</TD><TD>     66</TD>
+          <TD>       1</TD><TD> J060143-255604</TD><TD>  49.9</TD><TD>  50.0</TD><TD>  64.0</TD><TD>  90.432958</TD><TD> -25.934535</TD><TD> 857340.090</TD><TD>  0.43</TD><TD>  0.41</TD><TD>  89.27</TD><TD>    43.99</TD><TD>    48.03</TD><TD> 109048.197</TD><TD> 167639.214</TD><TD> 158295.840</TD><TD> 2645773.473</TD><TD> 20170.134</TD><TD>    10.926</TD><TD>  10.65</TD><TD>  45</TD><TD>  55</TD><TD>  44</TD><TD>  55</TD><TD>  58</TD><TD>  70</TD><TD>    482</TD><TD>    13</TD><TD>       93</TD><TD>    -</TD><TD>  49.9</TD><TD>  50.0</TD><TD>  64.0</TD><TD>   49.9</TD><TD>   50.0</TD><TD>   64.0</TD><TD>     50</TD><TD>     51</TD><TD>     66</TD>
         </TR>
         </TABLEDATA>
       </DATA>
