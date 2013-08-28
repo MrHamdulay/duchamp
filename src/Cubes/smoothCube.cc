@@ -183,7 +183,7 @@ void Cube::SpatialSmooth()
       GaussSmooth2D<float> gauss(this->par.getKernMaj(),
 				 this->par.getKernMin(),
 				 this->par.getKernPA(),
-				 1.e-10);
+				 this->par.getSpatialSmoothCutoff());
  
       if(this->par.isVerbose()) {
 	std::cout<<"  Smoothing spatially... " << std::flush;

@@ -276,9 +276,9 @@ namespace duchamp
       else if(type=="X2") return Column(type,"X2","",4,0,"pos.cartesian.x;stat.max","int","col_x2","");
       else if(type=="Y2") return Column(type,"Y2","",4,0,"pos.cartesian.y;stat.max","int","col_y2","");
       else if(type=="Z2") return Column(type,"Z2","",4,0,"pos.cartesian.z;stat.max","int","col_z2","");
-      else if(type=="NVOX") return Column(type,"Nvoxel","",6,0,"phys.size;instr.pixel;em.bin","int","col_nvox","");
+      else if(type=="NVOX") return Column(type,"Nvoxel","",7,0,"phys.size;instr.pixel;em.bin","int","col_nvox","");
       else if(type=="NUMCH") return Column(type,"Nchan","",6,0,"spect.line.width.full;em.bin","int","col_nch","");
-      else if(type=="SPATSIZE") return Column(type,"Nspatpix","",8,0,"phys.angArea;instr.pixel","int","col_spsize","");
+      else if(type=="SPATSIZE") return Column(type,"Nspatpix","",9,0,"phys.angArea;instr.pixel","int","col_spsize","");
       else if(type=="FLAG") return Column(type,"Flag","",5,0,"meta.code.qual","char","col_flag","");
       else if(type=="XAV") return Column(type,"X_av","",6,prXYZ,"pos.cartesian.x;stat.mean","float","col_xav","");
       else if(type=="YAV") return Column(type,"Y_av","",6,prXYZ,"pos.cartesian.y;stat.mean","float","col_yav","");
