@@ -1,4 +1,4 @@
-# Duchamp Source Finder v.1.5b
+# Duchamp Source Finder v.1.5
 # Results for FITS file: verification/verificationCube.fits
 # imageFile              verification/verificationCube.fits
 # flagSubsection         0
@@ -23,6 +23,8 @@
 # kernMaj                3
 # kernMin                3
 # kernPA                 0
+# smoothEdgeMethod       equal
+# spatialSmoothCutoff    1e-10
 # flagATrous             0
 # Detection threshold used = 0.681274
 # Mean of noise background = 0.00640906

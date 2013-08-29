@@ -1,4 +1,4 @@
-# Results of the Duchamp source finder v.1.5b: Wed Aug 28 11:36:14 2013
+# Results of the Duchamp source finder v.1.5: Thu Aug 29 10:22:26 2013
 # 
 # ---- Parameters ----
 # Image to be analysed.............................[imageFile]  =  verification/verificationCube.fits
@@ -22,9 +22,11 @@
 # Removing baselines before search?.............[flagBaseline]  =  false
 # Smoothing data prior to searching?..............[flagSmooth]  =  true
 # Type of smoothing...............................[smoothType]  =  spatial
-# Gaussian kernel semi-major axis [pix]..............[kernMaj]  =  3
-# Gaussian kernel semi-minor axis [pix]..............[kernMin]  =  3
+# Gaussian kernel major axis FWHM [pix]..............[kernMaj]  =  3
+# Gaussian kernel minor axis FWHM [pix]..............[kernMin]  =  3
 # Gaussian kernel position angle [deg]................[kernPA]  =  0
+# Method for treating edge pixels...........[smoothEdgeMethod]  =  equal
+# Cutoff value for determining kernel....[spatialSmoothCutoff]  =  1e-10
 # Using A Trous reconstruction?...................[flagATrous]  =  false
 # Using Robust statistics?...................[flagRobustStats]  =  true
 # Using FDR analysis?................................[flagFDR]  =  false

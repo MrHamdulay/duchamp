@@ -28,6 +28,8 @@
       <PARAM name="kernMaj" ucd="" datatype="float" value="3"/>
       <PARAM name="kernMin" ucd="" datatype="float" value="3"/>
       <PARAM name="kernPA" ucd="" datatype="float" value="0"/>
+      <PARAM name="smoothEdgeMethod" ucd="" datatype="char" arraysize="5" value="equal"/>
+      <PARAM name="spatialSmoothCutoff" ucd="" datatype="float" value="1e-10"/>
       <PARAM name="flagATrous" ucd="meta.code" datatype="boolean" value="0"/>
       <PARAM name="thresholdActual" ucd="" datatype="float" units="Jy/beam" value="0.681274"/>
       <PARAM name="noiseMeanActual" ucd="" datatype="float" units="Jy/beam" value="0.00640906"/>
