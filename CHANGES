@@ -23,6 +23,11 @@ New features & algorithms:
   be set via the input parameters, as can the way the edge pixels get
   treated. Conult the User's Guide for details.
 
+* You can now also specify the maximum number of voxels, spatial
+  pixels and/or channels, in a way analogous to the minimum
+  values. Detections with more than the maximum are rejected. Negative
+  values (such as the defaults) mean this comparison is not done.
+
 Output changes:
 
 * The results files now include the Nchan and Nspatpix columns,
