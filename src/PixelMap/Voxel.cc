@@ -33,15 +33,20 @@ namespace PixelInfo
 {
 
   Voxel::Voxel(long x, long y, long z, float f) :
-    itsX(x), itsY(y), itsZ(z), itsF(f)
+      itsX(x), itsY(y), itsZ(z), itsF(f)
   { 
   }
   //--------------------------------------------------------------------
 
   Voxel::Voxel(long x, long y, long z) :
-    itsX(x), itsY(y), itsZ(z)
+      itsX(x), itsY(y), itsZ(z), itsF(0.)
   { 
-    this->itsF=0.;
+  }
+  //--------------------------------------------------------------------
+
+  Voxel::Voxel(long x, long y) :
+      itsX(x), itsY(y), itsZ(0), itsF(0.)
+  { 
   }
   //--------------------------------------------------------------------
 
@@ -119,32 +124,5 @@ namespace PixelInfo
     return ind;
 
   }
-
-  //--------------------------------------------------------------------
-  //--------------------------------------------------------------------
-
-  Pixel::Pixel(long x, long y, float f)
-  { 
-    this->itsX=x; 
-    this->itsY=y; 
-    this->itsF=f;
-  }
-  //--------------------------------------------------------------------
-
-  Pixel::Pixel(const Pixel& p)
-  {
-    operator=(p);
-  }
-  //--------------------------------------------------------------------
-
-  Pixel& Pixel::operator= (const Pixel& p)
-  {
-    if(this == &p) return *this;
-    this->itsX=p.itsX; 
-    this->itsY=p.itsY; 
-    this->itsF=p.itsF;
-    return *this;
-  }
-  //--------------------------------------------------------------------
 
 }

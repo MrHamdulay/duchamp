@@ -47,6 +47,8 @@ namespace PixelInfo
     Voxel(long x, long y, long z, float f);
     /// @brief Specific constructor, defining an (x,y,z) location, setting f=0. 
     Voxel(long x, long y, long z);
+    /// @brief Specific constructor, defining an (x,y) location, setting z=0 and f=0. 
+    Voxel(long x, long y);
     /// @brief Copy constructor. 
     Voxel(const Voxel& v);
     /// @brief Assignment operator. 
@@ -92,25 +94,6 @@ namespace PixelInfo
     long  itsY;         ///< y-position of pixel
     long  itsZ;         ///< z-position of pixel
     float itsF;         ///< flux of pixel
-  };
-
-  //==========================================================================
-
-  /// Pixel class.
-  ///  A 2-dimensional type of voxel, with just x & y position + flux
-
-  class Pixel : public Voxel
-  {
-  public:
-    Pixel(){itsZ=0;};
-    Pixel(long x, long y, float f);
-    Pixel(const Pixel& p);
-    Pixel& operator= (const Pixel& p);
-    virtual ~Pixel(){};
-    // accessor functions
-    void  setXY(long x, long y){itsX = x; itsY = y;};
-    void  setXYF(long x, long y, float f){itsX = x; itsY = y; itsF = f;};
-
   };
 
 

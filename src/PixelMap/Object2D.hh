@@ -75,8 +75,6 @@ namespace PixelInfo
     bool  isInObject(long x, long y);
     /// @brief Test whether the (x,y) part of a Voxel is in the Object.
     bool  isInObject(Voxel v){return this->isInObject(v.getX(),v.getY());};
-    /// @brief Test whether a Pixel is in the Object.
-    bool  isInObject(Pixel p){return this->isInObject(p.getX(),p.getY());};
 
     /// @brief Test whether a given Scan overlaps with any pixels in the Object. 
     bool  scanOverlaps(Scan &scan);

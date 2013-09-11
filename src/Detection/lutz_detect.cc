@@ -90,7 +90,6 @@ namespace duchamp
     std::vector<FoundObject> oS;
     std::vector<STATUS>      psS;
 
-    Pixel pix;
     size_t loc=0;
 
     for(size_t posY=0;posY<(ydim+1);posY++){
