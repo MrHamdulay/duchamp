@@ -65,7 +65,7 @@ if test "x$ac_cv_c_compiler_gnu" = xyes ; then
     SHRLIB="libduchamp.$PACKAGE_VERSION.dylib"
     SHRLD="$SHRLD -dynamiclib -single_module"
     SHRLD="$SHRLD -compatibility_version $PACKAGE_VERSION -current_version $PACKAGE_VERSION"
-    SHRLN=
+    SHRLN="libduchamp.dylib"
 
     case "$build_cpu" in
     powerpc*)

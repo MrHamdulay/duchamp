@@ -4519,7 +4519,7 @@ $as_echo "$as_me:  Using darwin build option" >&6;}
     SHRLIB="libduchamp.$PACKAGE_VERSION.dylib"
     SHRLD="$SHRLD -dynamiclib -single_module"
     SHRLD="$SHRLD -compatibility_version $PACKAGE_VERSION -current_version $PACKAGE_VERSION"
-    SHRLN=
+    SHRLN="libduchamp.dylib"
 
     case "$build_cpu" in
     powerpc*)
