@@ -258,6 +258,12 @@ FDRnumCorChan   2
 #            it to be counted
 # minVoxels -- Minimum number of voxels a detected object must have for it to be 
 #              counted
+# maxChannels -- The maximum number of channels an object must have
+#                 for it to be accepted.
+# maxPix -- Maximum number of spatial pixels a detected object must have for 
+#            it to be counted
+# maxVoxels -- Maximum number of voxels a detected object must have for it to be 
+#              counted
 # flagRejectBeforeMerge -- If true, reject sources for not meeting the above 
 #                          criteria before the merging stage
 # flagTwoStageMerging -- If true, do an initial merge of a new source to the list 
@@ -270,6 +276,9 @@ threshVelocity	       7
 minChannels	       3
 minPix		       2
 minVoxels              4
+maxChannels	       -1
+maxPix		       -1
+maxVoxels              -1
 flagRejectBeforeMerge  false
 flagTwoStageMerging    true
 
