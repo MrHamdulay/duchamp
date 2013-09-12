@@ -1067,65 +1067,40 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  std::vector<int> Detection::getVertexSet()
+  void Detection::drawBorders(int xoffset, int yoffset)
   {
     ///  @details
-    /// Gets a list of points being the end-points of 1-pixel long
-    /// segments drawing a border around the spatial extend of a
-    /// detection. The vector is a series of 4 integers, being: x_0,
-    /// y_0, x_1, y_1.
-    /// \return The vector of vertex positions.
+    /// For a given object, draw borders around the spatial extent of the object.
+    /// \param xoffset The offset from 0 of the x-axis of the plotting window
+    /// \param yoffset The offset from 0 of the y-axis of the plotting window
 
-    std::vector<int> vertexSet;
-
-    int xmin = this->getXmin() - 1;
-    int xmax = this->getXmax() + 1;
-    int ymin = this->getYmin() - 1;
-    int ymax = this->getYmax() + 1;
-    int xsize = xmax - xmin + 1;
-    int ysize = ymax - ymin + 1;
-
-    std::vector<Voxel> voxlist = this->getPixelSet();
-    std::vector<bool> isObj(xsize*ysize,false);
-    std::vector<Voxel>::iterator vox;
-    for(vox=voxlist.begin();vox<voxlist.end();vox++){
-      size_t pos = (vox->getX()-xmin) + 
-	(vox->getY()-ymin)*xsize;
-      isObj[pos] = true;
+    if(!cpgtest()){
+      DUCHAMPERROR("Draw Borders","There is no PGPlot device open.");
     }
-    voxlist.clear();
-    
-    for(int x=xmin; x<=xmax; x++){
-      // for each column...
-      for(int y=ymin+1;y<=ymax;y++){
-	int current  = (y-ymin)*xsize + x-xmin;
-	int previous = (y-ymin-1)*xsize + x-xmin;
-	if((isObj[current]&&!isObj[previous])   ||
-	   (!isObj[current]&&isObj[previous])){
-	  vertexSet.push_back(x);
-	  vertexSet.push_back(y);
-	  vertexSet.push_back(x+1);
-	  vertexSet.push_back(y);
-	}
+    else{
+
+      float x1,x2,y1,y2;
+      cpgqwin(&x1,&x2,&y1,&y2);
+      int xsize = int(x2 - x1) + 1;
+      int ysize = int(y2 - y1) + 1;
+
+      cpgswin(0,xsize-1,0,ysize-1);
+
+      std::vector<std::vector<Voxel> > vertexSets = this->getVertexSet();
+
+      for(size_t n=0;n<vertexSets.size();n++){
+	  // for each set of vertices
+
+	  cpgmove(vertexSets[n][0].getX()-xoffset,vertexSets[n][0].getY()-yoffset);
+	  for(size_t i=1;i<vertexSets[n].size();i++)
+	      cpgdraw(vertexSets[n][i].getX()-xoffset,vertexSets[n][i].getY()-yoffset);
+
       }
-    }
-    for(int y=ymin; y<=ymax; y++){
-      // now for each row...
-      for(int x=xmin+1;x<=xmax;x++){
-	int current  = (y-ymin)*xsize + x-xmin;
-	int previous = (y-ymin)*xsize + x-xmin - 1;
-	if((isObj[current]&&!isObj[previous])   ||
-	   (!isObj[current]&&isObj[previous])){
-	  vertexSet.push_back(x);
-	  vertexSet.push_back(y);
-	  vertexSet.push_back(x);
-	  vertexSet.push_back(y+1);
-	}
-      }
-    }
 
-    return vertexSet;
+      cpgswin(x1,x2,y1,y2);
   
+    }    
+
   }
 
   

@@ -101,7 +101,7 @@ namespace duchamp {
       this->itsHead->pixToWCS(pix,wld,2);
       std::stringstream ss;
       ss << object->getID();
-      this->box(wld[0],wld[3],wld[1],wld[4],ss.str());
+      // this->box(wld[0],wld[3],wld[1],wld[4],ss.str());
       this->AnnotationWriter::writeEntry(object);
     }
   }
@@ -142,10 +142,10 @@ namespace duchamp {
   void CasaAnnotationWriter::joinTheDots(std::vector<double> x, std::vector<double> y)
   {
     if(this->itsOpenFlag){
-      if(x.size()==y.size()){
-	this->itsFileStream << "ann poly";
-	for(size_t i=0;i<x.size();i++) this->itsFileStream <<" " << x[i] << " " << y[i];
-	this->itsFileStream << "\n";
+	if(x.size()==y.size() && x.size()>0){
+	    this->itsFileStream << "ann poly[["<<x[0]<<this->itsSpatialUnits<<", "<<y[0]<<this->itsSpatialUnits<<"]";
+	    for(size_t i=0;i<x.size();i++) this->itsFileStream <<", [" << x[i]<<this->itsSpatialUnits << ", " << y[i]<<this->itsSpatialUnits<<"]";
+	this->itsFileStream << "]\n";
       }
     }
   }

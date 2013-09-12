@@ -29,6 +29,7 @@
 #include <fstream>
 #include <sstream>
 #include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Line.hh>
 #include <duchamp/PixelMap/Scan.hh>
 #include <duchamp/PixelMap/Object2D.hh>
 #include <duchamp/PixelMap/Object3D.hh>
@@ -486,5 +487,102 @@ namespace PixelInfo
     duchamp::Section section(sec);
     return section;
   }
+
+  std::vector<std::vector<Voxel> > Object3D::getVertexSet()
+  {
+    ///  @details
+    /// Gets a list of points being the end-points of 1-pixel long
+    /// segments drawing a border around the spatial extend of a
+    /// detection. The vector is a series of 4 integers, being: x_0,
+    /// y_0, x_1, y_1.
+    /// \return The vector of vertex positions.
+
+    std::vector<int> vertexSet;
+
+    int xmin = this->getXmin() - 1;
+    int xmax = this->getXmax() + 1;
+    int ymin = this->getYmin() - 1;
+    int ymax = this->getYmax() + 1;
+    int xsize = xmax - xmin + 1;
+    int ysize = ymax - ymin + 1;
+
+    std::vector<Voxel> voxlist = this->getPixelSet();
+    std::vector<bool> isObj(xsize*ysize,false);
+    std::vector<Voxel>::iterator vox;
+    for(vox=voxlist.begin();vox<voxlist.end();vox++){
+      size_t pos = (vox->getX()-xmin) + 
+	(vox->getY()-ymin)*xsize;
+      isObj[pos] = true;
+    }
+    voxlist.clear();
+
+    std::vector<Line> linelist;    
+    for(int x=xmin; x<=xmax; x++){
+      // for each column...
+      for(int y=ymin+1;y<=ymax;y++){
+	int current  = (y-ymin)*xsize + x-xmin;
+	int previous = (y-ymin-1)*xsize + x-xmin;
+	if((isObj[current]&&!isObj[previous])   ||
+	   (!isObj[current]&&isObj[previous])){
+	  vertexSet.push_back(x);
+	  vertexSet.push_back(y);
+	  vertexSet.push_back(x+1);
+	  vertexSet.push_back(y);
+	  linelist.push_back(Line(x,y,x+1,y));
+	}
+      }
+    }
+    for(int y=ymin; y<=ymax; y++){
+      // now for each row...
+      for(int x=xmin+1;x<=xmax;x++){
+	int current  = (y-ymin)*xsize + x-xmin;
+	int previous = (y-ymin)*xsize + x-xmin - 1;
+	if((isObj[current]&&!isObj[previous])   ||
+	   (!isObj[current]&&isObj[previous])){
+	  vertexSet.push_back(x);
+	  vertexSet.push_back(y);
+	  vertexSet.push_back(x);
+	  vertexSet.push_back(y+1);
+	  linelist.push_back(Line(x,y,x,y+1));
+	}
+      }
+    }
+
+    std::vector<std::vector<Voxel> > vertSet;
+    while(linelist.size()>0){
+	std::vector<Voxel> orderedVertices;
+	std::vector<Line>::iterator line=linelist.begin();
+	orderedVertices.push_back(line->start());
+	Voxel comp=line->end(),prev=line->start();
+	orderedVertices.push_back(comp);
+	linelist.erase(line);
+	bool atEnd=false;
+	do{
+	    bool foundIt=false;
+	    line=linelist.begin();
+	    while(line!=linelist.end() && !foundIt){
+		foundIt = line->has(comp);
+		atEnd = line->has(orderedVertices[0]);
+		if(comp == line->start()){
+		    orderedVertices.push_back(line->end());
+		    comp=line->end();
+		}
+		else if (comp==line->end()){
+		    orderedVertices.push_back(line->start());
+		    comp=line->start();
+		}
+		if(foundIt) linelist.erase(line);
+		else line++;
+	    }
+	}  while(linelist.size()>0 && !atEnd);
+	vertSet.push_back(orderedVertices);
+    }
+
+    return vertSet;
+  
+  }
+
+
+
 
 }

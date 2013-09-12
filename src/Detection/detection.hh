@@ -146,9 +146,6 @@ namespace duchamp
     //---------------------------------- 
     // For plotting routines... in Cubes/drawMomentCutout.cc
     //
-    /// @brief Get the location of the spatial borders. 
-    std::vector<int> getVertexSet();
-    //
     /// @brief Draw spatial borders for a particular Detection. 
     void   drawBorders(int xoffset, int yoffset); 
     //

@@ -57,6 +57,7 @@ HEADS = $(BASE)/config.h\
 	$(BASE)/pgheader.hh\
 	$(BASE)/param.hh\
 	$(BASE)/fitsHeader.hh\
+	$(PIXELMAPDIR)/Line.hh\
 	$(PIXELMAPDIR)/Voxel.hh\
 	$(PIXELMAPDIR)/Scan.hh\
 	$(PIXELMAPDIR)/Object2D.hh\
@@ -110,6 +111,7 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(BASE)/duchamp.o\
 	$(BASE)/param.o\
 	$(BASE)/fitsHeader.o\
+	$(PIXELMAPDIR)/Line.o\
 	$(PIXELMAPDIR)/Voxel.o\
 	$(PIXELMAPDIR)/Scan.o\
 	$(PIXELMAPDIR)/Object2D.o\

@@ -308,42 +308,6 @@ namespace duchamp
 
   }
   
-  void Detection::drawBorders(int xoffset, int yoffset)
-  {
-    ///  @details
-    /// For a given object, draw borders around the spatial extent of the object.
-    /// \param xoffset The offset from 0 of the x-axis of the plotting window
-    /// \param yoffset The offset from 0 of the y-axis of the plotting window
-
-    if(!cpgtest()){
-      DUCHAMPERROR("Draw Borders","There is no PGPlot device open.");
-    }
-    else{
-
-      float x1,x2,y1,y2;
-      cpgqwin(&x1,&x2,&y1,&y2);
-      int xsize = int(x2 - x1) + 1;
-      int ysize = int(y2 - y1) + 1;
-
-      std::vector<int> vertexSet = this->getVertexSet();
-
-      cpgswin(0,xsize-1,0,ysize-1);
-
-      if(vertexSet.size()%4 != 0){
-	DUCHAMPERROR("drawBorders","Vertex set wrong size!");
-      }
-      else{
-	for(size_t i=0;i<vertexSet.size()/4;i++){
-	  cpgmove(vertexSet[i*4]-xoffset,vertexSet[i*4+1]-yoffset);
-	  cpgdraw(vertexSet[i*4+2]-xoffset,vertexSet[i*4+3]-yoffset);
-	}
-      }
-      cpgswin(x1,x2,y1,y2);
-  
-    }    
-
-  }
-
   void Cube::drawFieldEdge()
   {
     /// @details

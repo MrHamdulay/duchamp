@@ -114,6 +114,9 @@ namespace PixelInfo
     /// @brief Return the largest number of adjacent channels in the Object.
     unsigned int getMaxAdjacentChannels();
 
+    /// @brief Get the location of the spatial borders. 
+    std::vector<std::vector<Voxel> > getVertexSet();
+
     /// @brief Get the channel map for channel z. 
     Object2D getChanMap(long z);
 

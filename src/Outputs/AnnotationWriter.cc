@@ -146,35 +146,32 @@ namespace duchamp {
     if(this->itsOpenFlag){
 
       if(this->itsParam->getAnnotationType() == "borders"){
-	double *pix = new double[3];
-	double *wld = new double[3];
-	double x1,x2,y1,y2;
-	std::vector<int> vertexSet = object->getVertexSet();
-	for(size_t i=0;i<vertexSet.size()/4;i++){
-	  pix[0] = vertexSet[i*4]-0.5;
-	  pix[1] = vertexSet[i*4+1]-0.5;
-	  pix[2] = object->getZcentre();
-	  if(this->itsHead->isWCS()){
-	    this->itsHead->pixToWCS(pix,wld);
-	    x1=wld[0];
-	    y1=wld[1];
-	  }
-	  else{
-	    x1=pix[0];
-	    y1=pix[1];
-	  }
-	  pix[0] = vertexSet[i*4+2]-0.5;
-	  pix[1] = vertexSet[i*4+3]-0.5;
-	  if(this->itsHead->isWCS()){
-	    this->itsHead->pixToWCS(pix,wld);
-	    x2=wld[0];
-	    y2=wld[1];
-	  }
-	  else{
-	    x2=wld[0];
-	    y2=wld[1];
-	  }
-	  this->line(x1,x2,y1,y2);
+
+	std::vector<std::vector<Voxel> > vertexSets = object->getVertexSet();
+	for(size_t n=0;n<vertexSets.size();n++){
+	    // for each set of vertices
+	 
+	    std::vector<double> x,y;
+	    for(size_t i=0;i<vertexSets[n].size();i++){
+		double *pix = new double[3];
+		double *wld = new double[3];
+		pix[0]=vertexSets[n][i].getX()-0.5;
+		pix[1]=vertexSets[n][i].getY()-0.5;
+		pix[2]=object->getZcentre();
+		if(this->itsHead->isWCS()){
+		    this->itsHead->pixToWCS(pix,wld);
+		    x.push_back(wld[0]);
+		    y.push_back(wld[1]);
+		}
+		else{
+		    x.push_back(pix[0]);
+		    y.push_back(pix[1]);
+		}
+		delete [] wld;
+		delete [] pix;
+	    }
+	    this->joinTheDots(x,y);		
+	    
 	}
       }
       else if(this->itsParam->getAnnotationType()=="circles"){
