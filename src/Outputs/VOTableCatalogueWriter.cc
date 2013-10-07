@@ -99,13 +99,20 @@ namespace duchamp {
     }
   }
 
+    void VOTableCatalogueWriter::writeParameter(VOParam param)
+    {
+	if(this->itsOpenFlag){
+	    this->itsFileStream << "      ";
+	    param.printParam(this->itsFileStream);
+	}
+    }
+
   void VOTableCatalogueWriter::writeParameters()
   {
     if(this->itsOpenFlag){
       std::vector<VOParam> paramList = this->itsParam->getVOParams();
       for(std::vector<VOParam>::iterator param=paramList.begin();param<paramList.end();param++){
-	this->itsFileStream << "      ";
-	param->printParam(this->itsFileStream);
+	  this->writeParameter(*param);
       }    
     }
   }

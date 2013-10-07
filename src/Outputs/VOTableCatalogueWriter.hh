@@ -50,6 +50,7 @@ namespace duchamp {
     /// @brief Write header information - not including parameters
     void writeHeader();
 
+    void writeParameter(VOParam param);
     void writeParameters();
     void writeStats(); 
     void writeTableHeader();
