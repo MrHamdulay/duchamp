@@ -242,11 +242,11 @@ Type *GaussSmooth2D<Type>::smooth(Type *input, size_t xdim, size_t ydim, bool *m
 	
 	  for(int yoff = -int(kernelHW); yoff<=int(kernelHW); yoff++){
 	    ycomp = ypos + yoff;
-	    if((ycomp>=0)&&(ycomp<ydim)){
+	    if(ycomp<ydim){
 
 		for(int xoff = -int(kernelHW); xoff<=int(kernelHW); xoff++){
 		xcomp = xpos + xoff;	      
-		if((xcomp>=0)&&(xcomp<xdim)){
+		if(xcomp<xdim){
 
 		  fpos = (xoff+kernelHW) + (yoff+kernelHW)*this->kernWidth;
 		  comp = ycomp*xdim + xcomp;

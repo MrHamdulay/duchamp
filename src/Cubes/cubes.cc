@@ -148,23 +148,18 @@ namespace duchamp
 
     this->axisDimAllocated = false;
     this->arrayAllocated = false;
-    if(size<0){
-      DUCHAMPERROR("DataArray(nDim,size)", "Negative size -- could not define DataArray");
-    }
-    else if(nDim<0){
+    if(nDim<0){
       DUCHAMPERROR("DataArray(nDim,size)", "Negative number of dimensions: could not define DataArray");
     }
     else {
-      if(size>0){
 	this->array = new float[size];
 	this->arrayAllocated = true;
-      }
-      this->numPixels = size;
-      if(nDim>0){
-	this->axisDim = new size_t[nDim];
-	this->axisDimAllocated = true;
-      }
-      this->numDim = nDim;
+	this->numPixels = size;
+	if(nDim>0){
+	    this->axisDim = new size_t[nDim];
+	    this->axisDimAllocated = true;
+	}
+	this->numDim = nDim;
     }
     this->objectList = new std::vector<Detection>;
   }
@@ -325,7 +320,7 @@ namespace duchamp
     /// If the pixel lies outside the valid range for the data array, return false.
     /// \param voxel Location of the DataArray's pixel to be tested.
 
-    if((voxel<0)||(voxel>this->numPixels)) return false;
+    if(voxel>this->numPixels) return false;
     else if(par.isBlank(this->array[voxel])) return false;
     else return Stats.isDetection(this->array[voxel]);
   }  
@@ -397,28 +392,21 @@ namespace duchamp
     this->axisDimAllocated = false;
     this->arrayAllocated = false;
     this->numPixels = this->numDim = 0;
-    if(size<0){
-      DUCHAMPERROR("Cube(size)","Negative size -- could not define Cube");
+    this->array = new float[size];
+    this->arrayAllocated = true;
+    if(this->par.getFlagATrous()||this->par.getFlagSmooth()){
+	this->recon = new float[size];
+	this->reconAllocated = true;
     }
-    else{
-      if(size>0){
-	this->array = new float[size];
-	this->arrayAllocated = true;
-	if(this->par.getFlagATrous()||this->par.getFlagSmooth()){
-	  this->recon = new float[size];
-	  this->reconAllocated = true;
-	}
-	if(this->par.getFlagBaseline()){
-	  this->baseline = new float[size];
-	  this->baselineAllocated = true;
-	}
-      }
-      this->numPixels = size;
-      this->axisDim = new size_t[3];
-      this->axisDimAllocated = true;
-      this->numDim = 3;
-      this->reconExists = false;
+    if(this->par.getFlagBaseline()){
+	this->baseline = new float[size];
+	this->baselineAllocated = true;
     }
+    this->numPixels = size;
+    this->axisDim = new size_t[3];
+    this->axisDimAllocated = true;
+    this->numDim = 3;
+    this->reconExists = false;
   }
   //--------------------------------------------------------------------
 
@@ -645,88 +633,83 @@ namespace duchamp
       this->baselineAllocated = false;
     }
 
-    if((size<0) || (imsize<0) ) {
-      DUCHAMPERROR("Cube::initialiseCube(dimArray)", "Negative size -- could not define Cube.");
-      return FAILURE;
-    }
-    else{
-      this->numPixels = size;
-      this->numDim  = 3;
-
-      this->axisDim = new size_t[this->numDim];
-      this->axisDimAllocated = true;
-      this->axisDim[0] = dimensions[lng];
-      if(numAxes>1) this->axisDim[1] = dimensions[lat];
-      else this->axisDim[1] = 1;
-      if(this->head.canUseThirdAxis() && numAxes>spc) this->axisDim[2] = dimensions[spc];
-      else this->axisDim[2] = 1;
-
-      this->numNondegDim=0;
-      for(int i=0;i<3;i++) if(this->axisDim[i]>1) this->numNondegDim++;
-
-      if(this->numNondegDim == 1){
+    this->numPixels = size;
+    this->numDim  = 3;
+    
+    this->axisDim = new size_t[this->numDim];
+    this->axisDimAllocated = true;
+    this->axisDim[0] = dimensions[lng];
+    if(numAxes>1) this->axisDim[1] = dimensions[lat];
+    else this->axisDim[1] = 1;
+    if(this->head.canUseThirdAxis() && numAxes>spc) this->axisDim[2] = dimensions[spc];
+    else this->axisDim[2] = 1;
+    
+    this->numNondegDim=0;
+    for(int i=0;i<3;i++) if(this->axisDim[i]>1) this->numNondegDim++;
+    
+    if(this->numNondegDim == 1){
 	if(!head.isWCS()) std::swap(this->axisDim[0],this->axisDim[2]);
 	imsize=this->axisDim[2];
-      }
-
-      bool haveChanged=false;
-      int change=0;
-      if(this->par.getMinPix() > this->axisDim[0]*this->axisDim[1]){
+    }
+    
+    bool haveChanged=false;
+    int change=0;
+    if(this->par.getMinPix() > this->axisDim[0]*this->axisDim[1]){
 	DUCHAMPWARN("Cube::initialiseCube", "The value of minPix ("<<this->par.getMinPix()<<") is greater than the image size. Setting to "<<this->axisDim[0]*this->axisDim[1]);
 	change=this->par.getMinPix() - this->axisDim[0]*this->axisDim[1];
 	haveChanged=true;
 	this->par.setMinPix(this->axisDim[0]*this->axisDim[1]);
-      }
-      if(this->par.getMinChannels() > this->axisDim[2]){
+    }
+    if(this->par.getMinChannels() > this->axisDim[2]){
 	DUCHAMPWARN("Cube::initialiseCube", "The value of minChannels ("<<this->par.getMinChannels()<<") is greater than the spectral size. Setting to "<<this->axisDim[2]);
 	change=this->par.getMinChannels() - this->axisDim[2];
 	haveChanged=true;
 	this->par.setMinChannels(this->axisDim[2]);
-      }
-      if(haveChanged){
+    }
+    if(haveChanged){
 	DUCHAMPWARN("Cube::initialiseCube","Reducing minVoxels to "<<this->par.getMinVoxels() - change<<" to accomodate these changes" );
 	this->par.setMinVoxels(this->par.getMinVoxels() - change);
-      }
+    }
       
-      if(this->par.getFlagSmooth()){
+    if(this->par.getFlagSmooth()){
 	if(this->par.getSmoothType()=="spectral" && this->numNondegDim==2){
-	  DUCHAMPWARN("Cube::initialiseCube", "Spectral smooth requested, but have a 2D image. Setting flagSmooth=false");
-	  this->par.setFlagSmooth(false);
+	    DUCHAMPWARN("Cube::initialiseCube", "Spectral smooth requested, but have a 2D image. Setting flagSmooth=false");
+	    this->par.setFlagSmooth(false);
 	}
 	if(this->par.getSmoothType()=="spatial" && this->numNondegDim==1){
-	  DUCHAMPWARN("Cube::initialiseCube", "Spatial smooth requested, but have a 1D image. Setting flagSmooth=false");
-	  this->par.setFlagSmooth(false);
+	    DUCHAMPWARN("Cube::initialiseCube", "Spatial smooth requested, but have a 1D image. Setting flagSmooth=false");
+	    this->par.setFlagSmooth(false);
 	}
-      }
-      if(this->par.getFlagATrous()){
+    }
+    if(this->par.getFlagATrous()){
 	for(int d=3; d>=1; d--){
-	  if(this->par.getReconDim()==d && this->numNondegDim==(d-1)){
-	    DUCHAMPWARN("Cube::initialiseCube", d << "D reconstruction requested, but image is " << d-1 <<"D. Setting flagAtrous=false");
-	    this->par.setFlagATrous(false);
-	  }
+	    if(this->par.getReconDim()==d && this->numNondegDim==(d-1)){
+		DUCHAMPWARN("Cube::initialiseCube", d << "D reconstruction requested, but image is " << d-1 <<"D. Setting flagAtrous=false");
+		this->par.setFlagATrous(false);
+	    }
 	}
-      }
+    }
 
-      if(allocateArrays && this->par.isVerbose()) this->reportMemorySize(std::cout,allocateArrays);
+    if(allocateArrays && this->par.isVerbose()) this->reportMemorySize(std::cout,allocateArrays);
 
-      this->reconExists = false;
-      if(size>0 && allocateArrays){
+    this->reconExists = false;
+    if(allocateArrays){
 	this->array      = new float[size];
 	this->arrayAllocated = true;
 	this->detectMap  = new short[imsize];
 	for(size_t i=0;i<imsize;i++) this->detectMap[i] = 0;
 	if(this->par.getFlagATrous() || this->par.getFlagSmooth()){
-	  this->recon    = new float[size];
-	  this->reconAllocated = true;
-	  for(size_t i=0;i<size;i++) this->recon[i] = 0.;
+	    this->recon    = new float[size];
+	    this->reconAllocated = true;
+	    for(size_t i=0;i<size;i++) this->recon[i] = 0.;
 	}
 	if(this->par.getFlagBaseline()){
-	  this->baseline = new float[size];
-	  this->baselineAllocated = true;
-	  for(size_t i=0;i<size;i++) this->baseline[i] = 0.;
+	    this->baseline = new float[size];
+	    this->baselineAllocated = true;
+	    for(size_t i=0;i<size;i++) this->baseline[i] = 0.;
 	}
-      }
     }
+    
     return SUCCESS;
   }
   //--------------------------------------------------------------------
@@ -1866,22 +1849,16 @@ namespace duchamp
 
   Image::Image(size_t size)
   {
-    // need error handling in case size<0 !!!
     this->numPixels = this->numDim = 0;
     this->minSize = 2;
-    if(size<0){
-      DUCHAMPERROR("Image(size)","Negative size -- could not define Image");
-    }
-    else{
-      if(size>0 && !this->arrayAllocated){
+    if(!this->arrayAllocated){
 	this->array = new float[size];
 	this->arrayAllocated = true;
-      }
-      this->numPixels = size;
-      this->axisDim = new size_t[2];
-      this->axisDimAllocated = true;
-      this->numDim = 2;
     }
+    this->numPixels = size;
+    this->axisDim = new size_t[2];
+    this->axisDimAllocated = true;
+    this->numDim = 2;
   }
   //--------------------------------------------------------------------
 
@@ -1889,21 +1866,14 @@ namespace duchamp
   {
     this->numPixels = this->numDim = 0;
     this->minSize = 2;
-    int size = dimensions[0] * dimensions[1];
-    if(size<0){
-      DUCHAMPERROR("Image(dimArray)","Negative size -- could not define Image");
-    }
-    else{
-      this->numPixels = size;
-      if(size>0){
-	this->array = new float[size];
-	this->arrayAllocated = true;
-      }
-      this->numDim=2;
-      this->axisDim = new size_t[2];
-      this->axisDimAllocated = true;
-      for(int i=0;i<2;i++) this->axisDim[i] = dimensions[i];
-    }
+    size_t size = dimensions[0] * dimensions[1];
+    this->numPixels = size;
+    this->array = new float[size];
+    this->arrayAllocated = true;
+    this->numDim=2;
+    this->axisDim = new size_t[2];
+    this->axisDimAllocated = true;
+    for(int i=0;i<2;i++) this->axisDim[i] = dimensions[i];
   }
   //--------------------------------------------------------------------
   Image::Image(const Image &i):
@@ -1959,7 +1929,7 @@ namespace duchamp
     /// \param dim The array of dimension values.
     /// \param pixel The spatial pixel that contains the desired spectrum.
 
-    if((pixel<0)||(pixel>=dim[0]*dim[1])){
+    if(pixel>=dim[0]*dim[1]){
       DUCHAMPERROR("Image::extractSpectrum", "Requested spatial pixel outside allowed range. Cannot save.");
     }
     else if(dim[2] != this->numPixels){
@@ -1989,7 +1959,7 @@ namespace duchamp
 
     size_t zdim = cube.getDimZ();
     size_t spatSize = cube.getDimX()*cube.getDimY();
-    if((pixel<0)||(pixel>=spatSize)){
+    if(pixel>=spatSize){
       DUCHAMPERROR("Image::extractSpectrum", "Requested spatial pixel outside allowed range. Cannot save.");
     }
     else if(zdim != this->numPixels){
@@ -2022,7 +1992,7 @@ namespace duchamp
     /// \param channel The spectral channel that contains the desired image.
 
     size_t spatSize = dim[0]*dim[1];
-    if((channel<0)||(channel>=dim[2])){
+    if(channel>=dim[2]){
       DUCHAMPERROR("Image::extractImage", "Requested channel outside allowed range. Cannot save.");
     }
     else if(spatSize != this->numPixels){
@@ -2052,7 +2022,7 @@ namespace duchamp
     /// \param channel The spectral channel that contains the desired image.
 
     size_t spatSize = cube.getDimX()*cube.getDimY();
-    if((channel<0)||(channel>=cube.getDimZ())){
+    if(channel>=cube.getDimZ()){
       DUCHAMPERROR("Image::extractImage", "Requested channel outside allowed range. Cannot save.");
     }
     else if(spatSize != this->numPixels){

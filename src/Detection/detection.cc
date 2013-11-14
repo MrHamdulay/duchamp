@@ -795,7 +795,7 @@ namespace duchamp
       float sign = this->negSource ? -1. : 1.;
       for(std::vector<Voxel>::iterator v=voxlist.begin();v<voxlist.end();v++){
 	  size_t spatpos=(v->getX()-x1) + (v->getY()-y1)*xsize;
-	  if(spatpos>=0 && spatpos<spatsize)
+	  if(spatpos<spatsize)
 	      momentMap[spatpos] += fluxArray[v->arrayIndex(dim)] * delta * sign;
 	  else DUCHAMPTHROW("findShape","Memory overflow - accessing spatpos="<<spatpos<<" when spatsize="<<spatsize <<". Pixel is (x,y)=("<<v->getX() <<","<<v->getY()<<") and (x1,y1)="<<x1<<","<<y1<<"), (x2,y2)="<<x2<<","<<y2<<"), xsize="<<xsize);
       }
