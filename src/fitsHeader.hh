@@ -68,10 +68,16 @@ namespace duchamp
 
     // front ends to WCS functions
     /// @brief Convert pixel coords to world coords for a single point. 
+    int     wcsToPix(double xWorld, double yWorld, double zWorld, double &xPix, double &yPix, double &zPix);
+
+    /// @brief Convert pixel coords to world coords for a single point. 
     int     wcsToPix(const double *world, double *pix);
 
     /// @brief Convert pixel coords to world coords for many points. 
     int     wcsToPix(const double *world, double *pix, const int npts);
+
+    /// @brief Convert world coords to pixel coords for a single point. 
+    int     pixToWCS(double xPix, double yPix, double zPix, double &xWorld, double &yWorld, double &zWorld);
 
     /// @brief Convert world coords to pixel coords for a single point. 
     int     pixToWCS(const double *pix, double *world);

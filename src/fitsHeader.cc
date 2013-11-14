@@ -149,6 +149,25 @@ namespace duchamp
     return wNew;
   }
 
+  int FitsHeader::wcsToPix(double xWorld, double yWorld, double zWorld, double &xPix, double &yPix, double &zPix)
+  {
+      double world[3],pix[3];
+      world[0]=xWorld;
+      world[1]=yWorld;
+      world[2]=zWorld;
+      int returnval = wcsToPixSingle(this->wcs, world, pix); 
+      if(returnval==0){
+	  xPix=pix[0];
+	  yPix=pix[1];
+	  zPix=pix[2];
+      }
+      else {
+	  xPix=-1.;
+	  yPix=-1.;
+	  zPix=-1.;
+      }
+      return returnval;
+  }
   int FitsHeader::wcsToPix(const double *world, double *pix)
   {      
     return wcsToPixSingle(this->wcs, world, pix);  
@@ -156,6 +175,25 @@ namespace duchamp
   int FitsHeader::wcsToPix(const double *world, double *pix, const int npts)
   { 
     return wcsToPixMulti(this->wcs, world, pix, npts);  
+  }
+  int FitsHeader::pixToWCS(double xPix, double yPix, double zPix, double &xWorld, double &yWorld, double &zWorld)
+  {
+      double world[3],pix[3];
+      pix[0]=xPix;
+      pix[1]=yPix;
+      pix[2]=zPix;
+      int returnval = pixToWCSSingle(this->wcs, pix, world); 
+      if(returnval==0){
+	  xWorld=world[0];
+	  yWorld=world[1];
+	  zWorld=world[2];
+      }
+      else {
+	  xWorld=-1.;
+	  yWorld=-1.;
+	  zWorld=-1.;
+      }
+      return returnval;
   }
   int FitsHeader::pixToWCS(const double *pix, double *world)
   {    
