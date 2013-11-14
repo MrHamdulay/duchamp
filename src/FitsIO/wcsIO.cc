@@ -105,7 +105,7 @@ namespace duchamp
     int nExc = 0,nkeys;
     int status = 0;
     char *hdr=0;
-    struct wcsprm *localwcs;
+    struct wcsprm *localwcs=NULL;
     int localnwcs;
 
     // Get the dimensions of the FITS file -- number of axes and size of each.

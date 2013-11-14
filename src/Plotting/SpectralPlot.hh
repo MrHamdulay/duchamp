@@ -66,6 +66,7 @@ namespace duchamp
 	    /// @brief Calculate boundaries for boxes.
 	    void calcCoords();
 
+	    using MultipleDuchampPlot::gotoHeader;
 	    /// @brief Set up the header and write the X label
 	    void gotoHeader(std::string xlabel);
 

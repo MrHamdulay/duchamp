@@ -50,6 +50,7 @@ namespace duchamp
     DuchampBeam& operator=(const DuchampBeam &b);
 
     void empty();
+      using Beam::define;
     void define(float maj, float min, float pa, BEAM_ORIGIN origin);
     void setFWHM(float fwhm, BEAM_ORIGIN origin);
     void setArea(float area, BEAM_ORIGIN origin);

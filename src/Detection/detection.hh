@@ -109,6 +109,8 @@ namespace duchamp
     /// @brief Set the values of the axis offsets from the cube. 
     void   setOffsets(Param &par); 
 
+      using Object3D::addOffsets;  //tell the compiler we want both the addOffsets from Object3D *and* Detection
+
     /// @brief Add the offset values to the pixel locations 
    void   addOffsets(size_t xoff, size_t yoff, size_t zoff){
        Object3D::addOffsets(xoff,yoff,zoff);

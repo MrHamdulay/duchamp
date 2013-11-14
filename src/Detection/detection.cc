@@ -638,16 +638,6 @@ namespace duchamp
 
       this->haveParams = true;
 
-       const int border = 1; // include one pixel either side in each direction
-      size_t xsize = size_t(this->xmax-this->xmin+2*border+1);
-      size_t ysize = size_t(this->ymax-this->ymin+2*border+1);
-      size_t zsize = size_t(this->zmax-this->zmin+2*border+1);
-      size_t xzero = size_t(std::max(0L,this->xmin-border));
-      size_t yzero = size_t(std::max(0L,this->ymin-border));
-      size_t zzero = size_t(std::max(0L,this->zmin-border));
-      size_t spatsize=xsize*ysize;
-      size_t size = xsize*ysize*zsize;
-
       this->intFlux = 0.;
       std::vector<Voxel> voxelList = this->getPixelSet();
       std::vector<Voxel>::iterator vox;
