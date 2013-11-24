@@ -38,33 +38,38 @@
 
 namespace duchamp {
 
-  class VOTableCatalogueWriter : public FileCatalogueWriter
-  {
-  public:
-    VOTableCatalogueWriter();
-    VOTableCatalogueWriter(std::string name);
-    VOTableCatalogueWriter(const VOTableCatalogueWriter& other);
-    VOTableCatalogueWriter& operator= (const VOTableCatalogueWriter& other);
-    virtual ~VOTableCatalogueWriter(){};
+    class VOTableCatalogueWriter : public FileCatalogueWriter
+    {
+    public:
+	VOTableCatalogueWriter();
+	VOTableCatalogueWriter(std::string name);
+	VOTableCatalogueWriter(const VOTableCatalogueWriter& other);
+	VOTableCatalogueWriter& operator= (const VOTableCatalogueWriter& other);
+	virtual ~VOTableCatalogueWriter(){};
 
-    /// @brief Write header information - not including parameters
-    void writeHeader();
+	/// @brief Write header information - not including parameters
+	void writeHeader();
+	
+	/// @brief Write the XML namespace definition
+	void writeNamespace();
+	/// @brief Write the Space-Time-Coordinate information, using the WCS
+	void writeSTC();
 
-    void writeParameter(VOParam param);
-    void writeParameters();
-    void writeStats(); 
-    void writeTableHeader();
-    void writeEntry(Detection *object);
+	void writeParameter(VOParam param);
+	void writeParameters();
+	void writeStats(); 
+	void writeTableHeader();
+	void writeEntry(Detection *object);
 
-    void writeFooter();
+	void writeFooter();
 
-    void setTableName(std::string s){itsTableName=s;};
-    void setTableDescription(std::string s){itsTableDescription=s;};
+	void setTableName(std::string s){itsTableName=s;};
+	void setTableDescription(std::string s){itsTableDescription=s;};
 
-  protected:
-    std::string itsTableName;
-    std::string itsTableDescription;
-  };
+    protected:
+	std::string itsTableName;
+	std::string itsTableDescription;
+    };
 
 }
 
