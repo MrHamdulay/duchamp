@@ -195,6 +195,7 @@ else
 	$(CUBESDIR)/drawMomentCutout.o\
 	$(CUBESDIR)/outputSpectra.o\
 	$(CUBESDIR)/plotting.o\
+	$(DETECTIONDIR)/drawBorders.o\
 	$(PLOTDIR)/DuchampPlot.o\
 	$(PLOTDIR)/MultipleDuchampPlot.o\
 	$(PLOTDIR)/ImagePlot.o\

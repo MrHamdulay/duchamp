@@ -1056,43 +1056,6 @@ namespace duchamp
   
   }
   //--------------------------------------------------------------------
-
-  void Detection::drawBorders(int xoffset, int yoffset)
-  {
-    ///  @details
-    /// For a given object, draw borders around the spatial extent of the object.
-    /// \param xoffset The offset from 0 of the x-axis of the plotting window
-    /// \param yoffset The offset from 0 of the y-axis of the plotting window
-
-    if(!cpgtest()){
-      DUCHAMPERROR("Draw Borders","There is no PGPlot device open.");
-    }
-    else{
-
-      float x1,x2,y1,y2;
-      cpgqwin(&x1,&x2,&y1,&y2);
-      int xsize = int(x2 - x1) + 1;
-      int ysize = int(y2 - y1) + 1;
-
-      cpgswin(0,xsize-1,0,ysize-1);
-
-      std::vector<std::vector<Voxel> > vertexSets = this->getVertexSet();
-
-      for(size_t n=0;n<vertexSets.size();n++){
-	  // for each set of vertices
-
-	  cpgmove(vertexSets[n][0].getX()-xoffset,vertexSets[n][0].getY()-yoffset);
-	  for(size_t i=1;i<vertexSets[n].size();i++)
-	      cpgdraw(vertexSets[n][i].getX()-xoffset,vertexSets[n][i].getY()-yoffset);
-
-      }
-
-      cpgswin(x1,x2,y1,y2);
-  
-    }    
-
-  }
-
   
   void Detection::addDetection(Detection &other)
   {
