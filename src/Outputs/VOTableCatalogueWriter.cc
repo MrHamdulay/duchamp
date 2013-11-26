@@ -87,9 +87,10 @@ namespace duchamp {
     {
 	if(this->itsOpenFlag){
 	    this->itsFileStream<<"<?xml version=\"1.0\"?>\n";
-	    this->itsFileStream<<"<VOTABLE version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n";
-	    this->itsFileStream<<" xsi:noNamespaceSchemaLocation=\"http://www.ivoa.net/xml/VOTable/VOTable/v1.1\">\n";
-
+	    this->itsFileStream<<"<VOTABLE version=\"1.3\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+			       <<" xmlns=\"http://www.ivoa.net/xml/VOTable/v1.3\"\n"
+			       <<" xmlns:stc=\"http://www.ivoa.net/xml/STC/v1.30\"\n"
+			       <<" xsi:schemaLocation=\"http://www.ivoa.net/xml/VOTable/VOTable/v1.1\" >\n";
 	}
     }
 
