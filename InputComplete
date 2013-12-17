@@ -147,7 +147,7 @@ flagTrim        false
 flaggedChannels no-default
 flagBaseline    false
 
-# GENERAL DETECTION RELATED
+### GENERAL DETECTION RELATED
 # flagStatSec -- Whether to only use a subsection of the cube to calculate 
 #                the statistics.
 # StatSec -- The subsection used for statistics calculations. It has the 
