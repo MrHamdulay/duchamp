@@ -7,7 +7,7 @@
 #  value it will take.
 #
 #
-# INPUT RELATED
+### INPUT RELATED
 # imageFile -- the FITS image.  THERE IS NO DEFAULT FOR THIS.
 # flagSubsection -- whether to get a subsection of that image. 
 # subsection -- the subsection to read in, in format [x1:x2,y1:y2,z1:z2],
@@ -32,7 +32,7 @@ smoothFile	your-smoothed-file-here
 usePrevious     false
 objectList      *
 
-# OUTPUT RELATED
+### OUTPUT RELATED
 # flagLog -- log the intermediate results?   
 # logfile-- the file to put that in.
 # outFile -- the final output list. 
@@ -138,7 +138,7 @@ precFlux        3
 precVel         3
 precSNR         2
 
-# FIXING UP THE CUBE
+### MODIFYING THE CUBE
 # flagTrim -- whether to trim blank pixels from the edges of the cube.
 # flagBaseline -- whether to subtract spectral baselines before searching
 # flaggedChannels -- list of channels to ignore in the source-finding
