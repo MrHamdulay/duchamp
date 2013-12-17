@@ -2,179 +2,152 @@
 # -------------------
 # 
 # This file contains the full list of user-definable parameters. They are 
-#  grouped here according to their use, and the values quoted are the defaults:
-#  if a given parameter is not included in your parameter file, this is the 
-#  value it will take.
+# grouped here according to their use, and the values quoted are the defaults:
+# if a given parameter is not included in your parameter file, this is the 
+# value it will take.
+#
+# In the comments at the start of each section, each parameter is listed followed 
+# by its datatype (in []) and, where applicable, a description of the allowed range
+# of values or types of inputs accepted (in {}), followed by a more verbose description.
 #
 #
 ### INPUT RELATED
-# imageFile -- the FITS image.  THERE IS NO DEFAULT FOR THIS.
-# flagSubsection -- whether to get a subsection of that image. 
-# subsection -- the subsection to read in, in format [x1:x2,y1:y2,z1:z2],
-#               or * to indicate the full range 
-# flagReconExists -- set to true if the reconstructed cube exists as a FITS 
-#                    file (ie. it has been saved from a previous Duchamp run)
-# reconFile -- the location of the FITS file containing the reconstructed cube
-# flagSmoothExists -- set to true if the smoothed cube exists as a FITS 
-#                    file (ie. it has been saved from a previous Duchamp run)
-# smoothFile -- the location of the FITS file containing the smoothed cube
-# usePrevious -- whether to read the list of detected objects from a previously-
-#                created log file
-# objectList -- the list of objects to plot in individual plots: used with usePrevious=true
+#* imageFile [string] {filename (must exist)} -- The FITS image.  THERE IS NO DEFAULT FOR THIS.
+#* flagSubsection [bool] {true or false, or 1 or 0} -- Whether to get a subsection of that image. 
+#* subsection [string] {Subsection specification like [x1:x2,y1:y2,z1:z2]} -- The subsection to read in, in format [x1:x2,y1:y2,z1:z2], or * to indicate the full range 
+#* flagReconExists [bool] {true or false, or 1 or 0} -- Set to true if the reconstructed cube exists as a FITS file (ie. it has been saved from a previous Duchamp run)
+#* reconFile [string] {filename (must exist)} -- The location of the FITS file containing the reconstructed cube
+#* flagSmoothExists [bool] {true or false, or 1 or 0} -- Set to true if the smoothed cube exists as a FITS file (ie. it has been saved from a previous Duchamp run)
+#* smoothFile [string] {filename (must exist)} -- The location of the FITS file containing the smoothed cube
+#* usePrevious [bool] {true or false, or 1 or 0} -- Whether to read the list of detected objects from a previously-created log file
+#* objectList [string] {comma-separated list of object numbers (integers)} -- The list of objects to plot in individual plots: used with usePrevious=true
 
-imageFile       your-file-here
-flagSubsection  false
-subsection      [*,*,*]
-flagReconExists	false
-reconFile	your-reconstructed-file-here
+imageFile        your-file-here
+flagSubsection   false
+subsection       ""
+flagReconExists	 false
+reconFile	 your-reconstructed-file-here
 flagSmoothExists false
-smoothFile	your-smoothed-file-here
-usePrevious     false
-objectList      *
+smoothFile	 your-smoothed-file-here
+usePrevious      false
+objectList       *
 
 ### OUTPUT RELATED
-# flagLog -- log the intermediate results?   
-# logfile-- the file to put that in.
-# outFile -- the final output list. 
-# flagSeparateHeader -- whether to write the header information 
-#                        (i.e. parameters, statistics and number of detections)
-#                        to a separate file from the outFile (so that the 
-#                        outFile just contains the table of detections).
-# headerFile -- the file to write the header information to.
-# flagWriteBinaryCatalogue -- whether to create a binary catalogue
-# 			      indicating the pixel locations of
-# 			      detected objects (for later reuse)
-# binaryCatalogue -- the file containing the binary source catalogue
-# flagPlotSpectra -- whether to produce a file showing spectra of each detection
-# spectraFile -- the postscript file of spectra
-# flagPlotIndividualSpectra -- whether to also write individual source
-# 			       spectra postscript files
-# flagTextSpectra -- whether to save a text file detailing the spectra
-#                    of each source
-# spectraTextFile -- the file in which to save the text-formatted spectra
-# flagOutputBaseline -- whether to save a FITS file containing the cube of baseline values
-# fileOutputBaseline -- the filename for the baseline FITS file. If not given, it defaults 
-#                   to the format shown (for input file image.fits)
-# flagOutputMomentMap -- whether to save a FITS file containing the moment-0 map
-# fileOutputMomentMap -- the filename for the moment-0 FITS file. If not given, it defaults 
-#                   to the format shown (for input file image.fits)
-# flagOutputMomentMask -- whether to save a FITS file containing the
-# 		       	  moment-0 mask image
-# fileOutputMomentMask -- the filename for the moment-0 mask FITS file. If not given, it defaults 
-#                   to the format shown (for input file image.fits)
-# flagOutputMask -- whether to save a FITS file containing a mask
-#                   array, showing the locations of detected objects
-# fileOutputMask -- the filename for the mask file. If not given, it defaults 
-#                   to the format shown (for input file image.fits)
-# flagMaskWithObjectNum -- if true, the detected pixels in the mask array have 
-#                          the object ID number, else they all have the value 1.
-# flagOutputSmooth -- whether to save the smoothed arrays as a FITS file
-# fileOutputSmooth -- the filename for the smoothed array file. If not given, it defaults 
-#                     to the format shown (for input file image.fits). See documentation for 
-#                     explanation of format.
-# flagOutputRecon/Resid -- whether to save the reconstruction & residual arrays
-#                          as FITS files
-# fileOutputRecon/Resid -- the filename for the reconstruction or residual files. 
-#                          If not given, it defaults to the format shown (for input 
-#			   file image.fits). See documentation for explanation of format.
-# flagVOT -- make a VOTable file of the results?  
-# votFile -- the file to put it in
-# flagKarma -- make a Karma annotation file of the results?  
-# karmaFile -- the file to put it in
-# flagDS9 -- make a DS9 region file of the results?  
-# ds9File -- the file to put it in
-# flagCasa -- make a CASA region file of the results?  
-# casaFile -- the file to put it in
-# flagMaps -- save postscript versions of the detection and 0th moment maps?
-# detectionMap, momentMap -- the postscript files produced.
-# flagXOutput -- display the moment map in a pgplot window
-# newFluxUnits -- brightness units to convert the array values to
-#                 (eg. from Jy/beam to mJy/beam)   
-# precFlux -- Desired precision for Flux value in outputs.
-# precVel -- Desired precision for Velocity/Frequency value in outputs.
-# precSNR -- Desired precision for peak SNR value in ouputs.
+#* flagLog [bool] {true or false, or 1 or 0} -- Log the intermediate results?   
+#* logfile [string] {filename} -- The file to put that in.
+#* outFile [string] {filename} -- The final output list. 
+#* flagSeparateHeader [bool] {true or false, or 1 or 0} -- Whether to write the header information (i.e. parameters, statistics and number of detections) to a separate file from the outFile (so that the outFile just contains the table of detections).
+#* headerFile [string] {filename} -- The file to write the header information to.
+#* flagWriteBinaryCatalogue [bool] {true or false, or 1 or 0} -- Whether to create a binary catalogue indicating the pixel locations of detected objects (for later reuse)
+#* binaryCatalogue [string] {filename} -- The file containing the binary source catalogue
+#* flagPlotSpectra [bool] {true or false, or 1 or 0} -- Whether to produce a file showing spectra of each detection
+#* spectraFile [string] {filename} -- The postscript file of spectra
+#* flagPlotIndividualSpectra [bool] {true or false, or 1 or 0} -- Whether to also write individual source spectra postscript files
+#* flagTextSpectra [bool] {true or false, or 1 or 0} -- Whether to save a text file detailing the spectra of each source
+#* spectraTextFile [string] {filename} -- The file in which to save the text-formatted spectra
+#* flagOutputBaseline [bool] {true or false, or 1 or 0} -- Whether to save a FITS file containing the cube of baseline values
+#* fileOutputBaseline [string] {filename} -- The filename for the baseline FITS file. If not given, it defaults to the format shown (for input file image.fits)
+#* flagOutputMomentMap [bool] {true or false, or 1 or 0} -- Whether to save a FITS file containing the moment-0 map
+#* fileOutputMomentMap [string] {filename} -- The filename for the moment-0 FITS file. If not given, it defaults to the format shown (for input file image.fits)
+#* flagOutputMomentMask [bool] {true or false, or 1 or 0} -- Whether to save a FITS file containing the moment-0 mask image
+#* fileOutputMomentMask [string] {filename} -- The filename for the moment-0 mask FITS file. If not given, it defaults to the format shown (for input file image.fits)
+#* flagOutputMask [bool] {true or false, or 1 or 0} -- Whether to save a FITS file containing a mask array, showing the locations of detected objects
+#* fileOutputMask [string] {filename} -- The filename for the mask file. If not given, it defaults to the format shown (for input file image.fits)
+#* flagMaskWithObjectNum [bool] {true or false, or 1 or 0} -- If true, the detected pixels in the mask array have the object ID number, else they all have the value 1.
+#* flagOutputSmooth [bool] {true or false, or 1 or 0} -- Whether to save the smoothed arrays as a FITS file
+#* fileOutputSmooth [string] {filename} -- The filename for the smoothed array file. If not given, it defaults to the format shown (for input file image.fits). See documentation for explanation of format.
+#* flagOutputRecon/Resid [bool] {true or false, or 1 or 0} -- Whether to save the reconstruction & residual arrays as FITS files
+#* fileOutputRecon/Resid [string] {filename} -- The filename for the reconstruction or residual files. If not given, it defaults to the format shown (for input file image.fits). See documentation for explanation of format.
+#* flagVOT [bool] {true or false, or 1 or 0} -- Make a VOTable file of the results?  
+#* votFile [string] {filename} -- The file to put it in
+#* flagKarma [bool] {true or false, or 1 or 0} -- Make a Karma annotation file of the results?  
+#* karmaFile [string] {filename} -- The file to put it in
+#* flagDS9 [bool] {true or false, or 1 or 0} -- Make a DS9 region file of the results?  
+#* ds9File [string] {filename} -- The file to put it in
+#* flagCasa [bool] {true or false, or 1 or 0} -- Make a CASA region file of the results?  
+#* casaFile [string] {filename} -- The file to put it in
+#* flagMaps [bool] {true or false, or 1 or 0} -- Save postscript versions of the detection and 0th moment maps?
+#* detectionMap [string] {filename}  -- The postscript file containing the detection map
+#* momentMap [string] {filename} -- The postscript files containing the 0th-moment map
+#* flagXOutput [bool] {true or false, or 1 or 0} -- Display the moment map in a pgplot window
+#* newFluxUnits [string] {units, convertible from FITS file units} -- Brightness units to convert the array values to (eg. from Jy/beam to mJy/beam)   
+#* precFlux [int] {>=0} -- Desired precision for Flux value in outputs.
+#* precVel [int] {>=0} -- Desired precision for Velocity/Frequency value in outputs.
+#* precSNR [int] {>=0} -- Desired precision for peak SNR value in ouputs.
 
-flagLog         false
-logFile		duchamp-Logfile.txt
-outFile		duchamp-Results.txt
-flagSeparateHeader false
-headerFile      duchamp-Results.hdr
-flagWriteBinaryCatalogue true
-binaryCatalogue duchamp-Catalogue.dpc
-flagPlotSpectra true
-spectraFile	duchamp-Spectra.ps
+flagLog                   false
+logFile		          duchamp-Logfile.txt
+outFile		          duchamp-Results.txt
+flagSeparateHeader        false
+headerFile                duchamp-Results.hdr
+flagWriteBinaryCatalogue  true
+binaryCatalogue           duchamp-Catalogue.dpc
+flagPlotSpectra           true
+spectraFile	          duchamp-Spectra.ps
 flagPlotIndividualSpectra false
-flagTextSpectra false
-spectraTextFile duchamp-Spectra.txt
-flagOutputBaseline  false
-fileOutputBaseline  image.BASE.fits
-flagOutputMomentMap  false
-fileOutputMomentMap  image.MOM0.fits
-flagOutputMomentMask  false
-fileOutputMomentMask  image.MOM0MASK.fits
-flagOutputMask  false
-fileOutputMask  image.MASK.fits
-flagMaskWithObjectNum false
-flagOutputSmooth false
-fileOutputSmooth image.SMOOTH-ND-X.fits
-flagOutputRecon	false
-fileOutputRecon image.RECON-A-B-C-D.fits
-flagOutputResid	false
-fileOutputResid image.RESID-A-B-C-D.fits
-flagVOT         false
-votFile         duchamp-Results.xml
-flagKarma       false
-karmaFile       duchamp-Results.ann
-flagDS9         false
-ds9File         duchamp-Results.reg
-flagCasa        false
-casaFile        duchamp-Results.crf
-flagMaps        true
-detectionMap    duchamp-DetectionMap.ps
-momentMap       duchamp-MomentMap.ps
-flagXOutput     true
-newFluxUnits    no-default
-precFlux        3
-precVel         3
-precSNR         2
+flagTextSpectra           false
+spectraTextFile           duchamp-Spectra.txt
+flagOutputBaseline        false
+fileOutputBaseline        image.BASE.fits
+flagOutputMomentMap       false
+fileOutputMomentMap       image.MOM0.fits
+flagOutputMomentMask      false
+fileOutputMomentMask      image.MOM0MASK.fits
+flagOutputMask            false
+fileOutputMask            image.MASK.fits
+flagMaskWithObjectNum     false
+flagOutputSmooth          false
+fileOutputSmooth          image.SMOOTH-ND-X.fits
+flagOutputRecon	          false
+fileOutputRecon           image.RECON-A-B-C-D.fits
+flagOutputResid	          false
+fileOutputResid           image.RESID-A-B-C-D.fits
+flagVOT                   false
+votFile                   duchamp-Results.xml
+flagKarma                 false
+karmaFile                 duchamp-Results.ann
+flagDS9                   false
+ds9File                   duchamp-Results.reg
+flagCasa                  false
+casaFile                  duchamp-Results.crf
+flagMaps                  true
+detectionMap              duchamp-DetectionMap.ps
+momentMap                 duchamp-MomentMap.ps
+flagXOutput               true
+newFluxUnits              no-default
+precFlux                  3
+precVel                   3
+precSNR                   2
 
 ### MODIFYING THE CUBE
-# flagTrim -- whether to trim blank pixels from the edges of the cube.
-# flagBaseline -- whether to subtract spectral baselines before searching
-# flaggedChannels -- list of channels to ignore in the source-finding
+#* flagTrim [bool] {true or false, or 1 or 0} -- Whether to trim blank pixels from the edges of the cube.
+#* flagBaseline [bool] {true or false, or 1 or 0} -- Whether to subtract spectral baselines before searching
+#* flaggedChannels [bool] {true or false, or 1 or 0} -- List of channels to ignore in the source-finding
+#* baselineType [string] {either 'atrous' or 'median'} -- Which type of baseline estimation to use. Only 'atrous' or 'median' modes accepted.
+#* baselineBoxWidth [int] {odd integer > 0} -- Box width used by the median baseline algorithm
 
-flagTrim        false
-flaggedChannels no-default
-flagBaseline    false
+flagTrim         false
+flaggedChannels  ""
+flagBaseline     false
+baselineType     atrous
+baselineBoxWidth 51
 
 ### GENERAL DETECTION RELATED
-# flagStatSec -- Whether to only use a subsection of the cube to calculate 
-#                the statistics.
-# StatSec -- The subsection used for statistics calculations. It has the 
-#            same format as the pixel subsection.
-# flagRobustStats -- Shall we use robust statistics to characterise
-#                    the noise in the image?
-# flagNegative -- Are the features being searched for negative (set to true) 
-#                 or positive (false -- the default)?
-# snrCut --  How many sigma above mean is a detection when sigma-clipping
-# threshold -- The threshold flux dividing source and non-source. Used instead 
-#              of calculating it from the cube's statistics. If not specified,
-#              it will be calculated.
-# flagGrowth -- Should the detections be "grown" to a lower significance value?
-# growthCut -- The lower threshold used when growing detections
-# growthThreshold -- The lower threshold, used in conjunction with "threshold"
-# beamarea -- the area of the beam in pixels (equivalent to the old beamsize 
-#             parameter). This value is overridden by the BMAJ, BMIN, BPA header 
-#             parameters if present.
-# beamFWHM -- the full-width at half-maximum of the beam, in pixels. Where given,
-#             it overrides beamarea, but is overridden by the BMAJ, BMIN, BPA
-#             headers.
-# searchType -- how the searching is done. Either "spatial", where each 2D map is 
-#               searched then detections combined, or "spectral", where each 1D 
-#               spectrum is searched then detections combined. 
+#* flagStatSec [bool] {true or false, or 1 or 0} -- Whether to only use a subsection of the cube to calculate the statistics.
+#* StatSec [string] {Subsection specification like [x1:x2,y1:y2,z1:z2] -- The subsection used for statistics calculations. It has the same format as the pixel subsection.
+#* flagRobustStats [bool] {true or false, or 1 or 0} -- Shall we use robust statistics to characterise the noise in the image?
+#* flagNegative [bool] {true or false, or 1 or 0} -- Are the features being searched for negative (set to true) or positive (false -- the default)?
+#* snrCut [float] {} --  How many sigma above mean is a detection when sigma-clipping
+#* threshold [float] {} -- The threshold flux dividing source and non-source. Used instead of calculating it from the cube's statistics. If not specified, it will be calculated.
+#* flagGrowth [bool] {true or false, or 1 or 0} -- Should the detections be "grown" to a lower significance value?
+#* growthCut [float] {any} -- The lower threshold used when growing detections
+#* growthThreshold [float] {any} -- The lower threshold, used in conjunction with "threshold"
+#* beamarea [float] {> 0.} -- The area of the beam in pixels (equivalent to the old beamsize parameter). This value is overridden by the BMAJ, BMIN, BPA header parameters if present.
+#* beamFWHM [float] {> 0.} -- The full-width at half-maximum of the beam, in pixels. Where given, it overrides beamarea, but is overridden by the BMAJ, BMIN, BPA headers.
+#* searchType [string] {either 'spatial' or 'spectral'} -- How the searching is done. Either "spatial", where each 2D map is searched then detections combined, or "spectral", where each 1D spectrum is searched then detections combined. 
 
 flagStatSec     false
-StatSec         [*,*,*]
+StatSec         ""
 flagRobustStats true
 flagNegative    false
 snrCut		5.
@@ -186,89 +159,63 @@ beamArea        0.
 beamFWHM        0.
 searchType      spatial
 
-# RECONSTRUCTION RELATED
-# flagATrous -- Whether or not to do the reconstruction before searching
-# reconDim -- The number of dimensions in which to perform the reconstruction.
-# scaleMin -- The minimum scale (starts at 1) to be included in the 
-#              reconstruction
-# scaleMax -- The maximum scale to be included in the reconstruction. If it 
-#              is <=0 then the maximum scale is calculated from the size of 
-#              the array being reconstructed.
-# snrRecon -- The threshold used in filtering the wavelet coefficient arrays.
-# reconConvergence -- The relative change in the residual rms must be
-#                     less than this to stop the a trous iterations.
-# filterCode -- The code number for the choice of filter to be used in the 
-#               reconstruction:  1 = B3-spline filter, 2 = Triangle function, 
-#                                3 = Haar wavelet. Other numbers default to 2.
+### RECONSTRUCTION RELATED
+#* flagATrous [bool] {true or false, or 1 or 0} -- Whether or not to do the reconstruction before searching
+#* reconDim [int] {> 0} -- The number of dimensions in which to perform the reconstruction.
+#* scaleMin [int] {> 0} -- The minimum scale (starts at 1) to be included in the reconstruction
+#* scaleMax [int] {any} -- The maximum scale to be included in the reconstruction. If it is <=0 then the maximum scale is calculated from the size of the array being reconstructed.
+#* snrRecon [float] {any} -- The threshold used in filtering the wavelet coefficient arrays.
+#* reconConvergence [float] {> 0.} -- The relative change in the residual rms must be less than this to stop the a trous iterations.
+#* filterCode [int] {one of 1,2,3} -- The code number for the choice of filter to be used in the reconstruction:  1 = B3-spline filter, 2 = Triangle function, 3 = Haar wavelet. Other numbers default to 1.
 
-flagATrous	false
-reconDim        1
-scaleMin	1
-scaleMax        0
-snrRecon	4.
+flagATrous	 false
+reconDim         1
+scaleMin	 1
+scaleMax         0
+snrRecon	 4.
 reconConvergence 0.005
-filterCode      1
+filterCode       1
 
-# SMOOTHING
-# flagSmooth -- whether to smooth the cube.
-# smoothType -- either "spectral" or "spatial"
-# hanningWidth -- the width parameter of the Hanning (spectral smoothing) 
-#                 function
-# kernMaj -- the FWHM of the major axis of the 2D spatial smoothing gaussian
-# kernMin -- the FWHM of the minor axis of the 2D spatial smoothing gaussian
-# kernPA  -- the position angle of the major axis of the 2D spatial 
-#            smoothing gaussian
-# smoothEdgeMethod -- how to deal with the pixels at the edge of the
-# 		      image when using the 2D smoothing algorith. Can
-# 		      be equal, truncate, or scale. 
-# spatialSmoothCutoff - relative cutoff used to determine the width of
-#  		      	the 2D smoothing kernel
+### SMOOTHING
+#* flagSmooth [bool] {true or false, or 1 or 0} -- Whether to smooth the cube.
+#* smoothType [string] {either 'spectral' or 'spatial'} -- The type of smoothing to use, either "spectral" or "spatial"
+#* hanningWidth [int] {> 0} -- The width parameter of the Hanning (spectral smoothing) function
+#* kernMaj [float] {> 0.} -- The FWHM (in pixels) of the major axis of the 2D spatial smoothing gaussian
+#* kernMin [float] {> 0.} -- The FWHM (in pixels) of the minor axis of the 2D spatial smoothing gaussian
+#* kernPA [float] {any} -- The position angle (in degrees) of the major axis of the 2D spatial smoothing gaussian
+#* smoothEdgeMethod [string] {one of 'equal', 'truncate' or 'scale'} -- How to deal with the pixels at the edge of the image when using the 2D smoothing algorith. Can be equal, truncate, or scale. 
+#* spatialSmoothCutoff [float] {> 0.} - Relative cutoff used to determine the width of the 2D smoothing kernel
 
-flagSmooth      false
-smoothType      spectral
-hanningWidth    5
-kernMaj         3.
-kernMin         -1.
-kernPA          0.
-smoothEdgeMethod equal
-spatialSmoothCutoff 1.e-10
+flagSmooth           false
+smoothType           spectral
+hanningWidth         5
+kernMaj              3.
+kernMin              -1.
+kernPA               0.
+smoothEdgeMethod     equal
+spatialSmoothCutoff  1.e-10
 
-# FALSE DISCOVERY RATE METHOD
-# flagFDR -- Whether or not to use the false discovery rate method instead of 
-#   simple sigma clipping.
-# alphaFDR -- The "alpha" parameter for the FDR method -- what desired 
-#             percentage of discoveries will be false. Expressed as a decimal.
-# FDRnumCorChan -- The number of neighbouring channels that are
-#                  correlated. This is used in the FDR algorithm
+### FALSE DISCOVERY RATE METHOD
+#* flagFDR [bool] {true or false, or 1 or 0} -- Whether or not to use the false discovery rate method instead of simple sigma clipping.
+#* alphaFDR [float] {0. - 1.} -- The "alpha" parameter for the FDR method -- what desired fraction of discoveries will be false. Expressed as a decimal.
+#* FDRnumCorChan [int] {>0} -- The number of neighbouring channels that are correlated. This is used only in the FDR algorithm
 
 flagFDR 	false
 alphaFDR	0.01
 FDRnumCorChan   2
 
-# MERGING PARAMETERS
-# flagAdjacent -- Whether to use the "adjacent criterion" to judge if objects 
-#                  are to be merged.
-# threshSpatial -- If flagAdjacent=false, this is the maximum spatial 
-#                   separation between objects for them to be merged.
-# threshVelocity -- The maximum channel separation between objects for them 
-#                   to be merged.
-# minChannels -- The minimum number of consecutive channels an object must have
-#                 for it to be accepted.
-# minPix -- Minimum number of spatial pixels a detected object must have for 
-#            it to be counted
-# minVoxels -- Minimum number of voxels a detected object must have for it to be 
-#              counted
-# maxChannels -- The maximum number of channels an object must have
-#                 for it to be accepted.
-# maxPix -- Maximum number of spatial pixels a detected object must have for 
-#            it to be counted
-# maxVoxels -- Maximum number of voxels a detected object must have for it to be 
-#              counted
-# flagRejectBeforeMerge -- If true, reject sources for not meeting the above 
-#                          criteria before the merging stage
-# flagTwoStageMerging -- If true, do an initial merge of a new source to the list 
-#                        (that is, merge it with the first source in the list that 
-#                        is close, but stop there)
+### MERGING PARAMETERS
+#* flagAdjacent [bool] {true or false, or 1 or 0} -- Whether to use the "adjacent criterion" to judge if objects are to be merged.
+#* threshSpatial [float] {>= 0.} -- If flagAdjacent=false, this is the maximum spatial separation between objects for them to be merged.
+#* threshVelocity [float] {>= 0.} -- The maximum channel separation between objects for them to be merged.
+#* minChannels [int] {> 0} -- The minimum number of consecutive channels an object must have for it to be accepted.
+#* minPix [int] {> 0} -- Minimum number of spatial pixels a detected object must have for it to be counted
+#* minVoxels [int] {> 0} -- Minimum number of voxels a detected object must have for it to be counted
+#* maxChannels [int] {any} -- The maximum number of channels an object must have for it to be accepted.
+#* maxPix [int] {any} -- Maximum number of spatial pixels a detected object must have for it to be counted
+#* maxVoxels [int] {any} -- Maximum number of voxels a detected object must have for it to be counted
+#* flagRejectBeforeMerge [bool] {true or false, or 1 or 0} -- If true, reject sources for not meeting the above criteria before the merging stage
+#* flagTwoStageMerging [bool] {true or false, or 1 or 0} -- If true, do an initial merge of a new source to the list (that is, merge it with the first source in the list that is close, but stop there)
 
 flagAdjacent	       true
 threshSpatial	       3
@@ -282,34 +229,22 @@ maxVoxels              -1
 flagRejectBeforeMerge  false
 flagTwoStageMerging    true
 
-# WCS PARAMETERS
-# 
-# spectralType -- an alternative spectral WCS type to use for spectral 
-# 	       	  transformations.
-# restFrequency -- a value of the rest frequency to override any
-# 		   provided in the FITS header
-# spectralUnits -- what units you want the spectral axis to be plotted in and 
-#                   values quoted in (including the units of integrated flux)
+### WCS PARAMETERS
+#* spectralType [string] {a valid WCS type} -- An alternative spectral WCS type to use for spectral transformations.
+#* restFrequency [float] {any} -- A value of the rest frequency to override any provided in the FITS header. Negative values will be ignored.
+#* spectralUnits [string] {valid units string} -- What units you want the spectral axis to be plotted in and values quoted in (including the units of integrated flux)
 
-spectralType   no-default
+spectralType   ""
 restFrequency  -1
-spectralUnits  no-default
+spectralUnits  ""
 
-# OTHER PARAMETERS
-# verbose -- whether to provide progress indicators on the terminal during 
-#             execution
-# drawBorders -- whether to draw borders around the detections on the moment 
-#                 maps in the output.
-# drawBlankEdges -- whether to draw an outline around any BLANK regions in the
-#                    moment maps and image cutouts.
-# spectralMethod -- how to plot the spectra in the output -- the spectrum of 
-#                    the peak pixel ("peak" -- the default), or integrated over
-#                    all spatial pixels present ("sum")
-# pixelCentre -- which option to use for quoting the centre of the detection. 
-#                 Options are: centroid, average, peak.
-# sortingParam -- which parameter to sort the final detection list on.
-#                  Options are: xvalue, yvalue, zvalue, ra, dec, vel, w50, 
-#                                iflux,  pflux, snr. 
+### OTHER PARAMETERS
+#* verbose [bool] {true or false, or 1 or 0} -- Whether to provide progress indicators on the terminal during execution
+#* drawBorders [bool] {true or false, or 1 or 0} -- Whether to draw borders around the detections on the moment maps in the output.
+#* drawBlankEdges [bool] {true or false, or 1 or 0} -- Whether to draw an outline around any BLANK regions in the moment maps and image cutouts.
+#* spectralMethod [string] {either 'peak' or 'sum'} -- How to plot the spectra in the output -- the spectrum of the peak pixel ("peak" -- the default), or integrated over all spatial pixels present ("sum")
+#* pixelCentre [string] {one of 'centroid', 'average' or 'peak'} -- Which option to use for quoting the centre of the detection. Options are: centroid (flux-weighted average position), average (simple average with no weighting), peak (brightest pixel).
+#* sortingParam [string] {one of 'xvalue', 'yvalue', 'zvalue', 'ra', 'dec', 'vel', 'w50', 'iflux',  'pflux', 'snr'} -- The parameter by which the final detection list is sorted
 
 verbose         true
 drawBorders	true
