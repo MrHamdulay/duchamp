@@ -186,7 +186,7 @@ filterCode       1
 #* kernMin [float] {> 0.} -- The FWHM (in pixels) of the minor axis of the 2D spatial smoothing gaussian
 #* kernPA [float] {any} -- The position angle (in degrees) of the major axis of the 2D spatial smoothing gaussian
 #* smoothEdgeMethod [string] {one of 'equal', 'truncate' or 'scale'} -- How to deal with the pixels at the edge of the image when using the 2D smoothing algorith. Can be equal, truncate, or scale. 
-#* spatialSmoothCutoff [float] {> 0.} - Relative cutoff used to determine the width of the 2D smoothing kernel
+#* spatialSmoothCutoff [float] {> 0.} -- Relative cutoff used to determine the width of the 2D smoothing kernel
 
 flagSmooth           false
 smoothType           spectral
