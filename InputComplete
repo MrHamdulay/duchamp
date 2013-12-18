@@ -66,6 +66,7 @@ objectList       *
 #* ds9File [string] {filename} -- The file to put it in
 #* flagCasa [bool] {true or false, or 1 or 0} -- Make a CASA region file of the results?  
 #* casaFile [string] {filename} -- The file to put it in
+#* annotationType [string] {borders/circles/ellipses} -- Which type of annotation plot to use. Options are: borders = outline around detected pixels; circles = circle centred on object with radius encompassing all detected pixels; ellipses = ellipse centred on object with size given by MAJ, MIN, PA
 #* flagMaps [bool] {true or false, or 1 or 0} -- Save postscript versions of the detection and 0th moment maps?
 #* detectionMap [string] {filename}  -- The postscript file containing the detection map
 #* momentMap [string] {filename} -- The postscript files containing the 0th-moment map
@@ -110,6 +111,7 @@ flagDS9                   false
 ds9File                   duchamp-Results.reg
 flagCasa                  false
 casaFile                  duchamp-Results.crf
+annotationType            borders
 flagMaps                  true
 detectionMap              duchamp-DetectionMap.ps
 momentMap                 duchamp-MomentMap.ps
@@ -122,7 +124,7 @@ precSNR                   2
 ### MODIFYING THE CUBE
 #* flagTrim [bool] {true or false, or 1 or 0} -- Whether to trim blank pixels from the edges of the cube.
 #* flagBaseline [bool] {true or false, or 1 or 0} -- Whether to subtract spectral baselines before searching
-#* flaggedChannels [bool] {true or false, or 1 or 0} -- List of channels to ignore in the source-finding
+#* flaggedChannels [string] {comma-separated list of channels} -- List of channels to ignore in the source-finding
 #* baselineType [string] {either 'atrous' or 'median'} -- Which type of baseline estimation to use. Only 'atrous' or 'median' modes accepted.
 #* baselineBoxWidth [int] {odd integer > 0} -- Box width used by the median baseline algorithm
 
@@ -134,7 +136,7 @@ baselineBoxWidth 51
 
 ### GENERAL DETECTION RELATED
 #* flagStatSec [bool] {true or false, or 1 or 0} -- Whether to only use a subsection of the cube to calculate the statistics.
-#* StatSec [string] {Subsection specification like [x1:x2,y1:y2,z1:z2] -- The subsection used for statistics calculations. It has the same format as the pixel subsection.
+#* StatSec [string] {Subsection specification like [x1:x2,y1:y2,z1:z2]} -- The subsection used for statistics calculations. It has the same format as the pixel subsection.
 #* flagRobustStats [bool] {true or false, or 1 or 0} -- Shall we use robust statistics to characterise the noise in the image?
 #* flagNegative [bool] {true or false, or 1 or 0} -- Are the features being searched for negative (set to true) or positive (false -- the default)?
 #* snrCut [float] {} --  How many sigma above mean is a detection when sigma-clipping
@@ -164,7 +166,7 @@ searchType      spatial
 #* reconDim [int] {> 0} -- The number of dimensions in which to perform the reconstruction.
 #* scaleMin [int] {> 0} -- The minimum scale (starts at 1) to be included in the reconstruction
 #* scaleMax [int] {any} -- The maximum scale to be included in the reconstruction. If it is <=0 then the maximum scale is calculated from the size of the array being reconstructed.
-#* snrRecon [float] {any} -- The threshold used in filtering the wavelet coefficient arrays.
+#* snrRecon [float] {> 0} -- The threshold used in filtering the wavelet coefficient arrays.
 #* reconConvergence [float] {> 0.} -- The relative change in the residual rms must be less than this to stop the a trous iterations.
 #* filterCode [int] {one of 1,2,3} -- The code number for the choice of filter to be used in the reconstruction:  1 = B3-spline filter, 2 = Triangle function, 3 = Haar wavelet. Other numbers default to 1.
 

@@ -36,287 +36,302 @@ not matter, they are grouped here in logical sections.
 
 \secB*{Input related}
 \begin{Lentry}
-\item[{ImageFile [no default]}] The filename of the
-  data cube to be analysed. 
-\item[{flagSubsection [false]}] A flag to indicate whether one
-  wants a subsection of the requested image.
-\item[{Subsection [ [*,*,*] ]}] The requested subsection
- -- see \S\ref{sec-input} for details on the subsection format.  If
- the full range of a dimension is required, use a \texttt{*} (thus the
- default is the full cube).
-\item[{flagReconExists [false]}] A flag to indicate whether the
-  reconstructed array has been saved by a previous run of \duchamp. If
-  set true, the reconstructed array will be read from the file given
-  by \texttt{reconFile}, rather than calculated directly.
-\item[{reconFile [no default]}] The FITS file that contains the
-  reconstructed array. If \texttt{flagReconExists} is true and this
-  parameter is not defined, the default file that is looked for will
-  be determined by the \atrous parameters (see \S\ref{sec-recon}).
-\item[{flagSmoothExists [false]}] A flag to indicate whether the
-  Hanning-smoothed array has been saved by a previous run of \duchamp. If
-  set true, the smoothed array will be read from the file given
-  by \texttt{smoothFile}, rather than calculated directly.
-\item[{smoothFile [no default]}] The FITS file that has
-  a previously smoothed array. If \texttt{flagSmoothExists}
+\item[{ImageFile [no default | string | filename]}] The filename of
+  the data cube to be analysed.
+\item[{flagSubsection [false | bool | true/false/1/0]}] A flag to
+  indicate whether one wants a subsection of the requested image.
+\item[{Subsection [full field | string | Subsection string]}] The
+  requested subsection -- see \S\ref{sec-input} for details on the
+  subsection format.  If the full range of a dimension is required,
+  use a \texttt{*} (thus the default is the full cube).
+\item[{flagReconExists [false | bool | true/false/1/0]}] A flag to
+  indicate whether the reconstructed array has been saved by a
+  previous run of \duchamp. If set true, the reconstructed array will
+  be read from the file given by \texttt{reconFile}, rather than
+  calculated directly.
+\item[{reconFile [no default | string | filename]}] The FITS file that
+  contains the reconstructed array. If \texttt{flagReconExists} is
+  true and this parameter is not defined, the default file that is
+  looked for will be determined by the \atrous parameters (see
+  \S\ref{sec-recon}).
+\item[{flagSmoothExists [false | bool | true/false/1/0]}] A flag to
+  indicate whether the Hanning-smoothed array has been saved by a
+  previous run of \duchamp. If set true, the smoothed array will be
+  read from the file given by \texttt{smoothFile}, rather than
+  calculated directly.
+\item[{smoothFile [no default | string | filename]}] The FITS file
+  that has a previously smoothed array. If \texttt{flagSmoothExists}
   is true and this parameter is not defined, the default file that is
   looked for will be determined by the smoothing parameters (see
   \S\ref{sec-smoothing}).
-\item[{usePrevious [false]}] A flag to indicate that \duchamp should
-  read the list of objects from a previously-created log file, rather
-  than doing the searching itself. The set of outputs will be created
-  according to the flags in the following section.
-\item[{objectList [no default]}] When \texttt{usePrevious=true}, this
-  list is used to output individual spectral plots, as well as a
-  postscript file for all spectral plots as given by
-  \texttt{SpectraFile}. The filenames of the plots will be the same as
-  \texttt{SpectraFile}, but with -XX at the end, where XX is the
-  object number (\eg \texttt{duchamp-Spectra-07.ps}). The format of
-  the parameter value should be a string listing individual objects or
-  object ranges: \eg 1,2,4-7,8,14.
+\item[{usePrevious [false | bool | true/false/1/0]}] A flag to
+  indicate that \duchamp should read the list of objects from a
+  previously-created log file, rather than doing the searching
+  itself. The set of outputs will be created according to the flags in
+  the following section.
+\item[{objectList [no default | string | comma-separated list]}] When
+  \texttt{usePrevious=true}, this list is used to output individual
+  spectral plots, as well as a postscript file for all spectral plots
+  as given by \texttt{SpectraFile}. The filenames of the plots will be
+  the same as \texttt{SpectraFile}, but with -XX at the end, where XX
+  is the object number (\eg \texttt{duchamp-Spectra-07.ps}). The
+  format of the parameter value should be a string listing individual
+  objects or object ranges: \eg 1,2,4-7,8,14.
 \end{Lentry}
 
 \secB*{Output related}
 \begin{Lentry}
-\item[{OutFile [duchamp-\\Results.txt]}] The file containing the
-  final list of detections. This also records the list of input
-  parameters.
-\item[{flagSeparateHeader [false]}] A flag to indicate that the header
-  information that would normally be printed at the start of the
-  results file (containing information on the parameters, image
-  statistics and number of detections) should instead be written to a
-  separate file.
-\item[{HeaderFile [duchamp-\\Results.hdr]}] The file to which the
-  header information should be written when
+\item[{OutFile [duchamp-\\Results.txt | string | filename]}] The file
+  containing the final list of detections. This also records the list
+  of input parameters.
+\item[{flagSeparateHeader [false | bool | true/false/1/0]}] A flag to
+  indicate that the header information that would normally be printed
+  at the start of the results file (containing information on the
+  parameters, image statistics and number of detections) should
+  instead be written to a separate file.
+\item[{HeaderFile [duchamp-\\Results.hdr | string | filename]}] The
+  file to which the header information should be written when
   \texttt{flagSeparateHeader=true}.
-\item[{flagWriteBinaryCatalogue [true]}] Whether to write a binary
-  catalogue of the detections, for later re-use (see
-  \S\ref{sec-reuse} for details).
-\item[{binaryCatalogue [duchamp-Catalogue.dpc]}] The filename for the
-  binary catalogue.
-\item[{flagPlotSpectra [true]}] Whether to produce a postscript file
-  containing spectra of all detected objects. If PGPlot has not been
-  enabled, this parameter defaults to \texttt{false}.
-\item[{SpectraFile [duchamp-\\Spectra.ps]}] The postscript file
-  that contains the resulting integrated spectra and images of the
-  detections.
-\item[{flagPlotIndividualSpectra [false]}] Whether to produce
-  individual spectral plots for listed sources.
-\item[{flagTextSpectra [false]}] A flag to say whether the spectra
-  should be saved in text form in a single file. See below for a
-  description. 
-\item[{spectraTextFile [duchamp-\\Spectra.txt]}] The file containing
-  the spectra of each object in ascii format. This file will have a
-  column showing the spectral coordinates, and one column for each of
-  the detected objects, showing the flux values as plotted in the
-  graphical output of \texttt{spectraFile}.
-\item[{flagLog [false]}] A flag to indicate whether the
-  details of intermediate detections should be logged.
-\item[{LogFile [duchamp-\\Logfile.txt]}] The file in which
-  intermediate detections and the pixel content of the final list of
-  detections are logged. These are detections that have not been
-  merged. This is primarily for use in debugging and diagnostic
+\item[{flagWriteBinaryCatalogue [true | bool | true/false/1/0]}]
+  Whether to write a binary catalogue of the detections, for later
+  re-use (see \S\ref{sec-reuse} for details).
+\item[{binaryCatalogue [duchamp-Catalogue.dpc | string | filename]}]
+  The filename for the binary catalogue.
+\item[{flagPlotSpectra [true | bool | true/false/1/0]}] Whether to
+  produce a postscript file containing spectra of all detected
+  objects. If PGPlot has not been enabled, this parameter defaults to
+  \texttt{false}.
+\item[{SpectraFile [duchamp-\\Spectra.ps | string | filename]}] The
+  postscript file that contains the resulting integrated spectra and
+  images of the detections.
+\item[{flagPlotIndividualSpectra [false | bool | true/false/1/0]}]
+  Whether to produce individual spectral plots for listed sources.
+\item[{flagTextSpectra [false | bool | true/false/1/0]}] A flag to say
+  whether the spectra should be saved in text form in a single
+  file. See below for a description.
+\item[{spectraTextFile [duchamp-\\Spectra.txt | string | filename]}]
+  The file containing the spectra of each object in ascii format. This
+  file will have a column showing the spectral coordinates, and one
+  column for each of the detected objects, showing the flux values as
+  plotted in the graphical output of \texttt{spectraFile}.
+\item[{flagLog [false | bool | true/false/1/0]}] A flag to indicate
+  whether the details of intermediate detections should be logged.
+\item[{LogFile [duchamp-\\Logfile.txt | string | filename]}] The file
+  in which intermediate detections and the pixel content of the final
+  list of detections are logged. These are detections that have not
+  been merged. This is primarily for use in debugging and diagnostic
   purposes: normal use of the program will probably not require it.
-\item[{flagOutputMomentMap [false]}] A flag to say whether or not to save a
-  FITS file containing the moment-0 map. 
-\item[fileOutputMomentMap{ [see text]}] The file to which the moment-0 array is
-  written. If left blank (the default), the naming scheme detailed in
-  \S\ref{sec-momentOut} is used.
-\item[{flagOutputMomentMask [false]}] A flag to say whether or not to save a
-  FITS file containing the moment-0 mask (a mask showing which spatial
-  pixels are detected in one or more channels). 
-\item[fileOutputMomentMask{ [see text]}] The file to which the moment-0 mask is
-  written. If left blank (the default), the naming scheme detailed in
-  \S\ref{sec-maskOut} is used.
-\item[{flagOutputMask [false]}] A flag to say whether or not to save a
-  FITS file containing a mask array, with values 1 where there is a
-  detected object and 0 elsewhere. 
-\item[fileOutputMask{ [see text]}] The file to which the mask array is
-  written. If left blank (the default), the naming scheme detailed in
-  \S\ref{sec-maskOut} is used.
-\item[{flagMaskWithObjectNum [false]}] If this flag is true, the
-  detected pixels in the mask image have the corresponding object ID
-  as their value. If false, they have the value 1. All non-detected
-  pixels have the value 0.
-\item[{flagOutputRecon [false]}] A flag to say whether or not
-  to save the reconstructed cube as a FITS file. 
-\item[fileOutputRecon{ [see text]}] The file to which the reconstructed array
-  is written. If left blank (the default), the naming scheme detailed
-  in \S\ref{sec-reconIO} is used.
-\item[{flagOutputResid [false]}] As for
+\item[{flagOutputMomentMap [false | bool | true/false/1/0]}] A flag to
+  say whether or not to save a FITS file containing the moment-0 map.
+\item[fileOutputMomentMap{ [see text | string | filename]}] The file
+  to which the moment-0 array is written. If left blank (the default),
+  the naming scheme detailed in \S\ref{sec-momentOut} is used.
+\item[{flagOutputMomentMask [false | bool | true/false/1/0]}] A flag
+  to say whether or not to save a FITS file containing the moment-0
+  mask (a mask showing which spatial pixels are detected in one or
+  more channels).
+\item[fileOutputMomentMask{ [see text | string | filename]}] The file
+  to which the moment-0 mask is written. If left blank (the default),
+  the naming scheme detailed in \S\ref{sec-maskOut} is used.
+\item[{flagOutputMask [false | bool | true/false/1/0]}] A flag to say
+  whether or not to save a FITS file containing a mask array, with
+  values 1 where there is a detected object and 0 elsewhere.
+\item[fileOutputMask{ [see text | string | filename]}] The file to
+  which the mask array is written. If left blank (the default), the
+  naming scheme detailed in \S\ref{sec-maskOut} is used.
+\item[{flagMaskWithObjectNum [false | bool | true/false/1/0]}] If this
+  flag is true, the detected pixels in the mask image have the
+  corresponding object ID as their value. If false, they have the
+  value 1. All non-detected pixels have the value 0.
+\item[{flagOutputRecon [false | bool | true/false/1/0]}] A flag to say
+  whether or not to save the reconstructed cube as a FITS file.
+\item[fileOutputRecon{ [see text | string | filename]}] The file to
+  which the reconstructed array is written. If left blank (the
+  default), the naming scheme detailed in \S\ref{sec-reconIO} is used.
+\item[{flagOutputResid [false | bool | true/false/1/0]}] As for
   \texttt{flagOutputRecon}, but for the residual array -- the
   difference between the original cube and the reconstructed cube. 
-\item[fileOutputResid{ [see text]}] The file to which the residual array
-  is written. If left blank (the default), the naming scheme detailed
-  in \S\ref{sec-reconIO} is used.
-\item[{flagOutputSmooth [false]}] A flag to say whether or not
-  to save the smoothed cube as a FITS file. 
-\item[fileOutputSmooth{ [see text]}] The file to which the smoothed array
-  is written. If left blank (the default), the naming scheme detailed
-  in \S\ref{sec-reconIO} is used.
-\item[{flagOutputBaseline [false]}] A flag to say whether or not
-  to save the cube of spectral baseline values as a FITS file. 
-\item[fileOutputBaseline{ [see text]}] The file to which the baseline
-  values are written. If left blank (the default), the naming scheme
-  detailed in \S\ref{sec-baselineOut} is used.
-\item[{flagVOT [false]}] A flag to say whether to create a
-  VOTable file with the detection information. This will be an XML
-  file in the Virtual Observatory VOTable format.
-\item[{votFile [duchamp-\\Results.xml]}] The VOTable file with
-  the list of final detections. Some input parameters are also
-  recorded. 
-\item[{flagKarma [false]}] A flag to say whether to create a
-  Karma annotation file corresponding to the information in
-  \texttt{outfile}. This can be used as an overlay in Karma
-  programs such as \texttt{kvis}.
-\item[{karmaFile [duchamp-\\Results.ann]}] The Karma annotation
-  file showing the list of final detections.
-\item[{flagDS9 [false]}] A flag to say whether to create a
-  DS9 region file corresponding to the information in
+\item[fileOutputResid{ [see text | string | filename]}] The file to
+  which the residual array is written. If left blank (the default),
+  the naming scheme detailed in \S\ref{sec-reconIO} is used.
+\item[{flagOutputSmooth [false | bool | true/false/1/0]}] A flag to
+  say whether or not to save the smoothed cube as a FITS file.
+\item[fileOutputSmooth{ [see text | string | filename]}] The file to
+  which the smoothed array is written. If left blank (the default),
+  the naming scheme detailed in \S\ref{sec-reconIO} is used.
+\item[{flagOutputBaseline [false | bool | true/false/1/0]}] A flag to
+  say whether or not to save the cube of spectral baseline values as a
+  FITS file.
+\item[fileOutputBaseline{ [see text | string | filename]}] The file to
+  which the baseline values are written. If left blank (the default),
+  the naming scheme detailed in \S\ref{sec-baselineOut} is used.
+\item[{flagVOT [false | bool | true/false/1/0]}] A flag to say whether
+  to create a VOTable file with the detection information. This will
+  be an XML file in the Virtual Observatory VOTable format.
+\item[{votFile [duchamp-\\Results.xml | string | filename]}] The
+  VOTable file with the list of final detections. Some input
+  parameters are also recorded.
+\item[{flagKarma [false | bool | true/false/1/0]}] A flag to say
+  whether to create a Karma annotation file corresponding to the
+  information in \texttt{outfile}. This can be used as an overlay in
+  Karma programs such as \texttt{kvis}.
+\item[{karmaFile [duchamp-\\Results.ann | string | filename]}] The
+  Karma annotation file showing the list of final detections.
+\item[{flagDS9 [false | bool | true/false/1/0]}] A flag to say whether
+  to create a DS9 region file corresponding to the information in
   \texttt{outfile}. This can be used as an overlay in SAOImage DS9 or
-  casaviewer. 
-\item[{ds9File [duchamp-\\Results.ann]}] The DS9 region file showing
-  the list of final detections.
-\item[{flagCasa [false]}] A flag to say whether to create a
-  CASA region file corresponding to the information in
-  \texttt{outfile}. This can be used as an overlay in casaviewer (when
-  this functionality is available) or import into casapy. 
-\item[{casaFile [duchamp-\\Results.crf]}] The CASA region file showing
-  the list of final detections.
-\item[{annotationType [borders]}] Which type of annotation plot to
-  use. Specifying ``borders'' gives an outline around the detected
-  spatial pixels, ``circles'' gives a circle centred on the
-  centre of the object with radius large enough to encompass all
-  spatial pixels, and ``ellipses'' gives an ellipse centred on the
-  centre of the object of size given by the MAJ, MIN \& PA values. 
-\item[{flagMaps [true]}] A flag to say whether to save postscript
-  files showing the 0th moment map of the whole cube
-  (\texttt{momentMap}) and the detection image
+  casaviewer.
+\item[{ds9File [duchamp-\\Results.ann | string | filename]}] The DS9
+  region file showing the list of final detections.
+\item[{flagCasa [false | bool | true/false/1/0]}] A flag to say
+  whether to create a CASA region file corresponding to the
+  information in \texttt{outfile}. This can be used as an overlay in
+  casaviewer (when this functionality is available) or import into
+  casapy.
+\item[{casaFile [duchamp-\\Results.crf | string | filename]}] The CASA
+  region file showing the list of final detections.
+\item[{annotationType [borders | string | borders/circles/ellipses]}]
+  Which type of annotation plot to use. Specifying ``borders'' gives
+  an outline around the detected spatial pixels, ``circles'' gives a
+  circle centred on the centre of the object with radius large enough
+  to encompass all spatial pixels, and ``ellipses'' gives an ellipse
+  centred on the centre of the object of size given by the MAJ, MIN \&
+  PA values.
+\item[{flagMaps [true | bool | true/false/1/0]}] A flag to say whether
+  to save postscript files showing the 0th moment map of the whole
+  cube (\texttt{momentMap}) and the detection image
   (\texttt{detectionMap}). If PGPlot has not been enabled, this
   parameter defaults to \texttt{false}.
-\item[{momentMap [duchamp-\\MomentMap.ps]}] A postscript file
-  containing a map of the 0th moment of the detected sources, as well
-  as pixel and WCS coordinates.
-\item[{detectionMap [duchamp-\\DetectionMap.ps]}] A postscript
-  file with a map showing each of the detected objects, coloured in
-  greyscale by the number of detected channels in each spatial
-  pixel. Also shows pixel and WCS coordinates.
-\item[{flagXOutput [true]}] A flag to say whether to display a
-  0th moment map in a PGPlot X-window. This will be in addition to any
-  that are saved to a file. This parameter can be overridden by the
-  use of the \texttt{-x} command-line option, which disables the
-  X-windows output. If PGPlot has not been enabled, this parameter
-  defaults to \texttt{false}.
-\item[{newFluxUnits [no default]}] Flux units that the pixel values
-  should be converted into. These should be directly compatible with
-  the units in the FITS header, given by the BUNIT keyword.
-\item[{precFlux [3]}] The desired precision (\ie number of decimal
-  places) for flux values given in the output files and tables.
-\item[{precVel [3]}] The desired precision (\ie number of decimal
-  places) for velocity/frequency values given in the output files and
+\item[{momentMap [duchamp-\\MomentMap.ps | string | filename]}] A
+  postscript file containing a map of the 0th moment of the detected
+  sources, as well as pixel and WCS coordinates.
+\item[{detectionMap [duchamp-\\DetectionMap.ps | string | filename]}]
+  A postscript file with a map showing each of the detected objects,
+  coloured in greyscale by the number of detected channels in each
+  spatial pixel. Also shows pixel and WCS coordinates.
+\item[{flagXOutput [true | bool | true/false/1/0]}] A flag to say
+  whether to display a 0th moment map in a PGPlot X-window. This will
+  be in addition to any that are saved to a file. This parameter can
+  be overridden by the use of the \texttt{-x} command-line option,
+  which disables the X-windows output. If PGPlot has not been enabled,
+  this parameter defaults to \texttt{false}.
+\item[{newFluxUnits [no default | string | units string]}] Flux units
+  that the pixel values should be converted into. These should be
+  directly compatible with the units in the FITS header, given by the
+  BUNIT keyword.
+\item[{precFlux [3 | int | $> 0$]}] The desired precision (\ie number
+  of decimal places) for flux values given in the output files and
   tables.
-\item[{precSNR [2]}] The desired precision (\ie number of decimal
-  places) for the peak SNR value given in the output files and tables.
+\item[{precVel [3 | int | $> 0$]}] The desired precision (\ie number
+  of decimal places) for velocity/frequency values given in the output
+  files and tables.
+\item[{precSNR [2 | int | $> 0$]}] The desired precision (\ie number
+  of decimal places) for the peak SNR value given in the output files
+  and tables.
 \end{Lentry}
 
 \secB*{Modifying the cube}
 \begin{Lentry}
-\item[{flagTrim [false]}] A flag to say whether to trim
-  BLANK pixels from the edges of the cube -- these are typically
-  pixels set to some particular value because they fall outside the
-  imaged area, and trimming them can help speed up the execution.
-\item[{flaggedChannels [no default]}] Channels that are to be ignored
-  by the source-finding. These should be specified by a
-  comma-separated list of single values and ranges, such as
-  1,3,6-12,18. Channel numbers are zero-based, so that the first
-  channel in the cube has value 0.
-\item[{flagBaseline [false]}] A flag to say whether to remove
-  the baseline from each spectrum in the cube for the purposes of
-  reconstruction and detection.
-\item[{baselineType [atrous]}] The algorithm used to calculate the
-  spectral baseline. Only \texttt{atrous} or \texttt{median} are
-  accepted.
-\item[{baselineBoxWidth [51]}] The box width used by the
-  \texttt{median} baseline algorithm. Needs to be odd - if even, it
-  will be incremented by one.
+\item[{flagTrim [false | bool | true/false/1/0]}] A flag to say
+  whether to trim BLANK pixels from the edges of the cube -- these are
+  typically pixels set to some particular value because they fall
+  outside the imaged area, and trimming them can help speed up the
+  execution.
+\item[{flaggedChannels [no default | string | comma-separated list]}]
+  Channels that are to be ignored by the source-finding. These should
+  be specified by a comma-separated list of single values and ranges,
+  such as 1,3,6-12,18. Channel numbers are zero-based, so that the
+  first channel in the cube has value 0.
+\item[{flagBaseline [false | bool | true/false/1/0]}] A flag to say
+  whether to remove the baseline from each spectrum in the cube for
+  the purposes of reconstruction and detection.
+\item[{baselineType [atrous | string | atrous/median]}] The algorithm
+  used to calculate the spectral baseline. Only \texttt{atrous} or
+  \texttt{median} are accepted.
+\item[{baselineBoxWidth [51 | int | odd integer $> 0$]}] The box width
+  used by the \texttt{median} baseline algorithm. Needs to be odd - if
+  even, it will be incremented by one.
 \end{Lentry}
 
 \secB*{Detection related}
 
 \secC*{General detection}
 \begin{Lentry}
-\item[{searchType [spatial]}] How the searches are done. Only
-  ``spatial'' and ``spectral'' are accepted. A value of ``spatial''
-  means each 2D channel map is searched, whereas ``spectral'' means
-  each 1D spectrum is searched.
-\item[{flagStatSec [false]}] A flag indicating whether the
-  statistics should be calculated on a subsection of the cube, rather
-  than the full cube. Note that this only applies to the statistics
-  used to determine the threshold, and not for other statistical
-  calculations (such as those in the reconstruction phase).
-\item[{StatSec [ [*,*,*] ]}] The subsection of the cube used
-  for calculating statistics -- see \S\ref{sec-input} for details on
- the subsection format. Only used if \texttt{flagStatSec=true}.
-\item[{flagRobustStats [true]}] A flag indicating whether to use the
-  robust statistics (median and MADFM) to estimate the noise
-  parameters of the cube, rather than the mean and rms. See
-  \S\ref{sec-stats} for details.
-\item[{flagNegative [false]}] A flag indicating that the
-  features of interest are negative. The cube is inverted prior to
-  searching.
-\item[{snrCut [5.]}] The threshold, in multiples of $\sigma$ above
-  the mean.
-\item[{threshold [no default]}] The actual value of the
+\item[{searchType [spatial | string | spectral/spatial]}] How the
+  searches are done. Only ``spatial'' and ``spectral'' are accepted. A
+  value of ``spatial'' means each 2D channel map is searched, whereas
+  ``spectral'' means each 1D spectrum is searched.
+\item[{flagStatSec [false | bool | true/false/1/0]}] A flag indicating
+  whether the statistics should be calculated on a subsection of the
+  cube, rather than the full cube. Note that this only applies to the
+  statistics used to determine the threshold, and not for other
+  statistical calculations (such as those in the reconstruction
+  phase).
+\item[{StatSec [full field | string | Subsection string]}] The
+  subsection of the cube used for calculating statistics -- see
+  \S\ref{sec-input} for details on the subsection format. Only used if
+  \texttt{flagStatSec=true}.
+\item[{flagRobustStats [true | bool | true/false/1/0]}] A flag
+  indicating whether to use the robust statistics (median and MADFM)
+  to estimate the noise parameters of the cube, rather than the mean
+  and rms. See \S\ref{sec-stats} for details.
+\item[{flagNegative [false | bool | true/false/1/0]}] A flag
+  indicating that the features of interest are negative. The cube is
+  inverted prior to searching.
+\item[{snrCut [5. | float | any]}] The threshold, in multiples of
+  $\sigma$ above the mean.
+\item[{threshold [no default | float | any]}] The actual value of the
   threshold. Normally the threshold is calculated from the cube's
   statistics, but the user can manually specify a value to be used
   that overrides the calculated value. If this is not specified, the
   calculated value is used, but this value will take precedence over
   other means of calculating the threshold (\ie via \texttt{snrCut} or
   the FDR method).
-\item[{flagGrowth [false]}] A flag indicating whether or not to
-  grow the detected objects to a smaller threshold.
-\item[{growthCut [3.]}] The smaller threshold using in growing
-  detections. In units of $\sigma$ above the mean.
-\item[{growthThreshold [no default]}] Alternatively, the threshold to
-  which detections are grown can be specified in flux units (in the
-  same manner as the \texttt{threshold} parameter). When the
-  \texttt{threshold} parameter is given, this option \textbf{must} be
-  used instead of \texttt{growthCut}.
-\item[{beamFWHM [0.]}] The full-width at half maximum of the beam, in
-  pixels.  If the header keywords BMAJ and BMIN are present, then
-  these will be used to calculate the beam area, and this parameter
-  will be ignored. This will take precedence over \texttt{beamArea}
-  (but is ignored if not specified).
-\item[{beamArea [0.]}] The \textbf{area} of the beam in pixels (\ie
-  how many pixel does the beam cover?). As above, if the header
-  keywords BMAJ and BMIN are present, then these will be used to
-  calculate the beam area, and this parameter will be ignored. 
+\item[{flagGrowth [false | bool | true/false/1/0]}] A flag indicating
+  whether or not to grow the detected objects to a smaller threshold.
+\item[{growthCut [3. | float | any]}] The smaller threshold using in
+  growing detections. In units of $\sigma$ above the mean.
+\item[{growthThreshold [no default | float | any]}] Alternatively, the
+  threshold to which detections are grown can be specified in flux
+  units (in the same manner as the \texttt{threshold} parameter). When
+  the \texttt{threshold} parameter is given, this option \textbf{must}
+  be used instead of \texttt{growthCut}.
+\item[{beamFWHM [0. | float | $> 0.$]}] The full-width at half maximum
+  of the beam, in pixels.  If the header keywords BMAJ and BMIN are
+  present, then these will be used to calculate the beam area, and
+  this parameter will be ignored. This will take precedence over
+  \texttt{beamArea} (but is ignored if not specified).
+\item[{beamArea [0. | float | $> 0.$]}] The \textbf{area} of the beam
+  in pixels (\ie how many pixel does the beam cover?). As above, if
+  the header keywords BMAJ and BMIN are present, then these will be
+  used to calculate the beam area, and this parameter will be ignored.
 \end{Lentry}
 
 \secC*{\Atrous reconstruction}
 \begin{Lentry}
-\item[{flagATrous [false]}] A flag indicating whether or not to
-  reconstruct the cube using the \atrous wavelet
+\item[{flagATrous [false | bool | true/false/1/0]}] A flag indicating
+  whether or not to reconstruct the cube using the \atrous wavelet
   reconstruction. See \S\ref{sec-recon} for details.
-\item[{reconDim [1]}] The number of dimensions to use in the
-  reconstruction. 1 means reconstruct each spectrum separately, 2
+\item[{reconDim [1 | int | $> 0$]}] The number of dimensions to use in
+  the reconstruction. 1 means reconstruct each spectrum separately, 2
   means each channel map is done separately, and 3 means do the whole
   cube in one go.
-\item[{scaleMin [1]}] The minimum wavelet scale to be used in the
-  reconstruction. A value of 1 means ``use all scales''.
-\item[{scaleMax [0]}] The maximum wavelet scale to be used in the
-  reconstruction. If the value is $\le0$ then the maximum scale is
-  calculated from the size of the input array. Similarly, if the value
-  given is larger than this calculated value, the calculated value is
-  used instead.
-\item[{snrRecon [4]}] The thresholding cutoff used in the
-  reconstruction -- only wavelet coefficients at least this many $\sigma$ above
-  the mean are included in the reconstruction. 
-\item[{reconConvergence [0.005]}] The convergence criterion used in
-  the reconstruction. The \atrous algorithm iterates until the
-  relative change in the standard deviation of the residuals is less
-  than this amount.
-\item[{filterCode [1]}] The code number of the filter to use in
-  the reconstruction. The options are:
+\item[{scaleMin [1 | int | $> 0$]}] The minimum wavelet scale to be
+  used in the reconstruction. A value of 1 means ``use all scales''.
+\item[{scaleMax [0 | int | any]}] The maximum wavelet scale to be used
+  in the reconstruction. If the value is $\le0$ then the maximum scale
+  is calculated from the size of the input array. Similarly, if the
+  value given is larger than this calculated value, the calculated
+  value is used instead.
+\item[{snrRecon [4 | float | $> 0$]}] The thresholding cutoff used in
+  the reconstruction -- only wavelet coefficients at least this many
+  $\sigma$ above the mean are included in the reconstruction.
+\item[{reconConvergence [0.005 | float | $> 0.$]}] The convergence
+  criterion used in the reconstruction. The \atrous algorithm iterates
+  until the relative change in the standard deviation of the residuals
+  is less than this amount.
+\item[{filterCode [1 | int | 1/2/3]}] The code number of the filter to
+  use in the reconstruction. The options are:
   \begin{itemize}
   \item \textbf{1:} B$_3$-spline filter: coefficients = 
     $(\frac{1}{16}, \frac{1}{4}, \frac{3}{8}, \frac{1}{4}, \frac{1}{16})$
@@ -329,37 +344,38 @@ not matter, they are grouped here in logical sections.
 
 \secC*{Smoothing the cube}
 \begin{Lentry}
-\item[{flagSmooth [false]}] A flag indicating whether to
+\item[{flagSmooth [false | bool | true/false/1/0]}] A flag indicating whether to
   smooth the cube. See \S\ref{sec-smoothing} for details. 
-\item[{smoothType [spectral]}] The smoothing method used: either
-  ``spectral'' (with a 1D Hanning filter) or ``spatial'' (with a 2D
-  Gaussian filter).  
-\item[{hanningWidth [5]}] The width of the Hanning smoothing
-  kernel.
-\item[{kernMaj [3]}] The full-width-half-maximum (FWHM) of the
-  2D Gaussian smoothing kernel's major axis.
-\item[{kernMin [3]}] The FWHM of the 2D Gaussian smoothing kernel's
+\item[{smoothType [spectral | string | spectral/spatial]}] The
+  smoothing method used: either ``spectral'' (with a 1D Hanning
+  filter) or ``spatial'' (with a 2D Gaussian filter).
+\item[{hanningWidth [5 | int | $> 0$]}] The width of the Hanning
+  smoothing kernel.
+\item[{kernMaj [3 | float | $> 0.$]}] The full-width-half-maximum
+  (FWHM), in pixels, of the 2D Gaussian smoothing kernel's major axis.
+\item[{kernMin [3 | float | $> 0.$]}] The FWHM (in pixels) of the 2D Gaussian smoothing kernel's
   minor axis.
-\item[{kernPA [0]}] The position angle, in degrees,
+\item[{kernPA [0 | float | any]}] The position angle, in degrees,
   anticlockwise from vertical (\ie usually East of North).
-\item[{smoothEdgeMethod [equal]}] What method to use for dealing with
-  pixels on the edge of the spatial image (\ie within the width of the
-  kernel). Can be one of \texttt{edge, truncate, scale}. See
+\item[{smoothEdgeMethod [equal | string | equal/truncate/scale]}] What
+  method to use for dealing with pixels on the edge of the spatial
+  image (\ie within the width of the kernel). Can be one of
+  \texttt{equal, truncate, scale}. See \S\ref{sec-smoothing} for
+  details.
+\item[{spatialSmoothCutoff [1.e-10 | float | $> 0.$]}] The cutoff
+  value for determining the width of the smoothing kernel. See
   \S\ref{sec-smoothing} for details.
-\item[{spatialSmoothCutoff [1.e-10]}] The cutoff value for determining
-  the width of the smoothing kernel. See \S\ref{sec-smoothing} for
-  details. 
 \end{Lentry}
 
 \secC*{FDR method}
 \begin{Lentry}
-\item[{flagFDR [false]}] A flag indicating whether or not to use
+\item[{flagFDR [false | bool | true/false/1/0]}] A flag indicating whether or not to use
   the False Discovery Rate method in thresholding the pixels.
-\item[{alphaFDR [0.01]}] The $\alpha$ parameter used in the FDR
+\item[{alphaFDR [0.01 | float | $0. - 1.$]}] The $\alpha$ parameter used in the FDR
   analysis. The average number of false detections, as a fraction of
   the total number, will be less than $\alpha$ (see
   \S\ref{sec-detection}).
-\item[{FDRnumCorChan [2]}] The number of neighbouring spectral
+\item[{FDRnumCorChan [2 | int | $> 0$]}] The number of neighbouring spectral
   channels that are assumed to be correlated. This is needed by the
   FDR algorithm to calculate the normalisation constant $c_N$ (see
   \S\ref{sec-detection}). 
@@ -367,84 +383,87 @@ not matter, they are grouped here in logical sections.
 
 \secC*{Merging detections}
 \begin{Lentry}
-\item[{minPix [2]}] The minimum number of spatial pixels for a
+\item[{minPix [2 | int | $> 0$]}] The minimum number of spatial pixels for a
   single detection to be counted.
-\item[{minChannels [3]}] At least one contiguous set of this many
+\item[{minChannels [3 | int | $> 0$]}] At least one contiguous set of this many
   channels must be present in the detection for it to be accepted.
-\item[{minVoxels [minPix$+$minChannels$-$1]}] The minimum size of
+\item[{minVoxels [minPix$+$minChannels$-$1 | int | $> 0$]}] The minimum size of
   the object, in terms of the total number of voxels, for it to be
   accepted. This will be \textit{at least} minPix$+$minChannels$-$1,
   but can be set higher.
-\item[{maxPix [$-1$]}] The maximum number of spatial pixels an object
+\item[{maxPix [$-1$ | int | any]}] The maximum number of spatial pixels an object
   can have. No check is made if the value is negative.
-\item[{maxChannels [-1]}] The maximum number of channels an object can
+\item[{maxChannels [-1 | int | any]}] The maximum number of channels an object can
   have. No check is made if the value is negative.
-\item[{maxVoxels [$-1$]}] The maximum size of
+\item[{maxVoxels [$-1$ | int | any]}] The maximum size of
   the object, in terms of the total number of voxels, for it to be
   accepted. No check is made if the value is negative.
-\item[{flagRejectBeforeMerge [false]}] A flag indicating whether to
-  reject sources that fail to meet the \texttt{minPix} or
-  \texttt{minChannels} criteria \textbf{before} the merging
-  stage. Default behaviour is to do the rejection last.
-\item[{flagTwoStageMerging [true]}] A flag indicating whether to do an
-  initial merge of newly-detected sources into the source list as they
-  are found. If \texttt{false}, new sources are simply added to the
-  end of the list for later merging.
-\item[{flagAdjacent [true]}] A flag indicating whether to use
-  the ``adjacent pixel'' criterion to decide whether to merge
-  objects. If not, the next two parameters are used to determine
+\item[{flagRejectBeforeMerge [false | bool | true/false/1/0]}] A flag
+  indicating whether to reject sources that fail to meet the
+  \texttt{minPix} or \texttt{minChannels} criteria \textbf{before} the
+  merging stage. Default behaviour is to do the rejection last.
+\item[{flagTwoStageMerging [true | bool | true/false/1/0]}] A flag
+  indicating whether to do an initial merge of newly-detected sources
+  into the source list as they are found. If \texttt{false}, new
+  sources are simply added to the end of the list for later merging.
+\item[{flagAdjacent [true | bool | true/false/1/0]}] A flag indicating
+  whether to use the ``adjacent pixel'' criterion to decide whether to
+  merge objects. If not, the next two parameters are used to determine
   whether objects are within the necessary thresholds.
-\item[{threshSpatial [3.]}] The maximum allowed minimum spatial
-  separation (in pixels) between two detections for them to be merged
-  into one. Only used if \texttt{flagAdjacent = false}.
-\item[{threshVelocity [7.]}] The maximum allowed minimum channel
-  separation between two detections for them to be merged into
-  one. 
+\item[{threshSpatial [$3.$ | float | $\ge 0$]}] The maximum allowed
+  minimum spatial separation (in pixels) between two detections for
+  them to be merged into one. Only used if \texttt{flagAdjacent =
+    false}.
+\item[{threshVelocity [$7.$ | float | $\ge 0$]}] The maximum allowed
+  minimum channel separation between two detections for them to be
+  merged into one.
 \end{Lentry}
 
 \secC*{WCS parameters}
 \begin{Lentry}
-\item[{spectralType []}] The user can specify an alternative WCS
-  spectral type that the spectral axis can be expressed in. This
-  specification should conform to the standards described in
-  \citet{greisen06}, although it is possible to provide just the first
-  four letters (the ``S-type'', \eg 'VELO').
-\item[{restFrequency [-1]}] If provided, this will be used in
+\item[{spectralType ["" | string | A valid WCS type]}] The user can
+  specify an alternative WCS spectral type that the spectral axis can
+  be expressed in. This specification should conform to the standards
+  described in \citet{greisen06}, although it is possible to provide
+  just the first four letters (the ``S-type'', \eg 'VELO').
+\item[{restFrequency [-1 | float | any]}] If provided, this will be used in
   preference to the rest frequency given in the FITS header to
   calculate velocities and related quantities. A negative value (such
   as the default) will mean this is not used and the FITS header
   value, if present, is used instead.
-\item[{spectralUnits []}] The user can specify the units of
-  the spectral axis, overriding those given in the FITS header. If the
-  spectral type is being changed, these units should be appropriate
-  for that quantity. If not provided, the FITS header information is
-  used. 
+\item[{spectralUnits ["" | string | A valid units string]}] The user
+  can specify the units of the spectral axis, overriding those given
+  in the FITS header. If the spectral type is being changed, these
+  units should be appropriate for that quantity. If not provided, the
+  FITS header information is used.
 \end{Lentry}
 
 \secC*{Other parameters}
 \begin{Lentry}
-\item[{spectralMethod [peak]}] This indicates which method is used
-  to plot the output spectra: \texttt{peak} means plot the spectrum
-  containing the detection's peak pixel; \texttt{sum} means sum the
-  spectra of each detected spatial pixel, and correct for the beam
-  size. Any other choice defaults to \texttt{peak}.
-\item[{pixelCentre [centroid]}] Which of the three ways of
-  expressing the ``centre'' of a detection (see \S\ref{sec-results}
-  for a description of the options) to use for the X, Y, \& Z
-  columns in the output list. Alternatives are: \texttt{centroid, peak,
-  average}.
-\item[{sortingParam [vel]}] The parameter on which to sort the output
-  list of detected objects. Options are: xvalue, yvalue, zvalue, ra,
-  dec, vel, w50, iflux, pflux (integrated and peak flux respectively),
-  or snr. If the parameter begins with a '-' (\eg '-vel'), the order
-  of the sort is reversed.
-\item[{drawBorders [true]}] A flag indicating whether to draw
+\item[{spectralMethod [peak | string | peak/sum]}] This indicates
+  which method is used to plot the output spectra: \texttt{peak} means
+  plot the spectrum containing the detection's peak pixel;
+  \texttt{sum} means sum the spectra of each detected spatial pixel,
+  and correct for the beam size. Any other choice defaults to
+  \texttt{peak}.
+\item[{pixelCentre [centroid | string | centroid/peak/average]}] Which
+  of the three ways of expressing the ``centre'' of a detection (see
+  \S\ref{sec-results} for a description of the options) to use for the
+  X, Y, \& Z columns in the output list. Alternatives are:
+  \texttt{centroid, peak, average}.
+\item[{sortingParam [vel | string | see text for options]}] The
+  parameter on which to sort the output list of detected
+  objects. Options are: xvalue, yvalue, zvalue, ra, dec, vel, w50,
+  iflux, pflux (integrated and peak flux respectively), or snr. If the
+  parameter begins with a '-' (\eg '-vel'), the order of the sort is
+  reversed.
+\item[{drawBorders [true | bool | true/false/1/0]}] A flag indicating whether to draw
   borders around the detected objects in the moment maps included in
   the output (see for example Fig.~\ref{fig-spect}).
-\item[{drawBlankEdges [true]}] A flag indicating whether to
+\item[{drawBlankEdges [true | bool | true/false/1/0]}] A flag indicating whether to
   draw the dividing line between BLANK and non-BLANK pixels on the
   2D images (see for example Fig.~\ref{fig-moment}).
-\item[{verbose [true]}] A flag indicating whether to print the
+\item[{verbose [true | bool | true/false/1/0]}] A flag indicating whether to print the
   progress of any computationally intensive algorithms (\eg
   reconstruction, searching or merging algorithms) to the screen.
 \end{Lentry}
