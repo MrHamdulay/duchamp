@@ -139,8 +139,8 @@ baselineBoxWidth 51
 #* StatSec [string] {Subsection specification like [x1:x2,y1:y2,z1:z2]} -- The subsection used for statistics calculations. It has the same format as the pixel subsection.
 #* flagRobustStats [bool] {true or false, or 1 or 0} -- Shall we use robust statistics to characterise the noise in the image?
 #* flagNegative [bool] {true or false, or 1 or 0} -- Are the features being searched for negative (set to true) or positive (false -- the default)?
-#* snrCut [float] {} --  How many sigma above mean is a detection when sigma-clipping
-#* threshold [float] {} -- The threshold flux dividing source and non-source. Used instead of calculating it from the cube's statistics. If not specified, it will be calculated.
+#* snrCut [float] {any} --  How many sigma above mean is a detection when sigma-clipping
+#* threshold [float] {any} -- The threshold flux dividing source and non-source. Used instead of calculating it from the cube's statistics. If not specified, it will be calculated.
 #* flagGrowth [bool] {true or false, or 1 or 0} -- Should the detections be "grown" to a lower significance value?
 #* growthCut [float] {any} -- The lower threshold used when growing detections
 #* growthThreshold [float] {any} -- The lower threshold, used in conjunction with "threshold"
