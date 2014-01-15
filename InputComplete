@@ -163,7 +163,7 @@ searchType      spatial
 
 ### RECONSTRUCTION RELATED
 #* flagATrous [bool] {true or false, or 1 or 0} -- Whether or not to do the reconstruction before searching
-#* reconDim [int] {> 0} -- The number of dimensions in which to perform the reconstruction.
+#* reconDim [int] {1, 2 or 3} -- The number of dimensions in which to perform the reconstruction.
 #* scaleMin [int] {> 0} -- The minimum scale (starts at 1) to be included in the reconstruction
 #* scaleMax [int] {any} -- The maximum scale to be included in the reconstruction. If it is <=0 then the maximum scale is calculated from the size of the array being reconstructed.
 #* snrRecon [float] {> 0} -- The threshold used in filtering the wavelet coefficient arrays.
