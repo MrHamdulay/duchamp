@@ -78,15 +78,17 @@ namespace duchamp
   //// Functions for DataArray class:
   ///////////////////////////////////////////////////
 
-  DataArray::DataArray(){
+    DataArray::DataArray():
+	numDim(0),axisDimAllocated(false),numPixels(0),array(0),arrayAllocated(false)
+    {
     /// Fundamental constructor for DataArray.
     /// Number of dimensions and pixels are set to 0. Nothing else allocated.
 
-    this->numDim=0; 
-    this->numPixels=0;
+    // this->numDim=0; 
+    // this->numPixels=0;
     this->objectList = new std::vector<Detection>;
-    this->axisDimAllocated = false;
-    this->arrayAllocated = false;
+    // this->axisDimAllocated = false;
+    // this->arrayAllocated = false;
   }
   //--------------------------------------------------------------------
 
@@ -368,15 +370,15 @@ namespace duchamp
   //// Functions for Cube class
   /////////////////////////////////////////////////////////////
 
-  Cube::Cube()
+    Cube::Cube():
+	DataArray(), recon(0), reconExists(false), detectMap(0), baseline(0), reconAllocated(false), baselineAllocated(false)
   {
     /// @details
     /// Basic Constructor for Cube class.
     /// numDim set to 3, but numPixels to 0 and all bool flags to false.
     /// No allocation done.
 
-    numPixels=0; numDim=3; 
-    reconExists = false; reconAllocated = false; baselineAllocated = false;
+      numDim=3; 
   }
   //--------------------------------------------------------------------
 
