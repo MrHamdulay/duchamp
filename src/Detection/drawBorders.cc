@@ -30,6 +30,7 @@
 #include <duchamp/duchamp.hh>
 #include <duchamp/Detection/detection.hh>
 #include <duchamp/PixelMap/Voxel.hh>
+#include <duchamp/PixelMap/Object3D.hh>
 
 using namespace PixelInfo;
 
