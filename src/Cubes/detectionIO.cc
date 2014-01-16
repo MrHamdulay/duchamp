@@ -426,7 +426,8 @@ namespace duchamp
 
     if(this->par.isVerbose()) std::cout << "  Successfully read " << numObj << " objects from the binary catalogue.\n";
 
-    this->updateDetectMap();
+    if(this->arrayAllocated)
+    	this->updateDetectMap();
 
     return SUCCESS;
 
