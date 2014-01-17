@@ -112,7 +112,7 @@ for (( i=0; i<${#number[@]}; i++ )); do
 	numdiff=`diff $vot $Svot | wc -l`
     else
 	head -`grep -n "<TABLEDATA>" $vot | sed -e 's/://g' | cut -f 1 -d ' '` $vot > $temp1
-	head -`grep -n "<TABLEDATA>" $Svot | sed -e 's/://g' | cut -f 1 -d ' '` $vot > $temp2
+	head -`grep -n "<TABLEDATA>" $Svot | sed -e 's/://g' | cut -f 1 -d ' '` $Svot > $temp2
 	numdiff=`diff $temp1 $temp2 | wc -l`
     fi
     if [ $numdiff == 0 ]; then
