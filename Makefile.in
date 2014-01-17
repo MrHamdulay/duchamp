@@ -64,6 +64,10 @@ HEADS = $(BASE)/config.h\
 	$(PIXELMAPDIR)/Object3D.hh\
 	$(ATROUSDIR)/atrous.hh\
 	$(ATROUSDIR)/filter.hh\
+	$(ATROUSDIR)/B3SplineFilter.hh\
+	$(ATROUSDIR)/TriangleFilter.hh\
+	$(ATROUSDIR)/HaarFilter.hh\
+	$(ATROUSDIR)/FilterFactory.hh\
 	$(DETECTIONDIR)/detection.hh\
 	$(DETECTIONDIR)/finders.hh\
 	$(DETECTIONDIR)/ObjectGrower.hh\
@@ -117,6 +121,10 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(PIXELMAPDIR)/Object2D.o\
 	$(PIXELMAPDIR)/Object3D.o\
 	$(ATROUSDIR)/filter.o\
+	$(ATROUSDIR)/B3SplineFilter.o\
+	$(ATROUSDIR)/TriangleFilter.o\
+	$(ATROUSDIR)/HaarFilter.o\
+	$(ATROUSDIR)/FilterFactory.o\
 	$(ATROUSDIR)/atrous_1d_reconstruct.o\
 	$(ATROUSDIR)/atrous_2d_reconstruct.o\
 	$(ATROUSDIR)/atrous_3d_reconstruct.o\

@@ -40,6 +40,7 @@
 #include <duchamp/duchamp.hh>
 #include <duchamp/pgheader.hh>
 #include <duchamp/ATrous/filter.hh>
+#include <duchamp/ATrous/FilterFactory.hh>
 #include <duchamp/Utils/utils.hh>
 #include <duchamp/Utils/Section.hh>
 #include <duchamp/Utils/VOParam.hh>
@@ -191,7 +192,8 @@ namespace duchamp
     this->snrRecon          = 4.;
     this->reconConvergence  = 0.005;
     this->filterCode        = 1;
-    this->reconFilter.define(this->filterCode);
+//    this->reconFilter.define(this->filterCode);
+    this->reconFilter = 0;
     // Volume-merging parameters
     this->flagAdjacent      = true;
     this->threshSpatial     = 3.;
@@ -825,7 +827,9 @@ namespace duchamp
 	this->reconConvergence *= -1.;
       }
 
-      this->reconFilter.define(this->filterCode);
+//      this->reconFilter.define(this->filterCode);
+      FilterFactory filtFac;
+      this->reconFilter = filtFac.getFilter(this->filterCode);
 
       if((this->scaleMax) > 0 && (this->scaleMax < this->scaleMin)){
 	DUCHAMPWARN("Reading Parameters","Reconstruction scaleMax ("<<this->scaleMax<<") is less than scaleMin ("<<this->scaleMin<<"): setting both to "<<this->scaleMin);

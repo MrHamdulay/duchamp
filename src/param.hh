@@ -402,8 +402,8 @@ namespace duchamp
     void   setReconConvergence(float f){reconConvergence = f;};
     int    getFilterCode(){return filterCode;};
     void   setFilterCode(int c){filterCode=c;};
-    std::string getFilterName(){return reconFilter.getName();};
-    Filter& filter(){ Filter &rfilter = reconFilter; return rfilter; }; 
+    std::string getFilterName(){return reconFilter->getName();};
+    Filter& filter(){ Filter &rfilter = *reconFilter; return rfilter; }; 
     //	 
     bool   getFlagAdjacent(){return flagAdjacent;};
     void   setFlagAdjacent(bool flag){flagAdjacent=flag;};
@@ -590,7 +590,7 @@ namespace duchamp
     unsigned int    scaleMax;        ///< Max scale used in a trous reconstruction
     float  snrRecon;        ///< SNR cutoff used in a trous reconstruction (only wavelet coefficients that survive this threshold are kept)
     float  reconConvergence;///< Convergence criterion for reconstruction - maximum fractional change in residual standard deviation
-    Filter reconFilter;     ///< The filter used for reconstructions.
+    Filter *reconFilter;     ///< The filter used for reconstructions.
     int    filterCode;      ///< The code number for the filter to be used (saves having to parse names)
 
     // Volume-merging parameters
