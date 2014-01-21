@@ -27,7 +27,7 @@
 // -----------------------------------------------------------------------
 #include <duchamp/duchamp.hh>
 #include <duchamp/ATrous/FilterFactory.hh>
-#include <duchamp/ATrous/Filter.hh>
+#include <duchamp/ATrous/filter.hh>
 #include <duchamp/ATrous/B3SplineFilter.hh>
 #include <duchamp/ATrous/TriangleFilter.hh>
 #include <duchamp/ATrous/HaarFilter.hh>

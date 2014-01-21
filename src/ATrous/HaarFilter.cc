@@ -1,5 +1,5 @@
 #include <duchamp/ATrous/HaarFilter.hh>
-#include <duchamp/ATrous/Filter.hh>
+#include <duchamp/ATrous/filter.hh>
 
 namespace duchamp {
 
