@@ -1307,7 +1307,9 @@ namespace duchamp
     if(this->flagFDR){
       outfile.write(reinterpret_cast<const char*>(&this->alphaFDR), sizeof this->alphaFDR);
       outfile.write(reinterpret_cast<const char*>(&this->FDRnumCorChan), sizeof this->FDRnumCorChan);
-      if(this->beamAsUsed.origin()==PARAM){
+      bool beamFromParam=(this->beamAsUsed.origin() == PARAM);
+      outfile.write(reinterpret_cast<const char*>(&beamFromParam), sizeof beamFromParam);
+      if(beamFromParam){
 	outfile.write(reinterpret_cast<const char*>(&this->fwhmBeam), sizeof this->fwhmBeam);
 	outfile.write(reinterpret_cast<const char*>(&this->areaBeam), sizeof this->areaBeam);
       }
@@ -1321,6 +1323,7 @@ namespace duchamp
     }
     outfile.write(reinterpret_cast<const char*>(&this->flagGrowth), sizeof this->flagGrowth);
     if(this->flagGrowth){
+      outfile.write(reinterpret_cast<const char*>(&this->flagUserGrowthThreshold), sizeof this->flagUserGrowthThreshold);
       if(this->flagUserGrowthThreshold)
 	outfile.write(reinterpret_cast<const char*>(&this->growthThreshold), sizeof this->growthThreshold);
       else
@@ -1403,7 +1406,9 @@ namespace duchamp
     if(this->flagFDR){
       infile.read(reinterpret_cast<char*>(&this->alphaFDR), sizeof this->alphaFDR);
       infile.read(reinterpret_cast<char*>(&this->FDRnumCorChan), sizeof this->FDRnumCorChan);
-      if(this->beamAsUsed.origin()==PARAM){
+      bool beamFromParam;
+      infile.read(reinterpret_cast<char*>(&beamFromParam), sizeof beamFromParam);
+      if(beamFromParam){
 	infile.read(reinterpret_cast<char*>(&this->fwhmBeam), sizeof this->fwhmBeam);
 	infile.read(reinterpret_cast<char*>(&this->areaBeam), sizeof this->areaBeam);
       }
@@ -1417,6 +1422,7 @@ namespace duchamp
     }
     infile.read(reinterpret_cast<char*>(&this->flagGrowth), sizeof this->flagGrowth);
     if(this->flagGrowth){
+      infile.read(reinterpret_cast<char*>(&this->flagUserGrowthThreshold), sizeof this->flagUserGrowthThreshold);
       if(this->flagUserGrowthThreshold)
 	infile.read(reinterpret_cast<char*>(&this->growthThreshold), sizeof this->growthThreshold);
       else
