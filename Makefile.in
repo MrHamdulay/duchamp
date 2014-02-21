@@ -225,9 +225,7 @@ lib     : $(OBJECTS)
 #	$(CXX) $(SHAREDFLAGS) -o $(LIBSO) $(OBJECTS)
 
 createTestImage : $(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o
-	$(CXX) -o createTestImage.x\
-	$(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o\
-	$(CFITSIOLIB) @LIBS@
+	$(CXX) -o createTestImage.x $(TESTDIR)/createTestImage.o $(UTILDIR)/get_random_spectrum.o $(CFITSIOLIB) @LIBS@
 
 install : 
 	$(INSTALL) -d -m 2755 $(INSTALLDIR)

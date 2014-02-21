@@ -69,16 +69,6 @@ void getSigmaFactors2DNew(duchamp::Filter &reconFilter, int &numScales);
 void getSigmaFactors3DNew(duchamp::Filter &reconFilter, int &numScales);
 
 
-// Random number generators -- all in get_random_spectrum.cc
-void getRandomSpectrum(int length, float *x, float *y);
-void getRandomSpectrum(int length, float *x, double *y);
-void getRandomSpectrum(int length, float mean, float sigma, 
-		       float *x, double *y);
-void getRandomSpectrum(int length, float mean, float sigma, 
-		       float *x, float *y);
-float getNormalRV();
-float getNormalRVtrunc();
-float getNormalRV(float mean, float sigma);
 
 //--------------------
 // PLOTTING ROUTINES

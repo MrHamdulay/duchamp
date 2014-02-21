@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-#include <Devel/devel.hh>
+#include <Utils/utils.hh>
 #define WCSLIB_GETWCSTAB // define this so that we don't try and redefine 
                          //  wtbarr (this is a problem when using gcc v.4+
 #include <fitsio.h>
@@ -94,7 +94,9 @@ int main()
 void addGaussian(float *array, long *dim, float *pos, float *fwhm, float norm)
 {
   long size = dim[0] * dim[1] * dim[2];
-  float sigsig = fwhm[0]*fwhm[0] + fwhm[1]*fwhm[1] + fwhm[2]*fwhm[2];
+  float sigma[3];
+  for(int i=0;i<3;i++) sigma[i] = fwhm[i] / (2 *sqrt(2*log(2)));
+  float sigsig = sigma[0]*sigma[0] + sigma[1]*sigma[1] + sigma[2]*sigma[2];
 
   int x1 = int(std::max(0.,pos[0]-10.));
   int x2 = int(std::min(float(dim[0]),pos[0]+11));
@@ -107,12 +109,12 @@ void addGaussian(float *array, long *dim, float *pos, float *fwhm, float norm)
     for(int y=y1;y<y2;y++){
       for(int z=z1;z<z2;z++){
 	
-	float distX = (x-pos[0])/fwhm[0];
-	float distY = (y-pos[1])/fwhm[1];
-	float distZ = (z-pos[2])/fwhm[2];
-	float gaussFlux = norm * exp( -1.*(distX*distX + 
-					   distY*distY + 
-					   distZ*distZ  ) );
+	float distX = (x-pos[0])/sigma[0];
+	float distY = (y-pos[1])/sigma[1];
+	float distZ = (z-pos[2])/sigma[2];
+	float gaussFlux = norm * exp( -0.5*(distX*distX + 
+					    distY*distY + 
+					    distZ*distZ  ) );
 	long loc = x + y*dim[0] + z*dim[0]*dim[1];
 	array[loc] += gaussFlux;
       }

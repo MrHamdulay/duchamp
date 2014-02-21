@@ -134,5 +134,15 @@ std::vector<int> selectionToIntVec(std::string &str);
 // PLOTTING UTILITY FUNCTIONS
 void wcsAxes(struct wcsprm *wcs, size_t *axes, int textColour, int axisColour);
 
+// Random number generators -- all in get_random_spectrum.cc
+void getRandomSpectrum(int length, float *x, float *y);
+void getRandomSpectrum(int length, float *x, double *y);
+void getRandomSpectrum(int length, float mean, float sigma, 
+		       float *x, double *y);
+void getRandomSpectrum(int length, float mean, float sigma, 
+		       float *x, float *y);
+float getNormalRV();
+float getNormalRVtrunc();
+float getNormalRV(float mean, float sigma);
 
 #endif
