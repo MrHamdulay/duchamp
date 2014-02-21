@@ -237,7 +237,7 @@ namespace duchamp {
 	this->itsFileStream<<"    </TABLE>\n";
 	this->itsFileStream<<"  </RESOURCE>\n";
 	this->itsFileStream<<"</VOTABLE>\n";
-	resetiosflags(std::ios::fixed);
+	std::resetiosflags(std::ios::fixed);
     }
 
 
