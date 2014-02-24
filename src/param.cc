@@ -1000,7 +1000,7 @@ namespace duchamp
     theStream << par.commentString()
 	      << std::setw(widthText) << paramDesc
 	      << std::setiosflags(std::ios::right) << paramName
-	      << "  =  " << resetiosflags(std::ios::right) << paramValue 
+	      << "  =  " << std::resetiosflags(std::ios::right) << paramValue 
 	      <<std::endl;
   }
 
