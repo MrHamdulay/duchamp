@@ -218,6 +218,7 @@ else
   # Checks for extra libraries needed by PGPLOT -- will add -lg2c -lstdc++ to $LIBS
   AC_CHECK_LIB([g2c], [gerror_])
   AC_CHECK_LIB([stdc++], [main])
+  AC_CHECK_LIB([c++], [main])
   if test "x$F77" = xgfortran; then
     PGPLOTLIB="-lcpgplot $PGPLOTLIB"
     AC_MSG_NOTICE([ Using gfortran, so manually adding -lcpgplot to PGPLOTLIB string.])
