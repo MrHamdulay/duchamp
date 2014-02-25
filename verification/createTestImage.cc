@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-#include <Utils/utils.hh>
+#include <duchamp/Utils/utils.hh>
 #define WCSLIB_GETWCSTAB // define this so that we don't try and redefine 
                          //  wtbarr (this is a problem when using gcc v.4+
 #include <fitsio.h>
