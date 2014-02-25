@@ -3854,6 +3854,7 @@ fi
   test -n "$INSTALL" && break
 done
 
+LINKER=$CXX
 
 # Check for maths library -- will add -lm to $LIBS
 
@@ -4767,13 +4768,7 @@ if test "x$PGPLOTLIBDIRS" = x; then
   #the argument to --with-pgplot was no, so we don't look for it.
   { $as_echo "$as_me:${as_lineno-$LINENO}: Not enabling PGPLOT use." >&5
 $as_echo "$as_me: Not enabling PGPLOT use." >&6;}
-  #This is the command to do the linking stage of the compilation
-  #If no pgplot, we can just link with g++ (or equivalent)
-  LINKER=$CXX
-#  AC_CHECK_LIB([stdc++], [main], [PGPLOTLIB="-lstdc++"])
-#  if test "x$F77" = xgfortran; then
-#    PGPLOTLIB="$PGPLOTLIB -bind_at_load"
-#  fi
+
 else
 
   #Set up the PGPLOT-related libraries and includes.
@@ -5650,7 +5645,6 @@ fi
 
 fi
 
-##  AC_PATH_X
   { $as_echo "$as_me:${as_lineno-$LINENO}: X-library search yielded X_CFLAGS=$X_CFLAGS, X_LIBS=$X_LIBS, X_EXTRA_LIBS=$X_EXTRA_LIBS, X_PRE_LIBS=$X_PRE_LIBS" >&5
 $as_echo "$as_me: X-library search yielded X_CFLAGS=$X_CFLAGS, X_LIBS=$X_LIBS, X_EXTRA_LIBS=$X_EXTRA_LIBS, X_PRE_LIBS=$X_PRE_LIBS" >&6;}
   # returns C compiler flags needed for X to X_CFLAGS and the X linker flags to X_LIBS
@@ -5658,11 +5652,6 @@ $as_echo "$as_me: X-library search yielded X_CFLAGS=$X_CFLAGS, X_LIBS=$X_LIBS, X
     LDFLAGS="$LDFLAGS $X_LIBS"
     EXTRAPGLIB="$X_LIBS $X_PRE_LIBS -lX11 $EXTRAPGLIB"
   fi
-
-#  # Add pgplot libraries, if they exist to the lib path
-#  for LIBDIR in $PGPLOTLIBDIRS ; do
-#    AC_CHECK_FILE([$LIBDIR/libcpgplot.a], [PGPLOTLIB="-L$LIBDIR $PGPLOTLIB"; break])
-#  done
 
   # It is possible that other libraries may be required depending on what
   # graphics drivers were installed with PGPLOT.
@@ -5751,6 +5740,7 @@ fi
 ac_compile='$F77 -c $FFLAGS conftest.$ac_ext >&5'
 ac_link='$F77 -o conftest$ac_exeext $FFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_f77_compiler_gnu
+
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pgopen in -lpgplot" >&5
@@ -5871,50 +5861,52 @@ _ACEOF
 
 fi
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lc++" >&5
-$as_echo_n "checking for main in -lc++... " >&6; }
-if ${ac_cv_lib_cpp_main+:} false; then :
+
+  # Need to link with libgfortran when we've used the gfortran
+  # compiler for pgplot
+  if test "x$F77" = xgfortran; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for _gfortran_getenv in -lgfortran" >&5
+$as_echo_n "checking for _gfortran_getenv in -lgfortran... " >&6; }
+if ${ac_cv_lib_gfortran__gfortran_getenv+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lc++  $LIBS"
+LIBS="-lgfortran  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char _gfortran_getenv ();
 int
 main ()
 {
-return main ();
+return _gfortran_getenv ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_cpp_main=yes
+  ac_cv_lib_gfortran__gfortran_getenv=yes
 else
-  ac_cv_lib_cpp_main=no
+  ac_cv_lib_gfortran__gfortran_getenv=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_cpp_main" >&5
-$as_echo "$ac_cv_lib_cpp_main" >&6; }
-if test "x$ac_cv_lib_cpp_main" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBC__ 1
-_ACEOF
-
-  LIBS="-lc++ $LIBS"
-
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_gfortran__gfortran_getenv" >&5
+$as_echo "$ac_cv_lib_gfortran__gfortran_getenv" >&6; }
+if test "x$ac_cv_lib_gfortran__gfortran_getenv" = xyes; then :
+  PGPLOTLIB="$PGPLOTLIB -lgfortran"
 fi
 
-  if test "x$F77" = xgfortran; then
-    PGPLOTLIB="-lcpgplot $PGPLOTLIB"
-    { $as_echo "$as_me:${as_lineno-$LINENO}:  Using gfortran, so manually adding -lcpgplot to PGPLOTLIB string." >&5
-$as_echo "$as_me:  Using gfortran, so manually adding -lcpgplot to PGPLOTLIB string." >&6;}
-  else
+  fi
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cpgopen in -lcpgplot" >&5
 $as_echo_n "checking for cpgopen in -lcpgplot... " >&6; }
 if ${ac_cv_lib_cpgplot_cpgopen+:} false; then :
@@ -5955,7 +5947,6 @@ if test "x$ac_cv_lib_cpgplot_cpgopen" = xyes; then :
   PGPLOTLIB="-lcpgplot $PGPLOTLIB"
 fi
 
-  fi
 
   # If PGPLOT is not present, we give a warning message but still continue.
   # The compilation is able to work without the PGPLOT-dependent files.
@@ -5970,11 +5961,7 @@ $as_echo "$as_me:
       WARNING! PGPLOT could not be found.
       Compiling Duchamp without graphics capabilities.
       -------------------------------------------------------" >&6;}
-    #We have no pgplot, so we just link with g++ (or equivalent)
-    LINKER=$CXX
   else
-    #We are using pgplot, so link with the fortran compiler.
-    LINKER=$F77
     PGPLOTLIB="$PGPLOTLIB $EXTRAPGLIB $LIBS"
     { $as_echo "$as_me:${as_lineno-$LINENO}: PGPLOT appears to be available." >&5
 $as_echo "$as_me: PGPLOT appears to be available." >&6;}
@@ -6046,12 +6033,11 @@ if eval test \"x\$"$as_ac_File"\" = x"yes"; then :
 fi
 
     done
-#    if test "x$F77" = xgfortran; then
-#      PGPLOTLIB="$PGPLOTLIB -bind_at_load"
-#    fi
+
   fi
 
 fi
+
 
 
 
@@ -6521,11 +6507,6 @@ fi
 
 # Only use libpgsbox if we have pgplot enabled - determine this by testing the PGPLOTINCDIRS variable
 if test "x$PGPLOTINCDIRS" != x; then
-   if test "x$F77" = xgfortran; then
-     WCSLIB="$WCSLIB -lpgsbox"
-       { $as_echo "$as_me:${as_lineno-$LINENO}:  Using gfortran, so manually adding -lpgsbox to WCSLIB string." >&5
-$as_echo "$as_me:  Using gfortran, so manually adding -lpgsbox to WCSLIB string." >&6;}
-   else
      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for cpgsbox in -lpgsbox" >&5
 $as_echo_n "checking for cpgsbox in -lpgsbox... " >&6; }
 if ${ac_cv_lib_pgsbox_cpgsbox+:} false; then :
@@ -6566,7 +6547,6 @@ if test "x$ac_cv_lib_pgsbox_cpgsbox" = xyes; then :
   WCSLIB="$WCSLIB -lpgsbox"
 fi
 
-   fi
 fi
 
 # WCSLIB is essential for Duchamp, so exit with error message if it

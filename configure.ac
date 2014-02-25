@@ -21,6 +21,7 @@ AC_PROG_CPP
 AC_PROG_F77
 AC_PROG_LN_S
 AC_CHECK_PROGS(INSTALL, install)
+LINKER=$CXX 
 
 # Check for maths library -- will add -lm to $LIBS
 AC_CHECK_LIB([m], [log])
@@ -164,13 +165,7 @@ PGPLOTLIBDIRS=$LIBDIRS
 if test "x$PGPLOTLIBDIRS" = x; then
   #the argument to --with-pgplot was no, so we don't look for it.
   AC_MSG_NOTICE([Not enabling PGPLOT use.])
-  #This is the command to do the linking stage of the compilation
-  #If no pgplot, we can just link with g++ (or equivalent)
-  LINKER=$CXX 
-#  AC_CHECK_LIB([stdc++], [main], [PGPLOTLIB="-lstdc++"])
-#  if test "x$F77" = xgfortran; then
-#    PGPLOTLIB="$PGPLOTLIB -bind_at_load"
-#  fi
+
 else
 
   #Set up the PGPLOT-related libraries and includes.
@@ -191,7 +186,6 @@ else
   
   # Search for X11 includes and libraries.
   AC_PATH_XTRA()
-##  AC_PATH_X
   AC_MSG_NOTICE([X-library search yielded X_CFLAGS=$X_CFLAGS, X_LIBS=$X_LIBS, X_EXTRA_LIBS=$X_EXTRA_LIBS, X_PRE_LIBS=$X_PRE_LIBS])
   # returns C compiler flags needed for X to X_CFLAGS and the X linker flags to X_LIBS
   if test "x$X_LIBS" != x; then
@@ -199,11 +193,6 @@ else
     EXTRAPGLIB="$X_LIBS $X_PRE_LIBS -lX11 $EXTRAPGLIB"
   fi
 
-#  # Add pgplot libraries, if they exist to the lib path
-#  for LIBDIR in $PGPLOTLIBDIRS ; do
-#    AC_CHECK_FILE([$LIBDIR/libcpgplot.a], [PGPLOTLIB="-L$LIBDIR $PGPLOTLIB"; break])
-#  done
-  
   # It is possible that other libraries may be required depending on what
   # graphics drivers were installed with PGPLOT.
   AC_CHECK_LIB([z],       [deflate],   [EXTRAPGLIB="$EXTRAPGLIB -lz"],
@@ -212,21 +201,22 @@ else
   	     [], [$EXTRAPGLIB $LIBS])
 
   AC_LANG([Fortran 77])
+
   AC_CHECK_LIB([pgplot],  [pgopen],    [PGPLOTLIB="-lpgplot"],
                [], [$PGPLOTLIB $EXTRAPGLIB])
   AC_LANG(C)
   # Checks for extra libraries needed by PGPLOT -- will add -lg2c -lstdc++ to $LIBS
   AC_CHECK_LIB([g2c], [gerror_])
   AC_CHECK_LIB([stdc++], [main])
-  AC_CHECK_LIB([c++], [main])
+
+  # Need to link with libgfortran when we've used the gfortran
+  # compiler for pgplot
   if test "x$F77" = xgfortran; then
-    PGPLOTLIB="-lcpgplot $PGPLOTLIB"
-    AC_MSG_NOTICE([ Using gfortran, so manually adding -lcpgplot to PGPLOTLIB string.])
-  else
-    AC_CHECK_LIB([cpgplot], [cpgopen],   [PGPLOTLIB="-lcpgplot $PGPLOTLIB"],
-                 [], [$PGPLOTLIB $LIBS $EXTRAPGLIB])
+    AC_CHECK_LIB([gfortran], [_gfortran_getenv], [PGPLOTLIB="$PGPLOTLIB -lgfortran"], [], [])
   fi
-  
+
+    AC_CHECK_LIB([cpgplot], [cpgopen],   [PGPLOTLIB="-lcpgplot $PGPLOTLIB"], [], [$PGPLOTLIB $LIBS $EXTRAPGLIB])
+
   # If PGPLOT is not present, we give a warning message but still continue. 
   # The compilation is able to work without the PGPLOT-dependent files.
   if test "x$PGPLOTLIB" = x; then
@@ -235,11 +225,7 @@ else
       WARNING! PGPLOT could not be found.
       Compiling Duchamp without graphics capabilities.               
       -------------------------------------------------------])
-    #We have no pgplot, so we just link with g++ (or equivalent)
-    LINKER=$CXX 
   else
-    #We are using pgplot, so link with the fortran compiler.
-    LINKER=$F77
     PGPLOTLIB="$PGPLOTLIB $EXTRAPGLIB $LIBS"
     AC_MSG_NOTICE([PGPLOT appears to be available.])
     AC_DEFINE([HAVE_PGPLOT], [1], [Define to 1 if PGPLOT is available.])
@@ -248,12 +234,11 @@ else
      AC_CHECK_FILE([$LIBDIR/lib/libcpgplot.a], [PGPLOTLIB="-L$LIBDIR/lib $PGPLOTLIB"; break])
      AC_CHECK_FILE([$LIBDIR/pgplot/libcpgplot.a], [PGPLOTLIB="-L$LIBDIR/pgplot $PGPLOTLIB"; break])
     done
-#    if test "x$F77" = xgfortran; then
-#      PGPLOTLIB="$PGPLOTLIB -bind_at_load"
-#    fi
+    
   fi
 
 fi
+
 
 AC_SUBST([LINKER])
 AC_SUBST([PGPLOTINC])
@@ -383,13 +368,8 @@ AC_CHECK_LIB([wcs], [wcss2p], [WCSLIB="$WCSLIB -lwcs"], [],
 
 # Only use libpgsbox if we have pgplot enabled - determine this by testing the PGPLOTINCDIRS variable
 if test "x$PGPLOTINCDIRS" != x; then 
-   if test "x$F77" = xgfortran; then
-     WCSLIB="$WCSLIB -lpgsbox"
-       AC_MSG_NOTICE([ Using gfortran, so manually adding -lpgsbox to WCSLIB string.])
-   else
      AC_CHECK_LIB([pgsbox], [cpgsbox], [WCSLIB="$WCSLIB -lpgsbox"], [],
                  [$WCSLIB $LIBS $CFITSIOLIB $PGPLOTLIB])
-   fi
 fi
 
 # WCSLIB is essential for Duchamp, so exit with error message if it
