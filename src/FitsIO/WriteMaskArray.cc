@@ -8,8 +8,9 @@
 namespace duchamp {
 
   WriteMaskArray::WriteMaskArray():
-    WriteArray(), itsBitpix(SHORT_IMG)
+    WriteArray()
   {
+    itsBitpix = SHORT_IMG;
   }
   
   WriteMaskArray::WriteMaskArray(Cube *cube):
