@@ -32,6 +32,11 @@ namespace duchamp {
     OUTCOME write();
 
   protected:
+      
+      OUTCOME writeToFITS_flt(size_t size, float *array);
+      OUTCOME writeToFITS_int(size_t size, int *array);
+      OUTCOME writeToFITS_long(size_t size, long *array);
+      
     Cube *itsCube;
     std::string itsFilename;
     int itsBitpix;

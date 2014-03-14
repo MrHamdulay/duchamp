@@ -10,12 +10,12 @@ namespace duchamp {
   WriteMomentMaskArray::WriteMomentMaskArray():
     WriteArray()
   {
-    this->itsBitpix=LONG_IMG;
+    this->itsBitpix=SHORT_IMG;
     this->itsFlag2D=true;
   }
   
   WriteMomentMaskArray::WriteMomentMaskArray(Cube *cube):
-    WriteArray(cube,LONG_IMG)
+    WriteArray(cube,SHORT_IMG)
   {
     this->itsFlag2D=true;
   }
@@ -102,28 +102,25 @@ namespace duchamp {
 
   OUTCOME WriteMomentMaskArray::writeData()
   {
-    OUTCOME result = SUCCESS;
-    int *mask = new int[this->itsCube->getSpatialSize()];
-    for(size_t i=0;i<this->itsCube->getSpatialSize();i++) mask[i]=0;
-    std::vector<Detection>::iterator obj;
-    for(obj=this->itsCube->pObjectList()->begin();obj<this->itsCube->pObjectList()->end();obj++){
-      std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
-      std::vector<PixelInfo::Voxel>::iterator vox;
-      for(vox=voxlist.begin();vox<voxlist.end();vox++){
-	size_t pixelpos = vox->getX() + this->itsCube->getDimX()*vox->getY();
-	mask[pixelpos] = 1;
+      OUTCOME result = SUCCESS;
+      size_t size=this->itsCube->getSpatialSize();
+      int *mask = new int[size];
+      for(size_t i=0;i<size;i++) mask[i]=0;
+      std::vector<Detection>::iterator obj;
+      for(obj=this->itsCube->pObjectList()->begin();obj<this->itsCube->pObjectList()->end();obj++){
+          std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
+          std::vector<PixelInfo::Voxel>::iterator vox;
+          for(vox=voxlist.begin();vox<voxlist.end();vox++){
+              size_t pixelpos = vox->getX() + this->itsCube->getDimX()*vox->getY();
+              mask[pixelpos] = 1;
+          }
       }
-    }
-    int status=0;
-    long group=0;
-    LONGLONG first=1;
-    LONGLONG nelem=LONGLONG(this->itsCube->getSpatialSize());
-    if(fits_write_img_int(this->itsFptr, group, first, nelem, mask, &status)){
-      duchampFITSerror(status,"writeMomentMaskArray","Error writing mask array:");
-      result = FAILURE;
-    }
 
-    return result;
+      result = this->writeToFITS_int(size,mask);
+
+      delete [] mask;
+      
+      return result;
 
   }
 

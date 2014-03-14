@@ -155,34 +155,26 @@ namespace duchamp {
 
   OUTCOME WriteReconArray::writeData()
   {
-    OUTCOME result = SUCCESS;
-
-    long group=0;
-    int status=0;
-
-    float *array;
-
-    if(this->itsIsRecon){
-      array = this->itsCube->getRecon();
-    }
-    else{
-
-      array = new float[this->itsCube->getSize()];
-      for(size_t i=0;i<this->itsCube->getSize();i++) 
-	array[i] = this->itsCube->getPixValue(i) - this->itsCube->getReconValue(i);
-
-    }
-
-    if(this->itsCube->pars().getFlagBlankPix())
-      fits_write_imgnull_flt(this->itsFptr, group, 1, this->itsCube->getSize(), array, this->itsCube->pars().getBlankPixVal(), &status);
-    else 
-      fits_write_img_flt(this->itsFptr, group, 1, this->itsCube->getSize(), array, &status);
-    if(status){
-      duchampFITSerror(status,this->itsIsRecon?"writeReconArray":"writeResidArray","Error writing reconstructed array:");
-      result = FAILURE;
-    }
-
-    return result;
+      OUTCOME result = SUCCESS;
+      
+      float *array;
+      
+      if(this->itsIsRecon){
+          array = this->itsCube->getRecon();
+      }
+      else{
+          
+          array = new float[this->itsCube->getSize()];
+          for(size_t i=0;i<this->itsCube->getSize();i++)
+          array[i] = this->itsCube->getPixValue(i) - this->itsCube->getReconValue(i);
+          
+      }
+      
+      result = this->writeToFITS_flt(this->itsCube->getSize(), array);
+      
+      if(!this->itsIsRecon) delete [] array;
+      
+      return result;
 
   }
 

@@ -136,20 +136,10 @@ namespace duchamp {
 
   OUTCOME WriteSmoothArray::writeData()
   {
-    OUTCOME result = SUCCESS;
+      
+      OUTCOME result = this->writeToFITS_flt(this->itsCube->getSize(), this->itsCube->getRecon());
 
-    long group=0;
-    int status=0;
-    if(this->itsCube->pars().getFlagBlankPix())
-      fits_write_imgnull_flt(this->itsFptr, group, 1, this->itsCube->getSize(), this->itsCube->getRecon(), this->itsCube->pars().getBlankPixVal(), &status);
-    else 
-      fits_write_img_flt(this->itsFptr, group, 1, this->itsCube->getSize(), this->itsCube->getRecon(), &status);
-    if(status){
-      duchampFITSerror(status,"writeSmoothArray","Error writing smoothed array:");
-      result = FAILURE;
-    }
-
-    return result;
+      return result;
 
   }
 

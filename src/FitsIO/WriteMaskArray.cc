@@ -8,16 +8,23 @@
 namespace duchamp {
 
   WriteMaskArray::WriteMaskArray():
-    WriteArray()
+    WriteArray(), itsBitpix(SHORT_IMG)
   {
-    this->itsBitpix=LONG_IMG;
   }
   
   WriteMaskArray::WriteMaskArray(Cube *cube):
-    WriteArray(cube,LONG_IMG)
+    WriteArray(cube, SHORT_IMG)
   {
   }
 
+  void WriteMaskArray::setCorrectBitpix()
+    {
+        if(this->itsCube->pars().getFlagMaskWithObjectNum()){
+            long shortImgMax=32768;
+            if(this->itsCube->getNumObj()>=shortImgMax) this->itsBitpix=LONG_IMG;
+        }
+    }
+    
   WriteMaskArray::WriteMaskArray(const WriteMaskArray &other)
   {
     this->operator=(other);
@@ -100,31 +107,94 @@ namespace duchamp {
   OUTCOME WriteMaskArray::writeData()
   {
     OUTCOME result = SUCCESS;
-    int *mask = new int[this->itsCube->getSize()];
-    for(size_t i=0;i<this->itsCube->getSize();i++) mask[i]=0;
-    std::vector<Detection>::iterator obj;
-    for(obj=this->itsCube->pObjectList()->begin();obj<this->itsCube->pObjectList()->end();obj++){
-      std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
-      std::vector<PixelInfo::Voxel>::iterator vox;
-      for(vox=voxlist.begin();vox<voxlist.end();vox++){
-	size_t pixelpos = vox->getX() + this->itsCube->getDimX()*vox->getY() + 
-	  this->itsCube->getDimX()*this->itsCube->getDimY()*vox->getZ();
-	if(this->itsCube->pars().getFlagMaskWithObjectNum()) mask[pixelpos] = obj->getID();
-	else mask[pixelpos] = 1;
+      
+      if(this->itsCube->pars().getFlagMaskWithObjectNum()){
+          if(this->itsBitpix==SHORT_IMG)
+            result = writeDataObjNumMask_int();
+          else
+            result = writeDataObjNumMask_long();
       }
-    }
-    int status=0;
-    long group=0;
-    LONGLONG first=1;
-    LONGLONG nelem=LONGLONG(this->itsCube->getSize());
-    if(fits_write_img_int(this->itsFptr, group, first, nelem, mask, &status)){
-      duchampFITSerror(status,"writeMaskArray","Error writing mask array:");
-      result = FAILURE;
-    }
-
-    return result;
-
+      else
+        result = writeDataSimpleMask();
+      
+      return result;
   }
+
+    OUTCOME WriteMaskArray::writeDataSimpleMask()
+    {
+        OUTCOME result = SUCCESS;
+        
+        size_t size=this->itsCube->getSize();
+        int *mask = new int[size];
+        for(size_t i=0;i<size;i++) mask[i]=0;
+        std::vector<Detection>::iterator obj;
+        for(obj=this->itsCube->pObjectList()->begin();obj<this->itsCube->pObjectList()->end();obj++){
+            std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
+            std::vector<PixelInfo::Voxel>::iterator vox;
+            for(vox=voxlist.begin();vox<voxlist.end();vox++){
+                size_t pixelpos = vox->getX() + this->itsCube->getDimX()*vox->getY() + this->itsCube->getDimX()*this->itsCube->getDimY()*vox->getZ();
+                mask[pixelpos] = 1;
+            }
+        }
+
+        result = this->writeToFITS_int(size,mask);
+        
+        delete [] mask;
+        
+        return result;
+
+    }
+
+    OUTCOME WriteMaskArray::writeDataObjNumMask_int()
+    {
+        OUTCOME result = SUCCESS;
+        
+        size_t size=this->itsCube->getSize();
+        int *mask = new int[size];
+        for(size_t i=0;i<size;i++) mask[i]=0;
+        std::vector<Detection>::iterator obj;
+        for(obj=this->itsCube->pObjectList()->begin();obj<this->itsCube->pObjectList()->end();obj++){
+            std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
+            std::vector<PixelInfo::Voxel>::iterator vox;
+            for(vox=voxlist.begin();vox<voxlist.end();vox++){
+                size_t pixelpos = vox->getX() + this->itsCube->getDimX()*vox->getY() + this->itsCube->getDimX()*this->itsCube->getDimY()*vox->getZ();
+                mask[pixelpos] = obj->getID();
+            }
+        }
+        
+        result = this->writeToFITS_int(size,mask);
+        
+        delete [] mask;
+        
+        return result;
+        
+    }
+    
+    OUTCOME WriteMaskArray::writeDataObjNumMask_long()
+    {
+        OUTCOME result = SUCCESS;
+        
+        size_t size=this->itsCube->getSize();
+        long *mask = new long[size];
+        for(size_t i=0;i<size;i++) mask[i]=0;
+        std::vector<Detection>::iterator obj;
+        for(obj=this->itsCube->pObjectList()->begin();obj<this->itsCube->pObjectList()->end();obj++){
+            std::vector<PixelInfo::Voxel> voxlist = obj->getPixelSet();
+            std::vector<PixelInfo::Voxel>::iterator vox;
+            for(vox=voxlist.begin();vox<voxlist.end();vox++){
+                size_t pixelpos = vox->getX() + this->itsCube->getDimX()*vox->getY() + this->itsCube->getDimX()*this->itsCube->getDimY()*vox->getZ();
+                mask[pixelpos] = obj->getID();
+            }
+        }
+        
+        result = this->writeToFITS_long(size,mask);
+        
+        delete [] mask;
+        
+        return result;
+        
+    }
+
 
 }
 

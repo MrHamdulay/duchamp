@@ -86,20 +86,10 @@ namespace duchamp {
 
   OUTCOME WriteBaselineArray::writeData()
   {
-    OUTCOME result = SUCCESS;
+      
+      OUTCOME result = this->writeToFITS_flt(this->itsCube->getSize(), this->itsCube->getBaseline());
 
-    long group=0;
-    int status=0;
-    if(this->itsCube->pars().getFlagBlankPix())
-      fits_write_imgnull_flt(this->itsFptr, group, 1, this->itsCube->getSize(), this->itsCube->getBaseline(), this->itsCube->pars().getBlankPixVal(), &status);
-    else 
-      fits_write_img_flt(this->itsFptr, group, 1, this->itsCube->getSize(), this->itsCube->getBaseline(), &status);
-    if(status){
-      duchampFITSerror(status,"writeBaselineArray","Error writing baseline array:");
-      result = FAILURE;
-    }
-
-    return result;
+      return result;
 
   }
 

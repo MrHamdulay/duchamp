@@ -22,6 +22,11 @@ namespace duchamp {
     OUTCOME writeData();
 
   protected:
+      void setCorrectBitpix();
+      
+      OUTCOME writeDataSimpleMask();
+      OUTCOME writeDataObjNumMask_int();
+      OUTCOME writeDataObjNumMask_long();
 
   };
 

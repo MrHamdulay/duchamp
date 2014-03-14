@@ -130,5 +130,67 @@ namespace duchamp {
     }
     return result;
   }
+    
+    OUTCOME WriteArray::writeToFITS_flt(size_t size, float *array)
+    {
+        OUTCOME result = SUCCESS;
+        
+        long group=0;
+        int status=0;
+        LONGLONG first=1;
+        LONGLONG nelem = LONGLONG(size);
+        if(this->itsCube->pars().getFlagBlankPix()){
+            float nulval = this->itsCube->pars().getBlankPixVal();
+            fits_write_imgnull_flt(this->itsFptr, group, first, nelem, array, nulval, &status);
+        }
+        else
+        fits_write_img_flt(this->itsFptr, group, first, nelem, array, &status);
+        
+        if(status){
+            duchampFITSerror(status,"writeArray","Error writing array:");
+            result = FAILURE;
+        }
+        
+        return result;
+        
+    }
+
+    OUTCOME WriteArray::writeToFITS_int(size_t size, int *array)
+    {
+        OUTCOME result = SUCCESS;
+        
+        long group=0;
+        int status=0;
+        LONGLONG first=1;
+        LONGLONG nelem = LONGLONG(size);
+        fits_write_img_int(this->itsFptr, group, first, nelem, array, &status);
+        
+        if(status){
+            duchampFITSerror(status,"writeArray","Error writing array:");
+            result = FAILURE;
+        }
+        
+        return result;
+        
+    }
+
+    OUTCOME WriteArray::writeToFITS_long(size_t size, long *array)
+    {
+        OUTCOME result = SUCCESS;
+        
+        long group=0;
+        int status=0;
+        LONGLONG first=1;
+        LONGLONG nelem = LONGLONG(size);
+        fits_write_img_lng(this->itsFptr, group, first, nelem, array, &status);
+        
+        if(status){
+            duchampFITSerror(status,"writeArray","Error writing array:");
+            result = FAILURE;
+        }
+        
+        return result;
+        
+    }
 
 }

@@ -98,23 +98,14 @@ namespace duchamp {
 
   OUTCOME WriteMomentMapArray::writeData()
   {
-    OUTCOME result = SUCCESS;
-    long size = this->itsCube->getSpatialSize();
-    float *momentMap = new float[size];
-    std::vector<bool> detectionMap = this->itsCube->getMomentMap(momentMap);
-    int status=0;
-    long group=0;
-    if(this->itsCube->pars().getFlagBlankPix())
-      fits_write_imgnull_flt(this->itsFptr, group, 1, size, momentMap, this->itsCube->pars().getBlankPixVal(), &status);
-    else 
-      fits_write_img_flt(this->itsFptr, group, 1, size, momentMap, &status);
-    if(status){
-      duchampFITSerror(status,"writeMomentMapArray","Error writing data");
-      result=FAILURE;
-    }
-
-    return result;
-
+      
+      size_t size = this->itsCube->getSpatialSize();
+      float *momentMap = new float[size];
+      std::vector<bool> detectionMap = this->itsCube->getMomentMap(momentMap);
+      OUTCOME result = this->writeToFITS_flt(size, momentMap);
+      delete [] momentMap;
+      return result;
+      
   }
 
 }
