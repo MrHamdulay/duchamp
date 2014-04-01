@@ -196,9 +196,9 @@ namespace duchamp {
 		if(col->type()=="W50")   field.setUCD("spect.line.width.50;"+specUCDbase);
 		if(col->type()=="WVEL")  field.setUCD("spect.line.width.full;"+specUCDbase);
 		if(!this->itsHead->is2D()){
-		    if(col->type()=="FINT") field.setUCD(field.UCD()+"spect.line.intensity");
-		    if(col->type()=="FTOT") field.setUCD(field.UCD()+"spect.line.intensity");
-		    if(col->type()=="FPEAK") field.setUCD(field.UCD()+"spect.line.intensity");
+		    if(col->type()=="FINT") field.setUCD(field.UCD()+";spect.line.intensity");
+		    if(col->type()=="FTOT") field.setUCD(field.UCD()+";spect.line.intensity");
+		    if(col->type()=="FPEAK") field.setUCD(field.UCD()+";spect.line.intensity");
 		}
 		this->itsFileStream << "      ";
 		field.printField(this->itsFileStream);
