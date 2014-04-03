@@ -57,17 +57,17 @@ locations:
 \secC{Basic installation}
 
 \duchamp can be built on Unix/Linux systems by typing (assuming that
-the prompt your terminal provides is a \texttt{> } -- don't type this
+the prompt your terminal provides is a \verb|>| -- don't type this
 character!):
 \begin{quote}
 {\footnotesize
-\texttt{%
-> ./configure\\
-> make\\
-> make lib (optional -- to create libraries for development
-purposes)\\ 
-> make clean (optional -- to remove the object files)\\
-> make install }
+\begin{verbatim}
+ > ./configure
+ > make
+ > make lib (optional -- to create libraries for development purposes)
+ > make clean (optional -- to remove the object files)
+ > make install 
+\end{verbatim}
 }
 \end{quote}
 
@@ -101,8 +101,7 @@ use the \texttt{--prefix} option with configure, specifying the
 directory above the \texttt{bin/} directory \eg
 \begin{quote}
 {\footnotesize
-\texttt{%
-> ./configure --prefix=/home/mduchamp}
+\verb| > ./configure --prefix=/home/mduchamp|
 }
 \end{quote}
 and then run \texttt{make}, (\texttt{make lib} if you like), and
@@ -114,31 +113,29 @@ put in \texttt{/home/mduchamp/lib} and the header files will be put in
 If the above-mentioned libraries have been installed in non-standard
 locations, or you have more than one version installed on your system,
 you can specify specific locations by using the \texttt{configure} flags
-\texttt{--with-cfitsio=<dir>}, \texttt{--with-wcslib=<dir>} or
-\texttt{--with-pgplot=<dir>}. For example:
+\verb|--with-cfitsio=<dir>|, \verb|--with-wcslib=<dir>| or
+\verb|--with-pgplot=<dir>|. For example:
 \begin{quote}
 {\footnotesize
-\texttt{%
-> ./configure --with-wcslib=/home/mduchamp/wcslib-4.2}
+\verb| > ./configure --with-wcslib=/home/mduchamp/wcslib-4.2|
 }
 \end{quote}
 
-Duchamp can be compiled without \textsc{pgplot} if it is not installed
+\duchamp can be compiled without \textsc{pgplot} if it is not installed
 on your system -- the searching and text-based output remains the
 same, but you will not have any graphical output.  To manually specify
 this option, you can either give \texttt{--without-pgplot} or
 \texttt{--with-pgplot=no} as arguments to \texttt{configure}:
 \begin{quote}
 {\footnotesize
-\texttt{%
-> ./configure --without-pgplot}
+\verb| > ./configure --without-pgplot|
 }
 \end{quote}
 
 (Note that CFITSIO and WCSLIB are essential, however, so flags such as
 \texttt{--without-wcslib} or \texttt{--without-cfitsio} will not
 work.).  Even if you do not give the \texttt{--without-pgplot} option,
-and the \textsc{pgplot} library is not found, Duchamp will still
+and the \textsc{pgplot} library is not found, \duchamp will still
 compile (albeit without graphical capabilities).
 
 An additional option that is useful is the ability to specify which
@@ -148,8 +145,7 @@ X, where \texttt{gfortran} is often used instead of \texttt{gcc}. To
 specify a particular Fortran compiler, use the \texttt{F77} flag:
 \begin{quote}
 {\footnotesize
-\texttt{%
-> ./configure F77=gfortran}
+\verb| > ./configure F77=gfortran|
 }
 \end{quote}
 
@@ -158,8 +154,7 @@ Of course, all desired flags should be combined in one
 \texttt{configure}, run:
 \begin{quote}
 {\footnotesize
-\texttt{%
-> ./configure --help}
+\verb| > ./configure --help|
 }
 \end{quote}
 Once \texttt{configure} has run correctly, simply run \texttt{make}
@@ -167,7 +162,116 @@ and \texttt{make install} to build \duchamp and put it in the correct
 place (either \texttt{/usr/local/bin} or the location given by the
 \texttt{--prefix} option discussed above).
 
-\secC{Problems building Duchamp}
+
+
+\secC{Making sure it all works}
+
+Running make will create the executable \texttt{Duchamp-{\version}}. You can
+verify that it is running correctly by running the verification shell
+script:
+\begin{quote}
+{\footnotesize
+\texttt{> ./VerifyDuchamp.sh}
+}
+\end{quote}
+This will use a dummy FITS image in the \texttt{verification/}
+directory -- this image has some Gaussian random noise, with five
+Gaussian sources present, plus a dummy WCS. The script runs
+\duchamp on this image with nine different sets of inputs, and
+compares to known results, looking for differences and reporting
+any. There should be none reported if everything is working
+correctly. 
+
+The script performs basic checks on the output files (results, log,
+VOTable, and annotation files), but ignores most of the actual values
+of source parameters (to avoid picking up just differences due to
+precision errors). For complete checks of the files, run
+\begin{quote}
+  {\footnotesize
+    \texttt{> ./VerifyDuchamp.sh -f}
+  }
+\end{quote}
+Be warned that on some systems this could provide a large number of
+apparent errors which may only be due to precision differences.
+
+If everything worked, you can then install \duchamp on your system via:
+\begin{quote}
+{\footnotesize
+\texttt{> make install}
+}
+\end{quote}
+(this may need to be run as sudo depending on your system setup and
+your prefix directory).
+
+\secB{Troubleshooting the installation process}
+
+This section deals with a few common problems encountered in building
+\duchamp, along with suggested fixes. As always, if you come across
+particularly intractable problems, you are welcome to submit a bug
+report -- see below for details.
+
+\secC{Unrecognised libraries}
+
+It may be that even after explicitly giving the location of particular
+libraries, they are still not being found properly by
+\texttt{configure}. This can be a particular problem when those
+libraries are installed in a non-standard location (for instance, if
+you do not have root permissions on the machine you are using and have
+installed them yourself in a local directory).
+
+One thing to be aware of is that the paths used for linking libraries
+include your new library. You can set this using the environment
+variables \verb|LD_LIBRARY_PATH| or, on a Mac,
+\verb|DYLD_LIBRARY_PATH|. For instance, if you've installed
+\texttt{wcslib} in \texttt{/home/mduchamp/mylibs/wcslib} then you can
+update the path via
+
+\begin{quote}
+{\footnotesize
+\verb|> export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/home/mduchamp/mylibs/wcslib"|
+\,\,\, for a \texttt{bash}-like shell, or\\
+\verb|> setenv LD_LIBRARY_PATH "${LD_LIBRARY_PATH}:/home/mduchamp/mylibs/wcslib"|
+\,\,\, for a \texttt{csh}-like shell
+}
+\end{quote}
+and similarly for \verb|DYLD_LIBRARY_PATH|.
+
+\secC{Non-standard system library locations}
+
+It may be that one of the system libraries is not being found
+correctly. This can be a problem with the \texttt{gfortran} libary. If
+\texttt{configure} cannot find it, then it will likely leave out one
+or more libraries from the linking command (such as \verb|-lcpgplot|
+or \verb|-lpgsbox|), resulting in \duchamp not building correctly. You
+may also get error messages at the linking stage (the final stage of
+running \texttt{make}) that complain of missing symbols.
+
+To force \texttt{configure} to use a non-standard location, you can
+use the \verb|LIBS| option. For instance, say your system has
+\verb|libgfortran| in some non-standard location like
+\verb|/some/other/path/libgfortran.so|, then you can run
+\texttt{configure} like so:
+
+\begin{quote}
+{\footnotesize
+\verb| > ./configure LIBS="-L/some/other/path -lgfortran"|
+}
+\end{quote}
+
+This will allow \texttt{configure} to test for other libraries using
+that location for \texttt{libgfortran}, and put that library location
+into the Makefile.
+
+Another potential problem are the X11 libraries. These are used for
+the \texttt{pgplot} display during run-time. The \texttt{configure}
+script has a specific function that searches for them, but sometimes
+it fails to locate them if they are in a non-standard place on your
+system. This can be a problem as \texttt{configure} will then fail to
+test properly for the presence of \texttt{pgplot}.  If this is the
+case, use the \verb|--x-includes| and \verb|--x-libraries| flags to
+give the relevant directories.
+
+\secC{Bad command-line options}
 
 While the configure script tries to get everything right, it can
 exhibit some quirks. For instance, in getting the X11 library
@@ -197,51 +301,12 @@ Makefile. Please log a bug report to let me know!
 
 
 
-\secC{Making sure it all works}
-
-Running make will create the executable \texttt{Duchamp-{\version}}. You can
-verify that it is running correctly by running the verification shell
-script:
-\begin{quote}
-{\footnotesize
-\texttt{> ./VerifyDuchamp.sh}
-}
-\end{quote}
-This will use a dummy FITS image in the \texttt{verification/}
-directory -- this image has some Gaussian random noise, with five
-Gaussian sources present, plus a dummy WCS. The script runs
-Duchamp on this image with nine different sets of inputs, and
-compares to known results, looking for differences and reporting
-any. There should be none reported if everything is working
-correctly. 
-
-The script performs basic checks on the output files (results, log,
-VOTable, and annotation files), but ignores most of the actual values
-of source parameters (to avoid picking up just differences due to
-precision errors). For complete checks of the files, run
-\begin{quote}
-  {\footnotesize
-    \texttt{> ./VerifyDuchamp.sh -f}
-  }
-\end{quote}
-Be warned that on some systems this could provide a large number of
-apparent errors which may only be due to precision differences.
-
-If everything worked, you can then install \duchamp on your system via:
-\begin{quote}
-{\footnotesize
-\texttt{> make install}
-}
-\end{quote}
-(this may need to be run as sudo depending on your system setup and
-your prefix directory).
-
 \secB{Running \duchamp}
-You can then run \duchamp on your own data. This can be done in one
+You can now run \duchamp on your own data. This can be done in one
 of two ways. The first is:
 \begin{quote}
 {\footnotesize
-\texttt{> Duchamp -f [FITS file]}
+\verb| > Duchamp -f [FITS file]|
 }
 \end{quote}
 where \texttt{[FITS file]} is the file you wish to search. This method
@@ -249,7 +314,7 @@ simply uses the default values of all parameters. The flux threshold
 can be specified using the \texttt{-t [THRESHOLD]} option:
 \begin{quote}
 {\footnotesize
-\texttt{> Duchamp -f [FITS file] -t [THRESHOLD]}
+\verb| > Duchamp -f [FITS file] -t [THRESHOLD]|
 }
 \end{quote}
 
@@ -257,7 +322,7 @@ The second method allows some determination of the parameter values by
 the user. Type:
 \begin{quote}
 {\footnotesize
-\texttt{> Duchamp -p [parameter file]}
+\verb| > Duchamp -p [parameter file]|
 }
 \end{quote}
 where \texttt{[parameterFile]} is a file with the input parameters,
@@ -274,7 +339,7 @@ replace the \texttt{"your-file-here"} in the \texttt{InputExample}
 file with your image name, and type
 \begin{quote}
 {\footnotesize
-\texttt{> Duchamp -p InputExample}
+\verb| > Duchamp -p InputExample|
 }
 \end{quote}
 
@@ -283,10 +348,10 @@ detections), one can either set the parameter \texttt{flagXOutput =
 false} or use the \texttt{-x} command-line option:
 \begin{quote}
 {\footnotesize
-\texttt{> Duchamp -x -p [parameter file]}
+\verb| > Duchamp -x -p [parameter file]|
 }, or\\
 {\footnotesize
-\texttt{> Duchamp -x -f [FITS file]}
+\verb| > Duchamp -x -f [FITS file]|
 }
 \end{quote}
 Note that the postscript outputs will still be produced (if required)
@@ -302,7 +367,7 @@ included in future releases. You can submit a ``ticket'' (a trackable
 bug report) at the \duchamp Trac wiki at the following location:\\
 \href{http://svn.atnf.csiro.au/trac/duchamp/newticket}%
 {http://svn.atnf.csiro.au/trac/duchamp/newticket}
-\\(there is a link to this page from the Duchamp website).
+\\(there is a link to this page from the \duchamp website).
 
 There is also an email exploder, duchamp-user\textbf{[at]}atnf.csiro.au,
 that users can subscribe to keep up to date with changes, updates, and

@@ -110,7 +110,9 @@ you can specify specific locations by using the --with-cfitsio=<dir>,
 --with-wcslib=<dir> or --with-pgplot=<dir> flags. For example:
 
  >  ./configure --with-wcslib=/home/mduchamp/wcslib-4.2 
+
 And then just run make in the usual fashion:
+
  >  make
 
 Duchamp can be compiled without PGPLOT if it is not installed on your
@@ -126,40 +128,17 @@ Even if you do not give the --without-pgplot option, and the PGPLOT
 library is not found, Duchamp will still compile (albeit without
 graphical capabilities).
 
+Troubleshooting the installation
+--------------------------------
 
-Installing on Mac OS X with gfortran
-------------------------------------
+There may be issues with the configure/make/install process that arise 
+from non-standard locations of key libraries. The User's Guide has a 
+section in Appendix A discussing some of the more common problems 
+and potential solutions.
 
-Some recent testing on a Mac with OS X and gfortran has shown that
-slight tweaking needs to be done with the use of configure. In
-addition to the options noted above, configure should be run with F77
-set to the desired fortran compiler command. Note that this should be
-the same as that used to compile the pgplot package, if you are using
-it: gfortran is probably the best choice. 
-This is done simply by:
+Feeback is welcome if you have trouble getting Duchamp working -- see 
+the feedback section below.
 
- >  ./configure F77=gfortran ...[other options]...
-
-
-Fixing problems with the Makefile
----------------------------------
-
-While the configure script tries to get everything right, it can
-exhibit some quirks. For instance, in getting the X11 library
-configuration right, it will sometimes provide a -R/path/to/X11
-argument for the linking string. This is accepted by ld, but not by
-all versions of gfortran. This can cause the final linking step to
-fail (and for the -lpgplot argument to be left off).
-
-To fix this, a shell script is provided to quickly patch the Makefile
-if necessary. If you run make and it fails, due to this error:
-   gfortran: error: unrecognized command line option ‘-R’
-or similar, run 
-
- > ./fixMakefile.sh
-
-and try again. If it still fails, you may have to manually edit the
-Makefile. Please log a bug report to let me know!
 
 Testing
 =======
@@ -239,6 +218,9 @@ documentation. It comes in both postscript and portable document
 format (pdf -- note that this contains hyperlinks). This guide will
 provide full descriptions of all parameters, and of all steps in the
 execution of Duchamp.
+
+Feedback
+========
 
 Any questions, please contact me. To report problems or bugs, or to
 suggest improvements, please go to the Duchamp Trac wiki site:
