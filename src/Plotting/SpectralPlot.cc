@@ -204,7 +204,7 @@ namespace duchamp {
 	    cpgqci(&ci);
 	    cpgqls(&ls);
 	    cpgsci(DUCHAMP_OBJECT_OUTLINE_COLOUR);
-	    cpgsls(DASHED);
+	    cpgsls(DUCHAMP_OBJECT_OUTLINE_STYLE);
 	    cpgmove(v1,min);  cpgdraw(v1,max);
 	    cpgmove(v2,min);  cpgdraw(v2,max);
 	    cpgsci(ci);
@@ -227,8 +227,8 @@ namespace duchamp {
 	    cpgqci(&ci);
 	    cpgqfs(&fs);
 	    setDarkGreen();
-	    cpgsci(DUCHAMP_MILKY_WAY_COLOUR);
-	    cpgsfs(HATCHED);
+	    cpgsci(DUCHAMP_FLAGGED_CHAN_COLOUR);
+	    cpgsfs(DUCHAMP_FLAGGED_CHAN_FILL);
 	    cpgrect(v1,v2,min,max);
 	    cpgsfs(OUTLINE);
 	    cpgrect(v1,v2,min,max);
@@ -240,9 +240,12 @@ namespace duchamp {
 	{
 
 	    float dud,vmin,vmax;
+	    int colour,style;
+	    cpgqci(&colour);
+	    cpgqls(&style);
 	    cpgqwin(&vmin,&vmax,&dud,&dud);
-	    cpgsci(BLUE);
-	    cpgsls(DASHED);
+	    cpgsci(DUCHAMP_THRESHOLD_COLOUR);
+	    cpgsls(DUCHAMP_THRESHOLD_MAIN_STYLE);
 	    float thresh = stats.getThreshold();
 	    if(par.getFlagNegative()) thresh *= -1.;
 	    cpgmove(vmin,thresh);
@@ -251,19 +254,22 @@ namespace duchamp {
 		if(par.getFlagUserGrowthThreshold()) thresh= par.getGrowthThreshold();
 		else thresh= stats.snrToValue(par.getGrowthCut());
 		if(par.getFlagNegative()) thresh *= -1.;	
-		cpgsls(DOTTED);
+		cpgsls(DUCHAMP_THRESHOLD_GROWTH_STYLE);
 		cpgmove(vmin,thresh);
 		cpgdraw(vmax,thresh);
 	    }
-	    cpgsci(FOREGND);
-	    cpgsls(SOLID);
+	    cpgsci(colour);
+	    cpgsls(style);
 	}
 
 	void SpectralPlot::drawThresholds(Param &par, Statistics::StatsContainer<float> &stats, float *vel, float *baseline, size_t size)
 	{
 
-	    cpgsci(BLUE);
-	    cpgsls(DASHED);
+	    int colour,style;
+	    cpgqci(&colour);
+	    cpgqls(&style);
+	    cpgsci(DUCHAMP_THRESHOLD_COLOUR);
+	    cpgsls(DUCHAMP_THRESHOLD_MAIN_STYLE);
 	    float thresh = stats.getThreshold();
 	    if(par.getFlagNegative()) thresh *= -1.;
 	    for(size_t i=0;i<size;i++) baseline[i]+= thresh;
@@ -274,12 +280,12 @@ namespace duchamp {
 		else thresh= stats.snrToValue(par.getGrowthCut());
 		if(par.getFlagNegative()) thresh *= -1.;	
 		for(size_t i=0;i<size;i++) baseline[i]+= thresh;
-		cpgsls(DOTTED);
+		cpgsls(DUCHAMP_THRESHOLD_GROWTH_STYLE);
 		cpgline(size,vel,baseline);
 		for(size_t i=0;i<size;i++) baseline[i]-= thresh;
 	    }
-	    cpgsci(FOREGND);
-	    cpgsls(SOLID);
+	    cpgsci(colour);
+	    cpgsls(style);
 	}
 
     }

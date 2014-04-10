@@ -243,8 +243,18 @@ namespace duchamp
   const int DUCHAMP_BASELINE_SPECTRA_COLOUR = mycpgplot::YELLOW;
   /// The colour for the object outline 
   const int DUCHAMP_OBJECT_OUTLINE_COLOUR = mycpgplot::BLUE;
-  /// The colour for the Milky-way region spectral boundaries 
-  const int DUCHAMP_MILKY_WAY_COLOUR = mycpgplot::DARKGREEN;
+  /// The linestyle for the object outline 
+  const int DUCHAMP_OBJECT_OUTLINE_STYLE = mycpgplot::FULL;
+  /// The colour for the flagged-channel spectral boundaries 
+  const int DUCHAMP_FLAGGED_CHAN_COLOUR = mycpgplot::DARKGREEN;
+  /// The fill style for the flagged-channel spectral boundaries 
+  const int DUCHAMP_FLAGGED_CHAN_FILL = mycpgplot::HATCHED;
+  /// The line colour for the threshold lines in the spectral plots
+  const int DUCHAMP_THRESHOLD_COLOUR = mycpgplot::BLUE;
+  /// The line style for the primary threshold in the spectral plots
+  const int DUCHAMP_THRESHOLD_MAIN_STYLE = mycpgplot::DASHED;
+  /// The line style for the growth threshold in the spectral plots
+  const int DUCHAMP_THRESHOLD_GROWTH_STYLE = mycpgplot::DOTTED;
   /// The colour for the tick marks in the image cutouts 
   const int DUCHAMP_TICKMARK_COLOUR = mycpgplot::RED;
   /// The colour for the text identifying objects on the maps 
