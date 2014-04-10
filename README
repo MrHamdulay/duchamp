@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
                The Duchamp Source Finder
 -----------------------------------------------------------------------
-Duchamp 1.5 -- an object finder for spectral-line data cubes
+Duchamp 1.6 -- an object finder for spectral-line data cubes
 Copyright (C) 2006-2013
 Matthew Whiting, CSIRO Astronomy & Space Science
 
@@ -83,7 +83,7 @@ character!):
 This default setup will search in standard locations for the necessary
 libraries, and install the executable ("Duchamp") in /usr/local/bin (a
 copy will also be in the current directory). It also installs the
-libraries libduchamp.1.5.a and libduchamp.1.5.so in /usr/local/lib and
+libraries libduchamp.1.6.a and libduchamp.1.6.so in /usr/local/lib and
 the header (.hh) files in /usr/local/include/duchamp. If you want
 these to go somewhere else, eg if you don't have write-access to that
 directory, or you need to tweak the libraries, see the next
