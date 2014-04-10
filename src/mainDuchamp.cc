@@ -115,7 +115,7 @@ int main(int argc, char * argv[])
       cube->removeBaseline();
       std::cout<<" Done.                 \n";
     }
-
+    
     if(cube->pars().getFlagNegative()){
       std::cout<<"Inverting the Cube... "<<std::flush;
       cube->invert();
@@ -137,24 +137,25 @@ int main(int argc, char * argv[])
     }
     std::cout<<"Final object count = "<<cube->getNumObj()<<std::endl; 
 
+
     if(cube->pars().getFlagNegative()){
       std::cout<<"Un-Inverting the Cube... "<<std::flush;
-      cube->invert();
+      cube->invert(!cube->pars().getFlagBaseline(),true);
       std::cout<<" Done."<<std::endl;
     }
 
-    if(cube->pars().getFlagBaseline()){
+    if(cube->pars().getFlagBaseline() && !cube->pars().getFlagNegative()){
       std::cout<<"Replacing the baselines...  "<<std::flush;
       cube->replaceBaseline();
       std::cout<<"Done."<<std::endl;
     }
-
+    
     if(cube->pars().getFlagCubeTrimmed()){
       std::cout<<"Replacing the trimmed pixels on the edges...  "<<std::flush;
       cube->unTrimCube();
       std::cout<<"Done."<<std::endl;
     }
-
+    
   }
 
   if(cube->getNumObj()>0){
@@ -170,6 +171,18 @@ int main(int argc, char * argv[])
 
   }
   
+  if(cube->pars().getFlagNegative() && cube->pars().getFlagBaseline()){
+    std::cout<<"Un-Inverting the Cube... "<<std::flush;
+    cube->invert(true,true);
+    std::cout<<" Done."<<std::endl;
+  }
+
+  if(cube->pars().getFlagBaseline() && cube->pars().getFlagNegative()){
+    std::cout<<"Replacing the baselines...  "<<std::flush;
+    cube->replaceBaseline(false);
+    std::cout<<"Done."<<std::endl;
+  }
+
   cube->outputCatalogue();
 
   if(USE_PGPLOT){

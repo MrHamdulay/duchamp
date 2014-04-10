@@ -31,42 +31,27 @@
 namespace duchamp
 {
 
-  void Cube::invert()
+  void Cube::invert(bool doArrays, bool doObjects)
   {
     /// @details A function that multiplies all non-Blank pixels by
     ///  -1.  This is used when searching for negative features. This
     ///  only has an effect when the main array has been allocated.
 
-    if(this->arrayAllocated){
-      for(size_t i=0; i<this->numPixels; i++)
-	if(!this->isBlank(i)){
-	  this->array[i] *= -1.;
-	  if(this->reconExists) this->recon[i] *= -1.;
-	}
+    if(doArrays){
+      if(this->arrayAllocated){
+	for(size_t i=0; i<this->numPixels; i++)
+	  if(!this->isBlank(i)){
+	    this->array[i] *= -1.;
+	    if(this->reconExists) this->recon[i] *= -1.;
+	  }
+      }
     }
-    std::vector<Detection>::iterator obj;
-    for(obj=this->objectList->begin(); obj<this->objectList->end(); obj++) 
+
+    if(doObjects){
+      std::vector<Detection>::iterator obj;
+      for(obj=this->objectList->begin(); obj<this->objectList->end(); obj++) 
 	obj->invert();
-
-  }
-
-  void Cube::reInvert()
-  {
-    /// @details A function that switches the array back to the
-    ///  original sign by calling Cube::invert(). It also inverts the
-    ///  fluxes in all the detected objects.  This is used when
-    ///  searching for negative features.
-    
-    this->invert();
-
-    std::vector<Detection>::iterator obj;
-    for(obj=this->objectList->begin(); obj<this->objectList->end(); obj++){
-      obj->setNegative(true);
-      obj->setTotalFlux(-1. * obj->getTotalFlux() );
-      obj->setIntegFlux(-1. * obj->getIntegFlux() );
-      obj->setPeakFlux(-1. * obj->getPeakFlux() );
     }
-
   }
 
 }

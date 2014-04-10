@@ -58,6 +58,9 @@ namespace duchamp
     long ydim=this->axisDim[1];
 
     std::vector<bool> detectedPixels = this->getMomentMap(momentMap);
+    
+    if(this->pars().getFlagNegative())
+      for(int i=0;i<xdim*ydim;i++) momentMap[i]*=-1.;
 
     int count=0;
     for(int i=0;i<xdim*ydim;i++) {

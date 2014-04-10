@@ -1702,7 +1702,8 @@ namespace duchamp
     std::vector<Detection>::iterator obj;
     for(obj=this->objectList->begin();obj<this->objectList->end();obj++){
 
-      if( this->enclosedFlux(*obj) < 0. )  
+      if( (!this->par.getFlagNegative() &&this->enclosedFlux(*obj) < 0.) || 
+	  (this->par.getFlagNegative() && this->enclosedFlux(*obj)>0.))  
 	obj->addToFlagText("N");
 
       if( this->objAtSpatialEdge(*obj) ) 

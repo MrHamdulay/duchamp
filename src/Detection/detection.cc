@@ -273,7 +273,7 @@ namespace duchamp
 	/// The fluxes are made negative, and the negSource flag is flipped.
 	/// This can be used at any time - it doesn't matter which way the inversion is happening.
 
-	this->negSource = !this->negSource;
+       this->negSource = true;
 	this->totalFlux = -1. * this->totalFlux;
 	this->intFlux = -1. * this->intFlux;
 	this->peakFlux = -1. * this->peakFlux;
@@ -317,8 +317,7 @@ namespace duchamp
 	this->yCentroid += y*f;
 	this->zCentroid += z*f;
 	if( (vox==voxelList.begin()) ||  //first time round
-	    (this->negSource&&(f<this->peakFlux)) || 
-	    (!this->negSource&&(f>this->peakFlux))   )
+	    (f>this->peakFlux) )   
 	  {
 	    this->peakFlux = f;
 	    this->xpeak =    x;
@@ -366,8 +365,7 @@ namespace duchamp
 	this->yCentroid += y*f;
 	this->zCentroid += z*f;
 	if( (vox==voxelList.begin()) ||  //first time round
-	    (this->negSource&&(f<this->peakFlux)) || 
-	    (!this->negSource&&(f>this->peakFlux))   )
+	    (f>this->peakFlux) )
 	  {
 	    this->peakFlux = f;
 	    this->xpeak =    x;
@@ -411,9 +409,7 @@ namespace duchamp
       this->xCentroid += x*f;
       this->yCentroid += y*f;
       this->zCentroid += z*f;
-      if( (vox==voxList.begin()) ||
-	  (this->negSource&&(f<this->peakFlux)) || 
-	  (!this->negSource&&(f>this->peakFlux))   )
+      if( (vox==voxList.begin()) || (f > this->peakFlux) )
 	{
 	  this->peakFlux = f;
 	  this->xpeak = x;
@@ -789,6 +785,8 @@ namespace duchamp
 	      momentMap[spatpos] += fluxArray[v->arrayIndex(dim)] * delta * sign;
 	  else DUCHAMPTHROW("findShape","Memory overflow - accessing spatpos="<<spatpos<<" when spatsize="<<spatsize <<". Pixel is (x,y)=("<<v->getX() <<","<<v->getY()<<") and (x1,y1)="<<x1<<","<<y1<<"), (x2,y2)="<<x2<<","<<y2<<"), xsize="<<xsize);
       }
+      if(this->negSource)
+	for(size_t i=0;i<spatsize;i++) momentMap[i]*=-1.;
 
       size_t smldim[2]; smldim[0]=xsize; smldim[1]=ysize;
       Image *smlIm = new Image(smldim);

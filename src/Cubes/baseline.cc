@@ -81,7 +81,7 @@ namespace duchamp
 
 
 
-  void Cube::replaceBaseline()
+  void Cube::replaceBaseline(bool fixObjects)
   {
     /// @details
     ///  A routine to replace the baseline flux on the reconstructed array 
@@ -103,10 +103,12 @@ namespace duchamp
 	}
       }
  
-      std::vector<Detection>::iterator obj;
-      for(obj=this->objectList->begin();obj<this->objectList->end();obj++){ 
-	// for each detection, correct the flux calculations.
-	obj->calcFluxes(this->array, this->axisDim);
+      if (fixObjects) {
+	std::vector<Detection>::iterator obj;
+	for(obj=this->objectList->begin();obj<this->objectList->end();obj++){ 
+	  // for each detection, correct the flux calculations.
+	  obj->calcFluxes(this->array, this->axisDim);
+	}
       }
     
     }

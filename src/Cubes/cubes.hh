@@ -437,13 +437,10 @@ namespace duchamp
     void        removeBaseline();   // in Cubes/baseline.cc
 
     /// @brief Replace the baselines stored in Cube::baseline 
-    void        replaceBaseline();  // in Cubes/baseline.cc
+    void        replaceBaseline(bool fixObjects=true);  // in Cubes/baseline.cc
 
     /// @brief Multiply all pixel values by -1. 
-    void        invert();           // in Cubes/invertCube.cc
-
-    /// @brief Undo the inversion, and invert fluxes of all detected objects. 
-    void        reInvert();         // in Cubes/invertCube.cc
+    void        invert(bool doArrays=true, bool doObjects=true);           // in Cubes/invertCube.cc
 
     //-------------------------------------
     // Reconstruction, Searching and Merging functions

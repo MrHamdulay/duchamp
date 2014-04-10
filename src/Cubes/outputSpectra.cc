@@ -176,8 +176,6 @@ namespace duchamp
     double xval = double(this->objectList->at(objNum).getXcentre());
     double yval = double(this->objectList->at(objNum).getYcentre());
  
-    this->objectList->at(objNum).calcFluxes(this->array, this->axisDim);
-
     float *specx  = new float[zdim];
     float *specy  = new float[zdim];
     float *specy2 = new float[zdim];
@@ -392,8 +390,6 @@ namespace duchamp
     /// 
     /// \param obj The Detection to be plotted.
     /// \param plot The PGPLOT device to plot the spectrum on.
-
-    obj.calcFluxes(this->array, this->axisDim);
 
     std::string label;
     plot.gotoHeader();
