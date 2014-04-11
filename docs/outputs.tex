@@ -268,6 +268,7 @@ this log file can be prevented by setting \texttt{flagLog = false}
 
 
 \secC{Spectral plots}
+\label{sec-spectralplots}
 
 As well as the output data file, a postscript file (with the filename
 given by the \texttt{spectralFile} parameter) is created that shows
@@ -278,7 +279,7 @@ any flags are printed after the name of the detection, in the format
 reconstruction is shown in red, over the top of the original
 spectrum. If the spectral baseline was removed prior to source
 detection, this is shown in yellow. The spectral extent of the
-detected object is indicated by two dashed blue lines, and the regions
+detected object is indicated by two solid blue lines, and the regions
 covered by the flagged channels are shown by green hashed boxes. An
 example detection can be seen in Fig.~\ref{fig-spect}.
 
@@ -304,7 +305,7 @@ separate window.
     several of the features discussed in the text: the red solid lines
     indicating the reconstructed spectrum; the blue dashed and dotted
     horizontal lines indicating the detection and growth thresholds
-    respectively; the blue dashed lines indicating the spectral extent
+    respectively; the vertical blue solid lines indicating the spectral extent
     of the detection; the green hashed area indicating the flagged
     channels that are ignored by the searching algorithm; the blue
     border showing its spatial extent on the 0th moment map; the

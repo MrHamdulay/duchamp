@@ -40,6 +40,10 @@ libraries.
 \secB{Image input}
 \label{sec-input}
 
+The image cube to be searched is provided to \duchamp in FITS
+format. The \texttt{cfitsio} library will read \texttt{.fits} files,
+as well as compressed \texttt{.fits.gz} files directly.
+
 The cube is read in using basic \textsc{cfitsio} commands, and stored
 as an array in a special C++ class. This class keeps track of the list
 of detected objects, as well as any reconstructed arrays that are made
@@ -165,24 +169,45 @@ some BLANK pixels left in the trimmed image (if the non-BLANK region
 is non-rectangular). However, these are ignored in all further
 calculations done on the cube.
 
+\secC{Negative-feature detection}
+\label{sec-negative}
+
+\duchamp searches strictly for positive sources -- that is, pixels
+that are \textbf{above} the detection threshold. If one instead wishes
+to search for negative features (such as absorption lines), set the
+parameter \texttt{flagNegative=true}. 
+
+This inverts the cube (\ie multiplies all pixels by $-1$) prior to
+searching, and then re-inverts the cube, and the fluxes of any
+detections (so that the detections will have, for instance, a negative
+peak flux) after searching is complete. Any reconstructed or smoothed
+array that has been read from disk is also inverted. 
+
+This works fine for the simple case of inverting the cube. If,
+however, a spectral baseline needs to be removed (see the next section
+\S\ref{sec-baseline}), then special care needs to be taken. This is
+described in more detail in \S\ref{sec-absorptionline}.
+
 \secC{Baseline removal}
 \label{sec-baseline}
 
-Second, the user may request the removal of baselines from the
+The user may request the removal of baselines from the
 spectra, via the parameter \texttt{flagBaseline}. This may be
 necessary if there is a strong baseline ripple present, which can
-result in spurious detections at the high points of the ripple. 
+result in spurious detections at the high points of the ripple, or if
+there is continuum emission present in the cube that is not
+interesting for the search.
 
 There are two ways in which the baseline can be calculated. The first
 makes use of the \atrous wavelet reconstruction procedure (see
 \S\ref{sec-recon}), where only the two largest scales are kept. 
 
-The second method uses a median filter combined with a sliding box of some
-specified width. For each pixel, the baseline is determined to be the
-median value of all pixels in a region of that width centred on the
-pixel of interest. The box is truncated at the edges of the spectrum
-(so that fewer pixels are included), but there will always be at least
-half the width of the box present.
+The second method uses a median filter combined with a sliding box of
+some specified width. For each pixel, the baseline is determined to be
+the median value of all pixels in a region of that width centred on
+the pixel of interest. The box is truncated at the edges of the
+spectrum (so that fewer pixels are included), but there will always be
+at least half the width of the box present.
 
 The choice between these methods is made using the
 \texttt{baselineType} parameter -- only values of \texttt{atrous} (the
@@ -209,6 +234,26 @@ does not affect the source-detection.
 
 The baseline values can be saved to a FITS file for later
 examination. See \S\ref{sec-baselineOut} for details.
+
+\secC{Combining negative detections with baseline removal}
+\label{sec-absorptionline}
+
+When both \texttt{flagNegative=true} and \texttt{flagBaseline=true},
+care needs to be taken when parameterising the sources. They are
+strictly negative on the baseline-subtracted spectrum, and so
+parameterisation is done on this spectrum, prior to adding the
+baseline back.
+
+This ensures that the peak flux and location correspond to the maximum
+absorption (the peak flux will be quoted as a negative value), and the
+spectral plots (see \S\ref{sec-spectralplots}) will properly show the
+peak spectrum (when used in \texttt{spectralMethod=peak} mode).
+
+This method is typical of the approach that would be used for
+detecting absorption lines against a continuum source. For now, the
+parameterisation is the same as for other detections, but a future
+version of \duchamp will have parameters more relevant for absorption
+lines, such as optical depth and equivalent width.
 
 \secC{Flagging channels}
 \label{sec-flagging}
