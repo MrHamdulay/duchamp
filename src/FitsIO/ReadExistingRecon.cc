@@ -65,7 +65,7 @@ namespace duchamp {
     fits_file_exists(reconFile.c_str(),&exists,&status);
     if(exists<=0){
       fits_report_error(stderr, status);
-      DUCHAMPERROR("readReconCube","ReconFile not present.");
+      DUCHAMPERROR("readReconCube","ReconFile " << reconFile << " not present.");
       this->itsCube->pars().setFlagReconExists(false);
       result = FAILURE;
     }

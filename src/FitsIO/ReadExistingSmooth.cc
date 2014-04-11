@@ -65,7 +65,7 @@ namespace duchamp {
     fits_file_exists(smoothFile.c_str(),&exists,&status);
     if(exists<=0){
       fits_report_error(stderr, status);
-      DUCHAMPERROR("readSmoothCube","SmoothFile not present.");
+      DUCHAMPERROR("readSmoothCube","SmoothFile " << smoothFile << " not present.");
       result = FAILURE;
     }
     else{
