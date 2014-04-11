@@ -101,6 +101,9 @@ namespace duchamp
     /// @brief Copy certain necessary FITS header parameters from a FitsHeader object 
     void   copyHeaderInfo(FitsHeader &head);
 
+    /// @brief Return the input name without a .fits or .fits.gz extension
+    std::string inputWithoutExtension();
+
     /// @brief Determine filename in which to save the moment map. 
     std::string outputMomentMapFile();
 

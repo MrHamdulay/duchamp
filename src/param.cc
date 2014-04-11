@@ -1489,6 +1489,25 @@ namespace duchamp
       this->bzeroKeyword;
   }
 
+  std::string Param::inputWithoutExtension()
+  {
+    /// This function takes the input filename and returns a string
+    /// that doesn't have its .fits extension. It will also remove a
+    /// .fits.gz extension. If no such extension exists, then the full
+    /// filename is returned.
+
+    std::string inputName = this->imageFile;
+    std::string outputName;
+    size_t size=inputName.size();
+    if(size>5 && inputName.substr(size-5,5)==".fits")  
+      outputName = inputName.substr(0,size-5);
+    else if(size>8 && inputName.substr(size-8,8)==".fits.gz") 
+      outputName = inputName.substr(0,size-8);
+    else
+      outputName = inputName;
+    return outputName;
+  }
+
   std::string Param::outputMaskFile()
   {
     ///  This function produces the required filename in which to save
@@ -1497,11 +1516,7 @@ namespace duchamp
     ///  output will be image.MASK.fits.
 
     if(this->fileOutputMask==""){
-      std::string inputName = this->imageFile;
-      std::string outputName = inputName;
-      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
-	outputName = inputName.substr(0,inputName.size()-5);  
-      // remove the ".fits" on the end.
+      std::string outputName = this->inputWithoutExtension();
       outputName += ".MASK.fits";
       return outputName;
     }
@@ -1515,11 +1530,7 @@ namespace duchamp
     ///  output will be image.MOM0.fits.
 
     if(this->fileOutputMomentMap==""){
-      std::string inputName = this->imageFile;
-      std::string outputName = inputName;
-      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
-	outputName = inputName.substr(0,inputName.size()-5);  
-      // remove the ".fits" on the end.
+      std::string outputName = this->inputWithoutExtension();
       outputName += ".MOM0.fits";
       return outputName;
     }
@@ -1533,11 +1544,7 @@ namespace duchamp
     ///  output will be image.MOM0.fits.
 
     if(this->fileOutputMomentMask==""){
-      std::string inputName = this->imageFile;
-      std::string outputName = inputName;
-      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
-	outputName = inputName.substr(0,inputName.size()-5);  
-      // remove the ".fits" on the end.
+      std::string outputName = this->inputWithoutExtension();
       outputName += ".MOM0MASK.fits";
       return outputName;
     }
@@ -1551,11 +1558,7 @@ namespace duchamp
     ///  output will be image.BASE.fits.
 
     if(this->fileOutputBaseline==""){
-      std::string inputName = this->imageFile;
-      std::string outputName = inputName;
-      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
-	outputName = inputName.substr(0,inputName.size()-5);  
-      // remove the ".fits" on the end.
+      std::string outputName = this->inputWithoutExtension();
       outputName += ".BASE.fits";
       return outputName;
     }
@@ -1574,13 +1577,8 @@ namespace duchamp
     ///    </ul>
 
     if(this->fileOutputSmooth==""){
-      std::string inputName = this->imageFile;
       std::stringstream ss;
-      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
-	ss << inputName.substr(0,inputName.size()-5);  
-      else
-	ss << inputName;
-      // remove the ".fits" on the end if necessary.
+      ss << this->inputWithoutExtension();
       if(this->flagSubsection) ss<<".sub";
       if(this->smoothType=="spectral")
 	ss << ".SMOOTH-1D-" << this->hanningWidth << ".fits";
@@ -1610,13 +1608,8 @@ namespace duchamp
     ///  3=reconDim, 2=filterCode, 4=snrRecon, 1=minScale
 
     if(this->fileOutputRecon==""){
-      std::string inputName = this->imageFile;
       std::stringstream ss;
-      // First we remove the ".fits" from the end of the filename.
-      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
-	  ss << inputName.substr(0,inputName.size()-5);  
-      else
-	  ss << inputName;
+      ss << this->inputWithoutExtension();
       if(this->flagSubsection) ss<<".sub";
       ss << ".RECON-" << this->reconDim 
 	 << "-"       << this->filterCode
@@ -1638,13 +1631,8 @@ namespace duchamp
     ///  3=reconDim, 2=filterCode, 4=snrRecon, 1=scaleMin
 
     if(this->fileOutputResid==""){
-      std::string inputName = this->imageFile;
       std::stringstream ss;
-      // First we remove the ".fits" from the end of the filename.
-      if(this->imageFile.size()>5 && inputName.substr(inputName.size()-5,5)==".fits")
-	  ss << inputName.substr(0,inputName.size()-5);
-      else
-	  ss << inputName;
+      ss << this->inputWithoutExtension();
       if(this->flagSubsection) ss<<".sub";
       ss << ".RESID-" << this->reconDim 
 	 << "-"       << this->filterCode
