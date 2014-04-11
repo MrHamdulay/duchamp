@@ -125,7 +125,7 @@ namespace duchamp
 	else label="Spectral pixel";
 	std::string filename=this->pars().getImageFile();
 	filename = filename.substr(filename.rfind('/')+1);
-	if(this->par.getSubsection().size()>0) filename += this->par.getSubsection();
+	if(this->par.getFlagSubsection()) filename += this->par.getSubsection();
 	spPlot.label(label,fluxLabel,"Detection summary : " + filename);
 	spPlot.gotoMainSpectrum(vmin,vmax,min,max);
 	cpgline(zdim,specx,specy);
