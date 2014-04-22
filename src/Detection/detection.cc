@@ -682,33 +682,37 @@ namespace duchamp
 
     this->haveParams = true;
 
-    const int border=1; // include one pixel either side in each direction
-    size_t xsize = std::min(size_t(this->xmax-this->xmin+2*border+1),dim[0]);
-    size_t ysize = std::min(size_t(this->ymax-this->ymin+2*border+1),dim[1]);
-    size_t zsize = std::min(size_t(this->zmax-this->zmin+2*border+1),dim[2]);
-    size_t xzero = size_t(std::max(0L,this->xmin-border));
-    size_t yzero = size_t(std::max(0L,this->ymin-border));
-    size_t zzero = size_t(std::max(0L,this->zmin-border));
-    size_t spatsize = xsize*ysize;
-    size_t size = xsize*ysize*zsize;
-    std::vector <bool> isObj(size,false);
-    double *localFlux = new double[size];
-    for(size_t i=0;i<size;i++) localFlux[i]=0.;
-    float *momMap = new float[spatsize];
-    for(size_t i=0;i<spatsize;i++) momMap[i]=0.;
-    // work out which pixels are object pixels
-    std::vector<Voxel> voxlist = this->getPixelSet();
-    for(std::vector<Voxel>::iterator v=voxlist.begin();v<voxlist.end();v++){
-      size_t spatpos=(v->getX()-xzero) + (v->getY()-yzero)*xsize;
-      size_t pos= spatpos + (v->getZ()-zzero)*spatsize;
-      localFlux[pos] = fluxArray[v->arrayIndex(dim)];
-      momMap[spatpos] += fluxArray[v->arrayIndex(dim)]*head.WCS().cdelt[head.WCS().spec];
-      isObj[pos] = true;
+    if (head.is2D() ){
+      // in this case there is just a 2D image.
+      this->intFlux = this->totalFlux;
     }
-  
-     if(!head.is2D()){
+    else {
 
-     // work out the WCS coords for each pixel
+      const int border=1; // include one pixel either side in each direction
+      size_t xsize = std::min(size_t(this->xmax-this->xmin+2*border+1),dim[0]);
+      size_t ysize = std::min(size_t(this->ymax-this->ymin+2*border+1),dim[1]);
+      size_t zsize = std::min(size_t(this->zmax-this->zmin+2*border+1),dim[2]);
+      size_t xzero = size_t(std::max(0L,this->xmin-border));
+      size_t yzero = size_t(std::max(0L,this->ymin-border));
+      size_t zzero = size_t(std::max(0L,this->zmin-border));
+      size_t spatsize = xsize*ysize;
+      size_t size = xsize*ysize*zsize;
+      std::vector <bool> isObj(size,false);
+      double *localFlux = new double[size];
+      for(size_t i=0;i<size;i++) localFlux[i]=0.;
+      float *momMap = new float[spatsize];
+      for(size_t i=0;i<spatsize;i++) momMap[i]=0.;
+      // work out which pixels are object pixels
+      std::vector<Voxel> voxlist = this->getPixelSet();
+      for(std::vector<Voxel>::iterator v=voxlist.begin();v<voxlist.end();v++){
+	size_t spatpos=(v->getX()-xzero) + (v->getY()-yzero)*xsize;
+	size_t pos= spatpos + (v->getZ()-zzero)*spatsize;
+	localFlux[pos] = fluxArray[v->arrayIndex(dim)];
+	momMap[spatpos] += fluxArray[v->arrayIndex(dim)]*head.WCS().cdelt[head.WCS().spec];
+	isObj[pos] = true;
+      }
+  
+      // work out the WCS coords for each pixel
       double *world  = new double[size];
       double xpt,ypt,zpt;
       size_t i=0;
@@ -745,14 +749,11 @@ namespace duchamp
       this->intFlux = integrated;
       
       calcVelWidths(fluxArray, dim, head, par);
+         
+      delete [] localFlux;
+      delete [] momMap;
 
-     }
-      else // in this case there is just a 2D image.
-      this->intFlux = this->totalFlux;
-    
-     delete [] localFlux;
-     delete [] momMap;
-    
+    }    
 
     if(head.isWCS()){
       // correct for the beam size if the flux units string ends in "/beam" and we have beam info
