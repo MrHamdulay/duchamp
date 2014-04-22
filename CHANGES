@@ -27,6 +27,10 @@ Improvements and bug fixes:
   now SHORT_IMG, although they can be bigger if warranted by the
   number of objects.
 
+* Duchamp can now read .fits.gz files, and have the output FITS files
+  appropriately named in the automatic way (the .gz suffix was not
+  being recognised & removed properly).
+
 * Some UCDs in the VOTable were missing semicolons between elements.
 
 * When calculating the cube statistics, Duchamp makes a mask showing
@@ -63,8 +67,9 @@ Build changes:
   vary. Please contact me via the Trac tickets if you encounter
   problems.
 
-* A number of warnings that came to light with the change to XCode
-  XXXXX on the Mac have been fixed, and to gcc-4.4.5 on debian.
+* A number of warnings that came to light with recent XCode upgrades
+  on the Mac have been fixed, as well as upgrades to gcc-4.4.5 on
+  debian.
 
 
 Code base changes:
