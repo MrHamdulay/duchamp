@@ -29,6 +29,16 @@ Improvements and bug fixes:
 
 * Some UCDs in the VOTable were missing semicolons between elements.
 
+* When calculating the cube statistics, Duchamp makes a mask showing
+  the locations of blank pixels, flagged channels, and the statistics
+  subsection are, so that only the required pixels are used in the
+  calculations. If none of these apply, however (that is, if there are
+  no blank pixels or flagged channels, and the user is not requesting
+  a particular stats subsection via the statsec parameter), then the
+  mask is not created. This saves additional memory allocation, which
+  can be important for large cubes. Thanks to Andrew Walsh for
+  identifying this problem.
+
 Documentation improvmements
 
 * The InputComplete file is more up-to-date, and has information on
