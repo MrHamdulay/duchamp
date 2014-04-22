@@ -27,9 +27,9 @@
       <PARAM name="pixelCentre" ucd="" datatype="char" arraysize="8" value="centroid"/>
       <PARAM name="flagSmooth" ucd="meta.code" datatype="boolean" value="0"/>
       <PARAM name="flagATrous" ucd="meta.code" datatype="boolean" value="0"/>
-      <PARAM name="thresholdActual" ucd="" datatype="float" units="Jy/beam" value="4.05187"/>
-      <PARAM name="noiseMeanActual" ucd="" datatype="float" units="Jy/beam" value="0.0148019"/>
-      <PARAM name="noiseSpreadActual" ucd="" datatype="float" units="Jy/beam" value="1.00927"/>
+      <PARAM name="thresholdActual" ucd="" datatype="float" units="Jy/beam" value="4.01741"/>
+      <PARAM name="noiseMeanActual" ucd="" datatype="float" units="Jy/beam" value="0.00446575"/>
+      <PARAM name="noiseSpreadActual" ucd="" datatype="float" units="Jy/beam" value="1.00324"/>
       <FIELD name="ObjID" ID="col_objnum" ucd="meta.id" datatype="int" unit="" width="8"/>
       <FIELD name="Name" ID="col_name" ucd="meta.id;meta.main" datatype="char" unit="" arraysize="15"/>
       <FIELD name="X" ID="col_x" ucd="pos.cartesian.x" datatype="float" unit="" width="6" precision="1"/>
@@ -43,10 +43,10 @@
       <FIELD name="PA" ID="col_pa" ucd="pos.posAng;phys.angSize" ref="J2000" datatype="float" unit="deg" width="7" precision="2"/>
       <FIELD name="w_RA" ID="col_wra" ucd="phys.angSize;pos.eq.ra" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
       <FIELD name="w_DEC" ID="col_wdec" ucd="phys.angSize;pos.eq.dec" ref="J2000" datatype="float" unit="arcmin" width="9" precision="2"/>
-      <FIELD name="w_50" ID="col_w50" ucd="spect.line.width.50;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
+      <FIELD name="w_50" ID="col_w50" ucd="spect.line.width.50;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="10" precision="3"/>
       <FIELD name="w_20" ID="col_w20" ucd="spect.line.width.20;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
-      <FIELD name="w_VOPT" ID="col_wvel" ucd="spect.line.width.full;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="11" precision="3"/>
-      <FIELD name="Integrated_Flux" ID="col_fint" ucd="phot.flux.density.integrated;spect.line.intensity" datatype="float" unit="Jy.m/s" width="12" precision="3"/>
+      <FIELD name="w_VOPT" ID="col_wvel" ucd="spect.line.width.full;phys.veloc;spect.dopplerVeloc.opt" datatype="float" unit="m/s" width="10" precision="3"/>
+      <FIELD name="Integrated_Flux" ID="col_fint" ucd="phot.flux.density.integrated;spect.line.intensity" datatype="float" unit="Jy.m/s" width="11" precision="3"/>
       <FIELD name="Integrated_Flux_Error" ID="col_efint" ucd="phot.flux.density.integrated;stat.err" datatype="float" unit="Jy.m/s" width="10" precision="3"/>
       <FIELD name="Peak_Flux" ID="col_fpeak" ucd="phot.flux;stat.max;spect.line.intensity" datatype="float" unit="Jy/beam" width="10" precision="3"/>
       <FIELD name="S/Nmax" ID="col_snrmax" ucd="stat.snr;phot.flux" datatype="float" unit="" width="7" precision="2"/>
@@ -72,19 +72,19 @@
       <DATA>
         <TABLEDATA>
         <TR>
-          <TD>       1</TD><TD> J060912-273501</TD><TD>  25.1</TD><TD>  25.1</TD><TD>  20.0</TD><TD>  92.301572</TD><TD> -27.583707</TD><TD>  277519.067</TD><TD>  0.46</TD><TD>  0.41</TD><TD> 164.08</TD><TD>    52.66</TD><TD>    43.29</TD><TD> 113193.247</TD><TD> 167767.013</TD><TD> 158295.840</TD><TD> 2663958.600</TD><TD> 20150.652</TD><TD>    11.489</TD><TD>  11.37</TD><TD>  19</TD><TD>  31</TD><TD>  20</TD><TD>  30</TD><TD>  14</TD><TD>  26</TD><TD>    494</TD><TD>    13</TD><TD>       95</TD><TD>    -</TD><TD>  25.1</TD><TD>  25.1</TD><TD>  20.0</TD><TD>   25.1</TD><TD>   25.1</TD><TD>   20.0</TD><TD>     26</TD><TD>     25</TD><TD>     21</TD>
+          <TD>       1</TD><TD> J060910-273509</TD><TD>  25.1</TD><TD>  25.0</TD><TD>  19.9</TD><TD>  92.294977</TD><TD> -27.586068</TD><TD>  275736.500</TD><TD>  0.26</TD><TD>  0.22</TD><TD>  51.95</TD><TD>    28.35</TD><TD>    23.62</TD><TD> 65986.495</TD><TD> 101195.117</TD><TD> 79147.920</TD><TD> 574623.770</TD><TD>  9278.442</TD><TD>    10.574</TD><TD>  10.54</TD><TD>  22</TD><TD>  28</TD><TD>  23</TD><TD>  28</TD><TD>  17</TD><TD>  23</TD><TD>    106</TD><TD>     7</TD><TD>       28</TD><TD>    -</TD><TD>  25.1</TD><TD>  25.1</TD><TD>  19.9</TD><TD>   25.1</TD><TD>   25.0</TD><TD>   19.9</TD><TD>     25</TD><TD>     24</TD><TD>     20</TD>
         </TR>
         <TR>
-          <TD>       2</TD><TD> J055409-273508</TD><TD>  75.1</TD><TD>  25.0</TD><TD>  41.9</TD><TD>  88.539348</TD><TD> -27.585681</TD><TD>  566189.093</TD><TD>  0.46</TD><TD>  0.41</TD><TD> 123.16</TD><TD>    47.23</TD><TD>    48.74</TD><TD> 107325.946</TD><TD> 170871.261</TD><TD> 145104.520</TD><TD> 2618008.867</TD><TD> 19986.823</TD><TD>    11.766</TD><TD>  11.64</TD><TD>  70</TD><TD>  81</TD><TD>  20</TD><TD>  31</TD><TD>  36</TD><TD>  47</TD><TD>    486</TD><TD>    12</TD><TD>       97</TD><TD>    -</TD><TD>  75.1</TD><TD>  25.1</TD><TD>  41.9</TD><TD>   75.1</TD><TD>   25.0</TD><TD>   41.9</TD><TD>     76</TD><TD>     25</TD><TD>     43</TD>
+          <TD>       2</TD><TD> J055411-273520</TD><TD>  74.9</TD><TD>  25.0</TD><TD>  42.0</TD><TD>  88.549408</TD><TD> -27.589149</TD><TD>  567720.660</TD><TD>  0.32</TD><TD>  0.24</TD><TD>  51.61</TD><TD>    35.57</TD><TD>    28.55</TD><TD> 65310.616</TD><TD>  99672.211</TD><TD> 79147.920</TD><TD> 582097.255</TD><TD>  9365.566</TD><TD>    10.546</TD><TD>  10.51</TD><TD>  71</TD><TD>  79</TD><TD>  22</TD><TD>  28</TD><TD>  39</TD><TD>  45</TD><TD>    108</TD><TD>     7</TD><TD>       36</TD><TD>    -</TD><TD>  74.9</TD><TD>  25.0</TD><TD>  42.0</TD><TD>   74.9</TD><TD>   25.0</TD><TD>   42.0</TD><TD>     76</TD><TD>     25</TD><TD>     43</TD>
         </TR>
         <TR>
-          <TD>       3</TD><TD> J060144-255603</TD><TD>  49.9</TD><TD>  50.0</TD><TD>  64.0</TD><TD>  90.434257</TD><TD> -25.934232</TD><TD>  857430.516</TD><TD>  0.43</TD><TD>  0.42</TD><TD>  54.51</TD><TD>    43.99</TD><TD>    48.03</TD><TD> 108686.688</TD><TD> 168356.690</TD><TD> 158295.840</TD><TD> 2722997.281</TD><TD> 20333.382</TD><TD>    10.926</TD><TD>  10.81</TD><TD>  45</TD><TD>  55</TD><TD>  44</TD><TD>  55</TD><TD>  58</TD><TD>  70</TD><TD>    503</TD><TD>    13</TD><TD>       96</TD><TD>    -</TD><TD>  49.9</TD><TD>  50.0</TD><TD>  64.0</TD><TD>   49.9</TD><TD>   50.0</TD><TD>   64.0</TD><TD>     50</TD><TD>     51</TD><TD>     66</TD>
+          <TD>       3</TD><TD> J060142-255609</TD><TD>  50.0</TD><TD>  50.0</TD><TD>  64.0</TD><TD>  90.427033</TD><TD> -25.936077</TD><TD>  857906.300</TD><TD>  0.25</TD><TD>  0.20</TD><TD>   2.75</TD><TD>    27.98</TD><TD>    28.02</TD><TD> 66177.107</TD><TD> 102664.549</TD><TD> 79147.920</TD><TD> 597812.950</TD><TD>  9365.566</TD><TD>    10.212</TD><TD>  10.17</TD><TD>  47</TD><TD>  53</TD><TD>  47</TD><TD>  53</TD><TD>  61</TD><TD>  67</TD><TD>    108</TD><TD>     7</TD><TD>       30</TD><TD>    -</TD><TD>  50.0</TD><TD>  49.9</TD><TD>  64.0</TD><TD>   50.0</TD><TD>   50.0</TD><TD>   64.0</TD><TD>     50</TD><TD>     50</TD><TD>     64</TD>
         </TR>
         <TR>
-          <TD>       4</TD><TD> J060859-241502</TD><TD>  25.1</TD><TD>  75.1</TD><TD>  86.1</TD><TD>  92.248524</TD><TD> -24.250630</TD><TD> 1148615.832</TD><TD>  0.46</TD><TD>  0.41</TD><TD>  41.54</TD><TD>    44.67</TD><TD>    51.43</TD><TD> 108414.502</TD><TD> 166604.867</TD><TD> 158295.840</TD><TD> 2583245.521</TD><TD> 19821.640</TD><TD>    10.445</TD><TD>  10.33</TD><TD>  20</TD><TD>  30</TD><TD>  69</TD><TD>  81</TD><TD>  81</TD><TD>  93</TD><TD>    478</TD><TD>    11</TD><TD>       96</TD><TD>    -</TD><TD>  25.1</TD><TD>  75.1</TD><TD>  86.1</TD><TD>   25.1</TD><TD>   75.1</TD><TD>   86.1</TD><TD>     26</TD><TD>     75</TD><TD>     86</TD>
+          <TD>       4</TD><TD> J060901-241511</TD><TD>  25.0</TD><TD>  75.0</TD><TD>  86.1</TD><TD>  92.257557</TD><TD> -24.253218</TD><TD> 1148499.591</TD><TD>  0.31</TD><TD>  0.21</TD><TD> 118.54</TD><TD>    28.36</TD><TD>    27.63</TD><TD> 63604.203</TD><TD> 103440.111</TD><TD> 65956.600</TD><TD> 545814.201</TD><TD>  9101.694</TD><TD>    10.023</TD><TD>   9.99</TD><TD>  22</TD><TD>  28</TD><TD>  72</TD><TD>  78</TD><TD>  84</TD><TD>  89</TD><TD>    102</TD><TD>     6</TD><TD>       34</TD><TD>    -</TD><TD>  25.0</TD><TD>  75.1</TD><TD>  86.0</TD><TD>   25.0</TD><TD>   75.0</TD><TD>   86.1</TD><TD>     25</TD><TD>     75</TD><TD>     86</TD>
         </TR>
         <TR>
-          <TD>       5</TD><TD> J055425-241534</TD><TD>  74.9</TD><TD>  74.9</TD><TD> 108.1</TD><TD>  88.604820</TD><TD> -24.259678</TD><TD> 1439420.168</TD><TD>  0.44</TD><TD>  0.41</TD><TD> 112.78</TD><TD>    43.37</TD><TD>    48.66</TD><TD> 106335.775</TD><TD> 168470.152</TD><TD> 145104.520</TD><TD> 2659945.257</TD><TD> 20109.820</TD><TD>    11.304</TD><TD>  11.19</TD><TD>  70</TD><TD>  80</TD><TD>  69</TD><TD>  80</TD><TD> 103</TD><TD> 114</TD><TD>    492</TD><TD>    12</TD><TD>      100</TD><TD>    -</TD><TD>  74.9</TD><TD>  74.9</TD><TD> 108.2</TD><TD>   74.9</TD><TD>   74.9</TD><TD>  108.1</TD><TD>     74</TD><TD>     75</TD><TD>    107</TD>
+          <TD>       5</TD><TD> J055425-241453</TD><TD>  74.9</TD><TD>  75.1</TD><TD> 108.1</TD><TD>  88.605051</TD><TD> -24.248108</TD><TD> 1438702.190</TD><TD>  0.28</TD><TD>  0.27</TD><TD> 113.20</TD><TD>    23.63</TD><TD>    28.35</TD><TD> 62405.461</TD><TD>  98593.176</TD><TD> 79147.920</TD><TD> 571773.334</TD><TD>  9278.442</TD><TD>    10.084</TD><TD>  10.05</TD><TD>  72</TD><TD>  77</TD><TD>  72</TD><TD>  78</TD><TD> 105</TD><TD> 111</TD><TD>    106</TD><TD>     7</TD><TD>       31</TD><TD>    -</TD><TD>  74.9</TD><TD>  75.1</TD><TD> 108.1</TD><TD>   74.9</TD><TD>   75.1</TD><TD>  108.1</TD><TD>     74</TD><TD>     75</TD><TD>    107</TD>
         </TR>
         </TABLEDATA>
       </DATA>

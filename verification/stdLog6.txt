@@ -1,5 +1,5 @@
-# Results of the Duchamp source finder v.1.5b: Wed Aug 28 11:36:16 2013
-# Executing statement: ./Duchamp-1.5b -p ./verification/input6 
+# Results of the Duchamp source finder v.1.6: Tue Apr 22 17:03:47 2014
+# Executing statement: ./Duchamp-1.6 -p ./verification/input6 
 # 
 # ---- Parameters ----
 # Image to be analysed.............................[imageFile]  =  verification/verificationCube.fits[35:64,35:64,1:128]
@@ -48,5 +48,5 @@
 #  ObjID     X     Y     Z     F_tot    F_peak S/Nmax  X1  X2  Y1  Y2  Z1  Z2 Nvoxel Nchan Nspatpix
 #                          [Jy/beam] [Jy/beam]                                                     
 # -------------------------------------------------------------------------------------------------
-       1  50.0  50.0  64.1  2470.297    10.926  11.15  46  54  45  54  59  70    391    12       63
-# Duchamp completed: Wed Aug 28 11:36:16 2013
+       1  50.0  50.0  64.0   560.346    10.212  10.45  48  52  48  52  61  67     86     7       23
+# Duchamp completed: Tue Apr 22 17:03:48 2014

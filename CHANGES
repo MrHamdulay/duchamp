@@ -46,6 +46,11 @@ Improvements and bug fixes:
 * Duchamp exits better (ie. without throwing a segmentation fault)
   when the requested FITS file does not exist.
 
+* The reference cube used for the verification script has been changed
+  - the sources therein are now smaller spatially (more appropriately
+  so for the pixel size), which gives a better idea as to the
+  performance.
+
 Documentation improvmements
 
 * The InputComplete file is more up-to-date, and has information on
