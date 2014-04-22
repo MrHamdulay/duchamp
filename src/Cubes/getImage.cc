@@ -157,7 +157,7 @@ namespace duchamp
     ///  \param fname A std::string with name of FITS file.
     ///  \return SUCCESS or FAILURE.
 
-    this->head.openFITS(fname);
+    if(this->head.openFITS(fname)) return FAILURE;
 
     if(this->getMetadata(fname) == FAILURE) return FAILURE;
 
