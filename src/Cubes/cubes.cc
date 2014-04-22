@@ -1290,6 +1290,7 @@ namespace duchamp
 		Detection *newobj = new Detection(*obj);
 		newobj->calcFluxes(this->recon,this->axisDim);
 		peak=newobj->getPeakFlux();
+		delete newobj;
 	    }
 	    obj->setPeakSNR( (peak - this->Stats.getMiddle()) / this->Stats.getSpread() );
 
