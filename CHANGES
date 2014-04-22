@@ -1,4 +1,4 @@
-Duchamp version 1.6 (2014/04/24)
+Duchamp version 1.6 (2014/04/22)
 --------------------------------
 
 Improvements and bug fixes:
@@ -43,12 +43,15 @@ Improvements and bug fixes:
   can be important for large cubes. Thanks to Andrew Walsh for
   identifying this problem.
 
+* Duchamp exits better (ie. without throwing a segmentation fault)
+  when the requested FITS file does not exist.
+
 Documentation improvmements
 
 * The InputComplete file is more up-to-date, and has information on
   the type and default values of each possible input parameter (this
   information is also reflected in the User Guide). This is in
-  preparation for a parameter editing GUI that will be released in a
+  preparation for a parameter-editing GUI that will be released in a
   forthcoming version.
 
 * The User's Guide now has a section on common installation issues,
@@ -58,7 +61,8 @@ Build changes:
 
 * Duchamp is now linked with the C++ compiler. Accordingly, the
   configure script searches for libgfortran when the gfortran compiler
-  is specified (ie. has been used to build pgplot).
+  is specified as the F77 compiler (ie. it has been used to build
+  pgplot).
 
 * To allow Duchamp to build on Mac OS X 10.9 (Mavericks), configure
   searches for the libc++ library as well as stdc++. Duchamp has been
@@ -68,8 +72,8 @@ Build changes:
   problems.
 
 * A number of warnings that came to light with recent XCode upgrades
-  on the Mac have been fixed, as well as upgrades to gcc-4.4.5 on
-  debian.
+  on the Mac have been fixed, as well as those from an upgrade to
+  gcc-4.4.5 on debian.
 
 
 Code base changes:
@@ -85,8 +89,14 @@ Code base changes:
   classes to handle the different filter types. The interface is
   largely the same, however.
 
+* The function Cube::reInvert() has been removed - use Cube::invert()
+  instead. Note that the interface for the latter now has two optional
+  bool parameters.
+
 * There are improved front-end functions for the writing of arrays to
   the various FITS files.
+
+
 
 Duchamp version 1.5 (2013/08/29)
 --------------------------------
