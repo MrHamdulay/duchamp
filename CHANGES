@@ -86,8 +86,14 @@ Code base changes:
   VOTableCatalogueWriter class.
 
 * The management of the wavelet filters has been improved, with new
-  classes to handle the different filter types. The interface is
-  largely the same, however.
+  classes to handle the different filter types, and a factory class to
+  generate them. The interface via the Param class is largely the
+  same, however.
+
+* The annotation file changes noted above involve a new PixelInfo
+  class called Line, with associated files. The method for drawing the
+  borders has been moved into its own file (drawBorders.cc) to allow
+  dependence on the pgplot library.
 
 * The function Cube::reInvert() has been removed - use Cube::invert()
   instead. Note that the interface for the latter now has two optional
