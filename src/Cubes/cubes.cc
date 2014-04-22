@@ -907,18 +907,26 @@ namespace duchamp
     
       // size_t xysize = this->axisDim[0]*this->axisDim[1];
 
-      bool *mask = new bool[this->numPixels];
-      size_t vox=0,goodSize = 0;
-      for(size_t z=0;z<this->axisDim[2];z++){
-	for(size_t y=0;y<this->axisDim[1];y++){
-	  for(size_t x=0;x<this->axisDim[0];x++){
-	    //	    vox = z * xysize + y*this->axisDim[0] + x;
-	    bool isBlank=this->isBlank(vox);
-	    bool statOK = this->par.isStatOK(x,y,z);
-	    bool isFlagged = this->par.isFlaggedChannel(z);
-	    mask[vox] = (!isBlank && !isFlagged && statOK );
-	    if(mask[vox]) goodSize++;
-	    vox++;
+      bool needMask=true;
+      if (!this->par.getFlagBlankPix() && !this->par.getFlagStatSec() && (this->par.getFlaggedChannels().size()==0) )
+	needMask=false;
+
+      bool *mask;
+      size_t vox=0,goodSize=this->numPixels;
+      if (needMask) {
+	mask = new bool[this->numPixels];
+	goodSize = 0;
+	for(size_t z=0;z<this->axisDim[2];z++){
+	  for(size_t y=0;y<this->axisDim[1];y++){
+	    for(size_t x=0;x<this->axisDim[0];x++){
+	      //	    vox = z * xysize + y*this->axisDim[0] + x;
+	      bool isBlank=this->isBlank(vox);
+	      bool statOK = this->par.isStatOK(x,y,z);
+	      bool isFlagged = this->par.isFlaggedChannel(z);
+	      mask[vox] = (!isBlank && !isFlagged && statOK );
+	      if(mask[vox]) goodSize++;
+	      vox++;
+	    }
 	  }
 	}
       }
@@ -941,7 +949,7 @@ namespace duchamp
 	    for(size_t y=0;y<this->axisDim[1];y++){
 	      for(size_t x=0;x<this->axisDim[0];x++){
 		//		vox = z * xysize + y*this->axisDim[0] + x;
-		if(mask[vox]) tempArray[goodSize++] = this->array[vox];
+		if(!needMask || mask[vox]) tempArray[goodSize++] = this->array[vox];
 		vox++;
 	      }
 	    }
@@ -963,7 +971,7 @@ namespace duchamp
 	    for(size_t y=0;y<this->axisDim[1];y++){
 	      for(size_t x=0;x<this->axisDim[0];x++){
 		//	      vox = z * xysize + p;
-	      if(mask[vox])
+	      if(!needMask || mask[vox])
 		tempArray[goodSize++] = this->array[vox] - this->recon[vox];
 	      vox++;
 	      }
@@ -989,14 +997,18 @@ namespace duchamp
 	if(!this->reconExists){
 	  DUCHAMPERROR("setCubeStats","Smoothing not yet done! Cannot calculate stats!");
 	}
-	else this->Stats.calculate(this->recon,this->numPixels,mask);
+	else{
+	  if(needMask) this->Stats.calculate(this->recon,this->numPixels,mask);
+	  else         this->Stats.calculate(this->recon,this->numPixels);
+	}
       }
       else{
 	// Case #1 -- default case, with no smoothing or reconstruction.
 	// get all four stats from the original array. This can just be
 	// done with the StatsContainer::calculate function, using the
 	// mask generated earlier.
-	this->Stats.calculate(this->array,this->numPixels,mask);
+	if(needMask) this->Stats.calculate(this->array,this->numPixels,mask);
+	else         this->Stats.calculate(this->array,this->numPixels);
       }
 
       this->Stats.setUseFDR( this->par.getFlagFDR() );
@@ -1010,7 +1022,8 @@ namespace duchamp
 	this->par.setThreshold( this->Stats.getThreshold() );
       }
     
-      delete [] mask;
+      if (needMask)
+	delete [] mask;
 
     }
 
