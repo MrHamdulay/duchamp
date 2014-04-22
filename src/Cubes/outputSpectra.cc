@@ -217,7 +217,7 @@ namespace duchamp
     }
   
     // Find the maximum & minimum values of the spectrum, ignoring flagged channels.
-    float max,min;
+    float max=0.,min=0.;
     bool haveStarted=false;
     for(int z=0;z<zdim;z++){
 	if(!this->par.isFlaggedChannel(z)){
