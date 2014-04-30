@@ -58,34 +58,36 @@ void printHash(std::ostream &stream, int num);
 /// </ul>
 
 const int DefaultLength=20;             ///< Default number of hashes
-const int ExtraSpaces=6;                ///< Extra spaces other than hashes - the two '|', 3 chars for percentage, plus '%'
+const int PercentWidth=3;               ///< Space required for percent value
+const int ExtraSpaces=PercentWidth+1+2; ///< Extra spaces other than hashes - the percent value, plus two '|' and a '%'
 
 class ProgressBar
 {
 public:
-  ProgressBar();                          ///< Default Constructor
-  ProgressBar(int newlength);             ///< Alternative constructor
-  virtual ~ProgressBar();                 ///< Destructor.
-  enum POS {BEG=0,END};                   ///< So that we can record where we are.
+    ProgressBar();                          ///< Default Constructor
+    ProgressBar(int newlength);             ///< Alternative constructor
+    virtual ~ProgressBar();                 ///< Destructor.
+    enum POS {BEG=0,END};                   ///< So that we can record where we are.
 
-  void init(unsigned int size);           ///< Prints empty bar, defines increment.
-  void update(unsigned int num);          ///< Prints correct number of hashes
-  void rewind();                          ///< Prints backspaces over bar.
-  void remove();                          ///< Overwrites bar with blanks
-  void fillSpace(std::string someString); ///< Overwrites bar with a string.
+    void init(unsigned int size);           ///< Prints empty bar, defines increment.
+    void update(unsigned int num);          ///< Prints correct number of hashes
+    void rewind();                          ///< Prints backspaces over bar.
+    void remove();                          ///< Overwrites bar with blanks
+    void fillSpace(std::string someString); ///< Overwrites bar with a string.
 
-  void backSpace(int num){printBackSpace(std::cout,num+ExtraSpaces); itsLoc=BEG;};
-  void space(int num){printSpace(std::cout,num);};
-  void hash(int num){printHash(std::cout,num);};
+    void printPercentage();
+    void backSpace(int num){printBackSpace(std::cout,num+ExtraSpaces); itsLoc=BEG;};
+    void space(int num){printSpace(std::cout,num);};
+    void hash(int num){printHash(std::cout,num);};
 
 
 private:
-  POS itsLoc;                                ///< Are we at the start or end?
-  float itsStepSize;                         ///< What is the interval between hashes?
-  unsigned int itsLength;                    ///< What's the maximum number of hashes?
-  unsigned int itsNumVisible;                ///< How many hashes are there currently visible?
-  unsigned int itsSize;                      ///< The total number of things to be considered
-  unsigned int itsPercentage;                ///< What percentage of the way through are we?
+    POS itsLoc;                                ///< Are we at the start or end?
+    float itsStepSize;                         ///< What is the interval between hashes?
+    unsigned int itsLength;                    ///< What's the maximum number of hashes?
+    unsigned int itsNumVisible;                ///< How many hashes are there currently visible?
+    unsigned int itsSize;                      ///< The total number of things to be considered
+    unsigned int itsPercentage;                ///< What percentage of the way through are we?
 };
 
 

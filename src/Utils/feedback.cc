@@ -47,7 +47,7 @@ void printHash(std::ostream &stream, int num)
 
 
 ProgressBar::ProgressBar():
-  itsLoc(BEG),itsStepSize(0.),itsLength(DefaultLength),itsNumVisible(0),itsSize(0),itsPercentage(0.)
+    itsLoc(BEG),itsStepSize(0.),itsLength(DefaultLength),itsNumVisible(0),itsSize(0),itsPercentage(0.)
 {
     /// @details
     /// The default constructor defines a bar with 20 hashes 
@@ -56,7 +56,7 @@ ProgressBar::ProgressBar():
 }
 
 ProgressBar::ProgressBar(int newlength):
-  itsLoc(BEG),itsStepSize(0.),itsLength(newlength),itsNumVisible(0),itsSize(0),itsPercentage(0.)
+    itsLoc(BEG),itsStepSize(0.),itsLength(newlength),itsNumVisible(0),itsSize(0),itsPercentage(0.)
 {
     /// @details
     /// This alternative constructor enables the user to define how many
@@ -68,6 +68,17 @@ ProgressBar::ProgressBar(int newlength):
 
 ProgressBar::~ProgressBar(){}
 
+void ProgressBar::printPercentage()
+{
+    /// @details
+    /// Function to print out the percentage, getting the formatting correct
+
+    std::cout << std::setw(PercentWidth) << this->itsPercentage;
+    std::cout << "%";
+
+}
+
+
 void ProgressBar::init(unsigned int size)
 { 
     /// @details
@@ -78,21 +89,19 @@ void ProgressBar::init(unsigned int size)
     /// 
     /// \param size The maximum number of iterations to be covered by the
     /// progress bar.
-  this->itsSize=size;
-  if(size < this->itsLength){
-    this->itsLength = size;
-  }
-  if(this->itsLength > 1) {
-    this->itsStepSize = float(size) / float(this->itsLength);
-    std::cout << "|"; 
-    this->space(this->itsLength); 
-    std::cout << "|";
-    std::cout.setf(std::ios::fixed);
-    std::cout << std::setw(3) << this->itsPercentage;
-    std::cout << "%";
-    std::cout << std::flush;
-    this->itsLoc = END;
-  }
+    this->itsSize=size;
+    if(size < this->itsLength){
+	this->itsLength = size;
+    }
+    if(this->itsLength > 1) {
+	this->itsStepSize = float(size) / float(this->itsLength);
+	std::cout << "|"; 
+	this->space(this->itsLength); 
+	std::cout << "|";
+	this->printPercentage();
+	std::cout << std::flush;
+	this->itsLoc = END;
+    }
 }
 
 void ProgressBar::update(unsigned int num)
@@ -115,7 +124,6 @@ void ProgressBar::update(unsigned int num)
 	for(unsigned int i=0;i<this->itsLength;i++)
 	    if(num>(i*this->itsStepSize)) numNeeded++;
     
-//	if(numNeeded != this->itsNumVisible){
 	if(numNeeded > this->itsNumVisible){
 	    this->itsPercentage = newPercentage;
 	    this->itsNumVisible = numNeeded;
@@ -124,16 +132,14 @@ void ProgressBar::update(unsigned int num)
 	    this->hash(this->itsNumVisible);
 	    this->space(this->itsLength-this->itsNumVisible);
 	    std::cout << "|";
-	    std::cout << std::setw(3) << this->itsPercentage;
-	    std::cout << "%";
+	    this->printPercentage();
 	    std::cout << std::flush;
 	    this->itsLoc=END;
 	}
 	else if(newPercentage > this->itsPercentage){
 	    this->itsPercentage = newPercentage;
-	    if(this->itsLoc==END) printBackSpace(std::cout,4);
-	    std::cout << std::setw(3) << this->itsPercentage;
-	    std::cout << "%";
+	    if(this->itsLoc==END) printBackSpace(std::cout,PercentWidth+1);
+	    this->printPercentage();
 	    std::cout << std::flush;
 	    this->itsLoc=END;
 	}
@@ -147,8 +153,8 @@ void ProgressBar::rewind()
     /// If we are at the end, we print out enough backspaces to wipe out
     /// the entire bar.  If we are not, the erasing does not need to be
     /// done.
-  if(this->itsLoc==END) this->backSpace(this->itsLength); 
-  std::cout << std::flush;
+    if(this->itsLoc==END) this->backSpace(this->itsLength); 
+    std::cout << std::flush;
 }
 
 void ProgressBar::remove()
