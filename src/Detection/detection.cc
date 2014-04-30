@@ -1009,6 +1009,7 @@ namespace duchamp
 
       this->calcVelWidths(dim[2],intSpec,head);
 
+      delete [] mask;
       delete [] intSpec;
 
     }
