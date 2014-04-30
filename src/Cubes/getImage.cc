@@ -81,6 +81,8 @@ namespace duchamp
 	}
 
 	int closeStatus = this->head.closeFITS();
+	if (closeStatus && result==SUCCESS)
+	    DUCHAMPWARN("Metadata reader","Error closing the FITS file, but will persist as the metadata was read successfully.");
     }
 
     return result;
