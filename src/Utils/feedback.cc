@@ -26,6 +26,7 @@
 //                    AUSTRALIA
 // -----------------------------------------------------------------------
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <duchamp/Utils/feedback.hh>
 
@@ -33,42 +34,29 @@ void printBackSpace(std::ostream &stream, int num)
 {
     for(int i=0;i<num;i++) stream << '\b';
 }
-void printBackSpace(int num)
-{
-    printBackSpace(std::cout,num);
-}
 
 void printSpace(std::ostream &stream, int num)
 {
     for(int i=0;i<num;i++) stream << ' '; 
-}
-void printSpace(int num)
-{
-    printSpace(std::cout,num);
 }
 
 void printHash(std::ostream &stream, int num)
 {
     for(int i=0;i<num;i++) stream << '#'; 
 }
-void printHash(int num)
-{
-    printHash(std::cout,num);
-}
 
 
-ProgressBar::ProgressBar()
+ProgressBar::ProgressBar():
+  itsLoc(BEG),itsStepSize(0.),itsLength(DefaultLength),itsNumVisible(0),itsSize(0),itsPercentage(0.)
 {
     /// @details
     /// The default constructor defines a bar with 20 hashes 
     /// (given by ProgressBar::length), sets the number visible to be 0 
     ///  and the location to be at the beginning.
-    length=20; 
-    loc=BEG; 
-    numVisible = 0;
 }
 
-ProgressBar::ProgressBar(int newlength)
+ProgressBar::ProgressBar(int newlength):
+  itsLoc(BEG),itsStepSize(0.),itsLength(newlength),itsNumVisible(0),itsSize(0),itsPercentage(0.)
 {
     /// @details
     /// This alternative constructor enables the user to define how many
@@ -76,14 +64,11 @@ ProgressBar::ProgressBar(int newlength)
     /// the location to be at the beginning.  
     /// 
     /// \param newlength The new number of hashes to appear in the bar.
-    length=newlength; 
-    loc=BEG; 
-    numVisible = 0;
 }
 
 ProgressBar::~ProgressBar(){}
 
-void ProgressBar::init(int size)
+void ProgressBar::init(unsigned int size)
 { 
     /// @details
     /// This initialises the bar to deal with a loop of a certain size.
@@ -93,19 +78,24 @@ void ProgressBar::init(int size)
     /// 
     /// \param size The maximum number of iterations to be covered by the
     /// progress bar.
-    if(size < length){
-	length = size;
-    }
-    if(length > 1) {
-	stepSize = float(size) / float(length);
-	std::cout << "|"; 
-	printSpace(length); 
-	std::cout << "|" << std::flush;
-	loc = END;
-    }
+  this->itsSize=size;
+  if(size < this->itsLength){
+    this->itsLength = size;
+  }
+  if(this->itsLength > 1) {
+    this->itsStepSize = float(size) / float(this->itsLength);
+    std::cout << "|"; 
+    this->space(this->itsLength); 
+    std::cout << "|";
+    std::cout.setf(std::ios::fixed);
+    std::cout << std::setw(3) << this->itsPercentage;
+    std::cout << "%";
+    std::cout << std::flush;
+    this->itsLoc = END;
+  }
 }
 
-void ProgressBar::update(int num)
+void ProgressBar::update(unsigned int num)
 {
     /// @details
     /// This makes sure the correct number of hashes are drawn.
@@ -118,19 +108,24 @@ void ProgressBar::update(int num)
     /// \param num The loop counter to be translated into the progress
     /// bar.
 
-    if( length > 1 ){
+  this->itsPercentage = 100 * num / this->itsSize;
+
+    if( this->itsLength > 1 ){
 	int numNeeded = 0;
-	for(int i=0;i<length;i++)
-	    if(num>(i*stepSize)) numNeeded++;
+	for(unsigned int i=0;i<this->itsLength;i++)
+	    if(num>(i*this->itsStepSize)) numNeeded++;
     
-	if(numNeeded != numVisible){
-	    numVisible = numNeeded;
-	    if(loc==END) printBackSpace(length+2); 
+	if(numNeeded != this->itsNumVisible){
+	    this->itsNumVisible = numNeeded;
+	    if(this->itsLoc==END) this->backSpace(this->itsLength); 
 	    std::cout << "|"; 
-	    printHash(numNeeded);
-	    printSpace(length-numNeeded);
-	    std::cout << "|" << std::flush;
-	    loc=END;
+	    this->hash(this->itsNumVisible);
+	    this->space(this->itsLength-this->itsNumVisible);
+	    std::cout << "|";
+	    std::cout << std::setw(3) << this->itsPercentage;
+	    std::cout << "%";
+	    std::cout << std::flush;
+	    this->itsLoc=END;
 	}
 
     }
@@ -142,9 +137,8 @@ void ProgressBar::rewind()
     /// If we are at the end, we print out enough backspaces to wipe out
     /// the entire bar.  If we are not, the erasing does not need to be
     /// done.
-    if(loc==END) printBackSpace(length+2); 
-    loc=BEG;
-    std::cout << std::flush;
+  if(this->itsLoc==END) this->backSpace(this->itsLength); 
+  std::cout << std::flush;
 }
 
 void ProgressBar::remove()
@@ -153,8 +147,8 @@ void ProgressBar::remove()
     /// We first rewind() to the beginning, overwrite the bar with blank spaces, 
     /// and then rewind(). We end up at the beginning.
     rewind();
-    printSpace(length+2);
-    loc=END; 
+    this->space(this->itsLength+ExtraSpaces);
+    this->itsLoc=END; 
     rewind(); 
     std::cout << std::flush;
 }
@@ -166,6 +160,6 @@ void ProgressBar::fillSpace(std::string someString)
     /// \param someString The string to be written over the bar area.
     remove();
     std::cout << someString;
-    loc=END;
+    this->itsLoc=END;
 }
 

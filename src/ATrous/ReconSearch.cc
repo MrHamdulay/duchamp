@@ -158,7 +158,7 @@ namespace duchamp
       this->reconExists = true;
       if(this->par.isVerbose()){
 	bar.fillSpace(" All Done.");
-	printSpace(22);
+	printSpace(std::cout,26);
 	std::cout << "\n";
       }
     }
@@ -205,7 +205,7 @@ namespace duchamp
       this->reconExists = true;
       if(this->par.isVerbose()) {
 	if(useBar) bar.fillSpace(" All Done.");
-	printSpace(22);
+	printSpace(std::cout,26);
 	std::cout << "\n";
       }
     }
@@ -225,7 +225,7 @@ namespace duchamp
 	this->reconExists = true;
 	if(this->par.isVerbose()) {
 	  std::cout << "  All Done.";
-	  printSpace(22);
+	  printSpace(std::cout,26);
 	  std::cout << "\n";
 	}
       }

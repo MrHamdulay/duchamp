@@ -100,7 +100,7 @@ namespace duchamp
 	    std::cout.unsetf(std::ios::right);
 	    std::cout.setf(std::ios::left);
 	    std::cout << std::setw(6) << currentList.size() << std::flush;
-	    printBackSpace(22);
+	    printBackSpace(std::cout,22);
 	    std::cout << std::flush;
 	  }
 	  grower.grow(&currentList[i]);
@@ -151,7 +151,7 @@ namespace duchamp
 	  std::cout.unsetf(std::ios::right);
 	  std::cout.setf(std::ios::left);
 	  std::cout << std::setw(6) << objList.size()-numRemoved;
-	  printBackSpace(22);
+	  printBackSpace(std::cout,22);
 	  std::cout << std::flush;
 	  std::cout.unsetf(std::ios::left);
 	}
@@ -178,7 +178,7 @@ namespace duchamp
 		  std::cout.unsetf(std::ios::right);
 		  std::cout.setf(std::ios::left);
 		  std::cout << std::setw(6) << objList.size()-numRemoved;
-		  printBackSpace(22);
+		  printBackSpace(std::cout,22);
 		  std::cout << std::flush;
 		  std::cout.unsetf(std::ios::left);
 		}
@@ -222,8 +222,8 @@ namespace duchamp
 
     if(par.isVerbose()){
       std::cout << "Rejecting:" << std::setw(6) << objList.size();
-      printSpace(6);
-      printBackSpace(22);
+      printSpace(std::cout,6);
+      printBackSpace(std::cout,22);
       std::cout << std::flush;
     }
 
@@ -251,8 +251,8 @@ namespace duchamp
 	numRej++;
 	if(par.isVerbose()){
 	  std::cout << "Rejecting:" << std::setw(6) << objList.size()-numRej;
-	  printSpace(6);
-	  printBackSpace(22);
+	  printSpace(std::cout,6);
+	  printBackSpace(std::cout,22);
 	  std::cout << std::flush;
 	}
 

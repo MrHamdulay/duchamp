@@ -119,7 +119,7 @@ namespace duchamp
       do{
 	if(par.isVerbose()) {
 	  std::cout << "Iteration #"<<++iteration<<":";
-	  printSpace(13);
+	  printSpace(std::cout,13);
 	}
 	// first, get the value of oldsigma and set it to the previous 
 	//   newsigma value
@@ -207,7 +207,7 @@ namespace duchamp
 	else
 	  newsigma = findStddevDiff<float>(input,output,isGood,xdim);
 
-	if(par.isVerbose()) printBackSpace(26);
+	if(par.isVerbose()) printBackSpace(std::cout,26);
 
       } while( (iteration==1) || 
 	       (fabs(oldsigma-newsigma)/newsigma > par.getReconConvergence()) );

@@ -35,11 +35,8 @@
 // Simple functions to print a given number of backspaces or spaces
 //  to std::cout
 void printBackSpace(std::ostream &stream, int num);
-void printBackSpace(int num);
 void printSpace(std::ostream &stream, int num);
-void printSpace(int num);
 void printHash(std::ostream &stream, int num);
-void printHash(int num);
 
 /// @brief
 ///  Controls printing out a progress bar.
@@ -60,6 +57,9 @@ void printHash(int num);
 ///                                    the string into the same space.
 /// </ul>
 
+const int DefaultLength=20;             ///< Default number of hashes
+const int ExtraSpaces=6;                ///< Extra spaces other than hashes - the two '|', 3 chars for percentage, plus '%'
+
 class ProgressBar
 {
 public:
@@ -68,17 +68,24 @@ public:
   virtual ~ProgressBar();                 ///< Destructor.
   enum POS {BEG=0,END};                   ///< So that we can record where we are.
 
-  void init(int size);                    ///< Prints empty bar, defines increment.
-  void update(int num);                   ///< Prints correct number of hashes
+  void init(unsigned int size);           ///< Prints empty bar, defines increment.
+  void update(unsigned int num);          ///< Prints correct number of hashes
   void rewind();                          ///< Prints backspaces over bar.
   void remove();                          ///< Overwrites bar with blanks
   void fillSpace(std::string someString); ///< Overwrites bar with a string.
 
+  void backSpace(int num){printBackSpace(std::cout,num+ExtraSpaces); itsLoc=BEG;};
+  void space(int num){printSpace(std::cout,num);};
+  void hash(int num){printHash(std::cout,num);};
+
+
 private:
-  POS loc;                                ///< Are we at the start or end?
-  float stepSize;                         ///< What is the interval between hashes?
-  int length;                             ///< What's the maximum number of hashes?
-  int numVisible;                         ///< How many hashes are there currently visible?
+  POS itsLoc;                                ///< Are we at the start or end?
+  float itsStepSize;                         ///< What is the interval between hashes?
+  unsigned int itsLength;                    ///< What's the maximum number of hashes?
+  unsigned int itsNumVisible;                ///< How many hashes are there currently visible?
+  unsigned int itsSize;                      ///< The total number of things to be considered
+  unsigned int itsPercentage;                ///< What percentage of the way through are we?
 };
 
 

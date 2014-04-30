@@ -194,7 +194,7 @@ namespace duchamp
 	  if(par.isVerbose()){
 	    std::cout << "Scale ";
 	    std::cout << setw(2)<<scale<<" / "<<setw(2)<<numScales;
-	    printBackSpace(13);
+	    printBackSpace(std::cout,13);
 	    std::cout << std::flush;
 	  }
 
@@ -313,7 +313,7 @@ namespace duchamp
 	else
 	  newsigma = findStddevDiff<float>(input,output,isGood,size);
 
-	if(par.isVerbose()) printBackSpace(15);
+	if(par.isVerbose()) printBackSpace(std::cout,15);
 
       } while( (iteration==1) || 
 	       (fabs(oldsigma-newsigma)/newsigma > par.getReconConvergence()) );
