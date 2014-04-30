@@ -60,8 +60,11 @@ namespace duchamp
     /// @brief Assign correct WCS parameters.  
     void    setWCS(struct wcsprm *w);
 
+    /// @brief Return a pointer to the WCS parameters 
+    struct wcsprm *getWCS(){return wcs;};
+
     /// @brief Return the WCS parameters in a WCSLIB wcsprm struct. 
-    struct wcsprm *getWCS();
+    struct wcsprm *getWCScopy();
 
     /// @brief Provides a reference to the WCS parameters
     struct wcsprm& WCS(){ struct wcsprm &rwcs = *wcs; return rwcs; }; 

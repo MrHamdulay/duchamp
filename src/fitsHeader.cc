@@ -136,7 +136,7 @@ namespace duchamp
     if( (w->lng!=-1) && (w->lat!=-1) ) this->wcsIsGood = true;
   }
 
-  struct wcsprm *FitsHeader::getWCS()
+  struct wcsprm *FitsHeader::getWCScopy()
   {
     ///  A function that returns a properly initilized wcsprm object
     ///  corresponding to the WCS.
