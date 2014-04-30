@@ -66,16 +66,22 @@ namespace duchamp
     std::string fname = par.getImageFile();
     if(par.getFlagSubsection()) fname+=par.getSubsection();
 
-    this->head.openFITS(fname);
-
-    OUTCOME result = getMetadata(fname);
-    
-    if(result==SUCCESS){
-      // Convert the flux Units if the user has so requested
-      this->convertFluxUnits(this->head.getFluxUnits(),this->par.getNewFluxUnits());
+    OUTCOME result=SUCCESS;
+    int openStatus = this->head.openFITS(fname);
+    if (openStatus){
+	result = FAILURE;
     }
+    else {
 
-    this->head.closeFITS();
+	result = getMetadata(fname);
+    
+	if(result==SUCCESS){
+	    // Convert the flux Units if the user has so requested
+	    this->convertFluxUnits(this->head.getFluxUnits(),this->par.getNewFluxUnits());
+	}
+
+	int closeStatus = this->head.closeFITS();
+    }
 
     return result;
   }
