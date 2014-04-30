@@ -1,3 +1,18 @@
+Duchamp version 1.6.1 (2014/05/01)
+----------------------------------
+
+Principal reason for the release is to fix a memory leak. This was
+occuring when making blank pixel masks, particularly in the
+parameterisation step. It was apparent with large files and large
+numbers of sources. Thanks to Quang Nguyen for raising the bug and
+helping with the identification of the problem.
+
+A few other potential memory leaks were identified and fixed.
+
+To aid the debugging, the progress bar now also reports the percentage
+complete as well as the set of hashes.
+
+
 Duchamp version 1.6 (2014/04/22)
 --------------------------------
 
