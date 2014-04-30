@@ -108,20 +108,30 @@ void ProgressBar::update(unsigned int num)
     /// \param num The loop counter to be translated into the progress
     /// bar.
 
-  this->itsPercentage = 100 * num / this->itsSize;
+    int newPercentage = 100 * num / this->itsSize;
 
     if( this->itsLength > 1 ){
 	int numNeeded = 0;
 	for(unsigned int i=0;i<this->itsLength;i++)
 	    if(num>(i*this->itsStepSize)) numNeeded++;
     
-	if(numNeeded != this->itsNumVisible){
+//	if(numNeeded != this->itsNumVisible){
+	if(numNeeded > this->itsNumVisible){
+	    this->itsPercentage = newPercentage;
 	    this->itsNumVisible = numNeeded;
 	    if(this->itsLoc==END) this->backSpace(this->itsLength); 
 	    std::cout << "|"; 
 	    this->hash(this->itsNumVisible);
 	    this->space(this->itsLength-this->itsNumVisible);
 	    std::cout << "|";
+	    std::cout << std::setw(3) << this->itsPercentage;
+	    std::cout << "%";
+	    std::cout << std::flush;
+	    this->itsLoc=END;
+	}
+	else if(newPercentage > this->itsPercentage){
+	    this->itsPercentage = newPercentage;
+	    if(this->itsLoc==END) printBackSpace(std::cout,4);
 	    std::cout << std::setw(3) << this->itsPercentage;
 	    std::cout << "%";
 	    std::cout << std::flush;
