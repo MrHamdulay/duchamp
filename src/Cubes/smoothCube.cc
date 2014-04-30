@@ -279,6 +279,8 @@ void Cube::SpatialSmoothNSearch()
       
       findMedianStats(smoothed,xySize,mask,median,madfm);
 
+      delete [] mask;
+
       channelImage->saveArray(smoothed,xySize);
 
       std::vector<PixelInfo::Object2D> objlist = channelImage->findSources2D();
@@ -296,7 +298,6 @@ void Cube::SpatialSmoothNSearch()
   }
 
   delete [] smoothed;
-  delete [] mask;
   delete [] image;
   delete channelImage;
     
