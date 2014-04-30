@@ -1922,7 +1922,10 @@ namespace duchamp
       DUCHAMPERROR("Image::saveArray", "Input array different size to existing array. Cannot save.");
     }
     else {
-      if(this->numPixels>0 && this->arrayAllocated) delete [] array;
+      if(this->numPixels>0 && this->arrayAllocated){
+	delete [] array;
+	this->arrayAllocated=false;
+      }
       this->numPixels = size;
       if(this->numPixels>0){
 	this->array = new float[size];
@@ -1953,7 +1956,10 @@ namespace duchamp
       DUCHAMPERROR("Image::extractSpectrum", "Input array different size to existing array. Cannot save.");
     }
     else {
-      if(this->numPixels>0 && this->arrayAllocated) delete [] array;
+      if(this->numPixels>0 && this->arrayAllocated){
+	delete [] array;
+	this->arrayAllocated=false;
+      }
       this->numPixels = dim[2];
       if(this->numPixels>0){
 	this->array = new float[dim[2]];
@@ -1983,7 +1989,10 @@ namespace duchamp
       DUCHAMPERROR("Image::extractSpectrum", "Input array different size to existing array. Cannot save.");
     }
     else {
-      if(this->numPixels>0 && this->arrayAllocated) delete [] array;
+      if(this->numPixels>0 && this->arrayAllocated){
+	delete [] array;
+	this->arrayAllocated=false;
+      }
       this->numPixels = zdim;
       if(this->numPixels>0){
 	this->array = new float[zdim];
@@ -2016,7 +2025,10 @@ namespace duchamp
       DUCHAMPERROR("Image::extractImage", "Input array different size to existing array. Cannot save.");
     }
     else {
-      if(this->numPixels>0 && this->arrayAllocated) delete [] array;
+      if(this->numPixels>0 && this->arrayAllocated){
+	delete [] array;
+	this->arrayAllocated = false;
+      }
       this->numPixels = spatSize;
       if(this->numPixels>0){
 	this->array = new float[spatSize];
@@ -2046,7 +2058,10 @@ namespace duchamp
       DUCHAMPERROR("Image::extractImage", "Input array different size to existing array. Cannot save.");
     }
     else {
-      if(this->numPixels>0 && this->arrayAllocated) delete [] array;
+      if(this->numPixels>0 && this->arrayAllocated){
+	delete [] array;
+	this->arrayAllocated=false;
+      }
       this->numPixels = spatSize;
       if(this->numPixels>0){
 	this->array = new float[spatSize];
