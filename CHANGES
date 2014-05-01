@@ -7,6 +7,11 @@ parameterisation step. It was apparent with large files and large
 numbers of sources. Thanks to Quang Nguyen for raising the bug and
 helping with the identification of the problem.
 
+For those interested in the code base itself, all boolean masks have
+been moved to vector<bool> types, with the consequent change of
+interface for some functions (including the statistics functions,
+Gaussian smoothing, and some spectral utility functions).
+
 A few other potential memory leaks were identified and fixed.
 
 To aid the debugging, the progress bar now also reports the percentage
