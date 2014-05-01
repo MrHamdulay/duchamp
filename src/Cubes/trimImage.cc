@@ -30,6 +30,7 @@
 #include <duchamp/Cubes/cubes.hh>
 #include <duchamp/PixelMap/Object3D.hh>
 #include <duchamp/Detection/finders.hh>
+#include <duchamp/Utils/feedback.hh>
 
 using namespace PixelInfo;
 
@@ -48,28 +49,31 @@ namespace duchamp
 	    
 	    size_t left=0,right=xdim-1,top=ydim-1,bottom=0;
 
-	    std::vector<bool> spatblank(spatsize,false);
-	    for (size_t z=0;z<zdim;z++){
-		std::vector<bool> currentBlank = this->par.makeBlankMask(this->array+z*spatsize,spatsize);
-		for(size_t i=0;i<spatsize;i++) spatblank[i]=spatblank[i] || currentBlank[i];
+	    ProgressBar bar;
+	    if(this->par.isVerbose()){
+	      std::cout << "\n  Determining blank pixel borders: "<<std::flush;
+	      bar.init(zdim);
 	    }
-
 	    std::vector<bool> rowblank(xdim,false);
-	    for(size_t x=0;x<xdim;x++){
-		for(size_t y=0;y<ydim;y++){
-		    rowblank[x] = rowblank[x] || spatblank[x+y*xdim];
-		}
-	    }
-	    std::vector<Scan> rowscans = spectrumDetect(rowblank,xdim,0);
-
 	    std::vector<bool> colblank(ydim,false);
-	    for(size_t y=0;y<ydim;y++){
+	    for (size_t z=0;z<zdim;z++){
+	      if(this->par.isVerbose()) bar.update(z+1);
+		std::vector<bool> currentBlank = this->par.makeBlankMask(this->array+z*spatsize,spatsize);
 		for(size_t x=0;x<xdim;x++){
-		    colblank[y] = colblank[y] || spatblank[x+y*xdim];
+		  for(size_t y=0;y<ydim;y++){
+		    rowblank[x] = rowblank[x] || currentBlank[x+y*xdim];
+		    colblank[y] = colblank[y] || currentBlank[x+y*xdim];
+		  }
 		}
 	    }
-	    std::vector<Scan> colscans = spectrumDetect(colblank,ydim,0);
 
+	    std::vector<Scan> rowscans = spectrumDetect(rowblank,xdim,1);
+	    std::vector<Scan> colscans = spectrumDetect(colblank,ydim,1);
+
+	    if(this->par.isVerbose()){
+	      bar.remove();
+	      std::cout << "Done."<<"\n";
+	    }
 
 	    if (rowscans.size()>0 && colscans.size()>0){
 
@@ -78,11 +82,11 @@ namespace duchamp
 		left=rowscans.begin()->getX();
 		right=xdim-1-rowscans.rbegin()->getXmax();
 		bottom=colscans.begin()->getX();
-		top=colscans.rbegin()->getXmax();
+		top=ydim-1-colscans.rbegin()->getXmax();
 
 		if (left>0 || right>0 || bottom > 0 || top>0 ) {
 		    // only trim if we need to - are the borders right at the edges?
-
+		  
 		    // Set the flag indicating trimming has taken place only if it has.
 		    this->par.setFlagCubeTrimmed(true);
 		    this->par.setBorderLeft(left);
@@ -98,6 +102,12 @@ namespace duchamp
 
 		    size_t oldpos,newpos;
 
+		    if(this->par.isVerbose()){
+		      std::cout << "  Trimming data arrays: " << std::flush;
+		      bar.init(4);
+		    }
+		    
+		    if(this->par.isVerbose()) bar.update(1);
 		    // Trim the array of pixel values
 		    float *newarray  = new float[this->numPixels];
 		    for(size_t x = 0; x < axisDim[0]; x++){
@@ -113,6 +123,7 @@ namespace duchamp
 		    delete [] this->array;
 		    this->array = newarray;
 
+		    if(this->par.isVerbose()) bar.update(2);
 		    // Trim the array of baseline values
 		    if(this->par.getFlagBaseline()){
 			float *newarray  = new float[this->numPixels];
@@ -130,6 +141,7 @@ namespace duchamp
 			this->baseline = newarray;
 		    }
 
+		    if(this->par.isVerbose()) bar.update(3);
 		    // Trim the 2-D detection map
 		    short *newdetect = new short[this->axisDim[0]*this->axisDim[1]];
 		    for(size_t x = 0; x < axisDim[0]; x++){
@@ -142,6 +154,7 @@ namespace duchamp
 		    delete [] this->detectMap;
 		    this->detectMap = newdetect;
 
+		    if(this->par.isVerbose()) bar.update(4);
 		    if(this->par.getFlagATrous() || this->par.getFlagSmooth()){
 			// Trim the reconstructed array if we are going to do the
 			// reconstruction or smooth the array
@@ -162,6 +175,11 @@ namespace duchamp
 
 		}
 
+	    }
+
+	    if(!this->par.getFlagCubeTrimmed()){
+	      if(this->par.isVerbose()) 
+		std::cout << "  No trimming necessary."<<"\n";
 	    }
 
 	}
