@@ -444,26 +444,26 @@ namespace duchamp
       (this->blankKeyword == int((value-this->bzeroKeyword)/this->bscaleKeyword));
   }
 
-  bool *Param::makeBlankMask(float *array, size_t size)
+    std::vector<bool> Param::makeBlankMask(float *array, size_t size)
   {
     ///  This returns an array of bools, saying whether each pixel in the
     ///  given array is BLANK or not. If the pixel is BLANK, set mask to
     ///  false, else set to true. The array is allocated by the function.
 
-    bool *mask = new bool[size];
-    for(size_t i=0;i<size;i++) mask[i] = !this->isBlank(array[i]);
-    return mask;
+      std::vector<bool> mask(size);
+      for(size_t i=0;i<size;i++) mask[i] = !this->isBlank(array[i]);
+      return mask;
   }
 
 
-  bool *Param::makeStatMask(float *array, size_t *dim)
+    std::vector<bool> Param::makeStatMask(float *array, size_t *dim)
   {
     ///  This returns an array of bools, saying whether each pixel in
     ///  the given array is suitable for a stats calculation. It needs
     ///  to be in the StatSec (if defined), not blank and not a flagged
     ///  channel. The array is allocated by the function with a 'new' call. 
 
-    bool *mask = new bool[dim[0]*dim[1]*dim[2]];
+      std::vector<bool> mask(dim[0]*dim[1]*dim[2]);
     std::vector<bool> flaggedChans = this->getChannelFlags(dim[2]);
     for(size_t x=0;x<dim[0];x++) {
       for(size_t y=0;y<dim[1];y++) {

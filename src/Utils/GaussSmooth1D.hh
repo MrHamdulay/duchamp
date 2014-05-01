@@ -28,7 +28,7 @@
 // -----------------------------------------------------------------------
 #ifndef GAUSSSMOOTH1D_H
 #define GAUSSSMOOTH1D_H
-
+#include <vector>
 /// @brief
 ///  Define a Gaussian to smooth a 2D array.
 /// @details
@@ -54,7 +54,7 @@ public:
   /// @brief Smooth an array with the Gaussian kernel
   Type *smooth(Type *input, int dim, bool normalise=false, bool scaleByCoverage=false);  
   /// @brief Smooth an array with the Gaussian kernel, using a mask to define blank pixels
-  Type *smooth(Type *input, int dim, bool *mask, bool normalise=false, bool scaleByCoverage=false);  
+  Type *smooth(Type *input, int dim, std::vector<bool> mask, bool normalise=false, bool scaleByCoverage=false);  
   
   void   setKernFWHM(float f){kernFWHM=f;};
 

@@ -331,7 +331,7 @@ namespace Statistics
   //--------------------------------------------------------------------
 
   template <class Type> 
-  void StatsContainer<Type>::calculate(Type *array, long size, bool *mask)
+  void StatsContainer<Type>::calculate(Type *array, long size, std::vector<bool> mask)
   {
     /// @details
     /// Calculate all four statistics for a subset of a given
@@ -349,10 +349,10 @@ namespace Statistics
 		 this->mean, this->stddev, this->median, this->madfm);
     this->defined = true;
   }
-  template void StatsContainer<int>::calculate(int *array, long size, bool *mask);
-  template void StatsContainer<long>::calculate(long *array, long size, bool *mask);
-  template void StatsContainer<float>::calculate(float *array, long size, bool *mask);
-  template void StatsContainer<double>::calculate(double *array, long size, bool *mask);
+  template void StatsContainer<int>::calculate(int *array, long size, std::vector<bool> mask);
+  template void StatsContainer<long>::calculate(long *array, long size, std::vector<bool> mask);
+  template void StatsContainer<float>::calculate(float *array, long size, std::vector<bool> mask);
+  template void StatsContainer<double>::calculate(double *array, long size, std::vector<bool> mask);
   //--------------------------------------------------------------------
 
   template <class Type> 

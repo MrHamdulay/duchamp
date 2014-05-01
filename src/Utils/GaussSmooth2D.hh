@@ -28,6 +28,7 @@
 // -----------------------------------------------------------------------
 #ifndef GAUSSSMOOTH2D_H
 #define GAUSSSMOOTH2D_H
+#include <vector>
 #include <duchamp/duchamp.hh>
 
 /// @brief How the edges of the array are dealt with
@@ -69,7 +70,7 @@ public:
   /// @brief Smooth an array with the Gaussian kernel
   Type *smooth(Type *input, size_t xdim, size_t ydim, EDGES edgeTreatment=EQUALTOEDGE);  
   /// @brief Smooth an array with the Gaussian kernel, using a mask to define blank pixels
-  Type *smooth(Type *input, size_t xdim, size_t ydim, bool *mask, EDGES edgeTreatment=EQUALTOEDGE);  
+  Type *smooth(Type *input, size_t xdim, size_t ydim, std::vector<bool> mask, EDGES edgeTreatment=EQUALTOEDGE);  
   
   void   setKernMaj(float f){kernMaj=f;};
   void   setKernMin(float f){kernMin=f;};

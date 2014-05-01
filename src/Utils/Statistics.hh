@@ -31,6 +31,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include <math.h>
 
 /// A namespace to control everything to do with statistical
@@ -138,7 +139,7 @@ namespace Statistics
     void calculate(Type *array, long size);
 
     /// @brief Calculate statistics for a subset of a data array 
-    void calculate(Type *array, long size, bool *mask);
+    void calculate(Type *array, long size, std::vector<bool> mask);
 
     void writeToBinaryFile(std::string filename);
     std::streampos readFromBinaryFile(std::string filename, std::streampos loc=0);

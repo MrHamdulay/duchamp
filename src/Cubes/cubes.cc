@@ -911,10 +911,10 @@ namespace duchamp
       if (!this->par.getFlagBlankPix() && !this->par.getFlagStatSec() && (this->par.getFlaggedChannels().size()==0) )
 	needMask=false;
 
-      bool *mask;
+      std::vector<bool> mask;
       size_t vox=0,goodSize=this->numPixels;
       if (needMask) {
-	mask = new bool[this->numPixels];
+	mask = std::vector<bool>(this->numPixels,false);
 	goodSize = 0;
 	for(size_t z=0;z<this->axisDim[2];z++){
 	  for(size_t y=0;y<this->axisDim[1];y++){
@@ -1022,9 +1022,6 @@ namespace duchamp
 	this->par.setThreshold( this->Stats.getThreshold() );
       }
     
-      if (needMask)
-	delete [] mask;
-
     }
 
     if(this->par.isVerbose()){

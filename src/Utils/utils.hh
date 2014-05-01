@@ -51,43 +51,43 @@ template <class T> T absval(T value);
 template <class T> void findMinMax(const T *array, const size_t size, 
 				   T &min, T &max);
 template <class T> float findMean(T *array, size_t size);
-template <class T> float findMean(T *array, bool *mask, size_t size);
+template <class T> float findMean(T *array, std::vector<bool> mask, size_t size);
 template <class T> float findMeanDiff(T *first, T *second, size_t size);
-template <class T> float findMeanDiff(T *first, T *second, bool *mask, size_t size);
+template <class T> float findMeanDiff(T *first, T *second, std::vector<bool> mask, size_t size);
 template <class T> float findStddev(T *array, size_t size);
-template <class T> float findStddev(T *array, bool *mask, size_t size);
+template <class T> float findStddev(T *array, std::vector<bool> mask, size_t size);
 template <class T> float findStddevDiff(T *first, T *second, size_t size);
-template <class T> float findStddevDiff(T *first, T *second, bool *mask, size_t size);
+template <class T> float findStddevDiff(T *first, T *second, std::vector<bool> mask, size_t size);
 template <class T> T findMedian(T *array, size_t size, bool changeArray=false);
-template <class T> T findMedian(T *array, bool *mask, size_t size);
+template <class T> T findMedian(T *array, std::vector<bool> mask, size_t size);
 template <class T> T findMedianDiff(T *first, T *second, size_t size);
-template <class T> T findMedianDiff(T *first, T *second, bool *mask, size_t size);
+template <class T> T findMedianDiff(T *first, T *second, std::vector<bool> mask, size_t size);
 template <class T> T findMADFM(T *array, size_t size, bool changeArray=false);
-template <class T> T findMADFM(T *array, bool *mask, size_t size);
+template <class T> T findMADFM(T *array, std::vector<bool> mask, size_t size);
 template <class T> T findMADFM(T *array, size_t size, T median, bool changeArray=false);
-template <class T> T findMADFM(T *array, bool *mask, size_t size, T median);
+template <class T> T findMADFM(T *array, std::vector<bool> mask, size_t size, T median);
 template <class T> T findMADFMDiff(T *first, T *second, size_t size);
-template <class T> T findMADFMDiff(T *first, T *second, bool *mask, size_t size);
+template <class T> T findMADFMDiff(T *first, T *second, std::vector<bool> mask, size_t size);
 template <class T> T findMADFMDiff(T *first, T *second, size_t size, T median);
-template <class T> T findMADFMDiff(T *first, T *second, bool *mask, size_t size, T median);
+template <class T> T findMADFMDiff(T *first, T *second, std::vector<bool> mask, size_t size, T median);
 template <class T> void findMedianStats(T *array, size_t size, 
 					T &median, T &madfm);
-template <class T> void findMedianStats(T *array, size_t size, bool *isGood, 
+template <class T> void findMedianStats(T *array, size_t size, std::vector<bool> isGood, 
 					T &median, T &madfm);
 template <class T> void findNormalStats(T *array, size_t size, 
 					float &mean, float &stddev);
-template <class T> void findNormalStats(T *array, size_t size, bool *isGood, 
+template <class T> void findNormalStats(T *array, size_t size, std::vector<bool> isGood, 
 					float &mean, float &stddev);
 template <class T> void findAllStats(T *array, size_t size, 
 				     float &mean, float &stddev,
 				     T &median, T &madfm);
-template <class T> void findAllStats(T *array, size_t size, bool *mask, 
+template <class T> void findAllStats(T *array, size_t size, std::vector<bool> mask, 
 				     float &mean, float &stddev,
 				     T &median, T &madfm);
 template <class T> void findMedianStatsDiff(T *first, T *second, size_t size, T &median, T &madfm);
-template <class T> void findMedianStatsDiff(T *first, T *second, size_t size, bool *isGood, T &median, T &madfm);
+template <class T> void findMedianStatsDiff(T *first, T *second, size_t size, std::vector<bool> isGood, T &median, T &madfm);
 template <class T> void findNormalStatsDiff(T *first, T *second, size_t size, float &mean, float &stddev);
-template <class T> void findNormalStatsDiff(T *first, T *second, size_t size, bool *isGood, float &mean, float &stddev);
+template <class T> void findNormalStatsDiff(T *first, T *second, size_t size, std::vector<bool> isGood, float &mean, float &stddev);
 
 
 // POSITION-RELATED ROUTINES

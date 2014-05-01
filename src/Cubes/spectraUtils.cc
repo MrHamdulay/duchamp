@@ -85,7 +85,7 @@ namespace duchamp
   }
   //--------------------------------------------------------------------
 
-  void getIntSpec(Detection &object, float *fluxArray, size_t *dimArray, bool *mask, 
+    void getIntSpec(Detection &object, float *fluxArray, size_t *dimArray, std::vector<bool> mask, 
 		  float beamCorrection, float *spec)
   {
     /// @details
@@ -103,8 +103,7 @@ namespace duchamp
 
     for(size_t i=0;i<dimArray[2];i++) spec[i] = 0.;
     size_t xySize = dimArray[0]*dimArray[1];
-    bool *done = new bool[xySize]; 
-    for(size_t i=0;i<xySize;i++) done[i]=false;
+    std::vector<bool> done(xySize,false); 
     std::vector<Voxel> voxlist = object.getPixelSet();
     std::vector<Voxel>::iterator vox;
     for(vox=voxlist.begin();vox<voxlist.end();vox++){
@@ -118,12 +117,11 @@ namespace duchamp
 	}
       }
     }
-    delete [] done;
 
   }
   //--------------------------------------------------------------------
 
-  void getPeakSpec(Detection &object, float *fluxArray, size_t *dimArray, bool *mask, float *spec)
+    void getPeakSpec(Detection &object, float *fluxArray, size_t *dimArray, std::vector<bool> mask, float *spec)
   {
     /// @details
     ///  The base function that extracts an peak spectrum for a
@@ -220,9 +218,7 @@ namespace duchamp
     else beamCorrection = 1.;
 	
     if(objNum>=0 && this->par.getSpectralMethod()=="sum"){
-      bool *done = new bool[xdim*ydim];
-      for(size_t i=0;i<xdim*ydim;i++) done[i]=false;
-//       std::vector<Voxel> voxlist = this->objectList->at(objNum).getPixelSet();
+      std::vector<bool> done(xdim*ydim,false);
       std::vector<Voxel>::iterator vox;
       for(vox=voxlist.begin();vox<voxlist.end();vox++){
 	spatpos = vox->getX() + xdim * vox->getY();
@@ -239,7 +235,6 @@ namespace duchamp
 	  }
 	}
       }
-      delete [] done;
     }
     else {// if(par.getSpectralMethod()=="peak"){
 //       size_t spatpos = this->objectList->at(objNum).getXPeak() +

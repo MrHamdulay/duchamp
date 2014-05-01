@@ -119,9 +119,8 @@ std::vector <Detection> search3DArraySpectral(size_t *dim, float *Array, Param &
     ProgressBar bar;
     if(par.isVerbose()) bar.init(xySize);
 
-    bool *doPixel = new bool[xySize];
+    std::vector<bool> doPixel(xySize,false);
     for(size_t npix=0; npix<xySize; npix++){
-      doPixel[npix] = false;
       for(size_t z=0;z<zdim;z++){
 	doPixel[npix] = doPixel[npix] || 
 	    (!par.isBlank(Array[npix+xySize*z]) && !par.isFlaggedChannel(z));
@@ -165,9 +164,7 @@ std::vector <Detection> search3DArraySpectral(size_t *dim, float *Array, Param &
       }
     }
 
-    delete spectrum;
-    delete [] doPixel;
-  
+    delete spectrum;  
 
     if(par.isVerbose()){
       bar.remove();

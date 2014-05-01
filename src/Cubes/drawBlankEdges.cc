@@ -65,8 +65,8 @@ namespace duchamp
 	float xoff,x2,yoff,y2;
 	cpgqwin(&xoff,&x2,&yoff,&y2);
 
-	bool *blank = new bool[xdim*ydim];
-	for(size_t i=0;i<xdim*ydim;i++) blank[i] = par.isBlank(dataArray[i]);
+	size_t size=xdim*ydim;
+	std::vector<bool> blank = par.makeBlankMask(dataArray,size);
 
 	for(size_t x=0; x<xdim; x++){// for each column...
 	  for(size_t y=1;y<ydim;y++){
@@ -92,7 +92,6 @@ namespace duchamp
 	  }
 	}
 
-	delete [] blank;
      
 	cpgsci(colour);
  

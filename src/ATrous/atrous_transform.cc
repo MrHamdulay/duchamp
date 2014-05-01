@@ -211,7 +211,7 @@ namespace duchamp{
     }
 
 
-    bool *isGood = new bool[size];
+    std::vector<bool> isGood(size);
     for(int pos=0;pos<size;pos++) //isGood[pos] = (!flagBlank) || (input[pos]!=blankPixValue);
       isGood[pos] = !par.isBlank(input[pos]);
 

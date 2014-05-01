@@ -237,7 +237,7 @@ namespace duchamp
       return par.isBlank(array[z*axisDim[0]*axisDim[1] + y*axisDim[0] + x]); };
 
     /// @brief Return a bool array masking blank pixels: 1=good, 0=blank 
-    bool *      makeBlankMask(){return par.makeBlankMask(array, numPixels);};
+    std::vector<bool> makeBlankMask(){return par.makeBlankMask(array, numPixels);};
 
     /// @brief Does the Cube::recon array exist? 
     bool        isRecon(){ return reconExists; }; 

@@ -84,7 +84,7 @@ namespace duchamp
 
     float mean,originalSigma,oldsigma,newsigma;
     size_t goodSize=0;
-    bool *isGood = new bool[size];
+    std::vector<bool> isGood(size);
     for(size_t pos=0;pos<size;pos++){
       isGood[pos] = !par.isBlank(input[pos]);
       if(isGood[pos]) goodSize++;
@@ -307,7 +307,6 @@ namespace duchamp
 
     }
 
-    delete [] isGood;
     delete [] sigmaFactors;
   }
     

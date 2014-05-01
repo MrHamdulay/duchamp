@@ -280,16 +280,13 @@ namespace duchamp
       ProgressBar bar;
       if(par.isVerbose()) bar.init(xySize);
 
-      bool *doPixel = new bool[xySize];
+      std::vector<bool> doPixel(xySize,false);
       // doPixel is a bool array to say whether to look in a given spectrum
       for(size_t npix=0; npix<xySize; npix++){
-	doPixel[npix] = false;
-	for(size_t z=0;z<zdim;z++) {
-	  doPixel[npix] = doPixel[npix] || 
-	      (!par.isBlank(originalArray[npix+xySize*z]) && !par.isFlaggedChannel(z));
+	for(size_t z=0;z<zdim && !doPixel[npix];z++) {
+	  doPixel[npix] = doPixel[npix] || (!par.isBlank(originalArray[npix+xySize*z]) && !par.isFlaggedChannel(z));
 	}
-	// doPixel[i] is false only when there are no good pixels in spectrum
-	//  of pixel #i.
+	// doPixel[i] is now false only when there are no good pixels in spectrum of pixel #i.
       }
 
       size_t *specdim = new size_t[2];
@@ -333,7 +330,6 @@ namespace duchamp
       }
 
       delete spectrum;
-      delete [] doPixel;
       
       if(par.isVerbose()){
 	bar.remove();

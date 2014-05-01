@@ -52,7 +52,7 @@ vector <Detection> cubicSearchNMerge(long *dim, float *Array, Param &par)
 
   //  bool flagBlank=par.getFlagBlankPix();
   float blankPixValue = par.getBlankPixVal();
-  bool *isGood = new bool[fullSize];
+  std::vector<bool> isGood(fullSize);
   for(size_t pos=0;pos<fullSize;pos++) 
     isGood[pos] = !par.isBlank(Array[pos]);
     //    isGood[pos] = (!flagBlank) || (Array[pos]!=blankPixValue);
@@ -153,7 +153,7 @@ vector <Detection> cubicSearchNMerge(long *dim, float *Array, Param &par)
     delete image;
   }
   // NEXT, DO SOURCE FINDING
-  bool *doChannel = new bool[zdim];
+  std::vector<bool> doChannel(zdim);
   for(int z=0;z<zdim;z++) 
       doChannel[z] = !par.isFlaggedChannel(z);
 
@@ -205,8 +205,6 @@ vector <Detection> cubicSearchNMerge(long *dim, float *Array, Param &par)
   
   delete [] imageMedian;
   delete [] imageSigma;
-  delete [] isGood;
-  delete [] doChannel;
 
   return outputList;
 }

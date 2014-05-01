@@ -170,7 +170,7 @@ Type *GaussSmooth2D<Type>::smooth(Type *input, size_t xdim, size_t ydim, EDGES e
   /// @details
   /// Smooth a given two-dimensional array, of dimensions xdim
   /// \f$\times\f$ ydim, with an elliptical gaussian. Simply runs as a
-  /// front end to GaussSmooth2D::smooth(float *, int, int, bool *) by
+  /// front end to GaussSmooth2D::smooth(float *, int, int, vector<bool>) by
   /// defining a mask that allows all pixels in the input array.
   /// 
   ///  \param input The 2D array to be smoothed.
@@ -179,15 +179,13 @@ Type *GaussSmooth2D<Type>::smooth(Type *input, size_t xdim, size_t ydim, EDGES e
   ///  \return The smoothed array.
 
   Type *smoothed;
-  bool *mask = new bool[xdim*ydim];
-  for(size_t i=0;i<xdim*ydim;i++) mask[i]=true;
+  std::vector<bool> mask(xdim*ydim,true);
   smoothed = this->smooth(input,xdim,ydim,mask,edgeTreatment);
-  delete [] mask;
   return smoothed;
 }
 
 template <class Type>
-Type *GaussSmooth2D<Type>::smooth(Type *input, size_t xdim, size_t ydim, bool *mask, EDGES edgeTreatment)
+Type *GaussSmooth2D<Type>::smooth(Type *input, size_t xdim, size_t ydim, std::vector<bool> mask, EDGES edgeTreatment)
 {
   /// @details
   ///  Smooth a given two-dimensional array, of dimensions xdim

@@ -92,7 +92,7 @@ template float findMedianDiff<float>(float *first, float *second, size_t size);
 template double findMedianDiff<double>(double *first, double *second, size_t size);
 //--------------------------------------------------------------------
 
-template <class T> T findMedian(T *array, bool *mask, size_t size)
+template <class T> T findMedian(T *array, std::vector<bool> mask, size_t size)
 {
   /// @details
   /// Find the median value of an array of numbers. Type independent. This will create a new array that gets partially sorted.
@@ -119,13 +119,13 @@ template <class T> T findMedian(T *array, bool *mask, size_t size)
   delete [] newarray;
   return median;
 }
-template int findMedian<int>(int *array, bool *mask, size_t size);
-template long findMedian<long>(long *array, bool *mask, size_t size);
-template float findMedian<float>(float *array, bool *mask, size_t size);
-template double findMedian<double>(double *array, bool *mask, size_t size);
+template int findMedian<int>(int *array, std::vector<bool> mask, size_t size);
+template long findMedian<long>(long *array, std::vector<bool> mask, size_t size);
+template float findMedian<float>(float *array, std::vector<bool> mask, size_t size);
+template double findMedian<double>(double *array, std::vector<bool> mask, size_t size);
 //--------------------------------------------------------------------
 
-template <class T> T findMedianDiff(T *first, T *second, bool *mask, size_t size)
+template <class T> T findMedianDiff(T *first, T *second, std::vector<bool> mask, size_t size)
 {
   /// @details
   /// Find the median value of an array of numbers. Type independent.
@@ -151,10 +151,10 @@ template <class T> T findMedianDiff(T *first, T *second, bool *mask, size_t size
   delete [] newarray;
   return median;
 }
-template int findMedianDiff<int>(int *first, int *second, bool *mask, size_t size);
-template long findMedianDiff<long>(long *first, long *second, bool *mask, size_t size);
-template float findMedianDiff<float>(float *first, float *second, bool *mask, size_t size);
-template double findMedianDiff<double>(double *first, double *second, bool *mask, size_t size);
+template int findMedianDiff<int>(int *first, int *second, std::vector<bool> mask, size_t size);
+template long findMedianDiff<long>(long *first, long *second, std::vector<bool> mask, size_t size);
+template float findMedianDiff<float>(float *first, float *second, std::vector<bool> mask, size_t size);
+template double findMedianDiff<double>(double *first, double *second, std::vector<bool> mask, size_t size);
 //--------------------------------------------------------------------
 
 template <class T> T findMADFM(T *array, size_t size, bool changeArray)
@@ -224,7 +224,7 @@ template float findMADFMDiff<float>(float *first, float *second, size_t size);
 template double findMADFMDiff<double>(double *first, double *second, size_t size);
 //--------------------------------------------------------------------
 
-template <class T> T findMADFM(T *array, bool *mask, size_t size)
+template <class T> T findMADFM(T *array, std::vector<bool> mask, size_t size)
 {
   /// @details
   /// Find the median absolute deviation from the median value of an
@@ -254,13 +254,13 @@ template <class T> T findMADFM(T *array, bool *mask, size_t size)
   delete [] newarray;
   return madfm;
 }
-template int findMADFM<int>(int *array, bool *mask, size_t size);
-template long findMADFM<long>(long *array, bool *mask, size_t size);
-template float findMADFM<float>(float *array, bool *mask, size_t size);
-template double findMADFM<double>(double *array, bool *mask, size_t size);
+template int findMADFM<int>(int *array, std::vector<bool> mask, size_t size);
+template long findMADFM<long>(long *array, std::vector<bool> mask, size_t size);
+template float findMADFM<float>(float *array, std::vector<bool> mask, size_t size);
+template double findMADFM<double>(double *array, std::vector<bool> mask, size_t size);
 //--------------------------------------------------------------------
 
-template <class T> T findMADFMDiff(T *first, T *second, bool *mask, size_t size)
+template <class T> T findMADFMDiff(T *first, T *second, std::vector<bool> mask, size_t size)
 {
   /// @details
   /// Find the median absolute deviation from the median value of an
@@ -290,10 +290,10 @@ template <class T> T findMADFMDiff(T *first, T *second, bool *mask, size_t size)
   delete [] newarray;
   return madfm;
 }
-template int findMADFMDiff<int>(int *first, int *second, bool *mask, size_t size);
-template long findMADFMDiff<long>(long *first, long *second, bool *mask, size_t size);
-template float findMADFMDiff<float>(float *first, float *second, bool *mask, size_t size);
-template double findMADFMDiff<double>(double *first, double *second, bool *mask, size_t size);
+template int findMADFMDiff<int>(int *first, int *second, std::vector<bool> mask, size_t size);
+template long findMADFMDiff<long>(long *first, long *second, std::vector<bool> mask, size_t size);
+template float findMADFMDiff<float>(float *first, float *second, std::vector<bool> mask, size_t size);
+template double findMADFMDiff<double>(double *first, double *second, std::vector<bool> mask, size_t size);
 //--------------------------------------------------------------------
 
 template <class T> T findMADFM(T *array, size_t size, T median, bool changeArray)
@@ -366,7 +366,7 @@ template float findMADFMDiff<float>(float *first, float *second, size_t size, fl
 template double findMADFMDiff<double>(double *first, double *second, size_t size, double median);
 //--------------------------------------------------------------------
 
-template <class T> T findMADFM(T *array, bool *mask, size_t size, T median)
+template <class T> T findMADFM(T *array, std::vector<bool> mask, size_t size, T median)
 {
   /// @details
   /// Find the median absolute deviation from the median value of an
@@ -397,13 +397,13 @@ template <class T> T findMADFM(T *array, bool *mask, size_t size, T median)
   delete [] newarray;
   return madfm;
 }
-template int findMADFM<int>(int *array, bool *mask, size_t size, int median);
-template long findMADFM<long>(long *array, bool *mask, size_t size, long median);
-template float findMADFM<float>(float *array, bool *mask, size_t size, float median);
-template double findMADFM<double>(double *array, bool *mask, size_t size, double median);
+template int findMADFM<int>(int *array, std::vector<bool> mask, size_t size, int median);
+template long findMADFM<long>(long *array, std::vector<bool> mask, size_t size, long median);
+template float findMADFM<float>(float *array, std::vector<bool> mask, size_t size, float median);
+template double findMADFM<double>(double *array, std::vector<bool> mask, size_t size, double median);
 //--------------------------------------------------------------------
 
-template <class T> T findMADFMDiff(T *first, T *second, bool *mask, size_t size, T median)
+template <class T> T findMADFMDiff(T *first, T *second, std::vector<bool> mask, size_t size, T median)
 {
   /// @details
   /// Find the median absolute deviation from the median value of an
@@ -434,10 +434,10 @@ template <class T> T findMADFMDiff(T *first, T *second, bool *mask, size_t size,
   delete [] newarray;
   return madfm;
 }
-template int findMADFMDiff<int>(int *first, int *second, bool *mask, size_t size, int median);
-template long findMADFMDiff<long>(long *first, long *second, bool *mask, size_t size, long median);
-template float findMADFMDiff<float>(float *first, float *second, bool *mask, size_t size, float median);
-template double findMADFMDiff<double>(double *first, double *second, bool *mask, size_t size, double median);
+template int findMADFMDiff<int>(int *first, int *second, std::vector<bool> mask, size_t size, int median);
+template long findMADFMDiff<long>(long *first, long *second, std::vector<bool> mask, size_t size, long median);
+template float findMADFMDiff<float>(float *first, float *second, std::vector<bool> mask, size_t size, float median);
+template double findMADFMDiff<double>(double *first, double *second, std::vector<bool> mask, size_t size, double median);
 //--------------------------------------------------------------------
 
 template <class T> void findMedianStats(T *array, size_t size, 
@@ -476,7 +476,7 @@ template void findMedianStats<double>(double *array, size_t size,
 					 double &median, double &madfm);
 //--------------------------------------------------------------------
 
-template <class T> void findMedianStats(T *array, size_t size, bool *mask, 
+template <class T> void findMedianStats(T *array, size_t size, std::vector<bool> mask, 
 					T &median, T &madfm)
 {
   /// @details
@@ -510,13 +510,13 @@ template <class T> void findMedianStats(T *array, size_t size, bool *mask,
 
   delete [] newarray;
 }
-template void findMedianStats<int>(int *array, size_t size, bool *mask, 
+template void findMedianStats<int>(int *array, size_t size, std::vector<bool> mask, 
 				      int &median, int &madfm);
-template void findMedianStats<long>(long *array, size_t size, bool *mask, 
+template void findMedianStats<long>(long *array, size_t size, std::vector<bool> mask, 
 				       long &median, long &madfm);
-template void findMedianStats<float>(float *array, size_t size, bool *mask, 
+template void findMedianStats<float>(float *array, size_t size, std::vector<bool> mask, 
 					float &median, float &madfm);
-template void findMedianStats<double>(double *array, size_t size, bool *mask, 
+template void findMedianStats<double>(double *array, size_t size, std::vector<bool> mask, 
 					 double &median, double &madfm);
 //--------------------------------------------------------------------
 
@@ -558,7 +558,7 @@ template void findMedianStatsDiff<double>(double *first, double *second, size_t 
 					  double &median, double &madfm);
 //--------------------------------------------------------------------
 
-template <class T> void findMedianStatsDiff(T *first, T *second, size_t size, bool *mask, 
+template <class T> void findMedianStatsDiff(T *first, T *second, size_t size, std::vector<bool> mask, 
 					    T &median, T &madfm)
 {
   /// @details Find the median and the median absolute deviation from
@@ -594,13 +594,13 @@ template <class T> void findMedianStatsDiff(T *first, T *second, size_t size, bo
 
   delete [] newarray;
 }
-template void findMedianStatsDiff<int>(int *first, int *second, size_t size, bool *mask, 
+template void findMedianStatsDiff<int>(int *first, int *second, size_t size, std::vector<bool> mask, 
 				       int &median, int &madfm);
-template void findMedianStatsDiff<long>(long *first, long *second, size_t size, bool *mask, 
+template void findMedianStatsDiff<long>(long *first, long *second, size_t size, std::vector<bool> mask, 
 					long &median, long &madfm);
-template void findMedianStatsDiff<float>(float *first, float *second, size_t size, bool *mask, 
+template void findMedianStatsDiff<float>(float *first, float *second, size_t size, std::vector<bool> mask, 
 					 float &median, float &madfm);
-template void findMedianStatsDiff<double>(double *first, double *second, size_t size, bool *mask, 
+template void findMedianStatsDiff<double>(double *first, double *second, size_t size, std::vector<bool> mask, 
 					  double &median, double &madfm);
 //--------------------------------------------------------------------
   

@@ -134,7 +134,7 @@ Type *GaussSmooth1D<Type>::smooth(Type *input, int dim, bool normalise, bool sca
 {
   /// @details Smooth a given one-dimensional array, of dimension dim,
   /// with a gaussian. Simply runs as a front end to
-  /// GaussSmooth1D::smooth(float *, int, bool *) by defining a mask
+  /// GaussSmooth1D::smooth(float *, int, vector<bool>) by defining a mask
   /// that allows all pixels in the input array.
   /// 
   ///  \param input The 2D array to be smoothed.
@@ -142,17 +142,15 @@ Type *GaussSmooth1D<Type>::smooth(Type *input, int dim, bool normalise, bool sca
   ///  \return The smoothed array.
 
   Type *smoothed;
-  bool *mask = new bool[dim];
-  for(int i=0;i<dim;i++) mask[i]=true;
+  std::vector<bool> mask(dim,true);
   smoothed = this->smooth(input,dim,mask,scaleByCoverage);
-  delete [] mask;
   return smoothed;
 }
 template float *GaussSmooth1D<float>::smooth(float *input, int dim, bool normalise, bool scaleByCoverage);
 template double *GaussSmooth1D<double>::smooth(double *input, int dim, bool normalise, bool scaleByCoverage);
 
 template <class Type>
-Type *GaussSmooth1D<Type>::smooth(Type *input, int dim, bool *mask, bool normalise, bool scaleByCoverage)
+Type *GaussSmooth1D<Type>::smooth(Type *input, int dim, std::vector<bool> mask, bool normalise, bool scaleByCoverage)
 {
   /// @details Smooth a given one-dimensional array, of dimension dim,
   ///  with a gaussian, where the boolean array mask defines which
@@ -170,7 +168,7 @@ Type *GaussSmooth1D<Type>::smooth(Type *input, int dim, bool *mask, bool normali
   /// 
   ///  \param input The 2D array to be smoothed.
   ///  \param dim  The size of the x-dimension of the array.
-  ///  \param mask The array showing which pixels in the input array
+  ///  \param mask The vector showing which pixels in the input array
   ///              are valid.
   ///  \return The smoothed array.
 
@@ -221,5 +219,5 @@ Type *GaussSmooth1D<Type>::smooth(Type *input, int dim, bool *mask, bool normali
   }
   
 }
-template float *GaussSmooth1D<float>::smooth(float *input, int dim, bool *mask, bool normalise, bool scaleByCoverage);
-template double *GaussSmooth1D<double>::smooth(double *input, int dim, bool *mask, bool normalise, bool scaleByCoverage);
+template float *GaussSmooth1D<float>::smooth(float *input, int dim, std::vector<bool> mask, bool normalise, bool scaleByCoverage);
+template double *GaussSmooth1D<double>::smooth(double *input, int dim, std::vector<bool> mask, bool normalise, bool scaleByCoverage);

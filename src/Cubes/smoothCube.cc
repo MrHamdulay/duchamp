@@ -207,7 +207,7 @@ void Cube::SpatialSmooth()
 	// update pointer to point to current channel
 	image = this->array + z*xySize;
     
-	bool *mask      = this->par.makeBlankMask(image,xySize);
+	std::vector<bool> mask = this->par.makeBlankMask(image,xySize);
     
 	float *smoothed = gauss.smooth(image,xdim,ydim,mask,edgeTreatment);
     
@@ -215,7 +215,6 @@ void Cube::SpatialSmooth()
 	    this->recon[z*xySize+pix] = smoothed[pix];
 
 	if(gauss.isAllocated()) delete [] smoothed;
-	delete [] mask;
       }
 
       this->reconExists = true;
@@ -263,7 +262,6 @@ void Cube::SpatialSmoothNSearch()
 
   float *image = new float[xySize];
   float *smoothed=0;
-  bool *mask=0;
   float median,madfm;//,threshold;
   for(size_t z=0;z<zdim;z++){
 
@@ -273,13 +271,11 @@ void Cube::SpatialSmoothNSearch()
 
       for(size_t pix=0;pix<xySize;pix++) image[pix] = this->array[z*xySize+pix];
 
-      mask  = this->par.makeBlankMask(image+z*xySize,xySize);
+      std::vector<bool> mask  = this->par.makeBlankMask(image+z*xySize,xySize);
 
       smoothed = gauss.smooth(image,xdim,ydim,mask);
       
       findMedianStats(smoothed,xySize,mask,median,madfm);
-
-      delete [] mask;
 
       channelImage->saveArray(smoothed,xySize);
 

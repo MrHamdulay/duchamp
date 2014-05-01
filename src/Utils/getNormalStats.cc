@@ -69,7 +69,7 @@ template float findMeanDiff<float>(float *first, float *second, size_t size);
 template float findMeanDiff<double>(double *first, double *second, size_t size);
 //--------------------------------------------------------------------
 
-template <class T> float findMean(T *array, bool *mask, size_t size)
+template <class T> float findMean(T *array, std::vector<bool> mask, size_t size)
 {
   /// @details
   /// Find the mean of an array of numbers. Type independent.
@@ -90,13 +90,13 @@ template <class T> float findMean(T *array, bool *mask, size_t size)
   if(ct>0) mean /= double(ct);
   return float(mean);
 }
-template float findMean<int>(int *array, bool *mask, size_t size);
-template float findMean<long>(long *array, bool *mask, size_t size);
-template float findMean<float>(float *array, bool *mask, size_t size);
-template float findMean<double>(double *array, bool *mask, size_t size);
+template float findMean<int>(int *array, std::vector<bool> mask, size_t size);
+template float findMean<long>(long *array, std::vector<bool> mask, size_t size);
+template float findMean<float>(float *array, std::vector<bool> mask, size_t size);
+template float findMean<double>(double *array, std::vector<bool> mask, size_t size);
 //--------------------------------------------------------------------
 
-template <class T> float findMeanDiff(T *first, T *second, bool *mask, size_t size)
+template <class T> float findMeanDiff(T *first, T *second, std::vector<bool> mask, size_t size)
 {
   /// @details
   /// Find the mean of an array of numbers. Type independent.
@@ -117,10 +117,10 @@ template <class T> float findMeanDiff(T *first, T *second, bool *mask, size_t si
   if(ct>0) mean /= double(ct);
   return float(mean);
 }
-template float findMeanDiff<int>(int *first, int *second, bool *mask, size_t size);
-template float findMeanDiff<long>(long *first, long *second, bool *mask, size_t size);
-template float findMeanDiff<float>(float *first, float *second, bool *mask, size_t size);
-template float findMeanDiff<double>(double *first, double *second, bool *mask, size_t size);
+template float findMeanDiff<int>(int *first, int *second, std::vector<bool> mask, size_t size);
+template float findMeanDiff<long>(long *first, long *second, std::vector<bool> mask, size_t size);
+template float findMeanDiff<float>(float *first, float *second, std::vector<bool> mask, size_t size);
+template float findMeanDiff<double>(double *first, double *second, std::vector<bool> mask, size_t size);
 //--------------------------------------------------------------------
 
 template <class T> float findStddev(T *array, size_t size)
@@ -180,7 +180,7 @@ template float findStddevDiff<float>(float *first, float *second, size_t size);
 template float findStddevDiff<double>(double *first, double *second, size_t size);
 //--------------------------------------------------------------------
 
-template <class T> float findStddev(T *array, bool *mask, size_t size)
+template <class T> float findStddev(T *array, std::vector<bool> mask, size_t size)
 {
   /// @details Find the rms or standard deviation of an array of
   /// numbers. Type independent. Calculated by iterating only once,
@@ -208,13 +208,13 @@ template <class T> float findStddev(T *array, bool *mask, size_t size)
     stddev = sqrt(sumxx/dct - mean*mean);
   return float(stddev);
 }
-template float findStddev<int>(int *array, bool *mask, size_t size);
-template float findStddev<long>(long *array, bool *mask, size_t size);
-template float findStddev<float>(float *array, bool *mask, size_t size);
-template float findStddev<double>(double *array, bool *mask, size_t size);
+template float findStddev<int>(int *array, std::vector<bool> mask, size_t size);
+template float findStddev<long>(long *array, std::vector<bool> mask, size_t size);
+template float findStddev<float>(float *array, std::vector<bool> mask, size_t size);
+template float findStddev<double>(double *array, std::vector<bool> mask, size_t size);
 //--------------------------------------------------------------------
 
-template <class T> float findStddevDiff(T *first, T *second, bool *mask, size_t size)
+template <class T> float findStddevDiff(T *first, T *second, std::vector<bool> mask, size_t size)
 {
   /// @details Find the rms or standard deviation of an array of
   /// numbers. Type independent. Calculated by iterating only once,
@@ -242,10 +242,10 @@ template <class T> float findStddevDiff(T *first, T *second, bool *mask, size_t 
     stddev = sqrt(sumxx/dct - mean*mean);
   return float(stddev);
 }
-template float findStddevDiff<int>(int *first, int *second, bool *mask, size_t size);
-template float findStddevDiff<long>(long *first, long *second, bool *mask, size_t size);
-template float findStddevDiff<float>(float *first, float *second, bool *mask, size_t size);
-template float findStddevDiff<double>(double *first, double *second, bool *mask, size_t size);
+template float findStddevDiff<int>(int *first, int *second, std::vector<bool> mask, size_t size);
+template float findStddevDiff<long>(long *first, long *second, std::vector<bool> mask, size_t size);
+template float findStddevDiff<float>(float *first, float *second, std::vector<bool> mask, size_t size);
+template float findStddevDiff<double>(double *first, double *second, std::vector<bool> mask, size_t size);
 //--------------------------------------------------------------------
 
 template <class T> void findNormalStats(T *array, size_t size, 
@@ -286,7 +286,7 @@ template void findNormalStats<double>(double *array, size_t size,
 					 float &mean, float &stddev);
 //--------------------------------------------------------------------
 
-template <class T> void findNormalStats(T *array, size_t size, bool *mask, 
+template <class T> void findNormalStats(T *array, size_t size, std::vector<bool> mask, 
 					float &mean, float &stddev)
 {
   /// @details
@@ -324,13 +324,13 @@ template <class T> void findNormalStats(T *array, size_t size, bool *mask,
   stddev = sqrt(stddev/float(goodSize-1));
 
 }
-template void findNormalStats<int>(int *array, size_t size, bool *mask, 
+template void findNormalStats<int>(int *array, size_t size, std::vector<bool> mask, 
 				      float &mean, float &stddev);
-template void findNormalStats<long>(long *array, size_t size, bool *mask, 
+template void findNormalStats<long>(long *array, size_t size, std::vector<bool> mask, 
 				       float &mean, float &stddev);
-template void findNormalStats<float>(float *array, size_t size, bool *mask, 
+template void findNormalStats<float>(float *array, size_t size, std::vector<bool> mask, 
 					float &mean, float &stddev);
-template void findNormalStats<double>(double *array, size_t size, bool *mask, 
+template void findNormalStats<double>(double *array, size_t size, std::vector<bool> mask, 
 					 float &mean, float &stddev);
 //--------------------------------------------------------------------  
 
@@ -373,7 +373,7 @@ template void findNormalStatsDiff<double>(double *first, double *second, size_t 
 					  float &mean, float &stddev);
 //--------------------------------------------------------------------
 
-template <class T> void findNormalStatsDiff(T *first, T *second, size_t size, bool *mask, 
+template <class T> void findNormalStatsDiff(T *first, T *second, size_t size, std::vector<bool> mask, 
 					    float &mean, float &stddev)
 {
   /// @details Find the mean and rms or standard deviation of the
@@ -413,12 +413,12 @@ template <class T> void findNormalStatsDiff(T *first, T *second, size_t size, bo
   stddev = sqrt(stddev/float(goodSize-1));
 
 }
-template void findNormalStatsDiff<int>(int *first, int *second, size_t size, bool *mask, 
+template void findNormalStatsDiff<int>(int *first, int *second, size_t size, std::vector<bool> mask, 
 				       float &mean, float &stddev);
-template void findNormalStatsDiff<long>(long *first, long *second, size_t size, bool *mask, 
+template void findNormalStatsDiff<long>(long *first, long *second, size_t size, std::vector<bool> mask, 
 					float &mean, float &stddev);
-template void findNormalStatsDiff<float>(float *first, float *second, size_t size, bool *mask, 
+template void findNormalStatsDiff<float>(float *first, float *second, size_t size, std::vector<bool> mask, 
 					 float &mean, float &stddev);
-template void findNormalStatsDiff<double>(double *first, double *second, size_t size, bool *mask, 
+template void findNormalStatsDiff<double>(double *first, double *second, size_t size, std::vector<bool> mask, 
 					  float &mean, float &stddev);
 //--------------------------------------------------------------------

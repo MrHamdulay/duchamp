@@ -76,8 +76,7 @@ namespace duchamp
       long zmin = object.getZmin();
       long zmax = object.getZmax();
 
-      bool *isGood = new bool[size*size];
-      for(size_t i=0;i<size*size;i++) isGood[i]=true;
+      std::vector<bool> isGood(size*size,true);
       for(int z=zmin; z<=zmax; z++){
 	for(int x=xmin; x<=xmax; x++){
 	  for(int y=ymin; y<=ymax; y++){
@@ -186,7 +185,6 @@ namespace duchamp
 
       cpgsci(ci);
 
-      delete [] isGood;
 
     }
 

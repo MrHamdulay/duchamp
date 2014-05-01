@@ -1004,12 +1004,11 @@ namespace duchamp
 
       float *intSpec = new float[dim[2]];
       size_t size=dim[0]*dim[1]*dim[2];
-      bool *mask = par.makeBlankMask(fluxArray,size);
+      std::vector<bool> mask = par.makeBlankMask(fluxArray,size);
       getIntSpec(*this,fluxArray,dim,mask,1.,intSpec);
 
       this->calcVelWidths(dim[2],intSpec,head);
 
-      delete [] mask;
       delete [] intSpec;
 
     }

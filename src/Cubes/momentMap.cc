@@ -112,8 +112,7 @@ namespace duchamp
     // get the list of objects that should be plotted. 
     std::vector<bool> objectChoice = this->par.getObjectChoices(this->objectList->size());
 
-    bool *isObj = new bool[xdim*ydim*zdim];
-    for(size_t i=0;i<xdim*ydim*zdim;i++) isObj[i] = false;
+    std::vector<bool> isObj(xdim*ydim*zdim,false);
     for(size_t i=0;i<this->objectList->size();i++){
       if(objectChoice[i]){
 	std::vector<Voxel> voxlist = this->objectList->at(i).getPixelSet();
@@ -175,7 +174,6 @@ namespace duchamp
     }
     
     delete [] zArray;
-    delete [] isObj;
 
     return detectedPixels;
 

@@ -118,7 +118,7 @@ template void findAllStats<double>(double *array, size_t size,
 				   double &median, double &madfm);
 //--------------------------------------------------------------------
 
-template <class T> void findAllStats(T *array, size_t size, bool *mask, 
+template <class T> void findAllStats(T *array, size_t size, std::vector<bool> mask, 
 				     float &mean, float &stddev,
 				     T &median, T &madfm)
 {
@@ -160,16 +160,16 @@ template <class T> void findAllStats(T *array, size_t size, bool *mask,
   delete [] newarray;
 
 }
-template void findAllStats<int>(int *array, size_t size, bool *mask,
+template void findAllStats<int>(int *array, size_t size, std::vector<bool> mask,
 				float &mean, float &stddev,
 				int &median, int &madfm);
-template void findAllStats<long>(long *array, size_t size, bool *mask,
+template void findAllStats<long>(long *array, size_t size, std::vector<bool> mask,
 				 float &mean, float &stddev,
 				 long &median, long &madfm);
-template void findAllStats<float>(float *array, size_t size, bool *mask,
+template void findAllStats<float>(float *array, size_t size, std::vector<bool> mask,
 				  float &mean, float &stddev,
 				  float &median, float &madfm);
-template void findAllStats<double>(double *array, size_t size, bool *mask,
+template void findAllStats<double>(double *array, size_t size, std::vector<bool> mask,
 				   float &mean, float &stddev,
 				   double &median, double &madfm);
 //--------------------------------------------------------------------
