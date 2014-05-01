@@ -100,15 +100,16 @@ namespace duchamp
       top = this->par.getBorderTop();
       bottom = this->par.getBorderBottom();
 
-      this->axisDim[0] = xdim - left - right; 
-      this->axisDim[1] = ydim - bottom - top; 
-      this->axisDim[2] = zdim;
-      this->numPixels = this->axisDim[0]*this->axisDim[1]*this->axisDim[2];
 
       size_t oldpos,newpos;
     
       // Do the trimming, but only if we need to -- is there a border of Blanks?
-      if((left>0)||(right>0)||(bottom>0)||(top>0)) {
+      if(((left>0)||(right>0)||(bottom>0)||(top>0)) && (right>left) && (top>bottom)) {
+
+	  this->axisDim[0] = xdim - left - right; 
+	  this->axisDim[1] = ydim - bottom - top; 
+	  this->axisDim[2] = zdim;
+	  this->numPixels = this->axisDim[0]*this->axisDim[1]*this->axisDim[2];
 
 	// Trim the array of pixel values
 	float *newarray  = new float[this->numPixels];
