@@ -51,7 +51,7 @@ namespace duchamp
 
 	    ProgressBar bar;
 	    if(this->par.isVerbose()){
-	      std::cout << "\n  Determining blank pixel borders: "<<std::flush;
+	      std::cout << "\n  Determining blank pixel borders... "<<std::flush;
 	      bar.init(zdim);
 	    }
 	    std::vector<bool> rowblank(xdim,false);
@@ -103,7 +103,7 @@ namespace duchamp
 		    size_t oldpos,newpos;
 
 		    if(this->par.isVerbose()){
-		      std::cout << "  Trimming data arrays: " << std::flush;
+		      std::cout << "  Trimming data arrays... " << std::flush;
 		      bar.init(4);
 		    }
 		    
@@ -171,6 +171,11 @@ namespace duchamp
 			}
 			delete [] this->recon;
 			this->recon = newrecon;
+		    }
+
+		    if(this->par.isVerbose()){
+			bar.remove();
+			std::cout << " Done.\n";
 		    }
 
 		}
