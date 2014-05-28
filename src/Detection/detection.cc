@@ -1024,11 +1024,14 @@ namespace duchamp
 
   void Detection::setOffsets(Param &par)
   {
-    ///  @details
-    /// This function stores the values of the offsets for each cube axis.
-    /// The offsets are the starting values of the cube axes that may differ from
-    ///  the default value of 0 (for instance, if a subsection is being used).
-    /// The values will be used when the detection is outputted.
+    ///  @details This function stores the values of the offsets for
+    /// each cube axis.  The offsets are the starting values of the
+    /// cube axes that may differ from the default value of 0 (for
+    /// instance, if a subsection is being used).  The values will be
+    /// used when the detection is outputted.  NB - this function
+    /// merely sets the values of the offset parameters, it *does not*
+    /// apply them to the pixels & parameters (that is the
+    /// applyOffsets() function).
 
     this->xSubOffset = par.getXOffset();
     this->ySubOffset = par.getYOffset();
