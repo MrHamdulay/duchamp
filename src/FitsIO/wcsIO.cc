@@ -194,7 +194,7 @@ namespace duchamp
 	if (stat[i] > 0) 
 	  errmsg << i+1 << ": WCSFIX error code=" << stat[i] << ": "
 		 << wcsfix_errmsg[stat[i]] << std::endl;
-      DUCHAMPWARN("Cube Reader", errmsg);
+      DUCHAMPWARN("Cube Reader", errmsg.str());
       return FAILURE;
     }
     // Set up the wcsprm struct. Report if something goes wrong.
@@ -215,7 +215,7 @@ namespace duchamp
 	  if (stat[i] > 0) 
 	    errmsg << i+1 << ": WCSFIX error code=" << stat[i] << ": "
 		   << wcsfix_errmsg[stat[i]] << std::endl;
-	DUCHAMPWARN("Cube Reader", errmsg );
+	DUCHAMPWARN("Cube Reader", errmsg.str() );
       }
 
 
