@@ -1038,7 +1038,9 @@ namespace duchamp
       recordParam(theStream, par, "[smoothExists]", "Smoothed array exists?", stringize(par.getFlagSmoothExists()));
       recordParam(theStream, par, "[smoothFile]", "FITS file containing smoothed array", par.getSmoothFile());
     }
-    recordParam(theStream, par, "[logFile]", "Intermediate Logfile", par.logFile);
+    if(par.getFlagLog()){
+	recordParam(theStream, par, "[logFile]", "Intermediate Logfile", par.logFile);
+    }
     recordParam(theStream, par, "[outFile]", "Final Results file", par.getOutFile());
     if(par.getFlagSeparateHeader()){
       recordParam(theStream, par, "[headerFile]", "Header for results file", par.getHeaderFile());
