@@ -90,7 +90,7 @@ namespace duchamp {
 	   << "\" ucd=\"" << this->itsUCD
 	   << "\" datatype=\"" << this->itsDatatype;
     if(this->itsUnits!="")
-      stream << "\" units=\"" << this->itsUnits;
+      stream << "\" unit=\"" << this->itsUnits;
     if(this->itsWidth!=0){
       if(this->itsDatatype=="char")
 	stream << "\" arraysize=\"" << this->itsWidth;
