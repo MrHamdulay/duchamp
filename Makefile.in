@@ -111,8 +111,9 @@ HEADS = $(BASE)/config.h\
 	$(OUTPUTSDIR)/DS9AnnotationWriter.hh\
 	$(OUTPUTSDIR)/CasaAnnotationWriter.hh
 
-OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
-	$(BASE)/duchamp.o\
+OBJECTS-MAIN = $(BASE)/mainDuchamp.o
+
+OBJECTS-NOPG = $(BASE)/duchamp.o\
 	$(BASE)/param.o\
 	$(BASE)/fitsHeader.o\
 	$(PIXELMAPDIR)/Line.o\
@@ -196,9 +197,10 @@ OBJECTS-NOPG = $(BASE)/mainDuchamp.o \
 	$(OUTPUTSDIR)/CasaAnnotationWriter.o
 
 ifeq ($(strip $(PGPLOTLIB)),)
-  OBJECTS = $(OBJECTS-NOPG)
+  OBJECTS = $(OBJECTS-NOPG) $(OBJECTS-MAIN)
 else
   OBJECTS = $(OBJECTS-NOPG)\
+	$(OBJECTS-MAIN)\
 	$(CUBESDIR)/drawBlankEdges.o\
 	$(CUBESDIR)/drawMomentCutout.o\
 	$(CUBESDIR)/outputSpectra.o\
@@ -214,6 +216,10 @@ else
 	$(UTILDIR)/PlottingUtilities.o\
 	$(UTILDIR)/pgplot_related.o
 endif
+
+test : $(OBJECTS)
+	$(CXX) -c $(BASE)/Tests/test.cc $(CINC) -o $(BASE)/Tests/test.o -std=c++11
+	$(LINK) -o Test-Duchamp $(OBJECTS-NOPG) $(BASE)/Tests/test.o $(LIBS) -std=c++11
 
 duchamp : $(OBJECTS)
 	$(LINK) -o $(EXEC) $(OBJECTS) $(LIBS)
