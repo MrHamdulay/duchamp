@@ -145,48 +145,6 @@ namespace duchamp
                 }
             }
 
-            // // Locating the borders of the image -- ignoring BLANK pixels
-            // //  Only do this if flagBlankPix is true. 
-            // //  Otherwise use the full range of x and y.
-            // //  No trimming is done in the z-direction at this point.
-            // long *xLim1 = new long[ydim];
-            // for(size_t i=0;i<ydim;i++) xLim1[i] = 0;
-            // long *xLim2 = new long[ydim];
-            // for(size_t i=0;i<ydim;i++) xLim2[i] = xdim-1;
-            // long *yLim1 = new long[xdim];
-            // for(size_t i=0;i<xdim;i++) yLim1[i] = 0;
-            // long *yLim2 = new long[xdim];
-            // for(size_t i=0;i<xdim;i++) yLim2[i] = ydim-1;
-
-            // if(par.getFlagBlankPix()){
-            // 	float avGapX = 0, avGapY = 0;
-            // 	for(size_t row=0;row<ydim;row++){
-            // 	  size_t ct1 = 0;
-            // 	  size_t ct2 = xdim - 1;
-            // 	  while((ct1<ct2)&&(par.isBlank(input[row*xdim+ct1]))) ct1++;
-            // 	  while((ct2>ct1)&&(par.isBlank(input[row*xdim+ct2]))) ct2--;
-            // 	  xLim1[row] = ct1;
-            // 	  xLim2[row] = ct2;
-            // 	  avGapX += ct2 - ct1 + 1;
-            // 	}
-            // 	avGapX /= float(ydim);
-
-            // 	for(size_t col=0;col<xdim;col++){
-            // 	  size_t ct1=0;
-            // 	  size_t ct2=ydim-1;
-            // 	  while((ct1<ct2)&&(par.isBlank(input[col+xdim*ct1]))) ct1++;
-            // 	  while((ct2>ct1)&&(par.isBlank(input[col+xdim*ct2]))) ct2--;
-            // 	  yLim1[col] = ct1;
-            // 	  yLim2[col] = ct2;
-            // 	  avGapY += ct2 - ct1 + 1;
-            // 	}
-            // 	avGapY /= float(xdim);
-
-            // 	// if(avGapX < mindim) mindim = int(avGapX);
-            // 	// if(avGapY < mindim) mindim = int(avGapY);
-            // 	// numScales = par.filter().getNumScales(mindim);
-            // }
-
             float threshold;
             int iteration=0;
             newsigma = 1.e9;
@@ -282,7 +240,11 @@ namespace duchamp
 
                     } //-> end of scale loop 
 
-                    for(size_t pos=0;pos<size;pos++) if(isGood[pos]) output[pos] += coeffs[pos];
+                    for(size_t pos=0;pos<size;pos++) {
+                        if(isGood[pos]) {
+                            output[pos] += coeffs[pos];
+                        }
+                    }
 
                     // for(size_t i=0;i<size;i++) residual[i] = input[i] - output[i];
                     // findMedianStats(residual,goodSize,isGood,mean,newsigma);
