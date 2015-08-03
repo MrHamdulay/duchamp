@@ -1,0 +1,12 @@
+*.o
+Makefile
+config.log
+config.status
+.DS_Store
+src/config.h
+autom4te.cache/*
+verification/*
+Duchamp-*
+duchamp-Catalogue.dpc
+Test-Duchamp
+docs/*
