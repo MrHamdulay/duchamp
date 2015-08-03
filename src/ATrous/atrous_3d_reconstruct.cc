@@ -42,6 +42,16 @@ using std::setw;
 
 namespace duchamp
 {
+    inline void boundaryConditions(long &d, long &dim) {
+        while(d<0 || d>=dim) {
+            if (d < 0) {
+                d = -d;
+            }
+            if (d >= dim) {
+                d = 2*(dim-1) - d;
+            }
+        }
+    }
 
     void atrous3DReconstruct(size_t &xdim, size_t &ydim, size_t &zdim, float *&input, 
             float *&output, Param &par)
@@ -213,29 +223,18 @@ namespace duchamp
                                     unsigned int filterpos = 0;
                                     for(int zoffset=-filterHW; zoffset<=filterHW; zoffset++){
                                         long z = zpos + spacing*zoffset;
-                                        while((z<0)||(z>=long(zdim))){
-                                            if(z<0) z = -z;                 // boundary conditions are 
-                                            if(z>=long(zdim)) z = 2*(zdim-1) - z; //    reflection.
-                                        }
+                                        boundaryConditions(z, zdim);
                                         size_t oldchan = z * spatialSize;
 
                                         for(int yoffset=-filterHW; yoffset<=filterHW; yoffset++){
                                             long y = long(ypos) + spacing*yoffset;
                                             // REFLECT
-                                            while((y<0)||(y>=long(ydim))){
-                                                // boundary conditions are reflection. 
-                                                if(y<0) y = 0 - y;
-                                                else if(y>=long(ydim)) y = 2*(ydim-1) - y;
-                                            }
+                                            boundaryConditions(y, ydim);
                                             size_t oldrow = y * xdim;
 
                                             for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
                                                 long x = long(xpos) + spacing*xoffset;
-                                                while((x<0)||(x>=long(xdim))){
-                                                    // boundary conditions are reflection. 
-                                                    if(x<0) x = 0 - x;
-                                                    else if(x>=long(xdim)) x = 2*(xdim-1) - x;
-                                                }
+                                                boundaryConditions(x, xdim);
 
                                                 size_t oldpos = oldchan + oldrow + x;
 
