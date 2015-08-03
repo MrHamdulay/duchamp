@@ -227,17 +227,6 @@ namespace duchamp
                                                 if(y<0) y = 0 - y;
                                                 else if(y>=long(ydim)) y = 2*(ydim-1) - y;
                                             }
-
-                                            // // Boundary conditions -- assume reflection at boundaries.
-                                            // // Use limits as calculated above
-                                            // if(yLim1[xpos]!=yLim2[xpos]){ 
-                                            // 	// if these are equal we will get into an infinite loop
-                                            // 	while((y<yLim1[xpos])||(y>yLim2[xpos])){
-                                            // 	// std::cerr << y << " " <<spacing << " " << yoffset << " " << ypos << " " << xpos << " " << yLim1[xpos] << " " << yLim2[xpos] << "\n";
-                                            // 	  if(y<yLim1[xpos]) y = 2*yLim1[xpos] - y;      
-                                            // 	  else if(y>yLim2[xpos]) y = 2*yLim2[xpos] - y;      
-                                            // 	}
-                                            // }
                                             size_t oldrow = y * xdim;
 
                                             for(int xoffset=-filterHW; xoffset<=filterHW; xoffset++){
@@ -247,16 +236,6 @@ namespace duchamp
                                                     if(x<0) x = 0 - x;
                                                     else if(x>=long(xdim)) x = 2*(xdim-1) - x;
                                                 }
-
-                                                // // Boundary conditions -- assume reflection at boundaries.
-                                                // // Use limits as calculated above
-                                                // if(xLim1[ypos]!=xLim2[ypos]){
-                                                //   // if these are equal we will get into an infinite loop
-                                                //   while((x<xLim1[ypos])||(x>xLim2[ypos])){
-                                                //     if(x<xLim1[ypos]) x = 2*xLim1[ypos] - x;      
-                                                //     else if(x>xLim2[ypos]) x = 2*xLim2[ypos] - x;      
-                                                //   }
-                                                // }
 
                                                 size_t oldpos = oldchan + oldrow + x;
 
