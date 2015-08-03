@@ -42,7 +42,7 @@ using std::setw;
 
 namespace duchamp
 {
-    inline void boundaryConditions(long &d, long &dim) {
+    inline void boundaryConditions(long &d, const long &dim) {
         while(d<0 || d>=dim) {
             if (d < 0) {
                 d = -d;
